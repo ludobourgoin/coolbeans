@@ -1,0 +1,91 @@
+---
+import type { Logo } from "../data/logos";
+
+interface Props {
+  logos: Logo[];
+  /** sens inverse (2e ligne) */
+  reverse?: boolean;
+}
+
+const { logos, reverse = false } = Astro.props;
+// dupliqué pour une boucle sans couture (translateX -50%)
+const loop = [...logos, ...logos];
+---
+
+<div class="marquee" aria-hidden="true">
+  <ul class:list={["track", { rev: reverse }]}>
+    {
+      loop.map((l) => (
+        <li class:list={["tool", { named: l.label }]}>
+          <img src={l.src} alt={l.alt} loading="lazy" class:list={{ invert: l.invert }} />
+          {l.label && <span>{l.label}</span>}
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  }
+  .track {
+    list-style: none;
+    margin: 0;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    width: max-content;
+    white-space: nowrap;
+    animation: marquee-scroll 58s linear infinite;
+  }
+  .track.rev {
+    animation-duration: 66s;
+    animation-direction: reverse;
+  }
+  .marquee:hover .track {
+    animation-play-state: paused;
+  }
+  .tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    flex: 0 0 auto;
+  }
+  .tool img {
+    height: 27px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+  }
+  .tool.named img {
+    height: 30px;
+  }
+  .tool span {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-transform: lowercase;
+  }
+  :global(.dark) .tool img.invert {
+    filter: brightness(0) invert(1);
+  }
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .track {
+      animation: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      white-space: normal;
+    }
+  }
+</style>

@@ -1,0 +1,274 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { toolCategories } from "../data/tools";
+
+const fb = (name: string) =>
+  name
+    .replace(/[^a-zA-ZÀ-ÿ ]/g, "")
+    .split(" ")
+    .filter(Boolean)
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join("")
+    .replace(/^\w/, (c) => c.toUpperCase());
+---
+
+<BaseLayout
+  title="Tools — la boîte à outils de Coolbeans"
+  description="Apps et outils que j'utilise au quotidien sur des projets réels coolbeans, et que je recommande les yeux fermés."
+>
+  <Nav />
+
+  <section class="hero surface-brand">
+    <div class="container-site hero-inner">
+      <h1>tools.</h1>
+      <p>
+        apps et outils que j'utilise <em>au quotidien</em>, sur des projets réels
+        coolbeans, et que je recommande les yeux fermés.
+      </p>
+    </div>
+  </section>
+
+  <div class="container-site layout">
+    <aside class="side" aria-label="catégories">
+      <nav>
+        {
+          toolCategories.map((cat) => (
+            <a href={`#${cat.id}`}>
+              {cat.title}
+              <span class="ct">{cat.cards.length}</span>
+            </a>
+          ))
+        }
+      </nav>
+    </aside>
+
+    <div class="cats">
+      {
+        toolCategories.map((cat) => (
+          <section class="cat" id={cat.id}>
+            <div class="cat-h">
+              <h2>{cat.title}</h2>
+              <span class="rule" />
+            </div>
+            <div class="grid">
+              {cat.cards.map((tool) => (
+                <a
+                  class="tool-card card"
+                  href={tool.href || "#"}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label={`${tool.name} — site officiel`}
+                >
+                  <div class="top">
+                    <div class="logo">
+                      {tool.logo ? (
+                        <img src={tool.logo} alt={tool.name} loading="lazy" />
+                      ) : (
+                        <span class="fb">{fb(tool.name)}</span>
+                      )}
+                    </div>
+                    <div class="nm">{tool.name}</div>
+                  </div>
+                  <p class="desc">{tool.desc}</p>
+                  {tool.chips.length > 0 && (
+                    <div class="chips">
+                      {tool.chips.map((chip) => (
+                        <span class="chip">{chip}</span>
+                      ))}
+                    </div>
+                  )}
+                </a>
+              ))}
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .hero {
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-inner {
+    padding-block: 72px 48px;
+  }
+  .hero h1 {
+    text-transform: lowercase;
+  }
+  .hero p {
+    margin-top: 20px;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.45;
+    max-width: 60ch;
+  }
+  .hero em {
+    font-style: italic;
+    color: var(--mute);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 64px;
+    padding-block: 56px 120px;
+    align-items: start;
+  }
+
+  /* sidebar ancres */
+  .side {
+    position: sticky;
+    top: 88px;
+  }
+  .side nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .side a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    border-radius: var(--radius-control);
+    text-transform: lowercase;
+    transition: background var(--dur) var(--ease);
+  }
+  .side a:hover {
+    background: var(--surface-raise);
+  }
+  .side .ct {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--mute);
+  }
+
+  .cats {
+    display: flex;
+    flex-direction: column;
+    gap: 72px;
+  }
+  .cat {
+    scroll-margin-top: 88px;
+  }
+  .cat-h {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  .cat-h h2 {
+    text-transform: lowercase;
+    white-space: nowrap;
+  }
+  .cat-h .rule {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .tool-card {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition:
+      border-color var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+  .tool-card:hover {
+    border-color: var(--ink);
+  }
+  .tool-card .top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .tool-card .logo {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tool-card .logo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  .tool-card .logo .fb {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--mute);
+  }
+  .tool-card .nm {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 18px;
+    text-transform: lowercase;
+  }
+  .tool-card .desc {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--mute);
+    max-width: 42ch;
+  }
+  .tool-card .chips {
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tool-card .chip {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    color: var(--mute);
+    text-transform: lowercase;
+  }
+
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .side {
+      position: static;
+    }
+    .side nav {
+      flex-flow: row wrap;
+    }
+    .cats {
+      gap: 52px;
+    }
+  }
+</style>

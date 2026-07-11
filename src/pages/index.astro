@@ -1,17 +1,899 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import CtaBand from "../components/CtaBand.astro";
+import Flow from "../components/Flow.astro";
+import { testimonials, initials } from "../data/testimonials";
 
+const clients = [
+  "amusoire", "uimm occitanie", "save me", "unlockbreath", "littlebox",
+  "tielle & popcorn", "promologis", "theodo", "trigger",
+];
+
+const cases = [
+  { span: "span-8", num: "№ 040", tag: "amusoire : homepage", title: "refonte du site d'un acteur parisien de l'entertain tech" },
+  { span: "span-4 tall", num: "№ 039", tag: "littlebox : produit", title: "boutique en ligne d'une marque lifestyle" },
+  { span: "span-6", num: "№ 038", tag: "unlockbreath : landing", title: "plateforme d'une startup santé & bien-être" },
+  { span: "span-6", num: "№ 037", tag: "tielle & popcorn : ciné-club", title: "site d'un ciné-club associatif" },
+];
+
+const steps = [
+  { n: "01", title: "brief & cadrage", text: "formulaire + call 30-60 min. scope, deadline et budget posés." },
+  { n: "02", title: "devis", text: "chiffré, daté, signé. paiement 30 % à l'acceptation." },
+  { n: "03", title: "développement", text: "v1 sous 5 j. v2 finale sous 3 j. validation par section." },
+  { n: "04", title: "livraison", text: "mise en prod, transfert, documentation et formation. 30 j de support inclus." },
+];
+
+const stats = [
+  { n: "40", small: "+", k: "projets livrés", h: "depuis 2022" },
+  { n: "90", small: "%", k: "recommandation", h: "nouveaux clients via le réseau" },
+  { n: "48", small: "h", k: "réponse devis", h: "week-end compris" },
+  { n: "97", small: "%", k: "renouvellement", h: "care plans après 12 mois" },
+];
+
+const columns: (typeof testimonials)[] = [[], [], []];
+testimonials.forEach((t, i) => columns[i % 3].push(t));
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Coolbeans</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="Coolbeans — le studio web des agences créatives">
+  <Nav />
+
+  <!-- HERO centré + flux -->
+  <section class="hero-center surface-brand">
+    <div class="container-site hero-content">
+      <h1 aria-label="le studio web des agences créatives, directeurs artistiques, pme & scale-ups, tpe & solopreneurs">
+        le studio web des<br />
+        <span class="tw" aria-hidden="true"><span id="tw-word" class="tw-word">agences créatives</span><span class="tw-caret"></span></span>
+      </h1>
+      <p class="lede">
+        studio solo, design et développement, à l'ère de l'IA. je conçois, je construis et
+        je maintiens des sites rapides et bien conçus, visibles par vos clients, par Google
+        et par les IA. un partenaire qui reste après la mise en ligne.
+      </p>
+      <div class="ctas">
+        <a class="btn" href="#vous-etes">discuter de votre projet</a>
+        <a class="btn btn-ghost" href="#projets">voir les projets récents</a>
+      </div>
+    </div>
+    <Flow />
+  </section>
+
+  <!-- PROOF · noms clients (marquee animé) -->
+  <section class="proof surface-brand">
+    <div class="container-site proof-top">
+      <h3>ils m'ont fait confiance</h3>
+      <span class="label">40+ projets · 2018 → 2026</span>
+    </div>
+    <div class="proof-marquee" aria-hidden="true">
+      <div class="proof-track">
+        {clients.map((c) => <span class="pn">{c}</span>)}
+        {clients.map((c) => <span class="pn">{c}</span>)}
+      </div>
+    </div>
+  </section>
+
+  <!-- VOUS ÊTES (bento) -->
+  <section class="sec audience-sec" id="vous-etes">
+    <div class="container-site">
+      <div class="sec-head"><h2>vous êtes…</h2></div>
+      <div class="aud-bento">
+        <article class="aud-card feature">
+          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="10" height="18"/><rect x="14" y="9" width="6" height="12"/><line x1="7" y1="7" x2="11" y2="7"/><line x1="7" y1="11" x2="11" y2="11"/><line x1="7" y1="15" x2="11" y2="15"/></svg>
+          <h5>une agence ou un studio créatif</h5>
+          <p>vous concevez, j'exécute. sous votre marque, en marque blanche, livré fiable — comme une extension de votre équipe.</p>
+          <a class="link" href="/about">en savoir plus →</a>
+        </article>
+        <article class="aud-card aud-b">
+          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+          <h5>un·e directeur·rice artistique</h5>
+          <p>votre design livré exactement comme pensé, au pixel près.</p>
+          <a class="link" href="/about">en savoir plus →</a>
+        </article>
+        <article class="aud-card aud-c">
+          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="21 12 21 7 16 7"/></svg>
+          <h5>une pme ou une startup</h5>
+          <p>votre site est un canal d'acquisition. traitons-le comme tel.</p>
+          <a class="link" href="/about">en savoir plus →</a>
+        </article>
+        <article class="aud-card aud-d">
+          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18l-1.4-5H4.4L3 9z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>
+          <h5>une tpe ou un solopreneur</h5>
+          <p>votre présence en ligne pro, livrée vite, prix fixe, zéro souci.</p>
+          <a class="link" href="/about">en savoir plus →</a>
+        </article>
+        <article class="aud-card ess">
+          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.5-9-9a4 4 0 0 1 9-2 4 4 0 0 1 9 2c-2 4.5-9 9-9 9z"/></svg>
+          <div class="ess-txt">
+            <h5>coopérative, association, intérêt général ?</h5>
+            <p>je mets mes compétences au service de l'économie sociale et solidaire : offres et tarifs adaptés pour les coopératives, les associations et les structures reconnues d'intérêt général. la qualité d'un studio, pensée pour vos moyens.</p>
+          </div>
+          <a class="link" href="#">l'accompagnement ess →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJETS (mosaic) -->
+  <section class="sec cases-sec" id="projets">
+    <div class="container-site">
+      <div class="sec-head row">
+        <h2>projets récents.</h2>
+        <a class="link" href="#">voir tous les projets →</a>
+      </div>
+      <div class="cases-mosaic">
+        {
+          cases.map((c) => (
+            <article class:list={["case-card", ...c.span.split(" ")]}>
+              <div class="case-img">
+                <span class="num">{c.num}</span>
+                <span class="ph">[ {c.tag} ]</span>
+              </div>
+              <div class="case-meta">
+                <h4>{c.title}</h4>
+                <a class="link sm" href="#">lire l'étude →</a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- TÉMOIGNAGES (mur cappé + fondu) -->
+  <section class="sec testis-sec">
+    <div class="container-site">
+      <div class="tw-head"><h2>ils en parlent mieux que moi.</h2></div>
+      <div class="tw-wall">
+        {
+          columns.map((col) => (
+            <div class="tw-col">
+              {col.map((t) => (
+                <figure class="tw-card">
+                  <blockquote class="q">« {t.quote} »</blockquote>
+                  <figcaption class="a">
+                    <span class="av">
+                      {t.photo && <img src={t.photo} alt={t.name} loading="lazy" />}
+                      {initials(t.name)}
+                    </span>
+                    <div>
+                      <b>{t.name}</b>
+                      <small>{t.role}</small>
+                    </div>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- MÉTHODE -->
+  <section class="sec method">
+    <div class="container-site">
+      <div class="sec-head"><h2>du brief à la mise en production</h2></div>
+      <div class="method-grid">
+        {
+          steps.map((s, i) => (
+            <>
+              <div class="step">
+                <div class="n">{s.n}</div>
+                <h5>{s.title}</h5>
+                <p>{s.text}</p>
+              </div>
+              {i < steps.length - 1 && <div class="step-arrow" aria-hidden="true">→</div>}
+            </>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="sec stats-sec">
+    <div class="container-site">
+      <div class="sec-head stats-head">
+        <span class="label">chiffres · depuis 2022</span>
+        <h2>les preuves chiffrées.</h2>
+        <p class="sec-lede">depuis 2022, j'accompagne agences, créatifs et entreprises sur leurs projets web : de la landing one-shot à l'application sur-mesure.</p>
+      </div>
+      <div class="stats">
+        {
+          stats.map((s) => (
+            <div class="stat">
+              <div class="n">{s.n}<small>{s.small}</small></div>
+              <div class="k">{s.k}</div>
+              <div class="h">{s.h}</div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT COURT -->
+  <section class="sec about-short">
+    <div class="container-site about-grid">
+      <div class="about-txt">
+        <h3>je m'appelle ludo,<br />j'ai créé coolbeans.</h3>
+        <p>développeur web freelance à sète, avec plus de 10 ans en agence et en indépendant : direction de projet, design, développement. je conçois autant que je code, et j'ai assez roulé ma bosse côté business pour savoir qu'un site doit d'abord servir vos objectifs avant de faire joli.</p>
+        <a class="link" href="/about">lire la version longue →</a>
+      </div>
+      <figure class="about-photo">
+        <img src="/img/ludovic-home.jpg" alt="ludovic bourgoin, fondateur de coolbeans" />
+        <figcaption class="label">ludovic · sète</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <CtaBand
+    title="on cadre votre projet en 30 minutes ?"
+    text="un échange sans engagement : on cadre votre besoin, je vous dis franchement si je suis la bonne personne, et vous repartez avec un devis chiffré sous 48 h."
+    ctaLabel="discuter du projet"
+  />
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .sec {
+    padding-block: 64px;
+  }
+  .sec-head {
+    margin-bottom: 40px;
+  }
+  .sec-head h2 {
+    text-transform: lowercase;
+  }
+  .sec-head.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  /* HERO centré */
+  .hero-center {
+    border-bottom: 1px solid var(--line);
+    padding-block: 56px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    overflow: hidden;
+  }
+  .hero-content {
+    text-align: center;
+  }
+  .hero-center h1 {
+    font-size: clamp(40px, 4.6vw, 64px);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    text-transform: lowercase;
+    max-width: 22ch;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+  .tw {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: center;
+    line-height: 1.02;
+  }
+  .tw-word {
+    white-space: nowrap;
+  }
+  .tw-caret {
+    display: inline-block;
+    width: 0.05em;
+    min-width: 3px;
+    height: 1em;
+    background: var(--ink);
+    margin-left: 0.1em;
+    transform: translateY(0.12em);
+    animation: tw-blink 1.05s steps(1, end) infinite;
+  }
+  @keyframes tw-blink {
+    0%, 50% { opacity: 1; }
+    50.01%, 100% { opacity: 0; }
+  }
+  .hero-center .lede {
+    margin: 26px auto 0;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.45;
+    max-width: 60ch;
+    text-wrap: pretty;
+  }
+  .hero-center .ctas {
+    margin-top: 36px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  /* PROOF marquee */
+  .proof {
+    border-bottom: 1px solid var(--line);
+    padding-block: 48px;
+    overflow: hidden;
+  }
+  .proof-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .proof-top h3 {
+    font-size: 18px;
+  }
+  .proof-marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .proof-track {
+    display: flex;
+    gap: 80px;
+    width: max-content;
+    align-items: center;
+    white-space: nowrap;
+    animation: marquee 50s linear infinite;
+  }
+  .proof-track .pn {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 40px;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    text-transform: lowercase;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .proof:hover .proof-track {
+    animation-play-state: paused;
+  }
+
+  /* BENTO */
+  .aud-bento {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(160px, auto);
+    gap: 16px;
+    grid-template-areas:
+      "a a b b"
+      "a a c d"
+      "e e e e";
+  }
+  .aud-card {
+    position: relative;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+  }
+  .aud-ic {
+    width: 38px;
+    height: 38px;
+    stroke: var(--ink);
+    stroke-width: 1.7;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex: 0 0 auto;
+  }
+  .aud-card h5 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 21px;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    text-transform: lowercase;
+    margin-top: 20px;
+    text-wrap: balance;
+  }
+  .aud-card p {
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1.5;
+    margin-top: 10px;
+    text-wrap: pretty;
+  }
+  .aud-card .link {
+    margin-top: auto;
+    padding-top: 22px;
+    align-self: flex-start;
+    font-size: 14px;
+  }
+  .aud-card.feature {
+    grid-area: a;
+    background: var(--ink);
+    color: var(--surface);
+  }
+  .aud-card.feature .aud-ic {
+    stroke: var(--surface);
+  }
+  .aud-card.feature h5 {
+    font-size: 30px;
+    margin-top: 24px;
+  }
+  .aud-card.feature p {
+    opacity: 0.82;
+    font-size: 16px;
+    max-width: 34ch;
+  }
+  .aud-card.feature .link {
+    color: rgba(255, 255, 255, 0.75);
+    border-bottom-color: rgba(255, 255, 255, 0.4);
+  }
+  .aud-card.feature .link:hover {
+    color: var(--surface);
+    border-bottom-color: var(--surface);
+  }
+  .aud-b { grid-area: b; }
+  .aud-c { grid-area: c; }
+  .aud-d { grid-area: d; }
+  .aud-card.ess {
+    grid-area: e;
+    background: var(--surface-raise);
+    flex-direction: row;
+    align-items: center;
+    gap: 26px;
+    flex-wrap: wrap;
+  }
+  .aud-card.ess .aud-ic {
+    width: 34px;
+    height: 34px;
+  }
+  .aud-card.ess .ess-txt {
+    flex: 1 1 340px;
+    min-width: 0;
+  }
+  .aud-card.ess h5 {
+    margin-top: 0;
+    font-size: 19px;
+  }
+  .aud-card.ess p {
+    margin-top: 8px;
+    max-width: 74ch;
+  }
+  .aud-card.ess .link {
+    margin-top: 0;
+    padding-top: 0;
+    white-space: nowrap;
+  }
+
+  /* CASES mosaic */
+  .cases-mosaic {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 32px;
+  }
+  .case-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .case-img {
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+    background: repeating-linear-gradient(45deg, transparent 0 16px, var(--tint-2) 16px 17px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--mute);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-align: center;
+    padding: 16px;
+  }
+  .case-card.tall .case-img {
+    aspect-ratio: 4 / 5;
+  }
+  .case-img .num {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 2px 7px;
+    letter-spacing: 0.04em;
+  }
+  .case-meta {
+    padding-top: 12px;
+  }
+  .case-card h4 {
+    font-weight: 800;
+    font-size: 36px;
+    letter-spacing: -0.025em;
+    line-height: 0.95;
+    text-transform: lowercase;
+  }
+  .case-card.tall h4 {
+    font-size: 24px;
+  }
+  .case-meta .link {
+    margin-top: 12px;
+    display: inline-block;
+  }
+  .case-card.span-8 { grid-column: span 8; }
+  .case-card.span-6 { grid-column: span 6; }
+  .case-card.span-4 { grid-column: span 4; }
+
+  /* TÉMOIGNAGES mur */
+  .tw-head {
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  .tw-head h2 {
+    font-weight: 800;
+    font-size: clamp(32px, 4.4vw, 64px);
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    text-transform: lowercase;
+  }
+  .tw-wall {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+  .tw-col {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: 1240px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 230px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 230px), transparent);
+  }
+  .tw-card {
+    margin: 0;
+    border: 1px solid var(--line);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    background: var(--surface);
+  }
+  .tw-card .q {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.55;
+    text-wrap: pretty;
+    margin: 0;
+  }
+  .tw-card .a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: auto;
+  }
+  .tw-card .av {
+    position: relative;
+    overflow: hidden;
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    border-radius: 50%;
+    border: 1px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    background: var(--tint);
+  }
+  .tw-card .av img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background: var(--surface);
+  }
+  .tw-card .a b {
+    display: block;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+  }
+  .tw-card .a small {
+    display: block;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--mute);
+    font-family: var(--font-mono);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* MÉTHODE */
+  .method-grid {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+  .method-grid .step {
+    flex: 1 1 0;
+    min-width: 0;
+    border: 1px solid var(--ink);
+    background: var(--surface);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  .method-grid .step-arrow {
+    flex: 0 0 auto;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 28px;
+    line-height: 1;
+    padding: 0 18px;
+    color: var(--ink);
+  }
+  .method-grid .step .n {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 72px;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+  }
+  .method-grid .step h5 {
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    margin-top: 12px;
+  }
+  .method-grid .step p {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--mute);
+    margin-top: 8px;
+    max-width: 32ch;
+  }
+
+  /* STATS */
+  .stats-head .label {
+    display: block;
+    margin-bottom: 12px;
+  }
+  .sec-lede {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.5;
+    max-width: 60ch;
+    margin-top: 12px;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .stat {
+    padding: 0 24px 0 0;
+    border-right: 1px solid var(--line);
+  }
+  .stat:last-child {
+    border-right: none;
+  }
+  .stat:not(:first-child) {
+    padding-left: 24px;
+  }
+  .stat .n {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 64px;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+  }
+  .stat .n small {
+    font-weight: 700;
+    font-size: 0.4em;
+    color: var(--mute);
+  }
+  .stat .k {
+    margin-top: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+  }
+  .stat .h {
+    margin-top: 4px;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--mute);
+    line-height: 1.4;
+    max-width: 24ch;
+  }
+
+  /* ABOUT COURT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 440px;
+    gap: 80px;
+    align-items: center;
+  }
+  .about-txt {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .about-txt h3 {
+    font-weight: 800;
+    font-size: clamp(40px, 5vw, 72px);
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+    text-transform: lowercase;
+    max-width: 14ch;
+  }
+  .about-txt p {
+    font-weight: 500;
+    font-size: 19px;
+    line-height: 1.55;
+    max-width: 46ch;
+    text-wrap: pretty;
+  }
+  .about-photo {
+    aspect-ratio: 4 / 5;
+    border: 1px solid var(--line);
+    background: repeating-linear-gradient(45deg, transparent 0 16px, var(--tint-2) 16px 17px);
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+  }
+  .about-photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 32%;
+  }
+  .about-photo .label {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 5px 11px;
+  }
+
+  @media (max-width: 1100px) {
+    .method-grid {
+      flex-direction: column;
+    }
+    .method-grid .step-arrow {
+      transform: rotate(90deg);
+      padding: 14px 0;
+    }
+    .stats,
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .about-photo {
+      aspect-ratio: 16 / 11;
+    }
+    .stat {
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      padding: 20px 0;
+    }
+    .stat:last-child {
+      border-bottom: none;
+    }
+    .stat:not(:first-child) {
+      padding-left: 0;
+    }
+  }
+  @media (max-width: 900px) {
+    .aud-bento {
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas: "a a" "b c" "d e";
+    }
+    .aud-card.feature h5 {
+      font-size: 26px;
+    }
+    .aud-card.ess {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .tw-wall {
+      flex-wrap: wrap;
+    }
+    .tw-col {
+      flex: 1 1 45%;
+      height: 1080px;
+    }
+    .cases-mosaic {
+      grid-template-columns: 1fr;
+    }
+    .case-card.span-8,
+    .case-card.span-6,
+    .case-card.span-4 {
+      grid-column: span 1;
+    }
+    .case-card h4 {
+      font-size: 28px;
+    }
+  }
+  @media (max-width: 680px) {
+    .aud-bento {
+      grid-template-columns: 1fr;
+      grid-template-areas: "a" "b" "c" "d" "e";
+    }
+    .tw-wall {
+      flex-direction: column;
+    }
+    .tw-col {
+      flex: 1 1 auto;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tw-caret {
+      animation: none;
+    }
+    .proof-track {
+      animation: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    const el = document.getElementById("tw-word");
+    if (!el) return;
+    const words = ["agences créatives", "directeurs artistiques", "pme & scale-ups", "tpe & solopreneurs"];
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let wi = 0, ci = words[0].length, deleting = true;
+    function tick() {
+      const word = words[wi];
+      if (deleting) {
+        ci--;
+        if (ci <= 0) { deleting = false; wi = (wi + 1) % words.length; }
+      } else {
+        ci++;
+        if (ci >= words[wi].length) { deleting = true; }
+      }
+      el.textContent = words[wi].slice(0, ci) || word.slice(0, 1);
+      const delay = deleting ? 45 : ci >= words[wi].length ? 1600 : 95;
+      setTimeout(tick, delay);
+    }
+    setTimeout(tick, 1600);
+  })();
+</script>

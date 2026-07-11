@@ -1,0 +1,73 @@
+---
+interface Props {
+  title: string;
+  text?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+}
+
+const {
+  title,
+  text,
+  ctaLabel = "discuter de votre projet",
+  ctaHref = "#",
+  secondaryLabel,
+  secondaryHref,
+} = Astro.props;
+---
+
+<section class="cta">
+  <div class="container-site cta-inner">
+    <h2>{title}</h2>
+    {text && <p>{text}</p>}
+    <div class="ctas">
+      <a class="btn" href={ctaHref}>{ctaLabel}</a>
+      {
+        secondaryLabel && (
+          <a class="btn-ghost btn" href={secondaryHref ?? "#"}>
+            {secondaryLabel}
+          </a>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    padding-block: 96px;
+  }
+  .cta-inner {
+    text-align: center;
+  }
+  .cta h2 {
+    font-size: clamp(40px, 5vw, 72px);
+    letter-spacing: -0.035em;
+    line-height: 1;
+    max-width: 20ch;
+    margin-inline: auto;
+  }
+  .cta p {
+    margin-top: 24px;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.5;
+    max-width: 58ch;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+  .ctas {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  @media (max-width: 1100px) {
+    .cta {
+      padding-block: 64px;
+    }
+  }
+</style>

@@ -1,0 +1,143 @@
+---
+const year = 2026;
+---
+
+<footer class="site-footer">
+  <div class="sf-inner">
+    <div class="sf-brand">
+      <a class="sf-logo" href="/" aria-label="coolbeans — accueil">
+        <img src="/img/coolbeans-wordmark-white.svg" alt="coolbeans" height="22" />
+      </a>
+      <p>
+        Studio web indépendant, basé à Sète.<br />
+        Design, développement et maintenance de sites performants, pensés pour vos
+        objectifs et prêts pour l'ère de l'IA.<br />
+        L'attention d'un studio, la réactivité d'un indépendant.
+      </p>
+    </div>
+
+    <nav class="sf-col" aria-label="explorer">
+      <h4>explorer</h4>
+      <ul>
+        <li><a href="/">accueil</a></li>
+        <li><a href="/about">à propos</a></li>
+        <li><a href="/tools">tools</a></li>
+      </ul>
+    </nav>
+
+    <nav class="sf-col" aria-label="contact">
+      <h4>contact</h4>
+      <ul>
+        <li><a href="#">discuter d'un projet</a></li>
+        <li>
+          <a href="https://linkedin.com/in/ludovicbourgoin" target="_blank" rel="noopener">
+            linkedin ↗
+          </a>
+        </li>
+        <li><a href="#">mentions légales</a></li>
+        <li><a href="#">cgv</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="sf-bottom">
+    <span>© {year} coolbeans · ludovic bourgoin</span>
+    <span>sète · france</span>
+  </div>
+</footer>
+
+<style>
+  /* Footer autonome : bande sombre constante (signal de fin de page),
+     indépendante du thème clair/sombre. */
+  .site-footer {
+    background: #101010;
+    color: #f4f2ec;
+    padding: 72px clamp(24px, 5vw, 56px) 28px;
+  }
+  .site-footer a {
+    color: inherit;
+  }
+  .sf-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 56px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .sf-logo {
+    display: inline-block;
+    line-height: 0;
+    margin-bottom: 22px;
+  }
+  .sf-logo img {
+    height: 22px;
+    width: auto;
+    display: block;
+  }
+  .sf-brand p {
+    font-size: 14px;
+    line-height: 1.65;
+    color: rgba(244, 242, 236, 0.6);
+    max-width: 42ch;
+    margin: 0;
+  }
+  .sf-col h4 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(244, 242, 236, 0.46);
+    margin: 0 0 18px;
+  }
+  .sf-col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .sf-col ul a {
+    color: rgba(244, 242, 236, 0.82);
+    font-size: 14px;
+    line-height: 1.3;
+    transition: color 0.15s;
+  }
+  .sf-col ul a:hover {
+    color: #fff;
+  }
+  .sf-bottom {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-top: 22px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(244, 242, 236, 0.42);
+  }
+  @media (max-width: 900px) {
+    .sf-inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+    }
+    .sf-brand {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 560px) {
+    .sf-inner {
+      grid-template-columns: 1fr;
+    }
+    .sf-bottom {
+      flex-direction: column;
+      gap: 6px;
+    }
+  }
+</style>

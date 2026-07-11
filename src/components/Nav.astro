@@ -1,0 +1,338 @@
+---
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+
+// ordre du wireframe ; pages non construites → # pour l'instant
+const links = [
+  { href: "#", label: "projets" },
+  { href: "#", label: "services" },
+  { href: "#", label: "blog" },
+  { href: "#", label: "ressources" },
+  { href: "/tools", label: "boîte à outils" },
+  { href: "/about", label: "à propos" },
+];
+const isActive = (href: string) => href !== "#" && path.startsWith(href);
+
+// dropdown « vous êtes » — pictos + labels du wireframe
+const audience = [
+  { href: "/#vous-etes", label: "agence créative", svg: '<rect x="4" y="3" width="10" height="18"/><rect x="14" y="9" width="6" height="12"/><line x1="7" y1="7" x2="11" y2="7"/><line x1="7" y1="11" x2="11" y2="11"/><line x1="7" y1="15" x2="11" y2="15"/>' },
+  { href: "/#vous-etes", label: "directeur artistique", svg: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>' },
+  { href: "/#vous-etes", label: "pme ou scale up", svg: '<polyline points="3 17 9 11 13 15 21 7"/><polyline points="21 12 21 7 16 7"/>' },
+  { href: "/#vous-etes", label: "tpe ou solopreneur", svg: '<path d="M3 9h18l-1.4-5H4.4L3 9z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/>' },
+];
+---
+
+<header class="site-nav at-top" id="site-nav">
+  <div class="container-site nav-inner">
+    <a class="brand" href="/" aria-label="coolbeans — accueil">
+      <img class="logo logo-light" src="/img/coolbeans-wordmark.svg" alt="coolbeans" height="21" />
+      <img class="logo logo-dark" src="/img/coolbeans-wordmark-white.svg" alt="coolbeans" height="21" />
+    </a>
+
+    <nav class="nav-menu" aria-label="navigation principale">
+      <div class="drop" data-open="false">
+        <button type="button" aria-haspopup="true" aria-expanded="false" id="aud-trigger">
+          vous êtes
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg>
+        </button>
+        <div class="panel" role="menu" aria-label="vous êtes">
+          {
+            audience.map((a) => (
+              <a role="menuitem" href={a.href}>
+                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={a.svg} />
+                {a.label}
+              </a>
+            ))
+          }
+          <div class="sep" role="separator"></div>
+          <span class="panel-lbl">économie sociale &amp; solidaire</span>
+          <a role="menuitem" class="ess" href="#">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.5-9-9a4 4 0 0 1 9-2 4 4 0 0 1 9 2c-2 4.5-9 9-9 9z"/></svg>
+            accompagnement ess
+          </a>
+        </div>
+      </div>
+
+      {
+        links.map((l) => (
+          <a href={l.href} class:list={["nav-link", { on: isActive(l.href) }]}>
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="nav-actions">
+      <button
+        id="theme-toggle"
+        class="dm"
+        type="button"
+        aria-label="basculer clair / sombre"
+        title="basculer clair / sombre"
+      >
+        <svg class="dm-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="dm-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+      </button>
+      <a class="btn btn-sm" href="#">contact</a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    transition:
+      background 0.25s var(--ease),
+      border-color 0.25s var(--ease),
+      box-shadow 0.25s var(--ease);
+  }
+  .site-nav.at-top {
+    background: transparent;
+    border-bottom-color: transparent;
+  }
+  .site-nav:not(.at-top) {
+    box-shadow: 0 1px 16px rgba(0, 0, 0, 0.06);
+  }
+  .nav-inner {
+    display: grid;
+    grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
+    align-items: center;
+    gap: 32px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+  }
+  .logo {
+    height: 21px;
+    width: auto;
+    display: block;
+  }
+  .logo-dark {
+    display: none;
+  }
+  :global(.dark) .logo-light {
+    display: none;
+  }
+  :global(.dark) .logo-dark {
+    display: block;
+  }
+
+  .nav-menu {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+  .nav-link,
+  .drop > button {
+    font-family: var(--font-sans);
+    font-size: 14.5px;
+    font-weight: 500;
+    padding: 7px 10px;
+    line-height: 1;
+    color: var(--mute);
+    border-radius: var(--radius-control);
+    transition: color 0.15s var(--ease), background 0.15s var(--ease);
+  }
+  .nav-link:hover {
+    color: var(--ink);
+  }
+  .nav-link.on {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* dropdown « vous êtes » */
+  .drop {
+    position: relative;
+  }
+  .drop > button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .drop > button svg {
+    width: 10px;
+    height: 10px;
+    transition: transform var(--dur) var(--ease);
+  }
+  .drop > button:hover,
+  .drop[data-open="true"] > button {
+    color: var(--ink);
+  }
+  .drop[data-open="true"] > button svg {
+    transform: rotate(180deg);
+  }
+  .drop .panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    min-width: 268px;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius-control);
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+    z-index: 60;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  }
+  .drop:hover .panel,
+  .drop[data-open="true"] .panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+  .drop .panel a {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 12px;
+    line-height: 1.25;
+    border-radius: 4px;
+    text-transform: lowercase;
+    transition: background 0.12s var(--ease), color 0.12s var(--ease);
+  }
+  .drop .panel a svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .drop .panel a:hover {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  .drop .panel .sep {
+    height: 1px;
+    background: var(--line);
+    margin: 6px 4px;
+  }
+  .drop .panel .panel-lbl {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mute);
+    padding: 6px 12px 4px;
+  }
+
+  .nav-actions {
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .dm {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    transition: opacity var(--dur) var(--ease);
+  }
+  .dm:hover {
+    opacity: 0.6;
+  }
+  .dm svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+  .dm .dm-sun {
+    display: none;
+  }
+  :global(.dark) .dm .dm-moon {
+    display: none;
+  }
+  :global(.dark) .dm .dm-sun {
+    display: block;
+  }
+
+  @media (max-width: 980px) {
+    .nav-inner {
+      grid-template-columns: 1fr auto;
+    }
+    .nav-menu {
+      display: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    document.getElementById("theme-toggle")?.addEventListener("click", () => {
+      const dark = document.documentElement.classList.toggle("dark");
+      try {
+        localStorage.setItem("theme", dark ? "dark" : "light");
+      } catch (e) {}
+    });
+
+    const nav = document.getElementById("site-nav");
+    if (nav) {
+      let ticking = false;
+      const update = () => {
+        nav.classList.toggle("at-top", window.scrollY <= 4);
+        ticking = false;
+      };
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (!ticking) {
+            requestAnimationFrame(update);
+            ticking = true;
+          }
+        },
+        { passive: true }
+      );
+      update();
+    }
+
+    const drop = document.querySelector(".drop");
+    const trigger = document.getElementById("aud-trigger");
+    if (drop && trigger) {
+      const setOpen = (open) => {
+        drop.setAttribute("data-open", String(open));
+        trigger.setAttribute("aria-expanded", String(open));
+      };
+      trigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        setOpen(drop.getAttribute("data-open") !== "true");
+      });
+      document.addEventListener("click", (e) => {
+        if (!drop.contains(e.target)) setOpen(false);
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") setOpen(false);
+      });
+    }
+  })();
+</script>

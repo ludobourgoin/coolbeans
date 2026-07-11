@@ -1,0 +1,414 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import CtaBand from "../components/CtaBand.astro";
+import LogoMarquee from "../components/LogoMarquee.astro";
+import { proofPrimary, proofSecondary } from "../data/logos";
+---
+
+<BaseLayout title="À propos — Coolbeans, studio web par Ludovic Bourgoin">
+  <Nav />
+
+  <!-- HERO -->
+  <section class="hero surface-brand">
+    <div class="container-site hero-inner">
+      <h1>développement, stratégie, performance.</h1>
+      <p class="lede">
+        une approche technique et stratégique pour des sites qui <b>convertissent</b>,
+        des intégrations qui <b>tiennent dans le temps</b>, et un partenaire qui
+        <b>reste après la livraison</b>.
+      </p>
+      <div class="ctas">
+        <a class="btn" href="#">discuter de votre projet</a>
+        <a class="btn btn-ghost" href="/tools">la boîte à outils</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROOF · stack -->
+  <section class="proof surface-brand">
+    <div class="container-site proof-inner">
+      <LogoMarquee logos={proofPrimary} />
+      <LogoMarquee logos={proofSecondary} />
+    </div>
+  </section>
+
+  <!-- INTRO Ludovic -->
+  <section class="intro">
+    <div class="container-site intro-grid">
+      <div class="intro-left">
+        <h2>je suis ludovic bourgoin,<br />j'ai créé coolbeans.</h2>
+        <p class="greet">
+          hello, je suis <b>développeur web freelance</b>, basé à sète.
+        </p>
+        <p>
+          diplômé d'un double master en <b>marketing stratégique</b> et
+          <b>communication digitale</b>, j'ai bifurqué après une formation intensive
+          au développement web. j'y ai trouvé mon terrain de jeu idéal : un endroit où
+          la <b>créativité visuelle</b>, la <b>rigueur technique</b> et les
+          <b>enjeux business</b> se rencontrent.
+        </p>
+        <p>cette complémentarité me permet aujourd'hui de concevoir des sites et des applications :</p>
+        <ul class="pictos">
+          <li>
+            <span class="mk"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5 21.5 12 12 21.5 2.5 12Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+            <span>à la fois <b>techniques et stratégiques</b>, conçus pour servir vos vrais objectifs</span>
+          </li>
+          <li>
+            <span class="mk"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20.5V5M5.5 11.5 12 5l6.5 6.5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg></span>
+            <span><b>rapides, fiables et évolutifs</b>, sur une stack choisie pour vos besoins</span>
+          </li>
+          <li>
+            <span class="mk"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/></svg></span>
+            <span><b>orientés résultats</b> : visibilité, conversion, croissance et autonomie</span>
+          </li>
+        </ul>
+        <p>je suis passionné par mon métier, j'adore le challenge et l'entrepreneuriat.</p>
+        <div class="socials">
+          <a class="link" href="https://linkedin.com/in/ludovicbourgoin" target="_blank" rel="noopener">linkedin ↗</a>
+        </div>
+      </div>
+      <div class="intro-img">
+        <img src="/img/ludovic-about.jpg" alt="ludovic bourgoin, fondateur de coolbeans" />
+        <span class="lbl">ludovic bourgoin</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPROCHE · bénéfices -->
+  <section class="approach">
+    <div class="container-site">
+      <div class="approach-head">
+        <h2>un accompagnement stratégique, de l'architecture à la mise en ligne.</h2>
+        <div class="approach-right">
+          <p>
+            au-delà du développement, <b>je vous accompagne dans la réflexion
+            stratégique de votre projet web</b>. chaque choix technique est pensé pour
+            maximiser vos résultats et votre autonomie future.
+          </p>
+          <p>
+            votre design devient réalité avec <b>un site performant, évolutif et
+            conforme à vos attentes</b>. une intégration rigoureuse où chaque détail
+            compte pour un résultat qui dure.
+          </p>
+        </div>
+      </div>
+
+      <div class="benefits">
+        <div class="benefit">
+          <div class="benefit-icon label">01</div>
+          <div>
+            <h3>un expert technique orienté résultats</h3>
+            <p>capable d'analyser vos enjeux, de challenger vos choix et de vous orienter vers la stack la plus adaptée à votre cas. chaque décision technique a une justification pour votre projet.</p>
+          </div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon label">02</div>
+          <div>
+            <h3>une exigence de performance</h3>
+            <p>architecture pensée pour la <b>performance, l'évolutivité et l'impact mesurable</b> sur vos objectifs. seo technique, accessibilité, performances web excellentes. et des sites ia-ready : trouvés sur google comme dans les réponses des ia.</p>
+          </div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon label">03</div>
+          <div>
+            <h3>un site aligné sur votre stratégie</h3>
+            <p>conçu pour <b>convertir, fidéliser et soutenir votre croissance</b>. tunnels de conversion mesurés, cms qui sert vraiment l'équipe éditoriale, fondations qui supportent vos campagnes acquisition.</p>
+          </div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon label">04</div>
+          <div>
+            <h3>un partenariat dans la durée</h3>
+            <p>vous possédez vos comptes dès le premier jour : le code, le contenu et l'hébergement sont à vous. je garde un accès de gestion que vous pouvez révoquer quand vous voulez, et je m'occupe de la maintenance tant que vous le souhaitez.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRIGGER -->
+  <section class="trigger">
+    <div class="container-site trigger-grid">
+      <div class="trigger-img">
+        <img class="shot" src="/img/trigger-team.jpg" alt="l'équipe de l'agence trigger à toulouse" />
+        <img class="logo-badge" src="/img/trigger-logo.webp" alt="logo trigger" />
+      </div>
+      <div>
+        <h2>je fais aussi partie de l'agence trigger à toulouse.</h2>
+        <p>
+          membre de l'agence <b>trigger</b>, j'interviens notamment sur la
+          <b>création de landing pages</b> pour les clients de l'agence.
+        </p>
+        <a class="btn btn-ghost" href="https://trigger.fr" target="_blank" rel="noopener">accéder à trigger ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="un projet web en tête ?"
+    text="une idée à développer, une maquette à intégrer, un besoin à clarifier ? voyons si je suis la bonne personne pour votre projet."
+    ctaLabel="discuter de votre projet"
+    secondaryLabel="voir la boîte à outils"
+    secondaryHref="/tools"
+  />
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  b {
+    font-weight: 700;
+  }
+
+  /* HERO */
+  .hero {
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-inner {
+    padding-block: 96px 56px;
+    text-align: center;
+  }
+  .hero h1 {
+    max-width: 20ch;
+    margin-inline: auto;
+  }
+  .hero .lede {
+    margin: 32px auto 0;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.45;
+    max-width: 60ch;
+  }
+  .hero .ctas {
+    margin-top: 44px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  /* PROOF */
+  .proof {
+    border-bottom: 1px solid var(--line);
+  }
+  .proof-inner {
+    padding-block: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* INTRO */
+  .intro-grid {
+    padding-block: 96px;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .intro-left h2 {
+    margin-bottom: 28px;
+  }
+  .intro-left .greet {
+    font-size: 18px;
+    line-height: 1.55;
+    margin-bottom: 16px;
+    max-width: 50ch;
+  }
+  .intro-left p {
+    line-height: 1.6;
+    margin-bottom: 16px;
+    max-width: 54ch;
+  }
+  .pictos {
+    list-style: none;
+    margin: 24px 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .pictos li {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+  .pictos .mk {
+    width: 22px;
+    display: flex;
+    justify-content: center;
+    margin-top: 0.18em;
+    color: var(--ink);
+  }
+  .pictos .mk svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+  .pictos li > span:last-child {
+    max-width: 40ch;
+    text-wrap: balance;
+  }
+  .socials {
+    margin-top: 28px;
+  }
+  .intro-img {
+    aspect-ratio: 4 / 5;
+    border: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+    background: var(--surface-raise);
+  }
+  .intro-img img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .intro-img .lbl {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 2px 7px;
+    letter-spacing: 0.04em;
+  }
+
+  /* APPROCHE */
+  .approach {
+    padding-block: 96px;
+  }
+  .approach-head {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 64px;
+    align-items: start;
+    margin-bottom: 56px;
+  }
+  .approach-right p {
+    line-height: 1.6;
+    max-width: 50ch;
+  }
+  .approach-right p + p {
+    margin-top: 14px;
+  }
+  .benefits {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .benefit {
+    padding: 32px 0;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .benefit > div {
+    min-width: 0;
+  }
+  .benefit:nth-child(odd) {
+    border-right: 1px solid var(--line);
+    padding-right: 32px;
+  }
+  .benefit:nth-child(even) {
+    padding-left: 32px;
+  }
+  .benefit:nth-last-child(-n + 2) {
+    border-bottom: none;
+  }
+  .benefit-icon {
+    width: 48px;
+    height: 48px;
+    border: 1px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    font-size: 13px;
+  }
+  .benefit h3 {
+    margin-bottom: 10px;
+  }
+  .benefit p {
+    font-size: 15px;
+    line-height: 1.55;
+    max-width: 48ch;
+  }
+
+  /* TRIGGER */
+  .trigger-grid {
+    padding-block: 96px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .trigger-grid h2 {
+    margin-bottom: 24px;
+    max-width: 20ch;
+  }
+  .trigger-grid p {
+    line-height: 1.6;
+    margin-bottom: 24px;
+    max-width: 50ch;
+  }
+  .trigger-img {
+    aspect-ratio: 4 / 3;
+    border: 1px solid var(--line);
+    position: relative;
+    background: var(--surface-raise);
+  }
+  .trigger-img .shot {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 38%;
+  }
+  .trigger-img .logo-badge {
+    position: absolute;
+    top: -28px;
+    left: 62px;
+    width: 150px;
+    height: 150px;
+    z-index: 2;
+    transform: rotate(-8deg);
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.28));
+  }
+
+  @media (max-width: 1100px) {
+    .intro-grid,
+    .trigger-grid,
+    .approach-head {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .benefits {
+      grid-template-columns: 1fr;
+    }
+    .benefit:nth-child(odd) {
+      border-right: none;
+      padding-right: 0;
+    }
+    .benefit:nth-child(even) {
+      padding-left: 0;
+    }
+    .trigger-img .logo-badge {
+      width: 118px;
+      height: 118px;
+      top: -22px;
+      left: 50px;
+    }
+  }
+</style>

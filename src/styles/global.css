@@ -1,0 +1,219 @@
+/* ============================================================================
+   COOLBEANS — Design System (source de vérité unique)
+   Astro + Tailwind v4 (CSS-first). Importer une seule fois dans le layout racine :
+       import "../styles/global.css";
+
+   Dérivé des pages livrées home / about / tools. Les valeurs ci-dessous sont
+   celles réellement rendues à l'écran (l'ancienne pile inline + folk-skin +
+   system-2026 est ici aplatie en UNE couche propre, sans !important).
+
+   Dark mode : piloté par la classe .dark sur <html> (comme le toggle du site).
+   Accent alternatif électrique : opt-in via [data-accent="electric"].
+   ========================================================================== */
+
+@import "tailwindcss";
+
+/* dark mode par classe (et non media-query) — colle au switch existant */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ----------------------------------------------------------------------------
+   POLICES — Geomanist (Book = corps, Geomanist = titres)
+   Fichiers dans /public/fonts/ (servis à la racine par Astro).
+   -------------------------------------------------------------------------- */
+@font-face{font-family:"Geomanist Book";src:url("/fonts/geomanist-book-webfont.woff2") format("woff2");font-weight:400 500;font-display:swap}
+@font-face{font-family:"Geomanist";src:url("/fonts/geomanist-medium-webfont.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Geomanist";src:url("/fonts/geomanist-bold-webfont.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Geomanist";src:url("/fonts/geomanist-black-webfont.woff2") format("woff2");font-weight:800;font-display:swap}
+
+/* ----------------------------------------------------------------------------
+   TOKENS — clair (défaut)
+   -------------------------------------------------------------------------- */
+:root{
+  /* surfaces */
+  --surface:#FBFAF7;          /* off-white chaud · surface de contenu (sans texture) */
+  --surface-marque:#F1EAE0;   /* cream · moments de marque : hero, footer (avec grain) */
+  --surface-raise:#F1F1F2;    /* gris "paper" · encarts, chips, blocs secondaires */
+  --line:rgba(20,17,12,.12);  /* filet fin · bordures, séparateurs */
+  --line-2:rgba(20,17,12,.18); /* filet appuyé */
+  --tint:rgba(20,17,12,.06);   /* voile · hover de ligne */
+  --tint-2:rgba(20,17,12,.04); /* voile · hachures placeholders d'image */
+
+  /* texte */
+  --ink:#111010;              /* texte principal */
+  --mute:#5E5C55;             /* texte secondaire · AA sur cream ET blanc (≥6:1) */
+
+  /* accent = ENCRE (design mono, pas de couleur) · CTA + liens + états actifs */
+  --accent:#111010;
+  --accent-strong:#000000;    /* hover / actif appuyé */
+  --accent-ink:#FFFFFF;       /* texte sur aplat accent */
+  --accent-focus:rgba(17,16,16,.26);
+
+  /* rayons — un seul langage : contrôles arrondis (6px), cartes+champs nets (0) */
+  --radius-control:6px;
+
+  /* layout */
+  --container:1280px;         /* = max-w-7xl */
+  --gutter:56px;
+
+  /* motion */
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --dur:.18s;
+}
+
+/* accent alternatif : bleu électrique (opt-in) */
+[data-accent="electric"]{
+  --accent:#2E4CDB;--accent-strong:#2038B8;--accent-ink:#FFFFFF;--accent-focus:rgba(46,76,219,.34);
+}
+
+/* gouttière resserrée sur petits écrans */
+@media (max-width:1100px){:root{--gutter:24px}}
+
+/* ----------------------------------------------------------------------------
+   TOKENS — sombre
+   -------------------------------------------------------------------------- */
+.dark{
+  --surface:#0C0A07;          /* surface de lecture, la plus profonde */
+  --surface-marque:#16130C;   /* relevée, chaude · moment de marque */
+  --surface-raise:rgba(255,255,255,.05);
+  --line:rgba(244,242,236,.14);
+  --line-2:rgba(244,242,236,.22);
+  --tint:rgba(255,255,255,.08);
+  --tint-2:rgba(255,255,255,.05);
+  --ink:#F4F2EC;
+  --mute:#A8A29A;             /* AA sur les deux surfaces sombres */
+  --accent:#F4F2EC;--accent-strong:#FFFFFF;--accent-ink:#1B1207;--accent-focus:rgba(244,242,236,.30);
+}
+.dark[data-accent="electric"]{
+  --accent:#7E95FF;--accent-strong:#9AACFF;--accent-ink:#0A0F2B;--accent-focus:rgba(126,149,255,.42);
+}
+
+/* ----------------------------------------------------------------------------
+   EXPOSITION AUX UTILITAIRES TAILWIND
+   `inline` = Tailwind référence la variable (et non sa valeur figée),
+   donc bg-surface / text-ink / border-line basculent seuls en dark.
+   Utilisables : bg-surface, bg-surface-marque, bg-surface-raise, text-ink,
+   text-mute, border-line, bg-accent, text-accent, font-sans, font-display,
+   font-mono, rounded-control, max-w-site, ease-brand.
+   -------------------------------------------------------------------------- */
+@theme inline{
+  --color-surface:var(--surface);
+  --color-surface-marque:var(--surface-marque);
+  --color-surface-raise:var(--surface-raise);
+  --color-line:var(--line);
+  --color-ink:var(--ink);
+  --color-mute:var(--mute);
+  --color-accent:var(--accent);
+  --color-accent-strong:var(--accent-strong);
+  --color-accent-ink:var(--accent-ink);
+
+  --font-sans:"Geomanist Book","Geomanist","Helvetica Neue",Arial,sans-serif;
+  --font-display:"Geomanist","Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,"JetBrains Mono",Menlo,monospace;
+
+  --radius-control:6px;
+  --max-width-site:1280px;
+  --ease-brand:cubic-bezier(.2,.7,.2,1);
+}
+
+/* ----------------------------------------------------------------------------
+   BASE — éléments bruts
+   -------------------------------------------------------------------------- */
+@layer base{
+  html{background:var(--surface);-webkit-text-size-adjust:100%}
+  body{
+    background:var(--surface);
+    color:var(--ink);
+    font-family:var(--font-sans);
+    font-weight:500;
+    font-size:17px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  /* titres : Geomanist. Display (h1/h2) lourd ; titres de carte (h3/h4) 700. */
+  h1,h2,h3,h4,h5{font-family:var(--font-display);letter-spacing:-.02em;line-height:1.05;text-wrap:balance}
+  h1{font-weight:800;font-size:clamp(40px,4.6vw,64px);letter-spacing:-.03em}
+  h2{font-weight:800;font-size:clamp(28px,3.2vw,44px);letter-spacing:-.03em}
+  h3{font-weight:700;font-size:clamp(20px,2vw,26px)}
+  h4{font-weight:700;font-size:19px}
+
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+  hr{border:none;border-top:1px solid var(--line);margin:0}
+  ::selection{background:var(--ink);color:var(--surface)}
+
+  /* focus visible : anneau accent (remplace le focus bleu navigateur) */
+  a:focus-visible,button:focus-visible,input:focus-visible,
+  textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{
+    outline:2px solid var(--accent);outline-offset:2px;border-radius:var(--radius-control);
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   COMPONENTS — primitives partagées (reproduisent home / about / tools)
+   Réutilisables telles quelles, ou à recopier dans des composants Astro.
+   -------------------------------------------------------------------------- */
+@layer components{
+  /* conteneur de page fluide (rythme --pad-x du site) */
+  .container-site{width:100%;max-width:var(--container);margin-inline:auto;padding-inline:var(--gutter)}
+
+  /* surface de marque : cream + grain (hero, footer, bandes de marque) */
+  .surface-brand{
+    background-color:var(--surface-marque);
+    background-image:url("/img/bg-texture.png");
+    background-repeat:repeat;background-size:158px 146px;
+  }
+  .dark .surface-brand{background-image:none}   /* le grain reste un signal clair uniquement */
+
+  /* lien inline souligné */
+  .link{
+    color:var(--accent);
+    border-bottom:1px solid var(--accent);
+    transition:color var(--dur) var(--ease),border-color var(--dur) var(--ease);
+  }
+  .link:hover{color:var(--accent-strong);border-color:var(--accent-strong)}
+
+  /* bouton principal (aplat accent, coins 6px, hover inversé) */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:.5em;
+    font-family:var(--font-display);font-weight:600;font-size:16px;line-height:1;
+    padding:14px 26px;
+    background:var(--accent);color:var(--accent-ink);
+    border:1px solid var(--accent);border-radius:var(--radius-control);
+    cursor:pointer;
+    transition:background var(--dur) var(--ease),color var(--dur) var(--ease),border-color var(--dur) var(--ease);
+  }
+  .btn:hover{background:transparent;color:var(--accent)}
+  .btn-sm{padding:10px 18px;font-size:14px}
+
+  /* bouton fantôme (contour encre) */
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+  .btn-ghost:hover{background:var(--ink);color:var(--surface)}
+
+  /* carte (coins nets) */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:0;
+    padding:26px;
+  }
+
+  /* champ de formulaire (coins nets, halo accent au focus) */
+  .field{
+    width:100%;
+    background:var(--surface);color:var(--ink);
+    border:1px solid var(--line);border-radius:0;
+    padding:12px 14px;font:inherit;
+    transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+  }
+  .field::placeholder{color:var(--mute)}
+  .field:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-focus)}
+
+  /* micro-label mono (surtitres, eyebrows) */
+  .label{
+    font-family:var(--font-mono);
+    font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--mute);
+  }
+}

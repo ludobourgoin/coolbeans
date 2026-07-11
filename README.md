@@ -1,43 +1,41 @@
-# Astro Starter Kit: Minimal
+# Coolbeans
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Site du studio web Coolbeans (Ludovic Bourgoin) — **Astro 6 + Tailwind v4** (CSS-first).
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Design system
 
-## 🚀 Project Structure
+- **Source de vérité unique** : [`src/styles/global.css`](src/styles/global.css) — tokens (`@theme`),
+  dark mode et primitives (`.btn`, `.btn-ghost`, `.card`, `.field`, `.link`, `.label`,
+  `.surface-brand`, `.container-site`). Importée une seule fois dans
+  [`src/layouts/BaseLayout.astro`](src/layouts/BaseLayout.astro).
+- **Tailwind v4** est branché via `@tailwindcss/vite` dans
+  [`astro.config.mjs`](astro.config.mjs) — pas de `tailwind.config.js`, tout vit dans `global.css`.
+- **Dark mode** : classe `.dark` sur `<html>`, script anti-flash dans le layout, toggle dans la nav.
+- **Accent alternatif** : `data-accent="electric"` sur `<html>` (encre → bleu cobalt).
+- Polices **Geomanist** dans `public/fonts/`, assets (texture, logos, photos) dans `public/img/`.
 
-Inside of your Astro project, you'll see the following folders and files:
+## Structure
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+src/
+├── styles/global.css       source de vérité (tokens + primitives)
+├── layouts/BaseLayout.astro <head>, SEO, anti-flash dark
+├── components/             Nav · Footer · CtaBand · LogoMarquee
+├── data/                   logos · testimonials · tools (page /tools)
+└── pages/                  index (home) · about · tools
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Commandes
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+| Commande          | Action                                    |
+| :---------------- | :---------------------------------------- |
+| `npm install`     | Installe les dépendances                  |
+| `npm run dev`     | Serveur local sur `localhost:4321`        |
+| `npm run build`   | Build de production dans `./dist/`        |
+| `npm run preview` | Prévisualise le build avant déploiement   |
 
-Any static assets, like images, can be placed in the `public/` directory.
+## À faire (hors périmètre v1)
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- Pages contact / projets / blog (les CTA « contact » pointent vers `#`).
+- Animations gelées en v1 : typewriter du hero, marquees défilants (JS), dropdown nav.
+- Favicons `ahrefs` / `gocardless` à sourcer (fallback initiales en attendant).
