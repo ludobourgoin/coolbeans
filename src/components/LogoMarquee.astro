@@ -3,7 +3,7 @@ import type { Logo } from "../data/logos";
 
 interface Props {
   logos: Logo[];
-  /** sens inverse (2e ligne) */
+  /** sens inverse (ligne 1, pour croiser la ligne 2) */
   reverse?: boolean;
 }
 
@@ -16,9 +16,11 @@ const loop = [...logos, ...logos];
   <ul class:list={["track", { rev: reverse }]}>
     {
       loop.map((l) => (
-        <li class:list={["tool", { named: l.label }]}>
-          <img src={l.src} alt={l.alt} loading="lazy" class:list={{ invert: l.invert }} />
-          {l.label && <span>{l.label}</span>}
+        <li class="tool">
+          {/* `mono` et pas `invert` : Tailwind expose une utilitaire `.invert` globale
+              qui s'appliquerait aussi en clair et blanchirait le picto. */}
+          <img src={l.src} alt="" loading="lazy" class:list={{ mono: l.mono }} />
+          <span>{l.name}</span>
         </li>
       ))
     }
@@ -46,9 +48,6 @@ const loop = [...logos, ...logos];
     animation-duration: 66s;
     animation-direction: reverse;
   }
-  .marquee:hover .track {
-    animation-play-state: paused;
-  }
   .tool {
     display: inline-flex;
     align-items: center;
@@ -56,13 +55,10 @@ const loop = [...logos, ...logos];
     flex: 0 0 auto;
   }
   .tool img {
-    height: 27px;
-    width: auto;
+    height: 30px;
+    width: 30px;
     display: block;
     object-fit: contain;
-  }
-  .tool.named img {
-    height: 30px;
   }
   .tool span {
     font-family: var(--font-display);
@@ -72,7 +68,7 @@ const loop = [...logos, ...logos];
     color: var(--ink);
     text-transform: lowercase;
   }
-  :global(.dark) .tool img.invert {
+  :global(.dark) .tool img.mono {
     filter: brightness(0) invert(1);
   }
   @keyframes marquee-scroll {

@@ -6,12 +6,24 @@ Astro autonome — plus aucune dépendance réseau à l'exécution.
 
 ## Où ils servent
 
-- **about · bande proof** (marquee sous le hero) : astro, shopify, sanity, make,
-  zapier, figma, webflow, cloudflare, notion, airtable, hubspot, google-analytics,
-  slack, github…
-- **home · visuel « flux »** (hero) : figma, astro-icon, cloudflare-icon, stripe,
-  make, sanity, notion, github-icon, netlify-icon, supabase-icon, sentry-icon,
+- **about · bande proof** (marquee sous le hero) : webflow, astro-icon, gsap-icon,
+  shopify, sanity, make, zapier-icon, figma, notion, airtable, hubspot,
+  google-analytics, slack-icon, github-icon, cloudflare-icon.
+- **home · visuel « flux »** (hero) : figma, astro-icon, gsap-icon, cloudflare-icon,
+  stripe, make, sanity, notion, github-icon, netlify-icon, supabase-icon, sentry-icon,
   visual-studio-code, brevo, resend, posthog, n8n, claude, hubspot…
+
+> [!important] Règle de la bande proof : **picto carré + nom de marque**
+> Le nom est rendu en Geomanist par `LogoMarquee`, à côté du picto. Donc on n'y met
+> **jamais un lockup** (`astro.svg`, `zapier.svg`, `github.svg`, `gsap.svg` : le nom
+> serait affiché deux fois) et **jamais un picto muet**. Un logo à ajouter dans la
+> bande veut donc dire : la variante *glyphe seul* du logo, et son nom dans `name`.
+>
+> Les pictos monochromes encre (astro-icon, notion, github-icon) portent `mono: true`
+> dans `src/data/logos.ts` : ils sont inversés en blanc en dark mode, sans quoi ils
+> disparaîtraient sur fond sombre. Attention, la classe CSS s'appelle bien `mono` et
+> **pas `invert`** — Tailwind expose une utilitaire globale `.invert` qui, elle,
+> s'appliquerait aussi en clair et blanchirait le picto en permanence.
 
 ## Sources d'origine
 
@@ -20,6 +32,8 @@ Astro autonome — plus aucune dépendance réseau à l'exécution.
 | `*.svg` (multicolore, ex. figma, shopify, astro, sanity) | `api.iconify.design/logos/<nom>.svg` |
 | `*-icon.svg` (glyphe seul, ex. cloudflare-icon, github-icon) | `api.iconify.design/logos/<nom>-icon.svg` |
 | `notion.svg`, `stripe.svg`, `make.svg`, `hubspot.svg`… | `cdn.simpleicons.org/<nom>/<hex>` (monochromes teintés) |
+| `gsap-icon.svg` (picto 4 cercles) | `gsap.com/safari-pinned-tab.svg` — seul picto carré officiel en vectoriel, recoloré au vert de marque `#0AE448` |
+| `gsap.svg` (wordmark) | `cdn.simpleicons.org/gsap/0AE448` — **inutilisé** depuis le passage de la bande proof au picto + nom. Conservé au cas où un lockup serait utile ailleurs. |
 
 ## Recommandation Astro (mieux que 30 SVG en dur)
 
