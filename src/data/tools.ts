@@ -3,8 +3,12 @@ export interface Tool {
   desc: string;
   chips: string[];
   href: string;
-  /** logo local ; null → fallback initiales */
-  logo: string | null;
+  /**
+   * Icône carrée locale, obligatoire. Source : le favicon du site officiel
+   * (`/img/tools/`), qui a l'avantage d'être déjà pensé comme une icône d'app
+   * — cadrage carré et marges internes. Voir public/img/tools/README.md.
+   */
+  logo: string;
 }
 
 export interface ToolCategory {
@@ -13,7 +17,7 @@ export interface ToolCategory {
   cards: Tool[];
 }
 
-/** Boîte à outils (page /tools) — extrait des pages livrées, logos rapatriés en local. */
+/** Boîte à outils (page /tools). Icônes rapatriées en local, aucune requête réseau au runtime. */
 export const toolCategories: ToolCategory[] = [
   {
     "id": "dev",
@@ -27,7 +31,7 @@ export const toolCategories: ToolCategory[] = [
           "stack ★"
         ],
         "href": "https://astro.build",
-        "logo": "/img/logos/astro.svg"
+        "logo": "/img/tools/astro.svg"
       },
       {
         "name": "vs code",
@@ -37,7 +41,7 @@ export const toolCategories: ToolCategory[] = [
           "stack ★"
         ],
         "href": "https://code.visualstudio.com",
-        "logo": "/img/logos/visual-studio-code.svg"
+        "logo": "/img/tools/vs-code.png"
       },
       {
         "name": "github",
@@ -47,7 +51,7 @@ export const toolCategories: ToolCategory[] = [
           "ci/cd"
         ],
         "href": "https://github.com",
-        "logo": "/img/logos/github.svg"
+        "logo": "/img/tools/github.svg"
       },
       {
         "name": "claude code",
@@ -57,7 +61,17 @@ export const toolCategories: ToolCategory[] = [
           "stack ★"
         ],
         "href": "https://www.anthropic.com/claude-code",
-        "logo": "/img/logos/claude.svg"
+        "logo": "/img/tools/claude.png"
+      },
+      {
+        "name": "gsap",
+        "desc": "librairie d'animation web. transitions, scroll-triggered, timelines. entièrement gratuite depuis le rachat par webflow.",
+        "chips": [
+          "animation",
+          "stack ★"
+        ],
+        "href": "https://gsap.com",
+        "logo": "/img/tools/gsap.png"
       },
       {
         "name": "react",
@@ -67,7 +81,7 @@ export const toolCategories: ToolCategory[] = [
           "stack ★"
         ],
         "href": "https://react.dev",
-        "logo": null
+        "logo": "/img/tools/react.png"
       },
       {
         "name": "tailwind css",
@@ -77,7 +91,7 @@ export const toolCategories: ToolCategory[] = [
           "stack ★"
         ],
         "href": "https://tailwindcss.com",
-        "logo": null
+        "logo": "/img/tools/tailwind.png"
       },
       {
         "name": "clerk",
@@ -87,7 +101,7 @@ export const toolCategories: ToolCategory[] = [
           "stack ★"
         ],
         "href": "https://clerk.com",
-        "logo": null
+        "logo": "/img/tools/clerk.svg"
       }
     ]
   },
@@ -103,7 +117,7 @@ export const toolCategories: ToolCategory[] = [
           "stack ★"
         ],
         "href": "https://www.sanity.io/studio",
-        "logo": "/img/logos/sanity.svg"
+        "logo": "/img/tools/sanity.png"
       },
       {
         "name": "webflow",
@@ -113,7 +127,7 @@ export const toolCategories: ToolCategory[] = [
           "no-code"
         ],
         "href": "https://webflow.com",
-        "logo": "/img/logos/webflow.svg"
+        "logo": "/img/tools/webflow.png"
       },
       {
         "name": "shopify",
@@ -123,7 +137,7 @@ export const toolCategories: ToolCategory[] = [
           "cms"
         ],
         "href": "https://www.shopify.com",
-        "logo": "/img/logos/shopify.svg"
+        "logo": "/img/tools/shopify.png"
       },
       {
         "name": "smootify",
@@ -133,7 +147,7 @@ export const toolCategories: ToolCategory[] = [
           "no-code"
         ],
         "href": "https://www.smootify.io",
-        "logo": null
+        "logo": "/img/tools/smootify.png"
       },
       {
         "name": "airtable",
@@ -160,7 +174,7 @@ export const toolCategories: ToolCategory[] = [
           "stack ★"
         ],
         "href": "https://www.make.com",
-        "logo": "/img/logos/make.svg"
+        "logo": "/img/tools/make.png"
       },
       {
         "name": "n8n",
@@ -170,7 +184,7 @@ export const toolCategories: ToolCategory[] = [
           "self-hosted"
         ],
         "href": "https://n8n.io",
-        "logo": "/img/logos/n8n.svg"
+        "logo": "/img/tools/n8n.png"
       },
       {
         "name": "zapier",
@@ -180,7 +194,7 @@ export const toolCategories: ToolCategory[] = [
           "saas"
         ],
         "href": "https://zapier.com",
-        "logo": "/img/logos/zapier.svg"
+        "logo": "/img/tools/zapier.png"
       }
     ]
   },
@@ -197,7 +211,7 @@ export const toolCategories: ToolCategory[] = [
           "stack ★"
         ],
         "href": "https://pages.cloudflare.com",
-        "logo": null
+        "logo": "/img/tools/cloudflare.png"
       },
       {
         "name": "supabase",
@@ -207,7 +221,7 @@ export const toolCategories: ToolCategory[] = [
           "db"
         ],
         "href": "https://supabase.com",
-        "logo": "/img/logos/supabase-icon.svg"
+        "logo": "/img/tools/supabase.png"
       },
       {
         "name": "cloudflare d1",
@@ -218,7 +232,7 @@ export const toolCategories: ToolCategory[] = [
           "stack ★"
         ],
         "href": "https://www.cloudflare.com/developer-platform/d1/",
-        "logo": null
+        "logo": "/img/tools/cloudflare.png"
       },
       {
         "name": "netlify",
@@ -228,7 +242,7 @@ export const toolCategories: ToolCategory[] = [
           "legacy"
         ],
         "href": "https://www.netlify.com",
-        "logo": "/img/logos/netlify-icon.svg"
+        "logo": "/img/tools/netlify.png"
       }
     ]
   },
@@ -244,7 +258,7 @@ export const toolCategories: ToolCategory[] = [
           "handoff"
         ],
         "href": "https://www.figma.com",
-        "logo": "/img/logos/figma.svg"
+        "logo": "/img/tools/figma.png"
       },
       {
         "name": "claude design",
@@ -255,7 +269,7 @@ export const toolCategories: ToolCategory[] = [
           "stack ★"
         ],
         "href": "https://claude.ai",
-        "logo": "/img/logos/claude.svg"
+        "logo": "/img/tools/claude.png"
       },
       {
         "name": "relume",
@@ -265,7 +279,7 @@ export const toolCategories: ToolCategory[] = [
           "wireframe"
         ],
         "href": "https://www.relume.io/",
-        "logo": "/img/relume-icon.png"
+        "logo": "/img/tools/relume.png"
       }
     ]
   },
@@ -280,7 +294,7 @@ export const toolCategories: ToolCategory[] = [
           "analytics"
         ],
         "href": "https://www.cloudflare.com/web-analytics/",
-        "logo": null
+        "logo": "/img/tools/cloudflare.png"
       },
       {
         "name": "ahrefs",
@@ -289,7 +303,7 @@ export const toolCategories: ToolCategory[] = [
           "seo"
         ],
         "href": "https://ahrefs.com",
-        "logo": null
+        "logo": "/img/tools/ahrefs.png"
       },
       {
         "name": "posthog",
@@ -299,7 +313,7 @@ export const toolCategories: ToolCategory[] = [
           "product"
         ],
         "href": "https://posthog.com",
-        "logo": "/img/logos/posthog.svg"
+        "logo": "/img/tools/posthog.png"
       },
       {
         "name": "sentry",
@@ -319,7 +333,7 @@ export const toolCategories: ToolCategory[] = [
           "uptime"
         ],
         "href": "https://uptimerobot.com",
-        "logo": "/img/uptimerobot-icon.png"
+        "logo": "/img/tools/uptimerobot.png"
       }
     ]
   },
@@ -334,7 +348,7 @@ export const toolCategories: ToolCategory[] = [
           "email api"
         ],
         "href": "https://resend.com",
-        "logo": "/img/logos/resend.svg"
+        "logo": "/img/tools/resend.png"
       },
       {
         "name": "hubspot",
@@ -344,7 +358,7 @@ export const toolCategories: ToolCategory[] = [
           "marketing"
         ],
         "href": "https://www.hubspot.com",
-        "logo": "/img/logos/hubspot.svg"
+        "logo": "/img/tools/hubspot.png"
       },
       {
         "name": "brevo",
@@ -354,7 +368,7 @@ export const toolCategories: ToolCategory[] = [
           "marketing"
         ],
         "href": "https://www.brevo.com",
-        "logo": "/img/logos/brevo.svg"
+        "logo": "/img/tools/brevo.svg"
       },
       {
         "name": "mailerlite",
@@ -364,7 +378,7 @@ export const toolCategories: ToolCategory[] = [
           "stack ★"
         ],
         "href": "https://www.mailerlite.com",
-        "logo": "/img/mailerlite-icon.png"
+        "logo": "/img/tools/mailerlite.png"
       },
       {
         "name": "pipedrive",
@@ -374,7 +388,7 @@ export const toolCategories: ToolCategory[] = [
           "sales"
         ],
         "href": "https://www.pipedrive.com",
-        "logo": "/img/pipedrive-icon.png"
+        "logo": "/img/tools/pipedrive.png"
       }
     ]
   },
@@ -390,7 +404,7 @@ export const toolCategories: ToolCategory[] = [
           "stack ★"
         ],
         "href": "https://stripe.com",
-        "logo": "/img/logos/stripe.svg"
+        "logo": "/img/tools/stripe.svg"
       },
       {
         "name": "snipcart",
@@ -400,7 +414,7 @@ export const toolCategories: ToolCategory[] = [
           "checkout"
         ],
         "href": "https://snipcart.com/fr",
-        "logo": null
+        "logo": "/img/tools/snipcart.png"
       },
       {
         "name": "gocardless",
@@ -410,7 +424,7 @@ export const toolCategories: ToolCategory[] = [
           "récurrent"
         ],
         "href": "https://gocardless.com/fr-fr",
-        "logo": null
+        "logo": "/img/tools/gocardless.png"
       }
     ]
   },
@@ -426,7 +440,7 @@ export const toolCategories: ToolCategory[] = [
           "projets"
         ],
         "href": "https://asana.com",
-        "logo": null
+        "logo": "/img/tools/asana.png"
       },
       {
         "name": "google workspace",
@@ -436,7 +450,7 @@ export const toolCategories: ToolCategory[] = [
           "drive"
         ],
         "href": "https://workspace.google.com",
-        "logo": null
+        "logo": "/img/tools/google-workspace.png"
       },
       {
         "name": "slack",
@@ -454,7 +468,7 @@ export const toolCategories: ToolCategory[] = [
           "sécurité"
         ],
         "href": "https://1password.com",
-        "logo": null
+        "logo": "/img/tools/1password.png"
       },
       {
         "name": "obsidian",
@@ -464,7 +478,7 @@ export const toolCategories: ToolCategory[] = [
           "markdown"
         ],
         "href": "https://obsidian.md",
-        "logo": null
+        "logo": "/img/tools/obsidian.png"
       },
       {
         "name": "cleanshot pro",
@@ -474,7 +488,7 @@ export const toolCategories: ToolCategory[] = [
           "macos"
         ],
         "href": "https://cleanshot.com",
-        "logo": "/img/cleanshot-icon.png"
+        "logo": "/img/tools/cleanshot.png"
       },
       {
         "name": "notion",
@@ -484,7 +498,7 @@ export const toolCategories: ToolCategory[] = [
           "brief"
         ],
         "href": "https://www.notion.so",
-        "logo": "/img/logos/notion.svg"
+        "logo": "/img/tools/notion.png"
       },
       {
         "name": "granola",
@@ -494,7 +508,7 @@ export const toolCategories: ToolCategory[] = [
           "réunions"
         ],
         "href": "https://www.granola.ai",
-        "logo": null
+        "logo": "/img/tools/granola.png"
       }
     ]
   },
@@ -510,7 +524,7 @@ export const toolCategories: ToolCategory[] = [
           "apple"
         ],
         "href": "https://www.apple.com/macbook-air/",
-        "logo": null
+        "logo": "/img/tools/apple.png"
       },
       {
         "name": "nuphy air75",
@@ -520,7 +534,7 @@ export const toolCategories: ToolCategory[] = [
           "mécanique"
         ],
         "href": "https://nuphy.com",
-        "logo": null
+        "logo": "/img/tools/nuphy.png"
       },
       {
         "name": "dell 27 plus 4k s2725qc",
@@ -530,7 +544,7 @@ export const toolCategories: ToolCategory[] = [
           "4k"
         ],
         "href": "https://www.dell.com",
-        "logo": null
+        "logo": "/img/tools/dell.png"
       },
       {
         "name": "dell u2415b",
@@ -540,7 +554,7 @@ export const toolCategories: ToolCategory[] = [
           "portrait"
         ],
         "href": "https://www.dell.com",
-        "logo": null
+        "logo": "/img/tools/dell.png"
       },
       {
         "name": "iphone 12 mini",
@@ -549,7 +563,7 @@ export const toolCategories: ToolCategory[] = [
           "mobile"
         ],
         "href": "https://www.apple.com/iphone/",
-        "logo": null
+        "logo": "/img/tools/apple.png"
       }
     ]
   },
@@ -564,7 +578,7 @@ export const toolCategories: ToolCategory[] = [
           "audio"
         ],
         "href": "https://www.apple.com/airpods-pro/",
-        "logo": null
+        "logo": "/img/tools/apple.png"
       },
       {
         "name": "dji mic mini",
@@ -574,7 +588,7 @@ export const toolCategories: ToolCategory[] = [
           "vidéo"
         ],
         "href": "https://www.dji.com",
-        "logo": null
+        "logo": "/img/tools/dji.png"
       },
       {
         "name": "blue yeti",
@@ -584,7 +598,7 @@ export const toolCategories: ToolCategory[] = [
           "audio"
         ],
         "href": "https://www.logitechg.com",
-        "logo": null
+        "logo": "/img/tools/logitech-g.png"
       },
       {
         "name": "dell pro webcam wb5023",
@@ -594,7 +608,7 @@ export const toolCategories: ToolCategory[] = [
           "vidéo"
         ],
         "href": "https://www.dell.com",
-        "logo": null
+        "logo": "/img/tools/dell.png"
       }
     ]
   }

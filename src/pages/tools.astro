@@ -3,16 +3,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import { toolCategories } from "../data/tools";
-
-const fb = (name: string) =>
-  name
-    .replace(/[^a-zA-ZÀ-ÿ ]/g, "")
-    .split(" ")
-    .filter(Boolean)
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join("")
-    .replace(/^\w/, (c) => c.toUpperCase());
 ---
 
 <BaseLayout
@@ -64,11 +54,7 @@ const fb = (name: string) =>
                 >
                   <div class="top">
                     <div class="logo">
-                      {tool.logo ? (
-                        <img src={tool.logo} alt={tool.name} loading="lazy" />
-                      ) : (
-                        <span class="fb">{fb(tool.name)}</span>
-                      )}
+                      <img src={tool.logo} alt="" loading="lazy" />
                     </div>
                     <div class="nm">{tool.name}</div>
                   </div>
@@ -202,34 +188,27 @@ const fb = (name: string) =>
     align-items: center;
     gap: 12px;
   }
+  /* vignette carrée au liseret, identique pour les 53 outils */
   .tool-card .logo {
-    width: 40px;
-    height: 40px;
-    flex: 0 0 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    /* la vignette reste claire en dark : les favicons sont majoritairement des
+       marques encre sur fond transparent, invisibles sur une carte sombre.
+       Même parti pris que les boîtes du flux hero. */
+    background: #fbfaf7;
   }
   .tool-card .logo img {
-    max-width: 100%;
-    max-height: 100%;
+    width: 74%;
+    height: 74%;
     object-fit: contain;
-  }
-  .tool-card .logo .fb {
-    width: 40px;
-    height: 40px;
-    border: 1px solid var(--line);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-mono);
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--mute);
   }
   .tool-card .nm {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 600;
     font-size: 18px;
     text-transform: lowercase;
   }
