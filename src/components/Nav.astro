@@ -15,7 +15,7 @@ const isActive = (href: string) => href !== "#" && path.startsWith(href);
 // dropdown « vous êtes » — pictos + labels du wireframe
 const audience = [
   { href: "/#vous-etes", label: "agence créative", svg: '<rect x="4" y="3" width="10" height="18"/><rect x="14" y="9" width="6" height="12"/><line x1="7" y1="7" x2="11" y2="7"/><line x1="7" y1="11" x2="11" y2="11"/><line x1="7" y1="15" x2="11" y2="15"/>' },
-  { href: "/#vous-etes", label: "directeur artistique", svg: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>' },
+  { href: "/#vous-etes", label: "directeur·rice artistique", svg: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>' },
   { href: "/#vous-etes", label: "pme ou scale up", svg: '<polyline points="3 17 9 11 13 15 21 7"/><polyline points="21 12 21 7 16 7"/>' },
   { href: "/#vous-etes", label: "tpe ou solopreneur", svg: '<path d="M3 9h18l-1.4-5H4.4L3 9z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/>' },
 ];
@@ -168,11 +168,12 @@ const audience = [
     height: 10px;
     transition: transform var(--dur) var(--ease);
   }
-  .drop > button:hover,
+  .drop:hover > button,
   .drop[data-open="true"] > button {
     color: var(--ink);
     background: var(--tint);
   }
+  .drop:hover > button svg,
   .drop[data-open="true"] > button svg {
     transform: rotate(180deg);
   }
@@ -196,6 +197,13 @@ const audience = [
       transform var(--dur) var(--ease);
     z-index: 60;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  }
+  /* pont invisible : évite que le menu se ferme en traversant l'écart bouton → panneau */
+  .drop .panel::before {
+    content: "";
+    position: absolute;
+    inset: -12px -12px auto -12px;
+    height: 14px;
   }
   .drop:hover .panel,
   .drop[data-open="true"] .panel {

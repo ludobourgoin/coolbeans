@@ -42,7 +42,7 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   <!-- HERO centré + flux -->
   <section class="hero-center surface-brand">
     <div class="container-site hero-content">
-      <h1 aria-label="le studio web des agences créatives, directeurs artistiques, pme & scale-ups, tpe & solopreneurs">
+      <h1 aria-label="le studio web des agences créatives, directeur·rices artistiques, pme ou scale up, tpe ou solopreneur">
         le studio web des<br />
         <span class="tw" aria-hidden="true"><span id="tw-word" class="tw-word">agences créatives</span><span class="tw-caret"></span></span>
       </h1>
@@ -80,25 +80,25 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
       <div class="aud-bento">
         <article class="aud-card feature">
           <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="10" height="18"/><rect x="14" y="9" width="6" height="12"/><line x1="7" y1="7" x2="11" y2="7"/><line x1="7" y1="11" x2="11" y2="11"/><line x1="7" y1="15" x2="11" y2="15"/></svg>
-          <h5>une agence ou un studio créatif</h5>
+          <h5>agence</h5>
           <p>vous concevez, j'exécute. sous votre marque, en marque blanche, livré fiable — comme une extension de votre équipe.</p>
           <a class="link" href="/about">en savoir plus →</a>
         </article>
         <article class="aud-card aud-b">
           <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
-          <h5>un·e directeur·rice artistique</h5>
+          <h5>directeur·rice artistique</h5>
           <p>votre design livré exactement comme pensé, au pixel près.</p>
           <a class="link" href="/about">en savoir plus →</a>
         </article>
         <article class="aud-card aud-c">
           <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="21 12 21 7 16 7"/></svg>
-          <h5>une pme ou une startup</h5>
+          <h5>pme ou scale up</h5>
           <p>votre site est un canal d'acquisition. traitons-le comme tel.</p>
           <a class="link" href="/about">en savoir plus →</a>
         </article>
         <article class="aud-card aud-d">
           <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18l-1.4-5H4.4L3 9z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>
-          <h5>une tpe ou un solopreneur</h5>
+          <h5>tpe ou solopreneur</h5>
           <p>votre présence en ligne pro, livrée vite, prix fixe, zéro souci.</p>
           <a class="link" href="/about">en savoir plus →</a>
         </article>
@@ -235,6 +235,44 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   />
 
   <Footer />
+
+  <script>
+    import gsap from "gsap";
+    import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
+
+    gsap.registerPlugin(ScrambleTextPlugin);
+
+    const el = document.getElementById("tw-word");
+    const words = [
+      "agences créatives",
+      "directeur·rices artistiques",
+      "pme ou scale up",
+      "tpe ou solopreneur",
+    ];
+    const chars = "abcdefghijklmnopqrstuvwxyz{}[]<>/*_-#$%&+=";
+
+    if (el && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      let i = 0;
+      const next = () => {
+        i = (i + 1) % words.length;
+        gsap.to(el, {
+          duration: 1.1,
+          ease: "none",
+          scrambleText: {
+            text: words[i],
+            chars,
+            speed: 0.55,
+            revealDelay: 0.28,
+            // saute directement à la longueur cible : la largeur ne tremble pas
+            // caractère par caractère pendant le décodage
+            tweenLength: false,
+          },
+          onComplete: () => gsap.delayedCall(2.1, next),
+        });
+      };
+      gsap.delayedCall(2.1, next);
+    }
+  </script>
 </BaseLayout>
 
 <style>
@@ -348,7 +386,7 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   }
   .proof-track .pn {
     font-family: var(--font-display);
-    font-weight: 800;
+    font-weight: 700;
     font-size: 40px;
     letter-spacing: -0.03em;
     color: var(--ink);
@@ -393,7 +431,7 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   }
   .aud-card h5 {
     font-family: var(--font-display);
-    font-weight: 800;
+    font-weight: 600;
     font-size: 21px;
     letter-spacing: -0.02em;
     line-height: 1.08;
@@ -519,7 +557,7 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
     padding-top: 12px;
   }
   .case-card h4 {
-    font-weight: 800;
+    font-weight: 600;
     font-size: 36px;
     letter-spacing: -0.025em;
     line-height: 0.95;
@@ -542,7 +580,7 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
     text-align: center;
   }
   .tw-head h2 {
-    font-weight: 800;
+    font-weight: 700;
     font-size: clamp(32px, 4.4vw, 64px);
     letter-spacing: -0.035em;
     line-height: 1.02;
@@ -651,7 +689,7 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 28px;
     line-height: 1;
     padding: 0 18px;
@@ -659,13 +697,13 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   }
   .method-grid .step .n {
     font-family: var(--font-display);
-    font-weight: 800;
+    font-weight: 700;
     font-size: 72px;
     letter-spacing: -0.04em;
     line-height: 0.9;
   }
   .method-grid .step h5 {
-    font-weight: 700;
+    font-weight: 600;
     font-size: 20px;
     letter-spacing: -0.01em;
     line-height: 1.15;
@@ -709,13 +747,13 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   }
   .stat .n {
     font-family: var(--font-display);
-    font-weight: 800;
+    font-weight: 700;
     font-size: 64px;
     letter-spacing: -0.04em;
     line-height: 0.95;
   }
   .stat .n small {
-    font-weight: 700;
+    font-weight: 600;
     font-size: 0.4em;
     color: var(--mute);
   }
@@ -750,7 +788,7 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
     gap: 24px;
   }
   .about-txt h3 {
-    font-weight: 800;
+    font-weight: 700;
     font-size: clamp(40px, 5vw, 72px);
     letter-spacing: -0.035em;
     line-height: 0.98;
@@ -874,27 +912,3 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
     }
   }
 </style>
-
-<script is:inline>
-  (function () {
-    const el = document.getElementById("tw-word");
-    if (!el) return;
-    const words = ["agences créatives", "directeurs artistiques", "pme & scale-ups", "tpe & solopreneurs"];
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let wi = 0, ci = words[0].length, deleting = true;
-    function tick() {
-      const word = words[wi];
-      if (deleting) {
-        ci--;
-        if (ci <= 0) { deleting = false; wi = (wi + 1) % words.length; }
-      } else {
-        ci++;
-        if (ci >= words[wi].length) { deleting = true; }
-      }
-      el.textContent = words[wi].slice(0, ci) || word.slice(0, 1);
-      const delay = deleting ? 45 : ci >= words[wi].length ? 1600 : 95;
-      setTimeout(tick, delay);
-    }
-    setTimeout(tick, 1600);
-  })();
-</script>

@@ -17,7 +17,7 @@ const deliverables = [
   <div class="flow-canvas" id="flow-canvas">
     <svg class="wires" viewBox="0 0 1280 440" aria-hidden="true">
       <path d="M424 77 C 505 77, 545 216, 596 216"></path>
-      <path d="M470 173 C 538 173, 556 216, 596 216"></path>
+      <path d="M516 173 C 560 173, 570 216, 596 216"></path>
       <path d="M452 267 C 538 267, 556 216, 596 216"></path>
       <path d="M425 362 C 510 362, 550 216, 596 216"></path>
       <path class="live" d="M684 216 C 756 216, 788 126, 836 126"></path>
@@ -25,7 +25,7 @@ const deliverables = [
       <path class="live" d="M684 216 C 756 216, 788 230, 836 230"></path>
       <path class="live" d="M684 216 C 756 216, 788 282, 836 282"></path>
       <circle class="tok" r="4"><animateMotion dur="2.4s" repeatCount="indefinite" path="M424 77 C 505 77, 545 216, 596 216"></animateMotion></circle>
-      <circle class="tok" r="4"><animateMotion dur="2.4s" begin="-0.6s" repeatCount="indefinite" path="M470 173 C 538 173, 556 216, 596 216"></animateMotion></circle>
+      <circle class="tok" r="4"><animateMotion dur="2.4s" begin="-0.6s" repeatCount="indefinite" path="M516 173 C 560 173, 570 216, 596 216"></animateMotion></circle>
       <circle class="tok" r="4"><animateMotion dur="2.4s" begin="-1.2s" repeatCount="indefinite" path="M452 267 C 538 267, 556 216, 596 216"></animateMotion></circle>
       <circle class="tok" r="4"><animateMotion dur="2.4s" begin="-1.8s" repeatCount="indefinite" path="M425 362 C 510 362, 550 216, 596 216"></animateMotion></circle>
     </svg>
@@ -50,7 +50,10 @@ const deliverables = [
         <img class="m-light" src="/img/coolbeans-mark-black.svg" alt="coolbeans" />
         <img class="m-dark" src="/img/coolbeans-mark-white.svg" alt="coolbeans" />
       </div>
-      <div class="read">un seul studio<br /><b>du brief à la maintenance</b></div>
+      <div class="read">
+        <p class="read-punch">vous briefez.<br />je fais le reste.</p>
+        <p class="read-sub">design · dev · maintenance</p>
+      </div>
     </div>
 
     <div class="fdeliv" aria-hidden="true">
@@ -63,8 +66,6 @@ const deliverables = [
         ))
       }
     </div>
-
-    <div class="flow-tag" aria-hidden="true"><span class="dot"></span>flux temps réel</div>
   </div>
 </figure>
 
@@ -247,18 +248,31 @@ const deliverables = [
     display: block;
   }
   .fcore .read {
-    font-family: var(--font-mono);
-    font-size: 11px;
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    text-align: center;
+  }
+  .fcore .read-punch {
+    font-family: var(--font-display);
+    font-size: 22px;
     font-weight: 700;
-    letter-spacing: 0.07em;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    text-transform: lowercase;
+    color: var(--ink);
+    margin: 0;
+  }
+  .fcore .read-sub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--mute);
-    text-align: center;
-    line-height: 1.75;
-    width: 240px;
-  }
-  .fcore .read b {
-    color: var(--ink);
+    margin: 0;
   }
   @keyframes core-pulse {
     0%,
@@ -293,7 +307,7 @@ const deliverables = [
     border: 1.5px solid var(--ink);
     background: var(--surface);
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 600;
     font-size: 13px;
     letter-spacing: -0.01em;
     text-transform: lowercase;
@@ -314,35 +328,11 @@ const deliverables = [
     stroke-linejoin: round;
   }
 
-  .flow-tag {
-    position: absolute;
-    left: 2px;
-    top: 412px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--mute);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    z-index: 4;
-  }
-  .flow-tag .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--ink);
-    animation: core-pulse 1.8s var(--ease) infinite;
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .wires path.live {
       animation: none;
     }
-    .fcore .mark::before,
-    .flow-tag .dot {
+    .fcore .mark::before {
       animation: none;
     }
     .wires circle.tok {
