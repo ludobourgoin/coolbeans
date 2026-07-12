@@ -31,7 +31,7 @@
 :root{
   /* surfaces */
   --surface:#FBFAF7;          /* off-white chaud · surface de contenu (sans texture) */
-  --surface-marque:#F1EAE0;   /* cream · moments de marque : hero, footer (avec grain) */
+  --surface-marque:#F7F3EF;   /* cream neutre · moments de marque : hero, footer (avec grain) */
   --surface-raise:#F1F1F2;    /* gris "paper" · encarts, chips, blocs secondaires */
   --line:rgba(20,17,12,.12);  /* filet fin · bordures, séparateurs */
   --line-2:rgba(20,17,12,.18); /* filet appuyé */

@@ -60,7 +60,7 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   </section>
 
   <!-- PROOF · noms clients (marquee animé) -->
-  <section class="proof surface-brand">
+  <section class="proof">
     <div class="container-site proof-top">
       <h3>ils m'ont fait confiance</h3>
       <span class="label">40+ projets · 2018 → 2026</span>
@@ -317,6 +317,7 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
 
   /* PROOF marquee */
   .proof {
+    background: var(--surface);
     border-bottom: 1px solid var(--line);
     padding-block: 48px;
     overflow: hidden;
