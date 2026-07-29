@@ -17,13 +17,7 @@
 
   <style>
     g {
-      fill: #000;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      g {
-        fill: #FFF;
-      }
+      fill: #17191e;
     }
   </style>
 </svg>

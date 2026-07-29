@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="fr" class="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aperçu — « la doc » (standard passation) · Amusoire</title>
+<style>
+@font-face{font-family:"Geomanist Book";src:url("../public/fonts/geomanist-book-webfont.woff2") format("woff2");font-weight:400 500;font-display:swap}
+@font-face{font-family:"Geomanist";src:url("../public/fonts/geomanist-medium-webfont.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Geomanist";src:url("../public/fonts/geomanist-bold-webfont.woff2") format("woff2");font-weight:700;font-display:swap}
+:root{
+  --surface:#ffffff; --surface-marque:#f7f3ef; --surface-raise:#f2efe8;
+  --line:rgba(20,17,12,.12); --line-2:rgba(20,17,12,.18); --tint:rgba(20,17,12,.05);
+  --ink:#111010; --mute:#5e5c55;
+  --radius:6px;
+  --f-iris:#C1AAF9; --f-iris-bg:#F6DFF6; --f-or:#FFC53D; --f-or-bg:#FFF0BD;
+  --f-magenta:#F59BF8; --f-bleu:#94C4FF; --f-bleu-bg:#BED9EF; --f-vert:#BDEE63;
+  --f-vert-bg:#E3EFDC; --f-corail:#F54E50; --f-corail-bg:#FCE1E1; --f-cyan-bg:#C4EAEE;
+  --font-sans:"Geomanist Book","Geomanist","Helvetica Neue",Arial,sans-serif;
+  --font-display:"Geomanist","Helvetica Neue",Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+.dark{
+  --surface:#0c0a07; --surface-marque:#16130c; --surface-raise:rgba(255,255,255,.05);
+  --line:rgba(244,242,236,.14); --line-2:rgba(244,242,236,.22); --tint:rgba(255,255,255,.06);
+  --ink:#f4f2ec; --mute:#a8a29a;
+  --f-iris-bg:rgba(193,170,249,.16); --f-or-bg:rgba(255,197,61,.15);
+  --f-bleu-bg:rgba(148,196,255,.15); --f-vert-bg:rgba(189,238,99,.14);
+  --f-corail-bg:rgba(245,78,80,.15); --f-cyan-bg:rgba(196,234,238,.14);
+}
+*{box-sizing:border-box}
+html{background:var(--surface)}
+body{margin:0;background:var(--surface);color:var(--ink);font-family:var(--font-sans);
+  font-weight:500;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2,h3,h4{font-family:var(--font-display);letter-spacing:-.02em;line-height:1.12;text-wrap:balance;margin:0}
+h1{font-weight:700;font-size:clamp(28px,3.2vw,40px);letter-spacing:-.03em}
+h2{font-weight:700;font-size:23px;margin:36px 0 12px;scroll-margin-top:80px;padding-top:6px}
+h3{font-weight:600;font-size:16px;margin:22px 0 8px}
+p{margin:12px 0}
+ul,ol{margin:10px 0;padding-left:20px}li{margin:4px 0}
+code{font-family:var(--font-mono);font-size:.86em;background:var(--surface-raise);
+  border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+pre{font-family:var(--font-mono);background:#0b0d11;color:#e6e9ef;border:1px solid var(--line);
+  border-radius:10px;padding:14px 16px;overflow:auto;font-size:12.5px;line-height:1.55;margin:14px 0}
+.dark pre{background:#05060a}
+pre .add{color:#56d364}pre .del{color:#f0857d}pre .cm{color:#7d8590}pre .hl{color:#ffd400}
+.label{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--mute)}
+dl.def dt{font-weight:600;margin-top:14px}
+dl.def dd{margin:2px 0 0;color:var(--mute)}
+
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;
+  height:56px;padding:0 20px;background:var(--surface-marque);border-bottom:1px solid var(--line)}
+.brand{font-family:var(--font-display);font-weight:700;letter-spacing:-.02em;font-size:16px}
+.brand .dot{color:var(--f-magenta)}
+.topbar .sep{color:var(--mute);opacity:.5}
+.topbar .proj{font-size:14px;color:var(--mute)}
+.topbar .spacer{flex:1}
+.lock{font-size:11px;color:var(--mute);border:1px solid var(--line);border-radius:20px;padding:3px 10px}
+.tgl{cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  border-radius:var(--radius);padding:6px 10px;font:inherit;font-size:13px}
+.shell{display:grid;grid-template-columns:288px minmax(0,1fr) 232px;align-items:start;max-width:1400px;margin:0 auto}
+.left{position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto;border-right:1px solid var(--line);padding:22px 18px 60px}
+.proj-card{border:1px solid var(--line);background:var(--surface-marque);padding:14px 14px 12px;margin-bottom:20px}
+.proj-card .name{font-family:var(--font-display);font-weight:700;font-size:15px}
+.proj-card .meta{font-size:11.5px;color:var(--mute);margin-top:6px;line-height:1.5}
+.proj-card .pill{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.05em;padding:2px 7px;border-radius:20px;background:var(--f-vert-bg);color:var(--ink)}
+.chapter{margin:16px 0}
+.chapter>.head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.chapter>.head .t{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--mute)}
+.chapter>.head .opt{font-size:9px;color:var(--mute);border:1px solid var(--line);border-radius:10px;padding:0 5px}
+.chapter a{display:block;text-decoration:none;color:var(--ink);font-size:13.5px;padding:5px 10px;border-radius:var(--radius);border-left:2px solid transparent;margin-left:3px}
+.chapter a:hover{background:var(--tint)}
+.chapter a.on{background:var(--tint);border-left-color:var(--ink);font-weight:600}
+.main{padding:34px 44px 100px;min-width:0}
+.crumbs{font-size:12px;color:var(--mute);margin-bottom:10px}
+.crumbs b{color:var(--ink)}
+.page-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:11.5px;color:var(--mute);margin:14px 0 6px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.page-meta b{color:var(--ink);font-weight:600}
+.page{display:none}.page.on{display:block}
+.right{position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto;padding:30px 20px 60px}
+.right .h{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+.right a{display:block;color:var(--mute);text-decoration:none;font-size:12.5px;padding:4px 0 4px 12px;border-left:2px solid var(--line)}
+.right a:hover{color:var(--ink)}
+.right a.on{color:var(--ink);border-left-color:var(--ink);font-weight:600}
+
+.hero{border:1px solid var(--line);padding:28px 30px 24px;margin:18px 0 8px;background:var(--surface-marque)}
+.hero .eyebrow{margin-bottom:10px}
+.hero h1{max-width:20ch}
+.hero p{max-width:60ch;color:var(--mute);margin-top:8px}
+.liens{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.liens a{font-size:13px;text-decoration:none;border:1px solid var(--line-2);border-radius:var(--radius);padding:8px 12px;background:var(--surface);display:inline-flex;gap:7px;align-items:center}
+.liens a:hover{border-color:var(--ink)}
+.liens a .ext{color:var(--mute);font-size:11px}
+
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);font-weight:700}
+tr:last-child td{border-bottom:none}
+table.framed{border:1px solid var(--line)}
+.pill{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.pill.ok{background:var(--f-vert-bg);color:var(--ink)}
+.pill.warn{background:var(--f-or-bg);color:var(--ink)}
+.pill.bad{background:var(--f-corail-bg);color:var(--ink)}
+
+.adm{border-left:4px solid var(--c);background:var(--bg);border-radius:0 10px 10px 0;padding:12px 16px;margin:16px 0;font-size:13.5px}
+.adm .t{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.adm.note{--c:var(--f-bleu);--bg:var(--f-bleu-bg)}
+.adm.tip{--c:var(--f-vert);--bg:var(--f-vert-bg)}
+.adm.warn{--c:var(--f-or);--bg:var(--f-or-bg)}
+.adm.danger{--c:var(--f-corail);--bg:var(--f-corail-bg)}
+.adm.piege{--c:var(--f-iris);--bg:var(--f-iris-bg)}
+.adm p{margin:4px 0}
+
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0}
+.node{background:var(--surface-raise);border:1px solid var(--line-2);border-radius:8px;padding:9px 13px;font-size:12.5px;font-weight:600}
+.node small{display:block;color:var(--mute);font-weight:400;font-size:10.5px;margin-top:2px}
+.arrow{color:var(--f-magenta);font-weight:800}
+.badge-acc{font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px}
+.badge-acc.amus{background:var(--f-or);color:#111}
+.badge-acc.blind{background:var(--f-bleu);color:#111}
+
+ol.steps{padding-left:0;counter-reset:s;list-style:none}
+ol.steps li{position:relative;padding:6px 0 6px 34px;counter-increment:s}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:5px;width:22px;height:22px;display:grid;place-items:center;background:var(--ink);color:var(--surface);border-radius:50%;font-family:var(--font-mono);font-size:12px;font-weight:700}
+
+.interdits{border:1px solid var(--f-corail);background:var(--f-corail-bg);border-radius:10px;padding:10px 16px;margin:14px 0}
+.interdits .t{font-weight:700;font-size:13px;margin-bottom:4px}
+
+.incident{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:16px 0}
+.incident .row{display:grid;grid-template-columns:120px 1fr;border-top:1px solid var(--line)}
+.incident .row:first-child{border-top:none}
+.incident .k{background:var(--surface-marque);padding:10px 14px;font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);font-weight:700}
+.incident .v{padding:10px 14px;font-size:13.5px}
+
+details{border:1px solid var(--line);border-radius:8px;padding:2px 14px;margin:14px 0;background:var(--surface-raise)}
+details summary{cursor:pointer;font-size:13px;font-weight:600;padding:8px 0}
+details .shot{border:1px dashed var(--line-2);border-radius:6px;height:120px;display:grid;place-items:center;color:var(--mute);font-size:12px;margin:8px 0 12px;background:repeating-linear-gradient(45deg,transparent,transparent 8px,var(--tint) 8px,var(--tint) 16px)}
+
+.xlink{font-size:12.5px;color:var(--mute)}
+.xlink a{color:var(--f-magenta);text-decoration:underline}
+.todo{background:var(--f-or-bg);color:#111;font-family:var(--font-mono);font-size:11px;padding:1px 6px;border-radius:4px}
+
+.pagefoot{margin-top:52px;padding-top:20px;border-top:1px solid var(--line)}
+.pf-meta{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:13px;color:var(--mute);margin-bottom:20px}
+.pf-meta a{display:inline-flex;gap:7px;align-items:center;color:var(--mute);text-decoration:none}
+.pf-meta a:hover{color:var(--ink)}
+.pf-nav{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pf-card{border:1px solid var(--line);border-radius:10px;padding:15px 18px;text-decoration:none;color:var(--ink);background:var(--surface);transition:border-color .15s,background .15s;display:block}
+.pf-card:hover{border-color:var(--ink);background:var(--tint)}
+.pf-card .lab{font-size:12.5px;color:var(--mute);display:flex;align-items:center;gap:6px}
+.pf-card .ttl{font-family:var(--font-display);font-weight:600;font-size:18px;margin-top:3px}
+.pf-card.next{text-align:right}.pf-card.next .lab{justify-content:flex-end}
+.pf-card.empty{visibility:hidden}
+@media(max-width:1180px){.right{display:none}.shell{grid-template-columns:270px minmax(0,1fr)}}
+@media(max-width:860px){.left{display:none}.shell{grid-template-columns:1fr}.main{padding:24px 20px 80px}}
+@media(max-width:640px){.pf-nav{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">coolbeans<span class="dot">.</span></span>
+  <span class="sep">/</span><span class="label">la doc</span>
+  <span class="sep">/</span><span class="proj">Amusoire</span>
+  <span class="spacer"></span>
+  <span class="lock">🔒 Cloudflare Access</span>
+  <button class="tgl" id="tgl">☀︎ / ☾</button>
+</div>
+
+<div class="shell">
+  <aside class="left">
+    <div class="proj-card">
+      <div class="name">Amusoire</div>
+      <div class="meta"><span class="pill">Final</span> · v1.0<br>Propriétaire : Ludovic B.<br>MAJ : 2026-07-28</div>
+    </div>
+    <nav id="nav">
+      <div class="chapter"><div class="head"><span class="t">1 · Cadre &amp; pilotage</span></div>
+        <a href="#" data-page="fiche" class="on">Fiche projet</a>
+        <a href="#" data-page="contexte">Contexte &amp; objectifs</a>
+        <a href="#" data-page="entreprise">Entreprise &amp; marques</a>
+        <a href="#" data-page="parties">Parties prenantes &amp; gouvernance</a>
+      </div>
+      <div class="chapter"><div class="head"><span class="t">2 · Architecture</span></div>
+        <a href="#" data-page="archi">Vue technique &amp; flux</a>
+        <a href="#" data-page="sitemap">Sitemap (HTML + XML)</a>
+      </div>
+      <div class="chapter"><div class="head"><span class="t">3 · Intégrations</span></div>
+        <a href="#" data-page="integ">Forms → Make → HubSpot</a>
+        <a href="#" data-page="refids">Référentiels d'IDs</a>
+      </div>
+      <div class="chapter"><div class="head"><span class="t">4 · Features sur-mesure</span></div>
+        <a href="#" data-page="simulateur">Simulateur ROI</a>
+        <a href="#" data-page="popup">Popup opt-in</a>
+      </div>
+      <div class="chapter"><div class="head"><span class="t">5 · Contenu &amp; édition</span></div>
+        <a href="#" data-page="principes">Principes agnostiques</a>
+        <a href="#" data-page="edit">Éditer (Webflow)</a>
+        <a href="#" data-page="blog">Blog &amp; CMS</a>
+      </div>
+      <div class="chapter"><div class="head"><span class="t">6 · SEO, Tracking &amp; RGPD</span><span class="opt">opt</span></div>
+        <a href="#" data-page="seo">SEO on-page</a>
+        <a href="#" data-page="tracking">Tracking / provenance</a>
+        <a href="#" data-page="rgpd">RGPD &amp; cookies</a>
+      </div>
+      <div class="chapter"><div class="head"><span class="t">7 · Accès, secrets &amp; sécu</span><span class="opt">opt</span></div>
+        <a href="#" data-page="acces">Comptes &amp; accès</a>
+        <a href="#" data-page="secrets">Secrets &amp; posture</a>
+      </div>
+      <div class="chapter"><div class="head"><span class="t">8 · Exploitation &amp; mémoire</span></div>
+        <a href="#" data-page="maint">Maintenance &amp; vigilance</a>
+        <a href="#" data-page="collab">Collaboration &amp; support</a>
+        <a href="#" data-page="journal">Journal &amp; log des bugs</a>
+      </div>
+      <div class="chapter"><div class="head"><span class="t">9 · Ressources</span></div>
+        <a href="#" data-page="liens">Liens &amp; accès outils</a>
+        <a href="#" data-page="droits">Propriété &amp; droits</a>
+        <a href="#" data-page="glossaire">Glossaire</a>
+      </div>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <!-- 1.1 FICHE PROJET -->
+    <article class="page on" id="page-fiche">
+      <div class="crumbs">Cadre &amp; pilotage <span style="opacity:.5">›</span> <b>Fiche projet</b></div>
+      <div class="hero">
+        <div class="eyebrow label">Document de vérité · Passation</div>
+        <h1>Amusoire — passation &amp; référence</h1>
+        <p>Manuel pour faire vivre le site en autonomie sans casser la qualité pro. Blind test, quiz &amp; karaoké — salles privées (B2C) &amp; solution licences établissements (B2B).</p>
+        <div class="liens">
+          <a href="#">🌐 Prod <span class="ext">amusoire.com ↗</span></a>
+          <a href="#">🧪 Staging <span class="ext">webflow.io ↗</span></a>
+          <a href="#">✏️ Webflow <span class="ext">Designer ↗</span></a>
+          <a href="#">🔗 Make <span class="ext">scénario ↗</span></a>
+        </div>
+      </div>
+      <div class="page-meta"><span>Propriétaire : <b>Ludovic Bourgoin</b></span><span>Version : <b>1.0</b></span><span>MAJ : <b>2026-07-28</b></span><span>Statut : <b>Final</b></span></div>
+      <h2>En bref</h2>
+      <p>Site <b>Webflow</b>, automatisations <b>Make</b>, CRM <b>HubSpot</b> (2 portails), emails <b>Resend</b>. 43 pages, 6 formulaires, 1 simulateur sur-mesure, 1 popup opt-in.</p>
+      <div class="adm note"><div class="t">🟦 Note</div><p>Cette page est la seule <b>source de vérité</b> — on la tient à jour (voir en-tête : version + date). Une doc périmée fait plus de mal qu'une absence de doc.</p></div>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 1.2 CONTEXTE -->
+    <article class="page" id="page-contexte">
+      <div class="crumbs">Cadre &amp; pilotage <span style="opacity:.5">›</span> <b>Contexte &amp; objectifs</b></div>
+      <h1>Contexte &amp; objectifs</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <h2>Le projet</h2>
+      <p>Site vitrine + acquisition pour Amusoire : réservation de salles privées côté grand public, et démarchage d'établissements (bars, hôtels, campings…) pour la solution de licences.</p>
+      <h2>Objectifs</h2>
+      <ul>
+        <li>Générer des <b>leads B2C</b> (réservations, événementiel) et <b>B2B</b> (licences établissements).</li>
+        <li>Router chaque lead vers le <b>bon CRM</b> selon sa nature.</li>
+        <li>Rendre le client <b>autonome</b> sur le contenu (blog, pages) sans casser le site.</li>
+      </ul>
+      <h2>Cibles</h2>
+      <table class="framed">
+        <tr><th>Segment</th><th>Qui</th><th>Entrée</th></tr>
+        <tr><td>B2C</td><td>Particuliers, EVG/EVJF, anniversaires, entreprises (team building)</td><td>Occasions, Lieux, Réserver</td></tr>
+        <tr><td>B2B</td><td>Bars, restaurants, hôtels, campings, loisirs indoor</td><td>Pages <code>/pro/*</code>, simulateur</td></tr>
+      </table>
+      <h2>Périmètre</h2>
+      <p><b>Dans</b> : site Webflow, formulaires, tracking, simulateur, popup, blog. <b>Hors</b> : campagnes payantes, production de contenu éditorial.</p>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 1.3 ENTREPRISE -->
+    <article class="page" id="page-entreprise">
+      <div class="crumbs">Cadre &amp; pilotage <span style="opacity:.5">›</span> <b>Entreprise &amp; marques</b></div>
+      <h1>L'entreprise &amp; ses marques</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <p>Deux marques cohabitent — c'est la clé pour comprendre le routage des leads.</p>
+      <table class="framed">
+        <tr><th>Marque</th><th>Cible</th><th>CRM / portail HubSpot</th></tr>
+        <tr><td><b>Amusoire</b></td><td>B2C — salles privées Paris &amp; Marseille</td><td>AMUSOIRE — <code>25692189</code></td></tr>
+        <tr><td><b>ThisIsBlindTest</b></td><td>B2B — licences établissements</td><td>BLINDTEST — <code>147562037</code></td></tr>
+      </table>
+      <div class="adm piege"><div class="t">🟪 Piège</div><p>Les deux marques ne mappent <b>pas</b> intuitivement sur les portails : les formulaires <b>pro/licences</b> remontent sur <b>AMUSOIRE</b>. Voir <span class="xlink"><a href="#" data-page="integ">Forms → Make → HubSpot</a></span>.</p></div>
+      <h2>Lieux (B2C)</h2>
+      <ul>
+        <li>Drawing House — Paris 14</li>
+        <li>Trinquet Village — Paris 16</li>
+        <li>Le Môm — Paris 17</li>
+        <li>La Valentine — Marseille</li>
+      </ul>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 1.4 PARTIES PRENANTES -->
+    <article class="page" id="page-parties">
+      <div class="crumbs">Cadre &amp; pilotage <span style="opacity:.5">›</span> <b>Parties prenantes &amp; gouvernance</b></div>
+      <h1>Parties prenantes &amp; gouvernance</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <h2>Annuaire</h2>
+      <table class="framed">
+        <tr><th>Rôle</th><th>Personne</th><th>Côté</th><th>Contact</th></tr>
+        <tr><td>Sponsor / décideur</td><td class="todo">(à compléter)</td><td>Amusoire</td><td class="todo">(à compléter)</td></tr>
+        <tr><td>Référent contenu</td><td class="todo">(à compléter)</td><td>Amusoire</td><td class="todo">(à compléter)</td></tr>
+        <tr><td>Lead dev / doc</td><td>Ludovic Bourgoin</td><td>Coolbeans</td><td>ludo@coolbeans.cc</td></tr>
+        <tr><td>Automatisations</td><td>Coolbeans</td><td>Coolbeans</td><td>—</td></tr>
+      </table>
+      <h2>Qui décide quoi</h2>
+      <table class="framed">
+        <tr><th>Décision</th><th>Propose</th><th>Valide</th></tr>
+        <tr><td>Mise en prod</td><td>Coolbeans</td><td>Amusoire</td></tr>
+        <tr><td>Contenu / blog</td><td>Amusoire</td><td>Amusoire</td></tr>
+        <tr><td>Évolutions techniques</td><td>Coolbeans</td><td>Amusoire (budget)</td></tr>
+      </table>
+      <h2>Demandes &amp; canaux</h2>
+      <p>Toute demande (bug ou évolution) passe par <span class="todo">(canal à compléter)</span>. Modèle de rapport de bug : voir <span class="xlink"><a href="#" data-page="collab">Collaboration &amp; support</a></span>.</p>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 2.1 ARCHI -->
+    <article class="page" id="page-archi">
+      <div class="crumbs">Architecture <span style="opacity:.5">›</span> <b>Vue technique &amp; flux</b></div>
+      <h1>Vue technique &amp; flux</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <h2>Stack</h2>
+      <table class="framed">
+        <tr><th>Brique</th><th>Rôle</th></tr>
+        <tr><td>Webflow</td><td>Site + CMS (blog) + formulaires</td></tr>
+        <tr><td>Make</td><td>1 scénario : Webflow forms → HubSpot / Resend</td></tr>
+        <tr><td>HubSpot ×2</td><td>CRM (AMUSOIRE 25692189 · BLINDTEST 147562037)</td></tr>
+        <tr><td>Resend</td><td>Email transactionnel (mail simulateur)</td></tr>
+      </table>
+      <h2>Environnements</h2>
+      <ul><li><b>Prod</b> : <code>amusoire.com</code></li><li><b>Staging</b> : <code>site-amusoire.webflow.io</code></li></ul>
+      <h2>Schéma de flux</h2>
+      <div class="flow">
+        <div class="node">Webflow<small>form + hidden fields</small></div><span class="arrow">→</span>
+        <div class="node">Make<small>webhook</small></div><span class="arrow">→</span>
+        <div class="node">HubSpot<small>routé</small></div><span class="arrow">+</span>
+        <div class="node">Resend<small>si simulateur</small></div>
+      </div>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 2.2 SITEMAP -->
+    <article class="page" id="page-sitemap">
+      <div class="crumbs">Architecture <span style="opacity:.5">›</span> <b>Sitemap</b></div>
+      <h1>Sitemap</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span><span>43 pages publiées</span></div>
+      <p>Liste lisible des pages (chaque lien ouvre un nouvel onglet). Le <b>sitemap XML</b> pour les moteurs est en bas.</p>
+      <h3>Grand public</h3>
+      <ul>
+        <li><a href="https://www.amusoire.com/" target="_blank" rel="noopener">Home ↗</a></li>
+        <li><a href="https://www.amusoire.com/occasions" target="_blank" rel="noopener">Occasions ↗</a></li>
+        <li><a href="https://www.amusoire.com/entreprises" target="_blank" rel="noopener">Entreprises ↗</a> · <a href="https://www.amusoire.com/team-building" target="_blank" rel="noopener">Team Building ↗</a></li>
+        <li>Jeux : <a href="https://www.amusoire.com/jeux/blindtest" target="_blank" rel="noopener">Blindtest</a> · <a href="https://www.amusoire.com/jeux/quiz" target="_blank" rel="noopener">Quiz</a> · <a href="https://www.amusoire.com/jeux/karaoke" target="_blank" rel="noopener">Karaoke</a></li>
+        <li>Lieux : Drawing House P14 · Trinquet P16 · Le Môm P17 · Valentine Marseille</li>
+        <li><a href="https://www.amusoire.com/contact" target="_blank" rel="noopener">Contact ↗</a></li>
+      </ul>
+      <h3>Pro (B2B)</h3>
+      <ul><li><a href="https://www.amusoire.com/pro" target="_blank" rel="noopener">/pro</a> · établissements (bars-restaurants, hôtels, camping, loisirs, music-quiz) · <a href="https://www.amusoire.com/pro/simulateur" target="_blank" rel="noopener">Simulateur</a> · Blog</li></ul>
+      <h3>Legal</h3>
+      <ul><li>Mentions légales · CGV · CGU · Confidentialité · Cookies</li></ul>
+      <p style="margin-top:18px"><a href="https://www.amusoire.com/sitemap.xml" target="_blank" rel="noopener">📄 Ouvrir le sitemap.xml ↗</a></p>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 3.1 INTÉGRATIONS (flagship) -->
+    <article class="page" id="page-integ">
+      <div class="crumbs">Intégrations <span style="opacity:.5">›</span> <b>Forms → Make → HubSpot</b></div>
+      <h1>Formulaires → Make → HubSpot</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span><span>Statut : <b>Final</b></span><span>Portails : <b>AMUSOIRE 25692189</b> · <b>BLINDTEST 147562037</b></span></div>
+      <h2>Architecture en un coup d'œil</h2>
+      <div class="flow">
+        <div class="node">Webflow<small>form + hidden fields</small></div><span class="arrow">→</span>
+        <div class="node">Make<small>1 scénario, webhook</small></div><span class="arrow">→</span>
+        <div class="node">HubSpot<small>routé par <code>account_target</code></small></div><span class="arrow">⇒</span>
+        <span class="badge-acc amus">AMUSOIRE</span><span style="color:var(--mute)">ou</span><span class="badge-acc blind">BLINDTEST</span>
+      </div>
+      <h2>Routage des 6 formulaires</h2>
+      <table class="framed">
+        <tr><th>Formulaire</th><th><code>account_target</code></th><th>Compte</th></tr>
+        <tr><td>Licences (/pro/*)</td><td><code>amusoire</code></td><td><span class="pill ok">AMUSOIRE</span></td></tr>
+        <tr><td>Simulateur</td><td><code>amusoire</code></td><td><span class="pill ok">AMUSOIRE</span></td></tr>
+        <tr><td>Formulaire UK (music-quiz EN)</td><td><code>amusoire</code></td><td><span class="pill ok">AMUSOIRE</span></td></tr>
+        <tr><td>Team Building</td><td><code>blindtest</code></td><td><span class="pill warn">BLINDTEST</span></td></tr>
+        <tr><td>Contact events</td><td><code>blindtest</code></td><td><span class="pill warn">BLINDTEST</span></td></tr>
+        <tr><td>Newsletter (footer)</td><td><code>blindtest</code></td><td><span class="pill warn">BLINDTEST</span></td></tr>
+      </table>
+      <div class="adm piege"><div class="t">🟪 Piège — ne pas « corriger »</div><p><b>Contre-intuitif mais exact</b> : les formulaires <b>pro</b> vont sur <b>AMUSOIRE</b>, l'événementiel + newsletter sur <b>BLINDTEST</b>. Routage réel via le champ caché <code>data-portal</code> — ne pas « rétablir la logique ».</p></div>
+      <h2>Le levier de routage</h2>
+<pre><span class="cm">// script global — l'attribut data-portal du &lt;form&gt; décide le portail</span>
+account_target = form.getAttribute(<span class="hl">'data-portal'</span>) || <span class="hl">'amusoire'</span>;
+<span class="cm">// blindtest → 147562037 · amusoire → 25692189</span></pre>
+      <h2>Incident &amp; correctif (pattern)</h2>
+      <div class="incident">
+        <div class="row"><div class="k">Symptôme</div><div class="v">Un form <code>/team-building</code> remontait sur le mauvais portail.</div></div>
+        <div class="row"><div class="k">Cause racine</div><div class="v">La modale <code>pro / contact modal</code> impose <code>data-portal="amusoire"</code> en dur, partagé par ses instances.</div></div>
+        <div class="row"><div class="k">Correctif</div><div class="v">Détacher (unlink) l'instance sur la page, puis <code>data-portal="blindtest"</code>.</div></div>
+        <div class="row"><div class="k">Étendre</div><div class="v">Toute page pro hérite d'<code>amusoire</code> — ne détacher que pour l'événementiel.</div></div>
+      </div>
+      <div class="adm danger"><div class="t">🔴 Danger</div><p>La clé secrète du webhook Make n'est <b>jamais</b> dans la doc ni dans git → 1Password. Voir <span class="xlink"><a href="#" data-page="secrets">Secrets &amp; posture</a></span>.</p></div>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 3.2 RÉFÉRENTIELS -->
+    <article class="page" id="page-refids">
+      <div class="crumbs">Intégrations <span style="opacity:.5">›</span> <b>Référentiels d'IDs</b></div>
+      <h1>Référentiels d'IDs</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <h2>Portails &amp; connexions Make</h2>
+      <table class="framed">
+        <tr><th>Compte</th><th>Portal ID</th><th>Connexion Make</th></tr>
+        <tr><td>AMUSOIRE</td><td><code>25692189</code></td><td>My Amusoire HubSpot CRM connection</td></tr>
+        <tr><td>BLINDTEST</td><td><code>147562037</code></td><td>My Blindtest HubSpot CRM connection</td></tr>
+      </table>
+      <h2>Formulaires ↔ data-portal</h2>
+      <p>Tableau de correspondance form → <code>data-portal</code> → compte : voir <span class="xlink"><a href="#" data-page="integ">Forms → Make → HubSpot</a></span>.</p>
+      <div class="adm note"><div class="t">🟦 Note</div><p>Ce référentiel évolue : ajouter une entrée = ajouter une ligne. Tenir à jour à chaque nouveau formulaire.</p></div>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 4.1 SIMULATEUR -->
+    <article class="page" id="page-simulateur">
+      <div class="crumbs">Features sur-mesure <span style="opacity:.5">›</span> <b>Simulateur ROI</b></div>
+      <h1>Simulateur ROI</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span><span>Page : <code>/pro/simulateur</code></span></div>
+      <h2>Ce que c'est</h2>
+      <p>Un calculateur de gains pour les établissements. Formulaire multi-étapes, résultats chiffrés, puis email récap (via Resend).</p>
+      <h2>Logique de calcul</h2>
+      <p>Les coefficients sont <b>éditables sans code</b> via des <code>Custom Attributes</code> Webflow. Le calcul se fait dans <code>calculator.ts</code> (bundle JS).</p>
+      <h2>Bundle JS — mise à jour</h2>
+      <ol class="steps">
+        <li>Modifier le code dans <code>src/</code>.</li>
+        <li><code>npm run build</code> → <code>dist/index.js</code> + <code>dist/index.css</code>.</li>
+        <li>Coller dans Webflow → /simulateur → Custom Code (head + before &lt;/body&gt;).</li>
+        <li>Publier sur <b>staging</b> d'abord.</li>
+      </ol>
+      <div class="adm piege"><div class="t">🟪 Piège</div><p>La doc technique détaillée du simulateur vit dans la <b>Docsify live</b> de la cliente — ne pas la dupliquer ici, la <span class="xlink"><a href="#">lier ↗</a></span>.</p></div>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 4.2 POPUP -->
+    <article class="page" id="page-popup">
+      <div class="crumbs">Features sur-mesure <span style="opacity:.5">›</span> <b>Popup opt-in</b></div>
+      <h1>Popup opt-in</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span><span>Page : <code>/modal</code></span></div>
+      <h2>Architecture</h2>
+      <p>Modale <b>Finsweet</b> + un script déclencheur (affichage à l'intention de sortie / au scroll). Le contenu est une page Webflow dédiée (<code>/modal</code>).</p>
+      <h2>Éditer le contenu</h2>
+      <p>Dans le Designer, ouvrir la page <code>/modal</code> et modifier textes/visuels comme n'importe quelle page — sans toucher au script.</p>
+      <div class="adm warn"><div class="t">🟨 Avertissement</div><p>Ne pas modifier les <b>modalités d'affichage</b> (fréquence, déclencheur) sans prévenir : c'est piloté par le script global.</p></div>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 5.1 PRINCIPES -->
+    <article class="page" id="page-principes">
+      <div class="crumbs">Contenu &amp; édition <span style="opacity:.5">›</span> <b>Principes agnostiques</b></div>
+      <h1>Principes d'édition (agnostiques)</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <p>Valables quelle que soit la plateforme. Les gestes précis sont dans la page <span class="xlink"><a href="#" data-page="edit">Éditer (Webflow)</a></span>.</p>
+      <h2>Nommage stable</h2>
+      <table class="framed">
+        <tr><th>Quoi</th><th>Règle</th><th>Impact si cassé</th></tr>
+        <tr><td>Classes / composants</td><td>Réutiliser, ne jamais renommer.</td><td>Casse le style partout où c'est utilisé.</td></tr>
+      </table>
+      <h2>Médias</h2>
+      <table class="framed">
+        <tr><th>Type</th><th>Règle</th></tr>
+        <tr><td>Images</td><td>&lt; 200 Ko · hero ~2500px · blog ~1200px · AVIF</td></tr>
+        <tr><td>OG image</td><td>1200×630</td></tr>
+      </table>
+      <h2>Modèle éditorial</h2>
+      <p>Titre → slug (court, sans accent/emoji), catégorie obligatoire, meta title/description, alt text.</p>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 5.2 ÉDITER WEBFLOW (flagship) -->
+    <article class="page" id="page-edit">
+      <div class="crumbs">Contenu &amp; édition <span style="opacity:.5">›</span> <b>Éditer (Webflow)</b></div>
+      <h1>Éditer le site — Webflow</h1>
+      <div class="page-meta"><span>Module plateforme : <b>Webflow</b></span><span>MAJ : <b>2026-07-28</b></span></div>
+      <p>Les <b>principes</b> sont agnostiques (page précédente) ; les gestes ci-dessous sont Webflow. Sur Shopify ou Astro+Sanity, seule cette page change.</p>
+      <div class="interdits"><div class="t">🚫 Les interdits</div>
+        <ul><li>Pas d'emoji / caractères spéciaux dans les <b>slugs</b>.</li><li>Ne pas toucher aux champs techniques / ID (Make, Memberstack).</li><li>Laisser un champ <b>vide</b> plutôt qu'un espace.</li></ul>
+      </div>
+      <h2>Publier un article — 3 étapes</h2>
+      <ol class="steps">
+        <li><b>Save as Draft</b> — sauvegarde sans publier.</li>
+        <li><b>Stage for Publish</b> — prêt pour la prochaine mise en ligne.</li>
+        <li><b>Publish</b> — ⚠️ publie <b>tout le site</b>.</li>
+      </ol>
+      <div class="adm warn"><div class="t">🟨 Avertissement</div><p>« Publish » pousse tout le site en prod. En cas de doute, reste sur <b>Stage for Publish</b> et préviens Coolbeans.</p></div>
+      <details><summary>📸 Voir le screenshot — panneau CMS</summary><div class="shot">[ capture Webflow CMS ]</div></details>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 5.3 BLOG -->
+    <article class="page" id="page-blog">
+      <div class="crumbs">Contenu &amp; édition <span style="opacity:.5">›</span> <b>Blog &amp; CMS</b></div>
+      <h1>Blog &amp; contenus dynamiques (CMS)</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <h2>Collections</h2>
+      <p>Articles publiés sur deux pages : <b>Actus</b> (B2C) et <b>Blog pro</b> (B2B). Un champ décide où.</p>
+      <h2>Routage Actus / Blog</h2>
+      <table class="framed">
+        <tr><th>Champ</th><th>Rôle</th></tr>
+        <tr><td>« Quel blog ? »</td><td>Décide la page de destination (Actus vs Blog pro).</td></tr>
+        <tr><td>Tags</td><td>Portent le même choix que l'article.</td></tr>
+      </table>
+      <div class="adm piege"><div class="t">🟪 Piège</div><p>Ne pas confondre « Quel blog ? » (destination) avec « Catégorie » (thème). Se tromper publie l'article sur la mauvaise page.</p></div>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 6.1 SEO -->
+    <article class="page" id="page-seo">
+      <div class="crumbs">SEO, Tracking &amp; RGPD <span style="opacity:.5">›</span> <b>SEO on-page</b></div>
+      <h1>SEO on-page</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <h2>Règles par page</h2>
+      <table class="framed">
+        <tr><th>Champ</th><th>Règle d'or</th><th>Impact</th></tr>
+        <tr><td>Meta Title</td><td>50–60 caractères, mot-clé présent</td><td>Clic depuis Google</td></tr>
+        <tr><td>Meta Description</td><td>~155 caractères</td><td>Taux de clic</td></tr>
+        <tr><td>Open Graph</td><td>Image 1200×630 + titre/desc</td><td>Rendu des partages</td></tr>
+      </table>
+      <h2>Structure</h2>
+      <p>Un seul <code>H1</code>, hiérarchie <code>H2/H3</code>, maillage interne, alt text sur les images.</p>
+      <h2>Vérifier après publication</h2>
+      <ul><li>Google Search Console (indexation)</li><li>Facebook Sharing Debugger (cache OG)</li></ul>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 6.2 TRACKING -->
+    <article class="page" id="page-tracking">
+      <div class="crumbs">SEO, Tracking &amp; RGPD <span style="opacity:.5">›</span> <b>Tracking / provenance</b></div>
+      <h1>Tracking &amp; provenance des leads</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <h2>L'URL = source de vérité</h2>
+      <p>Les paramètres <code>utm_*</code> présents dans l'URL sont pré-remplis en champs cachés et remontés dans HubSpot → on sait d'où vient chaque lead.</p>
+      <h2>Cookie hutk (attention)</h2>
+      <div class="adm piege"><div class="t">🟪 Piège</div><p>Le script de tracking HubSpot chargé est celui du portail <b>25692189</b> → le <code>hubspotutk</code> lui appartient. Les forms du flux BLINDTEST (147562037) reçoivent donc un <code>hutk</code> cross-portail ignoré. À aligner si on veut l'attribution parcours côté BLINDTEST.</p></div>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 6.3 RGPD -->
+    <article class="page" id="page-rgpd">
+      <div class="crumbs">SEO, Tracking &amp; RGPD <span style="opacity:.5">›</span> <b>RGPD &amp; cookies</b></div>
+      <h1>RGPD &amp; cookies</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <h2>Consentement</h2>
+      <p>Bandeau cookies au premier chargement. Les scripts de tracking ne s'activent qu'après consentement.</p>
+      <h2>Opt-in newsletter</h2>
+      <p>La popup <code>/modal</code> porte l'opt-in. Voir <span class="xlink"><a href="#" data-page="popup">Popup opt-in</a></span>.</p>
+      <h2>Rétention</h2>
+      <p>Durée de conservation des données : <span class="todo">(à compléter)</span>. Pages légales : Confidentialité · Cookies.</p>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 7.1 ACCÈS -->
+    <article class="page" id="page-acces">
+      <div class="crumbs">Accès, secrets &amp; sécu <span style="opacity:.5">›</span> <b>Comptes &amp; accès</b></div>
+      <h1>Comptes &amp; accès</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <h2>Qui accède à quoi</h2>
+      <table class="framed">
+        <tr><th>Outil</th><th>Propriétaire du compte</th><th>Accès Coolbeans</th></tr>
+        <tr><td>Webflow</td><td class="todo">(à compléter)</td><td>Designer</td></tr>
+        <tr><td>HubSpot ×2</td><td class="todo">(à compléter)</td><td>Admin</td></tr>
+        <tr><td>Make</td><td>Coolbeans</td><td>Owner</td></tr>
+        <tr><td>Cloudflare</td><td>Coolbeans</td><td>Owner</td></tr>
+        <tr><td>Resend</td><td>Coolbeans</td><td>Owner</td></tr>
+      </table>
+      <div class="adm note"><div class="t">🟦 Note</div><p>Cette doc elle-même est protégée par <b>Cloudflare Access</b> (mot de passe / email OTP).</p></div>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 7.2 SECRETS -->
+    <article class="page" id="page-secrets">
+      <div class="crumbs">Accès, secrets &amp; sécu <span style="opacity:.5">›</span> <b>Secrets &amp; posture</b></div>
+      <h1>Secrets &amp; posture de sécurité</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <div class="adm danger"><div class="t">🔴 Danger</div><p>Aucun secret (clé API, token, mot de passe) n'apparaît dans cette doc ni dans git. On documente <b>où</b> ils sont, jamais <b>quoi</b>.</p></div>
+      <h2>Où vivent les secrets</h2>
+      <table class="framed">
+        <tr><th>Secret</th><th>Emplacement</th></tr>
+        <tr><td>Clé webhook Make</td><td>1Password — coffre Coolbeans</td></tr>
+        <tr><td>Tokens HubSpot / Resend</td><td>Variables d'env / connexions Make</td></tr>
+      </table>
+      <h2>Rotation</h2>
+      <p>À faire si une clé fuite ou lors d'un changement de prestataire. Procédure : <span class="todo">(à compléter)</span>.</p>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 8.1 MAINTENANCE -->
+    <article class="page" id="page-maint">
+      <div class="crumbs">Exploitation &amp; mémoire <span style="opacity:.5">›</span> <b>Maintenance &amp; vigilance</b></div>
+      <h1>Maintenance &amp; vigilance</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <h2>Points de vigilance</h2>
+      <ul>
+        <li>Ne pas renommer une classe / un champ CMS technique.</li>
+        <li>Vérifier le routage HubSpot après tout ajout de formulaire.</li>
+        <li>Publier <b>staging d'abord</b>, toujours.</li>
+      </ul>
+      <h2>Rituel de mise à jour</h2>
+      <p><b>Staging → validation → prod + backup nommé.</b> Jamais de publication prod sans validation.</p>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 8.2 COLLAB -->
+    <article class="page" id="page-collab">
+      <div class="crumbs">Exploitation &amp; mémoire <span style="opacity:.5">›</span> <b>Collaboration &amp; support</b></div>
+      <h1>Collaboration &amp; support</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <h2>Inclus vs devis</h2>
+      <table class="framed">
+        <tr><th>Inclus (SAV)</th><th>Sur devis (évolutions)</th></tr>
+        <tr><td>Corrections de bugs, petites retouches</td><td>Nouvelles pages, features, intégrations</td></tr>
+      </table>
+      <p class="todo">(Périmètre exact + durée à compléter)</p>
+      <h2>Signaler un bug efficacement</h2>
+      <ol class="steps">
+        <li>Le <b>lien</b> de la page concernée.</li>
+        <li>L'<b>appareil</b> + le <b>navigateur</b>.</li>
+        <li>Une capture ou un <b>Loom</b> (vidéo courte).</li>
+      </ol>
+      <div class="adm tip"><div class="t">🟩 Astuce</div><p>Cherche d'abord dans cette doc : la réponse y est souvent (nav gauche ou prev/next).</p></div>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 8.3 JOURNAL -->
+    <article class="page" id="page-journal">
+      <div class="crumbs">Exploitation &amp; mémoire <span style="opacity:.5">›</span> <b>Journal &amp; log des bugs</b></div>
+      <h1>Journal &amp; log des bugs</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <h2>Journal de modifications <span style="font-weight:400;color:var(--mute);font-size:13px">(tenu par le client)</span></h2>
+      <table class="framed">
+        <tr><th>Date</th><th>Action</th><th>Impact</th><th>Backup ?</th></tr>
+        <tr><td>2026-07-24</td><td>MAJ visuels hero Home</td><td>Page</td><td>Oui</td></tr>
+        <tr><td class="todo">(date)</td><td class="todo">(action)</td><td class="todo">(page/global)</td><td class="todo">(oui/non)</td></tr>
+      </table>
+      <h2>Bugs corrigés</h2>
+      <table class="framed">
+        <tr><th>Bug</th><th>Cause racine</th><th>Correctif</th></tr>
+        <tr><td>Form team-building mauvais portail</td><td><code>data-portal</code> en dur dans la modale partagée</td><td>Unlink + <code>blindtest</code></td></tr>
+      </table>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 9.1 LIENS -->
+    <article class="page" id="page-liens">
+      <div class="crumbs">Ressources <span style="opacity:.5">›</span> <b>Liens &amp; accès outils</b></div>
+      <h1>Liens &amp; accès outils</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <table class="framed">
+        <tr><th>Ressource</th><th>Lien</th></tr>
+        <tr><td>Site prod</td><td><a href="https://www.amusoire.com" target="_blank" rel="noopener">amusoire.com ↗</a></td></tr>
+        <tr><td>Staging</td><td><a href="https://site-amusoire.webflow.io" target="_blank" rel="noopener">site-amusoire.webflow.io ↗</a></td></tr>
+        <tr><td>Repo simulateur</td><td class="todo">(à compléter)</td></tr>
+        <tr><td>Dashboard Make</td><td class="todo">(à compléter)</td></tr>
+        <tr><td>Doc Docsify simulateur (live cliente)</td><td><a href="https://amusoire.pages.dev/#/" target="_blank" rel="noopener">amusoire.pages.dev ↗</a></td></tr>
+      </table>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 9.2 DROITS -->
+    <article class="page" id="page-droits">
+      <div class="crumbs">Ressources <span style="opacity:.5">›</span> <b>Propriété &amp; droits</b></div>
+      <h1>Propriété &amp; droits</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <table class="framed">
+        <tr><th>Actif</th><th>Propriétaire</th></tr>
+        <tr><td>Nom de domaine</td><td class="todo">(à compléter)</td></tr>
+        <tr><td>Projet Webflow</td><td class="todo">(à compléter)</td></tr>
+        <tr><td>Code simulateur / scripts</td><td class="todo">(à compléter)</td></tr>
+        <tr><td>Design / maquettes</td><td class="todo">(à compléter)</td></tr>
+      </table>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+    <!-- 9.3 GLOSSAIRE -->
+    <article class="page" id="page-glossaire">
+      <div class="crumbs">Ressources <span style="opacity:.5">›</span> <b>Glossaire</b></div>
+      <h1>Glossaire</h1>
+      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <dl class="def">
+        <dt><code>account_target</code></dt><dd>Champ caché qui décide le portail HubSpot (amusoire / blindtest).</dd>
+        <dt><code>data-portal</code></dt><dd>Attribut du <code>&lt;form&gt;</code> Webflow qui alimente <code>account_target</code>.</dd>
+        <dt>typologie</dt><dd>Sous-critère de routage côté BLINDTEST (Entreprise / Particulier).</dd>
+        <dt><code>hutk</code></dt><dd>Cookie HubSpot (<code>hubspotutk</code>) liant un contact à son parcours. Ici lié au portail 25692189.</dd>
+        <dt>Catch-All</dt><dd>Formulaire HubSpot générique fourre-tout recevant les soumissions non dédiées.</dd>
+        <dt>Client-First</dt><dd>Convention de nommage des classes Webflow (Finsweet) qui rend le site maintenable.</dd>
+      </dl>
+      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+    </article>
+
+  </main>
+
+  <aside class="right"><div class="h">Sur cette page</div><nav id="toc"></nav></aside>
+</div>
+
+<script>
+document.getElementById('tgl').onclick=()=>document.documentElement.classList.toggle('dark');
+const pages={};document.querySelectorAll('.page').forEach(a=>pages[a.id.replace('page-','')]=a.id);
+const order=[...document.querySelectorAll('#nav a')].map(a=>({id:a.dataset.page,title:a.textContent.trim()}));
+
+function buildToc(){
+  const cur=document.querySelector('.page.on');const toc=document.getElementById('toc');toc.innerHTML='';
+  cur.querySelectorAll('h2').forEach((h,i)=>{
+    if(!h.id)h.id=cur.id+'-h'+i;
+    const a=document.createElement('a');a.textContent=h.textContent.replace(/^[^\wÀ-ÿ]+/,'').replace(/\(.*$/,'').trim();
+    a.href='#'+h.id;if(i===0)a.className='on';
+    a.onclick=e=>{e.preventDefault();h.scrollIntoView({behavior:'smooth'});toc.querySelectorAll('a').forEach(x=>x.classList.remove('on'));a.classList.add('on')};
+    toc.appendChild(a);
+  });
+}
+function renderFoot(article){
+  const id=article.id.replace('page-','');const idx=order.findIndex(o=>o.id===id);
+  const prev=order[idx-1],next=order[idx+1];const el=article.querySelector('.pagefoot');if(!el)return;
+  const upd=el.dataset.updated||'';
+  el.innerHTML=
+    '<div class="pf-meta"><a href="#">✎ Modifier cette page</a><span>Dernière mise à jour : '+upd+'</span></div>'+
+    '<div class="pf-nav">'+
+      (prev?'<a class="pf-card" href="#" data-page="'+prev.id+'"><span class="lab">← Précédent</span><span class="ttl">'+prev.title+'</span></a>':'<span class="pf-card empty"></span>')+
+      (next?'<a class="pf-card next" href="#" data-page="'+next.id+'"><span class="lab">Suivant →</span><span class="ttl">'+next.title+'</span></a>':'<span class="pf-card empty"></span>')+
+    '</div>';
+}
+function switchTo(p,clicked){
+  if(!p||!pages[p])return;
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  const art=document.getElementById(pages[p]);art.classList.add('on');
+  const navlinks=[...document.querySelectorAll('#nav a')];navlinks.forEach(x=>x.classList.remove('on'));
+  const active=(clicked&&clicked.closest&&clicked.closest('#nav'))?clicked:navlinks.find(x=>x.dataset.page===p);
+  if(active)active.classList.add('on');
+  renderFoot(art);window.scrollTo(0,0);buildToc();
+}
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-page]');if(!el)return;
+  e.preventDefault();switchTo(el.dataset.page,el);
+});
+addEventListener('scroll',()=>{
+  const cur=document.querySelector('.page.on');const hs=[...cur.querySelectorAll('h2')];
+  const links=[...document.querySelectorAll('#toc a')];let idx=0;
+  hs.forEach((h,i)=>{if(h.getBoundingClientRect().top<120)idx=i});
+  links.forEach((l,i)=>l.classList.toggle('on',i===idx));
+},{passive:true});
+renderFoot(document.querySelector('.page.on'));buildToc();
+</script>
+</body>
+</html>

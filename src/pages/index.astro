@@ -7,22 +7,61 @@ import Flow from "../components/Flow.astro";
 import { testimonials, initials } from "../data/testimonials";
 
 const clients = [
-  "amusoire", "uimm occitanie", "save me", "unlockbreath", "littlebox",
-  "tielle & popcorn", "promologis", "theodo", "trigger",
+  "amusoire",
+  "uimm occitanie",
+  "save me",
+  "unlockbreath",
+  "littlebox",
+  "tielle & popcorn",
+  "promologis",
+  "theodo",
+  "trigger",
 ];
 
 const cases = [
-  { span: "span-8", num: "№ 040", tag: "amusoire : homepage", title: "refonte du site d'un acteur parisien de l'entertain tech" },
-  { span: "span-4 tall", num: "№ 039", tag: "littlebox : produit", title: "boutique en ligne d'une marque lifestyle" },
-  { span: "span-6", num: "№ 038", tag: "unlockbreath : landing", title: "plateforme d'une startup santé & bien-être" },
-  { span: "span-6", num: "№ 037", tag: "tielle & popcorn : ciné-club", title: "site d'un ciné-club associatif" },
+  {
+    span: "span-8",
+    num: "№ 040",
+    tag: "amusoire : homepage",
+    title: "refonte du site d'un acteur parisien de l'entertain tech",
+  },
+  {
+    span: "span-4 tall",
+    num: "№ 039",
+    tag: "littlebox : produit",
+    title: "boutique en ligne d'une marque lifestyle",
+  },
+  {
+    span: "span-6",
+    num: "№ 038",
+    tag: "unlockbreath : landing",
+    title: "plateforme d'une startup santé & bien-être",
+  },
+  {
+    span: "span-6",
+    num: "№ 037",
+    tag: "tielle & popcorn : ciné-club",
+    title: "site d'un ciné-club associatif",
+  },
 ];
 
 const steps = [
-  { n: "01", title: "brief & cadrage", text: "formulaire + call 30-60 min. scope, deadline et budget posés." },
+  {
+    n: "01",
+    title: "brief & cadrage",
+    text: "formulaire + call 30-60 min. scope, deadline et budget posés.",
+  },
   { n: "02", title: "devis", text: "chiffré, daté, signé. paiement 30 % à l'acceptation." },
-  { n: "03", title: "développement", text: "v1 sous 5 j. v2 finale sous 3 j. validation par section." },
-  { n: "04", title: "livraison", text: "mise en prod, transfert, documentation et formation. 30 j de support inclus." },
+  {
+    n: "03",
+    title: "développement",
+    text: "v1 sous 5 j. v2 finale sous 3 j. validation par section.",
+  },
+  {
+    n: "04",
+    title: "livraison",
+    text: "mise en prod, transfert, documentation et formation. 30 j de support inclus.",
+  },
 ];
 
 const stats = [
@@ -42,14 +81,18 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   <!-- HERO centré + flux -->
   <section class="hero-center surface-brand">
     <div class="container-site hero-content">
-      <h1 aria-label="le studio web des agences créatives, directeur·rices artistiques, pme ou scale up, tpe ou solopreneur">
+      <h1
+        aria-label="le studio web des agences créatives, directeur·rices artistiques, pme ou scale up, tpe ou solopreneur"
+      >
         le studio web des<br />
-        <span class="tw" aria-hidden="true"><span id="tw-word" class="tw-word">agences créatives</span><span class="tw-caret"></span></span>
+        <span class="tw" aria-hidden="true"
+          ><span id="tw-word" class="tw-word">agences créatives</span></span
+        >
       </h1>
       <p class="lede">
-        studio solo, design et développement, à l'ère de l'IA. je conçois, je construis et
-        je maintiens des sites rapides et bien conçus, visibles par vos clients, par Google
-        et par les IA. un partenaire qui reste après la mise en ligne.
+        studio solo, design et développement, à l'ère de l'IA. je conçois, je construis et je
+        maintiens des sites rapides et bien conçus, visibles par vos clients, par Google et par les
+        IA. un partenaire qui reste après la mise en ligne.
       </p>
       <div class="ctas">
         <a class="btn" href="#vous-etes">discuter de votre projet</a>
@@ -79,34 +122,62 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
       <div class="sec-head"><h2>vous êtes…</h2></div>
       <div class="aud-bento">
         <article class="aud-card feature">
-          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="10" height="18"/><rect x="14" y="9" width="6" height="12"/><line x1="7" y1="7" x2="11" y2="7"/><line x1="7" y1="11" x2="11" y2="11"/><line x1="7" y1="15" x2="11" y2="15"/></svg>
-          <h5>agence</h5>
-          <p>vous concevez, j'exécute. sous votre marque, en marque blanche, livré fiable — comme une extension de votre équipe.</p>
+          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"
+            ><rect x="4" y="3" width="10" height="18"></rect><rect
+              x="14"
+              y="9"
+              width="6"
+              height="12"></rect><line x1="7" y1="7" x2="11" y2="7"></line><line
+              x1="7"
+              y1="11"
+              x2="11"
+              y2="11"></line><line x1="7" y1="15" x2="11" y2="15"></line></svg
+          >
+          <h5>agence créative</h5>
+          <p>
+            vous concevez, j'exécute. sous votre marque, en marque blanche, je suis comme une
+            extension de votre équipe.
+          </p>
           <a class="link" href="/about">en savoir plus →</a>
         </article>
         <article class="aud-card aud-b">
-          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"
+            ><path d="M12 20h9"></path><path
+              d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path></svg
+          >
           <h5>directeur·rice artistique</h5>
           <p>votre design livré exactement comme pensé, au pixel près.</p>
           <a class="link" href="/about">en savoir plus →</a>
         </article>
         <article class="aud-card aud-c">
-          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="21 12 21 7 16 7"/></svg>
+          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"
+            ><polyline points="3 17 9 11 13 15 21 7"></polyline><polyline points="21 12 21 7 16 7"
+            ></polyline></svg
+          >
           <h5>pme ou scale up</h5>
           <p>votre site est un canal d'acquisition. traitons-le comme tel.</p>
           <a class="link" href="/about">en savoir plus →</a>
         </article>
         <article class="aud-card aud-d">
-          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18l-1.4-5H4.4L3 9z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>
+          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"
+            ><path d="M3 9h18l-1.4-5H4.4L3 9z"></path><path d="M5 9v11h14V9"></path><path
+              d="M9 20v-6h6v6"></path></svg
+          >
           <h5>tpe ou solopreneur</h5>
           <p>votre présence en ligne pro, livrée vite, prix fixe, zéro souci.</p>
           <a class="link" href="/about">en savoir plus →</a>
         </article>
         <article class="aud-card ess">
-          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.5-9-9a4 4 0 0 1 9-2 4 4 0 0 1 9 2c-2 4.5-9 9-9 9z"/></svg>
+          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"
+            ><path d="M12 20s-7-4.5-9-9a4 4 0 0 1 9-2 4 4 0 0 1 9 2c-2 4.5-9 9-9 9z"></path></svg
+          >
           <div class="ess-txt">
             <h5>coopérative, association, intérêt général ?</h5>
-            <p>je mets mes compétences au service de l'économie sociale et solidaire : offres et tarifs adaptés pour les coopératives, les associations et les structures reconnues d'intérêt général. la qualité d'un studio, pensée pour vos moyens.</p>
+            <p>
+              je mets mes compétences au service de l'économie sociale et solidaire : offres et
+              tarifs adaptés pour les coopératives, les associations et les structures reconnues
+              d'intérêt général. la qualité d'un studio, pensée pour vos moyens.
+            </p>
           </div>
           <a class="link" href="#">l'accompagnement ess →</a>
         </article>
@@ -131,7 +202,9 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
               </div>
               <div class="case-meta">
                 <h4>{c.title}</h4>
-                <a class="link sm" href="#">lire l'étude →</a>
+                <a class="link sm" href="#">
+                  lire l'étude →
+                </a>
               </div>
             </article>
           ))
@@ -183,7 +256,11 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
                 <h5>{s.title}</h5>
                 <p>{s.text}</p>
               </div>
-              {i < steps.length - 1 && <div class="step-arrow" aria-hidden="true">→</div>}
+              {i < steps.length - 1 && (
+                <div class="step-arrow" aria-hidden="true">
+                  →
+                </div>
+              )}
             </>
           ))
         }
@@ -197,13 +274,19 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
       <div class="sec-head stats-head">
         <span class="label">chiffres · depuis 2022</span>
         <h2>les preuves chiffrées.</h2>
-        <p class="sec-lede">depuis 2022, j'accompagne agences, créatifs et entreprises sur leurs projets web : de la landing one-shot à l'application sur-mesure.</p>
+        <p class="sec-lede">
+          depuis 2022, j'accompagne agences, créatifs et entreprises sur leurs projets web : de la
+          landing one-shot à l'application sur-mesure.
+        </p>
       </div>
       <div class="stats">
         {
           stats.map((s) => (
             <div class="stat">
-              <div class="n">{s.n}<small>{s.small}</small></div>
+              <div class="n">
+                {s.n}
+                <small>{s.small}</small>
+              </div>
               <div class="k">{s.k}</div>
               <div class="h">{s.h}</div>
             </div>
@@ -218,7 +301,12 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
     <div class="container-site about-grid">
       <div class="about-txt">
         <h3>je m'appelle ludo,<br />j'ai créé coolbeans.</h3>
-        <p>développeur web freelance à sète, avec plus de 10 ans en agence et en indépendant : direction de projet, design, développement. je conçois autant que je code, et j'ai assez roulé ma bosse côté business pour savoir qu'un site doit d'abord servir vos objectifs avant de faire joli.</p>
+        <p>
+          développeur web freelance à sète, avec plus de 10 ans en agence et en indépendant :
+          direction de projet, design, développement. je conçois autant que je code, et j'ai assez
+          roulé ma bosse côté business pour savoir qu'un site doit d'abord servir vos objectifs
+          avant de faire joli.
+        </p>
         <a class="link" href="/about">lire la version longue →</a>
       </div>
       <figure class="about-photo">
@@ -238,39 +326,78 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
 
   <script>
     import gsap from "gsap";
-    import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 
-    gsap.registerPlugin(ScrambleTextPlugin);
-
-    const el = document.getElementById("tw-word");
+    const word = document.getElementById("tw-word");
+    const box = word?.parentElement; // .tw : conteneur dont on anime la largeur
     const words = [
       "agences créatives",
       "directeur·rices artistiques",
       "pme ou scale up",
       "tpe ou solopreneur",
     ];
-    const chars = "abcdefghijklmnopqrstuvwxyz{}[]<>/*_-#$%&+=";
 
-    if (el && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    // Mesure la largeur rendue de chaque mot dans un clone hors flux,
+    // pour animer .tw sans faire sauter le centrage de la ligne.
+    const measure = () => {
+      if (!word || !box) return [];
+      const probe = word.cloneNode(true) as HTMLElement;
+      probe.style.position = "absolute";
+      probe.style.visibility = "hidden";
+      probe.style.whiteSpace = "nowrap";
+      box.appendChild(probe);
+      const w = words.map((t) => {
+        probe.textContent = t;
+        return probe.getBoundingClientRect().width;
+      });
+      probe.remove();
+      return w;
+    };
+
+    if (word && box && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      let widths = measure();
       let i = 0;
-      const next = () => {
-        i = (i + 1) % words.length;
-        gsap.to(el, {
-          duration: 1.1,
-          ease: "none",
-          scrambleText: {
-            text: words[i],
-            chars,
-            speed: 0.55,
-            revealDelay: 0.28,
-            // saute directement à la longueur cible : la largeur ne tremble pas
-            // caractère par caractère pendant le décodage
-            tweenLength: false,
-          },
-          onComplete: () => gsap.delayedCall(2.1, next),
+
+      // Fige la largeur de départ pour que le premier cycle ne tressaute pas.
+      gsap.set(box, { width: widths[0] });
+
+      // La police de fallback fausse la mesure ; on recalcule quand la vraie est prête.
+      document.fonts?.ready.then(() => {
+        widths = measure();
+        gsap.set(box, { width: widths[i] });
+      });
+
+      // clamp() rend la taille de police dépendante du viewport → re-mesure au resize.
+      let rAF = 0;
+      window.addEventListener("resize", () => {
+        cancelAnimationFrame(rAF);
+        rAF = requestAnimationFrame(() => {
+          widths = measure();
+          gsap.set(box, { width: widths[i] });
         });
+      });
+
+      const next = () => {
+        const j = (i + 1) % words.length;
+        gsap
+          .timeline({ onComplete: () => gsap.delayedCall(2.4, next) })
+          // le mot courant s'échappe vers le haut
+          .to(word, { yPercent: -40, opacity: 0, duration: 0.28, ease: "power2.in" })
+          // swap texte + largeur pendant que le mot est invisible
+          .add(() => {
+            i = j;
+            word.textContent = words[i];
+          })
+          .to(box, { width: widths[j], duration: 0.42, ease: "power2.out" }, "<")
+          // le nouveau mot entre par le bas
+          .fromTo(
+            word,
+            { yPercent: 40, opacity: 0 },
+            { yPercent: 0, opacity: 1, duration: 0.42, ease: "power2.out" },
+            "<"
+          );
       };
-      gsap.delayedCall(2.1, next);
+
+      gsap.delayedCall(2.4, next);
     }
   </script>
 </BaseLayout>
@@ -315,27 +442,15 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
     text-wrap: balance;
   }
   .tw {
-    display: inline-flex;
-    align-items: baseline;
-    justify-content: center;
+    display: inline-block;
+    vertical-align: top;
     line-height: 1.02;
-  }
-  .tw-word {
     white-space: nowrap;
   }
-  .tw-caret {
+  .tw-word {
     display: inline-block;
-    width: 0.05em;
-    min-width: 3px;
-    height: 1em;
-    background: var(--ink);
-    margin-left: 0.1em;
-    transform: translateY(0.12em);
-    animation: tw-blink 1.05s steps(1, end) infinite;
-  }
-  @keyframes tw-blink {
-    0%, 50% { opacity: 1; }
-    50.01%, 100% { opacity: 0; }
+    white-space: nowrap;
+    will-change: transform, opacity;
   }
   .hero-center .lede {
     margin: 26px auto 0;
@@ -393,8 +508,12 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
     text-transform: lowercase;
   }
   @keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
   .proof:hover .proof-track {
     animation-play-state: paused;
@@ -413,11 +532,18 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   }
   .aud-card {
     position: relative;
-    border: 1px solid var(--line);
-    background: var(--surface);
+    border: 1px solid var(--card-frame);
+    background-color: var(--surface-raise);
+    background-image: url("/img/bg-texture.png");
+    background-repeat: repeat;
+    background-size: 158px 146px;
     padding: 26px;
     display: flex;
     flex-direction: column;
+  }
+  /* le grain reste un signal clair uniquement (comme .surface-brand) */
+  :global(.dark) .aud-card {
+    background-image: none;
   }
   .aud-ic {
     width: 38px;
@@ -454,7 +580,9 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   }
   .aud-card.feature {
     grid-area: a;
-    background: var(--ink);
+    background-color: var(--ink);
+    background-image: none;
+    border-color: var(--ink);
     color: var(--surface);
   }
   .aud-card.feature .aud-ic {
@@ -477,12 +605,17 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
     color: var(--surface);
     border-bottom-color: var(--surface);
   }
-  .aud-b { grid-area: b; }
-  .aud-c { grid-area: c; }
-  .aud-d { grid-area: d; }
+  .aud-b {
+    grid-area: b;
+  }
+  .aud-c {
+    grid-area: c;
+  }
+  .aud-d {
+    grid-area: d;
+  }
   .aud-card.ess {
     grid-area: e;
-    background: var(--surface-raise);
     flex-direction: row;
     align-items: center;
     gap: 26px;
@@ -570,9 +703,15 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
     margin-top: 12px;
     display: inline-block;
   }
-  .case-card.span-8 { grid-column: span 8; }
-  .case-card.span-6 { grid-column: span 6; }
-  .case-card.span-4 { grid-column: span 4; }
+  .case-card.span-8 {
+    grid-column: span 8;
+  }
+  .case-card.span-6 {
+    grid-column: span 6;
+  }
+  .case-card.span-4 {
+    grid-column: span 4;
+  }
 
   /* TÉMOIGNAGES mur */
   .tw-head {
@@ -904,9 +1043,6 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .tw-caret {
-      animation: none;
-    }
     .proof-track {
       animation: none;
     }

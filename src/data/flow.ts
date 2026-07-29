@@ -34,7 +34,6 @@ export const flowBoxes: FlowBox[] = [
     top: 133,
     icons: [
       { src: "/img/logos/astro-icon.svg", tip: "astro" },
-      { src: "/img/logos/gsap-icon.svg", tip: "gsap" },
       { src: "/img/logos/visual-studio-code.svg", tip: "vs code" },
       { src: "/img/logos/github-icon.svg", tip: "github" },
       { src: "/img/logos/claude.svg", tip: "claude code" },

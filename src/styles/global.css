@@ -50,11 +50,12 @@
    -------------------------------------------------------------------------- */
 :root {
   /* surfaces */
-  --surface: #fbfaf7; /* off-white chaud · surface de contenu (sans texture) */
+  --surface: #ffffff; /* blanc pur · surface de contenu (sans texture) — les moments de marque gardent --surface-marque */
   --surface-marque: #f7f3ef; /* cream neutre · moments de marque : hero, footer (avec grain) */
-  --surface-raise: #f1f1f2; /* gris "paper" · encarts, chips, blocs secondaires */
+  --surface-raise: #f2efe8; /* crème "paper" · encarts, chips, blocs secondaires (chaud, aligné sur --surface-marque) */
   --line: rgba(20, 17, 12, 0.12); /* filet fin · bordures, séparateurs */
   --line-2: rgba(20, 17, 12, 0.18); /* filet appuyé */
+  --card-frame: rgba(20, 17, 12, 0.3); /* cadre de carte "papier" · filet encre présent (look Folk) */
   --tint: rgba(20, 17, 12, 0.06); /* voile · hover de ligne */
   --tint-2: rgba(20, 17, 12, 0.04); /* voile · hachures placeholders d'image */
 
@@ -104,6 +105,7 @@
   --surface-raise: rgba(255, 255, 255, 0.05);
   --line: rgba(244, 242, 236, 0.14);
   --line-2: rgba(244, 242, 236, 0.22);
+  --card-frame: rgba(244, 242, 236, 0.26); /* cadre de carte · version sombre */
   --tint: rgba(255, 255, 255, 0.08);
   --tint-2: rgba(255, 255, 255, 0.05);
   --ink: #f4f2ec;
@@ -159,6 +161,12 @@
   html {
     background: var(--surface);
     -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
   body {
     background: var(--surface);

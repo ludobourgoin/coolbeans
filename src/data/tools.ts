@@ -11,8 +11,12 @@ export interface Tool {
   logo: string;
 }
 
+/** Segment de la boîte à outils : le logiciel d'un côté, le matériel de l'autre. */
+export type ToolGroup = "software" | "hardware";
+
 export interface ToolCategory {
   id: string;
+  group: ToolGroup;
   title: string;
   cards: Tool[];
 }
@@ -21,6 +25,7 @@ export interface ToolCategory {
 export const toolCategories: ToolCategory[] = [
   {
     "id": "dev",
+    "group": "software",
     "title": "développement",
     "cards": [
       {
@@ -107,6 +112,7 @@ export const toolCategories: ToolCategory[] = [
   },
   {
     "id": "cms",
+    "group": "software",
     "title": "cms et no-code",
     "cards": [
       {
@@ -163,6 +169,7 @@ export const toolCategories: ToolCategory[] = [
   },
   {
     "id": "automation",
+    "group": "software",
     "title": "automatisation",
     "cards": [
       {
@@ -200,6 +207,7 @@ export const toolCategories: ToolCategory[] = [
   },
   {
     "id": "hosting",
+    "group": "software",
     "title": "hébergement & déploiement",
     "cards": [
       {
@@ -248,6 +256,7 @@ export const toolCategories: ToolCategory[] = [
   },
   {
     "id": "design",
+    "group": "software",
     "title": "design",
     "cards": [
       {
@@ -285,6 +294,7 @@ export const toolCategories: ToolCategory[] = [
   },
   {
     "id": "analytics",
+    "group": "software",
     "title": "analyse & seo",
     "cards": [
       {
@@ -339,6 +349,7 @@ export const toolCategories: ToolCategory[] = [
   },
   {
     "id": "email",
+    "group": "software",
     "title": "email & crm",
     "cards": [
       {
@@ -394,6 +405,7 @@ export const toolCategories: ToolCategory[] = [
   },
   {
     "id": "payments",
+    "group": "software",
     "title": "paiements & facturation",
     "cards": [
       {
@@ -430,6 +442,7 @@ export const toolCategories: ToolCategory[] = [
   },
   {
     "id": "productivity",
+    "group": "software",
     "title": "productivité et communication",
     "cards": [
       {
@@ -478,7 +491,7 @@ export const toolCategories: ToolCategory[] = [
           "markdown"
         ],
         "href": "https://obsidian.md",
-        "logo": "/img/tools/obsidian.png"
+        "logo": "/img/tools/obsidian.svg"
       },
       {
         "name": "cleanshot pro",
@@ -514,6 +527,7 @@ export const toolCategories: ToolCategory[] = [
   },
   {
     "id": "workstation",
+    "group": "hardware",
     "title": "poste de travail",
     "cards": [
       {
@@ -569,6 +583,7 @@ export const toolCategories: ToolCategory[] = [
   },
   {
     "id": "audio",
+    "group": "hardware",
     "title": "audio & vidéo",
     "cards": [
       {
