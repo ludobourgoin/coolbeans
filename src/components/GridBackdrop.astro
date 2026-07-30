@@ -1,12 +1,15 @@
 ---
+import { getGridId } from '../utils/gridIdCounter.js';
+
 /* Grille pointillée décorative des hero. Le SVG utilise currentColor,
    donc la couleur suit le token via `color` — pas de valeur figée. */
 interface Props {
   size?: number;
   class?: string;
 }
+
 const { size = 64, class: className = "" } = Astro.props;
-const id = `grid-${Math.random().toString(36).slice(2, 8)}`;
+const id = getGridId();
 ---
 
 <div
