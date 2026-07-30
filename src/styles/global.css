@@ -1,35 +1,33 @@
 /* ============================================================================
-   COOLBEANS — Design System (source de vérité unique)
-   Astro + Tailwind v4 (CSS-first). Importer une seule fois dans le layout racine :
+   COOLBEANS — Design system (source de vérité unique)
+   Couche sémantique posée sur la fondation Geist. Astro + Tailwind v4.
+   Importer une seule fois dans le layout racine :
        import "../styles/global.css";
-
-   Dérivé des pages livrées home / about / tools. Les valeurs ci-dessous sont
-   celles réellement rendues à l'écran (l'ancienne pile inline + folk-skin +
-   system-2026 est ici aplatie en UNE couche propre, sans !important).
-
-   Dark mode : piloté par la classe .dark sur <html> (comme le toggle du site).
-   Accent alternatif électrique : opt-in via [data-accent="electric"].
+   Signature : Geomanist tient les h1/h2, Geist prend tout le reste.
+   Dark mode : classe .dark sur <html>.
    ========================================================================== */
 
 @import "tailwindcss";
+@import "./geist-tokens.css";
 
-/* dark mode par classe (et non media-query) — colle au switch existant */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ----------------------------------------------------------------------------
-   POLICES — Geomanist (Book = corps, Geomanist = titres)
-   Fichiers dans /public/fonts/ (servis à la racine par Astro).
+   POLICES
+   Geist Sans/Mono : variables, extraites de geist@1.7.2, self-hébergées.
+   Geomanist : bold et black seulement — le corps et h3-h5 passent à Geist,
+   donc geomanist-book et geomanist-medium ne sont plus chargés.
    -------------------------------------------------------------------------- */
 @font-face {
-  font-family: "Geomanist Book";
-  src: url("/fonts/geomanist-book-webfont.woff2") format("woff2");
-  font-weight: 400 500;
+  font-family: "Geist Sans";
+  src: url("/fonts/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
   font-display: swap;
 }
 @font-face {
-  font-family: "Geomanist";
-  src: url("/fonts/geomanist-medium-webfont.woff2") format("woff2");
-  font-weight: 600;
+  font-family: "Geist Mono";
+  src: url("/fonts/GeistMono-Variable.woff2") format("woff2");
+  font-weight: 100 900;
   font-display: swap;
 }
 @font-face {
@@ -46,116 +44,111 @@
 }
 
 /* ----------------------------------------------------------------------------
-   TOKENS — clair (défaut)
+   COUCHE SÉMANTIQUE
+   Les --ds-* basculent seuls avec .dark : presque rien à redéclarer en sombre.
+   Attention au sens du retrait : en clair la section alternée est plus CLAIRE
+   que le contenu, en sombre elle est plus NOIRE. C'est la logique de Geist.
    -------------------------------------------------------------------------- */
 :root {
-  /* surfaces */
-  --surface: #ffffff; /* blanc pur · surface de contenu (sans texture) — les moments de marque gardent --surface-marque */
-  --surface-marque: #f7f3ef; /* cream neutre · moments de marque : hero, footer (avec grain) */
-  --surface-raise: #f2efe8; /* crème "paper" · encarts, chips, blocs secondaires (chaud, aligné sur --surface-marque) */
-  --line: rgba(20, 17, 12, 0.12); /* filet fin · bordures, séparateurs */
-  --line-2: rgba(20, 17, 12, 0.18); /* filet appuyé */
-  --card-frame: rgba(20, 17, 12, 0.3); /* cadre de carte "papier" · filet encre présent (look Folk) */
-  --tint: rgba(20, 17, 12, 0.06); /* voile · hover de ligne */
-  --tint-2: rgba(20, 17, 12, 0.04); /* voile · hachures placeholders d'image */
+  --surface: var(--ds-background-100);
+  --surface-subtle: var(--ds-background-200);
+  --surface-raise: var(--ds-gray-100);
 
-  /* texte */
-  --ink: #111010; /* texte principal */
-  --mute: #5e5c55; /* texte secondaire · AA sur cream ET blanc (≥6:1) */
+  --line: var(--ds-gray-400);
+  --line-strong: var(--ds-gray-500);
 
-  /* accent = ENCRE (design mono, pas de couleur) · CTA + liens + états actifs */
-  --accent: #111010;
-  --accent-strong: #000000; /* hover / actif appuyé */
-  --accent-ink: #ffffff; /* texte sur aplat accent */
-  --accent-focus: rgba(17, 16, 16, 0.26);
+  --ink: var(--ds-gray-1000);
+  --mute: var(--ds-gray-900);
 
-  /* rayons — un seul langage : contrôles arrondis (6px), cartes+champs nets (0) */
+  --accent: var(--ds-gray-1000);
+  --accent-ink: var(--ds-background-100);
+  --accent-hover: hsl(0 0% 22%);
+  --focus: var(--ds-focus-color);
+
+  /* états — seule couleur du système, réservée au fonctionnel.
+     Jamais en fond de section, jamais en CTA. */
+  --info: var(--ds-blue-700);
+  --success: var(--ds-green-800);
+  --warning: var(--ds-amber-800);
+  --error: var(--ds-red-800);
+
   --radius-control: 6px;
+  --radius-card: 8px;
 
-  /* layout */
-  --container: 1280px; /* = max-w-7xl */
-  --gutter: 56px;
+  --space-2x: 8px;
+  --space-3x: 12px;
+  --space-4x: 16px;
+  --space-6x: 24px;
+  --space-8x: 32px;
+  --space-10x: 40px;
+  --space-16x: 64px;
+  --space-24x: 96px;
+  --space-32x: 128px;
 
-  /* motion */
+  --container: 1280px;
+  --gutter: 24px;
+
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --dur: 0.18s;
+  --dur: 0.15s;
 }
 
-/* accent alternatif : bleu électrique (opt-in) */
-[data-accent="electric"] {
-  --accent: #2e4cdb;
-  --accent-strong: #2038b8;
-  --accent-ink: #ffffff;
-  --accent-focus: rgba(46, 76, 219, 0.34);
+/* le primaire s'éclaircit en clair, s'assombrit en sombre :
+   dans les deux cas il se rapproche du fond au lieu de basculer dedans. */
+.dark {
+  --accent-hover: hsl(0 0% 80%);
 }
 
-/* gouttière resserrée sur petits écrans */
 @media (max-width: 1100px) {
   :root {
-    --gutter: 24px;
+    --gutter: 16px;
   }
 }
 
 /* ----------------------------------------------------------------------------
-   TOKENS — sombre
-   -------------------------------------------------------------------------- */
-.dark {
-  --surface: #0c0a07; /* surface de lecture, la plus profonde */
-  --surface-marque: #16130c; /* relevée, chaude · moment de marque */
-  --surface-raise: rgba(255, 255, 255, 0.05);
-  --line: rgba(244, 242, 236, 0.14);
-  --line-2: rgba(244, 242, 236, 0.22);
-  --card-frame: rgba(244, 242, 236, 0.26); /* cadre de carte · version sombre */
-  --tint: rgba(255, 255, 255, 0.08);
-  --tint-2: rgba(255, 255, 255, 0.05);
-  --ink: #f4f2ec;
-  --mute: #a8a29a; /* AA sur les deux surfaces sombres */
-  --accent: #f4f2ec;
-  --accent-strong: #ffffff;
-  --accent-ink: #1b1207;
-  --accent-focus: rgba(244, 242, 236, 0.3);
-}
-.dark[data-accent="electric"] {
-  --accent: #7e95ff;
-  --accent-strong: #9aacff;
-  --accent-ink: #0a0f2b;
-  --accent-focus: rgba(126, 149, 255, 0.42);
-}
-
-/* ----------------------------------------------------------------------------
    EXPOSITION AUX UTILITAIRES TAILWIND
-   `inline` = Tailwind référence la variable (et non sa valeur figée),
-   donc bg-surface / text-ink / border-line basculent seuls en dark.
-   Utilisables : bg-surface, bg-surface-marque, bg-surface-raise, text-ink,
-   text-mute, border-line, bg-accent, text-accent, font-sans, font-display,
-   font-mono, rounded-control, max-w-site, ease-brand.
+   `inline` = Tailwind référence la variable, pas sa valeur figée.
    -------------------------------------------------------------------------- */
 @theme inline {
   --color-surface: var(--surface);
-  --color-surface-marque: var(--surface-marque);
+  --color-surface-subtle: var(--surface-subtle);
   --color-surface-raise: var(--surface-raise);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-ink: var(--ink);
   --color-mute: var(--mute);
   --color-accent: var(--accent);
-  --color-accent-strong: var(--accent-strong);
   --color-accent-ink: var(--accent-ink);
+  --color-info: var(--info);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
 
-  /* vignette toujours claire, même en dark : les favicons sont des marques encre
-     sur fond transparent, invisibles sur une surface sombre. Ne suit pas --surface. */
+  /* vignette toujours claire : les favicons des logos partenaires sont des
+     marques encre sur fond transparent, invisibles sur surface sombre. */
   --color-tile: #fbfaf7;
 
-  --font-sans: "Geomanist Book", "Geomanist", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: "Geomanist", "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, "JetBrains Mono", Menlo, monospace;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --radius-control: 6px;
+  --radius-card: 8px;
   --max-width-site: 1280px;
   --ease-brand: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  --spacing-2x: 8px;
+  --spacing-3x: 12px;
+  --spacing-4x: 16px;
+  --spacing-6x: 24px;
+  --spacing-8x: 32px;
+  --spacing-10x: 40px;
+  --spacing-16x: 64px;
+  --spacing-24x: 96px;
+  --spacing-32x: 128px;
 }
 
 /* ----------------------------------------------------------------------------
-   BASE — éléments bruts
+   BASE
    -------------------------------------------------------------------------- */
 @layer base {
   html {
@@ -172,44 +165,45 @@
     background: var(--surface);
     color: var(--ink);
     font-family: var(--font-sans);
-    font-weight: 500;
-    font-size: 17px;
+    font-weight: 400;
+    font-size: 16px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
-  /* titres : Geomanist. Display (h1/h2) en 700 ; titres de carte (h3/h4/h5) en 600. */
+  /* la signature : Geomanist sur h1/h2, Geist sur le reste */
   h1,
-  h2,
-  h3,
-  h4,
-  h5 {
+  h2 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    letter-spacing: -0.03em;
     line-height: 1.05;
     text-wrap: balance;
   }
+  h3,
+  h4,
+  h5 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
   h1 {
-    font-weight: 700;
-    font-size: clamp(40px, 4.6vw, 64px);
-    letter-spacing: -0.03em;
+    font-size: clamp(44px, 5vw, 72px);
   }
   h2 {
-    font-weight: 700;
     font-size: clamp(28px, 3.2vw, 44px);
-    letter-spacing: -0.03em;
   }
   h3 {
-    font-weight: 600;
     font-size: clamp(20px, 2vw, 26px);
   }
   h4 {
-    font-weight: 600;
     font-size: 19px;
   }
   h5 {
-    font-weight: 600;
+    font-size: 16px;
   }
 
   a {
@@ -233,25 +227,47 @@
     color: var(--surface);
   }
 
-  /* focus visible : anneau accent (remplace le focus bleu navigateur) */
   a:focus-visible,
   button:focus-visible,
   input:focus-visible,
   textarea:focus-visible,
   select:focus-visible,
   [tabindex]:focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--focus);
     outline-offset: 2px;
     border-radius: var(--radius-control);
   }
 }
 
 /* ----------------------------------------------------------------------------
-   COMPONENTS — primitives partagées (reproduisent home / about / tools)
-   Réutilisables telles quelles, ou à recopier dans des composants Astro.
+   MATERIALS — l'élévation Geist.
+   Pas du verre dépoli : aucun backdrop-filter. Une pile d'ombres dont un
+   anneau de 1px qui remplace la bordure.
    -------------------------------------------------------------------------- */
 @layer components {
-  /* conteneur de page fluide (rythme --pad-x du site) */
+  .material-base {
+    box-shadow: var(--ds-shadow-border-base);
+  }
+  .material-small {
+    box-shadow: var(--ds-shadow-border-small);
+  }
+  .material-medium {
+    box-shadow: var(--ds-shadow-border-medium);
+  }
+  .material-large {
+    box-shadow: var(--ds-shadow-border-large);
+  }
+  .material-tooltip {
+    box-shadow: var(--ds-shadow-tooltip);
+  }
+  .material-menu {
+    box-shadow: var(--ds-shadow-menu);
+  }
+  .material-modal {
+    box-shadow: var(--ds-shadow-modal);
+  }
+
+  /* conteneur de page */
   .container-site {
     width: 100%;
     max-width: var(--container);
@@ -259,91 +275,114 @@
     padding-inline: var(--gutter);
   }
 
-  /* surface de marque : cream + grain (hero, footer, bandes de marque) */
-  .surface-brand {
-    background-color: var(--surface-marque);
-    background-image: url("/img/bg-texture.png");
-    background-repeat: repeat;
-    background-size: 158px 146px;
-  }
-  .dark .surface-brand {
-    background-image: none;
-  } /* le grain reste un signal clair uniquement */
-
-  /* lien inline souligné */
-  .link {
-    color: var(--accent);
-    border-bottom: 1px solid var(--accent);
-    transition:
-      color var(--dur) var(--ease),
-      border-color var(--dur) var(--ease);
-  }
-  .link:hover {
-    color: var(--accent-strong);
-    border-color: var(--accent-strong);
-  }
-
-  /* bouton principal (aplat accent, coins 6px, hover inversé) */
+  /* ── BOUTON — spec Geist stricte (vercel.com/geist/button) ──────────────
+     · la bordure est un box-shadow 1px, pas un border : elle ne participe
+       pas au calcul de taille
+     · transition 150ms ease-in-out, coupée au focus
+     · aucun transform au survol ni au clic
+     ------------------------------------------------------------------- */
   .btn {
+    --btn-bg: var(--accent);
+    --btn-fg: var(--accent-ink);
+    --btn-ring: transparent;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5em;
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 16px;
+    font-family: var(--font-sans);
+    font-weight: 500;
     line-height: 1;
-    padding: 14px 26px;
-    background: var(--accent);
-    color: var(--accent-ink);
-    border: 1px solid var(--accent);
+    height: 36px;
+    padding-inline: 10px;
+    font-size: 14px;
+    border: 0;
     border-radius: var(--radius-control);
     cursor: pointer;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    box-shadow: 0 0 0 1px var(--btn-ring);
     transition:
-      background var(--dur) var(--ease),
-      color var(--dur) var(--ease),
-      border-color var(--dur) var(--ease);
+      background 150ms ease-in-out,
+      color 150ms ease-in-out,
+      box-shadow 150ms ease-in-out;
   }
   .btn:hover {
-    background: transparent;
-    color: var(--accent);
-  }
-  .btn-sm {
-    padding: 10px 18px;
-    font-size: 14px;
+    --btn-bg: var(--accent-hover);
+    --btn-ring: var(--accent-hover);
   }
 
-  /* bouton fantôme (contour encre) */
+  .btn-outline {
+    --btn-bg: var(--surface);
+    --btn-fg: var(--ink);
+    --btn-ring: var(--ds-gray-400);
+  }
+  .btn-outline:hover {
+    --btn-bg: var(--ds-gray-100);
+    --btn-ring: var(--ds-gray-200);
+  }
+  .dark .btn-outline:hover {
+    --btn-bg: var(--ds-gray-200);
+  }
+
   .btn-ghost {
-    background: transparent;
-    color: var(--ink);
-    border-color: var(--ink);
+    --btn-bg: transparent;
+    --btn-fg: var(--ink);
+    --btn-ring: transparent;
   }
   .btn-ghost:hover {
-    background: var(--ink);
-    color: var(--surface);
+    --btn-bg: var(--ds-gray-alpha-200);
+    --btn-ring: var(--ds-gray-alpha-200);
   }
 
-  /* carte (coins nets) */
+  .btn-sm {
+    height: 32px;
+    padding-inline: 6px;
+    font-size: 14px;
+    border-radius: 6px;
+  }
+  .btn-lg {
+    height: 40px;
+    padding-inline: 14px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+
+  .btn:disabled {
+    --btn-bg: var(--ds-gray-100);
+    --btn-fg: var(--ds-gray-700);
+    --btn-ring: var(--ds-gray-400);
+    cursor: not-allowed;
+  }
+
+  .btn:focus-visible {
+    outline: none;
+    transition: none;
+    box-shadow:
+      0 0 0 1px var(--btn-ring),
+      0 0 0 2px var(--surface),
+      0 0 0 4px var(--focus);
+  }
+
   .card {
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 0;
-    padding: 26px;
+    border-radius: var(--radius-card);
+    padding: var(--space-6x);
   }
 
-  /* champ de formulaire (coins nets, halo accent au focus) */
   .field {
     width: 100%;
+    height: 40px;
     background: var(--surface);
     color: var(--ink);
-    border: 1px solid var(--line);
-    border-radius: 0;
-    padding: 12px 14px;
+    border: 1px solid var(--ds-gray-400);
+    border-radius: var(--radius-control);
+    padding-inline: 14px;
     font: inherit;
+    font-size: 15px;
     transition:
-      border-color var(--dur) var(--ease),
-      box-shadow var(--dur) var(--ease);
+      border-color 150ms ease-in-out,
+      box-shadow 150ms ease-in-out;
   }
   .field::placeholder {
     color: var(--mute);
@@ -351,10 +390,20 @@
   .field:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-focus);
+    box-shadow:
+      0 0 0 2px var(--surface),
+      0 0 0 4px var(--focus);
   }
 
-  /* micro-label mono (surtitres, eyebrows) */
+  .link {
+    color: var(--accent);
+    border-bottom: 1px solid var(--line-strong);
+    transition: border-color 150ms ease-in-out;
+  }
+  .link:hover {
+    border-color: var(--accent);
+  }
+
   .label {
     font-family: var(--font-mono);
     font-size: 11px;
