@@ -1,0 +1,30 @@
+---
+interface Props {
+  name: string;
+  placeholder?: string;
+}
+const { name, placeholder = "" } = Astro.props;
+---
+
+<div class="relative flex items-center">
+  <input class="field peer pr-10" name={name} placeholder={placeholder} />
+  <button
+    type="button"
+    aria-label="Effacer"
+    class="absolute right-1.5 hidden size-6 items-center justify-center rounded-full text-mute transition-colors duration-150 ease-in-out peer-not-placeholder-shown:flex hover:bg-[var(--ds-gray-alpha-200)] hover:text-ink"
+    data-clear
+  >
+    ✕
+  </button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-clear]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const input = btn.previousElementSibling as HTMLInputElement | null;
+      if (!input) return;
+      input.value = "";
+      input.focus();
+    });
+  });
+</script>

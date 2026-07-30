@@ -1,0 +1,29 @@
+---
+interface Props {
+  name: string;
+  options: { value: string; title: string; hint?: string; checked?: boolean }[];
+}
+const { name, options } = Astro.props;
+---
+
+<div class="grid gap-3">
+  {
+    options.map((o) => (
+      <label
+        class="flex cursor-pointer items-start gap-3 rounded-card border border-line bg-surface px-4 py-3.5 transition-colors duration-150 ease-in-out hover:border-[var(--ds-gray-500)] hover:bg-[var(--ds-gray-100)] has-checked:border-[var(--ds-blue-600)] has-checked:bg-[var(--ds-blue-100)] hover:has-checked:bg-[var(--ds-blue-200)]"
+      >
+        <input
+          type="radio"
+          name={name}
+          value={o.value}
+          checked={o.checked}
+          class="mt-0.5 accent-[var(--ds-blue-700)]"
+        />
+        <span>
+          <span class="block text-sm font-medium text-ink">{o.title}</span>
+          {o.hint && <span class="mt-0.5 block text-[13px] text-mute">{o.hint}</span>}
+        </span>
+      </label>
+    ))
+  }
+</div>

@@ -1,0 +1,33 @@
+---
+interface Props {
+  items: { label: string; key?: string }[];
+  placeholder?: string;
+}
+const { items, placeholder = "Rechercher…" } = Astro.props;
+---
+
+<div class="material-modal max-w-110 overflow-hidden rounded-card bg-surface">
+  <div class="flex h-12 items-center gap-2.5 border-b border-line px-4">
+    <span class="text-mute" aria-hidden="true">⌘</span>
+    <input
+      class="w-full border-0 bg-transparent text-[15px] text-ink outline-none"
+      placeholder={placeholder}
+    />
+  </div>
+  <ul class="m-0 list-none p-1.5">
+    {
+      items.map((it) => (
+        <li
+          class="flex h-9 cursor-pointer items-center justify-between gap-3 rounded-control px-2.5 text-sm text-ink transition-colors duration-150 ease-in-out hover:bg-surface-raise"
+        >
+          {it.label}
+          {it.key && (
+            <kbd class="rounded border border-line bg-surface-subtle px-1.5 py-px font-mono text-[11px] text-mute">
+              {it.key}
+            </kbd>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</div>
