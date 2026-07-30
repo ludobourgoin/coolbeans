@@ -1,14 +1,18 @@
 ---
+import { getGridId } from "../../utils/gridIdCounter.js";
+
 interface Props {
   label: string;
   href?: string;
 }
 const { label, href = "#" } = Astro.props;
+const id = getGridId();
 ---
 
 <span class="group relative inline-block">
-  <a href={href} class="border-b border-line">{label}</a>
+  <a href={href} class="border-b border-line" aria-describedby={id}>{label}</a>
   <span
+    id={id}
     class="material-menu invisible absolute left-0 top-[calc(100%+8px)] z-20 w-70 -translate-y-1 rounded-card bg-surface p-4 opacity-0 transition-[opacity,transform,visibility] duration-150 ease-in-out group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100"
   >
     <slot />

@@ -1,9 +1,9 @@
 ---
 interface Props {
   name: string;
-  placeholder?: string;
+  placeholder: string;
 }
-const { name, placeholder = "" } = Astro.props;
+const { name, placeholder } = Astro.props;
 ---
 
 <div class="relative flex items-center">
