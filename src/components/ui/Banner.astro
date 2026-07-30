@@ -1,0 +1,24 @@
+---
+interface Props {
+  tone?: "neutral" | "info" | "success" | "warning" | "error";
+}
+const { tone = "neutral" } = Astro.props;
+const DOT: Record<string, string> = {
+  neutral: "var(--mute)",
+  info: "var(--info)",
+  success: "var(--success)",
+  warning: "var(--warning)",
+  error: "var(--error)",
+};
+---
+
+<div
+  class="material-small flex items-center gap-3 rounded-control bg-surface px-3 py-2.5 text-sm"
+>
+  <span
+    class="block size-2 flex-none rounded-full"
+    style={`background:${DOT[tone]}`}
+    aria-hidden="true"
+  ></span>
+  <span><slot /></span>
+</div>

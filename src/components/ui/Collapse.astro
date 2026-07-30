@@ -1,0 +1,19 @@
+---
+interface Props {
+  question: string;
+  open?: boolean;
+}
+const { question, open = false } = Astro.props;
+---
+
+<details class="group border-t border-line last-of-type:border-b" open={open}>
+  <summary
+    class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-base font-medium text-ink [&::-webkit-details-marker]:hidden"
+  >
+    {question}
+    <span
+      class="font-mono text-mute after:content-['+'] group-open:after:content-['−']"
+      aria-hidden="true"></span>
+  </summary>
+  <div class="max-w-[68ch] pb-5 text-[15px] text-mute"><slot /></div>
+</details>

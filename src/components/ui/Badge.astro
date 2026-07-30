@@ -1,0 +1,36 @@
+---
+interface Props {
+  variant?: "gray" | "blue" | "amber" | "red" | "purple";
+  subtle?: boolean;
+  size?: "sm" | "md";
+}
+const { variant = "gray", subtle = false, size = "md" } = Astro.props;
+
+const SOLID: Record<string, string> = {
+  gray: "background:var(--ds-gray-900);color:var(--ds-contrast-fg)",
+  blue: "background:var(--ds-blue-800);color:var(--ds-contrast-fg)",
+  amber: "background:var(--ds-amber-700);color:var(--ds-amber-900)",
+  red: "background:var(--ds-red-900);color:var(--ds-contrast-fg)",
+  purple: "background:var(--ds-purple-900);color:var(--ds-contrast-fg)",
+};
+const SUBTLE: Record<string, string> = {
+  gray: "background:var(--ds-gray-200);color:var(--ds-gray-1000)",
+  blue: "background:var(--ds-blue-200);color:var(--ds-blue-900)",
+  amber: "background:var(--ds-amber-200);color:var(--ds-amber-900)",
+  red: "background:var(--ds-red-200);color:var(--ds-red-900)",
+  purple: "background:var(--ds-purple-200);color:var(--ds-purple-900)",
+};
+const style = subtle ? SUBTLE[variant] : SOLID[variant];
+---
+
+<span
+  class:list={[
+    "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full font-medium",
+    size === "sm"
+      ? "px-2 text-[11px]/[20px] tracking-[0.2px]"
+      : "px-2.5 text-[12px]/[24px]",
+  ]}
+  style={style}
+>
+  <slot />
+</span>

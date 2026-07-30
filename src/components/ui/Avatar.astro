@@ -1,0 +1,22 @@
+---
+interface Props {
+  size?: number;
+  src?: string;
+  alt?: string;
+  initials?: string;
+}
+const { size = 32, src, alt = "", initials = "" } = Astro.props;
+---
+
+<span
+  class="inline-block flex-none overflow-hidden rounded-full bg-surface-raise text-center font-medium text-mute"
+  style={`width:${size}px;height:${size}px;font-size:${Math.round(size * 0.4)}px;line-height:${size}px;box-shadow:0 0 0 1px var(--surface)`}
+>
+  {
+    src ? (
+      <img src={src} alt={alt} class="block h-full w-full object-cover" />
+    ) : (
+      initials
+    )
+  }
+</span>
