@@ -9,8 +9,8 @@ const { items } = Astro.props;
   {
     items.map((it) => (
       <div>
-        <dt class="mb-2 min-h-[14px] text-sm/[14px] text-mute">{it.term}</dt>
-        <dd class="m-0 text-sm text-ink">{it.value}</dd>
+        <dt class="mb-2 text-sm/[14px] text-mute">{it.term}</dt>
+        <dd class="m-0 min-h-5 text-sm text-ink">{it.value}</dd>
       </div>
     ))
   }

@@ -182,6 +182,67 @@ const styled = files.filter(f => f.endsWith('.astro') && (read(f) || '').include
 const illegal = styled.filter(f => !ALLOWED.includes(f.split(path.sep).join('/')));
 check('blocs <style> limités aux exceptions', illegal.length === 0, illegal.join(', '));
 
+/* ── G · contraste des variantes de Badge (WCAG ≥ 4.5:1) ───────── */
+/* On ne suppose jamais les paires fond/texte : on les LIT dans
+   Badge.astro (les objets SOLID et SUBTLE), on résout chaque
+   var(--ds-*) depuis geist-tokens.css (:root pour le clair, .dark
+   avec repli sur :root pour le sombre — même règle qu'en section E),
+   puis on calcule le ratio réel avec les fonctions déjà définies plus
+   haut. Une variante mal assortie doit faire échouer cette section,
+   pas juste se voir en dark mode. */
+const badge = read('src/components/ui/Badge.astro');
+check('Badge.astro existe', !!badge);
+if (badge && geist) {
+  const dsRoot = declMap(extractBlock(geist, ':root {'));
+  const dsDark = declMap(extractBlock(geist, '.dark {'));
+
+  const extractPairMap = name => {
+    const m = badge.match(new RegExp(name + '\\s*:\\s*Record<string,\\s*string>\\s*=\\s*\\{([\\s\\S]*?)\\n\\s*\\};'));
+    if (!m) return null;
+    const map = {};
+    for (const pm of m[1].matchAll(/(\w+):\s*"([^"]+)"/g)) map[pm[1]] = pm[2];
+    return map;
+  };
+  const resolveDsColor = (token, mode) => {
+    const raw = (mode === 'dark' && dsDark[token]) || dsRoot[token];
+    if (!raw) throw new Error(token + ' non défini dans geist-tokens.css (mode ' + mode + ')');
+    if (!HEX.test(raw)) throw new Error(token + ' = "' + raw + '" — pas un hex direct');
+    return raw;
+  };
+
+  for (const [mapName, styleLabel] of [['SOLID', 'pleine'], ['SUBTLE', 'discrète']]) {
+    const pairs = extractPairMap(mapName);
+    if (!pairs) {
+      check('Badge.astro : objet ' + mapName + ' lisible', false, 'introuvable ou format inattendu');
+      continue;
+    }
+    for (const [variant, decl] of Object.entries(pairs)) {
+      const m = decl.match(/background:var\((--ds-[\w-]+)\);color:var\((--ds-[\w-]+)\)/);
+      if (!m) {
+        check('Badge ' + styleLabel + ' ' + variant + ' : déclaration analysable', false, decl);
+        continue;
+      }
+      const [, bgToken, fgToken] = m;
+      for (const mode of ['light', 'dark']) {
+        try {
+          const bg = resolveDsColor(bgToken, mode);
+          const fg = resolveDsColor(fgToken, mode);
+          const r = ratio(fg, bg);
+          check(
+            'contraste Badge ' + styleLabel + ' ' + variant + ', ' + mode + ' (' + r.toFixed(2) + ':1)',
+            r >= 4.5,
+            'attendu ≥ 4.5 — ' + fgToken + ' sur ' + bgToken
+          );
+        } catch (e) {
+          check('contraste Badge ' + styleLabel + ' ' + variant + ', ' + mode, false, e.message);
+        }
+      }
+    }
+  }
+} else {
+  check('résolution des contrastes Badge', false, 'Badge.astro ou geist-tokens.css introuvable');
+}
+
 /* ── sortie ────────────────────────────────────────────────────── */
 console.log(ok.map(s => '  ok    ' + s).join('\n'));
 if (fail.length) {

@@ -6,12 +6,18 @@ interface Props {
 }
 const { variant = "gray", subtle = false, size = "md" } = Astro.props;
 
+/* --ds-contrast-fg vaut #fff en dur, jamais redéfini sous .dark : sur les
+   marches -800/-900 qui s'inversent vers le clair en sombre, ça donnait du
+   blanc sur du clair (jusqu'à 1,18:1). --ds-background-100 résout ça : il
+   bascule lui-même de #fff (clair) à #0a0a0a (sombre), donc le texte suit
+   le même retournement que le fond. Les cinq paires sont vérifiées ≥ 4.5:1
+   dans les deux thèmes par la section G de scripts/verify-design-system.js. */
 const SOLID: Record<string, string> = {
-  gray: "background:var(--ds-gray-900);color:var(--ds-contrast-fg)",
-  blue: "background:var(--ds-blue-800);color:var(--ds-contrast-fg)",
-  amber: "background:var(--ds-amber-700);color:var(--ds-amber-900)",
-  red: "background:var(--ds-red-900);color:var(--ds-contrast-fg)",
-  purple: "background:var(--ds-purple-900);color:var(--ds-contrast-fg)",
+  gray: "background:var(--ds-gray-900);color:var(--ds-background-100)",
+  blue: "background:var(--ds-blue-900);color:var(--ds-background-100)",
+  amber: "background:var(--ds-amber-900);color:var(--ds-background-100)",
+  red: "background:var(--ds-red-900);color:var(--ds-background-100)",
+  purple: "background:var(--ds-purple-900);color:var(--ds-background-100)",
 };
 const SUBTLE: Record<string, string> = {
   gray: "background:var(--ds-gray-200);color:var(--ds-gray-1000)",
