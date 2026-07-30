@@ -8,11 +8,13 @@ interface Props {
 const { url, shot, alt = "", label = "" } = Astro.props;
 ---
 
-<div class="material-small browser overflow-hidden bg-surface-subtle">
+<div
+  class="material-small @container overflow-hidden rounded-[6px] bg-surface-subtle md:rounded-[1.5cqw]"
+>
   <div
     class="flex items-center justify-between gap-4 bg-surface px-4 py-2 md:gap-6 md:px-5 md:py-2.5"
   >
-    <div class="flex flex-none items-center gap-2">
+    <div class="flex flex-none items-center gap-2" aria-hidden="true">
       <span class="block size-3 rounded-full" style="background:#FE5F57"></span>
       <span class="block size-3 rounded-full" style="background:#FEBB2E"></span>
       <span class="block size-3 rounded-full" style="background:#26C941"></span>
@@ -53,17 +55,3 @@ const { url, shot, alt = "", label = "" } = Astro.props;
     }
   </div>
 </div>
-
-<style>
-  /* irréductible : container queries — Tailwind ne génère pas `1.5cqw`
-     comme rayon dynamique, et `container-type` doit être posé sur l'élément. */
-  .browser {
-    container-type: inline-size;
-    border-radius: 6px;
-  }
-  @media (min-width: 768px) {
-    .browser {
-      border-radius: 1.5cqw;
-    }
-  }
-</style>

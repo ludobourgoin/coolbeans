@@ -176,13 +176,8 @@ if (glob && geist) {
 /* ── F · blocs <style> limités aux exceptions ──────────────────── */
 /* Exceptions à la convention CSS, chacune justifiée :
    Flow          — timeline GSAP
-   LogoMarquee   — @keyframes de défilement
-   Browser       — container-type + rayon en cqw, hors portée de Tailwind */
-const ALLOWED = [
-  'src/components/Flow.astro',
-  'src/components/LogoMarquee.astro',
-  'src/components/Browser.astro',
-];
+   LogoMarquee   — @keyframes de défilement */
+const ALLOWED = ['src/components/Flow.astro', 'src/components/LogoMarquee.astro'];
 const styled = files.filter(f => f.endsWith('.astro') && (read(f) || '').includes('<style'));
 const illegal = styled.filter(f => !ALLOWED.includes(f.split(path.sep).join('/')));
 check('blocs <style> limités aux exceptions', illegal.length === 0, illegal.join(', '));
