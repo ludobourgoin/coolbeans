@@ -1,0 +1,33 @@
+---
+/* Grille pointillée décorative des hero. Le SVG utilise currentColor,
+   donc la couleur suit le token via `color` — pas de valeur figée. */
+interface Props {
+  size?: number;
+  class?: string;
+}
+const { size = 64, class: className = "" } = Astro.props;
+const id = `grid-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div
+  class:list={["pointer-events-none absolute inset-0", className]}
+  style="color: var(--line-strong);
+         -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 25%, transparent 72%);
+         mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 25%, transparent 72%);"
+  aria-hidden="true"
+>
+  <svg class="block h-full w-full">
+    <defs>
+      <pattern id={id} width={size} height={size} patternUnits="userSpaceOnUse">
+        <path
+          d={`M${size} 0H0V${size}`}
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          stroke-dasharray="4 5"
+        />
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill={`url(#${id})`} />
+  </svg>
+</div>
