@@ -1,0 +1,545 @@
+/* ============================================================================
+   GEIST — tokens extraits de la feuille compilée de vercel.com
+   Source : https://vercel.com/geist/colors  ·  capture 2026-07-30
+   NE PAS ÉDITER À LA MAIN. Régénérer : node scripts/extract-geist-tokens.js
+   Base en hex sRGB ; lab()/oklch() derrière @supports pour le grand gamut.
+   Thème piloté par la classe .dark sur <html>.
+   ========================================================================== */
+
+:root {
+  /* background */
+  --ds-background-100: #fff;
+  --ds-background-200: #fafafa;
+
+  /* gray */
+  --ds-gray-100: #f2f2f2;
+  --ds-gray-200: #ebebeb;
+  --ds-gray-300: #e6e6e6;
+  --ds-gray-400: #eaeaea;
+  --ds-gray-500: #c9c9c9;
+  --ds-gray-600: #a8a8a8;
+  --ds-gray-700: #8f8f8f;
+  --ds-gray-800: #7d7d7d;
+  --ds-gray-900: #4d4d4d;
+  --ds-gray-1000: #171717;
+
+  /* gray-alpha */
+  --ds-gray-alpha-100: #0000000d;
+  --ds-gray-alpha-200: #00000014;
+  --ds-gray-alpha-300: #0000001a;
+  --ds-gray-alpha-400: #00000014;
+  --ds-gray-alpha-500: #00000036;
+  --ds-gray-alpha-600: #00000057;
+  --ds-gray-alpha-700: #00000070;
+  --ds-gray-alpha-800: #00000082;
+  --ds-gray-alpha-900: #000000b3;
+  --ds-gray-alpha-1000: #000000e8;
+
+  /* blue */
+  --ds-blue-100: #f0f7ff;
+  --ds-blue-200: #eaf4ff;
+  --ds-blue-300: #e0efff;
+  --ds-blue-400: #cce7ff;
+  --ds-blue-500: #97ccff;
+  --ds-blue-600: #51aeff;
+  --ds-blue-700: #0070f7;
+  --ds-blue-800: #005edc;
+  --ds-blue-900: #0064e2;
+  --ds-blue-1000: #002453;
+
+  /* red */
+  --ds-red-100: #ffeef0;
+  --ds-red-200: #ffe9ea;
+  --ds-red-300: #ffe4e5;
+  --ds-red-400: #ffd8d7;
+  --ds-red-500: #ffb5b6;
+  --ds-red-600: #ff6a6e;
+  --ds-red-700: #fc0035;
+  --ds-red-800: #e70022;
+  --ds-red-900: #d60020;
+  --ds-red-1000: #46000c;
+
+  /* amber */
+  --ds-amber-100: #fff6e1;
+  --ds-amber-200: #fff4d4;
+  --ds-amber-300: #fff1c8;
+  --ds-amber-400: #ffdd84;
+  --ds-amber-500: #ffc85e;
+  --ds-amber-600: #fa0;
+  --ds-amber-700: #ffb200;
+  --ds-amber-800: #f90;
+  --ds-amber-900: #a64f00;
+  --ds-amber-1000: #541c00;
+
+  /* green */
+  --ds-green-100: #ecfdec;
+  --ds-green-200: #e5fce7;
+  --ds-green-300: #d3fad1;
+  --ds-green-400: #b9f5bc;
+  --ds-green-500: #82eb8d;
+  --ds-green-600: #4ce15e;
+  --ds-green-700: #28a948;
+  --ds-green-800: #279141;
+  --ds-green-900: #107d32;
+  --ds-green-1000: #00370d;
+
+  /* teal */
+  --ds-teal-100: #dffffb;
+  --ds-teal-200: #ddfef6;
+  --ds-teal-300: #ccf9f1;
+  --ds-teal-400: #b1f7ec;
+  --ds-teal-500: #52f0db;
+  --ds-teal-600: #00e2c4;
+  --ds-teal-700: #00a694;
+  --ds-teal-800: #008d7d;
+  --ds-teal-900: #007a6e;
+  --ds-teal-1000: #003d34;
+
+  /* purple */
+  --ds-purple-100: #f9f0ff;
+  --ds-purple-200: #f9f1ff;
+  --ds-purple-300: #f5e8ff;
+  --ds-purple-400: #f1d9ff;
+  --ds-purple-500: #dda9ff;
+  --ds-purple-600: #c77dff;
+  --ds-purple-700: #9f00f4;
+  --ds-purple-800: #8400cd;
+  --ds-purple-900: #7c00c9;
+  --ds-purple-1000: #2e004d;
+
+  /* pink */
+  --ds-pink-100: #ffeaf5;
+  --ds-pink-200: #ffeaf2;
+  --ds-pink-300: #ffe0eb;
+  --ds-pink-400: #ffd5e1;
+  --ds-pink-500: #fdb3cc;
+  --ds-pink-600: #f97ea7;
+  --ds-pink-700: #f22782;
+  --ds-pink-800: #e4106e;
+  --ds-pink-900: #c41562;
+  --ds-pink-1000: #460523;
+
+  /* divers */
+  --ds-black: #000;
+  --ds-contrast-fg: #fff;
+  --ds-control-decoration-size: 14px;
+  --ds-focus-border: 0 0 0 1px var(--ds-gray-alpha-600), 0px 0px 0px 4px #00000029;
+  --ds-focus-color: var(--ds-blue-700);
+  --ds-focus-ring: 0 0 0 2px var(--ds-background-100), 0 0 0 4px var(--ds-focus-color);
+  --ds-focus-ring-outline: 2px solid var(--ds-focus-color);
+  --ds-motion-overlay-duration: .3s;
+  --ds-motion-overlay-scale: .96;
+  --ds-motion-overlay-timing: var(--ds-motion-timing-swift);
+  --ds-motion-popover-duration: .2s;
+  --ds-motion-popover-timing: var(--ds-motion-timing-swift);
+  --ds-motion-timing-swift: cubic-bezier(.175, .885, .32, 1.1);
+  --ds-overlay-backdrop-color: var(--ds-gray-100);
+  --ds-overlay-backdrop-opacity: .8;
+  --ds-page-width: 1400px;
+  --ds-page-width-with-margin: calc(var(--ds-page-width) + calc(2 * var(--geist-page-margin)));
+  --ds-popover-padding: 6px;
+  --ds-popover-row-height: var(--geist-space-medium);
+  --ds-popover-row-padding: 0 8px;
+  --ds-popover-row-radius: 6px;
+  --ds-shadow-2xl: 0px 1px 1px #00000005, 0px 8px 16px -4px #0000000a, 0px 24px 32px -8px #0000000f;
+  --ds-shadow-2xs: 0px 1px 1px #0000000a;
+  --ds-shadow-background-border: 0 0 0 1px var(--ds-background-200);
+  --ds-shadow-border: var(--ds-shadow-border-base), var(--ds-shadow-background-border);
+  --ds-shadow-border-base: 0 0 0 1px #00000014;
+  --ds-shadow-border-inset: inset 0 0 0 1px #00000014;
+  --ds-shadow-border-large: var(--ds-shadow-border-base), var(--ds-shadow-large), var(--ds-shadow-background-border);
+  --ds-shadow-border-medium: var(--ds-shadow-border-base), var(--ds-shadow-medium), var(--ds-shadow-background-border);
+  --ds-shadow-border-small: var(--ds-shadow-border-base), var(--ds-shadow-small), var(--ds-shadow-background-border);
+  --ds-shadow-fullscreen: var(--ds-shadow-border-base), 0px 1px 1px #00000005, 0px 8px 16px -4px #0000000a, 0px 24px 32px -8px #0000000f, var(--ds-shadow-background-border);
+  --ds-shadow-large: 0px 2px 2px #0000000a, 0px 8px 16px -4px #0000000a;
+  --ds-shadow-medium: 0px 2px 2px #0000000a, 0px 8px 8px -8px #0000000a;
+  --ds-shadow-menu: var(--ds-shadow-border-base), 0px 1px 1px #00000005, 0px 4px 8px -4px #0000000a, 0px 16px 24px -8px #0000000f, var(--ds-shadow-background-border);
+  --ds-shadow-modal: var(--ds-shadow-border-base), 0px 1px 1px #00000005, 0px 8px 16px -4px #0000000a, 0px 24px 32px -8px #0000000f, var(--ds-shadow-background-border);
+  --ds-shadow-modal-elevated: 0px 0px 0px 1px #00000014, 0px 32px 72px -12px #0000000f, 0px 8px 32px -12px #00000014, 0px 8px 24px -12px #0000001f;
+  --ds-shadow-small: 0px 2px 2px #0000000a;
+  --ds-shadow-tooltip: var(--ds-shadow-border-base), 0px 1px 1px #00000005, 0px 4px 8px #0000000a, var(--ds-shadow-background-border);
+  --ds-shadow-xl: 0px 1px 1px #00000005, 0px 4px 8px -4px #0000000a, 0px 16px 24px -8px #0000000f;
+  --ds-shadow-xs: 0px 1px 2px #0000000a;
+  --ds-size-large: var(--geist-space-large);
+  --ds-size-medium: var(--geist-space-medium);
+  --ds-size-small: var(--geist-space-small);
+  --ds-white: #fff;
+  --ds-z-drawer: 200;
+  --ds-z-menu: 2001;
+  --ds-z-modal: 300;
+  --ds-z-toast: 5000;
+  --ds-z-tooltip: 99999;
+}
+
+.dark {
+  /* background */
+  --ds-background-100: #0a0a0a;
+  --ds-background-200: #000000;
+
+  /* gray */
+  --ds-gray-100: #1a1a1a;
+  --ds-gray-200: #1f1f1f;
+  --ds-gray-300: #292929;
+  --ds-gray-400: #2e2e2e;
+  --ds-gray-500: #454545;
+  --ds-gray-600: #878787;
+  --ds-gray-700: #8f8f8f;
+  --ds-gray-800: #7d7d7d;
+  --ds-gray-900: #a0a0a0;
+  --ds-gray-1000: #ededed;
+
+  /* gray-alpha */
+  --ds-gray-alpha-100: #ffffff0f;
+  --ds-gray-alpha-200: #ffffff17;
+  --ds-gray-alpha-300: #ffffff21;
+  --ds-gray-alpha-400: #ffffff24;
+  --ds-gray-alpha-500: #ffffff3d;
+  --ds-gray-alpha-600: #ffffff82;
+  --ds-gray-alpha-700: #ffffff8a;
+  --ds-gray-alpha-800: #ffffff78;
+  --ds-gray-alpha-900: #ffffff9c;
+  --ds-gray-alpha-1000: #ffffffeb;
+
+  /* blue */
+  --ds-blue-100: #06193a;
+  --ds-blue-200: #022248;
+  --ds-blue-300: #002f62;
+  --ds-blue-400: #003771;
+  --ds-blue-500: #004287;
+  --ds-blue-600: #0090ff;
+  --ds-blue-700: #0071f6;
+  --ds-blue-800: #005fd8;
+  --ds-blue-900: #50a8ff;
+  --ds-blue-1000: #ebf6ff;
+
+  /* red */
+  --ds-red-100: #330a11;
+  --ds-red-200: #440d13;
+  --ds-red-300: #5d0e17;
+  --ds-red-400: #6f101b;
+  --ds-red-500: #88151f;
+  --ds-red-600: #f32e40;
+  --ds-red-700: #f13242;
+  --ds-red-800: #e2162a;
+  --ds-red-900: #ff5e63;
+  --ds-red-1000: #ffeaed;
+
+  /* amber */
+  --ds-amber-100: #291800;
+  --ds-amber-200: #331b00;
+  --ds-amber-300: #4f2900;
+  --ds-amber-400: #573200;
+  --ds-amber-500: #6c4100;
+  --ds-amber-600: #e99c00;
+  --ds-amber-700: #ffb200;
+  --ds-amber-800: #f90;
+  --ds-amber-900: #f90;
+  --ds-amber-1000: #fff3d9;
+
+  /* green */
+  --ds-green-100: #00250a;
+  --ds-green-200: #003110;
+  --ds-green-300: #003814;
+  --ds-green-400: #004616;
+  --ds-green-500: #00661d;
+  --ds-green-600: #009431;
+  --ds-green-700: #00ab3e;
+  --ds-green-800: #009335;
+  --ds-green-900: #00ca52;
+  --ds-green-1000: #daffe5;
+
+  /* teal */
+  --ds-teal-100: #00211b;
+  --ds-teal-200: #002922;
+  --ds-teal-300: #003b33;
+  --ds-teal-400: #003f35;
+  --ds-teal-500: #005f53;
+  --ds-teal-600: #009885;
+  --ds-teal-700: #00a794;
+  --ds-teal-800: #008d7d;
+  --ds-teal-900: #00c9b5;
+  --ds-teal-1000: #cefff5;
+
+  /* purple */
+  --ds-purple-100: #290c33;
+  --ds-purple-200: #341142;
+  --ds-purple-300: #47185e;
+  --ds-purple-400: #541a76;
+  --ds-purple-500: #642290;
+  --ds-purple-600: #9440d5;
+  --ds-purple-700: #9440d5;
+  --ds-purple-800: #7d2bba;
+  --ds-purple-900: #c472fb;
+  --ds-purple-1000: #faedff;
+
+  /* pink */
+  --ds-pink-100: #310d1e;
+  --ds-pink-200: #420c25;
+  --ds-pink-300: #571032;
+  --ds-pink-400: #5d0c34;
+  --ds-pink-500: #76063f;
+  --ds-pink-600: #b90056;
+  --ds-pink-700: #f12b82;
+  --ds-pink-800: #e6006e;
+  --ds-pink-900: #ff518d;
+  --ds-pink-1000: #ffeaf4;
+
+  /* divers */
+  --ds-focus-border: 0 0 0 1px var(--ds-gray-alpha-600), 0px 0px 0px 4px #ffffff3d;
+  --ds-focus-color: var(--ds-blue-900);
+  --ds-focus-ring: 0 0 0 2px var(--ds-background-100), 0 0 0 4px var(--ds-focus-color);
+  --ds-overlay-backdrop-color: var(--ds-background-200);
+  --ds-shadow-2xl: 0px 1px 1px #00000005, 0px 8px 16px -4px #0000000a, 0px 24px 32px -8px #0000000f;
+  --ds-shadow-2xs: 0px 1px 1px #00000029;
+  --ds-shadow-background-border: 0 0 0 1px var(--ds-background-200);
+  --ds-shadow-border: var(--ds-shadow-border-base), var(--ds-shadow-background-border);
+  --ds-shadow-border-base: 0 0 0 1px #ffffff25;
+  --ds-shadow-border-inset: inset 0 0 0 1px #ffffff1a;
+  --ds-shadow-border-large: var(--ds-shadow-border-base), var(--ds-shadow-large), var(--ds-shadow-background-border);
+  --ds-shadow-border-medium: var(--ds-shadow-border-base), var(--ds-shadow-medium), var(--ds-shadow-background-border);
+  --ds-shadow-border-small: var(--ds-shadow-border-base), var(--ds-shadow-small), var(--ds-shadow-background-border);
+  --ds-shadow-fullscreen: var(--ds-shadow-border-base), 0px 1px 1px #00000005, 0px 8px 16px -4px #0000000a, 0px 24px 32px -8px #0000000f, var(--ds-shadow-background-border);
+  --ds-shadow-large: 0px 2px 2px #0000000a, 0px 8px 16px -4px #0000000a;
+  --ds-shadow-medium: 0px 2px 2px #00000052, 0px 8px 8px -8px #00000029;
+  --ds-shadow-menu: var(--ds-shadow-border-base), 0px 1px 1px #00000005, 0px 4px 8px -4px #0000000a, 0px 16px 24px -8px #0000000f, var(--ds-shadow-background-border);
+  --ds-shadow-modal: var(--ds-shadow-border-base), 0px 1px 1px #00000005, 0px 8px 16px -4px #0000000a, 0px 24px 32px -8px #0000000f, var(--ds-shadow-background-border);
+  --ds-shadow-modal-elevated: 0 0 0 1px var(--ds-gray-alpha-400), 0px 32px 72px -12px #0000000f, 0px 8px 32px -12px #00000014, 0px 8px 24px -12px #0000001f;
+  --ds-shadow-small: 0px 1px 2px #00000029;
+  --ds-shadow-tooltip: var(--ds-shadow-border-base), 0px 1px 1px #00000005, 0px 4px 8px #0000000a, var(--ds-shadow-background-border);
+  --ds-shadow-xl: 0px 1px 1px #00000005, 0px 4px 8px -4px #0000000a, 0px 16px 24px -8px #0000000f;
+  --ds-shadow-xs: 0px 1px 2px #00000029;
+}
+
+@supports (color: lab(0% 0 0)) {
+  :root {
+    /* background */
+    --ds-background-100: lab(100% 0 0);
+    --ds-background-200: lab(98.144% 0 -.0000119209);
+
+    /* gray */
+    --ds-gray-100: lab(95.476% -.0000298023 0);
+    --ds-gray-200: lab(93.04% .0000298023 -.0000119209);
+    --ds-gray-300: lab(91.3% 0 -.0000119209);
+    --ds-gray-400: lab(92.692% 0 0);
+    --ds-gray-500: lab(80.976% 0 -.0000119209);
+    --ds-gray-600: lab(68.912% 0 -.0000119209);
+    --ds-gray-700: lab(59.4% 0 0);
+    --ds-gray-800: lab(52.44% 0 0);
+    --ds-gray-900: lab(32.72% -.0000149012 0);
+    --ds-gray-1000: lab(7.78201% -.0000149012 0);
+
+    /* gray-alpha */
+    --ds-gray-alpha-100: lab(0% 0 0/.05);
+    --ds-gray-alpha-200: lab(0% 0 0/.081);
+    --ds-gray-alpha-300: lab(0% 0 0/.1);
+    --ds-gray-alpha-400: lab(0% 0 0/.08);
+    --ds-gray-alpha-500: lab(0% 0 0/.21);
+    --ds-gray-alpha-600: lab(0% 0 0/.24);
+    --ds-gray-alpha-700: lab(0% 0 0/.44);
+    --ds-gray-alpha-800: lab(0% 0 0/.51);
+    --ds-gray-alpha-900: lab(0% 0 0/.7);
+    --ds-gray-alpha-1000: lab(0% 0 0/.91);
+
+    /* blue */
+    --ds-blue-100: oklch(97.32% .0141 251.56);
+    --ds-blue-200: oklch(96.29% .0195 250.59);
+    --ds-blue-300: oklch(94.58% .0293 249.849);
+    --ds-blue-400: oklch(91.58% .0473 245.116);
+    --ds-blue-500: oklch(82.75% .0979 248.48);
+    --ds-blue-600: oklch(73.08% .1583 248.133);
+    --ds-blue-700: oklch(57.61% .2508 258.23);
+    --ds-blue-800: oklch(51.51% .2399 257.85);
+    --ds-blue-900: oklch(53.18% .2399 256.99);
+    --ds-blue-1000: oklch(26.67% .1099 254.34);
+
+    /* red */
+    --ds-red-100: oklch(96.5% .0223 13.09);
+    --ds-red-200: oklch(95.41% .0299 14.2526);
+    --ds-red-300: oklch(94.33% .0369 15.0115);
+    --ds-red-400: oklch(91.51% .0471 19.8);
+    --ds-red-500: oklch(84.47% .1018 17.71);
+    --ds-red-600: oklch(71.12% .1881 21.22);
+    --ds-red-700: oklch(62.56% .2524 23.03);
+    --ds-red-800: oklch(58.19% .2482 25.15);
+    --ds-red-900: oklch(54.99% .232 25.29);
+    --ds-red-1000: oklch(24.8% .1041 18.86);
+
+    /* amber */
+    --ds-amber-100: oklch(97.48% .0331 85.79);
+    --ds-amber-200: oklch(96.81% .0495 90.2423);
+    --ds-amber-300: oklch(95.93% .0636 90.52);
+    --ds-amber-400: oklch(91.02% .1322 88.25);
+    --ds-amber-500: oklch(86.55% .1583 79.63);
+    --ds-amber-600: oklch(80.25% .1953 73.59);
+    --ds-amber-700: oklch(81.87% .1969 76.46);
+    --ds-amber-800: oklch(77.21% .1991 64.28);
+    --ds-amber-900: oklch(52.79% .1496 54.65);
+    --ds-amber-1000: oklch(30.83% .099 45.48);
+
+    /* green */
+    --ds-green-100: oklch(97.59% .0289 145.42);
+    --ds-green-200: oklch(96.92% .037 147.15);
+    --ds-green-300: oklch(94.6% .0674 144.23);
+    --ds-green-400: oklch(91.49% .0976 146.24);
+    --ds-green-500: oklch(85.45% .1627 146.3);
+    --ds-green-600: oklch(80.25% .214 145.18);
+    --ds-green-700: oklch(64.58% .1746 147.27);
+    --ds-green-800: oklch(57.81% .1507 147.5);
+    --ds-green-900: oklch(51.75% .1453 147.65);
+    --ds-green-1000: oklch(29.15% .1197 147.38);
+
+    /* teal */
+    --ds-teal-100: oklch(97.72% .0359 186.7);
+    --ds-teal-200: oklch(97.06% .0347 180.66);
+    --ds-teal-300: oklch(94.92% .0478 182.07);
+    --ds-teal-400: oklch(92.76% .0718 183.78);
+    --ds-teal-500: oklch(86.88% .1344 182.42);
+    --ds-teal-600: oklch(81.5% .161 178.96);
+    --ds-teal-700: oklch(64.92% .1572 181.95);
+    --ds-teal-800: oklch(57.53% .1392 181.66);
+    --ds-teal-900: oklch(52.08% .1251 182.93);
+    --ds-teal-1000: oklch(32.11% .0788 179.82);
+
+    /* purple */
+    --ds-purple-100: oklch(96.65% .0244 312.189);
+    --ds-purple-200: oklch(96.73% .0228 309.8);
+    --ds-purple-300: oklch(94.85% .0364 310.15);
+    --ds-purple-400: oklch(91.77% .0614 312.82);
+    --ds-purple-500: oklch(81.26% .1409 310.8);
+    --ds-purple-600: oklch(72.07% .2083 308.19);
+    --ds-purple-700: oklch(55.5% .3008 306.12);
+    --ds-purple-800: oklch(48.58% .2638 305.73);
+    --ds-purple-900: oklch(47.18% .2579 304);
+    --ds-purple-1000: oklch(23.96% .13 305.66);
+
+    /* pink */
+    --ds-pink-100: oklch(95.69% .0359 344.622);
+    --ds-pink-200: oklch(95.71% .0321 353.14);
+    --ds-pink-300: oklch(93.83% .0451 356.29);
+    --ds-pink-400: oklch(91.12% .0573 358.82);
+    --ds-pink-500: oklch(84.28% .0915 356.99);
+    --ds-pink-600: oklch(74.33% .1547 .24);
+    --ds-pink-700: oklch(63.52% .238 1.01);
+    --ds-pink-800: oklch(59.51% .2339 4.21);
+    --ds-pink-900: oklch(53.5% .2058 2.84);
+    --ds-pink-1000: oklch(26% .0977 359);
+
+    /* divers */
+    --ds-black: lab(0% 0 0);
+    --ds-white: lab(100% 0 0);
+  }
+
+  .dark {
+    /* background */
+    --ds-background-100: #0a0a0a;
+    --ds-background-200: #000000;
+
+    /* gray */
+    --ds-gray-100: lab(9.288% 0 -.00000298023);
+    --ds-gray-200: lab(11.724% 0 0);
+    --ds-gray-300: lab(16.596% 0 0);
+    --ds-gray-400: lab(18.916% -.0000149012 0);
+    --ds-gray-500: lab(29.24% -.0000149012 0);
+    --ds-gray-600: lab(56.268% 0 0);
+    --ds-gray-700: lab(59.4% 0 0);
+    --ds-gray-800: lab(52.44% 0 0);
+    --ds-gray-900: lab(65.896% 0 0);
+    --ds-gray-1000: lab(93.736% 0 0);
+
+    /* gray-alpha */
+    --ds-gray-alpha-100: lab(100% 0 0/.07);
+    --ds-gray-alpha-200: lab(100% 0 0/.09);
+    --ds-gray-alpha-300: lab(100% 0 0/.13);
+    --ds-gray-alpha-400: lab(100% 0 0/.14);
+    --ds-gray-alpha-500: lab(100% 0 0/.24);
+    --ds-gray-alpha-600: lab(100% 0 0/.51);
+    --ds-gray-alpha-700: lab(100% 0 0/.54);
+    --ds-gray-alpha-800: lab(100% 0 0/.47);
+    --ds-gray-alpha-900: lab(100% 0 0/.61);
+    --ds-gray-alpha-1000: lab(100% 0 0/.92);
+
+    /* blue */
+    --ds-blue-100: oklch(22.17% .069 259.89);
+    --ds-blue-200: oklch(25.45% .0811 255.8);
+    --ds-blue-300: oklch(30.86% .1022 255.21);
+    --ds-blue-400: oklch(34.1% .121 254.74);
+    --ds-blue-500: oklch(38.5% .1403 254.4);
+    --ds-blue-600: oklch(64.94% .1982 251.813);
+    --ds-blue-700: oklch(57.61% .2321 258.23);
+    --ds-blue-800: oklch(51.51% .2307 257.85);
+    --ds-blue-900: oklch(71.7% .1648 250.794);
+    --ds-blue-1000: oklch(96.75% .0179 242.423);
+
+    /* red */
+    --ds-red-100: oklch(22.1% .0657 15.11);
+    --ds-red-200: oklch(25.93% .0834 19.02);
+    --ds-red-300: oklch(31.47% .1105 20.96);
+    --ds-red-400: oklch(35.27% .1273 21.23);
+    --ds-red-500: oklch(40.68% .1479 23.16);
+    --ds-red-600: oklch(62.56% .2277 23.03);
+    --ds-red-700: oklch(62.56% .2234 23.03);
+    --ds-red-800: oklch(58.01% .227 25.12);
+    --ds-red-900: oklch(69.96% .2136 22.03);
+    --ds-red-1000: oklch(95.6% .0293 6.61);
+
+    /* amber */
+    --ds-amber-100: oklch(22.46% .0538 76.04);
+    --ds-amber-200: oklch(24.95% .0642 64.78);
+    --ds-amber-300: oklch(32.34% .0837 63.83);
+    --ds-amber-400: oklch(35.53% .0903 66.2971);
+    --ds-amber-500: oklch(41.55% .1044 67.98);
+    --ds-amber-600: oklch(75.04% .1737 74.49);
+    --ds-amber-700: oklch(81.87% .1969 76.46);
+    --ds-amber-800: oklch(77.21% .1991 64.28);
+    --ds-amber-900: oklch(77.21% .1991 64.28);
+    --ds-amber-1000: oklch(96.7% .0418 84.59);
+
+    /* green */
+    --ds-green-100: oklch(23.09% .0716 149.68);
+    --ds-green-200: oklch(27.12% .0895 150.09);
+    --ds-green-300: oklch(29.84% .096 149.25);
+    --ds-green-400: oklch(34.39% .1039 147.78);
+    --ds-green-500: oklch(44.19% .1484 147.2);
+    --ds-green-600: oklch(58.11% .1815 146.55);
+    --ds-green-700: oklch(64.58% .199 147.27);
+    --ds-green-800: oklch(57.81% .1776 147.5);
+    --ds-green-900: oklch(73.1% .2158 148.29);
+    --ds-green-1000: oklch(96.76% .056 154.18);
+
+    /* teal */
+    --ds-teal-100: oklch(22.1% .0544 178.74);
+    --ds-teal-200: oklch(25.06% .062 178.76);
+    --ds-teal-300: oklch(31.5% .0767 180.99);
+    --ds-teal-400: oklch(32.43% .0763 180.13);
+    --ds-teal-500: oklch(43.35% .1055 180.97);
+    --ds-teal-600: oklch(60.71% .1485 180.24);
+    --ds-teal-700: oklch(64.92% .1403 181.95);
+    --ds-teal-800: oklch(57.53% .1392 181.66);
+    --ds-teal-900: oklch(74.56% .1765 182.8);
+    --ds-teal-1000: oklch(96.46% .056 180.29);
+
+    /* purple */
+    --ds-purple-100: oklch(22.34% .0779 316.87);
+    --ds-purple-200: oklch(25.91% .0921 314.41);
+    --ds-purple-300: oklch(31.98% .1219 312.41);
+    --ds-purple-400: oklch(35.93% .1504 309.78);
+    --ds-purple-500: oklch(40.99% .1721 307.92);
+    --ds-purple-600: oklch(55.5% .2191 306.12);
+    --ds-purple-700: oklch(55.5% .2186 306.12);
+    --ds-purple-800: oklch(48.58% .2102 305.73);
+    --ds-purple-900: oklch(69.87% .2037 309.51);
+    --ds-purple-1000: oklch(96.1% .0304 316.46);
+
+    /* pink */
+    --ds-pink-100: oklch(22.67% .0628 354.73);
+    --ds-pink-200: oklch(26.2% .0859 356.68);
+    --ds-pink-300: oklch(31.15% .1067 355.93);
+    --ds-pink-400: oklch(32.13% .1174 356.71);
+    --ds-pink-500: oklch(37.01% .1453 358.39);
+    --ds-pink-600: oklch(50.33% .2089 4.33);
+    --ds-pink-700: oklch(63.52% .2346 1.01);
+    --ds-pink-800: oklch(59.51% .2429 4.21);
+    --ds-pink-900: oklch(69.36% .2223 3.91);
+    --ds-pink-1000: oklch(95.74% .0326 350.08);
+  }
+}
