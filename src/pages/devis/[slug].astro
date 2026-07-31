@@ -28,9 +28,12 @@ const eur = new Intl.NumberFormat("fr-FR", {
 });
 const dateLongue = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(d.date);
 
-const total = d.budget.lignes.reduce((somme, ligne) => somme + ligne.prix, 0);
-const remise = d.budget.remisePct ? (total * d.budget.remisePct) / 100 : 0;
-const totalFinal = total - remise;
+/* totaux dérivés des lignes chiffrées ; les lignes sans prix sont « Inclus » */
+const totaux = (budget: NonNullable<(typeof d.sections)[number]["budget"]>) => {
+  const total = budget.lignes.reduce((somme, ligne) => somme + (ligne.prix ?? 0), 0);
+  const remise = budget.remisePct ? (total * budget.remisePct) / 100 : 0;
+  return { total, remise, totalFinal: total - remise, mention: budget.mention ?? "" };
+};
 ---
 
 <BaseLayout
@@ -54,102 +57,117 @@ const totalFinal = total - remise;
   <!-- CORPS DU DEVIS -->
   <div class="container-site">
     <div class="mx-auto max-w-[880px] py-16x">
-      <section
-        class="grid grid-cols-[180px_1fr] gap-10 py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
-      >
-        <p class="label pt-1">Objectif</p>
-        <p class="max-w-[58ch] leading-[1.6]" set:html={riche(d.objectif)} />
-      </section>
+      {
+        d.sections.map((section, index) => (
+          <section
+            class:list={[
+              "grid grid-cols-[180px_1fr] gap-10 py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4",
+              index > 0 && "border-t border-line",
+            ]}
+          >
+            <p class="label pt-1">{section.titre}</p>
+            <div>
+              {section.texte && (
+                <p
+                  class:list={[
+                    "max-w-[58ch] leading-[1.6]",
+                    (section.liste || section.budget || section.planning) && "mb-5",
+                  ]}
+                  set:html={riche(section.texte)}
+                />
+              )}
 
-      <section
-        class="grid grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
-      >
-        <p class="label pt-1">Périmètre</p>
-        <p class="max-w-[58ch] leading-[1.6]" set:html={riche(d.perimetre)} />
-      </section>
+              {section.liste && (
+                <ul class="flex list-none flex-col gap-3">
+                  {section.liste.map((item) => (
+                    <li class="flex items-start gap-3.5">
+                      <span
+                        class="mt-[0.55em] block size-1.5 flex-none bg-ink"
+                        aria-hidden="true"
+                      />
+                      <span class="max-w-[58ch]" set:html={riche(item)} />
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-      <section
-        class="grid grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
-      >
-        <p class="label pt-1">Activités</p>
-        <ul class="flex list-none flex-col gap-3">
-          {
-            d.activites.map((item) => (
-              <li class="flex items-start gap-3.5">
-                <span class="mt-[0.55em] block size-1.5 flex-none bg-ink" aria-hidden="true" />
-                <span class="max-w-[58ch]" set:html={riche(item)} />
-              </li>
-            ))
-          }
-        </ul>
-      </section>
+              {section.budget &&
+                (() => {
+                  const b = section.budget;
+                  const { total, remise, totalFinal, mention } = totaux(b);
+                  return (
+                    <div>
+                      {b.lignes.map((ligne) => (
+                        <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px]">
+                          <span set:html={riche(ligne.label)} />
+                          {ligne.prix !== undefined ? (
+                            <span class="font-mono whitespace-nowrap tabular-nums">
+                              {eur.format(ligne.prix)}
+                            </span>
+                          ) : (
+                            <span class="font-mono text-[13px] whitespace-nowrap text-mute">
+                              Inclus
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                      {remise > 0 ? (
+                        <>
+                          <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] font-medium">
+                            <span>Total</span>
+                            <span class="font-mono whitespace-nowrap tabular-nums">
+                              {eur.format(total)} {mention}
+                            </span>
+                          </div>
+                          <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute">
+                            <span>Remise exceptionnelle (−{b.remisePct}&nbsp;%)</span>
+                            <span class="font-mono whitespace-nowrap tabular-nums">
+                              −{eur.format(remise)}
+                            </span>
+                          </div>
+                          <div class="flex items-baseline justify-between gap-4 py-4">
+                            <span class="text-[17px] font-bold">Total après remise</span>
+                            <span class="font-mono text-[20px] font-bold whitespace-nowrap tabular-nums">
+                              {eur.format(totalFinal)} {mention}
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        <div class="flex items-baseline justify-between gap-4 py-4">
+                          <span class="text-[17px] font-bold">Total</span>
+                          <span class="font-mono text-[20px] font-bold whitespace-nowrap tabular-nums">
+                            {eur.format(total)} {mention}
+                          </span>
+                        </div>
+                      )}
+                      {b.reglement && (
+                        <p class="text-[13px] text-mute">
+                          Conditions de règlement : <Fragment set:html={riche(b.reglement)} />
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
 
-      <section
-        class="grid grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
-      >
-        <p class="label pt-1">Livrables</p>
-        <ul class="flex list-none flex-col gap-3">
-          {
-            d.livrables.map((item) => (
-              <li class="flex items-start gap-3.5">
-                <span class="mt-[0.55em] block size-1.5 flex-none bg-ink" aria-hidden="true" />
-                <span class="max-w-[58ch]" set:html={riche(item)} />
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-
-      <section
-        class="grid grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
-      >
-        <p class="label pt-1">Budget</p>
-        <div>
-          {
-            d.budget.lignes.map((ligne) => (
-              <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px]">
-                <span>{ligne.label}</span>
-                <span class="font-mono tabular-nums">{eur.format(ligne.prix)}</span>
-              </div>
-            ))
-          }
-          {
-            remise > 0 ? (
-              <>
-                <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] font-medium">
-                  <span>Total</span>
-                  <span class="font-mono tabular-nums">{eur.format(total)} HT</span>
+              {section.planning && (
+                <div>
+                  <div>
+                    {section.planning.jalons.map((jalon) => (
+                      <div class="grid grid-cols-[150px_1fr] items-baseline gap-4 border-b border-line py-2.5 text-[15px] max-[700px]:grid-cols-[110px_1fr]">
+                        <span class="font-mono text-[13px] text-mute">{jalon.date}</span>
+                        <span set:html={riche(jalon.label)} />
+                      </div>
+                    ))}
+                  </div>
+                  {section.planning.note && (
+                    <p class="mt-4 text-[13px] text-mute" set:html={riche(section.planning.note)} />
+                  )}
                 </div>
-                <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute">
-                  <span>Remise exceptionnelle (−{d.budget.remisePct}&nbsp;%)</span>
-                  <span class="font-mono tabular-nums">−{eur.format(remise)}</span>
-                </div>
-                <div class="flex items-baseline justify-between gap-4 py-4">
-                  <span class="text-[17px] font-bold">Total après remise</span>
-                  <span class="font-mono text-[20px] font-bold tabular-nums">
-                    {eur.format(totalFinal)} HT
-                  </span>
-                </div>
-              </>
-            ) : (
-              <div class="flex items-baseline justify-between gap-4 py-4">
-                <span class="text-[17px] font-bold">Total</span>
-                <span class="font-mono text-[20px] font-bold tabular-nums">
-                  {eur.format(total)} HT
-                </span>
-              </div>
-            )
-          }
-          <p class="text-[13px] text-mute">Conditions de règlement : {d.budget.reglement}</p>
-        </div>
-      </section>
-
-      <section
-        class="grid grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
-      >
-        <p class="label pt-1">Timing</p>
-        <p class="max-w-[58ch] leading-[1.6]" set:html={riche(d.timing)} />
-      </section>
+              )}
+            </div>
+          </section>
+        ))
+      }
 
       {
         d.notes.length > 0 && (

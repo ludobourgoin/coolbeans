@@ -2,47 +2,112 @@ titre: En Haut x Coolbeans
 objet: Refonte du site Internet d'En Haut
 date: 2026-07-31
 
-objectif: >-
-  Concevoir un site web **fluide, désirable et cohérent** avec l'identité
-  d'Unlock Breath en repartant de la charte existante et en l'adaptant aux
-  exigences du web.
+sections:
+  - titre: Objectif
+    texte: >-
+      Conception et développement d'un **site moderne, sur la base de
+      l'existant** (refonte), reprenant et modernisant l'identité visuelle
+      actuelle d'En Haut, pour une meilleure lisibilité et une hiérarchie
+      plus claire.
 
-perimetre: >-
-  **UI desktop et mobile de la Home + 3 pages** (1 breakpoint) sur la base de
-  la charte existante adaptée aux exigences du web et d'un challenge UX.
+  - titre: Pages
+    texte: "**8 pages**, dont 2 templates reproductibles :"
+    liste:
+      - Accueil
+      - Projets (liste des projets)
+      - Projet X (template reproductible)
+      - Prestations (liste des prestations)
+      - "À propos / Qui sommes-nous ? (équipe, valeurs, ADN)"
+      - À propos / Les ateliers d'En Haut
+      - À propos / Photographies
+      - À propos / Photographies X (template reproductible)
 
-activites:
-  - Recherches, benchmarks et kick-off
-  - Adaptation de la charte existante pour le web
-  - Atelier UX pour challenger la navigation et la structure des pages
-  - Conception UI de la Home (desktop + mobile)
-  - Conception UI des 3 autres pages (desktop + mobile)
-  - >-
-    Création d'un UI kit léger (polices, couleurs, composants principaux) sur
-    la base des pages travaillées
+  - titre: Fonctionnalités
+    liste:
+      - Slider avant/après moderne et agréable à utiliser
+      - Intégration de cartes interactives pour contextualiser un projet
 
-livrables:
-  - >-
-    Enrichissement de la charte avec les éléments web (sur Figma) : couleurs
-    secondaires, sélection d'une bibliothèque de pictos, motifs, typographie
-    gratuite
-  - Maquettes UI Figma des 4 pages desktop et mobile (1 breakpoint, sur Figma)
-  - UI kit (sur Figma)
+  - titre: Stack technique
+    texte: >-
+      Ma recommandation : **Astro** (développement) + **Sanity** (CMS) +
+      **Cloudflare** (hébergement).
+    liste:
+      - Pages ultra-légères, site rapide
+      - "Coût d'usage nul : hébergement Cloudflare gratuit, aucun abonnement mensuel"
+      - "Autonomie : tu gères textes, images et projets toi-même via Sanity, sans toucher au code"
+      - >-
+        Tu restes libre : le code est dans un dépôt qui t'appartient, le
+        contenu Sanity est exportable, n'importe quel dev peut reprendre le
+        site
+      - Pas de plugins ni de mises à jour à gérer, contrairement à WordPress
 
-budget:
-  lignes:
-    - { label: Mise à jour de la charte, prix: 1500 }
-    - { label: Challenge UX, prix: 1000 }
-    - { label: UI design (home page + 3 pages + UI kit), prix: 4500 }
-  remisePct: 5
-  reglement: 40 % à la commande, 60 % à la livraison du projet.
+  - titre: Budget
+    budget:
+      lignes:
+        - label: >-
+            Refonte complète : conception UX/UI + développement de 8 pages
+            (wireframes, maquettes, intégration) · 350 € / page
+          prix: 2800
+        - label: Architecture technique
+          prix: 450
+        - label: Points hebdos de 30 min à 1 h jusqu'à la livraison
+      reglement: >-
+        Acompte de 30 % à la validation du devis, qui lance la prestation.
+        Solde à la livraison du site fonctionnel.
 
-timing: Livraison estimée en **3 semaines**.
+  - titre: Ce que ça comprend
+    liste:
+      - Responsive (desktop, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation de la vitesse
+      - Tests QA sur les 3 navigateurs principaux
+      - Setup tracking + GA4
+      - Certificat SSL, hébergement et DNS
+      - Pages légales et page de contact
+      - Doc de passation pour la prise en main du CMS
+      - Support 30 jours après mise en ligne
+
+  - titre: En option
+    liste:
+      - "Migration des contenus projets (que tu peux prendre en charge) : +450 €"
+      - >-
+        Réalisation sous Webflow plutôt qu'Astro/Sanity/Cloudflare : +600 €
+        (+ hébergement 240 €/an à ta charge)
+      - "Maintien du site en 3 langues FR/ES/EN : +600 €"
+      - >-
+        Direction artistique approfondie, si tu veux aller plus loin qu'une
+        modernisation sobre : à voir ensemble
+
+  - titre: Planning
+    texte: >-
+      Planning proposé pour un **démarrage le lundi 24 août** — on le recale
+      ensemble à la validation du devis.
+    planning:
+      jalons:
+        - { date: Lun 24/08, label: "Démarrage : cadrage, accès, point contenu" }
+        - { date: Ven 28/08, label: Wireframes V1 (structure des 8 pages + templates) }
+        - { date: Mer 02/09, label: Retour de ta part sur les wireframes }
+        - { date: Lun 07/09, label: Wireframes V2 (ajustements) }
+        - { date: Ven 11/09, label: Maquettes UI V1 (pages clés + 1 template) }
+        - { date: Mer 16/09, label: Retour de ta part sur les maquettes }
+        - { date: Lun 21/09, label: Maquettes UI V2 et validation du design }
+        - { date: 23/09 → 02/10, label: Intégration et développement }
+        - { date: Jeu 01/10, label: Migration des contenus (ou prise en charge de ton côté) }
+        - { date: 05 → 06/10, label: Tests cross-device et performances }
+        - { date: Mer 07/10, label: "Recette, relecture finale de ton côté" }
+        - { date: Jeu 08/10, label: Corrections }
+        - { date: Ven 09/10, label: Livraison et démarrage du support 30 jours }
+      note: >-
+        Ces dates tiennent si les retours arrivent dans les délais indiqués.
+        Si une validation prend du retard, la livraison peut glisser de plus
+        que le retard lui-même, le temps que je recale le projet entre mes
+        autres clients.
 
 notes:
   - >-
-    Cet accompagnement n'inclut pas le développement, l'intégration ni le
-    copywriting.
+    Cet accompagnement n'inclut pas les contenus (images et textes) ni la
+    conception d'une charte graphique poussée (il s'agit bien de moderniser
+    le design visuel existant)
   - >-
     La création ou la commande de nouvelles illustrations, photographies,
     typographies, animations ou vidéos, ainsi que l'achat de licences pour des
