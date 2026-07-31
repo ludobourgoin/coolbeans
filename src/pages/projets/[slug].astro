@@ -1,0 +1,305 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+import GridBackdrop from "../../components/GridBackdrop.astro";
+import Browser from "../../components/Browser.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import Breadcrumbs from "../../components/ui/Breadcrumbs.astro";
+import Badge from "../../components/ui/Badge.astro";
+import Avatar from "../../components/ui/Avatar.astro";
+import { initials } from "../../data/testimonials";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("projets");
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const p = entry.data;
+const { Content } = await render(entry);
+
+/* domaine nu pour l'affichage (barre d'adresse du Browser, lien de la fiche) */
+const domaine = p.url ? new URL(p.url).hostname.replace(/^www\./, "") : undefined;
+---
+
+<BaseLayout
+  title={`${p.titre} — Coolbeans`}
+  description={p.accroche}
+  noindex={p.brouillon}
+>
+  <Nav />
+
+  <!-- EN-TÊTE -->
+  <header class="relative overflow-hidden bg-surface-subtle">
+    <GridBackdrop />
+    <div class="container-site relative pt-24x pb-16x">
+      <Breadcrumbs
+        items={[
+          { label: "Accueil", href: "/" },
+          { label: "Projets", href: "/projets" },
+          { label: p.client.nom },
+        ]}
+      />
+      <p class="label mt-10">Étude de cas{p.numero && ` · ${p.numero}`}</p>
+      <h1 class="mt-5 max-w-[22ch]">{p.titre}</h1>
+      <p class="mt-6 max-w-[58ch] text-xl leading-[1.45] font-medium">{p.accroche}</p>
+
+      <div class="mt-14">
+        <Browser
+          url={domaine}
+          shot={p.hero?.shot}
+          alt={p.hero?.alt ?? ""}
+          label={p.client.nom}
+        />
+      </div>
+    </div>
+  </header>
+
+  <!-- FICHE PROJET -->
+  <section class="container-site pt-16x">
+    <div class="card grid grid-cols-4 gap-8 max-[900px]:grid-cols-2 max-[520px]:grid-cols-1">
+      <div>
+        <p class="label mb-3">Client</p>
+        {
+          p.client.contact ? (
+            <div class="flex items-center gap-3">
+              <Avatar
+                size={36}
+                src={p.client.contact.photo}
+                alt={p.client.contact.nom}
+                initials={initials(p.client.contact.nom)}
+              />
+              <div class="min-w-0">
+                <p class="truncate text-[15px] font-semibold">{p.client.contact.nom}</p>
+                <p class="truncate text-[13px] text-mute">{p.client.contact.role}</p>
+              </div>
+            </div>
+          ) : (
+            <p class="text-[15px] font-semibold">{p.client.nom}</p>
+          )
+        }
+      </div>
+      <div>
+        <p class="label mb-3">Secteur</p>
+        <p class="text-[15px] font-semibold">{p.secteur}</p>
+        {p.lieu && <p class="text-[13px] text-mute">{p.lieu}</p>}
+      </div>
+      <div>
+        <p class="label mb-3">Timeline</p>
+        <p class="text-[15px] font-semibold">{p.duree ?? "À confirmer"}</p>
+        {p.miseEnLigne && <p class="text-[13px] text-mute">En ligne depuis {p.miseEnLigne}</p>}
+      </div>
+      <div>
+        <p class="label mb-3">Site en ligne</p>
+        {
+          p.url ? (
+            <a class="link text-[15px] font-semibold" href={p.url} target="_blank" rel="noopener">
+              {domaine}
+            </a>
+          ) : (
+            <p class="text-[13px] text-mute">Non public</p>
+          )
+        }
+      </div>
+    </div>
+
+    {
+      (p.prestations.length > 0 || p.stack.length > 0) && (
+        <div class="mt-6 grid grid-cols-2 gap-8 max-[700px]:grid-cols-1">
+          {p.prestations.length > 0 && (
+            <div>
+              <p class="label mb-3">Prestations</p>
+              <div class="flex flex-wrap gap-1.5">
+                {p.prestations.map((item) => (
+                  <Badge subtle>{item}</Badge>
+                ))}
+              </div>
+            </div>
+          )}
+          {p.stack.length > 0 && (
+            <div>
+              <p class="label mb-3">Stack</p>
+              <div class="flex flex-wrap gap-1.5">
+                {p.stack.map((item) => (
+                  <Badge subtle>{item}</Badge>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )
+    }
+  </section>
+
+  <!-- EN BREF -->
+  {
+    p.enBref.length > 0 && (
+      <section class="container-site pt-16x">
+        <div class="rounded-[6px] bg-accent p-10 text-accent-ink max-[700px]:p-7">
+          <p class="label mb-7 !text-accent-ink opacity-70">En bref</p>
+          <ul class="flex list-none flex-col">
+            {p.enBref.map((item, index) => (
+              <li
+                class:list={[
+                  "flex items-start gap-4 py-3.5",
+                  index > 0 && "border-t border-accent-ink/15",
+                ]}
+              >
+                <svg
+                  class="mt-1.5 h-4 w-4 flex-none"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M3 8.5 6.5 12 13 4.5" />
+                </svg>
+                <span class="max-w-[62ch] text-[17px] leading-[1.5]">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- RÉCIT -->
+  <article class="container-site py-16x">
+    <div class="prose-projet mx-auto max-w-[680px]">
+      <Content />
+    </div>
+  </article>
+
+  <!-- AVANT / APRÈS -->
+  {
+    p.avantApres.length > 0 && (
+      <section class="border-t border-line bg-surface-subtle">
+        <div class="container-site py-16x">
+          <h2 class="max-w-[20ch]">Avant / après</h2>
+          <div class="mt-12 flex flex-col gap-16">
+            {p.avantApres.map((paire) => (
+              <div>
+                <p class="label mb-5">{paire.titre}</p>
+                <div class="grid grid-cols-2 gap-6 max-[900px]:grid-cols-1">
+                  <figure>
+                    <figcaption class="mb-2.5 font-mono text-[11px] font-bold tracking-[0.1em] text-mute uppercase">
+                      Avant
+                    </figcaption>
+                    <Browser shot={paire.avant.shot} alt={paire.avant.alt} label="Avant" />
+                  </figure>
+                  <figure>
+                    <figcaption class="mb-2.5 font-mono text-[11px] font-bold tracking-[0.1em] text-ink uppercase">
+                      Après
+                    </figcaption>
+                    <Browser
+                      url={domaine}
+                      shot={paire.apres.shot}
+                      alt={paire.apres.alt}
+                      label="Après"
+                    />
+                  </figure>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- TÉMOIGNAGE -->
+  {
+    p.temoignage && (
+      <section class="container-site py-16x">
+        <blockquote class="card mx-auto max-w-[680px] border-l-4 border-l-accent">
+          <p class="text-lg leading-[1.6] whitespace-pre-line italic">{p.temoignage.texte}</p>
+          <footer class="mt-7 flex items-center gap-3">
+            <Avatar
+              size={40}
+              src={p.temoignage.photo}
+              alt={p.temoignage.auteur}
+              initials={initials(p.temoignage.auteur)}
+            />
+            <div>
+              <p class="text-[15px] font-semibold not-italic">{p.temoignage.auteur}</p>
+              <p class="text-[13px] text-mute not-italic">{p.temoignage.role}</p>
+            </div>
+          </footer>
+        </blockquote>
+      </section>
+    )
+  }
+
+  <CtaBand
+    title="Envie d'un projet comme celui-là ?"
+    text="Racontez-moi où vous en êtes, je vous dis franchement ce que je ferais à votre place."
+  />
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* Typo du corps Markdown : le HTML rendu par <Content /> échappe aux
+     utilitaires Tailwind, d'où ce bloc scopé branché sur les tokens. */
+  .prose-projet :global(h2) {
+    font-size: clamp(26px, 3vw, 32px);
+    margin-top: 3.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .prose-projet :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .prose-projet :global(h3) {
+    font-size: 19px;
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .prose-projet :global(p) {
+    margin-bottom: 1.3rem;
+    line-height: 1.65;
+  }
+  .prose-projet :global(ul),
+  .prose-projet :global(ol) {
+    margin-bottom: 1.4rem;
+    padding-left: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .prose-projet :global(ul) {
+    list-style: disc;
+  }
+  .prose-projet :global(ol) {
+    list-style: decimal;
+  }
+  .prose-projet :global(li)::marker {
+    color: var(--mute);
+  }
+  .prose-projet :global(strong) {
+    font-weight: 600;
+  }
+  .prose-projet :global(a) {
+    color: var(--accent);
+    border-bottom: 1px solid var(--line-strong);
+    transition: border-color 150ms ease-in-out;
+  }
+  .prose-projet :global(a:hover) {
+    border-color: var(--accent);
+  }
+  .prose-projet :global(blockquote) {
+    border-left: 3px solid var(--accent);
+    padding: 0.25rem 0 0.25rem 1.25rem;
+    margin: 1.75rem 0;
+    font-style: italic;
+  }
+  .prose-projet :global(hr) {
+    border: 0;
+    border-top: 1px solid var(--line);
+    margin: 2.5rem 0;
+  }
+</style>
