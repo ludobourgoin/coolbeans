@@ -44,6 +44,7 @@
 - Create: `scripts/extract-geist-tokens.js`
 - Create: `src/styles/geist-tokens.css`
 - Create: `scripts/verify-design-system.js`
+- Create: `scripts/package.json` — `{"type": "commonjs"}`, cf. étape 2
 
 **Interfaces:**
 - Consumes: rien.
@@ -151,7 +152,14 @@ console.log('\n' + ok.length + ' assertions, toutes vertes.');
 - [ ] **Step 2: Lancer le harnais pour le voir échouer**
 
 Run: `node scripts/verify-design-system.js`
-Expected: FAIL — « police Geist-Variable.woff2 », « geist-tokens.css existe » et les assertions B en échec. Les assertions C passent déjà (les tokens morts existent encore, donc **C doit échouer** : `surface-marque`, `card-frame`, `data-accent`, `bg-texture` sont présents dans `src/`). Total attendu : au moins 12 échecs.
+Expected: FAIL, **9 assertions rouges sur 14**. Détail : les deux polices absentes, `geist-tokens.css` absent, et les cinq tokens morts (`surface-marque`, `card-frame`, `data-accent`, `bg-texture`, `accent-focus`) encore présents dans `src/`, plus les blocs `<style>` hors liste blanche.
+
+Les sous-assertions B ne comptent pas encore : elles sont gardées par `if (geist)` et ne s'exécutent pas tant que le fichier n'existe pas. C'est normal.
+
+> Le projet est en `"type": "module"` alors que ces deux scripts sont en CommonJS.
+> Créer `scripts/package.json` contenant `{"type": "commonjs"}` — mécanisme Node
+> documenté qui limite la portée au dossier, sans toucher au `package.json` racine.
+> Sans lui, les scripts plantent avant de produire la moindre assertion.
 
 - [ ] **Step 3: Installer les polices Geist**
 
@@ -367,8 +375,12 @@ if (glob) {
   check('tailles de bouton 32/36/40',
     /height:\s*32px/.test(glob) && /height:\s*36px/.test(glob) && /height:\s*40px/.test(glob));
   check('corps à 16px', /font-size:\s*16px/.test(glob));
-  check('geomanist-book non déclaré', !glob.includes('geomanist-book'));
-  check('geomanist-medium non déclaré', !glob.includes('geomanist-medium'));
+  /* l'exigence est qu'aucun fichier Book/Medium ne soit chargé — pas que leur
+     nom soit tabou. Le commentaire d'en-tête les cite légitimement pour
+     documenter ce qui a été retiré : tester la chaîne libre interdirait de
+     documenter la suppression. */
+  for (const f of ['geomanist-book-webfont', 'geomanist-medium-webfont'])
+    check('police ' + f + ' non chargée', !new RegExp('url\\(["\']?[^)]*' + f).test(glob));
 }
 ```
 
@@ -826,24 +838,55 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ## Task 3: GridBackdrop
 
 **Files:**
+- Create: `src/utils/gridIdCounter.js`
 - Create: `src/components/GridBackdrop.astro`
 
 **Interfaces:**
 - Consumes: `--line-strong` de la tâche 2.
-- Produces: `<GridBackdrop />`, accepte les props `size` (nombre, défaut 64) et `class` (string, défaut `""`).
+- Produces: `<GridBackdrop />`, accepte les props `size` (nombre, défaut 64) et `class` (string, défaut `""`) ; et `getGridId(): string` depuis `src/utils/gridIdCounter.js`.
 
-- [ ] **Step 1: Créer le composant**
+> Le reste de `src/` utilise `.ts` pour les modules hors composants (`src/data/*.ts`).
+> Ce fichier est en `.js` — incohérence de convention relevée en revue, différée au
+> passage final.
+
+- [ ] **Step 1: Créer le compteur d'identifiants**
+
+Le frontmatter d'un `.astro` est compilé en corps de fonction de rendu : une variable
+qui y est déclarée est réinitialisée **à chaque instance**. Il faut donc un vrai module
+ES, dont l'instance est unique par processus de build.
+
+Sans ça, deux `<GridBackdrop />` sur une même page peuvent porter le même identifiant,
+et la résolution des références SVG retient le **premier** `<pattern>` du DOM : la
+seconde instance afficherait la grille de la première, avec la mauvaise valeur de `size`.
+
+```js
+/* Compteur à portée module : une seule instance par processus de build,
+   donc des identifiants uniques sur toute la sortie.
+   Portée build et non page — garantie plus forte que nécessaire. Les
+   numéros dépendent en revanche de l'ordre de rendu des pages, donc ils
+   peuvent se décaler si l'on ajoute une page en amont. L'unicité, elle,
+   tient dans tous les cas. */
+let counter = 0;
+
+export function getGridId() {
+  return `grid-${++counter}`;
+}
+```
+
+- [ ] **Step 2: Créer le composant**
 
 ```astro
 ---
 /* Grille pointillée décorative des hero. Le SVG utilise currentColor,
    donc la couleur suit le token via `color` — pas de valeur figée. */
+import { getGridId } from "../utils/gridIdCounter";
+
 interface Props {
   size?: number;
   class?: string;
 }
 const { size = 64, class: className = "" } = Astro.props;
-const id = `grid-${Math.random().toString(36).slice(2, 8)}`;
+const id = getGridId();
 ---
 
 <div
@@ -870,15 +913,15 @@ const id = `grid-${Math.random().toString(36).slice(2, 8)}`;
 </div>
 ```
 
-- [ ] **Step 2: Vérifier le build**
+- [ ] **Step 3: Vérifier le build**
 
 Run: `npm run build`
 Expected: build réussi, aucune erreur Astro.
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 4: Commit**
 
 ```bash
-git add src/components/GridBackdrop.astro
+git add src/utils/gridIdCounter.js src/components/GridBackdrop.astro
 git commit -m "feat(design): composant GridBackdrop
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
@@ -959,7 +1002,9 @@ interface Props {
 const { url, shot, alt = "", label = "" } = Astro.props;
 ---
 
-<div class="material-small browser overflow-hidden bg-surface-subtle">
+<div
+  class="material-small @container overflow-hidden rounded-[6px] bg-surface-subtle md:rounded-[1.5cqw]"
+>
   <div
     class="flex items-center justify-between gap-4 bg-surface px-4 py-2 md:gap-6 md:px-5 md:py-2.5"
   >
@@ -1005,46 +1050,13 @@ const { url, shot, alt = "", label = "" } = Astro.props;
   </div>
 </div>
 
-<style>
-  /* irréductible : container queries — Tailwind ne génère pas `1.5cqw`
-     comme rayon dynamique, et `container-type` doit être posé sur l'élément. */
-  .browser {
-    container-type: inline-size;
-    border-radius: 6px;
-  }
-  @media (min-width: 768px) {
-    .browser {
-      border-radius: 1.5cqw;
-    }
-  }
-</style>
 ```
 
-> Ce `<style>` est une troisième exception à la convention, en plus de `Flow.astro` et `LogoMarquee.astro`. Ajouter `src/components/Browser.astro` à la liste `ALLOWED` du harnais à l'étape suivante.
+> Aucun `<style>`. `@container` est l'utilitaire natif de Tailwind v4 pour
+> `container-type: inline-size`, et les valeurs arbitraires acceptent n'importe
+> quelle unité — `rounded-[1.5cqw]` compile, avec préfixage responsive.
 
-- [ ] **Step 3: Autoriser Browser.astro dans le harnais**
-
-Dans `scripts/verify-design-system.js`, remplacer :
-
-```js
-const ALLOWED = ['src/components/Flow.astro', 'src/components/LogoMarquee.astro'];
-```
-
-par :
-
-```js
-/* Exceptions à la convention CSS, chacune justifiée :
-   Flow          — timeline GSAP
-   LogoMarquee   — @keyframes de défilement
-   Browser       — container-type + rayon en cqw, hors portée de Tailwind */
-const ALLOWED = [
-  'src/components/Flow.astro',
-  'src/components/LogoMarquee.astro',
-  'src/components/Browser.astro',
-];
-```
-
-- [ ] **Step 4: Brancher `cases.ts` dans `index.astro`**
+- [ ] **Step 3: Brancher `cases.ts` dans `index.astro`**
 
 Dans le frontmatter de `src/pages/index.astro`, supprimer la constante `const cases = [ … ];` et ajouter en haut :
 
@@ -1054,17 +1066,17 @@ import { cases } from "../data/cases";
 
 Le `cases.map(...)` existant continue de fonctionner : les champs `num`, `tag`, `title` et `span` sont inchangés.
 
-- [ ] **Step 5: Vérifier le build**
+- [ ] **Step 4: Vérifier le build**
 
 Run: `npm run build`
 Expected: build réussi.
 
 Contrôle : `grep -n "const cases" src/pages/index.astro` ne doit plus rien retourner.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 5: Commit**
 
 ```bash
-git add src/data/cases.ts src/components/Browser.astro scripts/verify-design-system.js src/pages/index.astro
+git add src/data/cases.ts src/components/Browser.astro src/pages/index.astro
 git commit -m "feat(portfolio): composant Browser et extraction des etudes de cas
 
 Le rayon du cadre suit la largeur du conteneur (1.5cqw).
@@ -1084,7 +1096,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 - Consumes: les tokens de la tâche 2.
 - Produces:
   - `<Badge variant?="gray"|"blue"|"amber"|"red"|"purple" subtle?={boolean} size?="sm"|"md" />` avec slot par défaut.
-  - `<Avatar size?={number} src?={string} alt?={string} initials?={string} />`.
+  - `<Avatar size?={number} src?={string} alt?={string} initials?={string} loading?="lazy"|"eager" />` (`loading` ajouté en tâche 8, défaut `"lazy"`).
   - `<Breadcrumbs items={{ label: string; href?: string }[]} />`.
   - `<Description items={{ term: string; value: string }[]} />`.
   - `<Banner tone?="neutral"|"info"|"success"|"warning"|"error" />` avec slot.
@@ -1104,12 +1116,20 @@ interface Props {
 }
 const { variant = "gray", subtle = false, size = "md" } = Astro.props;
 
+/* Fond uniforme sur la marche -900, texte en --ds-background-100 qui bascule
+   avec le thème (#fff en clair, #0a0a0a en sombre).
+
+   NE PAS revenir à --ds-contrast-fg : il vaut #fff en dur et n'est jamais
+   redéfini sous .dark, alors que les marches -800/-900 s'inversent vers le
+   clair. Le premier jet appariait ainsi du blanc sur du clair — l'ambre plein
+   tombait à 1,18:1 en sombre et 3,11:1 en clair. La section G du harnais
+   vérifie désormais les dix paires dans les deux thèmes, seuil 4,5:1. */
 const SOLID: Record<string, string> = {
-  gray: "background:var(--ds-gray-900);color:var(--ds-contrast-fg)",
-  blue: "background:var(--ds-blue-800);color:var(--ds-contrast-fg)",
-  amber: "background:var(--ds-amber-700);color:var(--ds-amber-900)",
-  red: "background:var(--ds-red-900);color:var(--ds-contrast-fg)",
-  purple: "background:var(--ds-purple-900);color:var(--ds-contrast-fg)",
+  gray: "background:var(--ds-gray-900);color:var(--ds-background-100)",
+  blue: "background:var(--ds-blue-900);color:var(--ds-background-100)",
+  amber: "background:var(--ds-amber-900);color:var(--ds-background-100)",
+  red: "background:var(--ds-red-900);color:var(--ds-background-100)",
+  purple: "background:var(--ds-purple-900);color:var(--ds-background-100)",
 };
 const SUBTLE: Record<string, string> = {
   gray: "background:var(--ds-gray-200);color:var(--ds-gray-1000)",
@@ -1145,8 +1165,9 @@ interface Props {
   src?: string;
   alt?: string;
   initials?: string;
+  loading?: "lazy" | "eager";
 }
-const { size = 32, src, alt = "", initials = "" } = Astro.props;
+const { size = 32, src, alt = "", initials = "", loading = "lazy" } = Astro.props;
 ---
 
 <span
@@ -1155,13 +1176,19 @@ const { size = 32, src, alt = "", initials = "" } = Astro.props;
 >
   {
     src ? (
-      <img src={src} alt={alt} class="block h-full w-full object-cover" />
+      <img src={src} alt={alt} loading={loading} class="block h-full w-full object-cover" />
     ) : (
       initials
     )
   }
 </span>
 ```
+
+> **Correction en cours d'exécution.** Prop `loading?: "lazy" | "eager"` ajoutée,
+> défaut `"lazy"`, en tâche 8 (fix round 1, commits f141ad6..bc37880) — l'audit
+> d'attributs qui a repris `index.astro` vérifiait href/alt/aria-*/role/id/tabindex/src
+> mais pas `loading`, et les 11 portraits de la page d'accueil l'avaient perdu.
+> Le défaut protège tous les appelants futurs sans qu'aucun ait à le répéter.
 
 - [ ] **Step 3: Créer `src/components/ui/Breadcrumbs.astro`**
 
@@ -1212,8 +1239,10 @@ const { items } = Astro.props;
   {
     items.map((it) => (
       <div>
-        <dt class="mb-2 min-h-[14px] text-sm/[14px] text-mute">{it.term}</dt>
-        <dd class="m-0 text-sm text-ink">{it.value}</dd>
+        <dt class="mb-2 text-sm/[14px] text-mute">{it.term}</dt>
+        {/* la garde va sur <dd>, pas sur <dt> : c'est la valeur qui peut être
+            vide et effondrer sa ligne. min-h-5 = 20px = l'interligne de text-sm. */}
+        <dd class="m-0 min-h-5 text-sm text-ink">{it.value}</dd>
       </div>
     ))
   }
@@ -1258,35 +1287,23 @@ interface Props {
 const { question, open = false } = Astro.props;
 ---
 
-<details class="collapse border-t border-line last-of-type:border-b" open={open}>
+<details class="group border-t border-line last-of-type:border-b" open={open}>
   <summary
-    class="flex cursor-pointer items-center justify-between gap-4 py-5 text-base font-medium text-ink"
+    class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-base font-medium text-ink [&::-webkit-details-marker]:hidden"
   >
     {question}
-    <span class="font-mono text-mute" aria-hidden="true"></span>
+    <span
+      class="font-mono text-mute after:content-['+'] group-open:after:content-['−']"
+      aria-hidden="true"></span>
   </summary>
   <div class="max-w-[68ch] pb-5 text-[15px] text-mute"><slot /></div>
 </details>
-
-<style>
-  /* irréductible : ::marker et le contenu généré du chevron ne sont pas
-     atteignables en utilitaires. */
-  .collapse summary {
-    list-style: none;
-  }
-  .collapse summary::-webkit-details-marker {
-    display: none;
-  }
-  .collapse summary > span::after {
-    content: "+";
-  }
-  .collapse[open] summary > span::after {
-    content: "−";
-  }
-</style>
 ```
 
-> Quatrième exception à la convention. Ajouter `src/components/ui/Collapse.astro` à `ALLOWED` (étape 8).
+> Aucun `<style>` ici. `list-none` couvre `list-style`, la variante arbitraire
+> `[&::-webkit-details-marker]:hidden` couvre le marqueur WebKit, et
+> `after:content-['+']` avec `group-open:after:content-['−']` couvre le chevron —
+> `group` sur le `<details>` permet à `group-open:` de réagir à l'attribut `open`.
 
 - [ ] **Step 7: Créer `src/components/ui/CopyButton.astro`**
 
@@ -1328,16 +1345,12 @@ const { value, label = "copier" } = Astro.props;
 </script>
 ```
 
-- [ ] **Step 8: Autoriser Collapse.astro dans le harnais**
-
-Dans `scripts/verify-design-system.js`, ajouter `'src/components/ui/Collapse.astro'` au tableau `ALLOWED`, avec le commentaire `Collapse — ::marker et contenu généré`.
-
-- [ ] **Step 9: Vérifier le build et le harnais**
+- [ ] **Step 8: Vérifier le build et le harnais**
 
 Run: `npm run build && node scripts/verify-design-system.js`
 Expected: build réussi. Le harnais échoue encore sur C, D et F (les pages ne sont pas encore reprises).
 
-- [ ] **Step 10: Commit**
+- [ ] **Step 9: Commit**
 
 ```bash
 git add src/components/ui scripts/verify-design-system.js
@@ -1359,8 +1372,8 @@ Ces quatre composants entrent dans la bibliothèque mais **ne sont posés sur au
 - Consumes: les tokens de la tâche 2, `.material-menu`, `.material-modal`, `.field`.
 - Produces:
   - `<Choicebox name={string} options={{ value: string; title: string; hint?: string; checked?: boolean }[]} />`
-  - `<ClearableInput name={string} placeholder?={string} />`
-  - `<ContextCard label={string} href?={string} />` avec slot pour le contenu du popover.
+  - `<ClearableInput name={string} placeholder={string} />` (`placeholder` requis, pas optionnel — voir étape 2)
+  - `<ContextCard label={string} href?={string} />` avec slot pour le contenu du popover ; l'`id` du popover est généré par `getGridId()` et relié au déclencheur via `aria-describedby`.
   - `<CommandMenu items={{ label: string; key?: string }[]} placeholder?={string} />`
 
 - [ ] **Step 1: Créer `src/components/ui/Choicebox.astro`**
@@ -1376,19 +1389,18 @@ interface Props {
 const { name, options } = Astro.props;
 ---
 
-<div class="choicebox grid gap-3">
+<div class="grid gap-3">
   {
     options.map((o) => (
       <label
-        class="flex cursor-pointer items-start gap-3 rounded-card border border-line bg-surface px-4 py-3.5 transition-colors duration-150 ease-in-out"
+        class="flex cursor-pointer items-start gap-3 rounded-card border border-line bg-surface px-4 py-3.5 transition-colors duration-150 ease-in-out hover:border-[var(--ds-gray-500)] hover:bg-[var(--ds-gray-100)] has-checked:border-[var(--ds-blue-600)] has-checked:bg-[var(--ds-blue-100)] hover:has-checked:bg-[var(--ds-blue-200)]"
       >
         <input
           type="radio"
           name={name}
           value={o.value}
           checked={o.checked}
-          class="mt-0.5"
-          style="accent-color:var(--ds-blue-700)"
+          class="mt-0.5 accent-[var(--ds-blue-700)]"
         />
         <span>
           <span class="block text-sm font-medium text-ink">{o.title}</span>
@@ -1398,23 +1410,11 @@ const { name, options } = Astro.props;
     ))
   }
 </div>
-
-<style>
-  /* irréductible : :has() combiné à des variantes de survol, hors portée
-     des utilitaires générés. */
-  .choicebox label:hover {
-    border-color: var(--ds-gray-500);
-    background: var(--ds-gray-100);
-  }
-  .choicebox label:has(:checked) {
-    border-color: var(--ds-blue-600);
-    background: var(--ds-blue-100);
-  }
-  .choicebox label:has(:checked):hover {
-    background: var(--ds-blue-200);
-  }
-</style>
 ```
+
+> Aucun `<style>`. `has-checked:` est une variante native de Tailwind v4 : elle
+> compile en `&:has(*:checked)`. Combinée à `hover:`, elle couvre les trois règles
+> de l'ancien bloc. `accent-[…]` remplace l'attribut `style` sur l'input.
 
 - [ ] **Step 2: Créer `src/components/ui/ClearableInput.astro`**
 
@@ -1424,35 +1424,22 @@ La croix n'apparaît qu'une fois le champ rempli, via `:not(:placeholder-shown)`
 ---
 interface Props {
   name: string;
-  placeholder?: string;
+  placeholder: string;
 }
-const { name, placeholder = "" } = Astro.props;
+const { name, placeholder } = Astro.props;
 ---
 
-<div class="clearable relative flex items-center">
-  <input class="field pr-10" name={name} placeholder={placeholder} />
+<div class="relative flex items-center">
+  <input class="field peer pr-10" name={name} placeholder={placeholder} />
   <button
     type="button"
     aria-label="Effacer"
-    class="absolute right-1.5 flex size-6 items-center justify-center rounded-full text-mute transition-colors duration-150 ease-in-out"
+    class="absolute right-1.5 hidden size-6 items-center justify-center rounded-full text-mute transition-colors duration-150 ease-in-out peer-not-placeholder-shown:flex hover:bg-[var(--ds-gray-alpha-200)] hover:text-ink"
     data-clear
   >
     ✕
   </button>
 </div>
-
-<style>
-  .clearable button {
-    display: none;
-  }
-  .clearable input:not(:placeholder-shown) + button {
-    display: flex;
-  }
-  .clearable button:hover {
-    background: var(--ds-gray-alpha-200);
-    color: var(--ink);
-  }
-</style>
 
 <script>
   document.querySelectorAll<HTMLButtonElement>("[data-clear]").forEach((btn) => {
@@ -1466,44 +1453,50 @@ const { name, placeholder = "" } = Astro.props;
 </script>
 ```
 
+> **Correction en cours d'exécution.** `placeholder` est passé de prop optionnelle
+> (défaut `""`) à requise. Le mécanisme du bouton croix repose entièrement sur
+> `:not(:placeholder-shown)` : sans placeholder, l'input n'a jamais d'état
+> « placeholder affiché » à quitter, et le bouton reste soit toujours masqué,
+> soit toujours visible selon le navigateur. Rendre la prop obligatoire force
+> chaque appelant à fournir la valeur dont le sélecteur a besoin pour fonctionner.
+
 - [ ] **Step 3: Créer `src/components/ui/ContextCard.astro`**
 
 ```astro
 ---
+import { getGridId } from "../../utils/gridIdCounter.js";
+
 interface Props {
   label: string;
   href?: string;
 }
 const { label, href = "#" } = Astro.props;
+const id = getGridId();
 ---
 
-<span class="ctxcard relative inline-block">
-  <a href={href} class="border-b border-line">{label}</a>
+<span class="group relative inline-block">
+  <a href={href} class="border-b border-line" aria-describedby={id}>{label}</a>
   <span
-    class="material-menu pop absolute left-0 top-[calc(100%+8px)] z-20 w-[280px] rounded-card bg-surface p-4"
+    id={id}
+    class="material-menu invisible absolute left-0 top-[calc(100%+8px)] z-20 w-70 -translate-y-1 rounded-card bg-surface p-4 opacity-0 transition-[opacity,transform,visibility] duration-150 ease-in-out group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100"
   >
     <slot />
   </span>
 </span>
-
-<style>
-  .ctxcard .pop {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-4px);
-    transition:
-      opacity 150ms ease-in-out,
-      transform 150ms ease-in-out,
-      visibility 150ms;
-  }
-  .ctxcard:hover .pop,
-  .ctxcard:focus-within .pop {
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-  }
-</style>
 ```
+
+> Aucun `<style>`. `group` sur le parent, puis `group-hover:` et
+> `group-focus-within:` sur le popover. `invisible` / `visible` couvrent
+> `visibility`, et `transition-[opacity,transform,visibility]` porte les trois
+> propriétés d'un coup.
+>
+> **Correction en cours d'exécution.** Le popover est relié au déclencheur par
+> `aria-describedby`, sans quoi son contenu n'est jamais exposé aux lecteurs
+> d'écran. L'`id` doit être unique par instance — le compteur `getGridId()` de
+> la tâche 3 (`src/utils/gridIdCounter.js`) est réutilisé ici pour la même
+> raison qu'il existe : un frontmatter Astro se réinitialise à chaque instance,
+> il faut un compteur au périmètre du module pour éviter deux `id` identiques
+> sur une même page.
 
 - [ ] **Step 4: Créer `src/components/ui/CommandMenu.astro`**
 
@@ -1516,7 +1509,7 @@ interface Props {
 const { items, placeholder = "Rechercher…" } = Astro.props;
 ---
 
-<div class="material-modal max-w-[440px] overflow-hidden rounded-card bg-surface">
+<div class="material-modal max-w-110 overflow-hidden rounded-card bg-surface">
   <div class="flex h-12 items-center gap-2.5 border-b border-line px-4">
     <span class="text-mute" aria-hidden="true">⌘</span>
     <input
@@ -1527,15 +1520,18 @@ const { items, placeholder = "Rechercher…" } = Astro.props;
   <ul class="m-0 list-none p-1.5">
     {
       items.map((it) => (
-        <li
-          class="flex h-9 cursor-pointer items-center justify-between gap-3 rounded-control px-2.5 text-sm text-ink transition-colors duration-150 ease-in-out hover:bg-surface-raise"
-        >
-          {it.label}
-          {it.key && (
-            <kbd class="rounded border border-line bg-surface-subtle px-1.5 py-px font-mono text-[11px] text-mute">
-              {it.key}
-            </kbd>
-          )}
+        <li>
+          <button
+            type="button"
+            class="flex h-9 w-full cursor-pointer items-center justify-between gap-3 rounded-control px-2.5 text-sm text-ink transition-colors duration-150 ease-in-out hover:bg-surface-raise"
+          >
+            {it.label}
+            {it.key && (
+              <kbd class="rounded border border-line bg-surface-subtle px-1.5 py-px font-mono text-[11px] text-mute">
+                {it.key}
+              </kbd>
+            )}
+          </button>
         </li>
       ))
     }
@@ -1543,16 +1539,18 @@ const { items, placeholder = "Rechercher…" } = Astro.props;
 </div>
 ```
 
-- [ ] **Step 5: Autoriser les trois nouveaux `<style>` dans le harnais**
+> **Correction en cours d'exécution.** Chaque `<li>` contient un vrai
+> `<button type="button">`, pas une classe directement sur le `<li>` : un item
+> de menu doit être focusable et activable au clavier, ce qu'un `<li>` seul
+> n'offre pas. `w-full` sur le bouton pour qu'il occupe toute la largeur de
+> la ligne.
 
-Ajouter à `ALLOWED` : `'src/components/ui/Choicebox.astro'` (`:has()` + survol), `'src/components/ui/ClearableInput.astro'` (`:placeholder-shown` + sibling), `'src/components/ui/ContextCard.astro'` (popover au survol).
-
-- [ ] **Step 6: Vérifier le build**
+- [ ] **Step 5: Vérifier le build**
 
 Run: `npm run build && node scripts/verify-design-system.js`
 Expected: build réussi ; C, D et F encore rouges.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add src/components/ui scripts/verify-design-system.js
@@ -1597,7 +1595,33 @@ Remplacer toute couleur en dur par un token. Le toggle `.dark` sur `<html>` et l
 
 - [ ] **Step 2: Reprendre `Footer.astro`**
 
-Supprimer le `<style>`. La bande de marque perd `.surface-brand` (grain retiré) et devient `bg-surface-subtle`. Colonnes en `grid gap-6 sm:grid-cols-2 lg:grid-cols-5`, séparateur `border-t border-line`, liens comme dans la nav.
+Supprimer le `<style>`. La bande de marque perd `.surface-brand` (grain retiré) et devient `bg-surface-subtle`.
+
+> **Structure revue en cours de chantier, sur décision du propriétaire —
+> description ci-dessous mise à jour pour correspondre au fichier réel.**
+> Le footer livré ne suit plus la disposition simple envisagée au départ
+> (grille `sm:grid-cols-2 lg:grid-cols-5`, un seul niveau de liens). Il a été
+> restructuré en cours d'exécution en :
+> - une grille `grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1.6fr]` à
+>   quatre zones : marque (wordmark + paragraphe, `dark:hidden`/`dark:block`
+>   pour les deux variantes de logo), nav « explorer », nav « contact »,
+>   newsletter ;
+> - un formulaire newsletter non branché à un service d'envoi : soumission
+>   native neutralisée par un `submit` listener avec `preventDefault()` (un
+>   champ email seul ne déclenche pas la garde native « more than one
+>   blocking field », donc une neutralisation explicite est nécessaire) ;
+> - un sélecteur de thème à trois positions (clair / système / sombre), pas
+>   un simple toggle deux états : `role="group"`, trois `<button
+>   aria-pressed>`, script inline qui lit/écrit `localStorage` et reflète
+>   l'état initial déjà posé par le script anti-flash de `BaseLayout.astro` ;
+> - une ligne de bas de page séparée (copyright + lien LinkedIn en texte avec
+>   icône SVG, `aria-label="linkedin"`) sous la grille principale, avec son
+>   propre `border-t`.
+>
+> Se référer à `src/components/Footer.astro` pour le détail exact du markup
+> plutôt qu'à un bloc de code figé ici : la surface de ce composant a bougé
+> plusieurs fois pendant le chantier (voir commits `78d9495`, `43f8eae`,
+> `42eee44`) et un extrait resterait périmé au prochain ajustement.
 
 - [ ] **Step 3: Reprendre `CtaBand.astro`**
 
@@ -2367,7 +2391,87 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 - Modify: `package.json` — ajouter le script de vérification
 - Modify: `docs/superpowers/specs/2026-07-30-design-system-geist-design.md` — marquer implémenté
 
-- [ ] **Step 1: Câbler le harnais dans les scripts npm**
+- [ ] **Step 1: Exclure `docs/` du scan de contenu Tailwind**
+
+Tailwind v4 détecte ses sources automatiquement et scanne le dépôt, `docs/` compris.
+Les noms de classes cités **en prose** dans la spec et le plan sont donc compilés en
+règles réelles : le bundle livré contient aujourd'hui `has-checked`,
+`peer-not-placeholder-shown`, `group-focus-within`, `material-modal` et `btn-lg` alors
+qu'aucun composant ne les utilisait encore au moment du constat. C'est du CSS mort
+expédié en production, et il grossit à chaque ligne de documentation écrite.
+
+Dans `src/styles/global.css`, juste après `@import "tailwindcss";` :
+
+```css
+/* La détection automatique de sources de Tailwind scanne aussi docs/, où les
+   noms de classes sont cités en prose. Sans cette exclusion, chaque classe
+   mentionnée dans la spec ou le plan est compilée en règle morte. */
+@source not "../../docs";
+@source not "../../_doc-standard";
+```
+
+Vérification — la classe doit disparaître du bundle :
+
+Run: `npm run build && grep -c 'peer-not-placeholder-shown' dist/_astro/*.css`
+Expected: `0` si aucun composant ne l'utilise ; sinon uniquement les occurrences réelles.
+
+- [ ] **Step 2: Resserrer les assertions non ancrées du harnais**
+
+Deux assertions de la section B2 cherchent une chaîne **n'importe où** dans
+`global.css` au lieu de la portée qui les concerne. `check('corps à 16px')` teste
+`font-size: 16px` sur tout le fichier, or `h5` et `.btn-lg` l'utilisent aussi : elle
+resterait verte si le corps régressait. Même défaut pour `check('transition Geist 150ms')`.
+
+C'est la même famille que le défaut de contraste corrigé en tâche 2 : une assertion
+qui ne peut plus échouer ne teste rien.
+
+Réécris-les pour qu'elles portent sur la règle visée. Extrais d'abord le bloc
+concerné, puis teste dedans :
+
+```js
+/* la portée compte : `font-size: 16px` apparaît aussi dans h5 et .btn-lg.
+   On teste la règle body{}, pas le fichier entier. */
+const rule = (css, selector) => {
+  const m = css.match(new RegExp('(^|\\})\\s*' + selector + '\\s*\\{([^}]*)\\}', 'm'));
+  return m ? m[2] : '';
+};
+const bodyRule = rule(glob, 'body');
+check('corps à 16px', /font-size:\s*16px/.test(bodyRule), 'règle body{} introuvable ou taille différente');
+check('corps en weight 400', /font-weight:\s*400/.test(bodyRule));
+const btnRule = rule(glob, '\\.btn');
+check('transition Geist 150ms sur .btn', /transition:[^;]*150ms ease-in-out/.test(btnRule));
+```
+
+Prouve que chacune mord : casse temporairement la valeur dans `global.css`, constate
+l'échec, remets en état.
+
+- [ ] **Step 3: Ancrer la table sémantique de `/design-system` au harnais**
+
+La page `/design-system` recopie en dur, dans sa constante `SEMANTIC`, la correspondance
+entre les tokens Coolbeans et leur source Geist (`--surface` → `--ds-background-100`, etc.).
+C'est précisément le travers que cette page existe pour éviter — appliqué aux valeurs de
+tokens plutôt qu'au markup. Si un mapping change dans `global.css`, la page continue
+d'afficher l'ancien, et rien ne le signale.
+
+Ajoute une section `H` à `scripts/verify-design-system.js`, sur le modèle de la section G
+qui vérifie déjà les paires de Badge : elle lit la table `SEMANTIC` **réellement déclarée**
+dans `src/pages/design-system.astro`, lit les déclarations correspondantes dans
+`src/styles/global.css`, et vérifie que chaque paire annoncée correspond à la réalité.
+
+Ne recopie pas la table dans le harnais — ce serait déplacer le problème d'un fichier.
+Parse les deux sources et compare.
+
+Prouve qu'elle mord : change temporairement un mapping dans `global.css` sans toucher à
+la page, constate l'échec, remets en état.
+
+- [ ] **Step 4: Compléter la liste des tokens morts**
+
+La liste `DEAD` du harnais ne contient pas `surface-brand`. Un reliquat de l'ancienne
+classe de bande de marque passerait donc la vérification sans être vu. Ajoute-le.
+
+Vérifie que l'assertion reste verte — plus aucun fichier de `src/` ne doit le référencer.
+
+- [ ] **Step 5: Câbler le harnais dans les scripts npm**
 
 Dans `package.json`, section `scripts`, ajouter :
 
@@ -2376,12 +2480,12 @@ Dans `package.json`, section `scripts`, ajouter :
 "tokens": "node scripts/extract-geist-tokens.js"
 ```
 
-- [ ] **Step 2: Passe complète**
+- [ ] **Step 6: Passe complète**
 
 Run: `npm run build && npm run verify`
 Expected: build réussi, toutes les assertions vertes.
 
-- [ ] **Step 3: Contrôle visuel en local**
+- [ ] **Step 7: Contrôle visuel en local**
 
 Run: `npm run dev`
 
@@ -2397,11 +2501,11 @@ Parcourir les trois pages et vérifier, en clair **et** en sombre :
 8. Les h1/h2 sont bien en Geomanist, tout le reste en Geist.
 9. `/design-system` répond, bascule de thème, et n'est liée depuis aucune navigation.
 
-- [ ] **Step 4: Vérifier le poids des polices chargées**
+- [ ] **Step 8: Vérifier le poids des polices chargées**
 
 Dans l'onglet Réseau du navigateur, filtrer sur `font`. Attendu : `Geist-Variable.woff2`, `GeistMono-Variable.woff2`, `geomanist-bold-webfont.woff2` et éventuellement `geomanist-black-webfont.woff2`. **`geomanist-book` et `geomanist-medium` ne doivent plus être chargées.**
 
-- [ ] **Step 5: Marquer la spec implémentée**
+- [ ] **Step 9: Resynchroniser le plan et marquer la spec implémentée**
 
 Dans l'en-tête de la spec, remplacer la ligne `Statut :` par :
 
@@ -2409,7 +2513,7 @@ Dans l'en-tête de la spec, remplacer la ligne `Statut :` par :
 Statut : implémenté le 2026-07-30 — plan `docs/superpowers/plans/2026-07-30-design-system-geist.md`
 ```
 
-- [ ] **Step 6: Commit et push sur staging**
+- [ ] **Step 10: Commit et push sur staging**
 
 ```bash
 git add package.json docs/superpowers/specs/2026-07-30-design-system-geist-design.md
@@ -2419,9 +2523,9 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 git push origin staging
 ```
 
-- [ ] **Step 7: Contrôler la preview Cloudflare**
+- [ ] **Step 11: Contrôler la preview Cloudflare**
 
-Le push sur `staging` déclenche un déploiement de preview. Repasser les huit points de l'étape 3 sur l'URL de preview, sur un vrai mobile si possible — le gutter à 24px et le rayon en `cqw` méritent un contrôle sur petit écran.
+Le push sur `staging` déclenche un déploiement de preview. Repasser les neuf points de l'étape 5 sur l'URL de preview, sur un vrai mobile si possible — le gutter à 24px et le rayon en `cqw` méritent un contrôle sur petit écran.
 
 **Ne pas déployer en production.** La mise en ligne attend un ordre explicite.
 

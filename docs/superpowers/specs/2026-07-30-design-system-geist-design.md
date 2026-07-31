@@ -2,7 +2,7 @@
 
 Date : 2026-07-30
 Branche de travail : `staging`
-Statut : validé, prêt pour le plan d'implémentation
+Statut : implémenté le 2026-07-30 — plan `docs/superpowers/plans/2026-07-30-design-system-geist.md`
 
 ---
 
@@ -301,18 +301,22 @@ Les blocs `<style>` de `Nav.astro`, `Footer.astro`, `CtaBand.astro`, `index.astr
 `about.astro` disparaissent : tout passe en utilitaires Tailwind branchés sur les
 tokens, conformément à la convention CSS du projet.
 
-Liste close des `<style>` tolérés, chacun justifié par une chose que les utilitaires
-ne savent pas exprimer. Le harnais de vérification refuse tout autre fichier.
+Liste close des `<style>` tolérés. Le harnais de vérification refuse tout autre fichier.
 
 | fichier | justification |
 |---|---|
 | `Flow.astro` | timeline GSAP — exception déjà actée |
 | `LogoMarquee.astro` | `@keyframes` du défilement, **réduit à ça** |
-| `Browser.astro` | `container-type` et rayon en `cqw` |
-| `ui/Collapse.astro` | `::marker` et contenu généré du chevron |
-| `ui/Choicebox.astro` | `:has(:checked)` combiné au survol |
-| `ui/ClearableInput.astro` | `:not(:placeholder-shown)` + sélecteur adjacent |
-| `ui/ContextCard.astro` | popover au survol et `:focus-within` |
+
+> **Correction en cours d'exécution.** Cinq autres exceptions figuraient ici sur la foi
+> d'une affirmation fausse de ma part : que Tailwind v4 ne savait pas exprimer ces
+> sélecteurs. Vérification faite dans la documentation, il les couvre tous —
+> `@container` et les valeurs arbitraires à unité libre (`rounded-[1.5cqw]`) pour
+> `Browser`, `has-checked:` pour `Choicebox`, `placeholder-shown:` et `not-*` pour
+> `ClearableInput`, `focus-within:` pour `ContextCard`, et les variantes arbitraires
+> `[&::-webkit-details-marker]:` plus `after:content-['+']` pour `Collapse`.
+> Aucun de ces blocs n'était irréductible ; ils passent tous en utilitaires.
+> Seul un `@keyframes` reste hors de portée du balisage.
 
 ## 10. Vérification
 
