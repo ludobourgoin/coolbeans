@@ -26,84 +26,84 @@ export const toolCategories: ToolCategory[] = [
   {
     "id": "dev",
     "group": "software",
-    "title": "développement",
+    "title": "Développement",
     "cards": [
       {
-        "name": "astro",
-        "desc": "framework rendu statique + island hydration. 100/100 pagespeed par défaut.",
+        "name": "Astro",
+        "desc": "Framework rendu statique + island hydration. 100/100 PageSpeed par défaut.",
         "chips": [
-          "framework",
-          "stack ★"
+          "Framework",
+          "Stack ★"
         ],
         "href": "https://astro.build",
         "logo": "/img/tools/astro.svg"
       },
       {
-        "name": "vs code",
-        "desc": "éditeur principal. extensions astro, eslint, github copilot, biome. dotfiles versionnés.",
+        "name": "VS Code",
+        "desc": "Éditeur principal. Extensions Astro, ESLint, GitHub Copilot, Biome. Dotfiles versionnés.",
         "chips": [
-          "éditeur",
-          "stack ★"
+          "Éditeur",
+          "Stack ★"
         ],
         "href": "https://code.visualstudio.com",
         "logo": "/img/tools/vs-code.png"
       },
       {
-        "name": "github",
-        "desc": "repos privés des clients, ci/cd, actions de déploiement vers cloudflare.",
+        "name": "GitHub",
+        "desc": "Repos privés des clients, CI/CD, actions de déploiement vers Cloudflare.",
         "chips": [
-          "git",
-          "ci/cd"
+          "Git",
+          "CI/CD"
         ],
         "href": "https://github.com",
         "logo": "/img/tools/github.svg"
       },
       {
-        "name": "claude code",
-        "desc": "agent terminal pour pair-coding. refactors, tests, scripts de migration. un vrai game changer !",
+        "name": "Claude Code",
+        "desc": "Agent terminal pour pair-coding. Refactors, tests, scripts de migration. Un vrai game changer !",
         "chips": [
-          "ai coding",
-          "stack ★"
+          "AI coding",
+          "Stack ★"
         ],
         "href": "https://www.anthropic.com/claude-code",
         "logo": "/img/tools/claude.png"
       },
       {
-        "name": "gsap",
-        "desc": "librairie d'animation web. transitions, scroll-triggered, timelines. entièrement gratuite depuis le rachat par webflow.",
+        "name": "GSAP",
+        "desc": "Librairie d'animation web. Transitions, scroll-triggered, timelines. Entièrement gratuite depuis le rachat par Webflow.",
         "chips": [
-          "animation",
-          "stack ★"
+          "Animation",
+          "Stack ★"
         ],
         "href": "https://gsap.com",
         "logo": "/img/tools/gsap.png"
       },
       {
-        "name": "react",
-        "desc": "librairie ui à composants pour les interfaces riches et les apps. en island astro ou en spa complète.",
+        "name": "React",
+        "desc": "Librairie UI à composants pour les interfaces riches et les apps. En island Astro ou en SPA complète.",
         "chips": [
-          "librairie",
-          "stack ★"
+          "Librairie",
+          "Stack ★"
         ],
         "href": "https://react.dev",
         "logo": "/img/tools/react.png"
       },
       {
-        "name": "tailwind css",
-        "desc": "css utility-first : styling rapide, cohérent et purgé à la compilation. zéro feuille de style qui dérive.",
+        "name": "Tailwind CSS",
+        "desc": "CSS utility-first : styling rapide, cohérent et purgé à la compilation. Zéro feuille de style qui dérive.",
         "chips": [
-          "css",
-          "stack ★"
+          "CSS",
+          "Stack ★"
         ],
         "href": "https://tailwindcss.com",
         "logo": "/img/tools/tailwind.png"
       },
       {
-        "name": "clerk",
-        "desc": "authentification clé-en-main : connexion, sso, gestion des utilisateurs et sessions. mon défaut pour les apps clientes.",
+        "name": "Clerk",
+        "desc": "Authentification clé-en-main : connexion, SSO, gestion des utilisateurs et sessions. Mon défaut pour les apps clientes.",
         "chips": [
-          "auth",
-          "stack ★"
+          "Auth",
+          "Stack ★"
         ],
         "href": "https://clerk.com",
         "logo": "/img/tools/clerk.svg"
@@ -113,54 +113,54 @@ export const toolCategories: ToolCategory[] = [
   {
     "id": "cms",
     "group": "software",
-    "title": "cms et no-code",
+    "title": "CMS et no-code",
     "cards": [
       {
-        "name": "sanity studio",
-        "desc": "cms structuré, customisable, avec un studio react. mon cms par défaut pour tous les projets ≥ standard.",
+        "name": "Sanity Studio",
+        "desc": "CMS structuré, customisable, avec un studio React. Mon CMS par défaut pour tous les projets ≥ standard.",
         "chips": [
-          "cms",
-          "stack ★"
+          "CMS",
+          "Stack ★"
         ],
         "href": "https://www.sanity.io/studio",
         "logo": "/img/tools/sanity.png"
       },
       {
-        "name": "webflow",
-        "desc": "site builder visuel pour les projets vitrine sans cms structuré, ou repris d'un client existant.",
+        "name": "Webflow",
+        "desc": "Site builder visuel pour les projets vitrine sans CMS structuré, ou repris d'un client existant.",
         "chips": [
-          "cms",
-          "no-code"
+          "CMS",
+          "No-code"
         ],
         "href": "https://webflow.com",
         "logo": "/img/tools/webflow.png"
       },
       {
-        "name": "shopify",
-        "desc": "plateforme e-commerce pour les boutiques clientes. thèmes custom et checkout intégré.",
+        "name": "Shopify",
+        "desc": "Plateforme e-commerce pour les boutiques clientes. Thèmes custom et checkout intégré.",
         "chips": [
-          "e-commerce",
-          "cms"
+          "E-commerce",
+          "CMS"
         ],
         "href": "https://www.shopify.com",
         "logo": "/img/tools/shopify.png"
       },
       {
-        "name": "smootify",
-        "desc": "connecte webflow et shopify : conçois des boutiques shopify headless directement dans webflow, sans une ligne de code.",
+        "name": "Smootify",
+        "desc": "Connecte Webflow et Shopify : conçois des boutiques Shopify headless directement dans Webflow, sans une ligne de code.",
         "chips": [
-          "e-commerce",
-          "no-code"
+          "E-commerce",
+          "No-code"
         ],
         "href": "https://www.smootify.io",
         "logo": "/img/tools/smootify.png"
       },
       {
-        "name": "airtable",
-        "desc": "base flexible : crm léger, suivi de contenu et back-office de projets clients.",
+        "name": "Airtable",
+        "desc": "Base flexible : CRM léger, suivi de contenu et back-office de projets clients.",
         "chips": [
-          "base",
-          "no-code"
+          "Base",
+          "No-code"
         ],
         "href": "https://www.airtable.com",
         "logo": "/img/logos/airtable.svg"
@@ -170,35 +170,35 @@ export const toolCategories: ToolCategory[] = [
   {
     "id": "automation",
     "group": "software",
-    "title": "automatisation",
+    "title": "Automatisation",
     "cards": [
       {
-        "name": "make",
-        "desc": "scénarios d'automatisation visuels entre outils. la colonne vertébrale des workflows clients.",
+        "name": "Make",
+        "desc": "Scénarios d'automatisation visuels entre outils. La colonne vertébrale des workflows clients.",
         "chips": [
-          "automatisation",
-          "no-code",
-          "stack ★"
+          "Automatisation",
+          "No-code",
+          "Stack ★"
         ],
         "href": "https://www.make.com",
         "logo": "/img/tools/make.png"
       },
       {
         "name": "n8n",
-        "desc": "automatisation self-hosted, plus technique et sans limite d'opérations. pour les workflows sensibles.",
+        "desc": "Automatisation self-hosted, plus technique et sans limite d'opérations. Pour les workflows sensibles.",
         "chips": [
-          "automatisation",
-          "self-hosted"
+          "Automatisation",
+          "Self-hosted"
         ],
         "href": "https://n8n.io",
         "logo": "/img/tools/n8n.png"
       },
       {
-        "name": "zapier",
-        "desc": "connexions rapides entre saas pour les automatisations simples et les prototypes.",
+        "name": "Zapier",
+        "desc": "Connexions rapides entre SaaS pour les automatisations simples et les prototypes.",
         "chips": [
-          "automatisation",
-          "saas"
+          "Automatisation",
+          "SaaS"
         ],
         "href": "https://zapier.com",
         "logo": "/img/tools/zapier.png"
@@ -208,46 +208,46 @@ export const toolCategories: ToolCategory[] = [
   {
     "id": "hosting",
     "group": "software",
-    "title": "hébergement & déploiement",
+    "title": "Hébergement & déploiement",
     "cards": [
       {
-        "name": "cloudflare pages",
-        "desc": "hébergement edge gratuit pour 95 % des projets. workers + d1 pour la partie dynamique. ~10 €/mois max.",
+        "name": "Cloudflare Pages",
+        "desc": "Hébergement edge gratuit pour 95 % des projets. Workers + D1 pour la partie dynamique. ~10 €/mois max.",
         "chips": [
-          "hosting",
-          "edge",
-          "stack ★"
+          "Hosting",
+          "Edge",
+          "Stack ★"
         ],
         "href": "https://pages.cloudflare.com",
         "logo": "/img/tools/cloudflare.png"
       },
       {
-        "name": "supabase",
-        "desc": "backend postgres managé : base de données, auth et storage pour les apps clientes.",
+        "name": "Supabase",
+        "desc": "Backend Postgres managé : base de données, auth et storage pour les apps clientes.",
         "chips": [
-          "backend",
-          "db"
+          "Backend",
+          "DB"
         ],
         "href": "https://supabase.com",
         "logo": "/img/tools/supabase.png"
       },
       {
-        "name": "cloudflare d1",
-        "desc": "base sqlite serverless sur l'edge cloudflare. la partie dynamique de mes sites astro.",
+        "name": "Cloudflare D1",
+        "desc": "Base SQLite serverless sur l'edge Cloudflare. La partie dynamique de mes sites Astro.",
         "chips": [
-          "db",
-          "edge",
-          "stack ★"
+          "DB",
+          "Edge",
+          "Stack ★"
         ],
         "href": "https://www.cloudflare.com/developer-platform/d1/",
         "logo": "/img/tools/cloudflare.png"
       },
       {
-        "name": "netlify",
-        "desc": "utilisé sur les vieux projets webflow et quand le client veut un cms intégré simple. déploiement via webhook.",
+        "name": "Netlify",
+        "desc": "Utilisé sur les vieux projets Webflow et quand le client veut un CMS intégré simple. Déploiement via webhook.",
         "chips": [
-          "hosting",
-          "legacy"
+          "Hosting",
+          "Legacy"
         ],
         "href": "https://www.netlify.com",
         "logo": "/img/tools/netlify.png"
@@ -257,35 +257,35 @@ export const toolCategories: ToolCategory[] = [
   {
     "id": "design",
     "group": "software",
-    "title": "design",
+    "title": "Design",
     "cards": [
       {
-        "name": "figma",
-        "desc": "quand le client a un designer ou m'envoie ses maquettes. lecture seule la plupart du temps.",
+        "name": "Figma",
+        "desc": "Quand le client a un designer ou m'envoie ses maquettes. Lecture seule la plupart du temps.",
         "chips": [
-          "design",
-          "handoff"
+          "Design",
+          "Handoff"
         ],
         "href": "https://www.figma.com",
         "logo": "/img/tools/figma.png"
       },
       {
-        "name": "claude design",
-        "desc": "prototypage hi-fi rapide à partir du design system coolbeans. le pont entre wireframes et intégration.",
+        "name": "Claude design",
+        "desc": "Prototypage hi-fi rapide à partir du design system coolbeans. Le pont entre wireframes et intégration.",
         "chips": [
-          "design",
-          "prototype",
-          "stack ★"
+          "Design",
+          "Prototype",
+          "Stack ★"
         ],
         "href": "https://claude.ai",
         "logo": "/img/tools/claude.png"
       },
       {
-        "name": "relume",
-        "desc": "bibliothèques de composants + génération de sitemaps et wireframes pour webflow et figma.",
+        "name": "Relume",
+        "desc": "Bibliothèques de composants + génération de sitemaps et wireframes pour Webflow et Figma.",
         "chips": [
-          "design",
-          "wireframe"
+          "Design",
+          "Wireframe"
         ],
         "href": "https://www.relume.io/",
         "logo": "/img/tools/relume.png"
@@ -295,52 +295,52 @@ export const toolCategories: ToolCategory[] = [
   {
     "id": "analytics",
     "group": "software",
-    "title": "analyse & seo",
+    "title": "Analyse & SEO",
     "cards": [
       {
-        "name": "cloudflare web analytics",
-        "desc": "fallback gratuit pour les projets sans care plan. moins riche que plausible mais suffisant pour le suivi de base.",
+        "name": "Cloudflare Web Analytics",
+        "desc": "Fallback gratuit pour les projets sans care plan. Moins riche que Plausible mais suffisant pour le suivi de base.",
         "chips": [
-          "analytics"
+          "Analytics"
         ],
         "href": "https://www.cloudflare.com/web-analytics/",
         "logo": "/img/tools/cloudflare.png"
       },
       {
-        "name": "ahrefs",
-        "desc": "audit seo technique, backlinks, suivi mot-clés. utilisé lors des phases d'audit en début de projet.",
+        "name": "Ahrefs",
+        "desc": "Audit SEO technique, backlinks, suivi mot-clés. Utilisé lors des phases d'audit en début de projet.",
         "chips": [
-          "seo"
+          "SEO"
         ],
         "href": "https://ahrefs.com",
         "logo": "/img/tools/ahrefs.png"
       },
       {
-        "name": "posthog",
-        "desc": "product analytics, funnels et session replay pour comprendre l'usage réel des apps.",
+        "name": "PostHog",
+        "desc": "Product analytics, funnels et session replay pour comprendre l'usage réel des apps.",
         "chips": [
-          "analytics",
-          "product"
+          "Analytics",
+          "Product"
         ],
         "href": "https://posthog.com",
         "logo": "/img/tools/posthog.png"
       },
       {
-        "name": "sentry",
-        "desc": "monitoring d'erreurs en production : stack traces, alertes et suivi des releases.",
+        "name": "Sentry",
+        "desc": "Monitoring d'erreurs en production : stack traces, alertes et suivi des releases.",
         "chips": [
-          "monitoring",
-          "erreurs"
+          "Monitoring",
+          "Erreurs"
         ],
         "href": "https://sentry.io",
         "logo": "/img/logos/sentry-icon.svg"
       },
       {
-        "name": "uptimerobot",
-        "desc": "surveillance uptime et alertes downtime sur tous les sites clients en care plan.",
+        "name": "UptimeRobot",
+        "desc": "Surveillance uptime et alertes downtime sur tous les sites clients en care plan.",
         "chips": [
-          "monitoring",
-          "uptime"
+          "Monitoring",
+          "Uptime"
         ],
         "href": "https://uptimerobot.com",
         "logo": "/img/tools/uptimerobot.png"
@@ -350,53 +350,53 @@ export const toolCategories: ToolCategory[] = [
   {
     "id": "email",
     "group": "software",
-    "title": "email & crm",
+    "title": "Email & CRM",
     "cards": [
       {
-        "name": "resend",
-        "desc": "api email transactionnel pour les apps. forms de contact, magic links, notifications. dev-friendly.",
+        "name": "Resend",
+        "desc": "API email transactionnel pour les apps. Forms de contact, magic links, notifications. Dev-friendly.",
         "chips": [
-          "email api"
+          "Email API"
         ],
         "href": "https://resend.com",
         "logo": "/img/tools/resend.png"
       },
       {
-        "name": "hubspot",
-        "desc": "crm et marketing automation pour les clients qui centralisent prospection et contenu.",
+        "name": "HubSpot",
+        "desc": "CRM et marketing automation pour les clients qui centralisent prospection et contenu.",
         "chips": [
-          "crm",
-          "marketing"
+          "CRM",
+          "Marketing"
         ],
         "href": "https://www.hubspot.com",
         "logo": "/img/tools/hubspot.png"
       },
       {
-        "name": "brevo",
-        "desc": "emailing et marketing automation, alternative rgpd-friendly hébergée en europe.",
+        "name": "Brevo",
+        "desc": "Emailing et marketing automation, alternative RGPD-friendly hébergée en Europe.",
         "chips": [
-          "email",
-          "marketing"
+          "Email",
+          "Marketing"
         ],
         "href": "https://www.brevo.com",
         "logo": "/img/tools/brevo.svg"
       },
       {
-        "name": "mailerlite",
-        "desc": "newsletter et email transactionnel. utilisé sur la moitié des projets clients comme cms email léger.",
+        "name": "MailerLite",
+        "desc": "Newsletter et email transactionnel. Utilisé sur la moitié des projets clients comme CMS email léger.",
         "chips": [
-          "email",
-          "stack ★"
+          "Email",
+          "Stack ★"
         ],
         "href": "https://www.mailerlite.com",
         "logo": "/img/tools/mailerlite.png"
       },
       {
-        "name": "pipedrive",
-        "desc": "crm commercial orienté pipeline : suivi des deals et relances en prospection active.",
+        "name": "Pipedrive",
+        "desc": "CRM commercial orienté pipeline : suivi des deals et relances en prospection active.",
         "chips": [
-          "crm",
-          "sales"
+          "CRM",
+          "Sales"
         ],
         "href": "https://www.pipedrive.com",
         "logo": "/img/tools/pipedrive.png"
@@ -406,34 +406,34 @@ export const toolCategories: ToolCategory[] = [
   {
     "id": "payments",
     "group": "software",
-    "title": "paiements & facturation",
+    "title": "Paiements & facturation",
     "cards": [
       {
-        "name": "stripe",
-        "desc": "paiement clients (acomptes, mensualités care plan), checkout sur les projets e-commerce.",
+        "name": "Stripe",
+        "desc": "Paiement clients (acomptes, mensualités care plan), checkout sur les projets e-commerce.",
         "chips": [
-          "paiement",
-          "stack ★"
+          "Paiement",
+          "Stack ★"
         ],
         "href": "https://stripe.com",
         "logo": "/img/tools/stripe.svg"
       },
       {
-        "name": "snipcart",
-        "desc": "panier & checkout à greffer sur n'importe quel site statique. boutiques légères sans refonte complète.",
+        "name": "Snipcart",
+        "desc": "Panier & checkout à greffer sur n'importe quel site statique. Boutiques légères sans refonte complète.",
         "chips": [
-          "e-commerce",
-          "checkout"
+          "E-commerce",
+          "Checkout"
         ],
         "href": "https://snipcart.com/fr",
         "logo": "/img/tools/snipcart.png"
       },
       {
-        "name": "gocardless",
-        "desc": "prélèvements sepa automatiques pour les abonnements care plan et mensualités. sans friction carte.",
+        "name": "GoCardless",
+        "desc": "Prélèvements SEPA automatiques pour les abonnements care plan et mensualités. Sans friction carte.",
         "chips": [
-          "prélèvement",
-          "récurrent"
+          "Prélèvement",
+          "Récurrent"
         ],
         "href": "https://gocardless.com/fr-fr",
         "logo": "/img/tools/gocardless.png"
@@ -443,82 +443,82 @@ export const toolCategories: ToolCategory[] = [
   {
     "id": "productivity",
     "group": "software",
-    "title": "productivité et communication",
+    "title": "Productivité et communication",
     "cards": [
       {
-        "name": "asana",
-        "desc": "gestion de projet et suivi des tâches partagés avec les clients.",
+        "name": "Asana",
+        "desc": "Gestion de projet et suivi des tâches partagés avec les clients.",
         "chips": [
-          "gestion",
-          "projets"
+          "Gestion",
+          "Projets"
         ],
         "href": "https://asana.com",
         "logo": "/img/tools/asana.png"
       },
       {
-        "name": "google workspace",
-        "desc": "mail pro, drive, meet. domaine coolbeans.cc. inchangé depuis 2022.",
+        "name": "Google Workspace",
+        "desc": "Mail pro, Drive, Meet. Domaine coolbeans.cc. Inchangé depuis 2022.",
         "chips": [
-          "mail",
-          "drive"
+          "Mail",
+          "Drive"
         ],
         "href": "https://workspace.google.com",
         "logo": "/img/tools/google-workspace.png"
       },
       {
-        "name": "slack",
-        "desc": "canaux clients lors des projets en cours. archivé à la livraison, transition vers email + portail care plan.",
+        "name": "Slack",
+        "desc": "Canaux clients lors des projets en cours. Archivé à la livraison, transition vers email + portail care plan.",
         "chips": [
-          "chat"
+          "Chat"
         ],
         "href": "https://slack.com",
         "logo": "/img/logos/slack-icon.svg"
       },
       {
-        "name": "1password",
-        "desc": "passwords, secrets, ssh keys, env files. partage de creds avec les clients via vaults dédiés.",
+        "name": "1Password",
+        "desc": "Passwords, secrets, SSH keys, env files. Partage de creds avec les clients via vaults dédiés.",
         "chips": [
-          "sécurité"
+          "Sécurité"
         ],
         "href": "https://1password.com",
         "logo": "/img/tools/1password.png"
       },
       {
-        "name": "obsidian",
-        "desc": "base de connaissance markdown locale : notes techniques, snippets, second cerveau hors-ligne.",
+        "name": "Obsidian",
+        "desc": "Base de connaissance Markdown locale : notes techniques, snippets, second cerveau hors-ligne.",
         "chips": [
-          "notes",
-          "markdown"
+          "Notes",
+          "Markdown"
         ],
         "href": "https://obsidian.md",
         "logo": "/img/tools/obsidian.svg"
       },
       {
-        "name": "cleanshot pro",
-        "desc": "app mac pour les captures d'écran et screencasts. annotations propres, partagées aux clients tous les jours.",
+        "name": "CleanShot Pro",
+        "desc": "App Mac pour les captures d'écran et screencasts. Annotations propres, partagées aux clients tous les jours.",
         "chips": [
-          "captures",
-          "macos"
+          "Captures",
+          "macOS"
         ],
         "href": "https://cleanshot.com",
         "logo": "/img/tools/cleanshot.png"
       },
       {
-        "name": "notion",
-        "desc": "brouillons, briefs, base de connaissance projets. parfois exporté comme cms léger pour les clients.",
+        "name": "Notion",
+        "desc": "Brouillons, briefs, base de connaissance projets. Parfois exporté comme CMS léger pour les clients.",
         "chips": [
-          "docs",
-          "brief"
+          "Docs",
+          "Brief"
         ],
         "href": "https://www.notion.so",
         "logo": "/img/tools/notion.png"
       },
       {
-        "name": "granola",
-        "desc": "prise de notes ia en réunion client. transcrit, résume et ressort les action items sans bot dans l'appel.",
+        "name": "Granola",
+        "desc": "Prise de notes IA en réunion client. Transcrit, résume et ressort les action items sans bot dans l'appel.",
         "chips": [
-          "notes ia",
-          "réunions"
+          "Notes IA",
+          "Réunions"
         ],
         "href": "https://www.granola.ai",
         "logo": "/img/tools/granola.png"
@@ -528,53 +528,53 @@ export const toolCategories: ToolCategory[] = [
   {
     "id": "workstation",
     "group": "hardware",
-    "title": "poste de travail",
+    "title": "Poste de travail",
     "cards": [
       {
-        "name": "macbook air 15\"",
-        "desc": "m4 · 24 go · 512 go. silencieux, sans ventilateur, autonomie incroyable. increvable.",
+        "name": "MacBook Air 15\"",
+        "desc": "M4 · 24 Go · 512 Go. Silencieux, sans ventilateur, autonomie incroyable. Increvable.",
         "chips": [
-          "laptop",
-          "apple"
+          "Laptop",
+          "Apple"
         ],
         "href": "https://www.apple.com/macbook-air/",
         "logo": "/img/tools/apple.png"
       },
       {
-        "name": "nuphy air75",
-        "desc": "clavier mécanique bas profil, bluetooth + usb-c. layout 75 %, switches bien cliquetants — désolé pour l'open space.",
+        "name": "NuPhy Air75",
+        "desc": "Clavier mécanique bas profil, Bluetooth + USB-C. Layout 75 %, switches bien cliquetants — désolé pour l'open space.",
         "chips": [
-          "clavier",
-          "mécanique"
+          "Clavier",
+          "Mécanique"
         ],
         "href": "https://nuphy.com",
         "logo": "/img/tools/nuphy.png"
       },
       {
-        "name": "dell 27 plus 4k s2725qc",
-        "desc": "écran 4k usb-c avec hub thunderbolt intégré. doc et previews côte à côte.",
+        "name": "Dell 27 Plus 4K S2725QC",
+        "desc": "Écran 4K USB-C avec hub Thunderbolt intégré. Doc et previews côte à côte.",
         "chips": [
-          "écran",
-          "4k"
+          "Écran",
+          "4K"
         ],
         "href": "https://www.dell.com",
         "logo": "/img/tools/dell.png"
       },
       {
-        "name": "dell u2415b",
-        "desc": "écran d'appoint 24\" : logs, terminal et slack pendant le dev. recyclé, increvable.",
+        "name": "Dell U2415B",
+        "desc": "Écran d'appoint 24\" : logs, terminal et Slack pendant le dev. Recyclé, increvable.",
         "chips": [
-          "écran",
-          "portrait"
+          "Écran",
+          "Portrait"
         ],
         "href": "https://www.dell.com",
         "logo": "/img/tools/dell.png"
       },
       {
-        "name": "iphone 12 mini",
-        "desc": "tests mobile réels : captures d'écran et recette responsive sur petit écran.",
+        "name": "iPhone 12 mini",
+        "desc": "Tests mobile réels : captures d'écran et recette responsive sur petit écran.",
         "chips": [
-          "mobile"
+          "Mobile"
         ],
         "href": "https://www.apple.com/iphone/",
         "logo": "/img/tools/apple.png"
@@ -584,43 +584,43 @@ export const toolCategories: ToolCategory[] = [
   {
     "id": "audio",
     "group": "hardware",
-    "title": "audio & vidéo",
+    "title": "Audio & vidéo",
     "cards": [
       {
-        "name": "airpods pro 2026",
-        "desc": "écouteurs du quotidien : calls en déplacement et réduction de bruit pour le deep work.",
+        "name": "AirPods Pro 2026",
+        "desc": "Écouteurs du quotidien : calls en déplacement et réduction de bruit pour le deep work.",
         "chips": [
-          "audio"
+          "Audio"
         ],
         "href": "https://www.apple.com/airpods-pro/",
         "logo": "/img/tools/apple.png"
       },
       {
-        "name": "dji mic mini",
-        "desc": "micro-cravate sans fil pour les tournages et démos vidéo sur le terrain.",
+        "name": "DJI Mic Mini",
+        "desc": "Micro-cravate sans fil pour les tournages et démos vidéo sur le terrain.",
         "chips": [
-          "micro",
-          "vidéo"
+          "Micro",
+          "Vidéo"
         ],
         "href": "https://www.dji.com",
         "logo": "/img/tools/dji.png"
       },
       {
-        "name": "blue yeti",
-        "desc": "micro usb d'appoint pour les enregistrements voix et les sessions podcast.",
+        "name": "Blue Yeti",
+        "desc": "Micro USB d'appoint pour les enregistrements voix et les sessions podcast.",
         "chips": [
-          "micro",
-          "audio"
+          "Micro",
+          "Audio"
         ],
         "href": "https://www.logitechg.com",
         "logo": "/img/tools/logitech-g.png"
       },
       {
-        "name": "dell pro webcam wb5023",
-        "desc": "webcam 2k pour les calls clients et démos vidéo. cadrage net et stable, fixée en haut de l'écran.",
+        "name": "Dell Pro Webcam WB5023",
+        "desc": "Webcam 2K pour les calls clients et démos vidéo. Cadrage net et stable, fixée en haut de l'écran.",
         "chips": [
-          "caméra",
-          "vidéo"
+          "Caméra",
+          "Vidéo"
         ],
         "href": "https://www.dell.com",
         "logo": "/img/tools/dell.png"

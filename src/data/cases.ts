@@ -14,25 +14,25 @@ export const cases: Case[] = [
   {
     span: "span-8",
     num: "№ 040",
-    tag: "amusoire : homepage",
-    title: "refonte du site d'un acteur parisien de l'entertain tech",
+    tag: "Amusoire : homepage",
+    title: "Refonte du site d'un acteur parisien de l'entertain tech",
   },
   {
     span: "span-4 tall",
     num: "№ 039",
-    tag: "littlebox : produit",
-    title: "boutique en ligne d'une marque lifestyle",
+    tag: "Littlebox : produit",
+    title: "Boutique en ligne d'une marque lifestyle",
   },
   {
     span: "span-6",
     num: "№ 038",
-    tag: "unlockbreath : landing",
-    title: "plateforme d'une startup santé & bien-être",
+    tag: "Unlockbreath : landing",
+    title: "Plateforme d'une startup santé & bien-être",
   },
   {
     span: "span-6",
     num: "№ 037",
-    tag: "tielle & popcorn : ciné-club",
-    title: "site d'un ciné-club associatif",
+    tag: "Tielle & popcorn : ciné-club",
+    title: "Site d'un ciné-club associatif",
   },
 ];
