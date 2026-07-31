@@ -10,42 +10,30 @@ import Avatar from "../components/ui/Avatar.astro";
 import { testimonials, initials } from "../data/testimonials";
 import { cases } from "../data/cases";
 
-const clients = [
-  "amusoire",
-  "uimm occitanie",
-  "save me",
-  "unlockbreath",
-  "littlebox",
-  "tielle & popcorn",
-  "promologis",
-  "theodo",
-  "trigger",
-];
-
 const steps = [
   {
     n: "01",
-    title: "brief & cadrage",
-    text: "formulaire + call 30-60 min. scope, deadline et budget posés.",
+    title: "Brief & cadrage",
+    text: "Formulaire + call 30-60 min. Scope, deadline et budget posés.",
   },
-  { n: "02", title: "devis", text: "chiffré, daté, signé. paiement 30 % à l'acceptation." },
+  { n: "02", title: "Devis", text: "Chiffré, daté, signé. Paiement 30 % à l'acceptation." },
   {
     n: "03",
-    title: "développement",
-    text: "v1 sous 5 j. v2 finale sous 3 j. validation par section.",
+    title: "Développement",
+    text: "V1 sous 5 j. V2 finale sous 3 j. Validation par section.",
   },
   {
     n: "04",
-    title: "livraison",
-    text: "mise en prod, transfert, documentation et formation. 30 j de support inclus.",
+    title: "Livraison",
+    text: "Mise en prod, transfert, documentation et formation. 30 j de support inclus.",
   },
 ];
 
 const stats = [
-  { n: "40", small: "+", k: "projets livrés", h: "depuis 2022" },
-  { n: "90", small: "%", k: "recommandation", h: "nouveaux clients via le réseau" },
-  { n: "48", small: "h", k: "réponse devis", h: "week-end compris" },
-  { n: "97", small: "%", k: "renouvellement", h: "care plans après 12 mois" },
+  { n: "40", small: "+", k: "projets livrés", h: "Depuis 2022" },
+  { n: "90", small: "%", k: "recommandation", h: "Nouveaux clients via le réseau" },
+  { n: "48", small: "h", k: "réponse devis", h: "Week-end compris" },
+  { n: "97", small: "%", k: "renouvellement", h: "Care plans après 12 mois" },
 ];
 
 const columns: (typeof testimonials)[] = [[], [], []];
@@ -74,10 +62,10 @@ const caseColSpan = (span: string) =>
     <GridBackdrop />
     <div class="container-site relative text-center">
       <h1
-        class="mx-auto max-w-[22ch] text-[clamp(40px,4.6vw,64px)] leading-[1.02] tracking-[-0.03em] text-balance lowercase"
-        aria-label="le studio web des agences créatives, directeur·rices artistiques, pme ou scale up, tpe ou solopreneur"
+        class="mx-auto max-w-[22ch] text-[clamp(40px,4.6vw,64px)] leading-[1.02] tracking-[-0.03em] text-balance"
+        aria-label="Le studio web des agences créatives, directeur·rices artistiques, PME ou scale up, TPE ou solopreneur"
       >
-        le studio web des<br />
+        Le studio web des<br />
         <span class="inline-block align-top leading-[1.02] whitespace-nowrap" aria-hidden="true"
           ><span id="tw-word" class="inline-block whitespace-nowrap [will-change:transform,opacity]"
             >agences créatives</span
@@ -87,61 +75,25 @@ const caseColSpan = (span: string) =>
       <p
         class="mx-auto mt-6.5 max-w-[60ch] text-[19px] leading-[1.45] font-medium text-pretty text-mute"
       >
-        studio solo, design et développement, à l'ère de l'IA. je conçois, je construis et je
-        maintiens des sites rapides et bien conçus, visibles par vos clients, par Google et par les
-        IA. un partenaire qui reste après la mise en ligne.
+        Design, développement et maintenance de sites performants, pensés pour vos objectifs
       </p>
       <div class="mt-9 flex flex-wrap justify-center gap-5">
-        <a class="btn btn-lg" href="#vous-etes">discuter de votre projet</a>
-        <a class="btn btn-lg btn-outline" href="#projets">voir les projets récents</a>
+        <a class="btn btn-lg" href="#vous-etes">Discuter de votre projet</a>
+        <a class="btn btn-lg btn-outline" href="#projets">Voir les projets récents</a>
       </div>
     </div>
     <Flow />
   </section>
 
-  <!-- PROOF · noms clients (marquee animé) -->
-  <section class="group overflow-hidden border-b border-line bg-surface py-12">
-    <div class="container-site mb-6 flex flex-wrap items-baseline justify-between gap-4">
-      <h2 class="font-sans font-semibold tracking-[-0.02em] text-lg">ils m'ont fait confiance</h2>
-      <span class="label">40+ projets · 2018 → 2026</span>
-    </div>
-    <div
-      class="overflow-hidden"
-      style="mask-image: linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent); -webkit-mask-image: linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);"
-    >
-      <div
-        class="flex w-max animate-proof-marquee items-center gap-20 whitespace-nowrap group-hover:[animation-play-state:paused] motion-reduce:animate-none"
-      >
-        {
-          clients.map((c) => (
-            <span class="font-display text-[40px] font-bold tracking-[-0.03em] text-ink lowercase">
-              {c}
-            </span>
-          ))
-        }
-        {
-          clients.map((c) => (
-            <span
-              class="font-display text-[40px] font-bold tracking-[-0.03em] text-ink lowercase"
-              aria-hidden="true"
-            >
-              {c}
-            </span>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
   <!-- VOUS ÊTES (bento) -->
   <section class="py-16x" id="vous-etes">
     <div class="container-site">
-      <div class="mb-10x"><h2 class="lowercase">vous êtes…</h2></div>
+      <div class="mb-10x"><h2>Vous êtes…</h2></div>
       <div
-        class="grid auto-rows-[minmax(160px,auto)] grid-cols-4 gap-4 max-[900px]:grid-cols-2 max-[680px]:grid-cols-1"
+        class="grid auto-rows-[minmax(180px,auto)] grid-cols-4 gap-4 max-[900px]:grid-cols-2 max-[680px]:grid-cols-1"
       >
         <article
-          class="relative col-span-2 row-span-2 flex flex-col border border-ink bg-ink p-6.5 text-surface max-[900px]:row-span-1 max-[680px]:col-span-1"
+          class="relative col-span-2 row-span-2 flex flex-col rounded-card border border-line bg-surface-raise p-8 max-[900px]:row-span-1 max-[680px]:col-span-1"
         >
           <svg
             class="size-9.5 flex-none fill-none stroke-current stroke-[1.7]"
@@ -157,18 +109,17 @@ const caseColSpan = (span: string) =>
               x2="11"
               y2="11"></line><line x1="7" y1="15" x2="11" y2="15"></line></svg
           >
-          <h3 class="mt-6 text-[30px] leading-[1.08] lowercase">agence créative</h3>
-          <p class="mt-2.5 max-w-[34ch] text-base opacity-82">
-            vous concevez, j'exécute. sous votre marque, en marque blanche, je suis comme une
-            extension de votre équipe.
-          </p>
-          <a
-            class="link mt-auto self-start border-surface/40 pt-5.5 text-sm text-surface/75 hover:border-surface hover:text-surface"
-            href="/about">en savoir plus →</a
-          >
+          <div class="mt-auto pt-8">
+            <h3 class="text-[30px] leading-[1.08]">Agence créative</h3>
+            <p class="mt-2.5 max-w-[34ch] text-base font-medium text-pretty">
+              Vous concevez, j'exécute. Sous votre marque, en marque blanche, je suis comme une
+              extension de votre équipe.
+            </p>
+            <a class="link mt-5.5 inline-block text-sm" href="/about">En savoir plus →</a>
+          </div>
         </article>
         <article
-          class="relative col-span-2 flex flex-col border border-line bg-surface-raise p-6.5 max-[900px]:col-span-1"
+          class="relative col-span-2 flex flex-col rounded-card border border-line bg-surface-raise p-8 max-[900px]:col-span-1"
         >
           <svg
             class="size-9.5 flex-none fill-none stroke-current stroke-[1.7]"
@@ -177,13 +128,15 @@ const caseColSpan = (span: string) =>
             ><path d="M12 20h9"></path><path
               d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path></svg
           >
-          <h3 class="mt-5 text-[21px] leading-[1.08] lowercase">directeur·rice artistique</h3>
-          <p class="mt-2.5 text-[15px] font-medium text-pretty">
-            votre design livré exactement comme pensé, au pixel près.
-          </p>
-          <a class="link mt-auto self-start pt-5.5 text-sm" href="/about">en savoir plus →</a>
+          <div class="mt-auto pt-6">
+            <h3 class="text-[21px] leading-[1.08]">Directeur·rice artistique</h3>
+            <p class="mt-2.5 text-[15px] font-medium text-pretty">
+              Votre design livré exactement comme pensé, au pixel près.
+            </p>
+            <a class="link mt-5 inline-block text-sm" href="/about">En savoir plus →</a>
+          </div>
         </article>
-        <article class="relative flex flex-col border border-line bg-surface-raise p-6.5">
+        <article class="relative flex flex-col rounded-card border border-line bg-surface-raise p-8">
           <svg
             class="size-9.5 flex-none fill-none stroke-current stroke-[1.7]"
             viewBox="0 0 24 24"
@@ -191,13 +144,15 @@ const caseColSpan = (span: string) =>
             ><polyline points="3 17 9 11 13 15 21 7"></polyline><polyline points="21 12 21 7 16 7"
             ></polyline></svg
           >
-          <h3 class="mt-5 text-[21px] leading-[1.08] lowercase">pme ou scale up</h3>
-          <p class="mt-2.5 text-[15px] font-medium text-pretty">
-            votre site est un canal d'acquisition. traitons-le comme tel.
-          </p>
-          <a class="link mt-auto self-start pt-5.5 text-sm" href="/about">en savoir plus →</a>
+          <div class="mt-auto pt-6">
+            <h3 class="text-[21px] leading-[1.08]">PME ou scale up</h3>
+            <p class="mt-2.5 text-[15px] font-medium text-pretty">
+              Votre site est un canal d'acquisition. Traitons-le comme tel.
+            </p>
+            <a class="link mt-5 inline-block text-sm" href="/about">En savoir plus →</a>
+          </div>
         </article>
-        <article class="relative flex flex-col border border-line bg-surface-raise p-6.5">
+        <article class="relative flex flex-col rounded-card border border-line bg-surface-raise p-8">
           <svg
             class="size-9.5 flex-none fill-none stroke-current stroke-[1.7]"
             viewBox="0 0 24 24"
@@ -205,14 +160,16 @@ const caseColSpan = (span: string) =>
             ><path d="M3 9h18l-1.4-5H4.4L3 9z"></path><path d="M5 9v11h14V9"></path><path
               d="M9 20v-6h6v6"></path></svg
           >
-          <h3 class="mt-5 text-[21px] leading-[1.08] lowercase">tpe ou solopreneur</h3>
-          <p class="mt-2.5 text-[15px] font-medium text-pretty">
-            votre présence en ligne pro, livrée vite, prix fixe, zéro souci.
-          </p>
-          <a class="link mt-auto self-start pt-5.5 text-sm" href="/about">en savoir plus →</a>
+          <div class="mt-auto pt-6">
+            <h3 class="text-[21px] leading-[1.08]">TPE ou solopreneur</h3>
+            <p class="mt-2.5 text-[15px] font-medium text-pretty">
+              Votre présence en ligne pro, livrée vite, prix fixe, zéro souci.
+            </p>
+            <a class="link mt-5 inline-block text-sm" href="/about">En savoir plus →</a>
+          </div>
         </article>
         <article
-          class="relative col-span-4 flex flex-row flex-wrap items-center gap-6.5 border border-line bg-surface-raise p-6.5 max-[900px]:col-span-1 max-[900px]:flex-col max-[900px]:items-start"
+          class="relative col-span-4 flex flex-row flex-wrap items-center gap-6.5 rounded-card border border-line bg-surface-raise p-8 max-[900px]:col-span-1 max-[900px]:flex-col max-[900px]:items-start"
         >
           <svg
             class="size-8.5 flex-none fill-none stroke-current stroke-[1.7]"
@@ -221,16 +178,14 @@ const caseColSpan = (span: string) =>
             ><path d="M12 20s-7-4.5-9-9a4 4 0 0 1 9-2 4 4 0 0 1 9 2c-2 4.5-9 9-9 9z"></path></svg
           >
           <div class="min-w-0 [flex:1_1_340px]">
-            <h3 class="text-[19px] leading-[1.08] lowercase">
-              coopérative, association, intérêt général ?
-            </h3>
+            <h3 class="text-[19px] leading-[1.08]">Coopérative, association, intérêt général ?</h3>
             <p class="mt-2 max-w-[74ch] text-[15px] font-medium text-pretty">
-              je mets mes compétences au service de l'économie sociale et solidaire : offres et
+              Je mets mes compétences au service de l'économie sociale et solidaire : offres et
               tarifs adaptés pour les coopératives, les associations et les structures reconnues
-              d'intérêt général. la qualité d'un studio, pensée pour vos moyens.
+              d'intérêt général. La qualité d'un studio, pensée pour vos moyens.
             </p>
           </div>
-          <a class="link self-start text-sm whitespace-nowrap" href="#">l'accompagnement ess →</a>
+          <a class="link self-start text-sm whitespace-nowrap" href="#">L'accompagnement ESS →</a>
         </article>
       </div>
     </div>
@@ -240,8 +195,8 @@ const caseColSpan = (span: string) =>
   <section class="py-16x" id="projets">
     <div class="container-site">
       <div class="mb-10x flex flex-wrap items-center justify-between gap-6">
-        <h2 class="lowercase">projets récents.</h2>
-        <a class="link" href="#">voir tous les projets →</a>
+        <h2>Projets récents.</h2>
+        <a class="link" href="#">Voir tous les projets →</a>
       </div>
       <div class="grid grid-cols-12 gap-8 max-[900px]:grid-cols-1">
         {
@@ -252,7 +207,7 @@ const caseColSpan = (span: string) =>
                 <span class="label mb-1.5 block">{c.num}</span>
                 <h3 class="text-[17px] leading-tight">{c.title}</h3>
                 <a class="link mt-2 inline-block text-sm" href="#">
-                  lire l'étude →
+                  Lire l'étude →
                 </a>
               </div>
             </article>
@@ -266,8 +221,8 @@ const caseColSpan = (span: string) =>
   <section class="py-16x">
     <div class="container-site">
       <div class="mb-10x text-center">
-        <h2 class="text-[clamp(32px,4.4vw,64px)] leading-[1.02] tracking-[-0.035em] lowercase">
-          ils en parlent mieux que moi.
+        <h2 class="text-[clamp(32px,4.4vw,64px)] leading-[1.02] tracking-[-0.035em]">
+          Ils en parlent mieux que moi.
         </h2>
       </div>
       <div class="flex items-start gap-6">
@@ -302,7 +257,7 @@ const caseColSpan = (span: string) =>
   <!-- MÉTHODE -->
   <section class="py-16x">
     <div class="container-site">
-      <div class="mb-10x"><h2 class="lowercase">du brief à la mise en production</h2></div>
+      <div class="mb-10x"><h2>Du brief à la mise en production</h2></div>
       <div class="flex items-stretch max-[1100px]:flex-col">
         {
           steps.map((s, i) => (
@@ -334,9 +289,9 @@ const caseColSpan = (span: string) =>
     <div class="container-site">
       <div class="mb-10x">
         <span class="label mb-3 block">chiffres · depuis 2022</span>
-        <h2 class="lowercase">les preuves chiffrées.</h2>
+        <h2>Les preuves chiffrées.</h2>
         <p class="mt-3 max-w-[60ch] text-lg leading-normal font-medium">
-          depuis 2022, j'accompagne agences, créatifs et entreprises sur leurs projets web : de la
+          Depuis 2022, j'accompagne agences, créatifs et entreprises sur leurs projets web : de la
           landing one-shot à l'application sur-mesure.
         </p>
       </div>
@@ -366,17 +321,17 @@ const caseColSpan = (span: string) =>
     >
       <div class="flex flex-col items-start gap-6">
         <h3
-          class="max-w-[14ch] text-[clamp(40px,5vw,72px)] leading-[0.98] tracking-[-0.035em] lowercase"
+          class="max-w-[14ch] text-[clamp(40px,5vw,72px)] leading-[0.98] tracking-[-0.035em]"
         >
-          je m'appelle ludo,<br />j'ai créé coolbeans.
+          Je m'appelle Ludo,<br />j'ai créé coolbeans.
         </h3>
         <p class="max-w-[46ch] text-[19px] leading-[1.55] font-medium text-pretty">
-          développeur web freelance à sète, avec plus de 10 ans en agence et en indépendant :
-          direction de projet, design, développement. je conçois autant que je code, et j'ai assez
+          Développeur web freelance à Sète, avec plus de 10 ans en agence et en indépendant :
+          direction de projet, design, développement. Je conçois autant que je code, et j'ai assez
           roulé ma bosse côté business pour savoir qu'un site doit d'abord servir vos objectifs
           avant de faire joli.
         </p>
-        <a class="link" href="/about">lire la version longue →</a>
+        <a class="link" href="/about">Lire la version longue →</a>
       </div>
       <figure
         class="relative aspect-[4/5] overflow-hidden border border-line bg-surface-subtle max-[1100px]:aspect-[16/11]"
@@ -396,9 +351,9 @@ const caseColSpan = (span: string) =>
   </section>
 
   <CtaBand
-    title="on cadre votre projet en 30 minutes ?"
-    text="un échange sans engagement : on cadre votre besoin, je vous dis franchement si je suis la bonne personne, et vous repartez avec un devis chiffré sous 48 h."
-    ctaLabel="discuter du projet"
+    title="On cadre votre projet en 30 minutes ?"
+    text="Un échange sans engagement : on cadre votre besoin, je vous dis franchement si je suis la bonne personne, et vous repartez avec un devis chiffré sous 48 h."
+    ctaLabel="Discuter du projet"
   />
 
   <Footer />
@@ -411,8 +366,8 @@ const caseColSpan = (span: string) =>
     const words = [
       "agences créatives",
       "directeur·rices artistiques",
-      "pme ou scale up",
-      "tpe ou solopreneur",
+      "PME ou scale up",
+      "TPE ou solopreneur",
     ];
 
     // Mesure la largeur rendue de chaque mot dans un clone hors flux,

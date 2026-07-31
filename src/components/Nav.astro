@@ -3,12 +3,12 @@ const path = Astro.url.pathname.replace(/\/$/, "") || "/";
 
 // ordre du wireframe ; pages non construites → # pour l'instant
 const links = [
-  { href: "#", label: "projets" },
-  { href: "#", label: "services" },
-  { href: "#", label: "blog" },
-  { href: "#", label: "ressources" },
-  { href: "/tools", label: "boîte à outils" },
-  { href: "/about", label: "à propos" },
+  { href: "#", label: "Projets" },
+  { href: "#", label: "Services" },
+  { href: "#", label: "Blog" },
+  { href: "#", label: "Ressources" },
+  { href: "/tools", label: "Boîte à outils" },
+  { href: "/about", label: "À propos" },
 ];
 const isActive = (href: string) => href !== "#" && path.startsWith(href);
 
@@ -16,22 +16,22 @@ const isActive = (href: string) => href !== "#" && path.startsWith(href);
 const audience = [
   {
     href: "/#vous-etes",
-    label: "agence créative",
+    label: "Agence créative",
     svg: '<rect x="4" y="3" width="10" height="18"/><rect x="14" y="9" width="6" height="12"/><line x1="7" y1="7" x2="11" y2="7"/><line x1="7" y1="11" x2="11" y2="11"/><line x1="7" y1="15" x2="11" y2="15"/>',
   },
   {
     href: "/#vous-etes",
-    label: "directeur·rice artistique",
+    label: "Directeur·rice artistique",
     svg: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>',
   },
   {
     href: "/#vous-etes",
-    label: "pme ou scale up",
+    label: "PME ou scale up",
     svg: '<polyline points="3 17 9 11 13 15 21 7"/><polyline points="21 12 21 7 16 7"/>',
   },
   {
     href: "/#vous-etes",
-    label: "tpe ou solopreneur",
+    label: "TPE ou solopreneur",
     svg: '<path d="M3 9h18l-1.4-5H4.4L3 9z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/>',
   },
 ];
@@ -71,7 +71,7 @@ const audience = [
           id="aud-trigger"
           class="inline-flex cursor-pointer items-center gap-1.5 rounded-full px-3.5 py-2 text-sm leading-none font-medium text-mute transition-colors duration-150 ease-in-out group-data-[open=true]:text-ink hover:text-ink"
         >
-          vous êtes
+          Vous êtes
           <svg
             viewBox="0 0 12 12"
             fill="none"
@@ -92,7 +92,7 @@ const audience = [
               <a
                 role="menuitem"
                 href={a.href}
-                class="flex items-center gap-2.25 rounded-sm px-3 py-2.5 text-[14px] leading-tight font-medium text-ink lowercase transition-[background-color,color] duration-120 ease-in-out hover:bg-accent hover:text-accent-ink"
+                class="flex items-center gap-2.25 rounded-sm px-3 py-2.5 text-[14px] leading-tight font-medium text-ink transition-[background-color,color] duration-120 ease-in-out hover:bg-accent hover:text-accent-ink"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -112,7 +112,7 @@ const audience = [
           </span>
           <a
             role="menuitem"
-            class="ess flex items-center gap-2.25 rounded-sm px-3 py-2.5 text-[14px] leading-tight font-medium text-ink lowercase transition-[background-color,color] duration-120 ease-in-out hover:bg-accent hover:text-accent-ink"
+            class="ess flex items-center gap-2.25 rounded-sm px-3 py-2.5 text-[14px] leading-tight font-medium text-ink transition-[background-color,color] duration-120 ease-in-out hover:bg-accent hover:text-accent-ink"
             href="#"
           >
             <svg
@@ -121,7 +121,7 @@ const audience = [
               class="h-4 w-4 flex-none fill-none stroke-current stroke-[1.7] [stroke-linecap:round] [stroke-linejoin:round]"
               ><path d="M12 20s-7-4.5-9-9a4 4 0 0 1 9-2 4 4 0 0 1 9 2c-2 4.5-9 9-9 9z"></path></svg
             >
-            accompagnement ess
+            Accompagnement ESS
           </a>
         </div>
       </div>
@@ -173,7 +173,7 @@ const audience = [
           ></path></svg
         >
       </button>
-      <a class="btn btn-sm" href="#">contact</a>
+      <a class="btn btn-sm" href="#">Contact</a>
     </div>
   </div>
 </header>

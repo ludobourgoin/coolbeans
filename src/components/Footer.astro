@@ -1,17 +1,20 @@
 ---
+import GridBackdrop from "./GridBackdrop.astro";
+
 const year = 2026;
 
 // contenu conservé du footer précédent, réorganisé en colonnes
 const exploreLinks = [
-  { href: "/", label: "accueil" },
-  { href: "/about", label: "à propos" },
-  { href: "/tools", label: "tools" },
+  { href: "/", label: "Accueil" },
+  { href: "/about", label: "À propos" },
+  { href: "/tools", label: "Tools" },
 ];
 ---
 
-<footer class="border-t border-line bg-surface-subtle">
+<footer class="relative overflow-hidden border-t border-line bg-surface-subtle">
+  <GridBackdrop />
   <div
-    class="container-site grid grid-cols-1 gap-10 py-16 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-[1fr_1fr_1fr_1.6fr] lg:gap-10"
+    class="container-site relative grid grid-cols-1 gap-10 py-16 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-[1fr_1fr_1fr_1.6fr] lg:gap-10"
   >
     <div class="sm:col-span-2 lg:col-span-1">
       <a href="/" aria-label="coolbeans — accueil" class="inline-flex items-center leading-0">
@@ -37,7 +40,7 @@ const exploreLinks = [
     </div>
 
     <nav aria-label="explorer">
-      <h4 class="text-sm font-medium text-ink">explorer</h4>
+      <h4 class="text-sm font-medium text-ink">Explorer</h4>
       <ul class="mt-4 flex flex-col gap-3">
         {
           exploreLinks.map((l) => (
@@ -55,14 +58,14 @@ const exploreLinks = [
     </nav>
 
     <nav aria-label="contact">
-      <h4 class="text-sm font-medium text-ink">contact</h4>
+      <h4 class="text-sm font-medium text-ink">Contact</h4>
       <ul class="mt-4 flex flex-col gap-3">
         <li>
           <a
             href="#"
             class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
           >
-            discuter d'un projet
+            Discuter d'un projet
           </a>
         </li>
         <li>
@@ -72,7 +75,7 @@ const exploreLinks = [
             rel="noopener"
             class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
           >
-            linkedin ↗
+            LinkedIn ↗
           </a>
         </li>
         <li>
@@ -80,7 +83,7 @@ const exploreLinks = [
             href="#"
             class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
           >
-            mentions légales
+            Mentions légales
           </a>
         </li>
         <li>
@@ -88,14 +91,14 @@ const exploreLinks = [
             href="#"
             class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
           >
-            cgv
+            CGV
           </a>
         </li>
       </ul>
     </nav>
 
     <div class="sm:col-span-2 lg:col-span-1">
-      <h4 class="text-sm font-medium text-ink">newsletter</h4>
+      <h4 class="text-sm font-medium text-ink">Newsletter</h4>
       <p class="mt-4 max-w-[36ch] text-sm text-mute">
         Les coulisses du studio, une fois par mois. Pas de spam, désinscription en un clic.
       </p>
@@ -120,16 +123,16 @@ const exploreLinks = [
           placeholder="vous@exemple.com"
           class="field h-8 min-w-0 flex-1 border-0 bg-transparent px-0 text-sm focus:shadow-none"
         />
-        <button type="button" class="btn btn-sm shrink-0">s'abonner</button>
+        <button type="button" class="btn btn-sm shrink-0">S'abonner</button>
       </form>
     </div>
   </div>
 
   <div
-    class="container-site flex flex-col gap-8 pt-14 pb-10 sm:flex-row sm:items-end sm:justify-between"
+    class="container-site relative flex flex-col gap-8 pt-14 pb-10 sm:flex-row sm:items-end sm:justify-between"
   >
     <div class="flex flex-col gap-4">
-      <p class="text-sm text-mute">© {year} coolbeans · ludovic bourgoin · sète · france</p>
+      <p class="text-sm text-mute">© {year} coolbeans · Ludovic Bourgoin · Sète · France</p>
       <div class="flex items-center gap-3">
         <a
           href="https://linkedin.com/in/ludovicbourgoin"

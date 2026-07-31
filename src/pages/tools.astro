@@ -20,9 +20,9 @@ const groups = [
 
   <section class="border-b border-line">
     <div class="container-site pt-20 pb-12 text-center">
-      <h1 class="lowercase">boîte à outils.</h1>
+      <h1>Boîte à outils.</h1>
       <p class="mx-auto mt-5 max-w-prose text-xl font-medium">
-        tous les outils que j'utilise au quotidien, et que je recommande les yeux fermés.
+        Tous les outils que j'utilise au quotidien, et que je recommande les yeux fermés.
       </p>
     </div>
   </section>
@@ -41,7 +41,7 @@ const groups = [
                 {group.categories.map((cat) => (
                   <a
                     href={`#${cat.id}`}
-                    class="flex items-center justify-between gap-2 rounded-control px-3 py-2.5 font-display text-sm font-semibold text-ink lowercase transition-colors duration-200 ease-brand hover:bg-surface-raise lg:not-last:border-b lg:not-last:border-line"
+                    class="flex items-center justify-between gap-2 rounded-control px-3 py-2.5 font-display text-sm font-semibold text-ink transition-colors duration-200 ease-brand hover:bg-surface-raise lg:not-last:border-b lg:not-last:border-line"
                   >
                     {cat.title}
                     <span class="font-mono text-xs text-mute">{cat.cards.length}</span>
@@ -59,7 +59,7 @@ const groups = [
         toolCategories.map((cat) => (
           <section class="scroll-mt-24" id={cat.id}>
             <div class="mb-6 flex items-center gap-4">
-              <h2 class="whitespace-nowrap lowercase">{cat.title}</h2>
+              <h2 class="whitespace-nowrap">{cat.title}</h2>
               <span class="h-px flex-1 bg-line" />
             </div>
             <div class="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-5">
@@ -75,13 +75,13 @@ const groups = [
                     <div class="grid size-11 shrink-0 place-items-center border border-line bg-tile">
                       <img src={tool.logo} alt="" loading="lazy" class="size-3/4 object-contain" />
                     </div>
-                    <div class="font-display text-lg font-semibold lowercase">{tool.name}</div>
+                    <div class="font-display text-lg font-semibold">{tool.name}</div>
                   </div>
                   <p class="text-sm text-mute">{tool.desc}</p>
                   {tool.chips.length > 0 && (
                     <div class="mt-auto flex flex-wrap gap-1.5">
                       {tool.chips.map((chip) => (
-                        <span class="border border-line px-2 py-1 font-mono text-xs font-semibold tracking-wide text-mute lowercase">
+                        <span class="border border-line px-2 py-1 font-mono text-xs font-semibold tracking-wide text-mute">
                           {chip}
                         </span>
                       ))}
