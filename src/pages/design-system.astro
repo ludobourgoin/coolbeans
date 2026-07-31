@@ -1,0 +1,528 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Browser from "../components/Browser.astro";
+import GridBackdrop from "../components/GridBackdrop.astro";
+import Badge from "../components/ui/Badge.astro";
+import Avatar from "../components/ui/Avatar.astro";
+import Breadcrumbs from "../components/ui/Breadcrumbs.astro";
+import Description from "../components/ui/Description.astro";
+import Banner from "../components/ui/Banner.astro";
+import Collapse from "../components/ui/Collapse.astro";
+import CopyButton from "../components/ui/CopyButton.astro";
+import Choicebox from "../components/ui/Choicebox.astro";
+import ClearableInput from "../components/ui/ClearableInput.astro";
+import ContextCard from "../components/ui/ContextCard.astro";
+import CommandMenu from "../components/ui/CommandMenu.astro";
+
+const SCALES = [
+  { key: "background", label: "Backgrounds", steps: [100, 200] },
+  { key: "gray", label: "Gray", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
+  { key: "gray-alpha", label: "Gray alpha", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
+  { key: "blue", label: "Blue", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
+  { key: "red", label: "Red", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
+  { key: "amber", label: "Amber", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
+  { key: "green", label: "Green", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
+  { key: "teal", label: "Teal", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
+  { key: "purple", label: "Purple", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
+  { key: "pink", label: "Pink", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
+];
+
+const SEMANTIC = [
+  ["--surface", "surface de contenu", "--ds-background-100"],
+  ["--surface-subtle", "sections en retrait", "--ds-background-200"],
+  ["--surface-raise", "cartes, chips, encarts", "--ds-gray-100"],
+  ["--line", "filet fin", "--ds-gray-400"],
+  ["--line-strong", "filet appuyé", "--ds-gray-500"],
+  ["--ink", "texte principal", "--ds-gray-1000"],
+  ["--mute", "texte secondaire", "--ds-gray-900"],
+  ["--accent", "CTA, liens, états actifs", "--ds-gray-1000"],
+  ["--accent-ink", "texte sur aplat accent", "--ds-background-100"],
+  ["--accent-hover", "survol du bouton primaire", "hsl(0 0% 22%) · dark hsl(0 0% 80%)"],
+  ["--focus", "anneau de focus", "--ds-focus-color"],
+];
+
+const SPACE = [
+  ["2x", 8], ["3x", 12], ["4x", 16], ["6x", 24], ["8x", 32],
+  ["10x", 40], ["16x", 64], ["24x", 96], ["32x", 128],
+];
+
+const MATERIALS = [
+  ["base", "Anneau seul", "1px, sans ombre portée. Le filet par défaut."],
+  ["small", "Carte posée", "Anneau + 2px d'ombre. Cartes, cadre Browser."],
+  ["medium", "Intermédiaire", "Ombre à 8px."],
+  ["large", "Carte détachée", "Ombre à 16px. Éléments qui flottent."],
+  ["tooltip", "Infobulle", "Court, net, proche de la surface."],
+  ["menu", "Menu", "Popovers, listes déroulantes."],
+  ["modal", "Modale", "Le plus haut de la pile."],
+];
+
+const BTN_TYPES = [
+  ["", "Primaire"],
+  ["btn-outline", "Secondaire"],
+  ["btn-ghost", "Tertiaire"],
+];
+const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "Large · 40"]];
+---
+
+<BaseLayout
+  title="Design system — Coolbeans"
+  description="Référence interne du design system Coolbeans."
+  noindex
+>
+  <header class="sticky top-0 z-50 bg-surface py-4 shadow-[inset_0_-1px_0_var(--line)]">
+    <div class="container-site flex flex-wrap items-center gap-6">
+      <strong class="font-display text-[19px] font-extrabold tracking-[-0.03em]">
+        design system
+      </strong>
+      <nav class="flex flex-1 flex-wrap gap-6 text-sm">
+        {
+          [
+            ["couleurs", "Couleurs"],
+            ["typo", "Typo"],
+            ["rythme", "Rythme"],
+            ["materials", "Materials"],
+            ["boutons", "Boutons"],
+            ["browser", "Browser"],
+            ["biblio", "Bibliothèque"],
+          ].map(([id, label]) => (
+            <a
+              href={`#${id}`}
+              class="text-mute transition-colors duration-150 ease-in-out hover:text-ink"
+            >
+              {label}
+            </a>
+          ))
+        }
+      </nav>
+      <button class="btn btn-ghost btn-sm" data-theme-toggle>Clair / sombre</button>
+    </div>
+  </header>
+
+  <section class="relative overflow-hidden bg-surface-subtle py-32x">
+    <GridBackdrop />
+    <div class="container-site relative">
+      <p class="label mb-6x">Référence interne · non indexée</p>
+      <h1 class="max-w-[18ch]">Le système, pas la page.</h1>
+      <p class="mt-6x max-w-[52ch] text-[19px] text-mute">
+        Cette page consomme les composants réels. Si un composant change, elle change
+        avec lui — elle ne peut pas mentir.
+      </p>
+    </div>
+  </section>
+
+  <!-- COULEURS -->
+  <section id="couleurs" class="border-t border-line py-24x">
+    <div class="container-site">
+      <p class="label">01</p>
+      <h2 class="mb-3x mt-3x">Couleurs</h2>
+      <p class="mb-10x max-w-[62ch] text-mute">
+        Le système Geist complet : dix échelles, hex en base et <code class="font-mono"
+          >lab()</code
+        > derrière <code class="font-mono">@supports</code>. L'identité reste monochrome ;
+        les échelles colorées ne servent qu'aux états fonctionnels.
+      </p>
+
+      {
+        SCALES.map((s) => (
+          <div class="grid grid-cols-1 items-center gap-4x py-1.5 md:grid-cols-[110px_1fr]">
+            <div class="font-mono text-xs text-mute">{s.label}</div>
+            <div
+              class="grid overflow-hidden rounded-card border border-line"
+              style={`grid-template-columns:repeat(${s.steps.length},1fr)`}
+            >
+              {s.steps.map((n) => (
+                <div
+                  class="flex h-14 items-end p-1.5 font-mono text-[9px] text-mute"
+                  style={`background:var(--ds-${s.key}-${n})`}
+                  title={`--ds-${s.key}-${n}`}
+                >
+                  {n}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+
+      <p class="label mb-3x mt-16x">Couche sémantique</p>
+      <div>
+        {
+          SEMANTIC.map(([tok, role, src]) => (
+            <div class="grid items-center gap-4x border-t border-line py-3x font-mono text-[12.5px] md:grid-cols-[150px_1fr_170px_auto]">
+              <span>{tok}</span>
+              <span class="text-mute">{role}</span>
+              <span class="text-[11.5px] text-mute">{src}</span>
+              <span
+                class="h-6 w-11 rounded border border-line-strong"
+                style={`background:var(${tok})`}
+              />
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="label mb-3x mt-16x">États fonctionnels</p>
+      <div class="grid gap-6x sm:grid-cols-2 lg:grid-cols-4">
+        {
+          [
+            ["info", "Info", "--ds-blue-700"],
+            ["success", "Succès", "--ds-green-800"],
+            ["warning", "Alerte", "--ds-amber-800"],
+            ["error", "Erreur", "--ds-red-800"],
+          ].map(([tok, label, src]) => (
+            <div class="card">
+              <span
+                class="mb-4x block h-11 w-full rounded-control"
+                style={`background:var(--${tok})`}
+              />
+              <h4>{label}</h4>
+              <p class="font-mono text-xs text-mute">{src}</p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="mt-8x max-w-[70ch] border-l-2 border-line-strong pl-4x text-[15px] text-mute">
+        Jamais en fond de section, jamais en CTA. Uniquement sur du signal — un message
+        d'erreur en gris n'est pas un message d'erreur.
+      </p>
+    </div>
+  </section>
+
+  <!-- TYPO -->
+  <section id="typo" class="border-t border-line py-24x">
+    <div class="container-site">
+      <p class="label">02</p>
+      <h2 class="mb-3x mt-3x">Typographie</h2>
+      <p class="mb-10x max-w-[62ch] text-mute">
+        Geomanist tient les h1/h2, Geist prend tout le reste. Une display ronde sur un
+        système froid — c'est la signature.
+      </p>
+
+      <div class="card mb-4x">
+        <div class="mb-6x flex flex-wrap justify-between gap-4x">
+          <span class="label">Display · Geomanist 700 / 800</span>
+          <span class="font-mono text-xs text-mute">h1 · h2 uniquement</span>
+        </div>
+        <div
+          class="font-display font-bold leading-[1.02] tracking-[-0.03em]"
+          style="font-size:clamp(40px,6vw,76px)"
+        >
+          Un studio qui livre
+        </div>
+      </div>
+
+      <div class="card mb-4x">
+        <div class="mb-6x flex flex-wrap justify-between gap-4x">
+          <span class="label">Corps &amp; UI · Geist Sans 400–600</span>
+          <span class="font-mono text-xs text-mute">h3-h5 · p · boutons · nav</span>
+        </div>
+        <h3 class="mb-3x">Titre de carte en Geist SemiBold</h3>
+        <p class="max-w-[64ch] text-mute">
+          Le corps passe en Geist Sans 400 à 16px sur une interligne de 1,5. La police est
+          dessinée pour l'écran et disparaît derrière le texte, ce qui est exactement ce
+          qu'on lui demande.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="mb-6x flex flex-wrap justify-between gap-4x">
+          <span class="label">Mono · Geist Mono 500 / 700</span>
+          <span class="font-mono text-xs text-mute">labels · eyebrows · code</span>
+        </div>
+        <p class="label text-[13px]">SURTITRE EN GEIST MONO</p>
+        <p class="mt-3x font-mono text-sm text-mute">--surface-subtle: #fafafa;</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RYTHME -->
+  <section id="rythme" class="border-t border-line py-24x">
+    <div class="container-site">
+      <p class="label">03</p>
+      <h2 class="mb-3x mt-3x">Rythme</h2>
+      <p class="mb-10x max-w-[62ch] text-mute">
+        Base 4px, gap par défaut à 24px, container 1280px.
+      </p>
+      <div class="grid gap-6x md:grid-cols-2">
+        <div>
+          {
+            SPACE.map(([n, v]) => (
+              <div class="grid grid-cols-[110px_1fr] items-center gap-4x py-1.5">
+                <span class="font-mono text-xs text-mute">--space-{n} · {v}</span>
+                <span class="block h-3.5 rounded-sm bg-ink" style={`width:${v}px`} />
+              </div>
+            ))
+          }
+        </div>
+        <div class="card bg-surface-raise font-mono text-[13px]">
+          <div>--container : <strong>1280px</strong></div>
+          <div class="mt-3x">--gutter : <strong>24px</strong></div>
+          <div class="mt-3x">--radius-control : <strong>6px</strong></div>
+          <div class="mt-3x">--radius-card : <strong>8px</strong></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATERIALS -->
+  <section id="materials" class="border-t border-line py-24x">
+    <div class="container-site">
+      <p class="label">04</p>
+      <h2 class="mb-3x mt-3x">Materials</h2>
+      <p class="mb-10x max-w-[62ch] text-mute">
+        Pas du verre dépoli : aucun <code class="font-mono">backdrop-filter</code> chez
+        Geist. Une échelle d'élévation en ombres empilées, dont un anneau de 1px qui
+        remplace la bordure.
+      </p>
+      <div class="grid gap-6x sm:grid-cols-2 lg:grid-cols-3">
+        {
+          MATERIALS.map(([key, title, desc]) => (
+            <div class={`card material-${key} border-0`}>
+              <span class="label">{key}</span>
+              <h4 class="mt-2x">{title}</h4>
+              <p class="mt-2x text-sm text-mute">{desc}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- BOUTONS -->
+  <section id="boutons" class="border-t border-line py-24x">
+    <div class="container-site">
+      <p class="label">05</p>
+      <h2 class="mb-3x mt-3x">Boutons</h2>
+      <p class="mb-10x max-w-[62ch] text-mute">
+        Le primaire n'inverse pas au survol : il s'éclaircit en clair, s'assombrit en
+        sombre. Bordure en <code class="font-mono">box-shadow</code>, transition 150ms,
+        coupée au focus. Survole-les, puis tabule.
+      </p>
+      <div class="card">
+        <div
+          class="grid items-center gap-4x"
+          style="grid-template-columns:auto repeat(3,1fr)"
+        >
+          <div></div>
+          {BTN_SIZES.map(([, label]) => <div class="label text-[10px]">{label}</div>)}
+          {
+            BTN_TYPES.map(([variant, label]) => (
+              <>
+                <div class="label text-[10px]">{label}</div>
+                {BTN_SIZES.map(([size]) => (
+                  <div>
+                    <button class:list={["btn", variant, size]}>Déployer</button>
+                  </div>
+                ))}
+              </>
+            ))
+          }
+          <div class="label text-[10px]">Inactif</div>
+          {
+            BTN_SIZES.map(([size]) => (
+              <div>
+                <button class:list={["btn", size]} disabled>
+                  Déployer
+                </button>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="mt-6x grid gap-6x md:grid-cols-2">
+        <div class="card">
+          <p class="label mb-4x">Champ</p>
+          <input class="field" placeholder="vous@exemple.fr" />
+          <p class="mt-4x text-sm text-mute">
+            Même anneau de focus que les boutons : 2px de fond puis 2px de couleur.
+          </p>
+        </div>
+        <div class="card font-mono text-[12.5px] leading-[1.8]">
+          <p class="label mb-4x font-sans">Ce que fait le survol</p>
+          <div><strong>Primaire</strong></div>
+          <div><span class="text-mute">clair</span> #171717 → <strong>hsl(0 0% 22%)</strong></div>
+          <div><span class="text-mute">sombre</span> #ededed → <strong>hsl(0 0% 80%)</strong></div>
+          <div class="mt-2x"><strong>Secondaire</strong> → --ds-gray-100 / 200</div>
+          <div class="mt-2x"><strong>Tertiaire</strong> → --ds-gray-alpha-200</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BROWSER -->
+  <section id="browser" class="border-t border-line py-24x">
+    <div class="container-site">
+      <p class="label">06</p>
+      <h2 class="mb-3x mt-3x">Browser</h2>
+      <p class="mb-10x max-w-[62ch] text-mute">
+        Le rayon du cadre suit la largeur du conteneur (<code class="font-mono"
+          >1.5cqw</code
+        >). Redimensionne la fenêtre, il s'ajuste. Sans <code class="font-mono">shot</code
+        >, l'état vide est explicite.
+      </p>
+      <div class="grid gap-6x md:grid-cols-2">
+        <Browser url="trigger.fr" label="trigger" />
+        <Browser label="amusoire : homepage" />
+      </div>
+    </div>
+  </section>
+
+  <!-- BIBLIOTHÈQUE -->
+  <section id="biblio" class="border-t border-line py-24x">
+    <div class="container-site">
+      <p class="label">07</p>
+      <h2 class="mb-3x mt-3x">Bibliothèque</h2>
+      <p class="mb-10x max-w-[62ch] text-mute">
+        Les composants réels, importés. Ceux du bas sont du mobilier d'application :
+        présents dans la bibliothèque, posés sur aucune page.
+      </p>
+
+      <div class="grid gap-6x md:grid-cols-2">
+        <div class="card">
+          <p class="label mb-6x">Badge</p>
+          <div class="flex flex-wrap items-center gap-3x">
+            <Badge>Livré</Badge>
+            <Badge subtle>Brouillon</Badge>
+            <Badge variant="blue">Astro</Badge>
+            <Badge variant="blue" subtle>Sanity</Badge>
+          </div>
+          <div class="mt-3x flex flex-wrap items-center gap-3x">
+            <Badge size="sm" variant="amber" subtle>En cours</Badge>
+            <Badge size="sm" variant="red" subtle>Bloqué</Badge>
+            <Badge size="sm" variant="purple" subtle>Maintenance</Badge>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="label mb-6x">Avatar</p>
+          <div class="flex flex-wrap items-center gap-6x">
+            <div class="flex">
+              <Avatar size={36} initials="MC" />
+              <span class="-ml-2"><Avatar size={36} initials="OC" /></span>
+              <span class="-ml-2"><Avatar size={36} initials="TM" /></span>
+              <span class="-ml-2"><Avatar size={36} initials="+8" /></span>
+            </div>
+            <Avatar size={48} initials="GC" />
+            <Avatar size={24} initials="AM" />
+          </div>
+          <p class="mt-6x text-sm text-mute">
+            L'anneau vaut <code class="font-mono">0 0 0 1px var(--surface)</code> — la
+            surface de page, pas un gris.
+          </p>
+        </div>
+
+        <div class="card">
+          <p class="label mb-6x">Breadcrumbs</p>
+          <Breadcrumbs
+            items={[
+              { label: "coolbeans", href: "/" },
+              { label: "réalisations", href: "#" },
+              { label: "amusoire" },
+            ]}
+          />
+        </div>
+
+        <div class="card">
+          <p class="label mb-6x">Description</p>
+          <Description
+            items={[
+              { term: "Client", value: "Amusoire" },
+              { term: "Année", value: "2026" },
+              { term: "Stack", value: "Astro · Sanity · Cloudflare" },
+              { term: "Durée", value: "6 semaines" },
+            ]}
+          />
+        </div>
+
+        <div class="card">
+          <p class="label mb-6x">Banner</p>
+          <div class="grid gap-3x">
+            <Banner tone="info">Le site est en préproduction sur staging.</Banner>
+            <Banner tone="success">Déploiement terminé.</Banner>
+            <Banner tone="warning">Certificat SSL à renouveler sous 14 jours.</Banner>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="label mb-6x">Copy button</p>
+          <div class="grid justify-items-start gap-3x">
+            <CopyButton value="ludo@coolbeans.cc" />
+            <CopyButton value="npm create astro@latest" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-6x">
+        <p class="label mb-4x">Collapse</p>
+        <Collapse question="Combien de temps prend un site ?" open>
+          Entre quatre et huit semaines selon le périmètre.
+        </Collapse>
+        <Collapse question="Qui écrit les contenus ?">
+          Vous, sauf mention contraire. Je fournis la structure et les gabarits.
+        </Collapse>
+        <Collapse question="Que se passe-t-il après la mise en ligne ?">
+          Maintenance mensuelle et un point trimestriel sur les performances.
+        </Collapse>
+      </div>
+
+      <p class="label mb-4x mt-16x">Mobilier d'application · non posé sur le site</p>
+      <div class="grid gap-6x lg:grid-cols-3">
+        <div class="card">
+          <p class="label mb-6x">Context card</p>
+          <p>
+            Réalisé avec <ContextCard label="Astro">
+              <strong class="text-sm">Astro</strong>
+              <p class="mt-2x text-[13px] text-mute">Zéro JS par défaut, îlots à la demande.</p>
+            </ContextCard> et hébergé sur Cloudflare.
+          </p>
+        </div>
+        <div class="card">
+          <p class="label mb-6x">Clearable input</p>
+          <ClearableInput name="q" placeholder="Rechercher un projet" />
+        </div>
+        <div class="card">
+          <p class="label mb-6x">Choicebox</p>
+          <Choicebox
+            name="offre"
+            options={[
+              { value: "vitrine", title: "Site vitrine", hint: "4 à 6 semaines", checked: true },
+              { value: "ecommerce", title: "E-commerce", hint: "8 à 12 semaines" },
+            ]}
+          />
+        </div>
+      </div>
+
+      <div class="mt-6x">
+        <p class="label mb-4x">Command menu</p>
+        <CommandMenu
+          items={[
+            { label: "Réalisations", key: "R" },
+            { label: "Outils", key: "O" },
+            { label: "À propos", key: "A" },
+            { label: "Écrire à Ludovic", key: "⌘ E" },
+          ]}
+          placeholder="Rechercher une page, un projet…"
+        />
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-line py-16x">
+    <div class="container-site">
+      <p class="label">
+        Page de référence interne · <code class="font-mono">noindex, nofollow</code> ·
+        non listée dans la navigation du site
+      </p>
+    </div>
+  </footer>
+</BaseLayout>
+
+<script>
+  document.querySelector("[data-theme-toggle]")?.addEventListener("click", () => {
+    const dark = document.documentElement.classList.toggle("dark");
+    try {
+      localStorage.setItem("theme", dark ? "dark" : "light");
+    } catch {}
+  });
+</script>

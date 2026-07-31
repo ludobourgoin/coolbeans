@@ -4,11 +4,13 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description?: string;
+  noindex?: boolean;
 }
 
 const {
   title,
   description = "Studio web indépendant basé à Sète. Design, développement et maintenance de sites performants, pensés pour vos objectifs et prêts pour l'ère de l'IA.",
+  noindex = false,
 } = Astro.props;
 ---
 
@@ -23,6 +25,7 @@ const {
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
