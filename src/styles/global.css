@@ -148,6 +148,27 @@
 }
 
 /* ----------------------------------------------------------------------------
+   ANIMATIONS PARTAGÉES
+   @keyframes ne peut pas s'exprimer en utilitaire seul, et index.astro n'est
+   pas sur la liste blanche des <style> (voir scripts/verify-design-system.js
+   §F : Flow et LogoMarquee sont les deux seules exceptions actées). La home
+   Tailwind v4 pour une primitive d'animation partagée sans <style> de
+   composant est @theme + --animate-* : https://tailwindcss.com/docs/theme
+   -------------------------------------------------------------------------- */
+@theme {
+  --animate-proof-marquee: proof-marquee 50s linear infinite;
+
+  @keyframes proof-marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/* ----------------------------------------------------------------------------
    BASE
    -------------------------------------------------------------------------- */
 @layer base {

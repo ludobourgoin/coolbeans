@@ -4,6 +4,9 @@ import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import CtaBand from "../components/CtaBand.astro";
 import Flow from "../components/Flow.astro";
+import Browser from "../components/Browser.astro";
+import GridBackdrop from "../components/GridBackdrop.astro";
+import Avatar from "../components/ui/Avatar.astro";
 import { testimonials, initials } from "../data/testimonials";
 import { cases } from "../data/cases";
 
@@ -47,56 +50,101 @@ const stats = [
 
 const columns: (typeof testimonials)[] = [[], [], []];
 testimonials.forEach((t, i) => columns[i % 3].push(t));
+
+// grille 12 colonnes des études de cas : cases.ts (Case.span) porte encore
+// les jetons historiques "span-8"/"span-6"/"span-4" ; on les fait
+// correspondre aux vraies utilitaires Tailwind col-span-* sans toucher à la
+// donnée. "tall" n'a plus d'effet visuel : Browser fixe l'aspect-ratio à
+// 16/10 quel que soit l'emplacement.
+const caseColSpan = (span: string) =>
+  span.startsWith("span-8")
+    ? "col-span-8"
+    : span.startsWith("span-6")
+      ? "col-span-6"
+      : "col-span-4";
 ---
 
 <BaseLayout title="Coolbeans — le studio web des agences créatives">
   <Nav />
 
   <!-- HERO centré + flux -->
-  <section class="hero-center surface-brand">
-    <div class="container-site hero-content">
+  <section
+    class="relative flex flex-col gap-10 overflow-hidden border-b border-line bg-surface-subtle pt-14 pb-10"
+  >
+    <GridBackdrop />
+    <div class="container-site relative text-center">
       <h1
+        class="mx-auto max-w-[22ch] text-[clamp(40px,4.6vw,64px)] leading-[1.02] tracking-[-0.03em] text-balance lowercase"
         aria-label="le studio web des agences créatives, directeur·rices artistiques, pme ou scale up, tpe ou solopreneur"
       >
         le studio web des<br />
-        <span class="tw" aria-hidden="true"
-          ><span id="tw-word" class="tw-word">agences créatives</span></span
+        <span class="inline-block align-top leading-[1.02] whitespace-nowrap" aria-hidden="true"
+          ><span id="tw-word" class="inline-block whitespace-nowrap [will-change:transform,opacity]"
+            >agences créatives</span
+          ></span
         >
       </h1>
-      <p class="lede">
+      <p
+        class="mx-auto mt-6.5 max-w-[60ch] text-[19px] leading-[1.45] font-medium text-pretty text-mute"
+      >
         studio solo, design et développement, à l'ère de l'IA. je conçois, je construis et je
         maintiens des sites rapides et bien conçus, visibles par vos clients, par Google et par les
         IA. un partenaire qui reste après la mise en ligne.
       </p>
-      <div class="ctas">
-        <a class="btn" href="#vous-etes">discuter de votre projet</a>
-        <a class="btn btn-ghost" href="#projets">voir les projets récents</a>
+      <div class="mt-9 flex flex-wrap justify-center gap-5">
+        <a class="btn btn-lg" href="#vous-etes">discuter de votre projet</a>
+        <a class="btn btn-lg btn-outline" href="#projets">voir les projets récents</a>
       </div>
     </div>
     <Flow />
   </section>
 
   <!-- PROOF · noms clients (marquee animé) -->
-  <section class="proof">
-    <div class="container-site proof-top">
-      <h3>ils m'ont fait confiance</h3>
+  <section class="group overflow-hidden border-b border-line bg-surface py-12">
+    <div class="container-site mb-6 flex flex-wrap items-baseline justify-between gap-4">
+      <h3 class="text-lg">ils m'ont fait confiance</h3>
       <span class="label">40+ projets · 2018 → 2026</span>
     </div>
-    <div class="proof-marquee" aria-hidden="true">
-      <div class="proof-track">
-        {clients.map((c) => <span class="pn">{c}</span>)}
-        {clients.map((c) => <span class="pn">{c}</span>)}
+    <div
+      class="overflow-hidden"
+      style="mask-image: linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent); -webkit-mask-image: linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);"
+      aria-hidden="true"
+    >
+      <div
+        class="flex w-max animate-proof-marquee items-center gap-20 whitespace-nowrap group-hover:[animation-play-state:paused] motion-reduce:animate-none"
+      >
+        {
+          clients.map((c) => (
+            <span class="font-display text-[40px] font-bold tracking-[-0.03em] text-ink lowercase">
+              {c}
+            </span>
+          ))
+        }
+        {
+          clients.map((c) => (
+            <span class="font-display text-[40px] font-bold tracking-[-0.03em] text-ink lowercase">
+              {c}
+            </span>
+          ))
+        }
       </div>
     </div>
   </section>
 
   <!-- VOUS ÊTES (bento) -->
-  <section class="sec audience-sec" id="vous-etes">
+  <section class="py-16x" id="vous-etes">
     <div class="container-site">
-      <div class="sec-head"><h2>vous êtes…</h2></div>
-      <div class="aud-bento">
-        <article class="aud-card feature">
-          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"
+      <div class="mb-10x"><h2 class="lowercase">vous êtes…</h2></div>
+      <div
+        class="grid auto-rows-[minmax(160px,auto)] grid-cols-4 gap-4 max-[900px]:grid-cols-2 max-[680px]:grid-cols-1"
+      >
+        <article
+          class="relative col-span-2 row-span-2 flex flex-col border border-ink bg-ink p-6.5 text-surface max-[900px]:row-span-1 max-[680px]:col-span-1"
+        >
+          <svg
+            class="size-9.5 flex-none fill-none stroke-current stroke-[1.7]"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
             ><rect x="4" y="3" width="10" height="18"></rect><rect
               x="14"
               y="9"
@@ -107,76 +155,101 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
               x2="11"
               y2="11"></line><line x1="7" y1="15" x2="11" y2="15"></line></svg
           >
-          <h5>agence créative</h5>
-          <p>
+          <h5 class="mt-6 text-[30px] leading-[1.08] lowercase">agence créative</h5>
+          <p class="mt-2.5 max-w-[34ch] text-base opacity-82">
             vous concevez, j'exécute. sous votre marque, en marque blanche, je suis comme une
             extension de votre équipe.
           </p>
-          <a class="link" href="/about">en savoir plus →</a>
+          <a
+            class="link mt-auto self-start border-white/40 pt-5.5 text-sm text-white/75 hover:border-surface hover:text-surface"
+            href="/about">en savoir plus →</a
+          >
         </article>
-        <article class="aud-card aud-b">
-          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"
+        <article
+          class="relative col-span-2 flex flex-col border border-line bg-surface-raise p-6.5 max-[900px]:col-span-1"
+        >
+          <svg
+            class="size-9.5 flex-none fill-none stroke-current stroke-[1.7]"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
             ><path d="M12 20h9"></path><path
               d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path></svg
           >
-          <h5>directeur·rice artistique</h5>
-          <p>votre design livré exactement comme pensé, au pixel près.</p>
-          <a class="link" href="/about">en savoir plus →</a>
+          <h5 class="mt-5 text-[21px] leading-[1.08] lowercase">directeur·rice artistique</h5>
+          <p class="mt-2.5 text-[15px] font-medium text-pretty">
+            votre design livré exactement comme pensé, au pixel près.
+          </p>
+          <a class="link mt-auto self-start pt-5.5 text-sm" href="/about">en savoir plus →</a>
         </article>
-        <article class="aud-card aud-c">
-          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"
+        <article class="relative flex flex-col border border-line bg-surface-raise p-6.5">
+          <svg
+            class="size-9.5 flex-none fill-none stroke-current stroke-[1.7]"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
             ><polyline points="3 17 9 11 13 15 21 7"></polyline><polyline points="21 12 21 7 16 7"
             ></polyline></svg
           >
-          <h5>pme ou scale up</h5>
-          <p>votre site est un canal d'acquisition. traitons-le comme tel.</p>
-          <a class="link" href="/about">en savoir plus →</a>
+          <h5 class="mt-5 text-[21px] leading-[1.08] lowercase">pme ou scale up</h5>
+          <p class="mt-2.5 text-[15px] font-medium text-pretty">
+            votre site est un canal d'acquisition. traitons-le comme tel.
+          </p>
+          <a class="link mt-auto self-start pt-5.5 text-sm" href="/about">en savoir plus →</a>
         </article>
-        <article class="aud-card aud-d">
-          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"
+        <article class="relative flex flex-col border border-line bg-surface-raise p-6.5">
+          <svg
+            class="size-9.5 flex-none fill-none stroke-current stroke-[1.7]"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
             ><path d="M3 9h18l-1.4-5H4.4L3 9z"></path><path d="M5 9v11h14V9"></path><path
               d="M9 20v-6h6v6"></path></svg
           >
-          <h5>tpe ou solopreneur</h5>
-          <p>votre présence en ligne pro, livrée vite, prix fixe, zéro souci.</p>
-          <a class="link" href="/about">en savoir plus →</a>
+          <h5 class="mt-5 text-[21px] leading-[1.08] lowercase">tpe ou solopreneur</h5>
+          <p class="mt-2.5 text-[15px] font-medium text-pretty">
+            votre présence en ligne pro, livrée vite, prix fixe, zéro souci.
+          </p>
+          <a class="link mt-auto self-start pt-5.5 text-sm" href="/about">en savoir plus →</a>
         </article>
-        <article class="aud-card ess">
-          <svg class="aud-ic" viewBox="0 0 24 24" aria-hidden="true"
+        <article
+          class="relative col-span-4 flex flex-row flex-wrap items-center gap-6.5 border border-line bg-surface-raise p-6.5 max-[900px]:col-span-1 max-[900px]:flex-col max-[900px]:items-start"
+        >
+          <svg
+            class="size-8.5 flex-none fill-none stroke-current stroke-[1.7]"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
             ><path d="M12 20s-7-4.5-9-9a4 4 0 0 1 9-2 4 4 0 0 1 9 2c-2 4.5-9 9-9 9z"></path></svg
           >
-          <div class="ess-txt">
-            <h5>coopérative, association, intérêt général ?</h5>
-            <p>
+          <div class="min-w-0 [flex:1_1_340px]">
+            <h5 class="text-[19px] leading-[1.08] lowercase">
+              coopérative, association, intérêt général ?
+            </h5>
+            <p class="mt-2 max-w-[74ch] text-[15px] font-medium text-pretty">
               je mets mes compétences au service de l'économie sociale et solidaire : offres et
               tarifs adaptés pour les coopératives, les associations et les structures reconnues
               d'intérêt général. la qualité d'un studio, pensée pour vos moyens.
             </p>
           </div>
-          <a class="link" href="#">l'accompagnement ess →</a>
+          <a class="link self-start text-sm whitespace-nowrap" href="#">l'accompagnement ess →</a>
         </article>
       </div>
     </div>
   </section>
 
   <!-- PROJETS (mosaic) -->
-  <section class="sec cases-sec" id="projets">
+  <section class="py-16x" id="projets">
     <div class="container-site">
-      <div class="sec-head row">
-        <h2>projets récents.</h2>
+      <div class="mb-10x flex flex-wrap items-center justify-between gap-6">
+        <h2 class="lowercase">projets récents.</h2>
         <a class="link" href="#">voir tous les projets →</a>
       </div>
-      <div class="cases-mosaic">
+      <div class="grid grid-cols-12 gap-8 max-[900px]:grid-cols-1">
         {
           cases.map((c) => (
-            <article class:list={["case-card", ...c.span.split(" ")]}>
-              <div class="case-img">
-                <span class="num">{c.num}</span>
-                <span class="ph">[ {c.tag} ]</span>
-              </div>
-              <div class="case-meta">
-                <h4>{c.title}</h4>
-                <a class="link sm" href="#">
+            <article class:list={[caseColSpan(c.span), "max-[900px]:col-span-1"]}>
+              <Browser url={c.url} shot={c.shot} alt={c.title} label={c.tag} />
+              <div class="mt-4">
+                <span class="label mb-1.5 block">{c.num}</span>
+                <h4 class="text-[17px] leading-tight">{c.title}</h4>
+                <a class="link mt-2 inline-block text-sm" href="#">
                   lire l'étude →
                 </a>
               </div>
@@ -188,24 +261,31 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   </section>
 
   <!-- TÉMOIGNAGES (mur cappé + fondu) -->
-  <section class="sec testis-sec">
+  <section class="py-16x">
     <div class="container-site">
-      <div class="tw-head"><h2>ils en parlent mieux que moi.</h2></div>
-      <div class="tw-wall">
+      <div class="mb-10x text-center">
+        <h2 class="text-[clamp(32px,4.4vw,64px)] leading-[1.02] tracking-[-0.035em] lowercase">
+          ils en parlent mieux que moi.
+        </h2>
+      </div>
+      <div class="flex items-start gap-6">
         {
           columns.map((col) => (
-            <div class="tw-col">
+            <div class="flex h-[1240px] min-w-0 flex-1 flex-col gap-6 overflow-hidden [mask-image:linear-gradient(to_bottom,#000_calc(100%_-_230px),transparent)] [-webkit-mask-image:linear-gradient(to_bottom,#000_calc(100%_-_230px),transparent)] max-[900px]:h-[1080px] max-[900px]:[flex:1_1_45%] max-[680px]:h-auto max-[680px]:w-full max-[680px]:[flex:1_1_auto] max-[680px]:overflow-visible max-[680px]:[mask-image:none] max-[680px]:[-webkit-mask-image:none]">
               {col.map((t) => (
-                <figure class="tw-card">
-                  <blockquote class="q">« {t.quote} »</blockquote>
-                  <figcaption class="a">
-                    <span class="av">
-                      {t.photo && <img src={t.photo} alt={t.name} loading="lazy" />}
-                      {initials(t.name)}
-                    </span>
+                <figure class="flex flex-col gap-7 border border-line bg-surface p-7">
+                  <blockquote class="text-base leading-[1.55] font-medium text-pretty">
+                    « {t.quote} »
+                  </blockquote>
+                  <figcaption class="mt-auto flex items-center gap-3.5">
+                    <Avatar src={t.photo} alt={t.name} initials={initials(t.name)} size={48} />
                     <div>
-                      <b>{t.name}</b>
-                      <small>{t.role}</small>
+                      <b class="block text-[15px] leading-[1.2] font-bold tracking-[-0.005em]">
+                        {t.name}
+                      </b>
+                      <small class="mt-1 block font-mono text-xs leading-[1.4] font-medium text-mute">
+                        {t.role}
+                      </small>
                     </div>
                   </figcaption>
                 </figure>
@@ -218,20 +298,25 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   </section>
 
   <!-- MÉTHODE -->
-  <section class="sec method">
+  <section class="py-16x">
     <div class="container-site">
-      <div class="sec-head"><h2>du brief à la mise en production</h2></div>
-      <div class="method-grid">
+      <div class="mb-10x"><h2 class="lowercase">du brief à la mise en production</h2></div>
+      <div class="flex items-stretch max-[1100px]:flex-col">
         {
           steps.map((s, i) => (
             <>
-              <div class="step">
-                <div class="n">{s.n}</div>
-                <h5>{s.title}</h5>
-                <p>{s.text}</p>
+              <div class="flex min-w-0 flex-1 flex-col border border-ink bg-surface p-7">
+                <div class="font-display text-[72px] leading-[0.9] font-bold tracking-[-0.04em]">
+                  {s.n}
+                </div>
+                <h5 class="mt-3 text-xl leading-[1.15] tracking-[-0.01em]">{s.title}</h5>
+                <p class="mt-2 max-w-[32ch] text-sm font-medium text-mute">{s.text}</p>
               </div>
               {i < steps.length - 1 && (
-                <div class="step-arrow" aria-hidden="true">
+                <div
+                  class="flex flex-none items-center justify-center px-4.5 text-[28px] leading-none font-bold text-ink max-[1100px]:rotate-90 max-[1100px]:px-0 max-[1100px]:py-3.5"
+                  aria-hidden="true"
+                >
                   →
                 </div>
               )}
@@ -243,26 +328,28 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   </section>
 
   <!-- STATS -->
-  <section class="sec stats-sec">
+  <section class="py-16x">
     <div class="container-site">
-      <div class="sec-head stats-head">
-        <span class="label">chiffres · depuis 2022</span>
-        <h2>les preuves chiffrées.</h2>
-        <p class="sec-lede">
+      <div class="mb-10x">
+        <span class="label mb-3 block">chiffres · depuis 2022</span>
+        <h2 class="lowercase">les preuves chiffrées.</h2>
+        <p class="mt-3 max-w-[60ch] text-lg leading-normal font-medium">
           depuis 2022, j'accompagne agences, créatifs et entreprises sur leurs projets web : de la
           landing one-shot à l'application sur-mesure.
         </p>
       </div>
-      <div class="stats">
+      <div class="grid grid-cols-4 max-[1100px]:grid-cols-1 max-[1100px]:gap-6">
         {
           stats.map((s) => (
-            <div class="stat">
-              <div class="n">
+            <div class="border-r border-line pr-6 not-first:pl-6 last:border-r-0 max-[1100px]:border-r-0 max-[1100px]:border-b max-[1100px]:py-5 max-[1100px]:pr-0 max-[1100px]:not-first:pl-0 max-[1100px]:last:border-b-0">
+              <div class="font-display text-[64px] leading-[0.95] font-bold tracking-[-0.04em]">
                 {s.n}
-                <small>{s.small}</small>
+                <small class="text-[0.4em] font-semibold text-mute">{s.small}</small>
               </div>
-              <div class="k">{s.k}</div>
-              <div class="h">{s.h}</div>
+              <div class="mt-2 font-mono text-[13px] font-bold tracking-[0.04em] uppercase">
+                {s.k}
+              </div>
+              <div class="mt-1 max-w-[24ch] text-xs leading-[1.4] text-mute">{s.h}</div>
             </div>
           ))
         }
@@ -271,11 +358,17 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   </section>
 
   <!-- ABOUT COURT -->
-  <section class="sec about-short">
-    <div class="container-site about-grid">
-      <div class="about-txt">
-        <h3>je m'appelle ludo,<br />j'ai créé coolbeans.</h3>
-        <p>
+  <section class="py-16x">
+    <div
+      class="container-site grid grid-cols-[1fr_440px] items-center gap-20 max-[1100px]:grid-cols-1 max-[1100px]:gap-6"
+    >
+      <div class="flex flex-col items-start gap-6">
+        <h3
+          class="max-w-[14ch] text-[clamp(40px,5vw,72px)] leading-[0.98] tracking-[-0.035em] lowercase"
+        >
+          je m'appelle ludo,<br />j'ai créé coolbeans.
+        </h3>
+        <p class="max-w-[46ch] text-[19px] leading-[1.55] font-medium text-pretty">
           développeur web freelance à sète, avec plus de 10 ans en agence et en indépendant :
           direction de projet, design, développement. je conçois autant que je code, et j'ai assez
           roulé ma bosse côté business pour savoir qu'un site doit d'abord servir vos objectifs
@@ -283,9 +376,19 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
         </p>
         <a class="link" href="/about">lire la version longue →</a>
       </div>
-      <figure class="about-photo">
-        <img src="/img/ludovic-home.jpg" alt="ludovic bourgoin, fondateur de coolbeans" />
-        <figcaption class="label">ludovic · sète</figcaption>
+      <figure
+        class="relative aspect-[4/5] overflow-hidden border border-line bg-surface-subtle max-[1100px]:aspect-[16/11]"
+      >
+        <img
+          src="/img/ludovic-home.jpg"
+          alt="ludovic bourgoin, fondateur de coolbeans"
+          class="absolute inset-0 h-full w-full object-cover object-[center_32%]"
+        />
+        <figcaption
+          class="label absolute bottom-4 left-4 border border-line bg-surface px-2.75 py-1.25"
+        >
+          ludovic · sète
+        </figcaption>
       </figure>
     </div>
   </section>
@@ -367,7 +470,7 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
             word,
             { yPercent: 40, opacity: 0 },
             { yPercent: 0, opacity: 1, duration: 0.42, ease: "power2.out" },
-            "<"
+            "<",
           );
       };
 
@@ -375,650 +478,3 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
     }
   </script>
 </BaseLayout>
-
-<style>
-  .sec {
-    padding-block: 64px;
-  }
-  .sec-head {
-    margin-bottom: 40px;
-  }
-  .sec-head h2 {
-    text-transform: lowercase;
-  }
-  .sec-head.row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-
-  /* HERO centré */
-  .hero-center {
-    border-bottom: 1px solid var(--line);
-    padding-block: 56px 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    overflow: hidden;
-  }
-  .hero-content {
-    text-align: center;
-  }
-  .hero-center h1 {
-    font-size: clamp(40px, 4.6vw, 64px);
-    line-height: 1.02;
-    letter-spacing: -0.03em;
-    text-transform: lowercase;
-    max-width: 22ch;
-    margin-inline: auto;
-    text-wrap: balance;
-  }
-  .tw {
-    display: inline-block;
-    vertical-align: top;
-    line-height: 1.02;
-    white-space: nowrap;
-  }
-  .tw-word {
-    display: inline-block;
-    white-space: nowrap;
-    will-change: transform, opacity;
-  }
-  .hero-center .lede {
-    margin: 26px auto 0;
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 1.45;
-    max-width: 60ch;
-    text-wrap: pretty;
-  }
-  .hero-center .ctas {
-    margin-top: 36px;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-
-  /* PROOF marquee */
-  .proof {
-    background: var(--surface);
-    border-bottom: 1px solid var(--line);
-    padding-block: 48px;
-    overflow: hidden;
-  }
-  .proof-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 16px;
-    flex-wrap: wrap;
-    margin-bottom: 24px;
-  }
-  .proof-top h3 {
-    font-size: 18px;
-  }
-  .proof-marquee {
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-  }
-  .proof-track {
-    display: flex;
-    gap: 80px;
-    width: max-content;
-    align-items: center;
-    white-space: nowrap;
-    animation: marquee 50s linear infinite;
-  }
-  .proof-track .pn {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 40px;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-    text-transform: lowercase;
-  }
-  @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
-  }
-  .proof:hover .proof-track {
-    animation-play-state: paused;
-  }
-
-  /* BENTO */
-  .aud-bento {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: minmax(160px, auto);
-    gap: 16px;
-    grid-template-areas:
-      "a a b b"
-      "a a c d"
-      "e e e e";
-  }
-  .aud-card {
-    position: relative;
-    border: 1px solid var(--card-frame);
-    background-color: var(--surface-raise);
-    background-image: url("/img/bg-texture.png");
-    background-repeat: repeat;
-    background-size: 158px 146px;
-    padding: 26px;
-    display: flex;
-    flex-direction: column;
-  }
-  /* le grain reste un signal clair uniquement (comme .surface-brand) */
-  :global(.dark) .aud-card {
-    background-image: none;
-  }
-  .aud-ic {
-    width: 38px;
-    height: 38px;
-    stroke: var(--ink);
-    stroke-width: 1.7;
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    flex: 0 0 auto;
-  }
-  .aud-card h5 {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 21px;
-    letter-spacing: -0.02em;
-    line-height: 1.08;
-    text-transform: lowercase;
-    margin-top: 20px;
-    text-wrap: balance;
-  }
-  .aud-card p {
-    font-weight: 500;
-    font-size: 15px;
-    line-height: 1.5;
-    margin-top: 10px;
-    text-wrap: pretty;
-  }
-  .aud-card .link {
-    margin-top: auto;
-    padding-top: 22px;
-    align-self: flex-start;
-    font-size: 14px;
-  }
-  .aud-card.feature {
-    grid-area: a;
-    background-color: var(--ink);
-    background-image: none;
-    border-color: var(--ink);
-    color: var(--surface);
-  }
-  .aud-card.feature .aud-ic {
-    stroke: var(--surface);
-  }
-  .aud-card.feature h5 {
-    font-size: 30px;
-    margin-top: 24px;
-  }
-  .aud-card.feature p {
-    opacity: 0.82;
-    font-size: 16px;
-    max-width: 34ch;
-  }
-  .aud-card.feature .link {
-    color: rgba(255, 255, 255, 0.75);
-    border-bottom-color: rgba(255, 255, 255, 0.4);
-  }
-  .aud-card.feature .link:hover {
-    color: var(--surface);
-    border-bottom-color: var(--surface);
-  }
-  .aud-b {
-    grid-area: b;
-  }
-  .aud-c {
-    grid-area: c;
-  }
-  .aud-d {
-    grid-area: d;
-  }
-  .aud-card.ess {
-    grid-area: e;
-    flex-direction: row;
-    align-items: center;
-    gap: 26px;
-    flex-wrap: wrap;
-  }
-  .aud-card.ess .aud-ic {
-    width: 34px;
-    height: 34px;
-  }
-  .aud-card.ess .ess-txt {
-    flex: 1 1 340px;
-    min-width: 0;
-  }
-  .aud-card.ess h5 {
-    margin-top: 0;
-    font-size: 19px;
-  }
-  .aud-card.ess p {
-    margin-top: 8px;
-    max-width: 74ch;
-  }
-  .aud-card.ess .link {
-    margin-top: 0;
-    padding-top: 0;
-    white-space: nowrap;
-  }
-
-  /* CASES mosaic */
-  .cases-mosaic {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 32px;
-  }
-  .case-card {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .case-img {
-    aspect-ratio: 16 / 10;
-    border: 1px solid var(--line);
-    position: relative;
-    overflow: hidden;
-    background: repeating-linear-gradient(45deg, transparent 0 16px, var(--tint-2) 16px 17px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--mute);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    text-align: center;
-    padding: 16px;
-  }
-  .case-card.tall .case-img {
-    aspect-ratio: 4 / 5;
-  }
-  .case-img .num {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    padding: 2px 7px;
-    letter-spacing: 0.04em;
-  }
-  .case-meta {
-    padding-top: 12px;
-  }
-  .case-card h4 {
-    font-weight: 600;
-    font-size: 36px;
-    letter-spacing: -0.025em;
-    line-height: 0.95;
-    text-transform: lowercase;
-  }
-  .case-card.tall h4 {
-    font-size: 24px;
-  }
-  .case-meta .link {
-    margin-top: 12px;
-    display: inline-block;
-  }
-  .case-card.span-8 {
-    grid-column: span 8;
-  }
-  .case-card.span-6 {
-    grid-column: span 6;
-  }
-  .case-card.span-4 {
-    grid-column: span 4;
-  }
-
-  /* TÉMOIGNAGES mur */
-  .tw-head {
-    margin-bottom: 40px;
-    text-align: center;
-  }
-  .tw-head h2 {
-    font-weight: 700;
-    font-size: clamp(32px, 4.4vw, 64px);
-    letter-spacing: -0.035em;
-    line-height: 1.02;
-    text-transform: lowercase;
-  }
-  .tw-wall {
-    display: flex;
-    gap: 24px;
-    align-items: flex-start;
-  }
-  .tw-col {
-    flex: 1 1 0;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    height: 1240px;
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 230px), transparent);
-    mask-image: linear-gradient(to bottom, #000 calc(100% - 230px), transparent);
-  }
-  .tw-card {
-    margin: 0;
-    border: 1px solid var(--line);
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-    background: var(--surface);
-  }
-  .tw-card .q {
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 1.55;
-    text-wrap: pretty;
-    margin: 0;
-  }
-  .tw-card .a {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-top: auto;
-  }
-  .tw-card .av {
-    position: relative;
-    overflow: hidden;
-    width: 46px;
-    height: 46px;
-    flex: 0 0 46px;
-    border-radius: 50%;
-    border: 1px solid var(--ink);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-mono);
-    font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    background: var(--tint);
-  }
-  .tw-card .av img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    background: var(--surface);
-  }
-  .tw-card .a b {
-    display: block;
-    font-weight: 700;
-    font-size: 15px;
-    line-height: 1.2;
-    letter-spacing: -0.005em;
-  }
-  .tw-card .a small {
-    display: block;
-    font-weight: 500;
-    font-size: 12px;
-    color: var(--mute);
-    font-family: var(--font-mono);
-    margin-top: 4px;
-    line-height: 1.4;
-  }
-
-  /* MÉTHODE */
-  .method-grid {
-    display: flex;
-    align-items: stretch;
-    gap: 0;
-  }
-  .method-grid .step {
-    flex: 1 1 0;
-    min-width: 0;
-    border: 1px solid var(--ink);
-    background: var(--surface);
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-  }
-  .method-grid .step-arrow {
-    flex: 0 0 auto;
-    align-self: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 28px;
-    line-height: 1;
-    padding: 0 18px;
-    color: var(--ink);
-  }
-  .method-grid .step .n {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 72px;
-    letter-spacing: -0.04em;
-    line-height: 0.9;
-  }
-  .method-grid .step h5 {
-    font-weight: 600;
-    font-size: 20px;
-    letter-spacing: -0.01em;
-    line-height: 1.15;
-    margin-top: 12px;
-  }
-  .method-grid .step p {
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--mute);
-    margin-top: 8px;
-    max-width: 32ch;
-  }
-
-  /* STATS */
-  .stats-head .label {
-    display: block;
-    margin-bottom: 12px;
-  }
-  .sec-lede {
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 1.5;
-    max-width: 60ch;
-    margin-top: 12px;
-  }
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-  }
-  .stat {
-    padding: 0 24px 0 0;
-    border-right: 1px solid var(--line);
-  }
-  .stat:last-child {
-    border-right: none;
-  }
-  .stat:not(:first-child) {
-    padding-left: 24px;
-  }
-  .stat .n {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 64px;
-    letter-spacing: -0.04em;
-    line-height: 0.95;
-  }
-  .stat .n small {
-    font-weight: 600;
-    font-size: 0.4em;
-    color: var(--mute);
-  }
-  .stat .k {
-    margin-top: 8px;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    font-family: var(--font-mono);
-  }
-  .stat .h {
-    margin-top: 4px;
-    font-weight: 500;
-    font-size: 12px;
-    color: var(--mute);
-    line-height: 1.4;
-    max-width: 24ch;
-  }
-
-  /* ABOUT COURT */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 440px;
-    gap: 80px;
-    align-items: center;
-  }
-  .about-txt {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 24px;
-  }
-  .about-txt h3 {
-    font-weight: 700;
-    font-size: clamp(40px, 5vw, 72px);
-    letter-spacing: -0.035em;
-    line-height: 0.98;
-    text-transform: lowercase;
-    max-width: 14ch;
-  }
-  .about-txt p {
-    font-weight: 500;
-    font-size: 19px;
-    line-height: 1.55;
-    max-width: 46ch;
-    text-wrap: pretty;
-  }
-  .about-photo {
-    aspect-ratio: 4 / 5;
-    border: 1px solid var(--line);
-    background: repeating-linear-gradient(45deg, transparent 0 16px, var(--tint-2) 16px 17px);
-    position: relative;
-    overflow: hidden;
-    margin: 0;
-  }
-  .about-photo img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 32%;
-  }
-  .about-photo .label {
-    position: absolute;
-    left: 16px;
-    bottom: 16px;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    padding: 5px 11px;
-  }
-
-  @media (max-width: 1100px) {
-    .method-grid {
-      flex-direction: column;
-    }
-    .method-grid .step-arrow {
-      transform: rotate(90deg);
-      padding: 14px 0;
-    }
-    .stats,
-    .about-grid {
-      grid-template-columns: 1fr;
-      gap: 24px;
-    }
-    .about-photo {
-      aspect-ratio: 16 / 11;
-    }
-    .stat {
-      border-right: none;
-      border-bottom: 1px solid var(--line);
-      padding: 20px 0;
-    }
-    .stat:last-child {
-      border-bottom: none;
-    }
-    .stat:not(:first-child) {
-      padding-left: 0;
-    }
-  }
-  @media (max-width: 900px) {
-    .aud-bento {
-      grid-template-columns: 1fr 1fr;
-      grid-template-areas: "a a" "b c" "d e";
-    }
-    .aud-card.feature h5 {
-      font-size: 26px;
-    }
-    .aud-card.ess {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .tw-wall {
-      flex-wrap: wrap;
-    }
-    .tw-col {
-      flex: 1 1 45%;
-      height: 1080px;
-    }
-    .cases-mosaic {
-      grid-template-columns: 1fr;
-    }
-    .case-card.span-8,
-    .case-card.span-6,
-    .case-card.span-4 {
-      grid-column: span 1;
-    }
-    .case-card h4 {
-      font-size: 28px;
-    }
-  }
-  @media (max-width: 680px) {
-    .aud-bento {
-      grid-template-columns: 1fr;
-      grid-template-areas: "a" "b" "c" "d" "e";
-    }
-    .tw-wall {
-      flex-direction: column;
-    }
-    .tw-col {
-      flex: 1 1 auto;
-      width: 100%;
-      height: auto;
-      overflow: visible;
-      -webkit-mask-image: none;
-      mask-image: none;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .proof-track {
-      animation: none;
-    }
-  }
-</style>
