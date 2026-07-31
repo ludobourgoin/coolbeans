@@ -7,12 +7,6 @@ const exploreLinks = [
   { href: "/about", label: "à propos" },
   { href: "/tools", label: "tools" },
 ];
-
-const contactLinks = [
-  { href: "#", label: "discuter d'un projet" },
-  { href: "#", label: "mentions légales" },
-  { href: "#", label: "cgv" },
-];
 ---
 
 <footer class="border-t border-line bg-surface-subtle">
@@ -34,6 +28,12 @@ const contactLinks = [
           height="22"
         />
       </a>
+      <p class="mt-4 max-w-[42ch] text-sm leading-[1.65] text-mute">
+        Studio web indépendant, basé à Sète.<br />
+        Design, développement et maintenance de sites performants, pensés pour vos objectifs et prêts
+        pour l'ère de l'IA.<br />
+        L'attention d'un studio, la réactivité d'un indépendant.
+      </p>
     </div>
 
     <nav aria-label="explorer">
@@ -57,18 +57,40 @@ const contactLinks = [
     <nav aria-label="contact">
       <h4 class="text-sm font-medium text-ink">contact</h4>
       <ul class="mt-4 flex flex-col gap-3">
-        {
-          contactLinks.map((l) => (
-            <li>
-              <a
-                href={l.href}
-                class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
-              >
-                {l.label}
-              </a>
-            </li>
-          ))
-        }
+        <li>
+          <a
+            href="#"
+            class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
+          >
+            discuter d'un projet
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://linkedin.com/in/ludovicbourgoin"
+            target="_blank"
+            rel="noopener"
+            class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
+          >
+            linkedin ↗
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
+          >
+            mentions légales
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
+          >
+            cgv
+          </a>
+        </li>
       </ul>
     </nav>
 
@@ -77,6 +99,11 @@ const contactLinks = [
       <p class="mt-4 max-w-[36ch] text-sm text-mute">
         Les coulisses du studio, une fois par mois. Pas de spam, désinscription en un clic.
       </p>
+      {
+        /* pas encore branché : sans `action` ni bouton `type="submit"`, ce <form> n'a pas
+           de "default button" au sens HTML — ni le clic ni la touche Entrée ne déclenchent
+           de soumission (donc pas de GET natif vers l'URL courante). */
+      }
       <form
         class="mt-4 flex w-full max-w-88 items-center gap-2 rounded-full border border-line bg-surface py-1 pr-1 pl-4 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-(--focus)"
       >
@@ -90,7 +117,7 @@ const contactLinks = [
           placeholder="vous@exemple.com"
           class="field h-8 min-w-0 flex-1 border-0 bg-transparent px-0 text-sm focus:shadow-none"
         />
-        <button type="submit" class="btn btn-sm shrink-0">s'abonner</button>
+        <button type="button" class="btn btn-sm shrink-0">s'abonner</button>
       </form>
     </div>
   </div>
