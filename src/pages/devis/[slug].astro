@@ -1,0 +1,232 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+import GridBackdrop from "../../components/GridBackdrop.astro";
+import Banner from "../../components/ui/Banner.astro";
+import Choicebox from "../../components/ui/Choicebox.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("devis");
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+
+/* seul enrichissement autorisé dans les chaînes du YAML : **gras** */
+const esc = (s: string) =>
+  s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+const riche = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, '<b class="font-bold">$1</b>');
+
+const eur = new Intl.NumberFormat("fr-FR", {
+  style: "currency",
+  currency: "EUR",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+});
+const dateLongue = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(d.date);
+
+const total = d.budget.lignes.reduce((somme, ligne) => somme + ligne.prix, 0);
+const remise = d.budget.remisePct ? (total * d.budget.remisePct) / 100 : 0;
+const totalFinal = total - remise;
+---
+
+<BaseLayout
+  title={`Devis ${d.titre} — Coolbeans`}
+  description={`Proposition commerciale : ${d.objet}`}
+  noindex
+>
+  <Nav />
+
+  <!-- EN-TÊTE -->
+  <header class="relative overflow-hidden bg-surface-subtle">
+    <GridBackdrop />
+    <div class="container-site relative pt-24x pb-16x text-center">
+      <p class="label">Proposition commerciale</p>
+      <h1 class="mx-auto mt-5 max-w-[18ch]">{d.titre}</h1>
+      <p class="mx-auto mt-6 max-w-[46ch] text-xl leading-[1.45] font-medium">{d.objet}</p>
+      <p class="mt-6 font-mono text-[13px] text-mute">Émise le {dateLongue}</p>
+    </div>
+  </header>
+
+  <!-- CORPS DU DEVIS -->
+  <div class="container-site">
+    <div class="mx-auto max-w-[880px] py-16x">
+      <section
+        class="grid grid-cols-[180px_1fr] gap-10 py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+      >
+        <p class="label pt-1">Objectif</p>
+        <p class="max-w-[58ch] leading-[1.6]" set:html={riche(d.objectif)} />
+      </section>
+
+      <section
+        class="grid grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+      >
+        <p class="label pt-1">Périmètre</p>
+        <p class="max-w-[58ch] leading-[1.6]" set:html={riche(d.perimetre)} />
+      </section>
+
+      <section
+        class="grid grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+      >
+        <p class="label pt-1">Activités</p>
+        <ul class="flex list-none flex-col gap-3">
+          {
+            d.activites.map((item) => (
+              <li class="flex items-start gap-3.5">
+                <span class="mt-[0.55em] block size-1.5 flex-none bg-ink" aria-hidden="true" />
+                <span class="max-w-[58ch]" set:html={riche(item)} />
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section
+        class="grid grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+      >
+        <p class="label pt-1">Livrables</p>
+        <ul class="flex list-none flex-col gap-3">
+          {
+            d.livrables.map((item) => (
+              <li class="flex items-start gap-3.5">
+                <span class="mt-[0.55em] block size-1.5 flex-none bg-ink" aria-hidden="true" />
+                <span class="max-w-[58ch]" set:html={riche(item)} />
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section
+        class="grid grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+      >
+        <p class="label pt-1">Budget</p>
+        <div>
+          {
+            d.budget.lignes.map((ligne) => (
+              <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px]">
+                <span>{ligne.label}</span>
+                <span class="font-mono tabular-nums">{eur.format(ligne.prix)}</span>
+              </div>
+            ))
+          }
+          {
+            remise > 0 ? (
+              <>
+                <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] font-medium">
+                  <span>Total</span>
+                  <span class="font-mono tabular-nums">{eur.format(total)} HT</span>
+                </div>
+                <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute">
+                  <span>Remise exceptionnelle (−{d.budget.remisePct}&nbsp;%)</span>
+                  <span class="font-mono tabular-nums">−{eur.format(remise)}</span>
+                </div>
+                <div class="flex items-baseline justify-between gap-4 py-4">
+                  <span class="text-[17px] font-bold">Total après remise</span>
+                  <span class="font-mono text-[20px] font-bold tabular-nums">
+                    {eur.format(totalFinal)} HT
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div class="flex items-baseline justify-between gap-4 py-4">
+                <span class="text-[17px] font-bold">Total</span>
+                <span class="font-mono text-[20px] font-bold tabular-nums">
+                  {eur.format(total)} HT
+                </span>
+              </div>
+            )
+          }
+          <p class="text-[13px] text-mute">Conditions de règlement : {d.budget.reglement}</p>
+        </div>
+      </section>
+
+      <section
+        class="grid grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+      >
+        <p class="label pt-1">Timing</p>
+        <p class="max-w-[58ch] leading-[1.6]" set:html={riche(d.timing)} />
+      </section>
+
+      {
+        d.notes.length > 0 && (
+          <div class="flex flex-col gap-3 border-t border-line pt-10">
+            {d.notes.map((note) => (
+              <Banner tone="info">
+                <Fragment set:html={riche(note)} />
+              </Banner>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  <!-- RÉPONSE -->
+  <section class="border-t border-line bg-surface-subtle">
+    <div class="container-site py-24x">
+      <div class="mx-auto max-w-[640px]">
+        <h2 class="text-center">Répondre à cette proposition</h2>
+        <p class="mx-auto mt-4 max-w-[44ch] text-center leading-[1.6] text-mute">
+          Validez la proposition ou posez vos questions, je reviens vers vous rapidement.
+        </p>
+        <form class="card mt-10 grid gap-6">
+          <Choicebox
+            name="reponse"
+            options={[
+              {
+                value: "validation",
+                title: "Je valide cette proposition",
+                hint: "Le projet démarre à réception de l'acompte.",
+                checked: true,
+              },
+              {
+                value: "question",
+                title: "J'ai une question ou une remarque",
+                hint: "Précisez-la dans le message ci-dessous.",
+              },
+            ]}
+          />
+          <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
+            <div class="grid gap-2">
+              <label class="label" for="devis-nom">Nom</label>
+              <input
+                class="field"
+                type="text"
+                id="devis-nom"
+                name="nom"
+                autocomplete="name"
+                placeholder="Votre nom"
+              />
+            </div>
+            <div class="grid gap-2">
+              <label class="label" for="devis-email">Email</label>
+              <input
+                class="field"
+                type="email"
+                id="devis-email"
+                name="email"
+                autocomplete="email"
+                placeholder="vous@entreprise.com"
+              />
+            </div>
+          </div>
+          <div class="grid gap-2">
+            <label class="label" for="devis-message">Message</label>
+            <textarea
+              class="field h-auto min-h-[120px] py-3"
+              id="devis-message"
+              name="message"
+              placeholder="Une question, une remarque, un ajustement souhaité…"></textarea>
+          </div>
+          <button class="btn btn-lg" type="button">Envoyer ma réponse</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,55 @@
+titre: En Haut x Coolbeans
+objet: Refonte du site Internet d'En Haut
+date: 2026-07-31
+
+objectif: >-
+  Concevoir un site web **fluide, désirable et cohérent** avec l'identité
+  d'Unlock Breath en repartant de la charte existante et en l'adaptant aux
+  exigences du web.
+
+perimetre: >-
+  **UI desktop et mobile de la Home + 3 pages** (1 breakpoint) sur la base de
+  la charte existante adaptée aux exigences du web et d'un challenge UX.
+
+activites:
+  - Recherches, benchmarks et kick-off
+  - Adaptation de la charte existante pour le web
+  - Atelier UX pour challenger la navigation et la structure des pages
+  - Conception UI de la Home (desktop + mobile)
+  - Conception UI des 3 autres pages (desktop + mobile)
+  - >-
+    Création d'un UI kit léger (polices, couleurs, composants principaux) sur
+    la base des pages travaillées
+
+livrables:
+  - >-
+    Enrichissement de la charte avec les éléments web (sur Figma) : couleurs
+    secondaires, sélection d'une bibliothèque de pictos, motifs, typographie
+    gratuite
+  - Maquettes UI Figma des 4 pages desktop et mobile (1 breakpoint, sur Figma)
+  - UI kit (sur Figma)
+
+budget:
+  lignes:
+    - { label: Mise à jour de la charte, prix: 1500 }
+    - { label: Challenge UX, prix: 1000 }
+    - { label: UI design (home page + 3 pages + UI kit), prix: 4500 }
+  remisePct: 5
+  reglement: 40 % à la commande, 60 % à la livraison du projet.
+
+timing: Livraison estimée en **3 semaines**.
+
+notes:
+  - >-
+    Cet accompagnement n'inclut pas le développement, l'intégration ni le
+    copywriting.
+  - >-
+    La création ou la commande de nouvelles illustrations, photographies,
+    typographies, animations ou vidéos, ainsi que l'achat de licences pour des
+    visuels issus de banques d'images ne sont pas inclus dans cette
+    proposition et pourront être ajoutés en option.
+  - >-
+    Notre approche collaborative inclut jusqu'à 2 rounds d'itération par
+    livrable, afin d'assurer un équilibre entre exigence créative et
+    efficacité projet. Des itérations supplémentaires restent bien sûr
+    possibles, et seront alors budgétisées au temps passé.

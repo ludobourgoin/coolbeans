@@ -14,6 +14,7 @@
     "tokens": "node scripts/extract-geist-tokens.js"
   },
   "dependencies": {
+    "@astrojs/mdx": "^7.0.5",
     "@astrojs/node": "^11.0.3",
     "@clerk/astro": "^4.0.4",
     "@tailwindcss/vite": "^4.3.2",
