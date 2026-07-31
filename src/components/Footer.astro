@@ -100,11 +100,14 @@ const exploreLinks = [
         Les coulisses du studio, une fois par mois. Pas de spam, désinscription en un clic.
       </p>
       {
-        /* pas encore branché : sans `action` ni bouton `type="submit"`, ce <form> n'a pas
-           de "default button" au sens HTML — ni le clic ni la touche Entrée ne déclenchent
-           de soumission (donc pas de GET natif vers l'URL courante). */
+        /* pas encore branché : le formulaire soumettrait quand même en GET vers l'URL
+           courante à la touche Entrée (un seul champ email = la garde "more than one
+           blocking field" de la soumission implicite HTML ne se déclenche pas, même
+           sans bouton submit). Neutralisé par un vrai gestionnaire `submit` avec
+           preventDefault(), voir <script> plus bas. */
       }
       <form
+        id="footer-newsletter-form"
         class="mt-4 flex w-full max-w-88 items-center gap-2 rounded-full border border-line bg-surface py-1 pr-1 pl-4 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-(--focus)"
       >
         <label for="footer-newsletter-email" class="sr-only">adresse e-mail</label>
@@ -257,5 +260,13 @@ const exploreLinks = [
 
     // état initial : reflète le localStorage déjà appliqué par le script anti-flash de BaseLayout
     reflect(currentChoice());
+
+    // newsletter : pas encore branchée, on bloque la soumission native (voir commentaire au-dessus du <form>)
+    var newsletterForm = document.getElementById("footer-newsletter-form");
+    if (newsletterForm) {
+      newsletterForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+      });
+    }
   })();
 </script>
