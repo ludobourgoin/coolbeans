@@ -12,15 +12,34 @@ const { logos, reverse = false } = Astro.props;
 const loop = [...logos, ...logos];
 ---
 
-<div class="marquee" aria-hidden="true">
-  <ul class:list={["track", { rev: reverse }]}>
+<div
+  class="overflow-hidden"
+  style="-webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);"
+  aria-hidden="true"
+>
+  <ul
+    class:list={[
+      "marquee-track flex w-max list-none items-center gap-15 px-7.5 py-0 whitespace-nowrap motion-reduce:w-full motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:whitespace-normal",
+      reverse && "[animation-direction:reverse] [animation-duration:66s]",
+    ]}
+  >
     {
       loop.map((l) => (
-        <li class="tool">
+        <li class="inline-flex flex-none items-center gap-2.75">
           {/* `mono` et pas `invert` : Tailwind expose une utilitaire `.invert` globale
               qui s'appliquerait aussi en clair et blanchirait le picto. */}
-          <img src={l.src} alt="" loading="lazy" class:list={{ mono: l.mono }} />
-          <span>{l.name}</span>
+          <img
+            src={l.src}
+            alt=""
+            loading="lazy"
+            class:list={[
+              "block h-7.5 w-7.5 object-contain",
+              l.mono && "dark:brightness-0 dark:invert",
+            ]}
+          />
+          <span class="font-display text-[22px] font-bold tracking-[-0.02em] text-ink lowercase">
+            {l.name}
+          </span>
         </li>
       ))
     }
@@ -28,60 +47,20 @@ const loop = [...logos, ...logos];
 </div>
 
 <style>
-  .marquee {
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
-  }
-  .track {
-    list-style: none;
-    margin: 0;
-    padding: 0 30px;
-    display: flex;
-    align-items: center;
-    gap: 60px;
-    width: max-content;
-    white-space: nowrap;
+  .marquee-track {
     animation: marquee-scroll 58s linear infinite;
   }
-  .track.rev {
-    animation-duration: 66s;
-    animation-direction: reverse;
-  }
-  .tool {
-    display: inline-flex;
-    align-items: center;
-    gap: 11px;
-    flex: 0 0 auto;
-  }
-  .tool img {
-    height: 30px;
-    width: 30px;
-    display: block;
-    object-fit: contain;
-  }
-  .tool span {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 22px;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    text-transform: lowercase;
-  }
-  :global(.dark) .tool img.mono {
-    filter: brightness(0) invert(1);
-  }
   @keyframes marquee-scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
   @media (prefers-reduced-motion: reduce) {
-    .track {
+    .marquee-track {
       animation: none;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
-      white-space: normal;
     }
   }
 </style>

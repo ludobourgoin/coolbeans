@@ -14,39 +14,113 @@ const isActive = (href: string) => href !== "#" && path.startsWith(href);
 
 // dropdown « vous êtes » — pictos + labels du wireframe
 const audience = [
-  { href: "/#vous-etes", label: "agence créative", svg: '<rect x="4" y="3" width="10" height="18"/><rect x="14" y="9" width="6" height="12"/><line x1="7" y1="7" x2="11" y2="7"/><line x1="7" y1="11" x2="11" y2="11"/><line x1="7" y1="15" x2="11" y2="15"/>' },
-  { href: "/#vous-etes", label: "directeur·rice artistique", svg: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>' },
-  { href: "/#vous-etes", label: "pme ou scale up", svg: '<polyline points="3 17 9 11 13 15 21 7"/><polyline points="21 12 21 7 16 7"/>' },
-  { href: "/#vous-etes", label: "tpe ou solopreneur", svg: '<path d="M3 9h18l-1.4-5H4.4L3 9z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/>' },
+  {
+    href: "/#vous-etes",
+    label: "agence créative",
+    svg: '<rect x="4" y="3" width="10" height="18"/><rect x="14" y="9" width="6" height="12"/><line x1="7" y1="7" x2="11" y2="7"/><line x1="7" y1="11" x2="11" y2="11"/><line x1="7" y1="15" x2="11" y2="15"/>',
+  },
+  {
+    href: "/#vous-etes",
+    label: "directeur·rice artistique",
+    svg: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>',
+  },
+  {
+    href: "/#vous-etes",
+    label: "pme ou scale up",
+    svg: '<polyline points="3 17 9 11 13 15 21 7"/><polyline points="21 12 21 7 16 7"/>',
+  },
+  {
+    href: "/#vous-etes",
+    label: "tpe ou solopreneur",
+    svg: '<path d="M3 9h18l-1.4-5H4.4L3 9z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/>',
+  },
 ];
 ---
 
-<header class="site-nav at-top" id="site-nav">
-  <div class="container-site nav-inner">
-    <a class="brand" href="/" aria-label="coolbeans — accueil">
-      <img class="logo logo-light" src="/img/coolbeans-wordmark.svg" alt="coolbeans" height="21" />
-      <img class="logo logo-dark" src="/img/coolbeans-wordmark-white.svg" alt="coolbeans" height="21" />
+<header
+  id="site-nav"
+  class="at-top sticky top-0 z-50 bg-surface shadow-[inset_0_-1px_0_var(--line),0_1px_16px_rgba(0,0,0,0.06)] transition-[background-color,box-shadow] duration-250 ease-brand [&.at-top]:bg-transparent [&.at-top]:shadow-none"
+>
+  <div
+    class="container-site grid grid-cols-[minmax(max-content,1fr)_auto_minmax(max-content,1fr)] items-center gap-8 py-4 max-[980px]:grid-cols-[1fr_auto]"
+  >
+    <a class="inline-flex items-center leading-0" href="/" aria-label="coolbeans — accueil">
+      <img
+        class="block h-5.25 w-auto dark:hidden"
+        src="/img/coolbeans-wordmark.svg"
+        alt="coolbeans"
+        height="21"
+      />
+      <img
+        class="hidden h-5.25 w-auto dark:block"
+        src="/img/coolbeans-wordmark-white.svg"
+        alt="coolbeans"
+        height="21"
+      />
     </a>
 
-    <nav class="nav-menu" aria-label="navigation principale">
-      <div class="drop" data-open="false">
-        <button type="button" aria-haspopup="true" aria-expanded="false" id="aud-trigger">
+    <nav
+      class="flex flex-nowrap items-center justify-center gap-1 whitespace-nowrap max-[980px]:hidden"
+      aria-label="navigation principale"
+    >
+      <div class="drop group relative" data-open="false">
+        <button
+          type="button"
+          aria-haspopup="true"
+          aria-expanded="false"
+          id="aud-trigger"
+          class="inline-flex cursor-pointer items-center gap-1.5 rounded-full px-3.5 py-2 text-sm leading-none font-medium text-mute transition-colors duration-150 ease-in-out group-data-[open=true]:text-ink hover:text-ink"
+        >
           vous êtes
-          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg>
+          <svg
+            viewBox="0 0 12 12"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            aria-hidden="true"
+            class="h-2.5 w-2.5 transition-transform duration-150 ease-in-out group-hover:rotate-180 group-data-[open=true]:rotate-180"
+            ><path d="M2.5 4.5 6 8l3.5-3.5"></path></svg
+          >
         </button>
-        <div class="panel" role="menu" aria-label="vous êtes">
+        <div
+          class="invisible absolute top-[calc(100%+10px)] left-1/2 z-60 flex w-67 -translate-x-1/2 -translate-y-1.5 flex-col rounded-control border-[1.5px] border-ink bg-surface p-1.5 text-ink opacity-0 shadow-[0_12px_32px_rgba(0,0,0,0.12)] transition-[opacity,transform,visibility] duration-150 ease-in-out group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-data-[open=true]:visible group-data-[open=true]:translate-y-0 group-data-[open=true]:opacity-100 before:absolute before:-inset-x-3 before:-top-3 before:h-3.5 before:content-['']"
+          role="menu"
+          aria-label="vous êtes"
+        >
           {
             audience.map((a) => (
-              <a role="menuitem" href={a.href}>
-                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={a.svg} />
+              <a
+                role="menuitem"
+                href={a.href}
+                class="flex items-center gap-2.25 rounded-sm px-3 py-2.5 text-[14px] leading-tight font-medium text-ink lowercase transition-[background-color,color] duration-120 ease-in-out hover:bg-accent hover:text-accent-ink"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  set:html={a.svg}
+                  class="h-4 w-4 flex-none fill-none stroke-current stroke-[1.7] [stroke-linecap:round] [stroke-linejoin:round]"
+                />
                 {a.label}
               </a>
             ))
           }
-          <div class="sep" role="separator"></div>
-          <span class="panel-lbl">économie sociale &amp; solidaire</span>
-          <a role="menuitem" class="ess" href="#">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.5-9-9a4 4 0 0 1 9-2 4 4 0 0 1 9 2c-2 4.5-9 9-9 9z"/></svg>
+          <div class="mx-1 my-1.5 h-px bg-line" role="separator"></div>
+          <span
+            class="px-3 pt-1.5 pb-1 font-mono text-[10px] font-bold tracking-[0.08em] text-mute uppercase"
+          >
+            économie sociale &amp; solidaire
+          </span>
+          <a
+            role="menuitem"
+            class="ess flex items-center gap-2.25 rounded-sm px-3 py-2.5 text-[14px] leading-tight font-medium text-ink lowercase transition-[background-color,color] duration-120 ease-in-out hover:bg-accent hover:text-accent-ink"
+            href="#"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              class="h-4 w-4 flex-none fill-none stroke-current stroke-[1.7] [stroke-linecap:round] [stroke-linejoin:round]"
+              ><path d="M12 20s-7-4.5-9-9a4 4 0 0 1 9-2 4 4 0 0 1 9 2c-2 4.5-9 9-9 9z"></path></svg
+            >
             accompagnement ess
           </a>
         </div>
@@ -54,249 +128,55 @@ const audience = [
 
       {
         links.map((l) => (
-          <a href={l.href} class:list={["nav-link", { on: isActive(l.href) }]}>
+          <a
+            href={l.href}
+            class:list={[
+              "rounded-full px-3.5 py-2 text-sm leading-none font-medium text-mute transition-colors duration-150 ease-in-out hover:text-ink",
+              { "font-semibold text-ink": isActive(l.href) },
+            ]}
+          >
             {l.label}
           </a>
         ))
       }
     </nav>
 
-    <div class="nav-actions">
+    <div class="flex items-center gap-3.5 justify-self-end">
       <button
         id="theme-toggle"
-        class="dm"
+        class="btn btn-ghost btn-sm"
         type="button"
         aria-label="basculer clair / sombre"
         title="basculer clair / sombre"
       >
-        <svg class="dm-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-        <svg class="dm-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+        <svg
+          class="dm-moon block h-4.5 w-4.5 dark:hidden"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg
+        >
+        <svg
+          class="dm-sun hidden h-4.5 w-4.5 dark:block"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          ><circle cx="12" cy="12" r="4.2"></circle><path
+            d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"
+          ></path></svg
+        >
       </button>
       <a class="btn btn-sm" href="#">contact</a>
     </div>
   </div>
 </header>
-
-<style>
-  .site-nav {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: var(--surface);
-    border-bottom: 1px solid var(--line);
-    transition:
-      background 0.25s var(--ease),
-      border-color 0.25s var(--ease),
-      box-shadow 0.25s var(--ease);
-  }
-  .site-nav.at-top {
-    background: transparent;
-    border-bottom-color: transparent;
-  }
-  .site-nav:not(.at-top) {
-    box-shadow: 0 1px 16px rgba(0, 0, 0, 0.06);
-  }
-  .nav-inner {
-    display: grid;
-    grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
-    align-items: center;
-    gap: 32px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-  }
-  .brand {
-    display: inline-flex;
-    align-items: center;
-    line-height: 0;
-  }
-  .logo {
-    height: 21px;
-    width: auto;
-    display: block;
-  }
-  .logo-dark {
-    display: none;
-  }
-  :global(.dark) .logo-light {
-    display: none;
-  }
-  :global(.dark) .logo-dark {
-    display: block;
-  }
-
-  .nav-menu {
-    display: flex;
-    gap: 4px;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: nowrap;
-    white-space: nowrap;
-  }
-  .nav-link,
-  .drop > button {
-    font-family: var(--font-sans);
-    font-size: 14.5px;
-    font-weight: 500;
-    padding: 8px 14px;
-    line-height: 1;
-    color: var(--mute);
-    border-radius: 999px;
-    transition: color 0.15s var(--ease), background 0.15s var(--ease);
-  }
-  .nav-link:hover {
-    color: var(--ink);
-    background: var(--tint);
-  }
-  .nav-link.on {
-    color: var(--ink);
-    font-weight: 600;
-    background: var(--tint);
-  }
-
-  /* dropdown « vous êtes » */
-  .drop {
-    position: relative;
-  }
-  .drop > button {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-  }
-  .drop > button svg {
-    width: 10px;
-    height: 10px;
-    transition: transform var(--dur) var(--ease);
-  }
-  .drop:hover > button,
-  .drop[data-open="true"] > button {
-    color: var(--ink);
-    background: var(--tint);
-  }
-  .drop:hover > button svg,
-  .drop[data-open="true"] > button svg {
-    transform: rotate(180deg);
-  }
-  .drop .panel {
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 50%;
-    transform: translateX(-50%) translateY(-6px);
-    min-width: 268px;
-    background: var(--surface);
-    color: var(--ink);
-    border: 1.5px solid var(--ink);
-    border-radius: var(--radius-control);
-    display: flex;
-    flex-direction: column;
-    padding: 6px;
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity var(--dur) var(--ease),
-      transform var(--dur) var(--ease);
-    z-index: 60;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
-  }
-  /* pont invisible : évite que le menu se ferme en traversant l'écart bouton → panneau */
-  .drop .panel::before {
-    content: "";
-    position: absolute;
-    inset: -12px -12px auto -12px;
-    height: 14px;
-  }
-  .drop:hover .panel,
-  .drop[data-open="true"] .panel {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0);
-  }
-  .drop .panel a {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    color: var(--ink);
-    font-size: 14px;
-    font-weight: 500;
-    padding: 10px 12px;
-    line-height: 1.25;
-    border-radius: 4px;
-    text-transform: lowercase;
-    transition: background 0.12s var(--ease), color 0.12s var(--ease);
-  }
-  .drop .panel a svg {
-    width: 16px;
-    height: 16px;
-    flex: 0 0 auto;
-    stroke: currentColor;
-    stroke-width: 1.7;
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .drop .panel a:hover {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
-  .drop .panel .sep {
-    height: 1px;
-    background: var(--line);
-    margin: 6px 4px;
-  }
-  .drop .panel .panel-lbl {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--mute);
-    padding: 6px 12px 4px;
-  }
-
-  .nav-actions {
-    justify-self: end;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .dm {
-    width: 34px;
-    height: 34px;
-    padding: 0;
-    color: var(--ink);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 0;
-    transition: opacity var(--dur) var(--ease);
-  }
-  .dm:hover {
-    opacity: 0.6;
-  }
-  .dm svg {
-    display: block;
-    width: 18px;
-    height: 18px;
-  }
-  .dm .dm-sun {
-    display: none;
-  }
-  :global(.dark) .dm .dm-moon {
-    display: none;
-  }
-  :global(.dark) .dm .dm-sun {
-    display: block;
-  }
-
-  @media (max-width: 980px) {
-    .nav-inner {
-      grid-template-columns: 1fr auto;
-    }
-    .nav-menu {
-      display: none;
-    }
-  }
-</style>
 
 <script is:inline>
   (function () {
@@ -322,7 +202,7 @@ const audience = [
             ticking = true;
           }
         },
-        { passive: true }
+        { passive: true },
       );
       update();
     }

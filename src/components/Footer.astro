@@ -1,143 +1,234 @@
 ---
 const year = 2026;
+
+// contenu conservé du footer précédent, réorganisé en colonnes
+const exploreLinks = [
+  { href: "/", label: "accueil" },
+  { href: "/about", label: "à propos" },
+  { href: "/tools", label: "tools" },
+];
+
+const contactLinks = [
+  { href: "#", label: "discuter d'un projet" },
+  { href: "#", label: "mentions légales" },
+  { href: "#", label: "cgv" },
+];
 ---
 
-<footer class="site-footer">
-  <div class="sf-inner">
-    <div class="sf-brand">
-      <a class="sf-logo" href="/" aria-label="coolbeans — accueil">
-        <img src="/img/coolbeans-wordmark-white.svg" alt="coolbeans" height="22" />
+<footer class="border-t border-line bg-surface-subtle">
+  <div
+    class="container-site grid grid-cols-1 gap-10 py-16 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-[1fr_1fr_1fr_1.6fr] lg:gap-10"
+  >
+    <div class="sm:col-span-2 lg:col-span-1">
+      <a href="/" aria-label="coolbeans — accueil" class="inline-flex items-center leading-0">
+        <img
+          class="block h-5.5 w-auto dark:hidden"
+          src="/img/coolbeans-wordmark.svg"
+          alt="coolbeans"
+          height="22"
+        />
+        <img
+          class="hidden h-5.5 w-auto dark:block"
+          src="/img/coolbeans-wordmark-white.svg"
+          alt="coolbeans"
+          height="22"
+        />
       </a>
-      <p>
-        Studio web indépendant, basé à Sète.<br />
-        Design, développement et maintenance de sites performants, pensés pour vos
-        objectifs et prêts pour l'ère de l'IA.<br />
-        L'attention d'un studio, la réactivité d'un indépendant.
-      </p>
     </div>
 
-    <nav class="sf-col" aria-label="explorer">
-      <h4>explorer</h4>
-      <ul>
-        <li><a href="/">accueil</a></li>
-        <li><a href="/about">à propos</a></li>
-        <li><a href="/tools">tools</a></li>
+    <nav aria-label="explorer">
+      <h4 class="text-sm font-medium text-ink">explorer</h4>
+      <ul class="mt-4 flex flex-col gap-3">
+        {
+          exploreLinks.map((l) => (
+            <li>
+              <a
+                href={l.href}
+                class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
+              >
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </nav>
 
-    <nav class="sf-col" aria-label="contact">
-      <h4>contact</h4>
-      <ul>
-        <li><a href="#">discuter d'un projet</a></li>
-        <li>
-          <a href="https://linkedin.com/in/ludovicbourgoin" target="_blank" rel="noopener">
-            linkedin ↗
-          </a>
-        </li>
-        <li><a href="#">mentions légales</a></li>
-        <li><a href="#">cgv</a></li>
+    <nav aria-label="contact">
+      <h4 class="text-sm font-medium text-ink">contact</h4>
+      <ul class="mt-4 flex flex-col gap-3">
+        {
+          contactLinks.map((l) => (
+            <li>
+              <a
+                href={l.href}
+                class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
+              >
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </nav>
+
+    <div class="sm:col-span-2 lg:col-span-1">
+      <h4 class="text-sm font-medium text-ink">newsletter</h4>
+      <p class="mt-4 max-w-[36ch] text-sm text-mute">
+        Les coulisses du studio, une fois par mois. Pas de spam, désinscription en un clic.
+      </p>
+      <form
+        class="mt-4 flex w-full max-w-88 items-center gap-2 rounded-full border border-line bg-surface py-1 pr-1 pl-4 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-(--focus)"
+      >
+        <label for="footer-newsletter-email" class="sr-only">adresse e-mail</label>
+        <input
+          id="footer-newsletter-email"
+          type="email"
+          name="email"
+          autocomplete="email"
+          required
+          placeholder="vous@exemple.com"
+          class="field h-8 min-w-0 flex-1 border-0 bg-transparent px-0 text-sm focus:shadow-none"
+        />
+        <button type="submit" class="btn btn-sm shrink-0">s'abonner</button>
+      </form>
+    </div>
   </div>
 
-  <div class="sf-bottom">
-    <span>© {year} coolbeans · ludovic bourgoin</span>
-    <span>sète · france</span>
+  <div
+    class="container-site flex flex-col gap-8 pt-14 pb-10 sm:flex-row sm:items-end sm:justify-between"
+  >
+    <div class="flex flex-col gap-4">
+      <p class="text-sm text-mute">© {year} coolbeans · ludovic bourgoin · sète · france</p>
+      <div class="flex items-center gap-3">
+        <a
+          href="https://linkedin.com/in/ludovicbourgoin"
+          target="_blank"
+          rel="noopener"
+          aria-label="linkedin"
+          class="text-mute transition-colors duration-150 ease-in-out hover:text-ink"
+        >
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8.34 18.34H5.67V9.75h2.67v8.59zM7 8.6a1.55 1.55 0 1 1 0-3.1 1.55 1.55 0 0 1 0 3.1zM18.34 18.34h-2.67v-4.2c0-1-.02-2.29-1.4-2.29-1.4 0-1.61 1.09-1.61 2.22v4.27H10V9.75h2.56v1.17h.04c.36-.68 1.23-1.4 2.53-1.4 2.7 0 3.21 1.78 3.21 4.09v4.73z"
+            ></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div
+      class="inline-flex w-fit items-center gap-0.5 rounded-full border border-line bg-surface p-0.5"
+      role="group"
+      aria-label="thème"
+    >
+      <button
+        type="button"
+        data-theme-choice="light"
+        aria-pressed="false"
+        aria-label="thème clair"
+        class="flex h-7 w-7 items-center justify-center rounded-full text-mute transition-colors duration-150 ease-in-out hover:text-ink aria-pressed:bg-surface-raise aria-pressed:text-ink"
+      >
+        <svg
+          class="h-4 w-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="4.2"></circle><path
+            d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"
+          ></path>
+        </svg>
+      </button>
+      <button
+        type="button"
+        data-theme-choice="system"
+        aria-pressed="true"
+        aria-label="thème système"
+        class="flex h-7 w-7 items-center justify-center rounded-full text-mute transition-colors duration-150 ease-in-out hover:text-ink aria-pressed:bg-surface-raise aria-pressed:text-ink"
+      >
+        <svg
+          class="h-4 w-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="3" y="4" width="18" height="12" rx="1.5"></rect><path d="M8 20h8M12 16v4"></path>
+        </svg>
+      </button>
+      <button
+        type="button"
+        data-theme-choice="dark"
+        aria-pressed="false"
+        aria-label="thème sombre"
+        class="flex h-7 w-7 items-center justify-center rounded-full text-mute transition-colors duration-150 ease-in-out hover:text-ink aria-pressed:bg-surface-raise aria-pressed:text-ink"
+      >
+        <svg
+          class="h-4 w-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+        </svg>
+      </button>
+    </div>
   </div>
 </footer>
 
-<style>
-  /* Footer autonome : bande sombre constante (signal de fin de page),
-     indépendante du thème clair/sombre. */
-  .site-footer {
-    background: #101010;
-    color: #f4f2ec;
-    padding: 72px clamp(24px, 5vw, 56px) 28px;
-  }
-  .site-footer a {
-    color: inherit;
-  }
-  .sf-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 56px;
-    padding-bottom: 48px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  }
-  .sf-logo {
-    display: inline-block;
-    line-height: 0;
-    margin-bottom: 22px;
-  }
-  .sf-logo img {
-    height: 22px;
-    width: auto;
-    display: block;
-  }
-  .sf-brand p {
-    font-size: 14px;
-    line-height: 1.65;
-    color: rgba(244, 242, 236, 0.6);
-    max-width: 42ch;
-    margin: 0;
-  }
-  .sf-col h4 {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(244, 242, 236, 0.46);
-    margin: 0 0 18px;
-  }
-  .sf-col ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .sf-col ul a {
-    color: rgba(244, 242, 236, 0.82);
-    font-size: 14px;
-    line-height: 1.3;
-    transition: color 0.15s;
-  }
-  .sf-col ul a:hover {
-    color: #fff;
-  }
-  .sf-bottom {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding-top: 22px;
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: rgba(244, 242, 236, 0.42);
-  }
-  @media (max-width: 900px) {
-    .sf-inner {
-      grid-template-columns: 1fr 1fr;
-      gap: 36px;
+<script is:inline>
+  (function () {
+    var KEY = "theme";
+    var buttons = Array.prototype.slice.call(document.querySelectorAll("[data-theme-choice]"));
+    if (!buttons.length) return;
+
+    function systemPrefersDark() {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
     }
-    .sf-brand {
-      grid-column: 1 / -1;
+
+    function currentChoice() {
+      try {
+        var stored = localStorage.getItem(KEY);
+        if (stored === "dark" || stored === "light") return stored;
+      } catch (e) {}
+      return "system";
     }
-  }
-  @media (max-width: 560px) {
-    .sf-inner {
-      grid-template-columns: 1fr;
+
+    function reflect(choice) {
+      buttons.forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b.getAttribute("data-theme-choice") === choice));
+      });
     }
-    .sf-bottom {
-      flex-direction: column;
-      gap: 6px;
+
+    function applyChoice(choice) {
+      try {
+        if (choice === "system") localStorage.removeItem(KEY);
+        else localStorage.setItem(KEY, choice);
+      } catch (e) {}
+      var dark = choice === "dark" || (choice === "system" && systemPrefersDark());
+      document.documentElement.classList.toggle("dark", dark);
+      reflect(choice);
     }
-  }
-</style>
+
+    buttons.forEach(function (b) {
+      b.addEventListener("click", function () {
+        applyChoice(b.getAttribute("data-theme-choice"));
+      });
+    });
+
+    // état initial : reflète le localStorage déjà appliqué par le script anti-flash de BaseLayout
+    reflect(currentChoice());
+  })();
+</script>
