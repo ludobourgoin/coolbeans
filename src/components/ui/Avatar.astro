@@ -4,8 +4,9 @@ interface Props {
   src?: string;
   alt?: string;
   initials?: string;
+  loading?: "lazy" | "eager";
 }
-const { size = 32, src, alt = "", initials = "" } = Astro.props;
+const { size = 32, src, alt = "", initials = "", loading = "lazy" } = Astro.props;
 ---
 
 <span
@@ -14,7 +15,7 @@ const { size = 32, src, alt = "", initials = "" } = Astro.props;
 >
   {
     src ? (
-      <img src={src} alt={alt} class="block h-full w-full object-cover" />
+      <img src={src} alt={alt} loading={loading} class="block h-full w-full object-cover" />
     ) : (
       initials
     )
