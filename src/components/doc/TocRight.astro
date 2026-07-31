@@ -1,0 +1,24 @@
+---
+// « Sur cette page » : ancres H2 de la page courante, état actif au scroll
+// (script de scroll-spy dans DocLayout).
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+}
+const { headings } = Astro.props;
+const h2s = headings.filter((h) => h.depth === 2);
+---
+
+{
+  h2s.length > 0 && (
+    <aside class="doc-right">
+      <div class="h">Sur cette page</div>
+      <nav id="doc-toc">
+        {h2s.map((h, i) => (
+          <a href={`#${h.slug}`} class={i === 0 ? "on" : undefined}>
+            {h.text}
+          </a>
+        ))}
+      </nav>
+    </aside>
+  )
+}

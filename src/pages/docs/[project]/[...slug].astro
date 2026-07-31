@@ -1,0 +1,76 @@
+---
+// « la doc » — rendu d'une page de doc de passation, derrière Clerk.
+// /docs/<projet>            → première page du projet (order le plus bas)
+// /docs/<projet>/<slug>     → page correspondante (slug = id sans préfixe numérique)
+//
+// Rendu à la demande (pas de prerender) : une page prérendue contournerait le
+// middleware Clerk. L'authentification est garantie par src/middleware.ts ;
+// ici on ne vérifie que le droit d'accès au projet.
+export const prerender = false;
+
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import DocLayout from "../../../layouts/DocLayout.astro";
+import Meta from "../../../components/doc/Meta.astro";
+
+type Doc = CollectionEntry<"docs">;
+const slugOf = (e: Doc) => e.id.split("/").pop()!.replace(/^\d+-/, "");
+const hrefOf = (e: Doc) => `/docs/${e.data.project}/${slugOf(e)}`;
+
+const { project, slug } = Astro.params;
+
+// Droit par projet : publicMetadata.projects = ["amusoire", …] sur l'utilisateur
+// (dashboard Clerk). role = "admin" voit tout (y compris /docs/_template).
+const user = await Astro.locals.currentUser();
+const meta = (user?.publicMetadata ?? {}) as { projects?: string[]; role?: string };
+const allowed = meta.role === "admin" || (meta.projects ?? []).includes(project ?? "");
+if (!allowed) return Astro.redirect("/espace");
+
+const entries = (await getCollection("docs", (e) => e.data.project === project)).sort(
+  (a, b) => a.data.order - b.data.order
+);
+if (entries.length === 0) return new Response(null, { status: 404 });
+
+const entry = slug ? entries.find((e) => slugOf(e) === slug) : entries[0];
+if (!entry) return new Response(null, { status: 404 });
+
+const { Content, headings } = await render(entry);
+
+const nav = entries.map((e) => ({
+  title: e.data.title,
+  href: hrefOf(e),
+  active: e.id === entry.id,
+}));
+const idx = entries.findIndex((e) => e.id === entry.id);
+const prev = idx > 0 ? { title: entries[idx - 1].data.title, href: hrefOf(entries[idx - 1]) } : null;
+const next =
+  idx < entries.length - 1
+    ? { title: entries[idx + 1].data.title, href: hrefOf(entries[idx + 1]) }
+    : null;
+
+// Index de recherche client-side : titres + sections H2 + texte brut de chaque page.
+const searchIndex = [];
+for (const e of entries) {
+  const { headings: hs } = await render(e);
+  searchIndex.push({
+    title: e.data.title,
+    href: hrefOf(e),
+    sections: hs.filter((h) => h.depth === 2).map((h) => ({ title: h.text, anchor: h.slug })),
+    text: (e.body ?? "").toLowerCase(),
+  });
+}
+---
+
+<DocLayout
+  title={entry.data.title}
+  project={entry.data.project}
+  nav={nav}
+  headings={headings}
+  prev={prev}
+  next={next}
+  searchIndex={searchIndex}
+>
+  <h1>{entry.data.title}</h1>
+  <Meta status={entry.data.status} updated={entry.data.updated} />
+  <Content />
+</DocLayout>

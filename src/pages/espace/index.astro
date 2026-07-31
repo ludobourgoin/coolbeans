@@ -1,0 +1,50 @@
+---
+// Accueil de l'espace client : une carte par service accessible.
+// Les projets visibles viennent de publicMetadata.projects (dashboard Clerk).
+export const prerender = false;
+
+import EspaceLayout from "../../layouts/EspaceLayout.astro";
+
+const user = await Astro.locals.currentUser();
+const meta = (user?.publicMetadata ?? {}) as { projects?: string[]; role?: string };
+const projects = meta.projects ?? [];
+const isAdmin = meta.role === "admin";
+const prenom = user?.firstName ?? "";
+
+const label = (p: string) => p.charAt(0).toUpperCase() + p.slice(1);
+---
+
+<EspaceLayout title="Espace client">
+  <h1>Bonjour{prenom ? ` ${prenom}` : ""}.</h1>
+  <p class="sub">Votre espace Coolbeans : documentation et services liés à votre projet.</p>
+
+  <div class="cards">
+    {
+      projects.map((p) => (
+        <a class="card" href={`/docs/${p}`}>
+          <div class="k">Doc</div>
+          <div class="t">{label(p)} — passation & référence</div>
+          <div class="d">Le document de vérité du projet : édition, leads, features, support.</div>
+        </a>
+      ))
+    }
+    {
+      isAdmin && (
+        <a class="card" href="/docs/_template">
+          <div class="k">Doc · interne</div>
+          <div class="t">Gabarit du standard</div>
+          <div class="d">Le squelette vierge « la doc », visible des admins seulement.</div>
+        </a>
+      )
+    }
+  </div>
+
+  {
+    projects.length === 0 && !isAdmin && (
+      <p class="sub">
+        Aucun projet n'est encore associé à votre compte. Contactez Coolbeans :
+        ludo@coolbeans.cc.
+      </p>
+    )
+  }
+</EspaceLayout>

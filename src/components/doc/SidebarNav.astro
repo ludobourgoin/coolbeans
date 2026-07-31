@@ -1,0 +1,17 @@
+---
+// Nav gauche : liste plate des pages du projet, triées par `order`.
+interface Props {
+  items: { title: string; href: string; active: boolean }[];
+}
+const { items } = Astro.props;
+---
+
+<nav class="doc-nav">
+  {
+    items.map((item) => (
+      <a href={item.href} class={item.active ? "on" : undefined} aria-current={item.active ? "page" : undefined}>
+        {item.title}
+      </a>
+    ))
+  }
+</nav>

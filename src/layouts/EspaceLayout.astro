@@ -1,0 +1,38 @@
+---
+// Espace client Coolbeans : topbar commune (nav + UserButton) au-dessus des
+// pages protégées. La doc a son propre layout (DocLayout) avec la même topbar.
+import BaseLayout from "./BaseLayout.astro";
+import { UserButton } from "@clerk/astro/components";
+import "../styles/doc.css";
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+
+<BaseLayout title={`${title} · Coolbeans`} description="Espace client Coolbeans" noindex>
+  <div class="doc-root">
+    <header class="doc-topbar">
+      <a class="brand" href="/">coolbeans.</a>
+      <nav class="topnav">
+        <a href="/espace" class="on">Espace</a>
+      </nav>
+      <span class="spacer"></span>
+      <button class="tgl" id="doc-theme" type="button" aria-label="Basculer le thème">☀︎ / ☾</button>
+      <UserButton />
+    </header>
+    <main class="espace-main">
+      <slot />
+    </main>
+  </div>
+
+  <script>
+    document.getElementById("doc-theme")?.addEventListener("click", () => {
+      const dark = document.documentElement.classList.toggle("dark");
+      try {
+        localStorage.setItem("theme", dark ? "dark" : "light");
+      } catch {}
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,80 @@
+---
+project: "amusoire"
+title: "Éditer le site"
+order: 2
+status: "final"
+updated: 2026-07-31
+description: "L'usage quotidien : contenu, blog, SEO. Gestes Webflow."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+La page de l'usage quotidien : contenu, blog, SEO. Les principes valent pour toute plateforme ; les gestes décrits sont Webflow.
+
+## Les interdits
+
+<div class="interdits">
+  <div class="t">🚫 À ne jamais faire</div>
+  <ul>
+    <li>Pas d'emoji / caractères spéciaux dans les <b>slugs</b>.</li>
+    <li>Ne pas toucher aux champs techniques / ID (Make, Memberstack).</li>
+    <li>Laisser un champ <b>vide</b> plutôt qu'un espace.</li>
+    <li>Ne jamais renommer une <b>classe</b> ou un composant : casse le style partout.</li>
+  </ul>
+</div>
+
+## Publier un article
+
+<ol class="steps">
+  <li><b>Save as Draft</b> : sauvegarde sans publier.</li>
+  <li><b>Stage for Publish</b> : prêt pour la prochaine mise en ligne.</li>
+  <li><b>Publish</b> : ⚠️ publie <b>tout le site</b>.</li>
+</ol>
+
+<Callout type="warn">
+  « Publish » pousse tout le site en prod. En cas de doute, reste sur **Stage for Publish** et préviens Coolbeans.
+</Callout>
+
+## Blog & CMS
+
+Une seule collection **Articles** alimente deux listings : **Actus** (B2C) et **Blog** (licences, B2B). Un article n'apparaît que sur une des deux pages.
+
+| Champ | Rôle |
+| --- | --- |
+| « Quel blog ? » | Route l'article : `Actus` ou `Blog (licences)`. Le seul champ qui décide. |
+| Tags | Portent le même menu Actus / Blog : ne rattacher que des tags du même blog que l'article (sinon filtrage vide ou hors contexte). |
+| « Catégorie » | Label éditorial affiché (ex. `Quiz musical`) : aucun effet de routage. |
+
+<Callout type="piege" title="Piège — article invisible">
+  Tant que « Quel blog ? » n'est pas renseigné, l'article n'apparaît sur **aucune** des deux pages (les Collection Lists filtrent dessus). Premier réflexe si un article publié reste introuvable.
+</Callout>
+
+### Checklist — publier sur la bonne page
+
+<ol class="steps">
+  <li>Renseigner <b>« Quel blog ? »</b> = Actus ou Blog (licences).</li>
+  <li>Choisir une <b>Catégorie</b> (label affiché, sans effet de routage).</li>
+  <li>N'ajouter que des <b>tags du même blog</b>.</li>
+  <li>Publier l'article, puis <b>publier le site</b> pour rafraîchir le listing.</li>
+</ol>
+
+**Modèle éditorial** : titre → slug court (sans accent/emoji), catégorie obligatoire, meta title/description, alt text.
+
+## SEO on-page
+
+| Champ | Règle | Impact |
+| --- | --- | --- |
+| Meta Title | 50–60 caractères, mot-clé présent | Clic depuis Google |
+| Meta Description | ~155 caractères | Taux de clic |
+| Open Graph | Image 1200×630 + titre/desc | Rendu des partages |
+
+**Structure** : un seul `H1`, hiérarchie `H2/H3`, maillage interne, alt text sur les images.
+
+**Vérifier après publication** : Google Search Console (indexation) · Facebook Sharing Debugger (cache OG).
+
+## Médias
+
+| Type | Règle |
+| --- | --- |
+| Images | 200 Ko max · hero ~2500px · blog ~1200px · AVIF |
+| OG image | 1200×630 |

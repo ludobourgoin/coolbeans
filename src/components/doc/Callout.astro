@@ -1,0 +1,21 @@
+---
+// Admonition « la doc » — types : note / tip / warn / danger / piege.
+// `piege` = le signal à plus haute valeur d'une passation (contre-intuitif, ne pas « corriger »).
+interface Props {
+  type?: "note" | "tip" | "warn" | "danger" | "piege";
+  title?: string;
+}
+const { type = "note", title } = Astro.props;
+const labels: Record<string, string> = {
+  note: "Note",
+  tip: "Astuce",
+  warn: "Avertissement",
+  danger: "Danger",
+  piege: "Piège",
+};
+---
+
+<div class={`adm ${type}`}>
+  <div class="t">{title ?? labels[type]}</div>
+  <slot />
+</div>

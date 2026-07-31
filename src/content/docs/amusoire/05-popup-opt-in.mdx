@@ -1,0 +1,127 @@
+---
+project: "amusoire"
+title: "Popup opt-in"
+order: 5
+status: "final"
+updated: 2026-07-31
+description: "Modal Finsweet : architecture, interrupteur ENABLED, recettes et script de référence."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+Lib : **Finsweet Attributes v1 (modal)** · Fréquence : **1 affichage / 7 jours**.
+
+S'ouvre automatiquement après un délai sur certaines pages, plafonné à 1 affichage / 7 jours par visiteur. Indépendant du simulateur.
+
+## Architecture
+
+| Brique | Où elle vit | Rôle |
+| --- | --- | --- |
+| Lib Finsweet | Project Settings → Custom Code → Footer (global) | Charge le moteur modal partout, une fois |
+| Composant `modal` | Source sur la page `/modal`, instance posée sur chaque page concernée | Markup + contenu (trigger `open-1`, wrapper `modal-1`) |
+| Script déclencheur | Footer global | Décide quand / sur quelles pages ouvrir + cooldown |
+
+## Éditer le contenu
+
+<ol class="steps">
+  <li>Ouvrir le composant <code>modal</code> (page <code>/modal</code> ou panneau Components) → <b>Edit Component</b>.</li>
+  <li>Modifier texte / image / champ / bouton comme n'importe quel élément.</li>
+  <li><b>Publish</b> : répercuté sur toutes les instances du site.</li>
+</ol>
+
+Le wrapper `modal-1` peut être en `display:none` au repos : Finsweet l'affiche à l'ouverture.
+
+## Modalités d'affichage
+
+| Variable | Valeur actuelle | Effet |
+| --- | --- | --- |
+| `ENABLED` | `false` | **Interrupteur global** : `true` = actif partout, `false` = coupé |
+| `allowed` | 10 chemins fixes | Pages exactes où le popup s'affiche (+ préfixe `/actu/` pour tous les articles) |
+| `DELAY_MS` | `8000` | Délai avant ouverture, démarre au chargement de la page |
+| `COOLDOWN_DAYS` | `7` | Fréquence max / visiteur (`localStorage`, clé `optin_popup_seen`) |
+| `MAX_WAIT_MS` | `15000` | Filet de sécurité (attente max de l'init lib), ne pas toucher |
+
+**Où trouver `ENABLED`** : Project Settings → Custom Code → Footer code, bloc `<!-- Pop up -->`. Changer la valeur, puis **Save + Publish**. Lien direct : [webflow.com/dashboard/sites/site-amusoire/custom-code](https://webflow.com/dashboard/sites/site-amusoire/custom-code)
+
+## Recettes courantes
+
+- **Ajouter à une page** : chemin dans `allowed` **+ poser l'instance du composant sur la page** + Publish.
+- **Retirer d'une page** : enlever le chemin de `allowed` (l'instance peut rester).
+- **Activer / couper partout** : `ENABLED` à `true`/`false` — prévu pour les évènements ponctuels (fête de la musique…).
+- **Délai / fréquence** : `DELAY_MS` et `COOLDOWN_DAYS`.
+
+## Points de vigilance
+
+- **Le composant doit être présent sur la page** : `allowed` seul ne suffit pas — sans markup, le script sort en silence.
+- Lib chargée une seule fois en global — ne pas remettre le loader dans le composant.
+- **Attributes v1 uniquement** : jamais de v2 sur le site (incompatibles).
+- Cooldown pendant les tests : navigation privée ou `localStorage.removeItem('optin_popup_seen')`.
+- Ne pas remplacer l'attente Finsweet (`fsAttributes.push`) par un `.click()` direct : race condition, le modal ne s'ouvrirait pas. Si l'init n'arrive pas, le cooldown n'est pas brûlé.
+
+## Script de référence (prod)
+
+La lib, chargée une fois dans le footer global :
+
+```html
+<script async src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-modal@1/modal.js"></script>
+```
+
+Le script déclencheur complet (bloc `<!-- Pop up -->` du même footer) :
+
+```html
+<script>
+(function () {
+  /* ▼▼▼ INTERRUPTEUR DU POPUP ▼▼▼
+     true  = popup actif
+     false = popup coupé partout
+     → changer la valeur, puis Save + Publish. Rien d'autre à toucher. */
+  var ENABLED = false;
+  /* ▲▲▲ ▲▲▲ */
+  if (!ENABLED) return;
+
+  var allowed = ['/', '/occasions', '/entreprises', '/jeux/blindtest', '/jeux/quiz', '/jeux/karaoke', '/lieux/drawing-house-paris-14', '/lieux/trinquet-village-paris-16', '/lieux/mom-paris-17', '/actus'];
+  var path = window.location.pathname.replace(/\/+$/, '') || '/';
+  if (allowed.indexOf(path) === -1 && path.indexOf('/actu/') !== 0) return;
+
+  var KEY = 'optin_popup_seen';
+  var COOLDOWN_DAYS = 7;
+  try {
+    var seen = localStorage.getItem(KEY);
+    if (seen && Date.now() - parseInt(seen, 10) < COOLDOWN_DAYS * 86400000) return;
+  } catch (e) {}
+
+  var DELAY_MS = 8000;       // délai visible : démarre AU CHARGEMENT, pas après l'init Finsweet
+  var MAX_WAIT_MS = 15000;   // filet de sécurité : attente max de l'init après le délai
+
+  // 1) Le délai de 8 s démarre immédiatement.
+  var timerDone = new Promise(function (resolve) {
+    setTimeout(resolve, DELAY_MS);
+  });
+
+  // 2) Signal d'init Finsweet (Attributes v1). Le callback est poussé dans la queue :
+  //    il se déclenche quand le modal est initialisé ET ses listeners posés.
+  var fsReady = false;
+  var finsweetReady = new Promise(function (resolve) {
+    window.fsAttributes = window.fsAttributes || [];
+    window.fsAttributes.push(['modal', function () { fsReady = true; resolve(); }]);
+  });
+
+  // 3) Filet de sécurité : si la lib ne charge jamais, on n'attend pas indéfiniment.
+  var safety = new Promise(function (resolve) {
+    setTimeout(resolve, DELAY_MS + MAX_WAIT_MS);
+  });
+
+  // Clic quand : délai écoulé ET Finsweet prêt — au plus tard au filet de sécurité.
+  Promise.all([timerDone, Promise.race([finsweetReady, safety])]).then(function () {
+    if (!fsReady) return; // init jamais arrivée : on ne brûle pas le cooldown, on retentera
+
+    var trigger = document.querySelector('[fs-modal-element="open-1"]');
+    if (!trigger) return;
+    trigger.click();
+    try {
+      localStorage.setItem(KEY, String(Date.now()));
+    } catch (e) {}
+  });
+})();
+</script>
+```

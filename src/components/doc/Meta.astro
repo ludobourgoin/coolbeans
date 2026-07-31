@@ -1,0 +1,20 @@
+---
+// En-tête de page : statut + date de MAJ (fraîcheur du doc, §10 de la SPEC).
+interface Props {
+  status: "draft" | "review" | "final";
+  updated: Date;
+}
+const { status, updated } = Astro.props;
+const labels = { draft: "Brouillon", review: "En relecture", final: "Final" };
+const kinds = { draft: "warn", review: "warn", final: "ok" } as const;
+const date = updated.toLocaleDateString("fr-FR", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<div class="doc-meta">
+  <span class={`pill ${kinds[status]}`}>{labels[status]}</span>
+  <span>MAJ : <b>{date}</b></span>
+</div>

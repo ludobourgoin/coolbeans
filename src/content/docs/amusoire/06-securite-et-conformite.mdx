@@ -1,0 +1,45 @@
+---
+project: "amusoire"
+title: "Sécurité & conformité"
+order: 6
+status: "final"
+updated: 2026-07-31
+description: "Comptes et accès, secrets, RGPD."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+## Comptes & accès
+
+| Outil | Propriétaire du compte | Accès Coolbeans |
+| --- | --- | --- |
+| Webflow | <span class="todo">(à compléter)</span> | Designer |
+| HubSpot ×2 | <span class="todo">(à compléter)</span> | Admin |
+| Make | Coolbeans | Owner |
+| Cloudflare | Coolbeans | Owner |
+| Resend | Coolbeans | Owner |
+
+<Callout type="note">
+  Cette doc elle-même est protégée par **Cloudflare Access** (mot de passe / email OTP).
+</Callout>
+
+## Secrets
+
+<Callout type="danger">
+  Aucun secret (clé API, token, mot de passe) dans cette doc ni dans git. On documente **où** ils sont, jamais **quoi**.
+</Callout>
+
+| Secret | Emplacement |
+| --- | --- |
+| Clé webhook Make | 1Password — coffre Coolbeans |
+| Tokens HubSpot / Resend | Variables d'env / connexions Make |
+
+**Rotation** : si une clé fuite ou à un changement de prestataire. Procédure : <span class="todo">(à compléter)</span>.
+
+## RGPD & cookies
+
+**Consentement** : bandeau cookies au premier chargement ; les scripts de tracking ne s'activent qu'après consentement.
+
+**Opt-in newsletter** : porté par la popup `/modal`. Voir [Popup opt-in](/docs/amusoire/popup-opt-in).
+
+**Rétention** : durée de conservation <span class="todo">(à compléter)</span>. Pages légales : Confidentialité · Cookies.

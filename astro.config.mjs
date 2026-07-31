@@ -2,27 +2,29 @@
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
+import clerk from "@clerk/astro";
+import cloudflare from "@astrojs/cloudflare";
 
-// Hébergement : Cloudflare PAGES. Site entièrement prérendu, donc aucun
-// adaptateur — Pages sert le contenu de `dist/` tel quel.
+// Hébergement : Cloudflare WORKERS (décision 2026-07-31, pour l'espace client
+// Clerk qui exige du rendu serveur — cf. _doc-standard/SPEC.md).
 //
-// Ne pas ajouter d'adaptateur « au cas où ». Les deux essais faits :
-//   @astrojs/node       → produit un serveur Node standalone, que Pages ne sait
-//                         pas exécuter. Déploiement en 404 sur toutes les
-//                         routes, sans message d'erreur.
-//   @astrojs/cloudflare → vise Cloudflare WORKERS, pas Pages : sortie découpée
-//                         en dist/client + dist/server et wrangler.json à
-//                         bindings Workers. Pages ne trouve pas le site.
+// Historique utile : le site était 100 % prérendu sur Cloudflare PAGES, sans
+// adaptateur. Les essais précédents avaient échoué parce que la sortie de
+// @astrojs/cloudflare (format Workers : dist/client + dist/server + wrangler
+// généré) était poussée vers le projet PAGES, qui ne sait pas la servir.
+// La cible correcte est un projet WORKERS : `npm run build` puis
+// `npx wrangler deploy` (le wrangler.json généré dans dist/ est repris via
+// .wrangler/deploy/config.json). L'ancien projet Pages sera remplacé.
 //
-// Clerk reste en dépendance mais n'est PAS enregistré ici : l'intégration
-// n'a de sens qu'avec du rendu serveur, et aucune page n'en fait aujourd'hui.
-// Le jour du dashboard client (cf. _doc-standard/SPEC.md, hors périmètre v1),
-// deux chemins : migrer le projet Pages vers Workers, ou protéger la zone via
-// Cloudflare Access — ce que le README du bundle doc prévoyait déjà.
+// Découpage du rendu : le site vitrine reste prérendu (défaut statique) ;
+// seuls /espace et /docs déclarent `prerender = false` (SSR, requis par le
+// middleware Clerk — une page prérendue le contournerait).
+// Secrets en prod : CLERK_SECRET_KEY = secret du Worker, jamais dans le repo.
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [mdx()],
+  integrations: [clerk(), mdx()],
+  adapter: cloudflare(),
   markdown: {
     shikiConfig: { theme: "github-dark" },
   },

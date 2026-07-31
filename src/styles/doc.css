@@ -1,0 +1,783 @@
+/* ============================================================================
+   « LA DOC » — couche d'accent docs, scopée .doc-root
+   S'appuie sur les tokens Coolbeans (global.css) : --surface, --surface-raise,
+   --line, --line-strong, --ink, --mute, --font-*, --radius-*, dark par .dark.
+   Design validé sur la maquette _doc-standard/preview.html : noir & blanc pur,
+   la couleur (palette Folk réduite) est un signal contextuel, jamais un décor.
+   ========================================================================== */
+
+.doc-root {
+  /* palette Folk — uniquement les couleurs employées (admonitions, pastilles, todo) */
+  --doc-iris: #c1aaf9;
+  --doc-iris-bg: #f6dff6;
+  --doc-or: #ffc53d;
+  --doc-or-bg: #fff0bd;
+  --doc-bleu: #94c4ff;
+  --doc-bleu-bg: #bed9ef;
+  --doc-vert: #bdee63;
+  --doc-vert-bg: #e3efdc;
+  --doc-corail: #f54e50;
+  --doc-corail-bg: #fce1e1;
+
+  color: var(--ink);
+  background: var(--surface);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.65;
+}
+.dark .doc-root {
+  --doc-iris-bg: rgba(193, 170, 249, 0.16);
+  --doc-or-bg: rgba(255, 197, 61, 0.15);
+  --doc-bleu-bg: rgba(148, 196, 255, 0.15);
+  --doc-vert-bg: rgba(189, 238, 99, 0.14);
+  --doc-corail-bg: rgba(245, 78, 80, 0.15);
+}
+
+/* ---- Topbar minimale : logo + toggle thème -------------------------------- */
+.doc-root .doc-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 56px;
+  padding: 0 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.doc-root .brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-size: 16px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.doc-root .doc-topbar .spacer {
+  flex: 1;
+}
+.doc-root .tgl {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: var(--radius-control);
+  padding: 6px 10px;
+  font: inherit;
+  font-size: 13px;
+}
+
+/* nav de l'espace client (topbar commune espace + doc) */
+.doc-root .topnav {
+  display: flex;
+  gap: 6px;
+  margin-left: 12px;
+}
+.doc-root .topnav a {
+  font-size: 13.5px;
+  color: var(--mute);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: var(--radius-control);
+}
+.doc-root .topnav a:hover {
+  color: var(--ink);
+  background: var(--surface-raise);
+}
+.doc-root .topnav a.on {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* pages de l'espace client */
+.doc-root .espace-main {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 56px 24px 110px;
+}
+.doc-root .espace-main h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-size: clamp(28px, 3.2vw, 38px);
+  margin: 0 0 8px;
+}
+.doc-root .espace-main .sub {
+  color: var(--mute);
+  margin: 0 0 32px;
+}
+.doc-root .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.doc-root .card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 18px;
+  display: block;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--surface);
+  transition: border-color var(--dur) var(--ease);
+}
+.doc-root .card:hover {
+  border-color: var(--ink);
+}
+.doc-root .card .k {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mute);
+}
+.doc-root .card .t {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  margin-top: 6px;
+}
+.doc-root .card .d {
+  font-size: 13px;
+  color: var(--mute);
+  margin-top: 4px;
+}
+
+/* ---- Grille 3 colonnes ---------------------------------------------------- */
+.doc-root .doc-shell {
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr) 232px;
+  align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.doc-root .doc-left {
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow: auto;
+  border-right: 1px solid var(--line);
+  padding: 28px 20px 60px;
+}
+.doc-root .doc-main {
+  padding: 44px 56px 110px;
+  min-width: 0;
+}
+.doc-root .doc-right {
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow: auto;
+  padding: 36px 20px 60px;
+}
+.doc-root .doc-right .h {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 10px;
+}
+.doc-root .doc-right a {
+  display: block;
+  color: var(--mute);
+  text-decoration: none;
+  font-size: 12.5px;
+  padding: 4px 0 4px 12px;
+  border-left: 2px solid var(--line);
+}
+.doc-root .doc-right a:hover {
+  color: var(--ink);
+}
+.doc-root .doc-right a.on {
+  color: var(--ink);
+  border-left-color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---- Nav gauche ----------------------------------------------------------- */
+.doc-root .doc-nav a {
+  display: block;
+  text-decoration: none;
+  color: var(--mute);
+  font-size: 14px;
+  padding: 7px 10px;
+  border-radius: var(--radius-control);
+}
+.doc-root .doc-nav a:hover {
+  color: var(--ink);
+  background: var(--surface-raise);
+}
+.doc-root .doc-nav a.on {
+  color: var(--ink);
+  background: var(--surface-raise);
+  font-weight: 600;
+}
+
+/* ---- Recherche ------------------------------------------------------------ */
+.doc-root .doc-search {
+  position: relative;
+  margin-bottom: 20px;
+}
+.doc-root .doc-search input {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 13px;
+  padding: 8px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--ink);
+}
+.doc-root .doc-search input:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+.doc-root .doc-search input::placeholder {
+  color: var(--mute);
+}
+.doc-root #doc-qres {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-card);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+  max-height: 330px;
+  overflow: auto;
+}
+.doc-root #doc-qres a {
+  display: block;
+  padding: 8px 12px;
+  text-decoration: none;
+  border-top: 1px solid var(--line);
+  font-size: 12.5px;
+  color: var(--ink);
+}
+.doc-root #doc-qres a:first-child {
+  border-top: none;
+}
+.doc-root #doc-qres a:hover {
+  background: var(--surface-raise);
+}
+.doc-root #doc-qres .rp {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+.doc-root #doc-qres .rt {
+  font-weight: 600;
+}
+.doc-root #doc-qres .empty {
+  padding: 10px 12px;
+  color: var(--mute);
+  font-size: 12.5px;
+}
+
+/* ---- Prose : titres, texte, listes ---------------------------------------- */
+.doc-main h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  text-wrap: balance;
+  font-size: clamp(28px, 3.2vw, 38px);
+  margin: 0;
+}
+.doc-main h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  text-wrap: balance;
+  font-size: 22px;
+  margin: 56px 0 14px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 80px;
+}
+.doc-main h2:first-of-type {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 40px;
+}
+.doc-main h3 {
+  font-weight: 600;
+  font-size: 15.5px;
+  margin: 26px 0 8px;
+}
+.doc-main p {
+  margin: 12px 0;
+  max-width: 70ch;
+}
+.doc-main ul,
+.doc-main ol {
+  margin: 10px 0;
+  padding-left: 20px;
+  max-width: 70ch;
+}
+.doc-main li {
+  margin: 5px 0;
+}
+.doc-main a {
+  color: var(--ink);
+}
+
+/* flèche discrète sur les liens qui ouvrent un nouvel onglet */
+.doc-root a[target="_blank"]::after {
+  content: "↗";
+  font-size: 0.72em;
+  color: var(--mute);
+  margin-left: 3px;
+}
+
+/* ---- En-tête de page (Meta) ----------------------------------------------- */
+.doc-main .doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  font-size: 11.5px;
+  color: var(--mute);
+  margin: 16px 0 0;
+  padding-bottom: 18px;
+}
+.doc-main .doc-meta b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---- Code ------------------------------------------------------------------ */
+.doc-main code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--surface-raise);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.doc-main pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+.doc-main pre {
+  font-family: var(--font-mono);
+  border-radius: var(--radius-card);
+  padding: 14px 16px;
+  overflow: auto;
+  font-size: 12.5px;
+  line-height: 1.55;
+  margin: 16px 0;
+}
+/* bandeau langage + bouton copier (posés par le script de DocLayout) */
+.doc-main .codefig {
+  margin: 16px 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+.doc-main .codefig figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background: #161b22;
+  color: #8b949e;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  padding: 7px 14px;
+  border-bottom: 1px solid rgba(240, 246, 252, 0.08);
+}
+.doc-main .codefig pre {
+  margin: 0;
+  border-radius: 0;
+  border: none;
+}
+.doc-main .copybtn {
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid rgba(139, 148, 158, 0.4);
+  color: #8b949e;
+  border-radius: 5px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.doc-main .copybtn:hover {
+  color: #e6e9ef;
+  border-color: #8b949e;
+}
+.doc-main details .codefig {
+  margin: 10px 0;
+}
+
+/* ---- Tableaux : sans cadre, filets horizontaux ----------------------------- */
+.doc-main table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 13.5px;
+}
+.doc-main th,
+.doc-main td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.doc-main th {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mute);
+  font-weight: 700;
+}
+.doc-main td:first-child,
+.doc-main th:first-child {
+  padding-left: 0;
+}
+.doc-main td:last-child,
+.doc-main th:last-child {
+  padding-right: 0;
+}
+
+/* ---- Pastilles ------------------------------------------------------------- */
+.doc-root .pill {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.doc-root .pill.ok {
+  background: var(--doc-vert-bg);
+  color: var(--ink);
+}
+.doc-root .pill.warn {
+  background: var(--doc-or-bg);
+  color: var(--ink);
+}
+.doc-root .pill.bad {
+  background: var(--doc-corail-bg);
+  color: var(--ink);
+}
+
+/* ---- Admonitions ------------------------------------------------------------ */
+.doc-main .adm {
+  border-left: 3px solid var(--c);
+  background: var(--bg);
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  padding: 12px 16px;
+  margin: 18px 0;
+  font-size: 13.5px;
+  max-width: 74ch;
+}
+.doc-main .adm .t {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.doc-main .adm.note {
+  --c: var(--doc-bleu);
+  --bg: var(--doc-bleu-bg);
+}
+.doc-main .adm.tip {
+  --c: var(--doc-vert);
+  --bg: var(--doc-vert-bg);
+}
+.doc-main .adm.warn {
+  --c: var(--doc-or);
+  --bg: var(--doc-or-bg);
+}
+.doc-main .adm.danger {
+  --c: var(--doc-corail);
+  --bg: var(--doc-corail-bg);
+}
+.doc-main .adm.piege {
+  --c: var(--doc-iris);
+  --bg: var(--doc-iris-bg);
+}
+.doc-main .adm p {
+  margin: 4px 0;
+}
+
+/* ---- Patterns de contenu ----------------------------------------------------- */
+/* schéma de flux */
+.doc-main .flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0;
+}
+.doc-main .node {
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-card);
+  padding: 9px 13px;
+  font-size: 12.5px;
+  font-weight: 600;
+  background: var(--surface);
+}
+.doc-main .node small {
+  display: block;
+  color: var(--mute);
+  font-weight: 400;
+  font-size: 10.5px;
+  margin-top: 2px;
+}
+.doc-main .arrow {
+  color: var(--mute);
+  font-weight: 700;
+}
+.doc-main .badge-acc {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-control);
+}
+.doc-main .badge-acc.amus {
+  background: var(--doc-or);
+  color: #111;
+}
+.doc-main .badge-acc.blind {
+  background: var(--doc-bleu);
+  color: #111;
+}
+
+/* step-by-step numéroté */
+.doc-main ol.steps {
+  padding-left: 0;
+  counter-reset: s;
+  list-style: none;
+}
+.doc-main ol.steps li {
+  position: relative;
+  padding: 6px 0 6px 34px;
+  counter-increment: s;
+}
+.doc-main ol.steps li::before {
+  content: counter(s);
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  background: var(--ink);
+  color: var(--surface);
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* bloc « interdits » */
+.doc-main .interdits {
+  border-left: 3px solid var(--doc-corail);
+  background: var(--doc-corail-bg);
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  padding: 12px 16px;
+  margin: 18px 0;
+  max-width: 74ch;
+}
+.doc-main .interdits .t {
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+/* incident & correctif */
+.doc-main .incident {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  margin: 16px 0;
+  max-width: 74ch;
+}
+.doc-main .incident .row {
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  border-top: 1px solid var(--line);
+}
+.doc-main .incident .row:first-child {
+  border-top: none;
+}
+.doc-main .incident .k {
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mute);
+  font-weight: 700;
+}
+.doc-main .incident .v {
+  padding: 10px 14px 10px 0;
+  font-size: 13.5px;
+}
+
+/* toggles */
+.doc-main details {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 2px 14px;
+  margin: 16px 0;
+  max-width: 74ch;
+}
+.doc-main details summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 0;
+}
+
+/* marqueur placeholder + liens croisés */
+.doc-main .todo {
+  background: var(--doc-or-bg);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.doc-main .xlink {
+  font-size: 12.5px;
+  color: var(--mute);
+}
+.doc-main .xlink a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* liens rapides (hero Vue d'ensemble) */
+.doc-main .liens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0 6px;
+}
+.doc-main .liens a {
+  font-size: 13px;
+  text-decoration: none;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  padding: 8px 12px;
+  background: var(--surface);
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+}
+.doc-main .liens a:hover {
+  border-color: var(--ink);
+}
+.doc-main .liens a .ext {
+  color: var(--mute);
+  font-size: 11px;
+}
+
+/* définitions (glossaire) */
+.doc-main dl {
+  max-width: 70ch;
+}
+.doc-main dt {
+  font-weight: 600;
+  margin-top: 16px;
+}
+.doc-main dd {
+  margin: 2px 0 0;
+  color: var(--mute);
+}
+
+/* ---- Pied de page : précédent / suivant ------------------------------------ */
+.doc-main .doc-pagefoot {
+  margin-top: 64px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.doc-main .pf-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.doc-main .pf-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 15px 18px;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--surface);
+  transition: border-color var(--dur) var(--ease);
+  display: block;
+}
+.doc-main .pf-card:hover {
+  border-color: var(--ink);
+}
+.doc-main .pf-card .lab {
+  font-size: 12.5px;
+  color: var(--mute);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.doc-main .pf-card .ttl {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  margin-top: 3px;
+  display: block;
+}
+.doc-main .pf-card.next {
+  text-align: right;
+}
+.doc-main .pf-card.next .lab {
+  justify-content: flex-end;
+}
+.doc-main .pf-card.empty {
+  visibility: hidden;
+}
+
+/* ---- Responsive -------------------------------------------------------------- */
+@media (max-width: 1180px) {
+  .doc-root .doc-right {
+    display: none;
+  }
+  .doc-root .doc-shell {
+    grid-template-columns: 250px minmax(0, 1fr);
+  }
+}
+@media (max-width: 860px) {
+  .doc-root .doc-left {
+    position: static;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 16px;
+  }
+  .doc-root .doc-shell {
+    grid-template-columns: 1fr;
+  }
+  .doc-root .doc-main {
+    padding: 28px 20px 80px;
+  }
+}
+@media (max-width: 640px) {
+  .doc-main .pf-nav {
+    grid-template-columns: 1fr;
+  }
+}

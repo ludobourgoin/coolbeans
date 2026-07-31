@@ -96,4 +96,20 @@ const projets = defineCollection({
   }),
 });
 
-export const collections = { devis, projets };
+/* Un fichier MDX par page de doc de passation dans src/content/docs/<projet>/ ;
+   le préfixe numérique du fichier fixe l'ordre, le reste devient le slug de
+   l'URL (/docs/<projet>/<slug>). Rendu par src/pages/docs/[project]/[...slug].astro,
+   derrière Clerk (voir src/middleware.ts). _template/ = gabarit du standard. */
+const docs = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/docs" }),
+  schema: z.object({
+    project: z.string(), // clé projet = dossier ("amusoire")
+    title: z.string(),
+    order: z.number(), // position dans la nav gauche
+    status: z.enum(["draft", "review", "final"]).default("final"),
+    updated: z.coerce.date(), // date de MAJ de la page
+    description: z.string().optional(),
+  }),
+});
+
+export const collections = { devis, projets, docs };
