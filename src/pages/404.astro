@@ -1,0 +1,73 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import GridBackdrop from "../components/GridBackdrop.astro";
+---
+
+<BaseLayout
+  title="Page introuvable — Coolbeans"
+  description="Cette page n'existe pas, ou plus. Le reste du site fonctionne très bien."
+  noindex
+>
+  <Nav />
+
+  <section class="relative overflow-hidden border-b border-line bg-surface-subtle">
+    <GridBackdrop />
+    <div
+      class="container-site relative flex flex-col items-center pt-20 pb-24 text-center"
+    >
+      <p class="label">erreur 404</p>
+
+      {/* le zéro manquant : même trait pointillé, même couleur que la grille —
+          la page absente est un trou dans la grille du site */}
+      <div
+        class="mt-6 flex items-center font-display text-[clamp(110px,20vw,200px)] leading-none font-extrabold tracking-[-0.04em] text-ink"
+        aria-hidden="true"
+      >
+        <span>4</span>
+        <svg
+          class="mx-[0.05em] h-[0.72em] w-[0.56em]"
+          viewBox="0 0 100 130"
+          fill="none"
+          style="color: var(--line-strong);"
+        >
+          <ellipse
+            cx="50"
+            cy="65"
+            rx="44"
+            ry="59"
+            stroke="currentColor"
+            stroke-width="5"
+            stroke-dasharray="7 9"
+            stroke-linecap="round"></ellipse>
+        </svg>
+        <span>4</span>
+      </div>
+
+      <h1 class="mt-6 text-[clamp(30px,3.6vw,48px)]">Page introuvable.</h1>
+      <p class="mx-auto mt-5 max-w-prose text-xl font-medium">
+        Cette page a déménagé, changé de nom, ou n'a jamais existé. Le reste du
+        site fonctionne, promis.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <a class="btn btn-lg" href="/">Retour à l'accueil</a>
+        <a class="btn btn-outline btn-lg" href="/tools">Voir la boîte à outils</a>
+      </div>
+
+      <p class="mt-14 font-mono text-[13px] text-mute">
+        GET <span id="req-path" class="text-ink">/…</span>
+        <span class="mx-1 text-line-strong">→</span>
+        <span class="font-semibold text-error">404 not found</span>
+      </p>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  const el = document.getElementById("req-path");
+  if (el) el.textContent = window.location.pathname;
+</script>
