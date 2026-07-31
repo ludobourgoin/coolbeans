@@ -56,8 +56,6 @@ if (glob) {
     'le survol doit éclaircir, pas inverser');
   check('bordure de bouton en box-shadow',
     /\.btn\s*\{[^}]*border:\s*0/.test(glob) && /box-shadow:\s*0 0 0 1px var\(--btn-ring\)/.test(glob));
-  check('tailles de bouton 32/36/40',
-    /height:\s*32px/.test(glob) && /height:\s*36px/.test(glob) && /height:\s*40px/.test(glob));
   /* la portée compte : `font-size: 16px` apparaît aussi dans h5 et .btn-lg,
      et `150ms ease-in-out` apparaît aussi dans .field et .link. On teste
      les règles body{} et .btn{} précisément, pas le fichier entier. */
@@ -70,6 +68,17 @@ if (glob) {
   check('corps en weight 400', /font-weight:\s*400/.test(bodyRule));
   const btnRule = rule(glob, '\\.btn');
   check('transition Geist 150ms sur .btn', /transition:[^;]*150ms ease-in-out/.test(btnRule));
+  /* même piège que body{} plus haut : `height: 40px` apparaît aussi dans
+     .field, donc un test non ancré sur le fichier entier resterait vert
+     même si .btn-lg régressait vers n'importe quelle autre valeur. On lit
+     .btn, .btn-sm et .btn-lg précisément via rule(), pas le fichier entier. */
+  const btnSmRule = rule(glob, '\\.btn-sm');
+  const btnLgRule = rule(glob, '\\.btn-lg');
+  check(
+    'tailles de bouton 32/36/40',
+    /height:\s*36px/.test(btnRule) && /height:\s*32px/.test(btnSmRule) && /height:\s*40px/.test(btnLgRule),
+    'attendu .btn=36px, .btn-sm=32px, .btn-lg=40px',
+  );
   /* l'exigence réelle n'est pas que la chaîne "geomanist-book"/"geomanist-medium"
      soit absente du fichier (un commentaire peut légitimement documenter ce qui
      a été retiré et pourquoi) — c'est qu'aucun @font-face ne charge plus ces
@@ -184,10 +193,17 @@ if (glob && geist) {
 }
 
 /* ── F · blocs <style> limités aux exceptions ──────────────────── */
-/* Exceptions à la convention CSS, chacune justifiée :
-   Flow          — timeline GSAP
-   LogoMarquee   — @keyframes de défilement */
-const ALLOWED = ['src/components/Flow.astro', 'src/components/LogoMarquee.astro'];
+/* Exception à la convention CSS, justifiée :
+   Flow — ~270 lignes de CSS écrit à la main que les utilitaires Tailwind ne
+   couvrent pas : un canvas à coordonnées fixes (positionnement absolu par
+   px, recalé en JS au resize), des @keyframes (wire-flow, core-pulse), des
+   tooltips en attr(data-tip)::after, et des surcharges :global(.dark) pour
+   les boîtes qui doivent rester claires en sombre (logos partenaires
+   lisibles). Pas de timeline GSAP ici — GSAP anime le sélecteur de mots du
+   hero, dans src/pages/index.astro (script inline, pas de <style>).
+   LogoMarquee n'a plus de <style> : son animation vit dans global.css
+   (--animate-marquee-scroll), comme --animate-proof-marquee. */
+const ALLOWED = ['src/components/Flow.astro'];
 const styled = files.filter(f => f.endsWith('.astro') && (read(f) || '').includes('<style'));
 const illegal = styled.filter(f => !ALLOWED.includes(f.split(path.sep).join('/')));
 check('blocs <style> limités aux exceptions', illegal.length === 0, illegal.join(', '));
@@ -321,6 +337,118 @@ if (designSystemPage && glob) {
 } else {
   check('résolution de la table SEMANTIC', false, 'design-system.astro ou global.css introuvable');
 }
+
+/* ── I · aucune couleur brute dans le markup (class=/style=) ──────
+   Le bug qui a motivé cette section : la plus grosse tuile CTA de la home
+   (src/pages/index.astro, la carte « agence créative ») utilisait
+   `border-white/40` et `text-white/75` — des utilitaires de palette
+   Tailwind qui ne s'inversent jamais avec .dark (--ink devient blanc en
+   sombre : la carte elle-même s'inverse via bg-ink/text-surface, mais ce
+   lien restait sur du blanc littéral → 1.13:1 de contraste mesuré). Rien
+   dans le harnais ne regardait le markup pour de la couleur brute ; cette
+   section comble le trou.
+
+   Portée : class="…", class:list={[…]} et style="…"/style={`…`} dans
+   src/components/ et src/pages/. On flague :
+     - les utilitaires de palette Tailwind (bg-white, text-red-500,
+       border-black…, variantes d'opacité /NN comprises — mais pas
+       transparent/current/inherit, qui ne sont pas des couleurs figées) ;
+     - les hex/rgb()/rgba()/hsl()/hsla() littéraux, mais seulement quand ils
+       fixent une propriété de couleur visible de premier plan/fond/bordure
+       (color, background[-color], border[-color], fill, stroke,
+       outline-color, text-decoration-color) — en style="" comme dans un
+       utilitaire arbitraire (bg-[#fff], [color:#fff]…).
+   Volontairement hors-scope : mask-image (le hex n'y sert que de canal
+   alpha — technique déjà utilisée ailleurs dans le projet, ex. les
+   marquees) et box-shadow/drop-shadow (couleur d'élévation, jamais de
+   texte ni de fond). Ni l'un ni l'autre n'est le bug que cette section
+   existe pour attraper, et les flaguer aurait noyé le signal réel sous du
+   bruit sans rapport avec l'inversion dark mode. */
+const MARKUP_COLOR_ALLOW = [
+  {
+    file: 'src/components/Browser.astro',
+    reason: 'les trois pastilles macOS (#FE5F57 rouge, #FEBB2E jaune, #26C941 vert) sont de ' +
+      'la couleur par décision de spec : trois points gris cesseraient de se lire comme un navigateur.',
+  },
+];
+
+const MC_PREFIXES = 'bg|text|border|ring|fill|stroke|decoration|outline|accent|caret|divide|from|via|to';
+const MC_PALETTE = 'slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|white|black';
+const MC_UTILITY_RE = new RegExp('(?:^|[^\\w-])(?:' + MC_PREFIXES + ')-(?:' + MC_PALETTE + ')(?:-[0-9]{2,3})?(?:/[0-9]{1,3})?\\b', 'g');
+const MC_COLOR_PROPS = ['color', 'background', 'background-color', 'border', 'border-color', 'fill', 'stroke', 'outline-color', 'text-decoration-color'];
+const MC_HEX_RE = /#[0-9a-fA-F]{3,8}\b/;
+const MC_FUNC_RE = /\b(?:rgb|rgba|hsl|hsla)\(/;
+
+const stripStyleTags = src => src.replace(/<style[\s\S]*?<\/style>/g, '');
+
+function findMarkupColorHits(src) {
+  const hits = [];
+  const body = stripStyleTags(src);
+
+  const classChunks = [];
+  for (const m of body.matchAll(/\bclass="([^"]*)"/g)) classChunks.push(m[1]);
+  for (const m of body.matchAll(/\bclass:list=\{/g)) {
+    let depth = 1, i = m.index + m[0].length;
+    const start = i;
+    while (i < body.length && depth > 0) {
+      if (body[i] === '{') depth++;
+      else if (body[i] === '}') depth--;
+      i++;
+    }
+    classChunks.push(body.slice(start, i - 1));
+  }
+  for (const chunk of classChunks) {
+    for (const hit of chunk.matchAll(MC_UTILITY_RE))
+      hits.push('utilitaire de palette « ' + hit[0].trim() + ' »');
+    for (const br of chunk.matchAll(/(?:([a-zA-Z-]+)-)?\[([^\]]+)\]/g)) {
+      const prefix = br[1];
+      const inner = br[2];
+      const isColorPrefixed = !!prefix && new RegExp('^(?:' + MC_PREFIXES + ')$').test(prefix);
+      const propMatch = inner.match(/^([a-zA-Z-]+)\s*:/);
+      const isColorProp = !!propMatch && MC_COLOR_PROPS.includes(propMatch[1].toLowerCase());
+      if (isColorPrefixed || isColorProp) {
+        if (MC_HEX_RE.test(inner)) hits.push('hex brut dans un utilitaire arbitraire « ' + br[0] + ' »');
+        if (MC_FUNC_RE.test(inner)) hits.push('rgb()/hsl() brut dans un utilitaire arbitraire « ' + br[0] + ' »');
+      }
+    }
+  }
+
+  const styleChunks = [];
+  for (const m of body.matchAll(/\bstyle="([^"]*)"/g)) styleChunks.push(m[1]);
+  for (const m of body.matchAll(/\bstyle=\{`([^`]*)`\}/g)) styleChunks.push(m[1]);
+  for (const chunk of styleChunks) {
+    for (const decl of chunk.split(';')) {
+      const dm = decl.match(/^\s*([a-zA-Z-]+)\s*:\s*(.+)$/);
+      if (!dm) continue;
+      const prop = dm[1].toLowerCase();
+      const val = dm[2];
+      if (!MC_COLOR_PROPS.includes(prop)) continue;
+      if (MC_HEX_RE.test(val)) hits.push('hex brut sur `' + prop + '` en style inline (« ' + val.trim() + ' »)');
+      if (MC_FUNC_RE.test(val)) hits.push('rgb()/hsl() brut sur `' + prop + '` en style inline (« ' + val.trim() + ' »)');
+    }
+  }
+  return hits;
+}
+
+const MARKUP_TARGETS = files.filter(f => {
+  const norm = f.split(path.sep).join('/');
+  return norm.endsWith('.astro') && (norm.startsWith('src/components/') || norm.startsWith('src/pages/'));
+});
+const mcAllowedFiles = new Set(MARKUP_COLOR_ALLOW.map(e => e.file));
+const markupColorFailures = [];
+for (const f of MARKUP_TARGETS) {
+  const norm = f.split(path.sep).join('/');
+  if (mcAllowedFiles.has(norm)) continue;
+  const hits = findMarkupColorHits(read(f) || '');
+  if (hits.length) markupColorFailures.push(norm + ' → ' + hits.join(' ; '));
+}
+check(
+  'aucune couleur brute dans class=/style= (src/components, src/pages)',
+  markupColorFailures.length === 0,
+  markupColorFailures.join(' | '),
+);
+for (const entry of MARKUP_COLOR_ALLOW)
+  check('exception couleur brute justifiée : ' + entry.file, !!entry.reason && entry.reason.length > 20);
 
 /* ── sortie ────────────────────────────────────────────────────── */
 console.log(ok.map(s => '  ok    ' + s).join('\n'));

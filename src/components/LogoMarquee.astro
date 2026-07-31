@@ -15,17 +15,19 @@ const loop = [...logos, ...logos];
 <div
   class="overflow-hidden"
   style="-webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);"
-  aria-hidden="true"
 >
   <ul
     class:list={[
-      "marquee-track flex w-max list-none items-center gap-15 px-7.5 py-0 whitespace-nowrap motion-reduce:w-full motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:whitespace-normal",
+      "flex w-max list-none items-center gap-15 px-7.5 py-0 whitespace-nowrap animate-marquee-scroll motion-reduce:w-full motion-reduce:animate-none motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:whitespace-normal",
       reverse && "[animation-direction:reverse] [animation-duration:66s]",
     ]}
   >
     {
-      loop.map((l) => (
-        <li class="inline-flex flex-none items-center gap-2.75">
+      loop.map((l, i) => (
+        <li
+          class="inline-flex flex-none items-center gap-2.75"
+          aria-hidden={i >= logos.length ? "true" : undefined}
+        >
           {/* `mono` et pas `invert` : Tailwind expose une utilitaire `.invert` globale
               qui s'appliquerait aussi en clair et blanchirait le picto. */}
           <img
@@ -45,22 +47,3 @@ const loop = [...logos, ...logos];
     }
   </ul>
 </div>
-
-<style>
-  .marquee-track {
-    animation: marquee-scroll 58s linear infinite;
-  }
-  @keyframes marquee-scroll {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .marquee-track {
-      animation: none;
-    }
-  }
-</style>

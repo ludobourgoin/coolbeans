@@ -128,10 +128,6 @@
   --color-warning: var(--warning);
   --color-error: var(--error);
 
-  /* vignette toujours claire : les favicons des logos partenaires sont des
-     marques encre sur fond transparent, invisibles sur surface sombre. */
-  --color-tile: #fbfaf7;
-
   --font-sans: "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: "Geomanist", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -152,16 +148,35 @@
   --spacing-32x: 128px;
 }
 
+/* --color-tile est un hex figé, pas un var(--surface)-like qui doit suivre
+   .dark : il n'a donc pas besoin d'« inline ». Un @theme normal l'expose
+   aussi comme vraie custom property sur :root, donc consommable en
+   var(--color-tile) hors utilitaire Tailwind — nécessaire pour
+   src/components/Flow.astro, qui a son propre <style> et référence le
+   token directement plutôt que via une classe bg-tile. */
+@theme {
+  /* vignette toujours claire : les favicons des logos partenaires sont des
+     marques encre sur fond transparent, invisibles sur surface sombre. */
+  --color-tile: #fbfaf7;
+}
+
 /* ----------------------------------------------------------------------------
    ANIMATIONS PARTAGÉES
-   @keyframes ne peut pas s'exprimer en utilitaire seul, et index.astro n'est
-   pas sur la liste blanche des <style> (voir scripts/verify-design-system.js
-   §F : Flow et LogoMarquee sont les deux seules exceptions actées). La home
-   Tailwind v4 pour une primitive d'animation partagée sans <style> de
-   composant est @theme + --animate-* : https://tailwindcss.com/docs/theme
+   @keyframes ne peut pas s'exprimer en utilitaire seul, et ni index.astro ni
+   LogoMarquee ne sont sur la liste blanche des <style> (voir
+   scripts/verify-design-system.js §F : Flow est la seule exception actée).
+   La voie Tailwind v4 pour une primitive d'animation partagée sans <style>
+   de composant est @theme + --animate-* : https://tailwindcss.com/docs/theme
+
+   proof-marquee sert deux vitesses : la marquee de noms clients de la home
+   (50s) et le marquee de logos partenaires de LogoMarquee.astro (58s, via
+   --animate-marquee-scroll). Même trajectoire (translateX 0 → -50%, la
+   liste étant dupliquée en amont pour une boucle sans couture) : un seul
+   @keyframes, deux tokens --animate-* qui ne varient que par la durée.
    -------------------------------------------------------------------------- */
 @theme {
   --animate-proof-marquee: proof-marquee 50s linear infinite;
+  --animate-marquee-scroll: proof-marquee 58s linear infinite;
 
   @keyframes proof-marquee {
     from {

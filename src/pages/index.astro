@@ -102,13 +102,12 @@ const caseColSpan = (span: string) =>
   <!-- PROOF · noms clients (marquee animé) -->
   <section class="group overflow-hidden border-b border-line bg-surface py-12">
     <div class="container-site mb-6 flex flex-wrap items-baseline justify-between gap-4">
-      <h3 class="text-lg">ils m'ont fait confiance</h3>
+      <h2 class="font-sans font-semibold tracking-[-0.02em] text-lg">ils m'ont fait confiance</h2>
       <span class="label">40+ projets · 2018 → 2026</span>
     </div>
     <div
       class="overflow-hidden"
       style="mask-image: linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent); -webkit-mask-image: linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);"
-      aria-hidden="true"
     >
       <div
         class="flex w-max animate-proof-marquee items-center gap-20 whitespace-nowrap group-hover:[animation-play-state:paused] motion-reduce:animate-none"
@@ -122,7 +121,10 @@ const caseColSpan = (span: string) =>
         }
         {
           clients.map((c) => (
-            <span class="font-display text-[40px] font-bold tracking-[-0.03em] text-ink lowercase">
+            <span
+              class="font-display text-[40px] font-bold tracking-[-0.03em] text-ink lowercase"
+              aria-hidden="true"
+            >
               {c}
             </span>
           ))
@@ -155,13 +157,13 @@ const caseColSpan = (span: string) =>
               x2="11"
               y2="11"></line><line x1="7" y1="15" x2="11" y2="15"></line></svg
           >
-          <h5 class="mt-6 text-[30px] leading-[1.08] lowercase">agence créative</h5>
+          <h3 class="mt-6 text-[30px] leading-[1.08] lowercase">agence créative</h3>
           <p class="mt-2.5 max-w-[34ch] text-base opacity-82">
             vous concevez, j'exécute. sous votre marque, en marque blanche, je suis comme une
             extension de votre équipe.
           </p>
           <a
-            class="link mt-auto self-start border-white/40 pt-5.5 text-sm text-white/75 hover:border-surface hover:text-surface"
+            class="link mt-auto self-start border-surface/40 pt-5.5 text-sm text-surface/75 hover:border-surface hover:text-surface"
             href="/about">en savoir plus →</a
           >
         </article>
@@ -175,7 +177,7 @@ const caseColSpan = (span: string) =>
             ><path d="M12 20h9"></path><path
               d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path></svg
           >
-          <h5 class="mt-5 text-[21px] leading-[1.08] lowercase">directeur·rice artistique</h5>
+          <h3 class="mt-5 text-[21px] leading-[1.08] lowercase">directeur·rice artistique</h3>
           <p class="mt-2.5 text-[15px] font-medium text-pretty">
             votre design livré exactement comme pensé, au pixel près.
           </p>
@@ -189,7 +191,7 @@ const caseColSpan = (span: string) =>
             ><polyline points="3 17 9 11 13 15 21 7"></polyline><polyline points="21 12 21 7 16 7"
             ></polyline></svg
           >
-          <h5 class="mt-5 text-[21px] leading-[1.08] lowercase">pme ou scale up</h5>
+          <h3 class="mt-5 text-[21px] leading-[1.08] lowercase">pme ou scale up</h3>
           <p class="mt-2.5 text-[15px] font-medium text-pretty">
             votre site est un canal d'acquisition. traitons-le comme tel.
           </p>
@@ -203,7 +205,7 @@ const caseColSpan = (span: string) =>
             ><path d="M3 9h18l-1.4-5H4.4L3 9z"></path><path d="M5 9v11h14V9"></path><path
               d="M9 20v-6h6v6"></path></svg
           >
-          <h5 class="mt-5 text-[21px] leading-[1.08] lowercase">tpe ou solopreneur</h5>
+          <h3 class="mt-5 text-[21px] leading-[1.08] lowercase">tpe ou solopreneur</h3>
           <p class="mt-2.5 text-[15px] font-medium text-pretty">
             votre présence en ligne pro, livrée vite, prix fixe, zéro souci.
           </p>
@@ -219,9 +221,9 @@ const caseColSpan = (span: string) =>
             ><path d="M12 20s-7-4.5-9-9a4 4 0 0 1 9-2 4 4 0 0 1 9 2c-2 4.5-9 9-9 9z"></path></svg
           >
           <div class="min-w-0 [flex:1_1_340px]">
-            <h5 class="text-[19px] leading-[1.08] lowercase">
+            <h3 class="text-[19px] leading-[1.08] lowercase">
               coopérative, association, intérêt général ?
-            </h5>
+            </h3>
             <p class="mt-2 max-w-[74ch] text-[15px] font-medium text-pretty">
               je mets mes compétences au service de l'économie sociale et solidaire : offres et
               tarifs adaptés pour les coopératives, les associations et les structures reconnues
@@ -248,7 +250,7 @@ const caseColSpan = (span: string) =>
               <Browser url={c.url} shot={c.shot} alt={c.title} label={c.tag} />
               <div class="mt-4">
                 <span class="label mb-1.5 block">{c.num}</span>
-                <h4 class="text-[17px] leading-tight">{c.title}</h4>
+                <h3 class="text-[17px] leading-tight">{c.title}</h3>
                 <a class="link mt-2 inline-block text-sm" href="#">
                   lire l'étude →
                 </a>
@@ -309,7 +311,7 @@ const caseColSpan = (span: string) =>
                 <div class="font-display text-[72px] leading-[0.9] font-bold tracking-[-0.04em]">
                   {s.n}
                 </div>
-                <h5 class="mt-3 text-xl leading-[1.15] tracking-[-0.01em]">{s.title}</h5>
+                <h3 class="mt-3 text-xl leading-[1.15] tracking-[-0.01em]">{s.title}</h3>
                 <p class="mt-2 max-w-[32ch] text-sm font-medium text-mute">{s.text}</p>
               </div>
               {i < steps.length - 1 && (

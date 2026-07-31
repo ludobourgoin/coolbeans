@@ -167,15 +167,15 @@ const deliverables = [
   }
   /* dark : les boîtes restent claires (logos lisibles), comme le wireframe */
   :global(.dark) .fbox {
-    background: #f1efe9;
-    border-color: #141414;
+    background: var(--color-tile);
+    border-color: var(--ds-gray-1000);
   }
   :global(.dark) .fbox .bl {
-    color: #141414;
-    border-bottom-color: #141414;
+    color: var(--ds-gray-1000);
+    border-bottom-color: var(--ds-gray-1000);
   }
   :global(.dark) .fbox .ic {
-    border-right-color: #141414;
+    border-right-color: var(--ds-gray-1000);
   }
   /* tooltip */
   .fbox .ic[data-tip]::after {
@@ -313,9 +313,6 @@ const deliverables = [
     text-transform: lowercase;
     line-height: 1.1;
     white-space: nowrap;
-  }
-  :global(.dark) .fpill {
-    background: #16140e;
   }
   .fpill svg {
     width: 17px;
