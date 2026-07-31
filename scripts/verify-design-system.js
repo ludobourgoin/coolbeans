@@ -56,10 +56,20 @@ if (glob) {
     'le survol doit éclaircir, pas inverser');
   check('bordure de bouton en box-shadow',
     /\.btn\s*\{[^}]*border:\s*0/.test(glob) && /box-shadow:\s*0 0 0 1px var\(--btn-ring\)/.test(glob));
-  check('transition Geist 150ms', glob.includes('150ms ease-in-out'));
   check('tailles de bouton 32/36/40',
     /height:\s*32px/.test(glob) && /height:\s*36px/.test(glob) && /height:\s*40px/.test(glob));
-  check('corps à 16px', /font-size:\s*16px/.test(glob));
+  /* la portée compte : `font-size: 16px` apparaît aussi dans h5 et .btn-lg,
+     et `150ms ease-in-out` apparaît aussi dans .field et .link. On teste
+     les règles body{} et .btn{} précisément, pas le fichier entier. */
+  const rule = (css, selector) => {
+    const m = css.match(new RegExp('(^|\\})\\s*' + selector + '\\s*\\{([^}]*)\\}', 'm'));
+    return m ? m[2] : '';
+  };
+  const bodyRule = rule(glob, 'body');
+  check('corps à 16px', /font-size:\s*16px/.test(bodyRule), 'règle body{} introuvable ou taille différente');
+  check('corps en weight 400', /font-weight:\s*400/.test(bodyRule));
+  const btnRule = rule(glob, '\\.btn');
+  check('transition Geist 150ms sur .btn', /transition:[^;]*150ms ease-in-out/.test(btnRule));
   /* l'exigence réelle n'est pas que la chaîne "geomanist-book"/"geomanist-medium"
      soit absente du fichier (un commentaire peut légitimement documenter ce qui
      a été retiré et pourquoi) — c'est qu'aucun @font-face ne charge plus ces

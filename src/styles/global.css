@@ -8,6 +8,11 @@
    ========================================================================== */
 
 @import "tailwindcss";
+/* La détection automatique de sources de Tailwind scanne aussi docs/, où les
+   noms de classes sont cités en prose. Sans cette exclusion, chaque classe
+   mentionnée dans la spec ou le plan est compilée en règle morte. */
+@source not "../../docs";
+@source not "../../_doc-standard";
 @import "./geist-tokens.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
