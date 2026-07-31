@@ -1,0 +1,795 @@
+---
+project: "amusoire"
+title: "Simulateur ROI"
+order: 4
+status: "final"
+updated: 2026-07-31
+description: "Doc technique complète du simulateur : calculs, pipeline Make + Resend, mail, bundle JS."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+Page `/pro/simulateur` · Portail **AMUSOIRE `25692189`** · Source : `PASSATION.md` (repo `ludobourgoin/amusoire`).
+
+Le prospect simule le CA additionnel généré par les jeux Amusoire dans son établissement. À la soumission : création du contact HubSpot + mail récap personnalisé via Resend.
+
+## Flow & stack
+
+```text
+Étape 1 — Secteur d'activité (radios)
+Étape 2 — Modes d'utilisation (1 à 3 checkboxes) : RDV récurrents · Espace privatif · Team Building
+Étape 3 — Saisie des données (blocs conditionnels selon l'étape 2)
+Étape 4 — ROI calculé (CA brut, coût licence, gain net)
+Étape 5 — Contact + submit → Webhook Make → HubSpot + Resend
+```
+
+| Couche | Outil | Rôle |
+| --- | --- | --- |
+| Design / DOM | Webflow | Structure HTML, classes, styles |
+| Multi-step form | Inputflow | Navigation entre étapes, transitions |
+| Logique custom | Bundle TS (repo `amusoire`) | Validation, affichage conditionnel, calcul ROI, hidden fields |
+| Bundler | esbuild | Build → `dist/index.js` + `dist/index.css` |
+| Orchestration | Make | Réception du form, dispatch HubSpot + Resend |
+| CRM | HubSpot `25692189` | Contact / company / form submission |
+| Email | Resend (`send.amusoire.com`) | Mail récapitulatif |
+
+<Callout type="note" title="Note — pourquoi Resend">
+  Le mail prospect passe par Resend, pas par HubSpot : l'add-on Transactional Email HubSpot coûte ~600 $/mois. Resend : délivrabilité équivalente, quota gratuit 3 000 mails/mois (100/jour), découplé du CRM.
+</Callout>
+
+## Calculs & coefficients
+
+Deux niveaux de modification :
+
+- **Coefficients business** : sans code, via Custom Attributes Webflow (ci-dessous).
+- **Formules** : dans `src/utils/calculator.ts`, puis `pnpm build` et re-collage du bundle (voir Bundle JS).
+
+Attributs posés sur `.simulator_form-wrapper` (Designer → Settings → Custom Attributes) :
+
+| Attribut | Défaut | Description |
+| --- | --- | --- |
+| `data-rdv-rate` | `0.3` | Taux de majoration F&B pour les RDV (30 %) |
+| `data-privatif-ratio` | `1.5` | m² nécessaires par joueur (privatif) |
+| `data-rdv-monthly-licence` | `159` | Coût mensuel licence RDV (€) |
+| `data-privatif-monthly-licence` | `279` | Coût mensuel licence Privatif (€) |
+
+| Bloc | Formule CA annuel | Palier licence mensuel |
+| --- | --- | --- |
+| RDV | `#rdv-ca × rdv-rate × 52` | 159 € |
+| Privatif | `(#input-surface ÷ privatif-ratio) × #input-prix-joueur × #input-jours × 52` | 279 € (BUSINESS) |
+| Team Building | `#input-personnes × #input-prix-joueur-team-b × #input-frequence × 12` | gratuit (0) |
+
+<Callout type="piege" title="Piège — palier max, pas la somme">
+  **Coût licence annuel = `max(paliers cochés) × 12`**. Plusieurs objectifs cochés = une seule licence, la plus élevée. Ex : RDV + Privatif → `max(159, 279) × 12 = 3 348 €`, et non `(159 + 279) × 12`.
+</Callout>
+
+**Gain net annuel** = CA total − coût licence. <span class="todo">À faire (reporté)</span> : mention « tarif valable pour un engagement 24 mois » (confirmée le 2026-07-24), non implémentée.
+
+**Recalcul** : au chargement, à chaque input/checkbox, au clic « Étape suivante » (délai 100 ms pour Inputflow), et quand le step ROI devient visible (`MutationObserver`) : les hidden inputs sont à jour au submit.
+
+## Hidden inputs
+
+11 inputs cachés du formulaire final, tous remplis par `calculator.ts` (Webflow strippe les `value` statiques au publish).
+
+| Name (clé Make) | Contenu |
+| --- | --- |
+| `form_type` | `simulateur` (constant — filtre de la route mail) |
+| `ca_rdv` · `ca_privatif` · `ca_team_building` | CA additionnel annuel par levier (€) |
+| `ca_total` · `cout_licence` · `gain_net` | Totaux (€) |
+| `flag_rdv` · `flag_privatif` · `flag_team_building` | `"true"` / `""` — levier sélectionné |
+| `flag_tout_coche` | non utilisé côté Make (logique `&` des 3 flags dans le module 52) ; injecté pour usage futur |
+
+<Callout type="piege" title="Piège — jamais « false »">
+  Make évalue toute chaîne non vide comme truthy dans `{{if(...)}}` : `"false"` passerait la condition à vrai. Non coché = **chaîne vide**, la seule valeur falsy fiable.
+</Callout>
+
+<Callout type="warn">
+  **`required` à retirer côté Webflow** sur tous les hidden inputs et la checkbox RGPD : un champ requis invisible bloque la soumission sans erreur visible. La validation RGPD est faite en JS (`validation.ts`).
+</Callout>
+
+## DOM Webflow — référence
+
+| Élément | Sélecteur · note |
+| --- | --- |
+| Formulaire | `#formulaire-simulateur` — si renommé, mettre à jour `validation.ts:77` |
+| Étapes / navigation | `.simulator_step` · `[if-element="button-next"]` · `[if-step="ROI"]` · `.progress_item` (Inputflow) |
+| Checkboxes étape 2 | `secteur-activite` · `utilisation-rdv` · `utilisation-privatif` · `utilisation-team-building` |
+| Inputs étape 3 | `#rdv-ca` · `#input-surface` · `#input-prix-joueur` · `#input-jours` · `#input-personnes` · `#input-prix-joueur-team-b` · `#input-frequence` |
+| Blocs conditionnels | `.block-rdv` · `.block-privatif` · `.block-team-building` |
+| Outputs étape 4 | `#result-ca-brut` · `#result-cout-licence` · `#result-benefice-net` (format FR) |
+| RGPD | `#RGPD` (input cachée) + wrapper `.form_checkbox` (classe `is-error` si submit sans coche) |
+
+<Callout type="warn">
+  Le bouton de soumission doit être un **Submit Button Webflow natif** (`<input type="submit">`). Un Link Block / Button (rendus `<a>`) ne déclenche pas le submit.
+</Callout>
+
+## Pipeline Make + Resend
+
+```text
+Webhook (id 3) → Router 12
+  ├─ Route 1 : Flux Amusoire   (account_target = "amusoire") → HubSpot CRM
+  ├─ Route 2 : Flux Blindtest  (account_target = "blindtest")
+  └─ Route 3 : Mail simulateur (account_target = "amusoire" AND form_type = "simulateur")
+      ├─ SetVariables "chunks" (id 51)              — 7 chunks HTML en variables
+      ├─ SetVariables "blocs conditionnels" (id 52) — 7 if(truthiness) + cta_url
+      └─ Resend "Send an Email" (id 47)             — squelette avec {{52.bloc_*}} et {{52.cta_url}}
+```
+
+<Callout type="danger" title="Danger — filtre de la route 3">
+  Colonne A = la **variable Make** (`{{3.payload.data.account_target}}`), colonne B = la **string littérale**. L'inverse (texte brut en colonne A) rend le filtre toujours faux → aucun mail. Le double filtre est indispensable : sans `form_type = simulateur`, un mail partirait pour **toutes** les soumissions Amusoire.
+</Callout>
+
+Module 51 « chunks » *(scope roundtrip)* — coller chaque fichier dans sa variable :
+
+| Variable Make | Source repo |
+| --- | --- |
+| `chunk_rdv` · `chunk_privatif` · `chunk_team_building` | `email/chunks/rdv.html` · `privatif.html` · `team-building.html` |
+| `chunk_allez_plus_loin_header` | `email/chunks/allez-plus-loin-header.html` |
+| `chunk_not_rdv` · `chunk_not_privatif` · `chunk_not_team_building` | `email/chunks/not-*.html` |
+
+Module 52 « blocs conditionnels » — 7 expressions IML (truthiness sur les flags, chaîne vide = falsy) :
+
+```text
+bloc_rdv               {{if(3.payload.data.flag_rdv; 51.chunk_rdv; )}}
+bloc_privatif          {{if(3.payload.data.flag_privatif; 51.chunk_privatif; )}}
+bloc_team_building     {{if(3.payload.data.flag_team_building; 51.chunk_team_building; )}}
+bloc_not_rdv           {{if(3.payload.data.flag_rdv; ; 51.chunk_not_rdv)}}
+bloc_not_privatif      {{if(3.payload.data.flag_privatif; ; 51.chunk_not_privatif)}}
+bloc_not_team_building {{if(3.payload.data.flag_team_building; ; 51.chunk_not_team_building)}}
+bloc_allez_plus_loin   {{if(3.payload.data.flag_rdv & 3.payload.data.flag_privatif
+                          & 3.payload.data.flag_team_building; ; 51.chunk_allez_plus_loin_header)}}
+```
+
+Module Resend 47 : connection `Resend Amusoire` · from `Amusoire <noreply@send.amusoire.com>` · to `{{3.payload.data.email}}` · objet « Vos revenus additionnels avec l'offre Amusoire » · body HTML = `email/template-resend-body.html`. **3 ops Make par mail.**
+
+<Callout type="warn">
+  Avant collage du squelette dans le module 47 : remplacer toutes les occurrences `{{N.` par `{{52.` (rappel en tête du fichier).
+</Callout>
+
+## CTA dynamique du mail
+
+Le bouton CTA pointe vers l'un de 4 calendriers HubSpot Meetings selon le couple **(département, secteur)** : variable `cta_url` calculée dans le module 52 depuis `zip` et `secteur-activite`.
+
+| Critère | Calendrier |
+| --- | --- |
+| Département 75, tout secteur | `…/thisisblindtest/rdv-demo` |
+| Hors 75 — Bar/Restaurant ou Hôtel | `…/noemie-boiton/rdvdemo` |
+| Hors 75 — Camping/Club ou Loisirs | `…/maxime-costeau/reserver-demo` |
+| Hors 75 — Autre (fallback) | `…/noemie-boiton/rdv-demo` |
+
+```text
+{{if(substring(3.payload.data.zip + ""; 0; 2) = "75";
+  "https://pro.thisisblindtest.com/meetings/thisisblindtest/rdv-demo";
+  if(get(3.payload.data; "secteur-activite") = "bar-restau" | get(3.payload.data; "secteur-activite") = "hotel";
+    "https://pro.thisisblindtest.com/meetings/noemie-boiton/rdvdemo";
+    if(get(3.payload.data; "secteur-activite") = "camping" | get(3.payload.data; "secteur-activite") = "loisirs";
+      "https://pro.thisisblindtest.com/meetings/maxime-costeau/reserver-demo";
+      "https://pro.thisisblindtest.com/meetings/noemie-boiton/rdv-demo")))}}
+```
+
+- **Slugs ≠ labels** : Webflow envoie le slug (`bar-restau`, `hotel`, `camping`, `loisirs`, `autre`), pas le label affiché.
+- `zip + ""` caste le zip (number) en texte avant `substring` ; `get(…)` est obligatoire car `secteur-activite` contient un tiret (la dot-notation serait lue comme une soustraction).
+- Tester les 4 buckets : History → « Run once » en modifiant le payload (`75010` · `33000 + bar-restau` · `44000 + camping` · `69000 + autre`).
+
+## Mail prospect — édition
+
+<Callout type="note" title="Note — workflow client">
+  Le client ne touche ni à Make ni au repo : toute demande de modif par email à `ludo@trigger.fr` (bloc concerné + phrase actuelle → nouvelle version). Livraison sous **48–72 h ouvrées**. Inclus : copy, coquille, objet/preheader, structure mineure. Sur devis : refonte design, nouveau bloc conditionnel, nouvelle logique.
+</Callout>
+
+```text
+email/template.mjml              ← source éditable (MJML)
+email/template.html              ← compilé, toutes sections visibles (relecture)
+email/chunks/*.html              ← 7 chunks → module SetVariables 51
+email/template-resend-body.html  ← squelette {{N.bloc_*}} → module Resend 47 ({{N. → {{52.)
+```
+
+| Section du mail | Condition |
+| --- | --- |
+| Intro + total gain (`firstname`, `gain_net`) | toujours |
+| Leviers RDV / Privatif / Team B. (`ca_*`) | `flag_*` truthy |
+| « Allez plus loin » + suggestions | flags manquants (inverse) |
+| Bloc accompagnement · CTA + note légale (`cta_url`) | toujours |
+
+<ol class="steps">
+  <li>Éditer <code>email/template.mjml</code>.</li>
+  <li><code>npx mjml email/template.mjml -o email/template.html</code> (preview de relecture).</li>
+  <li>Répercuter dans les fichiers impactés : chunk → <code>email/chunks/*.html</code> ; squelette → <code>template-resend-body.html</code>.</li>
+  <li>Commit + push.</li>
+  <li>Recoller dans Make : chunk → module 51 ; squelette → module 47 (avec <code>{"{{N."}</code> → <code>{"{{52."}</code>).</li>
+</ol>
+
+Le logo du mail est servi depuis le **HubSpot File Manager** du client (pas le repo) : uploader la nouvelle version → coller l'URL dans `template.mjml` → recompiler.
+
+## Bundle JS — intégration Webflow
+
+TypeScript + esbuild (starter Finsweet), pnpm. Sortie : `dist/index.js` (~5 KB) + `dist/index.css` (~2,5 KB). Scripts : `pnpm dev` (watch + localhost:3000) · `pnpm build` · `pnpm check` · `pnpm lint`.
+
+**Inliné directement dans Webflow** (pas de CDN) : le repo est privé (jsDelivr ne sert que le public) et l'inlining déploie immédiatement.
+
+<ol class="steps">
+  <li>Modifier le code dans <code>src/</code> (ex. <code>calculator.ts</code>).</li>
+  <li><code>pnpm build</code>.</li>
+  <li>Webflow → Pages → /pro/simulateur → Settings → Custom Code : <code>dist/index.css</code> dans <code>&lt;style&gt;</code> (head) · <code>dist/index.js</code> dans <code>&lt;script&gt;</code> (before <code>&lt;/body&gt;</code>).</li>
+  <li>Publish (staging d'abord).</li>
+</ol>
+
+<Callout type="warn">
+  **Ne pas retirer** les deux scripts InputFlow du head : ils gèrent `[if-step="ROI"]` et `[if-element="button-next"]` utilisés par le code custom.
+</Callout>
+
+## Vigilance
+
+- `required` sur blocs masqués : géré par `conditionalDisplay.ts` (`dataset.wasRequired`) — ne pas retirer cette logique.
+- Checkbox RGPD : validation JS (`validation.ts`), ne pas réactiver `required` côté Webflow.
+- Coefficients business : toujours passer par les Custom Attributes, pas par le code.
+- Scénario Make : stable — le mail prospect = 3 modules (51/52/47) sur la route 3, pas de scénario séparé. Ne pas réécrire les branches existantes.
+- Flags : strings `"true"`/`""`, jamais `"false"`.
+- CTA : 4 URLs en dur dans la formule du module 52 — à mettre à jour si un calendrier change ou un commercial arrive.
+- API Key Resend : jamais dans le repo (module Make / coffre client).
+- En prod : vérifier que le script est bien inliné, aucune référence `cdn.jsdelivr.net/gh/ludobourgoin/amusoire` (404, repo privé).
+
+## Code de référence
+
+Source complète du bundle (repo `ludobourgoin/amusoire`, dossier `src/`), compilée par esbuild en `dist/index.js` + `dist/index.css` (générés, non reproduits ici).
+
+<details>
+<summary>`src/index.ts` — point d'entrée (init des 4 modules)</summary>
+
+```ts
+import './index.css';
+
+import { setupCalculator } from '$utils/calculator';
+import { setupConditionalDisplay } from '$utils/conditionalDisplay';
+import { setupProgressBarObserver } from '$utils/progressBar';
+import { setupStepValidation } from '$utils/validation';
+
+window.Webflow ||= [];
+window.Webflow.push(() => {
+  console.log('🚀 Le code local est bien connecté à Webflow !');
+  setupProgressBarObserver();
+  setupStepValidation();
+  setupConditionalDisplay();
+  setupCalculator();
+});
+```
+
+</details>
+
+<details>
+<summary>`src/utils/calculator.ts` — calcul ROI + hidden inputs</summary>
+
+```ts
+/**
+ * calculator.ts
+ * Calcule en temps réel l'impact sur le CA, affiche les résultats dans l'écran 4,
+ * et remplit les hidden inputs du formulaire pour le payload Make → Resend (mail prospect).
+ *
+ * Formules CA :
+ *  - RDV       : CA (#rdv-ca) × rdv-rate × 52
+ *  - Privatif  : (Surface (#input-surface) ÷ privatif-ratio) × Prix (#input-prix-joueur) × Jours (#input-jours) × 52
+ *  - Team B.   : Personnes (#input-personnes) × Prix (#input-prix-joueur-team-b) × Fréquence (#input-frequence) × 12
+ *
+ * Coût de licence : palier le plus élevé parmi les objectifs cochés × 12 (PAS la somme).
+ *  - RDV = 159 €/mois · Privatif (BUSINESS) = 279 €/mois · Événementiel = gratuit (0).
+ *  - Ex : RDV + Privatif → max(159, 279) × 12 = 3 348 € (une seule licence BUSINESS).
+ *
+ * Config (Custom Attributes sur .simulator_form-wrapper) :
+ *  - data-rdv-rate              : taux de majoration F&B pour les RDV (défaut : 0.3 → 30%)
+ *  - data-privatif-ratio        : m² nécessaires par joueur (défaut : 1.5)
+ *  - data-rdv-monthly-licence   : coût mensuel licence RDV (défaut : 159 €)
+ *  - data-privatif-monthly-licence : coût mensuel licence Privatif (défaut : 279 €)
+ *
+ * Hidden inputs remplis (cf. PASSATION.md §3) :
+ *  - hidden-ca-rdv, hidden-ca-privatif, hidden-ca-team-building, hidden-ca-total
+ *  - hidden-cout-licence, hidden-gain-net
+ *  - hidden-flag-rdv, hidden-flag-privatif, hidden-flag-team-building, hidden-flag-tout-coche
+ */
+
+/** Formate un nombre en chaîne lisible avec séparateur d'espace (ex: 12 500) */
+const formatNumber = (value: number): string => {
+  return Math.round(value).toLocaleString('fr-FR');
+};
+
+/** Lit la valeur numérique d'un input par son ID. Retourne 0 si l'élément est absent ou vide. */
+const getInputValue = (id: string): number => {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  if (!el) return 0;
+  const parsed = parseFloat(el.value);
+  return isNaN(parsed) ? 0 : parsed;
+};
+
+/** Injecte du texte dans un élément par son ID, sans écraser l'unité (€) adjacente. */
+const setResultText = (id: string, value: number): void => {
+  const el = document.getElementById(id);
+  if (el) el.textContent = formatNumber(value);
+};
+
+/** Écrit une valeur dans un input caché (par ID). Utilisé pour le payload Make/Resend. */
+const setHiddenValue = (id: string, value: string): void => {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  if (el) el.value = value;
+};
+
+/** Retourne true si la checkbox correspondante est cochée */
+const isChecked = (name: string): boolean => {
+  const el = document.querySelector<HTMLInputElement>(`input[name="${name}"]`);
+  return el?.checked ?? false;
+};
+
+export const setupCalculator = (): void => {
+  // --- Lecture de la configuration depuis les Custom Attributes Webflow ---
+  const formWrapper = document.querySelector<HTMLElement>('.simulator_form-wrapper');
+  const rdvRate = parseFloat(formWrapper?.dataset.rdvRate ?? '0.3');
+  const privatifRatio = parseFloat(formWrapper?.dataset.privatifRatio ?? '1.5');
+  const rdvMonthlyLicence = parseFloat(formWrapper?.dataset.rdvMonthlyLicence ?? '159');
+  const privatifMonthlyLicence = parseFloat(formWrapper?.dataset.privatifMonthlyLicence ?? '279');
+
+  // Champ statique : identifie le formulaire pour le routage côté Make (filtre du module Resend).
+  // Webflow strippe les `value` statiques sur les inputs au publish, donc on l'injecte ici.
+  setHiddenValue('hidden-form-type', 'simulateur');
+
+  // --- Fonction de calcul principale ---
+  const calculate = (): void => {
+    let caRdv = 0;
+    let caPrivatif = 0;
+    let caTeamBuilding = 0;
+    let licenceMensuelle = 0;
+
+    const flagRdv = isChecked('utilisation-rdv');
+    const flagPrivatif = isChecked('utilisation-privatif');
+    const flagTeamBuilding = isChecked('utilisation-team-building');
+
+    // Bloc RDV : CA ce soir-là × taux (30%) × 52 semaines
+    if (flagRdv) {
+      const ca = getInputValue('rdv-ca');
+      caRdv = ca * rdvRate * 52;
+      licenceMensuelle = Math.max(licenceMensuelle, rdvMonthlyLicence);
+    }
+
+    // Bloc Privatif : (Surface ÷ ratio) × Prix joueur × Jours × 52 semaines
+    if (flagPrivatif) {
+      const surface = getInputValue('input-surface');
+      const prix = getInputValue('input-prix-joueur');
+      const jours = getInputValue('input-jours');
+      const joueurs = privatifRatio > 0 ? surface / privatifRatio : 0;
+      caPrivatif = joueurs * prix * jours * 52;
+      licenceMensuelle = Math.max(licenceMensuelle, privatifMonthlyLicence);
+    }
+
+    // Bloc Team Building : Personnes × Prix joueur × Fréquence × 12 mois
+    // Offre événementielle : gratuite (palier 0). Ne fait jamais monter la licence.
+    if (flagTeamBuilding) {
+      const personnes = getInputValue('input-personnes');
+      const prix = getInputValue('input-prix-joueur-team-b');
+      const frequence = getInputValue('input-frequence');
+      caTeamBuilding = personnes * prix * frequence * 12;
+    }
+
+    // Licence = palier le plus élevé parmi les objectifs cochés × 12 (PAS la somme).
+    // Un prospect qui coche plusieurs objectifs ne paie qu'une seule licence, la plus chère.
+    const licenceCost = licenceMensuelle * 12;
+
+    const caTotal = caRdv + caPrivatif + caTeamBuilding;
+    const beneficeNet = caTotal - licenceCost;
+    const flagToutCoche = flagRdv && flagPrivatif && flagTeamBuilding;
+
+    // Injection des résultats dans l'écran 4 (affichage formaté)
+    setResultText('result-ca-brut', caTotal);
+    setResultText('result-cout-licence', licenceCost);
+    setResultText('result-benefice-net', beneficeNet);
+
+    // Hidden inputs (payload envoyé à Make → Resend pour le mail prospect).
+    // Valeurs en string brute (entier arrondi, pas de séparateur) : le formatting visuel
+    // est fait côté template mail.
+    const intStr = (n: number) => Math.round(n).toString();
+    setHiddenValue('hidden-ca-rdv', intStr(caRdv));
+    setHiddenValue('hidden-ca-privatif', intStr(caPrivatif));
+    setHiddenValue('hidden-ca-team-building', intStr(caTeamBuilding));
+    setHiddenValue('hidden-ca-total', intStr(caTotal));
+    setHiddenValue('hidden-cout-licence', intStr(licenceCost));
+    setHiddenValue('hidden-gain-net', intStr(beneficeNet));
+    // Levier coché → "true" (truthy en IML Make) → le bloc s'affiche.
+    // Non coché → "" (string vide, seul falsy fiable pour un input HTML qui ne supporte que des strings).
+    // Si on envoyait "false", Make traiterait toute string non vide comme truthy → bug.
+    setHiddenValue('hidden-flag-rdv', flagRdv ? 'true' : '');
+    setHiddenValue('hidden-flag-privatif', flagPrivatif ? 'true' : '');
+    setHiddenValue('hidden-flag-team-building', flagTeamBuilding ? 'true' : '');
+    setHiddenValue('hidden-flag-tout-coche', flagToutCoche ? 'true' : '');
+  };
+
+  // --- Attache les écouteurs sur tous les champs de l'écran 3 ---
+  const inputIds = [
+    'rdv-ca',
+    'input-surface',
+    'input-prix-joueur',
+    'input-jours',
+    'input-personnes',
+    'input-prix-joueur-team-b',
+    'input-frequence',
+  ];
+
+  inputIds.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', calculate);
+  });
+
+  // Recalcule aussi si les checkboxes de l'écran 2 changent
+  ['utilisation-rdv', 'utilisation-privatif', 'utilisation-team-building'].forEach((name) => {
+    const el = document.querySelector<HTMLInputElement>(`input[name="${name}"]`);
+    if (el) el.addEventListener('change', calculate);
+  });
+
+  // --- Recalcule à chaque clic sur "Étape suivante" ---
+  // Inputflow met un court délai pour animer la transition.
+  // On laisse 100ms pour qu'il finisse d'afficher le nouveau step.
+  document.querySelectorAll('[if-element="button-next"]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      setTimeout(calculate, 100);
+    });
+  });
+
+  // --- Observer la visibilité du step ROI ---
+  // Si Inputflow réinitialise visuellement le step lors de la navigation,
+  // on intercepte ce changement et on re-injecte les valeurs calculées.
+  const roiStep = document.querySelector('[if-step="ROI"]');
+  if (roiStep) {
+    const observer = new MutationObserver(() => {
+      calculate();
+    });
+    observer.observe(roiStep, { attributes: true, attributeFilter: ['style', 'class'] });
+  }
+
+  // Calcul initial au chargement (pour afficher les valeurs par défaut des sliders)
+  calculate();
+};
+```
+
+</details>
+
+<details>
+<summary>`src/utils/validation.ts` — validation des étapes + RGPD</summary>
+
+```ts
+export const setupStepValidation = () => {
+  const steps = document.querySelectorAll<HTMLElement>('.simulator_step');
+  if (steps.length < 2) return;
+
+  const step1 = steps[0];
+  const step2 = steps[1];
+
+  const updateButtonState = (button: HTMLElement | null, isValid: boolean) => {
+    if (!button) return;
+    if (isValid) {
+      button.style.opacity = '1';
+      button.style.cursor = 'pointer';
+    } else {
+      button.style.opacity = '0.5';
+      button.style.cursor = 'not-allowed';
+    }
+  };
+
+  // ===============================
+  // VALIDATION DE L'ÉTAPE 1 (Radios)
+  // ===============================
+  const step1Button = step1.querySelector<HTMLElement>('[if-element="button-next"]');
+
+  const getIsStep1Valid = () =>
+    !!document.querySelector<HTMLInputElement>('input[name="secteur-activite"]:checked');
+
+  const validateStep1 = () => {
+    updateButtonState(step1Button, getIsStep1Valid());
+  };
+
+  // Interception musclée du clic AVANT qu'Inputflow ne puisse réagir
+  if (step1Button) {
+    step1Button.addEventListener('click', (e) => {
+      if (!getIsStep1Valid()) {
+        e.preventDefault();
+        e.stopPropagation(); // Bloque Inputflow
+      }
+    }, { capture: true });
+  }
+
+  validateStep1();
+  step1.addEventListener('change', validateStep1);
+
+  // ===================================
+  // VALIDATION DE L'ÉTAPE 2 (Checkboxes)
+  // ===================================
+  const step2Button = step2.querySelector<HTMLElement>('[if-element="button-next"]');
+
+  const getIsStep2Valid = () =>
+    !!document.querySelector<HTMLInputElement>(
+      'input[name="utilisation-rdv"]:checked, input[name="utilisation-privatif"]:checked, input[name="utilisation-team-building"]:checked'
+    );
+
+  const validateStep2 = () => {
+    updateButtonState(step2Button, getIsStep2Valid());
+  };
+
+  if (step2Button) {
+    step2Button.addEventListener('click', (e) => {
+      if (!getIsStep2Valid()) {
+        e.preventDefault();
+        e.stopPropagation(); // Bloque Inputflow
+      }
+    }, { capture: true });
+  }
+
+  validateStep2();
+  step2.addEventListener('change', validateStep2);
+
+  // ===================================
+  // VALIDATION DU FORMULAIRE FINAL (RGPD)
+  // ===================================
+  // L'attribut `required` sur la checkbox RGPD doit être retiré côté Webflow :
+  // l'input est en `opacity:0`, donc l'erreur de validation HTML5 native s'affiche
+  // sous forme de pop-up navigateur peu user-friendly. On valide ici en JS et on
+  // applique une classe `is-error` sur le label pour un feedback visible.
+  const form = document.getElementById('formulaire-simulateur') as HTMLFormElement | null;
+  const rgpdCheckbox = document.getElementById('RGPD') as HTMLInputElement | null;
+
+  if (form && rgpdCheckbox) {
+    const rgpdLabel = rgpdCheckbox.closest('.form_checkbox') as HTMLElement | null;
+
+    // Détection défensive : on regarde l'input ET la classe visuelle Webflow
+    // (au cas où le couplage label/input se désynchronise).
+    const isRgpdChecked = (): boolean => {
+      if (rgpdCheckbox.checked) return true;
+      const visual = rgpdLabel?.querySelector('.w--redirected-checked');
+      return visual !== null && visual !== undefined;
+    };
+
+    form.addEventListener('submit', (e) => {
+      if (!isRgpdChecked()) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (rgpdLabel) {
+          rgpdLabel.classList.add('is-error');
+          rgpdLabel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+      }
+      // Si le visuel est coché mais l'input pas synchronisée, on force pour
+      // que le payload envoie bien la valeur RGPD au backend.
+      if (!rgpdCheckbox.checked) rgpdCheckbox.checked = true;
+    }, { capture: true });
+
+    rgpdCheckbox.addEventListener('change', () => {
+      if (rgpdLabel) rgpdLabel.classList.remove('is-error');
+    });
+    rgpdLabel?.addEventListener('click', () => {
+      // Le label peut être cliqué avant que le change event sur l'input ne fire
+      setTimeout(() => {
+        if (isRgpdChecked()) rgpdLabel.classList.remove('is-error');
+      }, 50);
+    });
+  }
+};
+```
+
+</details>
+
+<details>
+<summary>`src/utils/conditionalDisplay.ts` — blocs conditionnels + gestion du required</summary>
+
+```ts
+export const setupConditionalDisplay = () => {
+  // Inputs de l'étape 2
+  const rdvInput = document.querySelector<HTMLInputElement>('input[name="utilisation-rdv"]');
+  const privatifInput = document.querySelector<HTMLInputElement>('input[name="utilisation-privatif"]');
+  const teamBuildingInput = document.querySelector<HTMLInputElement>('input[name="utilisation-team-building"]');
+
+  // Blocs de l'étape 3
+  const rdvBlock = document.querySelector<HTMLElement>('.block-rdv');
+  const privatifBlock = document.querySelector<HTMLElement>('.block-privatif');
+  const teamBuildingBlock = document.querySelector<HTMLElement>('.block-team-building');
+
+  // Fonction utilitaire pour gérer l'affichage ET les champs requis
+  const toggleBlock = (block: HTMLElement | null, isVisible: boolean) => {
+    if (!block) return;
+
+    // Gérer l'affichage
+    block.style.display = isVisible ? 'block' : 'none';
+
+    // Gérer l'attribut "required" des champs à l'intérieur
+    // Si un bloc est caché, ses champs obligatoires empêchent Inputflow de passer à l'étape suivante !
+    const inputs = block.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input, select, textarea');
+    inputs.forEach(input => {
+      if (isVisible) {
+        // Restaurer "required" s'il l'était à l'origine
+        if (input.dataset.wasRequired === 'true') {
+          input.setAttribute('required', '');
+        }
+      } else {
+        // Sauvegarder l'état "required" et le retirer
+        if (input.hasAttribute('required')) {
+          input.dataset.wasRequired = 'true';
+          input.removeAttribute('required');
+        }
+      }
+    });
+  };
+
+  // Fonctions de mise à jour pour chaque bloc
+  const updateRdvBlock = () => toggleBlock(rdvBlock, rdvInput ? rdvInput.checked : false);
+  const updatePrivatifBlock = () => toggleBlock(privatifBlock, privatifInput ? privatifInput.checked : false);
+  const updateTeamBuildingBlock = () => toggleBlock(teamBuildingBlock, teamBuildingInput ? teamBuildingInput.checked : false);
+
+  // Initialisation au chargement de la page
+  updateRdvBlock();
+  updatePrivatifBlock();
+  updateTeamBuildingBlock();
+
+  // Écouteurs d'événements "change" sur les checkboxes
+  if (rdvInput) rdvInput.addEventListener('change', updateRdvBlock);
+  if (privatifInput) privatifInput.addEventListener('change', updatePrivatifBlock);
+  if (teamBuildingInput) teamBuildingInput.addEventListener('change', updateTeamBuildingBlock);
+};
+```
+
+</details>
+
+<details>
+<summary>`src/utils/progressBar.ts` — barre de progression</summary>
+
+```ts
+export const setupProgressBarObserver = () => {
+  const steps = document.querySelectorAll<HTMLElement>('.simulator_step');
+  const progressItems = document.querySelectorAll<HTMLElement>('.progress_item');
+
+  if (steps.length === 0 || progressItems.length === 0) return;
+
+  const updateProgress = (activeIndex: number) => {
+    progressItems.forEach((item, index) => {
+      if (index === activeIndex) {
+        item.classList.add('is-active');
+      } else {
+        item.classList.remove('is-active');
+      }
+    });
+  };
+
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (
+        mutation.type === 'attributes' &&
+        (mutation.attributeName === 'style' || mutation.attributeName === 'class')
+      ) {
+        const target = mutation.target as HTMLElement;
+        const index = Array.from(steps).indexOf(target);
+
+        if (index !== -1) {
+          // Vérifie si l'étape est devenue visible
+          const style = window.getComputedStyle(target);
+          if (style.display !== 'none') {
+            updateProgress(index);
+          }
+        }
+      }
+    });
+  });
+
+  steps.forEach((step) => {
+    observer.observe(step, { attributes: true, attributeFilter: ['style', 'class'] });
+  });
+
+  // Initialisation au chargement de la page
+  const activeStepIndex = Array.from(steps).findIndex((step) => {
+    return window.getComputedStyle(step).display !== 'none';
+  });
+
+  if (activeStepIndex !== -1) {
+    updateProgress(activeStepIndex);
+  } else {
+    updateProgress(0);
+  }
+};
+```
+
+</details>
+
+<details>
+<summary>`src/index.css` — styles injectés (progression, cartes radio/checkbox)</summary>
+
+```css
+/* =========================================
+   0. VARIABLES
+   ========================================= */
+:root {
+  --magenta-amusoire: #e2007a;
+  --magenta-light: #fbe5ef;
+}
+
+/* =========================================
+   1. ANTI-CLIGNOTEMENT (FOUC)
+   ========================================= */
+:not(.w-editor) .simulator_step {
+  display: none;
+}
+:not(.w-editor) .simulator_step:first-of-type {
+  display: block;
+}
+
+/* =========================================
+   2. BARRE DE PROGRESSION
+   ========================================= */
+.progress_item.is-active .progress_number-wrapper {
+  background-color: var(--magenta-amusoire) !important;
+}
+.progress_item.is-active .progress_number-wrapper div {
+  color: #ffffff !important;
+}
+.progress_item.is-active .progress_text-wrapper div:first-child {
+  color: #000000 !important;
+}
+
+/* =========================================
+   3. CARTES SECTEUR (Radios) & UTILISATION (Checkboxes)
+   ========================================= */
+.radio-card_wrapper,
+.checkbox-card_wrapper {
+  transition: all 0.2s ease !important;
+  cursor: pointer;
+}
+
+/* --- La bordure de la carte entière --- */
+.radio-card_wrapper:has(input:checked),
+.radio-card_wrapper.is-active,
+.checkbox-card_wrapper:has(input:checked),
+.checkbox-card_wrapper.is-active {
+  border-color: var(--magenta-amusoire) !important;
+}
+
+/* --- Le fond et l'icône du SVG --- */
+.radio-card_wrapper.is-active .icon-embed-custom rect,
+.checkbox-card_wrapper.is-active .icon-embed-custom rect {
+  stroke: var(--magenta-amusoire) !important;
+  fill: var(--magenta-light) !important;
+  fill-opacity: 1 !important;
+  rx: 10px !important;
+  ry: 10px !important;
+}
+.radio-card_wrapper.is-active .icon-embed-custom path,
+.checkbox-card_wrapper.is-active .icon-embed-custom path {
+  fill: var(--magenta-amusoire) !important;
+}
+
+/* --- Le petit rond (radio) et le carré (checkbox) --- */
+.radio-card_wrapper:has(input:checked) .custom-radio-button,
+.radio-card_wrapper.is-active .custom-radio-button,
+.radio-card_wrapper:has(input:checked) .w-radio-input,
+.radio-card_wrapper.is-active .w-radio-input,
+.checkbox-card_wrapper:has(input:checked) .w-checkbox-input,
+.checkbox-card_wrapper.is-active .w-checkbox-input,
+.checkbox-card_wrapper:has(input:checked) .custom-radio-button,
+.checkbox-card_wrapper.is-active .custom-radio-button {
+  background-color: var(--magenta-amusoire) !important;
+  border-color: var(--magenta-amusoire) !important;
+}
+
+/* --- Le point blanc à l'intérieur (Radio) --- */
+.radio-card_wrapper:has(input:checked) .custom-radio-button,
+.radio-card_wrapper.is-active .custom-radio-button,
+.radio-card_wrapper:has(input:checked) .w-radio-input,
+.radio-card_wrapper.is-active .w-radio-input {
+  background-image: url('https://d3e54v103j8qbb.cloudfront.net/static/custom-radio-check.360ca0e25c.svg') !important;
+  background-size: 10px !important;
+  background-position: 50% 50% !important;
+  background-repeat: no-repeat !important;
+}
+
+/* --- Le check blanc à l'intérieur (Checkbox) --- */
+.checkbox-card_wrapper:has(input:checked) .w-checkbox-input,
+.checkbox-card_wrapper.is-active .w-checkbox-input,
+.checkbox-card_wrapper:has(input:checked) .custom-radio-button,
+.checkbox-card_wrapper.is-active .custom-radio-button {
+  background-image: url('https://d3e54v103j8qbb.cloudfront.net/static/custom-checkbox-check.839ce6f500.svg') !important;
+  background-size: 12px !important;
+  background-position: 50% 50% !important;
+  background-repeat: no-repeat !important;
+}
+```
+
+</details>

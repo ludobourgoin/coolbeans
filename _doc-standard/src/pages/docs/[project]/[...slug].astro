@@ -1,0 +1,75 @@
+---
+// « la doc » — rendu d'une page de doc de passation.
+// /docs/<projet>            → première page du projet (order le plus bas)
+// /docs/<projet>/<slug>     → page correspondante (slug = id sans préfixe numérique)
+export const prerender = true;
+
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import DocLayout from "../../../layouts/DocLayout.astro";
+import Meta from "../../../components/doc/Meta.astro";
+
+type Doc = CollectionEntry<"docs">;
+const slugOf = (e: Doc) => e.id.split("/").pop()!.replace(/^\d+-/, "");
+const hrefOf = (e: Doc) => `/docs/${e.data.project}/${slugOf(e)}`;
+
+export async function getStaticPaths() {
+  const all = await getCollection("docs");
+  const projects = [...new Set(all.map((e) => e.data.project))];
+  const paths = [];
+  for (const project of projects) {
+    const entries = all
+      .filter((e) => e.data.project === project)
+      .sort((a, b) => a.data.order - b.data.order);
+    entries.forEach((entry, i) => {
+      paths.push({ params: { project, slug: slugOf(entry) }, props: { entry, entries } });
+      if (i === 0) {
+        // /docs/<projet> sans slug → première page
+        paths.push({ params: { project, slug: undefined }, props: { entry, entries } });
+      }
+    });
+  }
+  return paths;
+}
+
+const { entry, entries } = Astro.props as { entry: Doc; entries: Doc[] };
+const { Content, headings } = await render(entry);
+
+const nav = entries.map((e) => ({
+  title: e.data.title,
+  href: hrefOf(e),
+  active: e.id === entry.id,
+}));
+const idx = entries.findIndex((e) => e.id === entry.id);
+const prev = idx > 0 ? { title: entries[idx - 1].data.title, href: hrefOf(entries[idx - 1]) } : null;
+const next =
+  idx < entries.length - 1
+    ? { title: entries[idx + 1].data.title, href: hrefOf(entries[idx + 1]) }
+    : null;
+
+// Index de recherche client-side : titres + sections H2 + texte brut de chaque page.
+const searchIndex = [];
+for (const e of entries) {
+  const { headings: hs } = await render(e);
+  searchIndex.push({
+    title: e.data.title,
+    href: hrefOf(e),
+    sections: hs.filter((h) => h.depth === 2).map((h) => ({ title: h.text, anchor: h.slug })),
+    text: (e.body ?? "").toLowerCase(),
+  });
+}
+---
+
+<DocLayout
+  title={entry.data.title}
+  project={entry.data.project}
+  nav={nav}
+  headings={headings}
+  prev={prev}
+  next={next}
+  searchIndex={searchIndex}
+>
+  <h1>{entry.data.title}</h1>
+  <Meta status={entry.data.status} updated={entry.data.updated} />
+  <Content />
+</DocLayout>

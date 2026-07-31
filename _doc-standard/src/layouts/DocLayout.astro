@@ -1,0 +1,213 @@
+---
+// Layout 3 colonnes de « la doc » : nav gauche (recherche + pages), contenu,
+// ancres H2 à droite. S'appuie sur BaseLayout (anti-flash dark inclus) et les
+// tokens Coolbeans ; la couche d'accent docs vit dans styles/doc.css.
+import BaseLayout from "./BaseLayout.astro";
+import SidebarNav from "../components/doc/SidebarNav.astro";
+import TocRight from "../components/doc/TocRight.astro";
+import "../styles/doc.css";
+
+interface NavItem {
+  title: string;
+  href: string;
+  active: boolean;
+}
+interface PrevNext {
+  title: string;
+  href: string;
+}
+interface SearchEntry {
+  title: string;
+  href: string;
+  sections: { title: string; anchor: string }[];
+  text: string;
+}
+interface Props {
+  title: string;
+  project: string;
+  nav: NavItem[];
+  headings: { depth: number; slug: string; text: string }[];
+  prev: PrevNext | null;
+  next: PrevNext | null;
+  searchIndex: SearchEntry[];
+}
+const { title, project, nav, headings, prev, next, searchIndex } = Astro.props;
+const projectLabel = project.charAt(0).toUpperCase() + project.slice(1);
+// `</script>` peut apparaître dans le texte indexé (extraits de code) : on
+// neutralise tous les `<` pour que le JSON inline ne casse pas la balise.
+const indexJson = JSON.stringify(searchIndex).replaceAll("<", "\\u003c");
+---
+
+<BaseLayout title={`${title} · la doc — ${projectLabel}`} description={`Documentation de passation ${projectLabel}`} noindex>
+  <div class="doc-root">
+    <header class="doc-topbar">
+      <a class="brand" href="/">coolbeans.</a>
+      <span class="spacer"></span>
+      <button class="tgl" id="doc-theme" type="button" aria-label="Basculer le thème">☀︎ / ☾</button>
+    </header>
+
+    <div class="doc-shell">
+      <aside class="doc-left">
+        <div class="doc-search">
+          <input id="doc-q" type="search" placeholder="Rechercher… (⌘K)" autocomplete="off" />
+          <div id="doc-qres" hidden></div>
+        </div>
+        <SidebarNav items={nav} />
+      </aside>
+
+      <main class="doc-main">
+        <slot />
+        <footer class="doc-pagefoot">
+          <div class="pf-nav">
+            {
+              prev ? (
+                <a class="pf-card" href={prev.href}>
+                  <span class="lab">← Précédent</span>
+                  <span class="ttl">{prev.title}</span>
+                </a>
+              ) : (
+                <span class="pf-card empty" />
+              )
+            }
+            {
+              next ? (
+                <a class="pf-card next" href={next.href}>
+                  <span class="lab">Suivant →</span>
+                  <span class="ttl">{next.title}</span>
+                </a>
+              ) : (
+                <span class="pf-card empty" />
+              )
+            }
+          </div>
+        </footer>
+      </main>
+
+      <TocRight headings={headings} />
+    </div>
+  </div>
+
+  <script type="application/json" id="doc-search-index" set:html={indexJson} />
+
+  <script>
+    /* ---- Thème (même clé localStorage que l'anti-flash de BaseLayout) ---- */
+    document.getElementById("doc-theme")?.addEventListener("click", () => {
+      const dark = document.documentElement.classList.toggle("dark");
+      try {
+        localStorage.setItem("theme", dark ? "dark" : "light");
+      } catch {}
+    });
+
+    /* ---- Scroll-spy du sommaire droit ---- */
+    const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>("#doc-toc a")];
+    const h2s = [...document.querySelectorAll<HTMLElement>(".doc-main h2[id]")];
+    if (tocLinks.length && h2s.length) {
+      addEventListener(
+        "scroll",
+        () => {
+          let idx = 0;
+          h2s.forEach((h, i) => {
+            if (h.getBoundingClientRect().top < 130) idx = i;
+          });
+          tocLinks.forEach((l, i) => l.classList.toggle("on", i === idx));
+        },
+        { passive: true }
+      );
+    }
+
+    /* ---- Blocs de code : bandeau langage + bouton copier ---- */
+    const LANG_LABELS: Record<string, string> = {
+      js: "JavaScript",
+      ts: "TypeScript",
+      css: "CSS",
+      json: "JSON",
+      html: "HTML",
+      bash: "Shell",
+      sh: "Shell",
+      text: "Texte",
+      plaintext: "Texte",
+    };
+    document.querySelectorAll<HTMLPreElement>(".doc-main pre.astro-code").forEach((pre) => {
+      const lang = pre.dataset.language ?? "";
+      const fig = document.createElement("figure");
+      fig.className = "codefig";
+      const cap = document.createElement("figcaption");
+      const label = document.createElement("span");
+      label.textContent = LANG_LABELS[lang] ?? lang ?? "Code";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "copybtn";
+      btn.textContent = "⧉ Copier";
+      btn.addEventListener("click", () => {
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+          btn.textContent = "✓ Copié";
+          setTimeout(() => (btn.textContent = "⧉ Copier"), 1500);
+        });
+      });
+      cap.append(label, btn);
+      pre.parentNode?.insertBefore(fig, pre);
+      fig.append(cap, pre);
+    });
+
+    /* ---- Recherche client-side ---- */
+    const idxEl = document.getElementById("doc-search-index");
+    const qIn = document.getElementById("doc-q") as HTMLInputElement | null;
+    const qRes = document.getElementById("doc-qres");
+    if (idxEl && qIn && qRes) {
+      type Entry = {
+        title: string;
+        href: string;
+        sections: { title: string; anchor: string }[];
+        text: string;
+      };
+      const entries: Entry[] = JSON.parse(idxEl.textContent ?? "[]");
+      // Aplatit : la page elle-même + chaque section H2.
+      const flat = entries.flatMap((e) => [
+        { page: e.title, title: e.title, href: e.href, text: e.text },
+        ...e.sections.map((s) => ({
+          page: e.title,
+          title: s.title,
+          href: `${e.href}#${s.anchor}`,
+          text: "",
+        })),
+      ]);
+      const esc = (s: string) =>
+        s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const search = () => {
+        const v = qIn.value.trim().toLowerCase();
+        if (v.length < 2) {
+          qRes.hidden = true;
+          qRes.innerHTML = "";
+          return;
+        }
+        const hits: [number, (typeof flat)[number]][] = [];
+        flat.forEach((f) => {
+          if (f.title.toLowerCase().includes(v)) hits.push([0, f]);
+          else if (f.text.includes(v)) hits.push([1, f]);
+        });
+        hits.sort((a, b) => a[0] - b[0]);
+        qRes.innerHTML =
+          hits
+            .slice(0, 8)
+            .map(
+              ([, f]) =>
+                `<a href="${f.href}"><span class="rp">${esc(f.page)}</span><div class="rt">${esc(f.title)}</div></a>`
+            )
+            .join("") || '<div class="empty">Aucun résultat</div>';
+        qRes.hidden = false;
+      };
+      qIn.addEventListener("input", search);
+      document.addEventListener("keydown", (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+          e.preventDefault();
+          qIn.focus();
+          qIn.select();
+        }
+        if (e.key === "Escape") qRes.hidden = true;
+      });
+      document.addEventListener("click", (e) => {
+        if (!(e.target as HTMLElement).closest(".doc-search")) qRes.hidden = true;
+      });
+    }
+  </script>
+</BaseLayout>

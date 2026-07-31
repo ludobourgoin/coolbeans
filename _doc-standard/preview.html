@@ -9,104 +9,91 @@
 @font-face{font-family:"Geomanist";src:url("../public/fonts/geomanist-medium-webfont.woff2") format("woff2");font-weight:600;font-display:swap}
 @font-face{font-family:"Geomanist";src:url("../public/fonts/geomanist-bold-webfont.woff2") format("woff2");font-weight:700;font-display:swap}
 :root{
-  --surface:#ffffff; --surface-marque:#f7f3ef; --surface-raise:#f2efe8;
-  --line:rgba(20,17,12,.12); --line-2:rgba(20,17,12,.18); --tint:rgba(20,17,12,.05);
-  --ink:#111010; --mute:#5e5c55;
+  --surface:#ffffff; --surface-2:#f7f7f7;
+  --line:rgba(17,16,16,.1); --line-2:rgba(17,16,16,.18); --tint:rgba(17,16,16,.04);
+  --ink:#111010; --mute:#6b6b67;
   --radius:6px;
   --f-iris:#C1AAF9; --f-iris-bg:#F6DFF6; --f-or:#FFC53D; --f-or-bg:#FFF0BD;
-  --f-magenta:#F59BF8; --f-bleu:#94C4FF; --f-bleu-bg:#BED9EF; --f-vert:#BDEE63;
-  --f-vert-bg:#E3EFDC; --f-corail:#F54E50; --f-corail-bg:#FCE1E1; --f-cyan-bg:#C4EAEE;
+  --f-bleu:#94C4FF; --f-bleu-bg:#BED9EF; --f-vert:#BDEE63; --f-vert-bg:#E3EFDC;
+  --f-corail:#F54E50; --f-corail-bg:#FCE1E1;
   --font-sans:"Geomanist Book","Geomanist","Helvetica Neue",Arial,sans-serif;
   --font-display:"Geomanist","Helvetica Neue",Arial,sans-serif;
   --font-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 .dark{
-  --surface:#0c0a07; --surface-marque:#16130c; --surface-raise:rgba(255,255,255,.05);
-  --line:rgba(244,242,236,.14); --line-2:rgba(244,242,236,.22); --tint:rgba(255,255,255,.06);
-  --ink:#f4f2ec; --mute:#a8a29a;
+  --surface:#0d0d0c; --surface-2:rgba(255,255,255,.05);
+  --line:rgba(244,242,236,.13); --line-2:rgba(244,242,236,.24); --tint:rgba(255,255,255,.05);
+  --ink:#f2f1ec; --mute:#a3a29c;
   --f-iris-bg:rgba(193,170,249,.16); --f-or-bg:rgba(255,197,61,.15);
   --f-bleu-bg:rgba(148,196,255,.15); --f-vert-bg:rgba(189,238,99,.14);
-  --f-corail-bg:rgba(245,78,80,.15); --f-cyan-bg:rgba(196,234,238,.14);
+  --f-corail-bg:rgba(245,78,80,.15);
 }
 *{box-sizing:border-box}
 html{background:var(--surface)}
 body{margin:0;background:var(--surface);color:var(--ink);font-family:var(--font-sans);
-  font-weight:500;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  font-weight:500;font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
 a{color:inherit}
 h1,h2,h3,h4{font-family:var(--font-display);letter-spacing:-.02em;line-height:1.12;text-wrap:balance;margin:0}
-h1{font-weight:700;font-size:clamp(28px,3.2vw,40px);letter-spacing:-.03em}
-h2{font-weight:700;font-size:23px;margin:36px 0 12px;scroll-margin-top:80px;padding-top:6px}
-h3{font-weight:600;font-size:16px;margin:22px 0 8px}
-p{margin:12px 0}
-ul,ol{margin:10px 0;padding-left:20px}li{margin:4px 0}
-code{font-family:var(--font-mono);font-size:.86em;background:var(--surface-raise);
-  border:1px solid var(--line);border-radius:4px;padding:1px 5px}
-pre{font-family:var(--font-mono);background:#0b0d11;color:#e6e9ef;border:1px solid var(--line);
-  border-radius:10px;padding:14px 16px;overflow:auto;font-size:12.5px;line-height:1.55;margin:14px 0}
-.dark pre{background:#05060a}
+h1{font-weight:700;font-size:clamp(28px,3.2vw,38px);letter-spacing:-.03em}
+h2{font-weight:700;font-size:22px;margin:56px 0 14px;padding-top:28px;border-top:1px solid var(--line);scroll-margin-top:80px}
+h2:first-of-type{border-top:none;padding-top:0;margin-top:40px}
+h3{font-weight:600;font-size:15.5px;margin:26px 0 8px}
+p{margin:12px 0;max-width:70ch}
+ul,ol{margin:10px 0;padding-left:20px;max-width:70ch}li{margin:5px 0}
+code{font-family:var(--font-mono);font-size:.86em;background:var(--surface-2);
+  border-radius:4px;padding:1px 5px}
+pre{font-family:var(--font-mono);background:#0b0d11;color:#e6e9ef;
+  border-radius:8px;padding:14px 16px;overflow:auto;font-size:12.5px;line-height:1.55;margin:16px 0}
+.dark pre{background:#05060a;border:1px solid var(--line)}
 pre .add{color:#56d364}pre .del{color:#f0857d}pre .cm{color:#7d8590}pre .hl{color:#ffd400}
 .label{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.1em;
   text-transform:uppercase;color:var(--mute)}
-dl.def dt{font-weight:600;margin-top:14px}
+dl.def{max-width:70ch}
+dl.def dt{font-weight:600;margin-top:16px}
 dl.def dd{margin:2px 0 0;color:var(--mute)}
 
 .topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;
-  height:56px;padding:0 20px;background:var(--surface-marque);border-bottom:1px solid var(--line)}
+  height:56px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--line)}
 .brand{font-family:var(--font-display);font-weight:700;letter-spacing:-.02em;font-size:16px}
-.brand .dot{color:var(--f-magenta)}
-.topbar .sep{color:var(--mute);opacity:.5}
-.topbar .proj{font-size:14px;color:var(--mute)}
 .topbar .spacer{flex:1}
-.lock{font-size:11px;color:var(--mute);border:1px solid var(--line);border-radius:20px;padding:3px 10px}
 .tgl{cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);
   border-radius:var(--radius);padding:6px 10px;font:inherit;font-size:13px}
-.shell{display:grid;grid-template-columns:288px minmax(0,1fr) 232px;align-items:start;max-width:1400px;margin:0 auto}
-.left{position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto;border-right:1px solid var(--line);padding:22px 18px 60px}
-.proj-card{border:1px solid var(--line);background:var(--surface-marque);padding:14px 14px 12px;margin-bottom:20px}
-.proj-card .name{font-family:var(--font-display);font-weight:700;font-size:15px}
-.proj-card .meta{font-size:11.5px;color:var(--mute);margin-top:6px;line-height:1.5}
-.proj-card .pill{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.05em;padding:2px 7px;border-radius:20px;background:var(--f-vert-bg);color:var(--ink)}
-.chapter{margin:16px 0}
-.chapter>.head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.chapter>.head .t{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--mute)}
-.chapter>.head .opt{font-size:9px;color:var(--mute);border:1px solid var(--line);border-radius:10px;padding:0 5px}
-.chapter a{display:block;text-decoration:none;color:var(--ink);font-size:13.5px;padding:5px 10px;border-radius:var(--radius);border-left:2px solid transparent;margin-left:3px}
-.chapter a:hover{background:var(--tint)}
-.chapter a.on{background:var(--tint);border-left-color:var(--ink);font-weight:600}
-.main{padding:34px 44px 100px;min-width:0}
-.crumbs{font-size:12px;color:var(--mute);margin-bottom:10px}
-.crumbs b{color:var(--ink)}
-.page-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:11.5px;color:var(--mute);margin:14px 0 6px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.shell{display:grid;grid-template-columns:264px minmax(0,1fr) 232px;align-items:start;max-width:1400px;margin:0 auto}
+.left{position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto;border-right:1px solid var(--line);padding:28px 20px 60px}
+.chapter a{display:block;text-decoration:none;color:var(--mute);font-size:14px;padding:7px 10px;border-radius:var(--radius)}
+.chapter a:hover{color:var(--ink);background:var(--tint)}
+.chapter a.on{color:var(--ink);background:var(--tint);font-weight:600}
+.main{padding:44px 56px 110px;min-width:0}
+.page-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:11.5px;color:var(--mute);margin:16px 0 0;padding-bottom:18px}
 .page-meta b{color:var(--ink);font-weight:600}
 .page{display:none}.page.on{display:block}
-.right{position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto;padding:30px 20px 60px}
+.right{position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto;padding:36px 20px 60px}
 .right .h{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
 .right a{display:block;color:var(--mute);text-decoration:none;font-size:12.5px;padding:4px 0 4px 12px;border-left:2px solid var(--line)}
 .right a:hover{color:var(--ink)}
 .right a.on{color:var(--ink);border-left-color:var(--ink);font-weight:600}
 
-.hero{border:1px solid var(--line);padding:28px 30px 24px;margin:18px 0 8px;background:var(--surface-marque)}
-.hero .eyebrow{margin-bottom:10px}
-.hero h1{max-width:20ch}
-.hero p{max-width:60ch;color:var(--mute);margin-top:8px}
-.liens{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.hero{padding:26px 0 6px}
+.hero .eyebrow{margin-bottom:12px}
+.hero h1{max-width:22ch}
+.hero p{max-width:58ch;color:var(--mute);margin-top:12px}
+.liens{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 .liens a{font-size:13px;text-decoration:none;border:1px solid var(--line-2);border-radius:var(--radius);padding:8px 12px;background:var(--surface);display:inline-flex;gap:7px;align-items:center}
 .liens a:hover{border-color:var(--ink)}
 .liens a .ext{color:var(--mute);font-size:11px}
 
-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
-th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
 th{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);font-weight:700}
-tr:last-child td{border-bottom:none}
-table.framed{border:1px solid var(--line)}
+td:first-child,th:first-child{padding-left:0}
+td:last-child,th:last-child{padding-right:0}
 .pill{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
 .pill.ok{background:var(--f-vert-bg);color:var(--ink)}
 .pill.warn{background:var(--f-or-bg);color:var(--ink)}
 .pill.bad{background:var(--f-corail-bg);color:var(--ink)}
 
-.adm{border-left:4px solid var(--c);background:var(--bg);border-radius:0 10px 10px 0;padding:12px 16px;margin:16px 0;font-size:13.5px}
-.adm .t{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.adm{border-left:3px solid var(--c);background:var(--bg);border-radius:0 8px 8px 0;padding:12px 16px;margin:18px 0;font-size:13.5px;max-width:74ch}
+.adm .t{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
 .adm.note{--c:var(--f-bleu);--bg:var(--f-bleu-bg)}
 .adm.tip{--c:var(--f-vert);--bg:var(--f-vert-bg)}
 .adm.warn{--c:var(--f-or);--bg:var(--f-or-bg)}
@@ -114,10 +101,10 @@ table.framed{border:1px solid var(--line)}
 .adm.piege{--c:var(--f-iris);--bg:var(--f-iris-bg)}
 .adm p{margin:4px 0}
 
-.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0}
-.node{background:var(--surface-raise);border:1px solid var(--line-2);border-radius:8px;padding:9px 13px;font-size:12.5px;font-weight:600}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0}
+.node{border:1px solid var(--line-2);border-radius:8px;padding:9px 13px;font-size:12.5px;font-weight:600;background:var(--surface)}
 .node small{display:block;color:var(--mute);font-weight:400;font-size:10.5px;margin-top:2px}
-.arrow{color:var(--f-magenta);font-weight:800}
+.arrow{color:var(--mute);font-weight:700}
 .badge-acc{font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px}
 .badge-acc.amus{background:var(--f-or);color:#111}
 .badge-acc.blind{background:var(--f-bleu);color:#111}
@@ -126,258 +113,212 @@ ol.steps{padding-left:0;counter-reset:s;list-style:none}
 ol.steps li{position:relative;padding:6px 0 6px 34px;counter-increment:s}
 ol.steps li::before{content:counter(s);position:absolute;left:0;top:5px;width:22px;height:22px;display:grid;place-items:center;background:var(--ink);color:var(--surface);border-radius:50%;font-family:var(--font-mono);font-size:12px;font-weight:700}
 
-.interdits{border:1px solid var(--f-corail);background:var(--f-corail-bg);border-radius:10px;padding:10px 16px;margin:14px 0}
+.interdits{border-left:3px solid var(--f-corail);background:var(--f-corail-bg);border-radius:0 8px 8px 0;padding:12px 16px;margin:18px 0;max-width:74ch}
 .interdits .t{font-weight:700;font-size:13px;margin-bottom:4px}
 
-.incident{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:16px 0}
-.incident .row{display:grid;grid-template-columns:120px 1fr;border-top:1px solid var(--line)}
+.incident{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:16px 0;max-width:74ch}
+.incident .row{display:grid;grid-template-columns:118px 1fr;border-top:1px solid var(--line)}
 .incident .row:first-child{border-top:none}
-.incident .k{background:var(--surface-marque);padding:10px 14px;font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);font-weight:700}
-.incident .v{padding:10px 14px;font-size:13.5px}
+.incident .k{padding:10px 14px;font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);font-weight:700}
+.incident .v{padding:10px 14px 10px 0;font-size:13.5px}
 
-details{border:1px solid var(--line);border-radius:8px;padding:2px 14px;margin:14px 0;background:var(--surface-raise)}
+details{border:1px solid var(--line);border-radius:8px;padding:2px 14px;margin:16px 0;max-width:74ch}
 details summary{cursor:pointer;font-size:13px;font-weight:600;padding:8px 0}
-details .shot{border:1px dashed var(--line-2);border-radius:6px;height:120px;display:grid;place-items:center;color:var(--mute);font-size:12px;margin:8px 0 12px;background:repeating-linear-gradient(45deg,transparent,transparent 8px,var(--tint) 8px,var(--tint) 16px)}
 
 .xlink{font-size:12.5px;color:var(--mute)}
-.xlink a{color:var(--f-magenta);text-decoration:underline}
-.todo{background:var(--f-or-bg);color:#111;font-family:var(--font-mono);font-size:11px;padding:1px 6px;border-radius:4px}
+.xlink a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.todo{background:var(--f-or-bg);color:var(--ink);font-family:var(--font-mono);font-size:11px;padding:1px 6px;border-radius:4px}
 
-.pagefoot{margin-top:52px;padding-top:20px;border-top:1px solid var(--line)}
+a[target="_blank"]::after{content:"↗";font-size:.72em;color:var(--mute);margin-left:3px}
+.liens a .ext::after{content:"↗";font-size:.85em;opacity:.7;margin-left:3px}
+
+.search{position:relative;margin-bottom:20px}
+.search input{width:100%;box-sizing:border-box;font:inherit;font-size:13px;padding:8px 11px;border:1px solid var(--line-2);border-radius:var(--radius);background:var(--surface);color:var(--ink)}
+.search input:focus{outline:none;border-color:var(--ink)}
+.search input::placeholder{color:var(--mute)}
+#qres{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:30;background:var(--surface);border:1px solid var(--line-2);border-radius:8px;box-shadow:0 10px 28px rgba(0,0,0,.14);max-height:330px;overflow:auto}
+#qres a{display:block;padding:8px 12px;text-decoration:none;border-top:1px solid var(--line);font-size:12.5px}
+#qres a:first-child{border-top:none}
+#qres a:hover{background:var(--tint)}
+#qres .rp{font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+#qres .rt{font-weight:600}
+#qres .empty{padding:10px 12px;color:var(--mute);font-size:12.5px}
+
+.codefig{margin:16px 0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.codefig figcaption{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#161b22;color:#8b949e;font-family:var(--font-mono);font-size:11px;letter-spacing:.03em;padding:7px 14px;border-bottom:1px solid rgba(240,246,252,.08)}
+.codefig pre{margin:0;border-radius:0;border:none}
+.copybtn{cursor:pointer;background:transparent;border:1px solid rgba(139,148,158,.4);color:#8b949e;border-radius:5px;font-family:var(--font-mono);font-size:10.5px;padding:2px 8px;white-space:nowrap}
+.copybtn:hover{color:#e6e9ef;border-color:#8b949e}
+.tk-c{color:#8b949e}.tk-s{color:#a5d6ff}.tk-k{color:#ff7b72}.tk-n{color:#ffa657}.tk-f{color:#d2a8ff}.tk-t{color:#ffd400}
+details .codefig{margin:10px 0}
+ul ul{margin:4px 0 8px}
+
+.pagefoot{margin-top:64px;padding-top:20px;border-top:1px solid var(--line)}
 .pf-meta{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:13px;color:var(--mute);margin-bottom:20px}
 .pf-meta a{display:inline-flex;gap:7px;align-items:center;color:var(--mute);text-decoration:none}
 .pf-meta a:hover{color:var(--ink)}
 .pf-nav{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.pf-card{border:1px solid var(--line);border-radius:10px;padding:15px 18px;text-decoration:none;color:var(--ink);background:var(--surface);transition:border-color .15s,background .15s;display:block}
-.pf-card:hover{border-color:var(--ink);background:var(--tint)}
+.pf-card{border:1px solid var(--line);border-radius:8px;padding:15px 18px;text-decoration:none;color:var(--ink);background:var(--surface);transition:border-color .15s;display:block}
+.pf-card:hover{border-color:var(--ink)}
 .pf-card .lab{font-size:12.5px;color:var(--mute);display:flex;align-items:center;gap:6px}
-.pf-card .ttl{font-family:var(--font-display);font-weight:600;font-size:18px;margin-top:3px}
+.pf-card .ttl{font-family:var(--font-display);font-weight:600;font-size:17px;margin-top:3px}
 .pf-card.next{text-align:right}.pf-card.next .lab{justify-content:flex-end}
 .pf-card.empty{visibility:hidden}
-@media(max-width:1180px){.right{display:none}.shell{grid-template-columns:270px minmax(0,1fr)}}
-@media(max-width:860px){.left{display:none}.shell{grid-template-columns:1fr}.main{padding:24px 20px 80px}}
+@media(max-width:1180px){.right{display:none}.shell{grid-template-columns:250px minmax(0,1fr)}}
+@media(max-width:860px){.left{display:none}.shell{grid-template-columns:1fr}.main{padding:28px 20px 80px}}
 @media(max-width:640px){.pf-nav{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <span class="brand">coolbeans<span class="dot">.</span></span>
-  <span class="sep">/</span><span class="label">la doc</span>
-  <span class="sep">/</span><span class="proj">Amusoire</span>
+  <span class="brand">coolbeans.</span>
   <span class="spacer"></span>
-  <span class="lock">🔒 Cloudflare Access</span>
   <button class="tgl" id="tgl">☀︎ / ☾</button>
 </div>
 
 <div class="shell">
   <aside class="left">
-    <div class="proj-card">
-      <div class="name">Amusoire</div>
-      <div class="meta"><span class="pill">Final</span> · v1.0<br>Propriétaire : Ludovic B.<br>MAJ : 2026-07-28</div>
+    <div class="search">
+      <input id="q" type="search" placeholder="Rechercher… (⌘K)" autocomplete="off">
+      <div id="qres" hidden></div>
     </div>
-    <nav id="nav">
-      <div class="chapter"><div class="head"><span class="t">1 · Cadre &amp; pilotage</span></div>
-        <a href="#" data-page="fiche" class="on">Fiche projet</a>
-        <a href="#" data-page="contexte">Contexte &amp; objectifs</a>
-        <a href="#" data-page="entreprise">Entreprise &amp; marques</a>
-        <a href="#" data-page="parties">Parties prenantes &amp; gouvernance</a>
-      </div>
-      <div class="chapter"><div class="head"><span class="t">2 · Architecture</span></div>
-        <a href="#" data-page="archi">Vue technique &amp; flux</a>
-        <a href="#" data-page="sitemap">Sitemap (HTML + XML)</a>
-      </div>
-      <div class="chapter"><div class="head"><span class="t">3 · Intégrations</span></div>
-        <a href="#" data-page="integ">Forms → Make → HubSpot</a>
-        <a href="#" data-page="refids">Référentiels d'IDs</a>
-      </div>
-      <div class="chapter"><div class="head"><span class="t">4 · Features sur-mesure</span></div>
-        <a href="#" data-page="simulateur">Simulateur ROI</a>
-        <a href="#" data-page="popup">Popup opt-in</a>
-      </div>
-      <div class="chapter"><div class="head"><span class="t">5 · Contenu &amp; édition</span></div>
-        <a href="#" data-page="principes">Principes agnostiques</a>
-        <a href="#" data-page="edit">Éditer (Webflow)</a>
-        <a href="#" data-page="blog">Blog &amp; CMS</a>
-      </div>
-      <div class="chapter"><div class="head"><span class="t">6 · SEO, Tracking &amp; RGPD</span><span class="opt">opt</span></div>
-        <a href="#" data-page="seo">SEO on-page</a>
-        <a href="#" data-page="tracking">Tracking / provenance</a>
-        <a href="#" data-page="rgpd">RGPD &amp; cookies</a>
-      </div>
-      <div class="chapter"><div class="head"><span class="t">7 · Accès, secrets &amp; sécu</span><span class="opt">opt</span></div>
-        <a href="#" data-page="acces">Comptes &amp; accès</a>
-        <a href="#" data-page="secrets">Secrets &amp; posture</a>
-      </div>
-      <div class="chapter"><div class="head"><span class="t">8 · Exploitation &amp; mémoire</span></div>
-        <a href="#" data-page="maint">Maintenance &amp; vigilance</a>
-        <a href="#" data-page="collab">Collaboration &amp; support</a>
-        <a href="#" data-page="journal">Journal &amp; log des bugs</a>
-      </div>
-      <div class="chapter"><div class="head"><span class="t">9 · Ressources</span></div>
-        <a href="#" data-page="liens">Liens &amp; accès outils</a>
-        <a href="#" data-page="droits">Propriété &amp; droits</a>
-        <a href="#" data-page="glossaire">Glossaire</a>
-      </div>
+    <nav id="nav" class="chapter">
+      <a href="#" data-page="vue" class="on">Vue d'ensemble</a>
+      <a href="#" data-page="editer">Éditer le site</a>
+      <a href="#" data-page="leads">Leads &amp; formulaires</a>
+      <a href="#" data-page="simulateur">Simulateur ROI</a>
+      <a href="#" data-page="popup">Popup opt-in</a>
+      <a href="#" data-page="secu">Sécurité &amp; conformité</a>
+      <a href="#" data-page="ref">Référence &amp; support</a>
     </nav>
   </aside>
 
   <main class="main">
 
-    <!-- 1.1 FICHE PROJET -->
-    <article class="page on" id="page-fiche">
-      <div class="crumbs">Cadre &amp; pilotage <span style="opacity:.5">›</span> <b>Fiche projet</b></div>
+    <!-- 1. VUE D'ENSEMBLE -->
+    <article class="page on" id="page-vue">
       <div class="hero">
         <div class="eyebrow label">Document de vérité · Passation</div>
         <h1>Amusoire — passation &amp; référence</h1>
-        <p>Manuel pour faire vivre le site en autonomie sans casser la qualité pro. Blind test, quiz &amp; karaoké — salles privées (B2C) &amp; solution licences établissements (B2B).</p>
+        <p>Le manuel pour faire vivre le site en autonomie sans casser la qualité pro. Blind test, quiz &amp; karaoké — salles privées (B2C) et licences établissements (B2B).</p>
         <div class="liens">
-          <a href="#">🌐 Prod <span class="ext">amusoire.com ↗</span></a>
-          <a href="#">🧪 Staging <span class="ext">webflow.io ↗</span></a>
-          <a href="#">✏️ Webflow <span class="ext">Designer ↗</span></a>
-          <a href="#">🔗 Make <span class="ext">scénario ↗</span></a>
+          <a href="#">🌐 Prod <span class="ext">amusoire.com</span></a>
+          <a href="#">🧪 Staging <span class="ext">webflow.io</span></a>
+          <a href="#">✏️ Webflow <span class="ext">Designer</span></a>
+          <a href="#">🔗 Make <span class="ext">scénario</span></a>
         </div>
       </div>
       <div class="page-meta"><span>Propriétaire : <b>Ludovic Bourgoin</b></span><span>Version : <b>1.0</b></span><span>MAJ : <b>2026-07-28</b></span><span>Statut : <b>Final</b></span></div>
-      <h2>En bref</h2>
-      <p>Site <b>Webflow</b>, automatisations <b>Make</b>, CRM <b>HubSpot</b> (2 portails), emails <b>Resend</b>. 43 pages, 6 formulaires, 1 simulateur sur-mesure, 1 popup opt-in.</p>
-      <div class="adm note"><div class="t">🟦 Note</div><p>Cette page est la seule <b>source de vérité</b> — on la tient à jour (voir en-tête : version + date). Une doc périmée fait plus de mal qu'une absence de doc.</p></div>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
 
-    <!-- 1.2 CONTEXTE -->
-    <article class="page" id="page-contexte">
-      <div class="crumbs">Cadre &amp; pilotage <span style="opacity:.5">›</span> <b>Contexte &amp; objectifs</b></div>
-      <h1>Contexte &amp; objectifs</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <h2>Le projet</h2>
-      <p>Site vitrine + acquisition pour Amusoire : réservation de salles privées côté grand public, et démarchage d'établissements (bars, hôtels, campings…) pour la solution de licences.</p>
-      <h2>Objectifs</h2>
+      <h2>En bref</h2>
+      <p>Site <b>Webflow</b>, automatisations <b>Make</b>, CRM <b>HubSpot</b> (2 portails), emails <b>Resend</b>. 39 pages publiées (+ gabarits CMS), 6 formulaires, 1 simulateur sur-mesure, 1 popup opt-in. Un site de landing pages hérité (<code>lp.pro.thisisblindtest.com</code>) reste en ligne en attendant sa suppression.</p>
+      <div class="adm note"><div class="t">Note</div><p>Cette doc est la seule <b>source de vérité</b> — tenue à jour (en-tête : version + date). Une doc périmée fait plus de mal qu'une absence de doc.</p></div>
+
+      <h2>Contexte &amp; objectifs</h2>
+      <p>Site vitrine + acquisition : réservation de salles privées côté grand public, démarchage d'établissements (bars, hôtels, campings…) pour la solution de licences.</p>
       <ul>
-        <li>Générer des <b>leads B2C</b> (réservations, événementiel) et <b>B2B</b> (licences établissements).</li>
+        <li>Générer des <b>leads B2C</b> (réservations, événementiel) et <b>B2B</b> (licences).</li>
         <li>Router chaque lead vers le <b>bon CRM</b> selon sa nature.</li>
-        <li>Rendre le client <b>autonome</b> sur le contenu (blog, pages) sans casser le site.</li>
+        <li>Rendre le client <b>autonome</b> sur le contenu sans casser le site.</li>
       </ul>
-      <h2>Cibles</h2>
-      <table class="framed">
+      <table>
         <tr><th>Segment</th><th>Qui</th><th>Entrée</th></tr>
-        <tr><td>B2C</td><td>Particuliers, EVG/EVJF, anniversaires, entreprises (team building)</td><td>Occasions, Lieux, Réserver</td></tr>
+        <tr><td>B2C</td><td>Particuliers, EVG/EVJF, anniversaires, team building</td><td>Occasions, Lieux, Réserver</td></tr>
         <tr><td>B2B</td><td>Bars, restaurants, hôtels, campings, loisirs indoor</td><td>Pages <code>/pro/*</code>, simulateur</td></tr>
       </table>
-      <h2>Périmètre</h2>
-      <p><b>Dans</b> : site Webflow, formulaires, tracking, simulateur, popup, blog. <b>Hors</b> : campagnes payantes, production de contenu éditorial.</p>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+      <p><b>Dans le périmètre</b> : site Webflow, formulaires, tracking, simulateur, popup, blog. <b>Hors</b> : campagnes payantes, production éditoriale.</p>
+
+      <h2>La marque : de ThisIsBlindTest à Amusoire</h2>
+      <p>Une seule marque, renommée : l'activité s'appelait <b>ThisIsBlindTest</b> et s'appelle désormais <b>Amusoire</b>. L'ancien site <code>thisisblindtest.com</code> a été <b>supprimé</b> et remplacé par <code>amusoire.com</code>. Il subsiste un site Webflow de <b>landing pages</b> (<code>lp.pro.thisisblindtest.com</code>, 5 LPs créées pour les campagnes publicitaires) : ses pages ont été <b>migrées sur le nouveau site</b> et il sera supprimé après la bascule des campagnes. Détail : section Sitemap de <span class="xlink"><a href="#" data-page="ref">Référence &amp; support</a></span>.</p>
+      <p>Héritage direct du renommage : <b>deux portails HubSpot</b> coexistent.</p>
+      <table>
+        <tr><th>Portail</th><th>ID</th><th>Ce qui y remonte</th></tr>
+        <tr><td><b>AMUSOIRE</b> (nouveau)</td><td><code>25692189</code></td><td>Leads licences B2B : formulaires pro, simulateur, UK</td></tr>
+        <tr><td><b>BLINDTEST</b> (historique)</td><td><code>147562037</code></td><td>Événementiel (team building, contact events) + newsletter</td></tr>
+      </table>
+      <div class="adm piege"><div class="t">Piège</div><p>Le nom du portail ne mappe pas intuitivement : les formulaires <b>pro/licences</b> remontent sur <b>AMUSOIRE</b>, l'événementiel et la newsletter sur <b>BLINDTEST</b>. Ne pas « corriger ». Détail : <span class="xlink"><a href="#" data-page="leads">Leads &amp; formulaires</a></span>.</p></div>
+      <p><b>Lieux B2C</b> : Drawing House (Paris 14) · Trinquet Village (Paris 16) · Le Môm (Paris 17) · La Valentine (Marseille).</p>
+      <div class="pagefoot" data-updated="30 juil. 2026"></div>
     </article>
 
-    <!-- 1.3 ENTREPRISE -->
-    <article class="page" id="page-entreprise">
-      <div class="crumbs">Cadre &amp; pilotage <span style="opacity:.5">›</span> <b>Entreprise &amp; marques</b></div>
-      <h1>L'entreprise &amp; ses marques</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <p>Deux marques cohabitent — c'est la clé pour comprendre le routage des leads.</p>
-      <table class="framed">
-        <tr><th>Marque</th><th>Cible</th><th>CRM / portail HubSpot</th></tr>
-        <tr><td><b>Amusoire</b></td><td>B2C — salles privées Paris &amp; Marseille</td><td>AMUSOIRE — <code>25692189</code></td></tr>
-        <tr><td><b>ThisIsBlindTest</b></td><td>B2B — licences établissements</td><td>BLINDTEST — <code>147562037</code></td></tr>
-      </table>
-      <div class="adm piege"><div class="t">🟪 Piège</div><p>Les deux marques ne mappent <b>pas</b> intuitivement sur les portails : les formulaires <b>pro/licences</b> remontent sur <b>AMUSOIRE</b>. Voir <span class="xlink"><a href="#" data-page="integ">Forms → Make → HubSpot</a></span>.</p></div>
-      <h2>Lieux (B2C)</h2>
-      <ul>
-        <li>Drawing House — Paris 14</li>
-        <li>Trinquet Village — Paris 16</li>
-        <li>Le Môm — Paris 17</li>
-        <li>La Valentine — Marseille</li>
-      </ul>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
+    <!-- 2. ÉDITER LE SITE -->
+    <article class="page" id="page-editer">
+      <h1>Éditer le site</h1>
+      <div class="page-meta"><span>Module plateforme : <b>Webflow</b></span><span>MAJ : <b>2026-07-28</b></span></div>
+      <p>La page de l'usage quotidien : contenu, blog, SEO. Les principes valent pour toute plateforme ; les gestes décrits sont Webflow.</p>
 
-    <!-- 1.4 PARTIES PRENANTES -->
-    <article class="page" id="page-parties">
-      <div class="crumbs">Cadre &amp; pilotage <span style="opacity:.5">›</span> <b>Parties prenantes &amp; gouvernance</b></div>
-      <h1>Parties prenantes &amp; gouvernance</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <h2>Annuaire</h2>
-      <table class="framed">
-        <tr><th>Rôle</th><th>Personne</th><th>Côté</th><th>Contact</th></tr>
-        <tr><td>Sponsor / décideur</td><td class="todo">(à compléter)</td><td>Amusoire</td><td class="todo">(à compléter)</td></tr>
-        <tr><td>Référent contenu</td><td class="todo">(à compléter)</td><td>Amusoire</td><td class="todo">(à compléter)</td></tr>
-        <tr><td>Lead dev / doc</td><td>Ludovic Bourgoin</td><td>Coolbeans</td><td>ludo@coolbeans.cc</td></tr>
-        <tr><td>Automatisations</td><td>Coolbeans</td><td>Coolbeans</td><td>—</td></tr>
-      </table>
-      <h2>Qui décide quoi</h2>
-      <table class="framed">
-        <tr><th>Décision</th><th>Propose</th><th>Valide</th></tr>
-        <tr><td>Mise en prod</td><td>Coolbeans</td><td>Amusoire</td></tr>
-        <tr><td>Contenu / blog</td><td>Amusoire</td><td>Amusoire</td></tr>
-        <tr><td>Évolutions techniques</td><td>Coolbeans</td><td>Amusoire (budget)</td></tr>
-      </table>
-      <h2>Demandes &amp; canaux</h2>
-      <p>Toute demande (bug ou évolution) passe par <span class="todo">(canal à compléter)</span>. Modèle de rapport de bug : voir <span class="xlink"><a href="#" data-page="collab">Collaboration &amp; support</a></span>.</p>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
-
-    <!-- 2.1 ARCHI -->
-    <article class="page" id="page-archi">
-      <div class="crumbs">Architecture <span style="opacity:.5">›</span> <b>Vue technique &amp; flux</b></div>
-      <h1>Vue technique &amp; flux</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <h2>Stack</h2>
-      <table class="framed">
-        <tr><th>Brique</th><th>Rôle</th></tr>
-        <tr><td>Webflow</td><td>Site + CMS (blog) + formulaires</td></tr>
-        <tr><td>Make</td><td>1 scénario : Webflow forms → HubSpot / Resend</td></tr>
-        <tr><td>HubSpot ×2</td><td>CRM (AMUSOIRE 25692189 · BLINDTEST 147562037)</td></tr>
-        <tr><td>Resend</td><td>Email transactionnel (mail simulateur)</td></tr>
-      </table>
-      <h2>Environnements</h2>
-      <ul><li><b>Prod</b> : <code>amusoire.com</code></li><li><b>Staging</b> : <code>site-amusoire.webflow.io</code></li></ul>
-      <h2>Schéma de flux</h2>
-      <div class="flow">
-        <div class="node">Webflow<small>form + hidden fields</small></div><span class="arrow">→</span>
-        <div class="node">Make<small>webhook</small></div><span class="arrow">→</span>
-        <div class="node">HubSpot<small>routé</small></div><span class="arrow">+</span>
-        <div class="node">Resend<small>si simulateur</small></div>
+      <h2>Les interdits</h2>
+      <div class="interdits"><div class="t">🚫 À ne jamais faire</div>
+        <ul>
+          <li>Pas d'emoji / caractères spéciaux dans les <b>slugs</b>.</li>
+          <li>Ne pas toucher aux champs techniques / ID (Make, Memberstack).</li>
+          <li>Laisser un champ <b>vide</b> plutôt qu'un espace.</li>
+          <li>Ne jamais renommer une <b>classe</b> ou un composant — casse le style partout.</li>
+        </ul>
       </div>
+
+      <h2>Publier un article</h2>
+      <ol class="steps">
+        <li><b>Save as Draft</b> — sauvegarde sans publier.</li>
+        <li><b>Stage for Publish</b> — prêt pour la prochaine mise en ligne.</li>
+        <li><b>Publish</b> — ⚠️ publie <b>tout le site</b>.</li>
+      </ol>
+      <div class="adm warn"><div class="t">Avertissement</div><p>« Publish » pousse tout le site en prod. En cas de doute, reste sur <b>Stage for Publish</b> et préviens Coolbeans.</p></div>
+
+      <h2>Blog &amp; CMS</h2>
+      <p>Une seule collection <b>Articles</b> alimente deux listings : <b>Actus</b> (B2C) et <b>Blog</b> (licences, B2B). Un article n'apparaît que sur une des deux pages.</p>
+      <table>
+        <tr><th>Champ</th><th>Rôle</th></tr>
+        <tr><td>« Quel blog ? »</td><td>Route l'article : <code>Actus</code> ou <code>Blog (licences)</code>. Le seul champ qui décide.</td></tr>
+        <tr><td>Tags</td><td>Portent le même menu Actus / Blog — ne rattacher que des tags du même blog que l'article (sinon filtrage vide ou hors contexte).</td></tr>
+        <tr><td>« Catégorie »</td><td>Label éditorial affiché (ex. <code>Quiz musical</code>) — aucun effet de routage.</td></tr>
+      </table>
+      <div class="adm piege"><div class="t">Piège — article invisible</div><p>Tant que « Quel blog ? » n'est pas renseigné, l'article n'apparaît sur <b>aucune</b> des deux pages (les Collection Lists filtrent dessus). Premier réflexe si un article publié reste introuvable.</p></div>
+      <h3>Checklist — publier sur la bonne page</h3>
+      <ol class="steps">
+        <li>Renseigner <b>« Quel blog ? »</b> = Actus ou Blog (licences).</li>
+        <li>Choisir une <b>Catégorie</b> (label affiché, sans effet de routage).</li>
+        <li>N'ajouter que des <b>tags du même blog</b>.</li>
+        <li>Publier l'article, puis <b>publier le site</b> pour rafraîchir le listing.</li>
+      </ol>
+      <p><b>Modèle éditorial</b> : titre → slug court (sans accent/emoji), catégorie obligatoire, meta title/description, alt text.</p>
+
+      <h2>SEO on-page</h2>
+      <table>
+        <tr><th>Champ</th><th>Règle</th><th>Impact</th></tr>
+        <tr><td>Meta Title</td><td>50–60 caractères, mot-clé présent</td><td>Clic depuis Google</td></tr>
+        <tr><td>Meta Description</td><td>~155 caractères</td><td>Taux de clic</td></tr>
+        <tr><td>Open Graph</td><td>Image 1200×630 + titre/desc</td><td>Rendu des partages</td></tr>
+      </table>
+      <p><b>Structure</b> : un seul <code>H1</code>, hiérarchie <code>H2/H3</code>, maillage interne, alt text sur les images.</p>
+      <p><b>Vérifier après publication</b> : Google Search Console (indexation) · Facebook Sharing Debugger (cache OG).</p>
+
+      <h2>Médias</h2>
+      <table>
+        <tr><th>Type</th><th>Règle</th></tr>
+        <tr><td>Images</td><td>&lt; 200 Ko · hero ~2500px · blog ~1200px · AVIF</td></tr>
+        <tr><td>OG image</td><td>1200×630</td></tr>
+      </table>
       <div class="pagefoot" data-updated="28 juil. 2026"></div>
     </article>
 
-    <!-- 2.2 SITEMAP -->
-    <article class="page" id="page-sitemap">
-      <div class="crumbs">Architecture <span style="opacity:.5">›</span> <b>Sitemap</b></div>
-      <h1>Sitemap</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span><span>43 pages publiées</span></div>
-      <p>Liste lisible des pages (chaque lien ouvre un nouvel onglet). Le <b>sitemap XML</b> pour les moteurs est en bas.</p>
-      <h3>Grand public</h3>
-      <ul>
-        <li><a href="https://www.amusoire.com/" target="_blank" rel="noopener">Home ↗</a></li>
-        <li><a href="https://www.amusoire.com/occasions" target="_blank" rel="noopener">Occasions ↗</a></li>
-        <li><a href="https://www.amusoire.com/entreprises" target="_blank" rel="noopener">Entreprises ↗</a> · <a href="https://www.amusoire.com/team-building" target="_blank" rel="noopener">Team Building ↗</a></li>
-        <li>Jeux : <a href="https://www.amusoire.com/jeux/blindtest" target="_blank" rel="noopener">Blindtest</a> · <a href="https://www.amusoire.com/jeux/quiz" target="_blank" rel="noopener">Quiz</a> · <a href="https://www.amusoire.com/jeux/karaoke" target="_blank" rel="noopener">Karaoke</a></li>
-        <li>Lieux : Drawing House P14 · Trinquet P16 · Le Môm P17 · Valentine Marseille</li>
-        <li><a href="https://www.amusoire.com/contact" target="_blank" rel="noopener">Contact ↗</a></li>
-      </ul>
-      <h3>Pro (B2B)</h3>
-      <ul><li><a href="https://www.amusoire.com/pro" target="_blank" rel="noopener">/pro</a> · établissements (bars-restaurants, hôtels, camping, loisirs, music-quiz) · <a href="https://www.amusoire.com/pro/simulateur" target="_blank" rel="noopener">Simulateur</a> · Blog</li></ul>
-      <h3>Legal</h3>
-      <ul><li>Mentions légales · CGV · CGU · Confidentialité · Cookies</li></ul>
-      <p style="margin-top:18px"><a href="https://www.amusoire.com/sitemap.xml" target="_blank" rel="noopener">📄 Ouvrir le sitemap.xml ↗</a></p>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
-
-    <!-- 3.1 INTÉGRATIONS (flagship) -->
-    <article class="page" id="page-integ">
-      <div class="crumbs">Intégrations <span style="opacity:.5">›</span> <b>Forms → Make → HubSpot</b></div>
-      <h1>Formulaires → Make → HubSpot</h1>
+    <!-- 3. LEADS & FORMULAIRES -->
+    <article class="page" id="page-leads">
+      <h1>Leads &amp; formulaires</h1>
       <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span><span>Statut : <b>Final</b></span><span>Portails : <b>AMUSOIRE 25692189</b> · <b>BLINDTEST 147562037</b></span></div>
-      <h2>Architecture en un coup d'œil</h2>
+
+      <h2>Le flux en un coup d'œil</h2>
       <div class="flow">
         <div class="node">Webflow<small>form + hidden fields</small></div><span class="arrow">→</span>
         <div class="node">Make<small>1 scénario, webhook</small></div><span class="arrow">→</span>
         <div class="node">HubSpot<small>routé par <code>account_target</code></small></div><span class="arrow">⇒</span>
         <span class="badge-acc amus">AMUSOIRE</span><span style="color:var(--mute)">ou</span><span class="badge-acc blind">BLINDTEST</span>
       </div>
+      <p>Cas particulier : le simulateur déclenche en plus un email récap via <b>Resend</b>.</p>
+
       <h2>Routage des 6 formulaires</h2>
-      <table class="framed">
+      <table>
         <tr><th>Formulaire</th><th><code>account_target</code></th><th>Compte</th></tr>
         <tr><td>Licences (/pro/*)</td><td><code>amusoire</code></td><td><span class="pill ok">AMUSOIRE</span></td></tr>
         <tr><td>Simulateur</td><td><code>amusoire</code></td><td><span class="pill ok">AMUSOIRE</span></td></tr>
@@ -386,183 +327,898 @@ details .shot{border:1px dashed var(--line-2);border-radius:6px;height:120px;dis
         <tr><td>Contact events</td><td><code>blindtest</code></td><td><span class="pill warn">BLINDTEST</span></td></tr>
         <tr><td>Newsletter (footer)</td><td><code>blindtest</code></td><td><span class="pill warn">BLINDTEST</span></td></tr>
       </table>
-      <div class="adm piege"><div class="t">🟪 Piège — ne pas « corriger »</div><p><b>Contre-intuitif mais exact</b> : les formulaires <b>pro</b> vont sur <b>AMUSOIRE</b>, l'événementiel + newsletter sur <b>BLINDTEST</b>. Routage réel via le champ caché <code>data-portal</code> — ne pas « rétablir la logique ».</p></div>
+      <div class="adm piege"><div class="t">Piège — ne pas « corriger »</div><p><b>Contre-intuitif mais exact</b> : les formulaires <b>pro</b> vont sur <b>AMUSOIRE</b>, l'événementiel + newsletter sur <b>BLINDTEST</b>. Ne pas « rétablir la logique ».</p></div>
+
       <h2>Le levier de routage</h2>
-<pre><span class="cm">// script global — l'attribut data-portal du &lt;form&gt; décide le portail</span>
+      <figure class="codefig"><figcaption><span>JavaScript — script global du site</span><button class="copybtn" type="button">⧉ Copier</button></figcaption><pre><span class="cm">// script global — l'attribut data-portal du &lt;form&gt; décide le portail</span>
 account_target = form.getAttribute(<span class="hl">'data-portal'</span>) || <span class="hl">'amusoire'</span>;
-<span class="cm">// blindtest → 147562037 · amusoire → 25692189</span></pre>
-      <h2>Incident &amp; correctif (pattern)</h2>
+<span class="cm">// blindtest → 147562037 · amusoire → 25692189</span></pre></figure>
+
+      <h2>Incident type &amp; correctif</h2>
       <div class="incident">
         <div class="row"><div class="k">Symptôme</div><div class="v">Un form <code>/team-building</code> remontait sur le mauvais portail.</div></div>
         <div class="row"><div class="k">Cause racine</div><div class="v">La modale <code>pro / contact modal</code> impose <code>data-portal="amusoire"</code> en dur, partagé par ses instances.</div></div>
         <div class="row"><div class="k">Correctif</div><div class="v">Détacher (unlink) l'instance sur la page, puis <code>data-portal="blindtest"</code>.</div></div>
         <div class="row"><div class="k">Étendre</div><div class="v">Toute page pro hérite d'<code>amusoire</code> — ne détacher que pour l'événementiel.</div></div>
       </div>
-      <div class="adm danger"><div class="t">🔴 Danger</div><p>La clé secrète du webhook Make n'est <b>jamais</b> dans la doc ni dans git → 1Password. Voir <span class="xlink"><a href="#" data-page="secrets">Secrets &amp; posture</a></span>.</p></div>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
 
-    <!-- 3.2 RÉFÉRENTIELS -->
-    <article class="page" id="page-refids">
-      <div class="crumbs">Intégrations <span style="opacity:.5">›</span> <b>Référentiels d'IDs</b></div>
-      <h1>Référentiels d'IDs</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <h2>Portails &amp; connexions Make</h2>
-      <table class="framed">
+      <h2>Référentiel d'IDs</h2>
+      <table>
         <tr><th>Compte</th><th>Portal ID</th><th>Connexion Make</th></tr>
         <tr><td>AMUSOIRE</td><td><code>25692189</code></td><td>My Amusoire HubSpot CRM connection</td></tr>
         <tr><td>BLINDTEST</td><td><code>147562037</code></td><td>My Blindtest HubSpot CRM connection</td></tr>
       </table>
-      <h2>Formulaires ↔ data-portal</h2>
-      <p>Tableau de correspondance form → <code>data-portal</code> → compte : voir <span class="xlink"><a href="#" data-page="integ">Forms → Make → HubSpot</a></span>.</p>
-      <div class="adm note"><div class="t">🟦 Note</div><p>Ce référentiel évolue : ajouter une entrée = ajouter une ligne. Tenir à jour à chaque nouveau formulaire.</p></div>
+      <div class="adm note"><div class="t">Note</div><p>Ce référentiel évolue : nouveau formulaire = nouvelle ligne, à tenir à jour.</p></div>
+
+      <h2>Tracking &amp; provenance</h2>
+      <p><b>L'URL de la page = source unique de vérité.</b> Le script global injecte <code>page_uri</code> (= <code>window.location.href</code>, UTMs compris) dans tout <code>&lt;form data-portal&gt;</code> ; remontée dans la propriété contact <code>url_formulaire</code>, créée sur <b>les deux portails</b>. C'est elle qui dit d'où vient le lead et quel formulaire il a rempli. Les champs existants (Provenance, Comment connu…) restent en place pour le routage commercial.</p>
+      <table>
+        <tr><th>Module Make (<code>url_formulaire</code> mappé)</th><th>Route</th><th>Portal / Form</th></tr>
+        <tr><td>15 (+ fallback 23)</td><td>Flux Amusoire</td><td><code>25692189</code> / <code>4df88a0c-…</code></td></tr>
+        <tr><td>26 (+ fallback 38)</td><td>Blindtest entreprises</td><td><code>147562037</code> / <code>b108e60c-…</code></td></tr>
+        <tr><td>46</td><td>Blindtest particuliers</td><td><code>147562037</code> / <code>45cb43a7-…</code></td></tr>
+      </table>
+      <div class="adm piege"><div class="t">Piège — pageUri ≠ propriété</div><p>Le paramètre natif <code>Page URL / pageUri</code> du module Make n'est qu'une métadonnée de timeline : ni filtrable en liste, ni utilisable en workflow. La source exploitable est la propriété <code>url_formulaire</code> mappée dans la collection <code>fields</code>.</p></div>
+      <div class="adm piege"><div class="t">Piège — cookie hutk</div><p>Le script de tracking chargé est celui du portail <b>25692189</b> → le <code>hubspotutk</code> lui appartient. Les forms du flux BLINDTEST reçoivent un <code>hutk</code> cross-portail ignoré. À aligner si on veut l'attribution parcours côté BLINDTEST.</p></div>
+
+      <h2>Récap simulateur dans HubSpot</h2>
+      <p>En parallèle du mail Resend, un récap textuel de la simulation est écrit dans la propriété contact <code>simulation_roi__recap</code> (multi-line, form <code>4df88a0c-…</code>) — les commerciaux le retrouvent dans la fiche sans dépendre du mail. Mapping présent dans le module <b>15 et son fallback 23</b>.</p>
+      <div class="adm danger"><div class="t">Danger — hutk vide = 400</div><p>Le champ « HubSpot Tracking Cookie » du module 15 doit rester <b>complètement vide</b>. Un <code>hs_context</code> vide envoyé comme hutk → <code>400 — is not a valid Hutk</code>, le module 15 échoue, seul le fallback 23 tourne : sans le mapping dans le 23, le récap n'arrive jamais.</p></div>
+      <ul>
+        <li>Contenu du récap en <b>ASCII pur</b> (ni accents ni €) : un copy-paste avait corrompu l'encodage (<code>reçue → reÃ§ue</code>). Pour modifier : taper directement dans Make.</li>
+        <li>Champ ajouté côté form HubSpot invisible dans le mapper Make ? <b>Rafraîchir la structure</b> : module → champ « Form » → retirer puis re-sélectionner le form.</li>
+      </ul>
+
+      <h2>Pièges des dropdowns</h2>
+      <p>Un champ HubSpot de type menu déroulant rejette (ou stocke en valeur orpheline) toute valeur qui ne matche pas <b>caractère pour caractère</b>, casse comprise, une valeur interne. Webflow envoie l'attribut <code>value</code> de l'<code>&lt;option&gt;</code>, pas le texte affiché (le form UK affiche « Social media » mais envoie <code>Réseaux Sociaux</code>).</p>
+      <table>
+        <tr><th>Champ HubSpot</th><th>Type</th><th>Statut</th></tr>
+        <tr><td><code>etablissement</code></td><td>dropdown</td><td><span class="pill ok">OK</span> 6/6 valeurs alignées</td></tr>
+        <tr><td><code>heures_rappel</code></td><td>texte libre</td><td><span class="pill ok">OK</span> aucune contrainte</td></tr>
+        <tr><td><code>comment_vous_nous_avez_connu__</code></td><td>dropdown</td><td><span class="pill warn">Corrigé</span> <code>Réseaux sociaux</code> ≠ <code>Réseaux Sociaux</code> — réaligné dans les 3 forms Webflow</td></tr>
+      </table>
+
+      <h2>Tester la pipeline (QA)</h2>
+      <p>Les forms Webflow rejettent les soumissions automatisées (<code>422 — Could not process the form submission</code>, anti-spam sans reCAPTCHA). Pour tester Make → HubSpot sans soumission manuelle : <b>POST directement sur le webhook</b> (hook « Webflow Leads », id <code>2445505</code> — URL à récupérer dans Make, jamais stockée dans le repo).</p>
+      <details><summary>Payload de test (réplique du webhook Webflow <code>form_submission</code>)</summary>
+      <figure class="codefig"><figcaption><span>JSON — body du POST</span><button class="copybtn" type="button">⧉ Copier</button></figcaption><pre data-hl="json">{
+  "triggerType": "form_submission",
+  "payload": {
+    "name": "Formulaire Licences",
+    "siteId": "696fc31b2211286a7d8ca4cf",
+    "pageUrl": "https://www.amusoire.com/pro",
+    "data": {
+      "firstname": "QA", "lastname": "Test", "email": "qa+test@coolbeans.cc",
+      "phone": "0600000000", "company": "QA - a supprimer", "zip": "75001",
+      "type": "Bar", "source": "Réseaux Sociaux", "message": "test - a supprimer",
+      "account_target": "amusoire", "form_type": "", "page_uri": "https://www.amusoire.com/pro",
+      "hs_context": "", "heure_rappel": "Matin (9h / 12h)", "RGPD": "true"
+    }
+  }
+}</pre></figure></details>
+      <p><b>Routage du test</b> : <code>account_target</code> au Router 12, puis <code>typologie</code> (<code>Entreprise</code>/<code>Particulier</code>) au Router 45. Pour viser le module 46 (particuliers) : <code>account_target=blindtest</code> + <code>typologie=Particulier</code>.</p>
+      <div class="adm warn"><div class="t">Avertissement</div><p>Chaque POST crée un <b>vrai contact</b> dans le CRM du client → adresses <code>qa+…@</code> et suppression après vérif. La vérif finale se fait dans la fiche HubSpot (Make n'expose pas la valeur mappée).</p></div>
+
+      <div class="adm danger"><div class="t">Danger</div><p>La clé secrète du webhook Make n'est <b>jamais</b> dans la doc ni dans git → 1Password. Voir <span class="xlink"><a href="#" data-page="secu">Sécurité &amp; conformité</a></span>.</p></div>
       <div class="pagefoot" data-updated="28 juil. 2026"></div>
     </article>
 
-    <!-- 4.1 SIMULATEUR -->
+    <!-- 4. SIMULATEUR ROI -->
     <article class="page" id="page-simulateur">
-      <div class="crumbs">Features sur-mesure <span style="opacity:.5">›</span> <b>Simulateur ROI</b></div>
       <h1>Simulateur ROI</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span><span>Page : <code>/pro/simulateur</code></span></div>
-      <h2>Ce que c'est</h2>
-      <p>Un calculateur de gains pour les établissements. Formulaire multi-étapes, résultats chiffrés, puis email récap (via Resend).</p>
-      <h2>Logique de calcul</h2>
-      <p>Les coefficients sont <b>éditables sans code</b> via des <code>Custom Attributes</code> Webflow. Le calcul se fait dans <code>calculator.ts</code> (bundle JS).</p>
-      <h2>Bundle JS — mise à jour</h2>
+      <div class="page-meta"><span>Page : <code>/pro/simulateur</code></span><span>MAJ : <b>2026-07-30</b></span><span>Portail : <b>AMUSOIRE 25692189</b></span><span>Source : <code>PASSATION.md</code> (repo)</span></div>
+      <p>Le prospect simule le CA additionnel généré par les jeux Amusoire dans son établissement. À la soumission : création du contact HubSpot + mail récap personnalisé via Resend.</p>
+
+      <h2>Flow &amp; stack</h2>
+<pre>Étape 1 — Secteur d'activité (radios)
+Étape 2 — Modes d'utilisation (1 à 3 checkboxes) : RDV récurrents · Espace privatif · Team Building
+Étape 3 — Saisie des données (blocs conditionnels selon l'étape 2)
+Étape 4 — ROI calculé (CA brut, coût licence, gain net)
+Étape 5 — Contact + submit → Webhook Make → HubSpot + Resend</pre>
+      <table>
+        <tr><th>Couche</th><th>Outil</th><th>Rôle</th></tr>
+        <tr><td>Design / DOM</td><td>Webflow</td><td>Structure HTML, classes, styles</td></tr>
+        <tr><td>Multi-step form</td><td>Inputflow</td><td>Navigation entre étapes, transitions</td></tr>
+        <tr><td>Logique custom</td><td>Bundle TS (repo <code>amusoire</code>)</td><td>Validation, affichage conditionnel, calcul ROI, hidden fields</td></tr>
+        <tr><td>Bundler</td><td>esbuild</td><td>Build → <code>dist/index.js</code> + <code>dist/index.css</code></td></tr>
+        <tr><td>Orchestration</td><td>Make</td><td>Réception du form, dispatch HubSpot + Resend</td></tr>
+        <tr><td>CRM</td><td>HubSpot <code>25692189</code></td><td>Contact / company / form submission</td></tr>
+        <tr><td>Email</td><td>Resend (<code>send.amusoire.com</code>)</td><td>Mail récapitulatif</td></tr>
+      </table>
+      <div class="adm note"><div class="t">Note — pourquoi Resend</div><p>Le mail prospect passe par Resend, pas par HubSpot : l'add-on Transactional Email HubSpot coûte ~600 $/mois. Resend : délivrabilité équivalente, quota gratuit 3 000 mails/mois (100/jour), découplé du CRM.</p></div>
+
+      <h2>Calculs &amp; coefficients</h2>
+      <p>Deux niveaux de modification :</p>
+      <ul>
+        <li><b>Coefficients business</b> — sans code, via Custom Attributes Webflow (ci-dessous).</li>
+        <li><b>Formules</b> — dans <code>src/utils/calculator.ts</code>, puis <code>pnpm build</code> et re-collage du bundle (voir Bundle JS).</li>
+      </ul>
+      <p>Attributs posés sur <code>.simulator_form-wrapper</code> (Designer → Settings → Custom Attributes) :</p>
+      <table>
+        <tr><th>Attribut</th><th>Défaut</th><th>Description</th></tr>
+        <tr><td><code>data-rdv-rate</code></td><td><code>0.3</code></td><td>Taux de majoration F&amp;B pour les RDV (30 %)</td></tr>
+        <tr><td><code>data-privatif-ratio</code></td><td><code>1.5</code></td><td>m² nécessaires par joueur (privatif)</td></tr>
+        <tr><td><code>data-rdv-monthly-licence</code></td><td><code>159</code></td><td>Coût mensuel licence RDV (€)</td></tr>
+        <tr><td><code>data-privatif-monthly-licence</code></td><td><code>279</code></td><td>Coût mensuel licence Privatif (€)</td></tr>
+      </table>
+      <table>
+        <tr><th>Bloc</th><th>Formule CA annuel</th><th>Palier licence mensuel</th></tr>
+        <tr><td>RDV</td><td><code>#rdv-ca × rdv-rate × 52</code></td><td>159 €</td></tr>
+        <tr><td>Privatif</td><td><code>(#input-surface ÷ privatif-ratio) × #input-prix-joueur × #input-jours × 52</code></td><td>279 € (BUSINESS)</td></tr>
+        <tr><td>Team Building</td><td><code>#input-personnes × #input-prix-joueur-team-b × #input-frequence × 12</code></td><td>gratuit (0)</td></tr>
+      </table>
+      <div class="adm piege"><div class="t">Piège — palier max, pas la somme</div><p><b>Coût licence annuel = <code>max(paliers cochés) × 12</code></b>. Plusieurs objectifs cochés = une seule licence, la plus élevée. Ex : RDV + Privatif → <code>max(159, 279) × 12 = 3 348 €</code>, et non <code>(159 + 279) × 12</code>.</p></div>
+      <p><b>Gain net annuel</b> = CA total − coût licence. <span class="todo">À faire (reporté)</span> : mention « tarif valable pour un engagement 24 mois » (confirmée le 2026-07-24), non implémentée.</p>
+      <p><b>Recalcul</b> : au chargement, à chaque input/checkbox, au clic « Étape suivante » (délai 100 ms pour Inputflow), et quand le step ROI devient visible (<code>MutationObserver</code>) — les hidden inputs sont à jour au submit.</p>
+
+      <h2>Hidden inputs</h2>
+      <p>11 inputs cachés du formulaire final, tous remplis par <code>calculator.ts</code> (Webflow strippe les <code>value</code> statiques au publish).</p>
+      <table>
+        <tr><th>Name (clé Make)</th><th>Contenu</th></tr>
+        <tr><td><code>form_type</code></td><td><code>simulateur</code> (constant — filtre de la route mail)</td></tr>
+        <tr><td><code>ca_rdv</code> · <code>ca_privatif</code> · <code>ca_team_building</code></td><td>CA additionnel annuel par levier (€)</td></tr>
+        <tr><td><code>ca_total</code> · <code>cout_licence</code> · <code>gain_net</code></td><td>Totaux (€)</td></tr>
+        <tr><td><code>flag_rdv</code> · <code>flag_privatif</code> · <code>flag_team_building</code></td><td><code>"true"</code> / <code>""</code> — levier sélectionné</td></tr>
+        <tr><td><code>flag_tout_coche</code></td><td>non utilisé côté Make (logique <code>&amp;</code> des 3 flags dans le module 52) ; injecté pour usage futur</td></tr>
+      </table>
+      <div class="adm piege"><div class="t">Piège — jamais <code>"false"</code></div><p>Make évalue toute chaîne non vide comme truthy dans <code>{{if(...)}}</code> : <code>"false"</code> passerait la condition à vrai. Non coché = <b>chaîne vide</b>, la seule valeur falsy fiable.</p></div>
+      <div class="adm warn"><div class="t">Avertissement</div><p><b><code>required</code> à retirer côté Webflow</b> sur tous les hidden inputs et la checkbox RGPD : un champ requis invisible bloque la soumission sans erreur visible. La validation RGPD est faite en JS (<code>validation.ts</code>).</p></div>
+
+      <h2>DOM Webflow — référence</h2>
+      <table>
+        <tr><th>Élément</th><th>Sélecteur · note</th></tr>
+        <tr><td>Formulaire</td><td><code>#formulaire-simulateur</code> — si renommé, mettre à jour <code>validation.ts:77</code></td></tr>
+        <tr><td>Étapes / navigation</td><td><code>.simulator_step</code> · <code>[if-element="button-next"]</code> · <code>[if-step="ROI"]</code> · <code>.progress_item</code> (Inputflow)</td></tr>
+        <tr><td>Checkboxes étape 2</td><td><code>secteur-activite</code> · <code>utilisation-rdv</code> · <code>utilisation-privatif</code> · <code>utilisation-team-building</code></td></tr>
+        <tr><td>Inputs étape 3</td><td><code>#rdv-ca</code> · <code>#input-surface</code> · <code>#input-prix-joueur</code> · <code>#input-jours</code> · <code>#input-personnes</code> · <code>#input-prix-joueur-team-b</code> · <code>#input-frequence</code></td></tr>
+        <tr><td>Blocs conditionnels</td><td><code>.block-rdv</code> · <code>.block-privatif</code> · <code>.block-team-building</code></td></tr>
+        <tr><td>Outputs étape 4</td><td><code>#result-ca-brut</code> · <code>#result-cout-licence</code> · <code>#result-benefice-net</code> (format FR)</td></tr>
+        <tr><td>RGPD</td><td><code>#RGPD</code> (input cachée) + wrapper <code>.form_checkbox</code> (classe <code>is-error</code> si submit sans coche)</td></tr>
+      </table>
+      <div class="adm warn"><div class="t">Avertissement</div><p>Le bouton de soumission doit être un <b>Submit Button Webflow natif</b> (<code>&lt;input type="submit"&gt;</code>). Un Link Block / Button (rendus <code>&lt;a&gt;</code>) ne déclenche pas le submit.</p></div>
+
+      <h2>Pipeline Make + Resend</h2>
+<pre>Webhook (id 3) → Router 12
+  ├─ Route 1 : Flux Amusoire   (account_target = "amusoire") → HubSpot CRM
+  ├─ Route 2 : Flux Blindtest  (account_target = "blindtest")
+  └─ Route 3 : Mail simulateur (account_target = "amusoire" AND form_type = "simulateur")
+      ├─ SetVariables "chunks" (id 51)             — 7 chunks HTML en variables
+      ├─ SetVariables "blocs conditionnels" (id 52) — 7 if(truthiness) + cta_url
+      └─ Resend "Send an Email" (id 47)            — squelette avec {{52.bloc_*}} et {{52.cta_url}}</pre>
+      <div class="adm danger"><div class="t">Danger — filtre de la route 3</div><p>Colonne A = la <b>variable Make</b> (<code>{{3.payload.data.account_target}}</code>), colonne B = la <b>string littérale</b>. L'inverse (texte brut en colonne A) rend le filtre toujours faux → aucun mail. Le double filtre est indispensable : sans <code>form_type = simulateur</code>, un mail partirait pour <b>toutes</b> les soumissions Amusoire.</p></div>
+      <p>Module 51 « chunks » <i>(scope roundtrip)</i> — coller chaque fichier dans sa variable :</p>
+      <table>
+        <tr><th>Variable Make</th><th>Source repo</th></tr>
+        <tr><td><code>chunk_rdv</code> · <code>chunk_privatif</code> · <code>chunk_team_building</code></td><td><code>email/chunks/rdv.html</code> · <code>privatif.html</code> · <code>team-building.html</code></td></tr>
+        <tr><td><code>chunk_allez_plus_loin_header</code></td><td><code>email/chunks/allez-plus-loin-header.html</code></td></tr>
+        <tr><td><code>chunk_not_rdv</code> · <code>chunk_not_privatif</code> · <code>chunk_not_team_building</code></td><td><code>email/chunks/not-*.html</code></td></tr>
+      </table>
+      <p>Module 52 « blocs conditionnels » — 7 expressions IML (truthiness sur les flags, chaîne vide = falsy) :</p>
+      <figure class="codefig"><figcaption><span>Make IML — module SetVariables 52</span><button class="copybtn" type="button">⧉ Copier</button></figcaption><pre data-hl="iml">bloc_rdv               {{if(3.payload.data.flag_rdv; 51.chunk_rdv; )}}
+bloc_privatif          {{if(3.payload.data.flag_privatif; 51.chunk_privatif; )}}
+bloc_team_building     {{if(3.payload.data.flag_team_building; 51.chunk_team_building; )}}
+bloc_not_rdv           {{if(3.payload.data.flag_rdv; ; 51.chunk_not_rdv)}}
+bloc_not_privatif      {{if(3.payload.data.flag_privatif; ; 51.chunk_not_privatif)}}
+bloc_not_team_building {{if(3.payload.data.flag_team_building; ; 51.chunk_not_team_building)}}
+bloc_allez_plus_loin   {{if(3.payload.data.flag_rdv &amp; 3.payload.data.flag_privatif
+                          &amp; 3.payload.data.flag_team_building; ; 51.chunk_allez_plus_loin_header)}}</pre></figure>
+      <p>Module Resend 47 : connection <code>Resend Amusoire</code> · from <code>Amusoire &lt;noreply@send.amusoire.com&gt;</code> · to <code>{{3.payload.data.email}}</code> · objet « Vos revenus additionnels avec l'offre Amusoire » · body HTML = <code>email/template-resend-body.html</code>. <b>3 ops Make par mail.</b></p>
+      <div class="adm warn"><div class="t">Avertissement</div><p>Avant collage du squelette dans le module 47 : remplacer toutes les occurrences <code>{{N.</code> par <code>{{52.</code> (rappel en tête du fichier).</p></div>
+
+      <h2>CTA dynamique du mail</h2>
+      <p>Le bouton CTA pointe vers l'un de 4 calendriers HubSpot Meetings selon le couple <b>(département, secteur)</b> — variable <code>cta_url</code> calculée dans le module 52 depuis <code>zip</code> et <code>secteur-activite</code> :</p>
+      <table>
+        <tr><th>Critère</th><th>Calendrier</th></tr>
+        <tr><td>Département 75, tout secteur</td><td><code>…/thisisblindtest/rdv-demo</code></td></tr>
+        <tr><td>Hors 75 — Bar/Restaurant ou Hôtel</td><td><code>…/noemie-boiton/rdvdemo</code></td></tr>
+        <tr><td>Hors 75 — Camping/Club ou Loisirs</td><td><code>…/maxime-costeau/reserver-demo</code></td></tr>
+        <tr><td>Hors 75 — Autre (fallback)</td><td><code>…/noemie-boiton/rdv-demo</code></td></tr>
+      </table>
+      <figure class="codefig"><figcaption><span>Make IML — variable cta_url (module 52)</span><button class="copybtn" type="button">⧉ Copier</button></figcaption><pre data-hl="iml">{{if(substring(3.payload.data.zip + ""; 0; 2) = "75";
+  "https://pro.thisisblindtest.com/meetings/thisisblindtest/rdv-demo";
+  if(get(3.payload.data; "secteur-activite") = "bar-restau" | get(3.payload.data; "secteur-activite") = "hotel";
+    "https://pro.thisisblindtest.com/meetings/noemie-boiton/rdvdemo";
+    if(get(3.payload.data; "secteur-activite") = "camping" | get(3.payload.data; "secteur-activite") = "loisirs";
+      "https://pro.thisisblindtest.com/meetings/maxime-costeau/reserver-demo";
+      "https://pro.thisisblindtest.com/meetings/noemie-boiton/rdv-demo")))}}</pre></figure>
+      <ul>
+        <li><b>Slugs ≠ labels</b> : Webflow envoie le slug (<code>bar-restau</code>, <code>hotel</code>, <code>camping</code>, <code>loisirs</code>, <code>autre</code>), pas le label affiché.</li>
+        <li><code>zip + ""</code> caste le zip (number) en texte avant <code>substring</code> ; <code>get(…)</code> est obligatoire car <code>secteur-activite</code> contient un tiret (la dot-notation serait lue comme une soustraction).</li>
+        <li>Tester les 4 buckets : History → « Run once » en modifiant le payload (<code>75010</code> · <code>33000 + bar-restau</code> · <code>44000 + camping</code> · <code>69000 + autre</code>).</li>
+      </ul>
+
+      <h2>Mail prospect — édition</h2>
+      <div class="adm note"><div class="t">Note — workflow client</div><p>Le client ne touche ni à Make ni au repo : toute demande de modif par email à <code>ludo@trigger.fr</code> (bloc concerné + phrase actuelle → nouvelle version). Livraison sous <b>48–72 h ouvrées</b>. Inclus : copy, coquille, objet/preheader, structure mineure. Sur devis : refonte design, nouveau bloc conditionnel, nouvelle logique.</p></div>
+<pre>email/template.mjml              ← source éditable (MJML)
+email/template.html              ← compilé, toutes sections visibles (relecture)
+email/chunks/*.html              ← 7 chunks → module SetVariables 51
+email/template-resend-body.html  ← squelette {{N.bloc_*}} → module Resend 47 ({{N. → {{52.)</pre>
+      <table>
+        <tr><th>Section du mail</th><th>Condition</th></tr>
+        <tr><td>Intro + total gain (<code>firstname</code>, <code>gain_net</code>)</td><td>toujours</td></tr>
+        <tr><td>Leviers RDV / Privatif / Team B. (<code>ca_*</code>)</td><td><code>flag_*</code> truthy</td></tr>
+        <tr><td>« Allez plus loin » + suggestions</td><td>flags manquants (inverse)</td></tr>
+        <tr><td>Bloc accompagnement · CTA + note légale (<code>cta_url</code>)</td><td>toujours</td></tr>
+      </table>
       <ol class="steps">
-        <li>Modifier le code dans <code>src/</code>.</li>
-        <li><code>npm run build</code> → <code>dist/index.js</code> + <code>dist/index.css</code>.</li>
-        <li>Coller dans Webflow → /simulateur → Custom Code (head + before &lt;/body&gt;).</li>
-        <li>Publier sur <b>staging</b> d'abord.</li>
+        <li>Éditer <code>email/template.mjml</code>.</li>
+        <li><code>npx mjml email/template.mjml -o email/template.html</code> (preview de relecture).</li>
+        <li>Répercuter dans les fichiers impactés : chunk → <code>email/chunks/*.html</code> ; squelette → <code>template-resend-body.html</code>.</li>
+        <li>Commit + push.</li>
+        <li>Recoller dans Make : chunk → module 51 ; squelette → module 47 (avec <code>{{N.</code> → <code>{{52.</code>).</li>
       </ol>
-      <div class="adm piege"><div class="t">🟪 Piège</div><p>La doc technique détaillée du simulateur vit dans la <b>Docsify live</b> de la cliente — ne pas la dupliquer ici, la <span class="xlink"><a href="#">lier ↗</a></span>.</p></div>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+      <p>Le logo du mail est servi depuis le <b>HubSpot File Manager</b> du client (pas le repo) : uploader la nouvelle version → coller l'URL dans <code>template.mjml</code> → recompiler.</p>
+
+      <h2>Bundle JS — intégration Webflow</h2>
+      <p>TypeScript + esbuild (starter Finsweet), pnpm. Sortie : <code>dist/index.js</code> (~5 KB) + <code>dist/index.css</code> (~2,5 KB). Scripts : <code>pnpm dev</code> (watch + localhost:3000) · <code>pnpm build</code> · <code>pnpm check</code> · <code>pnpm lint</code>.</p>
+      <p><b>Inliné directement dans Webflow</b> (pas de CDN) : le repo est privé (jsDelivr ne sert que le public) et l'inlining déploie immédiatement.</p>
+      <ol class="steps">
+        <li>Modifier le code dans <code>src/</code> (ex. <code>calculator.ts</code>).</li>
+        <li><code>pnpm build</code>.</li>
+        <li>Webflow → Pages → /pro/simulateur → Settings → Custom Code : <code>dist/index.css</code> dans <code>&lt;style&gt;</code> (head) · <code>dist/index.js</code> dans <code>&lt;script&gt;</code> (before <code>&lt;/body&gt;</code>).</li>
+        <li>Publish (staging d'abord).</li>
+      </ol>
+      <div class="adm warn"><div class="t">Avertissement</div><p><b>Ne pas retirer</b> les deux scripts InputFlow du head : ils gèrent <code>[if-step="ROI"]</code> et <code>[if-element="button-next"]</code> utilisés par le code custom.</p></div>
+
+      <h2>Vigilance</h2>
+      <ul>
+        <li><code>required</code> sur blocs masqués : géré par <code>conditionalDisplay.ts</code> (<code>dataset.wasRequired</code>) — ne pas retirer cette logique.</li>
+        <li>Checkbox RGPD : validation JS (<code>validation.ts</code>), ne pas réactiver <code>required</code> côté Webflow.</li>
+        <li>Coefficients business : toujours passer par les Custom Attributes, pas par le code.</li>
+        <li>Scénario Make : stable — le mail prospect = 3 modules (51/52/47) sur la route 3, pas de scénario séparé. Ne pas réécrire les branches existantes.</li>
+        <li>Flags : strings <code>"true"</code>/<code>""</code>, jamais <code>"false"</code>.</li>
+        <li>CTA : 4 URLs en dur dans la formule du module 52 — à mettre à jour si un calendrier change ou un commercial arrive.</li>
+        <li>API Key Resend : jamais dans le repo (module Make / coffre client).</li>
+        <li>En prod : vérifier que le script est bien inliné, aucune référence <code>cdn.jsdelivr.net/gh/ludobourgoin/amusoire</code> (404, repo privé).</li>
+      </ul>
+      <h2>Code de référence</h2>
+      <p>Source complète du bundle (repo <code>ludobourgoin/amusoire</code>, dossier <code>src/</code>), compilée par esbuild en <code>dist/index.js</code> + <code>dist/index.css</code> (générés, non reproduits ici).</p>
+
+      <details><summary><code>src/index.ts</code> — point d'entrée (init des 4 modules)</summary>
+      <figure class="codefig"><figcaption><span>TypeScript — src/index.ts</span><button class="copybtn" type="button">⧉ Copier</button></figcaption><pre data-hl="ts">import './index.css';
+
+import { setupCalculator } from '$utils/calculator';
+import { setupConditionalDisplay } from '$utils/conditionalDisplay';
+import { setupProgressBarObserver } from '$utils/progressBar';
+import { setupStepValidation } from '$utils/validation';
+
+window.Webflow ||= [];
+window.Webflow.push(() =&gt; {
+  console.log('🚀 Le code local est bien connecté à Webflow !');
+  setupProgressBarObserver();
+  setupStepValidation();
+  setupConditionalDisplay();
+  setupCalculator();
+});</pre></figure></details>
+
+      <details><summary><code>src/utils/calculator.ts</code> — calcul ROI + hidden inputs</summary>
+      <figure class="codefig"><figcaption><span>TypeScript — src/utils/calculator.ts</span><button class="copybtn" type="button">⧉ Copier</button></figcaption><pre data-hl="ts">/**
+ * calculator.ts
+ * Calcule en temps réel l'impact sur le CA, affiche les résultats dans l'écran 4,
+ * et remplit les hidden inputs du formulaire pour le payload Make → Resend (mail prospect).
+ *
+ * Formules CA :
+ *  - RDV       : CA (#rdv-ca) × rdv-rate × 52
+ *  - Privatif  : (Surface (#input-surface) ÷ privatif-ratio) × Prix (#input-prix-joueur) × Jours (#input-jours) × 52
+ *  - Team B.   : Personnes (#input-personnes) × Prix (#input-prix-joueur-team-b) × Fréquence (#input-frequence) × 12
+ *
+ * Coût de licence : palier le plus élevé parmi les objectifs cochés × 12 (PAS la somme).
+ *  - RDV = 159 €/mois · Privatif (BUSINESS) = 279 €/mois · Événementiel = gratuit (0).
+ *  - Ex : RDV + Privatif → max(159, 279) × 12 = 3 348 € (une seule licence BUSINESS).
+ *
+ * Config (Custom Attributes sur .simulator_form-wrapper) :
+ *  - data-rdv-rate              : taux de majoration F&amp;B pour les RDV (défaut : 0.3 → 30%)
+ *  - data-privatif-ratio        : m² nécessaires par joueur (défaut : 1.5)
+ *  - data-rdv-monthly-licence   : coût mensuel licence RDV (défaut : 159 €)
+ *  - data-privatif-monthly-licence : coût mensuel licence Privatif (défaut : 279 €)
+ *
+ * Hidden inputs remplis (cf. PASSATION.md §7) :
+ *  - hidden-ca-rdv, hidden-ca-privatif, hidden-ca-team-building, hidden-ca-total
+ *  - hidden-cout-licence, hidden-gain-net
+ *  - hidden-flag-rdv, hidden-flag-privatif, hidden-flag-team-building, hidden-flag-tout-coche
+ */
+
+/** Formate un nombre en chaîne lisible avec séparateur d'espace (ex: 12 500) */
+const formatNumber = (value: number): string =&gt; {
+  return Math.round(value).toLocaleString('fr-FR');
+};
+
+/** Lit la valeur numérique d'un input par son ID. Retourne 0 si l'élément est absent ou vide. */
+const getInputValue = (id: string): number =&gt; {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  if (!el) return 0;
+  const parsed = parseFloat(el.value);
+  return isNaN(parsed) ? 0 : parsed;
+};
+
+/** Injecte du texte dans un élément par son ID, sans écraser l'unité (€) adjacente. */
+const setResultText = (id: string, value: number): void =&gt; {
+  const el = document.getElementById(id);
+  if (el) el.textContent = formatNumber(value);
+};
+
+/** Écrit une valeur dans un input caché (par ID). Utilisé pour le payload Make/Resend. */
+const setHiddenValue = (id: string, value: string): void =&gt; {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  if (el) el.value = value;
+};
+
+/** Retourne true si la checkbox correspondante est cochée */
+const isChecked = (name: string): boolean =&gt; {
+  const el = document.querySelector&lt;HTMLInputElement&gt;(`input[name="${name}"]`);
+  return el?.checked ?? false;
+};
+
+export const setupCalculator = (): void =&gt; {
+  // --- Lecture de la configuration depuis les Custom Attributes Webflow ---
+  const formWrapper = document.querySelector&lt;HTMLElement&gt;('.simulator_form-wrapper');
+  const rdvRate = parseFloat(formWrapper?.dataset.rdvRate ?? '0.3');
+  const privatifRatio = parseFloat(formWrapper?.dataset.privatifRatio ?? '1.5');
+  const rdvMonthlyLicence = parseFloat(formWrapper?.dataset.rdvMonthlyLicence ?? '159');
+  const privatifMonthlyLicence = parseFloat(formWrapper?.dataset.privatifMonthlyLicence ?? '279');
+
+  // Champ statique : identifie le formulaire pour le routage côté Make (filtre du module Resend).
+  // Webflow strippe les `value` statiques sur les inputs au publish, donc on l'injecte ici.
+  setHiddenValue('hidden-form-type', 'simulateur');
+
+  // --- Fonction de calcul principale ---
+  const calculate = (): void =&gt; {
+    let caRdv = 0;
+    let caPrivatif = 0;
+    let caTeamBuilding = 0;
+    let licenceMensuelle = 0;
+
+    const flagRdv = isChecked('utilisation-rdv');
+    const flagPrivatif = isChecked('utilisation-privatif');
+    const flagTeamBuilding = isChecked('utilisation-team-building');
+
+    // Bloc RDV : CA ce soir-là × taux (30%) × 52 semaines
+    if (flagRdv) {
+      const ca = getInputValue('rdv-ca');
+      caRdv = ca * rdvRate * 52;
+      licenceMensuelle = Math.max(licenceMensuelle, rdvMonthlyLicence);
+    }
+
+    // Bloc Privatif : (Surface ÷ ratio) × Prix joueur × Jours × 52 semaines
+    if (flagPrivatif) {
+      const surface = getInputValue('input-surface');
+      const prix = getInputValue('input-prix-joueur');
+      const jours = getInputValue('input-jours');
+      const joueurs = privatifRatio &gt; 0 ? surface / privatifRatio : 0;
+      caPrivatif = joueurs * prix * jours * 52;
+      licenceMensuelle = Math.max(licenceMensuelle, privatifMonthlyLicence);
+    }
+
+    // Bloc Team Building : Personnes × Prix joueur × Fréquence × 12 mois
+    // Offre événementielle : gratuite (palier 0). Ne fait jamais monter la licence.
+    if (flagTeamBuilding) {
+      const personnes = getInputValue('input-personnes');
+      const prix = getInputValue('input-prix-joueur-team-b');
+      const frequence = getInputValue('input-frequence');
+      caTeamBuilding = personnes * prix * frequence * 12;
+    }
+
+    // Licence = palier le plus élevé parmi les objectifs cochés × 12 (PAS la somme).
+    // Un prospect qui coche plusieurs objectifs ne paie qu'une seule licence, la plus chère.
+    const licenceCost = licenceMensuelle * 12;
+
+    const caTotal = caRdv + caPrivatif + caTeamBuilding;
+    const beneficeNet = caTotal - licenceCost;
+    const flagToutCoche = flagRdv &amp;&amp; flagPrivatif &amp;&amp; flagTeamBuilding;
+
+    // Injection des résultats dans l'écran 4 (affichage formaté)
+    setResultText('result-ca-brut', caTotal);
+    setResultText('result-cout-licence', licenceCost);
+    setResultText('result-benefice-net', beneficeNet);
+
+    // Hidden inputs (payload envoyé à Make → Resend pour le mail prospect).
+    // Valeurs en string brute (entier arrondi, pas de séparateur) : le formatting visuel
+    // est fait côté template mail.
+    const intStr = (n: number) =&gt; Math.round(n).toString();
+    setHiddenValue('hidden-ca-rdv', intStr(caRdv));
+    setHiddenValue('hidden-ca-privatif', intStr(caPrivatif));
+    setHiddenValue('hidden-ca-team-building', intStr(caTeamBuilding));
+    setHiddenValue('hidden-ca-total', intStr(caTotal));
+    setHiddenValue('hidden-cout-licence', intStr(licenceCost));
+    setHiddenValue('hidden-gain-net', intStr(beneficeNet));
+    // Levier coché → "true" (truthy en IML Make) → le bloc s'affiche.
+    // Non coché → "" (string vide, seul falsy fiable pour un input HTML qui ne supporte que des strings).
+    // Si on envoyait "false", Make traiterait toute string non vide comme truthy → bug.
+    setHiddenValue('hidden-flag-rdv', flagRdv ? 'true' : '');
+    setHiddenValue('hidden-flag-privatif', flagPrivatif ? 'true' : '');
+    setHiddenValue('hidden-flag-team-building', flagTeamBuilding ? 'true' : '');
+    setHiddenValue('hidden-flag-tout-coche', flagToutCoche ? 'true' : '');
+  };
+
+  // --- Attache les écouteurs sur tous les champs de l'écran 3 ---
+  const inputIds = [
+    'rdv-ca',
+    'input-surface',
+    'input-prix-joueur',
+    'input-jours',
+    'input-personnes',
+    'input-prix-joueur-team-b',
+    'input-frequence',
+  ];
+
+  inputIds.forEach((id) =&gt; {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', calculate);
+  });
+
+  // Recalcule aussi si les checkboxes de l'écran 2 changent
+  ['utilisation-rdv', 'utilisation-privatif', 'utilisation-team-building'].forEach((name) =&gt; {
+    const el = document.querySelector&lt;HTMLInputElement&gt;(`input[name="${name}"]`);
+    if (el) el.addEventListener('change', calculate);
+  });
+
+  // --- Recalcule à chaque clic sur "Étape suivante" ---
+  // Inputflow met un court délai pour animer la transition.
+  // On laisse 100ms pour qu'il finisse d'afficher le nouveau step.
+  document.querySelectorAll('[if-element="button-next"]').forEach((btn) =&gt; {
+    btn.addEventListener('click', () =&gt; {
+      setTimeout(calculate, 100);
+    });
+  });
+
+  // --- Observer la visibilité du step ROI ---
+  // Si Inputflow réinitialise visuellement le step lors de la navigation,
+  // on intercepte ce changement et on re-injecte les valeurs calculées.
+  const roiStep = document.querySelector('[if-step="ROI"]');
+  if (roiStep) {
+    const observer = new MutationObserver(() =&gt; {
+      calculate();
+    });
+    observer.observe(roiStep, { attributes: true, attributeFilter: ['style', 'class'] });
+  }
+
+  // Calcul initial au chargement (pour afficher les valeurs par défaut des sliders)
+  calculate();
+};</pre></figure></details>
+
+      <details><summary><code>src/utils/validation.ts</code> — validation des étapes + RGPD</summary>
+      <figure class="codefig"><figcaption><span>TypeScript — src/utils/validation.ts</span><button class="copybtn" type="button">⧉ Copier</button></figcaption><pre data-hl="ts">export const setupStepValidation = () =&gt; {
+  const steps = document.querySelectorAll&lt;HTMLElement&gt;('.simulator_step');
+  if (steps.length &lt; 2) return;
+
+  const step1 = steps[0];
+  const step2 = steps[1];
+
+  const updateButtonState = (button: HTMLElement | null, isValid: boolean) =&gt; {
+    if (!button) return;
+    if (isValid) {
+      button.style.opacity = '1';
+      button.style.cursor = 'pointer';
+    } else {
+      button.style.opacity = '0.5';
+      button.style.cursor = 'not-allowed';
+    }
+  };
+
+  // ===============================
+  // VALIDATION DE L'ÉTAPE 1 (Radios)
+  // ===============================
+  const step1Button = step1.querySelector&lt;HTMLElement&gt;('[if-element="button-next"]');
+
+  const getIsStep1Valid = () =&gt;
+    !!document.querySelector&lt;HTMLInputElement&gt;('input[name="secteur-activite"]:checked');
+
+  const validateStep1 = () =&gt; {
+    updateButtonState(step1Button, getIsStep1Valid());
+  };
+
+  // Interception musclée du clic AVANT qu'Inputflow ne puisse réagir
+  if (step1Button) {
+    step1Button.addEventListener('click', (e) =&gt; {
+      if (!getIsStep1Valid()) {
+        e.preventDefault();
+        e.stopPropagation(); // Bloque Inputflow
+      }
+    }, { capture: true });
+  }
+
+  validateStep1();
+  step1.addEventListener('change', validateStep1);
+
+  // ===================================
+  // VALIDATION DE L'ÉTAPE 2 (Checkboxes)
+  // ===================================
+  const step2Button = step2.querySelector&lt;HTMLElement&gt;('[if-element="button-next"]');
+
+  const getIsStep2Valid = () =&gt;
+    !!document.querySelector&lt;HTMLInputElement&gt;(
+      'input[name="utilisation-rdv"]:checked, input[name="utilisation-privatif"]:checked, input[name="utilisation-team-building"]:checked'
+    );
+
+  const validateStep2 = () =&gt; {
+    updateButtonState(step2Button, getIsStep2Valid());
+  };
+
+  if (step2Button) {
+    step2Button.addEventListener('click', (e) =&gt; {
+      if (!getIsStep2Valid()) {
+        e.preventDefault();
+        e.stopPropagation(); // Bloque Inputflow
+      }
+    }, { capture: true });
+  }
+
+  validateStep2();
+  step2.addEventListener('change', validateStep2);
+
+  // ===================================
+  // VALIDATION DU FORMULAIRE FINAL (RGPD)
+  // ===================================
+  // L'attribut `required` sur la checkbox RGPD doit être retiré côté Webflow :
+  // l'input est en `opacity:0`, donc l'erreur de validation HTML5 native s'affiche
+  // sous forme de pop-up navigateur peu user-friendly. On valide ici en JS et on
+  // applique une classe `is-error` sur le label pour un feedback visible.
+  const form = document.getElementById('formulaire-simulateur') as HTMLFormElement | null;
+  const rgpdCheckbox = document.getElementById('RGPD') as HTMLInputElement | null;
+
+  if (form &amp;&amp; rgpdCheckbox) {
+    const rgpdLabel = rgpdCheckbox.closest('.form_checkbox') as HTMLElement | null;
+
+    // Détection défensive : on regarde l'input ET la classe visuelle Webflow
+    // (au cas où le couplage label/input se désynchronise).
+    const isRgpdChecked = (): boolean =&gt; {
+      if (rgpdCheckbox.checked) return true;
+      const visual = rgpdLabel?.querySelector('.w--redirected-checked');
+      return visual !== null &amp;&amp; visual !== undefined;
+    };
+
+    form.addEventListener('submit', (e) =&gt; {
+      if (!isRgpdChecked()) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (rgpdLabel) {
+          rgpdLabel.classList.add('is-error');
+          rgpdLabel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+      }
+      // Si le visuel est coché mais l'input pas synchronisée, on force pour
+      // que le payload envoie bien la valeur RGPD au backend.
+      if (!rgpdCheckbox.checked) rgpdCheckbox.checked = true;
+    }, { capture: true });
+
+    rgpdCheckbox.addEventListener('change', () =&gt; {
+      if (rgpdLabel) rgpdLabel.classList.remove('is-error');
+    });
+    rgpdLabel?.addEventListener('click', () =&gt; {
+      // Le label peut être cliqué avant que le change event sur l'input ne fire
+      setTimeout(() =&gt; {
+        if (isRgpdChecked()) rgpdLabel.classList.remove('is-error');
+      }, 50);
+    });
+  }
+};</pre></figure></details>
+
+      <details><summary><code>src/utils/conditionalDisplay.ts</code> — blocs conditionnels + gestion du required</summary>
+      <figure class="codefig"><figcaption><span>TypeScript — src/utils/conditionalDisplay.ts</span><button class="copybtn" type="button">⧉ Copier</button></figcaption><pre data-hl="ts">export const setupConditionalDisplay = () =&gt; {
+  // Inputs de l'étape 2
+  const rdvInput = document.querySelector&lt;HTMLInputElement&gt;('input[name="utilisation-rdv"]');
+  const privatifInput = document.querySelector&lt;HTMLInputElement&gt;('input[name="utilisation-privatif"]');
+  const teamBuildingInput = document.querySelector&lt;HTMLInputElement&gt;('input[name="utilisation-team-building"]');
+
+  // Blocs de l'étape 3
+  const rdvBlock = document.querySelector&lt;HTMLElement&gt;('.block-rdv');
+  const privatifBlock = document.querySelector&lt;HTMLElement&gt;('.block-privatif');
+  const teamBuildingBlock = document.querySelector&lt;HTMLElement&gt;('.block-team-building');
+
+  // Fonction utilitaire pour gérer l'affichage ET les champs requis
+  const toggleBlock = (block: HTMLElement | null, isVisible: boolean) =&gt; {
+    if (!block) return;
+
+    // Gérer l'affichage
+    block.style.display = isVisible ? 'block' : 'none';
+
+    // Gérer l'attribut "required" des champs à l'intérieur
+    // Si un bloc est caché, ses champs obligatoires empêchent Inputflow de passer à l'étape suivante !
+    const inputs = block.querySelectorAll&lt;HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement&gt;('input, select, textarea');
+    inputs.forEach(input =&gt; {
+      if (isVisible) {
+        // Restaurer "required" s'il l'était à l'origine
+        if (input.dataset.wasRequired === 'true') {
+          input.setAttribute('required', '');
+        }
+      } else {
+        // Sauvegarder l'état "required" et le retirer
+        if (input.hasAttribute('required')) {
+          input.dataset.wasRequired = 'true';
+          input.removeAttribute('required');
+        }
+      }
+    });
+  };
+
+  // Fonctions de mise à jour pour chaque bloc
+  const updateRdvBlock = () =&gt; toggleBlock(rdvBlock, rdvInput ? rdvInput.checked : false);
+  const updatePrivatifBlock = () =&gt; toggleBlock(privatifBlock, privatifInput ? privatifInput.checked : false);
+  const updateTeamBuildingBlock = () =&gt; toggleBlock(teamBuildingBlock, teamBuildingInput ? teamBuildingInput.checked : false);
+
+  // Initialisation au chargement de la page
+  updateRdvBlock();
+  updatePrivatifBlock();
+  updateTeamBuildingBlock();
+
+  // Écouteurs d'événements "change" sur les checkboxes
+  if (rdvInput) rdvInput.addEventListener('change', updateRdvBlock);
+  if (privatifInput) privatifInput.addEventListener('change', updatePrivatifBlock);
+  if (teamBuildingInput) teamBuildingInput.addEventListener('change', updateTeamBuildingBlock);
+};</pre></figure></details>
+
+      <details><summary><code>src/utils/progressBar.ts</code> — barre de progression</summary>
+      <figure class="codefig"><figcaption><span>TypeScript — src/utils/progressBar.ts</span><button class="copybtn" type="button">⧉ Copier</button></figcaption><pre data-hl="ts">export const setupProgressBarObserver = () =&gt; {
+  const steps = document.querySelectorAll&lt;HTMLElement&gt;('.simulator_step');
+  const progressItems = document.querySelectorAll&lt;HTMLElement&gt;('.progress_item');
+
+  if (steps.length === 0 || progressItems.length === 0) return;
+
+  const updateProgress = (activeIndex: number) =&gt; {
+    progressItems.forEach((item, index) =&gt; {
+      if (index === activeIndex) {
+        item.classList.add('is-active');
+      } else {
+        item.classList.remove('is-active');
+      }
+    });
+  };
+
+  const observer = new MutationObserver((mutations) =&gt; {
+    mutations.forEach((mutation) =&gt; {
+      if (
+        mutation.type === 'attributes' &amp;&amp;
+        (mutation.attributeName === 'style' || mutation.attributeName === 'class')
+      ) {
+        const target = mutation.target as HTMLElement;
+        const index = Array.from(steps).indexOf(target);
+
+        if (index !== -1) {
+          // Vérifie si l'étape est devenue visible
+          const style = window.getComputedStyle(target);
+          if (style.display !== 'none') {
+            updateProgress(index);
+          }
+        }
+      }
+    });
+  });
+
+  steps.forEach((step) =&gt; {
+    observer.observe(step, { attributes: true, attributeFilter: ['style', 'class'] });
+  });
+
+  // Initialisation au chargement de la page
+  const activeStepIndex = Array.from(steps).findIndex((step) =&gt; {
+    return window.getComputedStyle(step).display !== 'none';
+  });
+
+  if (activeStepIndex !== -1) {
+    updateProgress(activeStepIndex);
+  } else {
+    updateProgress(0);
+  }
+};</pre></figure></details>
+
+      <details><summary><code>src/index.css</code> — styles injectés (progression, cartes radio/checkbox)</summary>
+      <figure class="codefig"><figcaption><span>CSS — src/index.css</span><button class="copybtn" type="button">⧉ Copier</button></figcaption><pre data-hl="css">/* =========================================
+   0. VARIABLES
+   ========================================= */
+:root {
+  --magenta-amusoire: #e2007a;
+  --magenta-light: #fbe5ef;
+}
+
+/* =========================================
+   1. ANTI-CLIGNOTEMENT (FOUC)
+   ========================================= */
+:not(.w-editor) .simulator_step {
+  display: none;
+}
+:not(.w-editor) .simulator_step:first-of-type {
+  display: block;
+}
+
+/* =========================================
+   2. BARRE DE PROGRESSION
+   ========================================= */
+.progress_item.is-active .progress_number-wrapper {
+  background-color: var(--magenta-amusoire) !important;
+}
+.progress_item.is-active .progress_number-wrapper div {
+  color: #ffffff !important;
+}
+.progress_item.is-active .progress_text-wrapper div:first-child {
+  color: #000000 !important;
+}
+
+/* =========================================
+   3. CARTES SECTEUR (Radios) &amp; UTILISATION (Checkboxes)
+   ========================================= */
+.radio-card_wrapper,
+.checkbox-card_wrapper {
+  transition: all 0.2s ease !important;
+  cursor: pointer;
+}
+
+/* --- La bordure de la carte entière --- */
+.radio-card_wrapper:has(input:checked),
+.radio-card_wrapper.is-active,
+.checkbox-card_wrapper:has(input:checked),
+.checkbox-card_wrapper.is-active {
+  border-color: var(--magenta-amusoire) !important;
+}
+
+/* --- Le fond et l'icône du SVG --- */
+.radio-card_wrapper.is-active .icon-embed-custom rect,
+.checkbox-card_wrapper.is-active .icon-embed-custom rect {
+  stroke: var(--magenta-amusoire) !important;
+  fill: var(--magenta-light) !important;
+  fill-opacity: 1 !important;
+  rx: 10px !important;
+  ry: 10px !important;
+}
+.radio-card_wrapper.is-active .icon-embed-custom path,
+.checkbox-card_wrapper.is-active .icon-embed-custom path {
+  fill: var(--magenta-amusoire) !important;
+}
+
+/* --- Le petit rond (radio) et le carré (checkbox) --- */
+.radio-card_wrapper:has(input:checked) .custom-radio-button,
+.radio-card_wrapper.is-active .custom-radio-button,
+.radio-card_wrapper:has(input:checked) .w-radio-input,
+.radio-card_wrapper.is-active .w-radio-input,
+.checkbox-card_wrapper:has(input:checked) .w-checkbox-input,
+.checkbox-card_wrapper.is-active .w-checkbox-input,
+.checkbox-card_wrapper:has(input:checked) .custom-radio-button,
+.checkbox-card_wrapper.is-active .custom-radio-button {
+  background-color: var(--magenta-amusoire) !important;
+  border-color: var(--magenta-amusoire) !important;
+}
+
+/* --- Le point blanc à l'intérieur (Radio) --- */
+.radio-card_wrapper:has(input:checked) .custom-radio-button,
+.radio-card_wrapper.is-active .custom-radio-button,
+.radio-card_wrapper:has(input:checked) .w-radio-input,
+.radio-card_wrapper.is-active .w-radio-input {
+  background-image: url('https://d3e54v103j8qbb.cloudfront.net/static/custom-radio-check.360ca0e25c.svg') !important;
+  background-size: 10px !important;
+  background-position: 50% 50% !important;
+  background-repeat: no-repeat !important;
+}
+
+/* --- Le check blanc à l'intérieur (Checkbox) --- */
+.checkbox-card_wrapper:has(input:checked) .w-checkbox-input,
+.checkbox-card_wrapper.is-active .w-checkbox-input,
+.checkbox-card_wrapper:has(input:checked) .custom-radio-button,
+.checkbox-card_wrapper.is-active .custom-radio-button {
+  background-image: url('https://d3e54v103j8qbb.cloudfront.net/static/custom-checkbox-check.839ce6f500.svg') !important;
+  background-size: 12px !important;
+  background-position: 50% 50% !important;
+  background-repeat: no-repeat !important;
+}</pre></figure></details>
+      <div class="pagefoot" data-updated="30 juil. 2026"></div>
     </article>
 
-    <!-- 4.2 POPUP -->
+    <!-- 5. POPUP OPT-IN -->
     <article class="page" id="page-popup">
-      <div class="crumbs">Features sur-mesure <span style="opacity:.5">›</span> <b>Popup opt-in</b></div>
       <h1>Popup opt-in</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span><span>Page : <code>/modal</code></span></div>
+      <div class="page-meta"><span>Lib : <b>Finsweet Attributes v1 (modal)</b></span><span>MAJ : <b>2026-07-30</b></span><span>Fréquence : <b>1 affichage / 7 jours</b></span></div>
+      <p>S'ouvre automatiquement après un délai sur certaines pages, plafonné à 1 affichage / 7 jours par visiteur. Indépendant du simulateur.</p>
+
       <h2>Architecture</h2>
-      <p>Modale <b>Finsweet</b> + un script déclencheur (affichage à l'intention de sortie / au scroll). Le contenu est une page Webflow dédiée (<code>/modal</code>).</p>
+      <table>
+        <tr><th>Brique</th><th>Où elle vit</th><th>Rôle</th></tr>
+        <tr><td>Lib Finsweet</td><td>Project Settings → Custom Code → Footer (global)</td><td>Charge le moteur modal partout, une fois</td></tr>
+        <tr><td>Composant <code>modal</code></td><td>Source sur la page <code>/modal</code>, instance posée sur chaque page concernée</td><td>Markup + contenu (trigger <code>open-1</code>, wrapper <code>modal-1</code>)</td></tr>
+        <tr><td>Script déclencheur</td><td>Footer global</td><td>Décide quand / sur quelles pages ouvrir + cooldown</td></tr>
+      </table>
+
       <h2>Éditer le contenu</h2>
-      <p>Dans le Designer, ouvrir la page <code>/modal</code> et modifier textes/visuels comme n'importe quelle page — sans toucher au script.</p>
-      <div class="adm warn"><div class="t">🟨 Avertissement</div><p>Ne pas modifier les <b>modalités d'affichage</b> (fréquence, déclencheur) sans prévenir : c'est piloté par le script global.</p></div>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
-
-    <!-- 5.1 PRINCIPES -->
-    <article class="page" id="page-principes">
-      <div class="crumbs">Contenu &amp; édition <span style="opacity:.5">›</span> <b>Principes agnostiques</b></div>
-      <h1>Principes d'édition (agnostiques)</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <p>Valables quelle que soit la plateforme. Les gestes précis sont dans la page <span class="xlink"><a href="#" data-page="edit">Éditer (Webflow)</a></span>.</p>
-      <h2>Nommage stable</h2>
-      <table class="framed">
-        <tr><th>Quoi</th><th>Règle</th><th>Impact si cassé</th></tr>
-        <tr><td>Classes / composants</td><td>Réutiliser, ne jamais renommer.</td><td>Casse le style partout où c'est utilisé.</td></tr>
-      </table>
-      <h2>Médias</h2>
-      <table class="framed">
-        <tr><th>Type</th><th>Règle</th></tr>
-        <tr><td>Images</td><td>&lt; 200 Ko · hero ~2500px · blog ~1200px · AVIF</td></tr>
-        <tr><td>OG image</td><td>1200×630</td></tr>
-      </table>
-      <h2>Modèle éditorial</h2>
-      <p>Titre → slug (court, sans accent/emoji), catégorie obligatoire, meta title/description, alt text.</p>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
-
-    <!-- 5.2 ÉDITER WEBFLOW (flagship) -->
-    <article class="page" id="page-edit">
-      <div class="crumbs">Contenu &amp; édition <span style="opacity:.5">›</span> <b>Éditer (Webflow)</b></div>
-      <h1>Éditer le site — Webflow</h1>
-      <div class="page-meta"><span>Module plateforme : <b>Webflow</b></span><span>MAJ : <b>2026-07-28</b></span></div>
-      <p>Les <b>principes</b> sont agnostiques (page précédente) ; les gestes ci-dessous sont Webflow. Sur Shopify ou Astro+Sanity, seule cette page change.</p>
-      <div class="interdits"><div class="t">🚫 Les interdits</div>
-        <ul><li>Pas d'emoji / caractères spéciaux dans les <b>slugs</b>.</li><li>Ne pas toucher aux champs techniques / ID (Make, Memberstack).</li><li>Laisser un champ <b>vide</b> plutôt qu'un espace.</li></ul>
-      </div>
-      <h2>Publier un article — 3 étapes</h2>
       <ol class="steps">
-        <li><b>Save as Draft</b> — sauvegarde sans publier.</li>
-        <li><b>Stage for Publish</b> — prêt pour la prochaine mise en ligne.</li>
-        <li><b>Publish</b> — ⚠️ publie <b>tout le site</b>.</li>
+        <li>Ouvrir le composant <code>modal</code> (page <code>/modal</code> ou panneau Components) → <b>Edit Component</b>.</li>
+        <li>Modifier texte / image / champ / bouton comme n'importe quel élément.</li>
+        <li><b>Publish</b> — répercuté sur toutes les instances du site.</li>
       </ol>
-      <div class="adm warn"><div class="t">🟨 Avertissement</div><p>« Publish » pousse tout le site en prod. En cas de doute, reste sur <b>Stage for Publish</b> et préviens Coolbeans.</p></div>
-      <details><summary>📸 Voir le screenshot — panneau CMS</summary><div class="shot">[ capture Webflow CMS ]</div></details>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
+      <p>Le wrapper <code>modal-1</code> peut être en <code>display:none</code> au repos : Finsweet l'affiche à l'ouverture.</p>
 
-    <!-- 5.3 BLOG -->
-    <article class="page" id="page-blog">
-      <div class="crumbs">Contenu &amp; édition <span style="opacity:.5">›</span> <b>Blog &amp; CMS</b></div>
-      <h1>Blog &amp; contenus dynamiques (CMS)</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <h2>Collections</h2>
-      <p>Articles publiés sur deux pages : <b>Actus</b> (B2C) et <b>Blog pro</b> (B2B). Un champ décide où.</p>
-      <h2>Routage Actus / Blog</h2>
-      <table class="framed">
-        <tr><th>Champ</th><th>Rôle</th></tr>
-        <tr><td>« Quel blog ? »</td><td>Décide la page de destination (Actus vs Blog pro).</td></tr>
-        <tr><td>Tags</td><td>Portent le même choix que l'article.</td></tr>
+      <h2>Modalités d'affichage</h2>
+      <table>
+        <tr><th>Variable</th><th>Valeur actuelle</th><th>Effet</th></tr>
+        <tr><td><code>ENABLED</code></td><td><code>false</code></td><td><b>Interrupteur global</b> — <code>true</code> = actif partout, <code>false</code> = coupé</td></tr>
+        <tr><td><code>allowed</code></td><td>10 chemins fixes</td><td>Pages exactes où le popup s'affiche (+ préfixe <code>/actu/</code> pour tous les articles)</td></tr>
+        <tr><td><code>DELAY_MS</code></td><td><code>8000</code></td><td>Délai avant ouverture — démarre au chargement de la page</td></tr>
+        <tr><td><code>COOLDOWN_DAYS</code></td><td><code>7</code></td><td>Fréquence max / visiteur (<code>localStorage</code>, clé <code>optin_popup_seen</code>)</td></tr>
+        <tr><td><code>MAX_WAIT_MS</code></td><td><code>15000</code></td><td>Filet de sécurité (attente max de l'init lib) — ne pas toucher</td></tr>
       </table>
-      <div class="adm piege"><div class="t">🟪 Piège</div><p>Ne pas confondre « Quel blog ? » (destination) avec « Catégorie » (thème). Se tromper publie l'article sur la mauvaise page.</p></div>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
+      <p><b>Où trouver <code>ENABLED</code></b> : Project Settings → Custom Code → Footer code, bloc <code>&lt;!-- Pop up --&gt;</code>. Changer la valeur, puis <b>Save + Publish</b>.</p>
+
+      <h2>Recettes courantes</h2>
+      <ul>
+        <li><b>Ajouter à une page</b> : chemin dans <code>allowed</code> <b>+ poser l'instance du composant sur la page</b> + Publish.</li>
+        <li><b>Retirer d'une page</b> : enlever le chemin de <code>allowed</code> (l'instance peut rester).</li>
+        <li><b>Activer / couper partout</b> : <code>ENABLED</code> à <code>true</code>/<code>false</code> — prévu pour les évènements ponctuels (fête de la musique…).</li>
+        <li><b>Délai / fréquence</b> : <code>DELAY_MS</code> et <code>COOLDOWN_DAYS</code>.</li>
+      </ul>
+
+      <h2>Points de vigilance</h2>
+      <ul>
+        <li><b>Le composant doit être présent sur la page</b> : <code>allowed</code> seul ne suffit pas — sans markup, le script sort en silence.</li>
+        <li>Lib chargée une seule fois en global — ne pas remettre le loader dans le composant.</li>
+        <li><b>Attributes v1 uniquement</b> : jamais de v2 sur le site (incompatibles).</li>
+        <li>Cooldown pendant les tests : navigation privée ou <code>localStorage.removeItem('optin_popup_seen')</code>.</li>
+        <li>Ne pas remplacer l'attente Finsweet (<code>fsAttributes.push</code>) par un <code>.click()</code> direct : race condition, le modal ne s'ouvrirait pas. Si l'init n'arrive pas, le cooldown n'est pas brûlé.</li>
+      </ul>
+      <h2>Script de référence (prod)</h2>
+      <p>La lib, chargée une fois dans le footer global :</p>
+      <figure class="codefig"><figcaption><span>HTML — Project Settings → Custom Code → Footer</span><button class="copybtn" type="button">⧉ Copier</button></figcaption><pre data-hl="ts">&lt;script async src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-modal@1/modal.js"&gt;&lt;/script&gt;</pre></figure>
+      <p>Le script déclencheur complet (bloc <code>&lt;!-- Pop up --&gt;</code> du même footer) :</p>
+      <figure class="codefig"><figcaption><span>HTML / JavaScript — script déclencheur</span><button class="copybtn" type="button">⧉ Copier</button></figcaption><pre data-hl="ts">&lt;script&gt;
+(function () {
+  /* ▼▼▼ INTERRUPTEUR DU POPUP ▼▼▼
+     true  = popup actif
+     false = popup coupé partout
+     → changer la valeur, puis Save + Publish. Rien d'autre à toucher. */
+  var ENABLED = false;
+  /* ▲▲▲ ▲▲▲ */
+  if (!ENABLED) return;
+
+  var allowed = ['/', '/occasions', '/entreprises', '/jeux/blindtest', '/jeux/quiz', '/jeux/karaoke', '/lieux/drawing-house-paris-14', '/lieux/trinquet-village-paris-16', '/lieux/mom-paris-17', '/actus'];
+  var path = window.location.pathname.replace(/\/+$/, '') || '/';
+  if (allowed.indexOf(path) === -1 &amp;&amp; path.indexOf('/actu/') !== 0) return;
+
+  var KEY = 'optin_popup_seen';
+  var COOLDOWN_DAYS = 7;
+  try {
+    var seen = localStorage.getItem(KEY);
+    if (seen &amp;&amp; Date.now() - parseInt(seen, 10) &lt; COOLDOWN_DAYS * 86400000) return;
+  } catch (e) {}
+
+  var DELAY_MS = 8000;       // délai visible : démarre AU CHARGEMENT, pas après l'init Finsweet
+  var MAX_WAIT_MS = 15000;   // filet de sécurité : attente max de l'init après le délai
+
+  // 1) Le délai de 8 s démarre immédiatement.
+  var timerDone = new Promise(function (resolve) {
+    setTimeout(resolve, DELAY_MS);
+  });
+
+  // 2) Signal d'init Finsweet (Attributes v1). Le callback est poussé dans la queue :
+  //    il se déclenche quand le modal est initialisé ET ses listeners posés.
+  var fsReady = false;
+  var finsweetReady = new Promise(function (resolve) {
+    window.fsAttributes = window.fsAttributes || [];
+    window.fsAttributes.push(['modal', function () { fsReady = true; resolve(); }]);
+  });
+
+  // 3) Filet de sécurité : si la lib ne charge jamais, on n'attend pas indéfiniment.
+  var safety = new Promise(function (resolve) {
+    setTimeout(resolve, DELAY_MS + MAX_WAIT_MS);
+  });
+
+  // Clic quand : délai écoulé ET Finsweet prêt — au plus tard au filet de sécurité.
+  Promise.all([timerDone, Promise.race([finsweetReady, safety])]).then(function () {
+    if (!fsReady) return; // init jamais arrivée : on ne brûle pas le cooldown, on retentera
+
+    var trigger = document.querySelector('[fs-modal-element="open-1"]');
+    if (!trigger) return;
+    trigger.click();
+    try {
+      localStorage.setItem(KEY, String(Date.now()));
+    } catch (e) {}
+  });
+})();
+&lt;/script&gt;</pre></figure>
+      <div class="pagefoot" data-updated="30 juil. 2026"></div>
     </article>
 
-    <!-- 6.1 SEO -->
-    <article class="page" id="page-seo">
-      <div class="crumbs">SEO, Tracking &amp; RGPD <span style="opacity:.5">›</span> <b>SEO on-page</b></div>
-      <h1>SEO on-page</h1>
+    <!-- 5. SÉCURITÉ & CONFORMITÉ -->
+    <article class="page" id="page-secu">
+      <h1>Sécurité &amp; conformité</h1>
       <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <h2>Règles par page</h2>
-      <table class="framed">
-        <tr><th>Champ</th><th>Règle d'or</th><th>Impact</th></tr>
-        <tr><td>Meta Title</td><td>50–60 caractères, mot-clé présent</td><td>Clic depuis Google</td></tr>
-        <tr><td>Meta Description</td><td>~155 caractères</td><td>Taux de clic</td></tr>
-        <tr><td>Open Graph</td><td>Image 1200×630 + titre/desc</td><td>Rendu des partages</td></tr>
-      </table>
-      <h2>Structure</h2>
-      <p>Un seul <code>H1</code>, hiérarchie <code>H2/H3</code>, maillage interne, alt text sur les images.</p>
-      <h2>Vérifier après publication</h2>
-      <ul><li>Google Search Console (indexation)</li><li>Facebook Sharing Debugger (cache OG)</li></ul>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
 
-    <!-- 6.2 TRACKING -->
-    <article class="page" id="page-tracking">
-      <div class="crumbs">SEO, Tracking &amp; RGPD <span style="opacity:.5">›</span> <b>Tracking / provenance</b></div>
-      <h1>Tracking &amp; provenance des leads</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <h2>L'URL = source de vérité</h2>
-      <p>Les paramètres <code>utm_*</code> présents dans l'URL sont pré-remplis en champs cachés et remontés dans HubSpot → on sait d'où vient chaque lead.</p>
-      <h2>Cookie hutk (attention)</h2>
-      <div class="adm piege"><div class="t">🟪 Piège</div><p>Le script de tracking HubSpot chargé est celui du portail <b>25692189</b> → le <code>hubspotutk</code> lui appartient. Les forms du flux BLINDTEST (147562037) reçoivent donc un <code>hutk</code> cross-portail ignoré. À aligner si on veut l'attribution parcours côté BLINDTEST.</p></div>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
-
-    <!-- 6.3 RGPD -->
-    <article class="page" id="page-rgpd">
-      <div class="crumbs">SEO, Tracking &amp; RGPD <span style="opacity:.5">›</span> <b>RGPD &amp; cookies</b></div>
-      <h1>RGPD &amp; cookies</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <h2>Consentement</h2>
-      <p>Bandeau cookies au premier chargement. Les scripts de tracking ne s'activent qu'après consentement.</p>
-      <h2>Opt-in newsletter</h2>
-      <p>La popup <code>/modal</code> porte l'opt-in. Voir <span class="xlink"><a href="#" data-page="popup">Popup opt-in</a></span>.</p>
-      <h2>Rétention</h2>
-      <p>Durée de conservation des données : <span class="todo">(à compléter)</span>. Pages légales : Confidentialité · Cookies.</p>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
-
-    <!-- 7.1 ACCÈS -->
-    <article class="page" id="page-acces">
-      <div class="crumbs">Accès, secrets &amp; sécu <span style="opacity:.5">›</span> <b>Comptes &amp; accès</b></div>
-      <h1>Comptes &amp; accès</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <h2>Qui accède à quoi</h2>
-      <table class="framed">
+      <h2>Comptes &amp; accès</h2>
+      <table>
         <tr><th>Outil</th><th>Propriétaire du compte</th><th>Accès Coolbeans</th></tr>
         <tr><td>Webflow</td><td class="todo">(à compléter)</td><td>Designer</td></tr>
         <tr><td>HubSpot ×2</td><td class="todo">(à compléter)</td><td>Admin</td></tr>
@@ -570,125 +1226,176 @@ account_target = form.getAttribute(<span class="hl">'data-portal'</span>) || <sp
         <tr><td>Cloudflare</td><td>Coolbeans</td><td>Owner</td></tr>
         <tr><td>Resend</td><td>Coolbeans</td><td>Owner</td></tr>
       </table>
-      <div class="adm note"><div class="t">🟦 Note</div><p>Cette doc elle-même est protégée par <b>Cloudflare Access</b> (mot de passe / email OTP).</p></div>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
+      <div class="adm note"><div class="t">Note</div><p>Cette doc elle-même est protégée par <b>Cloudflare Access</b> (mot de passe / email OTP).</p></div>
 
-    <!-- 7.2 SECRETS -->
-    <article class="page" id="page-secrets">
-      <div class="crumbs">Accès, secrets &amp; sécu <span style="opacity:.5">›</span> <b>Secrets &amp; posture</b></div>
-      <h1>Secrets &amp; posture de sécurité</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <div class="adm danger"><div class="t">🔴 Danger</div><p>Aucun secret (clé API, token, mot de passe) n'apparaît dans cette doc ni dans git. On documente <b>où</b> ils sont, jamais <b>quoi</b>.</p></div>
-      <h2>Où vivent les secrets</h2>
-      <table class="framed">
+      <h2>Secrets</h2>
+      <div class="adm danger"><div class="t">Danger</div><p>Aucun secret (clé API, token, mot de passe) dans cette doc ni dans git. On documente <b>où</b> ils sont, jamais <b>quoi</b>.</p></div>
+      <table>
         <tr><th>Secret</th><th>Emplacement</th></tr>
         <tr><td>Clé webhook Make</td><td>1Password — coffre Coolbeans</td></tr>
         <tr><td>Tokens HubSpot / Resend</td><td>Variables d'env / connexions Make</td></tr>
       </table>
-      <h2>Rotation</h2>
-      <p>À faire si une clé fuite ou lors d'un changement de prestataire. Procédure : <span class="todo">(à compléter)</span>.</p>
+      <p><b>Rotation</b> : si une clé fuite ou à un changement de prestataire. Procédure : <span class="todo">(à compléter)</span>.</p>
+
+      <h2>RGPD &amp; cookies</h2>
+      <p><b>Consentement</b> : bandeau cookies au premier chargement ; les scripts de tracking ne s'activent qu'après consentement.</p>
+      <p><b>Opt-in newsletter</b> : porté par la popup <code>/modal</code>. Voir <span class="xlink"><a href="#" data-page="features">Features sur-mesure</a></span>.</p>
+      <p><b>Rétention</b> : durée de conservation <span class="todo">(à compléter)</span>. Pages légales : Confidentialité · Cookies.</p>
       <div class="pagefoot" data-updated="28 juil. 2026"></div>
     </article>
 
-    <!-- 8.1 MAINTENANCE -->
-    <article class="page" id="page-maint">
-      <div class="crumbs">Exploitation &amp; mémoire <span style="opacity:.5">›</span> <b>Maintenance &amp; vigilance</b></div>
-      <h1>Maintenance &amp; vigilance</h1>
+    <!-- 6. RÉFÉRENCE & SUPPORT -->
+    <article class="page" id="page-ref">
+      <h1>Référence &amp; support</h1>
       <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <h2>Points de vigilance</h2>
+
+      <h2>Stack &amp; environnements</h2>
+      <table>
+        <tr><th>Brique</th><th>Rôle</th></tr>
+        <tr><td>Webflow</td><td>Site + CMS (blog) + formulaires</td></tr>
+        <tr><td>Make</td><td>1 scénario : Webflow forms → HubSpot / Resend</td></tr>
+        <tr><td>HubSpot ×2</td><td>CRM (AMUSOIRE 25692189 · BLINDTEST 147562037)</td></tr>
+        <tr><td>Resend</td><td>Email transactionnel (mail simulateur)</td></tr>
+      </table>
+      <p><b>Prod</b> : <code>amusoire.com</code> · <b>Staging</b> : <code>site-amusoire.webflow.io</code>. Le schéma de flux détaillé est dans <span class="xlink"><a href="#" data-page="leads">Leads &amp; formulaires</a></span>.</p>
+
+      <h2>Sitemap — amusoire.com</h2>
+      <p>Toutes les pages du site (liens en nouvel onglet). Pages et routage vérifiés via l'API Webflow le 2026-07-28. <a href="https://www.amusoire.com/sitemap.xml" target="_blank" rel="noopener">sitemap.xml</a></p>
+      <div class="adm note"><div class="t">Note</div><p>Le sitemap XML n'expose que 33 URLs : Team Building, les landings Réserver, <code>/pro/simulateur</code>, la page EN music-quiz et les pages légales sont <b>hors sitemap XML</b> mais bien publiées.</p></div>
+      <p><span class="pill ok">AMUSOIRE</span> / <span class="pill warn">BLINDTEST</span> = page portant un formulaire de lead et son portail de remontée.</p>
+      <h3>Pages principales (B2C)</h3>
+      <ul>
+        <li><a href="https://www.amusoire.com/" target="_blank" rel="noopener">Home</a></li>
+        <li><a href="https://www.amusoire.com/occasions" target="_blank" rel="noopener">Occasions</a></li>
+        <li><a href="https://www.amusoire.com/entreprises" target="_blank" rel="noopener">Entreprises</a></li>
+        <li><a href="https://www.amusoire.com/team-building" target="_blank" rel="noopener">Team Building</a> <span class="pill warn">BLINDTEST</span></li>
+        <li><a href="https://www.amusoire.com/contact" target="_blank" rel="noopener">Contact</a> <span class="pill warn">BLINDTEST</span></li>
+        <li><a href="https://www.amusoire.com/app" target="_blank" rel="noopener">App</a></li>
+      </ul>
+      <h3>Jeux (B2C)</h3>
+      <ul>
+        <li><a href="https://www.amusoire.com/jeux/blindtest" target="_blank" rel="noopener">Blindtest</a></li>
+        <li><a href="https://www.amusoire.com/jeux/quiz" target="_blank" rel="noopener">Quiz</a></li>
+        <li><a href="https://www.amusoire.com/jeux/karaoke" target="_blank" rel="noopener">Karaoke</a></li>
+      </ul>
+      <h3>Lieux (B2C)</h3>
+      <ul>
+        <li><a href="https://www.amusoire.com/lieux/drawing-house-paris-14" target="_blank" rel="noopener">Drawing House — Paris 14</a></li>
+        <li><a href="https://www.amusoire.com/lieux/trinquet-village-paris-16" target="_blank" rel="noopener">Trinquet Village — Paris 16</a></li>
+        <li><a href="https://www.amusoire.com/lieux/mom-paris-17" target="_blank" rel="noopener">Le Môm — Paris 17</a></li>
+        <li><a href="https://www.amusoire.com/lieux/valentine-marseille" target="_blank" rel="noopener">La Valentine — Marseille</a></li>
+      </ul>
+      <h3>Réserver (widget externe, sans formulaire Webflow)</h3>
+      <ul>
+        <li><a href="https://www.amusoire.com/reserver-une-salle" target="_blank" rel="noopener">Réserver — Drawing House</a></li>
+        <li><a href="https://www.amusoire.com/reserver-au-trinquet-village" target="_blank" rel="noopener">Réserver — Trinquet Village</a></li>
+        <li><a href="https://www.amusoire.com/reserver-au-restaurant-le-mom" target="_blank" rel="noopener">Réserver — Le Môm</a></li>
+        <li><a href="https://www.amusoire.com/reserver-a-la-valentine" target="_blank" rel="noopener">Réserver — La Valentine</a></li>
+      </ul>
+      <h3>Blog B2C</h3>
+      <ul>
+        <li><a href="https://www.amusoire.com/actus" target="_blank" rel="noopener">Actus</a></li>
+        <li>Gabarits CMS : article <code>/actu/:slug</code> · auteur <code>/auteurs/:slug</code> · tag <code>/tag/:slug</code></li>
+      </ul>
+      <h3>Univers pro (B2B)</h3>
+      <ul>
+        <li><a href="https://www.amusoire.com/pro" target="_blank" rel="noopener">Hub /pro</a> <span class="pill ok">AMUSOIRE ×2</span> (Licences + Simulateur)</li>
+        <li><a href="https://www.amusoire.com/pro/jeux/blindtest" target="_blank" rel="noopener">Jeux pro — Blindtest</a> <span class="pill ok">AMUSOIRE</span></li>
+        <li><a href="https://www.amusoire.com/pro/jeux/quiz" target="_blank" rel="noopener">Jeux pro — Quiz</a> <span class="pill ok">AMUSOIRE</span></li>
+        <li><a href="https://www.amusoire.com/pro/jeux/karaoke" target="_blank" rel="noopener">Jeux pro — Karaoke</a> <span class="pill ok">AMUSOIRE</span></li>
+        <li><a href="https://www.amusoire.com/pro/etablissements/bars-restaurants" target="_blank" rel="noopener">Établissements — Bars-restaurants</a> <span class="pill ok">AMUSOIRE</span></li>
+        <li><a href="https://www.amusoire.com/pro/etablissements/hotels" target="_blank" rel="noopener">Établissements — Hôtels</a> <span class="pill ok">AMUSOIRE</span></li>
+        <li><a href="https://www.amusoire.com/pro/etablissements/camping" target="_blank" rel="noopener">Établissements — Camping</a> <span class="pill ok">AMUSOIRE</span></li>
+        <li><a href="https://www.amusoire.com/pro/etablissements/loisirs-indoor" target="_blank" rel="noopener">Établissements — Loisirs indoor</a> <span class="pill ok">AMUSOIRE</span></li>
+        <li><a href="https://www.amusoire.com/pro/etablissements/music-quiz" target="_blank" rel="noopener">Établissements — Music-quiz (EN)</a> <span class="pill ok">AMUSOIRE (form UK)</span></li>
+        <li><a href="https://www.amusoire.com/pro/simulateur" target="_blank" rel="noopener">Simulateur</a> <span class="pill ok">AMUSOIRE + mail Resend</span></li>
+        <li><a href="https://www.amusoire.com/pro/blog" target="_blank" rel="noopener">Blog pro</a></li>
+        <li><a href="https://www.amusoire.com/pro-recrutement" target="_blank" rel="noopener">Pro recrutement</a> <span class="pill ok">AMUSOIRE</span></li>
+      </ul>
+      <h3>Légal</h3>
+      <ul>
+        <li><a href="https://www.amusoire.com/legal/mentions-legales" target="_blank" rel="noopener">Mentions légales</a></li>
+        <li><a href="https://www.amusoire.com/legal/conditrions-generales-de-vente" target="_blank" rel="noopener">CGV</a> (slug avec coquille, tel quel en prod)</li>
+        <li><a href="https://www.amusoire.com/legal/conditions-generales-dutilisation" target="_blank" rel="noopener">CGU</a></li>
+        <li><a href="https://www.amusoire.com/legal/politique-de-confidentialite" target="_blank" rel="noopener">Politique de confidentialité</a></li>
+        <li><a href="https://www.amusoire.com/legal/politique-des-cookies" target="_blank" rel="noopener">Politique des cookies</a></li>
+      </ul>
+      <h3>Système</h3>
+      <ul>
+        <li><a href="https://www.amusoire.com/modal" target="_blank" rel="noopener">/modal</a> (contenu du popup, pas une page de nav)</li>
+        <li>/playground (page de test) · /404 · /401 · Style Guide (draft non publié)</li>
+        <li>Newsletter footer sur ~toutes les pages <span class="pill warn">BLINDTEST</span></li>
+      </ul>
+
+      <h2>Landing pages héritées — lp.pro.thisisblindtest.com</h2>
+      <p>L'ancien site <code>thisisblindtest.com</code> a été <b>supprimé</b> (remplacé par <code>amusoire.com</code>). Subsiste ce site Webflow dédié aux <b>landing pages des campagnes publicitaires</b> : ses pages ont été migrées sur le nouveau site, il sera supprimé après la bascule des campagnes. Pas de <code>sitemap.xml</code> et robots.txt bloquant (volontaire : pages de campagne, hors indexation).</p>
+      <div class="adm warn"><div class="t">Avertissement — ne pas supprimer encore</div><p>Tant que des campagnes actives pointent vers ces URLs, le site doit rester en ligne. À la bascule : rediriger chaque LP vers sa page migrée ci-dessous.</p></div>
+      <ul>
+        <li><a href="https://lp.pro.thisisblindtest.com/" target="_blank" rel="noopener">Home</a></li>
+        <li><a href="https://lp.pro.thisisblindtest.com/bars-restaurants" target="_blank" rel="noopener">/bars-restaurants</a> → migrée : <code>/pro/etablissements/bars-restaurants</code></li>
+        <li><a href="https://lp.pro.thisisblindtest.com/hotels" target="_blank" rel="noopener">/hotels</a> → migrée : <code>/pro/etablissements/hotels</code></li>
+        <li><a href="https://lp.pro.thisisblindtest.com/camping" target="_blank" rel="noopener">/camping</a> → migrée : <code>/pro/etablissements/camping</code></li>
+        <li><a href="https://lp.pro.thisisblindtest.com/loisirs-indoor" target="_blank" rel="noopener">/loisirs-indoor</a> → migrée : <code>/pro/etablissements/loisirs-indoor</code></li>
+        <li><a href="https://lp.pro.thisisblindtest.com/team-building" target="_blank" rel="noopener">/team-building</a> → migrée : <code>/team-building</code></li>
+      </ul>
+      <p>Indépendant de ce site : les calendriers <b>HubSpot Meetings</b> restent servis sur <code>pro.thisisblindtest.com/meetings/*</code> (domaine connecté HubSpot) — ce sont les cibles du CTA dynamique du mail simulateur.</p>
+
+      <h2>Maintenance &amp; vigilance</h2>
       <ul>
         <li>Ne pas renommer une classe / un champ CMS technique.</li>
         <li>Vérifier le routage HubSpot après tout ajout de formulaire.</li>
         <li>Publier <b>staging d'abord</b>, toujours.</li>
       </ul>
-      <h2>Rituel de mise à jour</h2>
-      <p><b>Staging → validation → prod + backup nommé.</b> Jamais de publication prod sans validation.</p>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
+      <p><b>Rituel de mise à jour</b> : staging → validation → prod + backup nommé. Jamais de prod sans validation.</p>
 
-    <!-- 8.2 COLLAB -->
-    <article class="page" id="page-collab">
-      <div class="crumbs">Exploitation &amp; mémoire <span style="opacity:.5">›</span> <b>Collaboration &amp; support</b></div>
-      <h1>Collaboration &amp; support</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <h2>Inclus vs devis</h2>
-      <table class="framed">
+      <h2>Support &amp; demandes</h2>
+      <table>
         <tr><th>Inclus (SAV)</th><th>Sur devis (évolutions)</th></tr>
         <tr><td>Corrections de bugs, petites retouches</td><td>Nouvelles pages, features, intégrations</td></tr>
       </table>
       <p class="todo">(Périmètre exact + durée à compléter)</p>
-      <h2>Signaler un bug efficacement</h2>
+      <h3>Signaler un bug efficacement</h3>
       <ol class="steps">
         <li>Le <b>lien</b> de la page concernée.</li>
         <li>L'<b>appareil</b> + le <b>navigateur</b>.</li>
         <li>Une capture ou un <b>Loom</b> (vidéo courte).</li>
       </ol>
-      <div class="adm tip"><div class="t">🟩 Astuce</div><p>Cherche d'abord dans cette doc : la réponse y est souvent (nav gauche ou prev/next).</p></div>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
+      <div class="adm tip"><div class="t">Astuce</div><p>Cherche d'abord dans cette doc : la réponse y est souvent (nav gauche ou sommaire de droite).</p></div>
 
-    <!-- 8.3 JOURNAL -->
-    <article class="page" id="page-journal">
-      <div class="crumbs">Exploitation &amp; mémoire <span style="opacity:.5">›</span> <b>Journal &amp; log des bugs</b></div>
-      <h1>Journal &amp; log des bugs</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <h2>Journal de modifications <span style="font-weight:400;color:var(--mute);font-size:13px">(tenu par le client)</span></h2>
-      <table class="framed">
+      <h2>Journal &amp; log des bugs</h2>
+      <p>Journal de modifications, <span style="color:var(--mute)">tenu par le client</span> :</p>
+      <table>
         <tr><th>Date</th><th>Action</th><th>Impact</th><th>Backup ?</th></tr>
         <tr><td>2026-07-24</td><td>MAJ visuels hero Home</td><td>Page</td><td>Oui</td></tr>
         <tr><td class="todo">(date)</td><td class="todo">(action)</td><td class="todo">(page/global)</td><td class="todo">(oui/non)</td></tr>
       </table>
-      <h2>Bugs corrigés</h2>
-      <table class="framed">
+      <p>Bugs corrigés :</p>
+      <table>
         <tr><th>Bug</th><th>Cause racine</th><th>Correctif</th></tr>
         <tr><td>Form team-building mauvais portail</td><td><code>data-portal</code> en dur dans la modale partagée</td><td>Unlink + <code>blindtest</code></td></tr>
       </table>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
 
-    <!-- 9.1 LIENS -->
-    <article class="page" id="page-liens">
-      <div class="crumbs">Ressources <span style="opacity:.5">›</span> <b>Liens &amp; accès outils</b></div>
-      <h1>Liens &amp; accès outils</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <table class="framed">
+      <h2>Liens utiles</h2>
+      <table>
         <tr><th>Ressource</th><th>Lien</th></tr>
-        <tr><td>Site prod</td><td><a href="https://www.amusoire.com" target="_blank" rel="noopener">amusoire.com ↗</a></td></tr>
-        <tr><td>Staging</td><td><a href="https://site-amusoire.webflow.io" target="_blank" rel="noopener">site-amusoire.webflow.io ↗</a></td></tr>
-        <tr><td>Repo simulateur</td><td class="todo">(à compléter)</td></tr>
-        <tr><td>Dashboard Make</td><td class="todo">(à compléter)</td></tr>
-        <tr><td>Doc Docsify simulateur (live cliente)</td><td><a href="https://amusoire.pages.dev/#/" target="_blank" rel="noopener">amusoire.pages.dev ↗</a></td></tr>
+        <tr><td>Site prod</td><td><a href="https://www.amusoire.com" target="_blank" rel="noopener">amusoire.com</a></td></tr>
+        <tr><td>Staging</td><td><a href="https://site-amusoire.webflow.io" target="_blank" rel="noopener">site-amusoire.webflow.io</a></td></tr>
+        <tr><td>Repo simulateur</td><td><code>ludobourgoin/amusoire</code> (GitHub, privé) — blueprints Make versionnés dans <code>make scenario blueprints/</code></td></tr>
+        <tr><td>Scénario Make</td><td><code>Webflow forms to Hubspot</code> (webhook custom)</td></tr>
+        <tr><td>Resend</td><td>Domaine <code>send.amusoire.com</code> · from <code>noreply@send.amusoire.com</code> · quota gratuit 3 000 mails/mois (100/jour)</td></tr>
+        <tr><td>Demandes de modif (mail simulateur…)</td><td><code>ludo@trigger.fr</code></td></tr>
+        <tr><td>Doc Docsify simulateur (live cliente)</td><td><a href="https://amusoire.pages.dev/#/" target="_blank" rel="noopener">amusoire.pages.dev</a></td></tr>
       </table>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
 
-    <!-- 9.2 DROITS -->
-    <article class="page" id="page-droits">
-      <div class="crumbs">Ressources <span style="opacity:.5">›</span> <b>Propriété &amp; droits</b></div>
-      <h1>Propriété &amp; droits</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
-      <table class="framed">
-        <tr><th>Actif</th><th>Propriétaire</th></tr>
-        <tr><td>Nom de domaine</td><td class="todo">(à compléter)</td></tr>
-        <tr><td>Projet Webflow</td><td class="todo">(à compléter)</td></tr>
-        <tr><td>Code simulateur / scripts</td><td class="todo">(à compléter)</td></tr>
-        <tr><td>Design / maquettes</td><td class="todo">(à compléter)</td></tr>
-      </table>
-      <div class="pagefoot" data-updated="28 juil. 2026"></div>
-    </article>
-
-    <!-- 9.3 GLOSSAIRE -->
-    <article class="page" id="page-glossaire">
-      <div class="crumbs">Ressources <span style="opacity:.5">›</span> <b>Glossaire</b></div>
-      <h1>Glossaire</h1>
-      <div class="page-meta"><span>MAJ : <b>2026-07-28</b></span></div>
+      <h2>Glossaire</h2>
       <dl class="def">
         <dt><code>account_target</code></dt><dd>Champ caché qui décide le portail HubSpot (amusoire / blindtest).</dd>
         <dt><code>data-portal</code></dt><dd>Attribut du <code>&lt;form&gt;</code> Webflow qui alimente <code>account_target</code>.</dd>
         <dt>typologie</dt><dd>Sous-critère de routage côté BLINDTEST (Entreprise / Particulier).</dd>
         <dt><code>hutk</code></dt><dd>Cookie HubSpot (<code>hubspotutk</code>) liant un contact à son parcours. Ici lié au portail 25692189.</dd>
-        <dt>Catch-All</dt><dd>Formulaire HubSpot générique fourre-tout recevant les soumissions non dédiées.</dd>
+        <dt><code>form_type</code></dt><dd>Champ caché (<code>simulateur</code>) qui déclenche la route mail — 2ᵉ filtre de la route 3 Make.</dd>
+        <dt>Inputflow</dt><dd>Librairie multi-step du formulaire simulateur (navigation entre étapes).</dd>
+        <dt>Catch-All</dt><dd>Formulaire HubSpot générique recevant les soumissions non dédiées.</dd>
         <dt>Client-First</dt><dd>Convention de nommage des classes Webflow (Finsweet) qui rend le site maintenable.</dd>
       </dl>
       <div class="pagefoot" data-updated="28 juil. 2026"></div>
@@ -741,10 +1448,90 @@ document.addEventListener('click',e=>{
 addEventListener('scroll',()=>{
   const cur=document.querySelector('.page.on');const hs=[...cur.querySelectorAll('h2')];
   const links=[...document.querySelectorAll('#toc a')];let idx=0;
-  hs.forEach((h,i)=>{if(h.getBoundingClientRect().top<120)idx=i});
+  hs.forEach((h,i)=>{if(h.getBoundingClientRect().top<130)idx=i});
   links.forEach((l,i)=>l.classList.toggle('on',i===idx));
 },{passive:true});
 renderFoot(document.querySelector('.page.on'));buildToc();
+
+/* ---- Boutons copier ---- */
+document.querySelectorAll('.copybtn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const pre=b.closest('.codefig').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(()=>{
+      b.textContent='✓ Copié';setTimeout(()=>{b.textContent='⧉ Copier'},1500);
+    });
+  });
+});
+
+/* ---- Coloration syntaxique légère ---- */
+const escHtml=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const HL={
+  ts:{re:/(\/\*[\s\S]*?\*\/|\/\/[^\n]*)|('(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"|`(?:[^`\\]|\\.)*`)|\b(import|from|export|const|let|var|function|return|if|else|new|as|typeof|null|undefined|true|false|void|try|catch)\b|(\b\d[\d._]*\b)/g,cls:['c','s','k','n']},
+  css:{re:/(\/\*[\s\S]*?\*\/)|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|url\([^)]*\))|(![a-z]+\b|^[ \t]*[-a-zA-Z]+(?=\s*:))|([^{};\n]+(?=\s*\{))|(\b\d[\d.]*(?:px|em|rem|%|s|ms)?\b)/gm,cls:['c','s','k','f','n']},
+  json:{re:/("(?:[^"\\]|\\.)*")(?=\s*:)|("(?:[^"\\]|\\.)*")|(\b\d[\d.]*\b)|\b(true|false|null)\b/g,cls:['f','s','n','k']},
+  iml:{re:/(\{\{|\}\})|("(?:[^"\\]|\\.)*")|(\b\d[\d.]*\b)/g,cls:['t','s','n']}
+};
+document.querySelectorAll('pre[data-hl]').forEach(pre=>{
+  const cfg=HL[pre.dataset.hl];
+  if(!cfg||pre.children.length)return;
+  const src=pre.textContent;let out='',last=0,mt;
+  cfg.re.lastIndex=0;
+  while((mt=cfg.re.exec(src))){
+    out+=escHtml(src.slice(last,mt.index));
+    let cls='';
+    for(let i=1;i<mt.length;i++){if(mt[i]!==undefined){cls=cfg.cls[i-1];break;}}
+    out+='<span class="tk-'+cls+'">'+escHtml(mt[0])+'</span>';
+    last=mt.index+mt[0].length;
+    if(mt[0].length===0)cfg.re.lastIndex++;
+  }
+  out+=escHtml(src.slice(last));
+  pre.innerHTML=out;
+});
+
+/* ---- Recherche ---- */
+const sIdx=[];
+document.querySelectorAll('.page').forEach(art=>{
+  const pid=art.id.replace('page-','');
+  const o=order.find(x=>x.id===pid);
+  const ptitle=o?o.title:pid;
+  let cur={page:pid,ptitle,h2:null,title:ptitle,text:''};
+  sIdx.push(cur);
+  [...art.children].forEach(el=>{
+    if(el.tagName==='H2'){cur={page:pid,ptitle,h2:el,title:el.textContent.trim(),text:''};sIdx.push(cur);}
+    else cur.text+=' '+el.textContent;
+  });
+});
+const qIn=document.getElementById('q'),qRes=document.getElementById('qres');
+function doSearch(){
+  const v=qIn.value.trim().toLowerCase();
+  if(v.length<2){qRes.hidden=true;qRes.innerHTML='';return;}
+  const hits=[];
+  sIdx.forEach((e,i)=>{
+    const inTitle=e.title.toLowerCase().includes(v);
+    const inText=e.text.toLowerCase().includes(v);
+    if(inTitle)hits.push([0,i]);else if(inText)hits.push([1,i]);
+  });
+  hits.sort((a,b)=>a[0]-b[0]);
+  qRes.innerHTML=hits.slice(0,8).map(([s,i])=>{
+    const e=sIdx[i];
+    return '<a href="#" data-r="'+i+'"><span class="rp">'+e.ptitle+'</span><div class="rt">'+e.title+'</div></a>';
+  }).join('')||'<div class="empty">Aucun résultat</div>';
+  qRes.hidden=false;
+}
+qIn.addEventListener('input',doSearch);
+qRes.addEventListener('click',e=>{
+  const a=e.target.closest('a[data-r]');if(!a)return;
+  e.preventDefault();
+  const entry=sIdx[+a.dataset.r];
+  switchTo(entry.page);
+  if(entry.h2)setTimeout(()=>entry.h2.scrollIntoView({behavior:'smooth'}),60);
+  qRes.hidden=true;qIn.value='';
+});
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();qIn.focus();qIn.select();}
+  if(e.key==='Escape')qRes.hidden=true;
+});
+document.addEventListener('click',e=>{if(!e.target.closest('.search'))qRes.hidden=true;});
 </script>
 </body>
 </html>

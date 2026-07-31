@@ -1,0 +1,143 @@
+---
+project: "amusoire"
+title: "Leads & formulaires"
+order: 3
+status: "final"
+updated: 2026-07-31
+description: "Routage Webflow → Make → HubSpot, référentiels d'IDs, tracking et QA."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+import Pill from "../../../components/doc/Pill.astro";
+
+Portails : **AMUSOIRE `25692189`** · **BLINDTEST `147562037`**.
+
+## Le flux en un coup d'œil
+
+<div class="flow">
+  <div class="node">Webflow<small>form + hidden fields</small></div><span class="arrow">→</span>
+  <div class="node">Make<small>1 scénario, webhook</small></div><span class="arrow">→</span>
+  <div class="node">HubSpot<small>routé par <code>account_target</code></small></div><span class="arrow">⇒</span>
+  <span class="badge-acc amus">AMUSOIRE</span><span class="arrow">ou</span><span class="badge-acc blind">BLINDTEST</span>
+</div>
+
+Cas particulier : le simulateur déclenche en plus un email récap via **Resend**.
+
+## Routage des 6 formulaires
+
+| Formulaire | `account_target` | Compte |
+| --- | --- | --- |
+| Licences (/pro/*) | `amusoire` | <Pill kind="ok">AMUSOIRE</Pill> |
+| Simulateur | `amusoire` | <Pill kind="ok">AMUSOIRE</Pill> |
+| Formulaire UK (music-quiz EN) | `amusoire` | <Pill kind="ok">AMUSOIRE</Pill> |
+| Team Building | `blindtest` | <Pill kind="warn">BLINDTEST</Pill> |
+| Contact events | `blindtest` | <Pill kind="warn">BLINDTEST</Pill> |
+| Newsletter (footer) | `blindtest` | <Pill kind="warn">BLINDTEST</Pill> |
+
+<Callout type="piege" title="Piège — ne pas « corriger »">
+  **Contre-intuitif mais exact** : les formulaires **pro** vont sur **AMUSOIRE**, l'événementiel + newsletter sur **BLINDTEST**. Ne pas « rétablir la logique ».
+</Callout>
+
+## Le levier de routage
+
+```js
+// script global — l'attribut data-portal du <form> décide le portail
+account_target = form.getAttribute('data-portal') || 'amusoire';
+// blindtest → 147562037 · amusoire → 25692189
+```
+
+## Incident type & correctif
+
+<div class="incident">
+  <div class="row"><div class="k">Symptôme</div><div class="v">Un form <code>/team-building</code> remontait sur le mauvais portail.</div></div>
+  <div class="row"><div class="k">Cause racine</div><div class="v">La modale <code>pro / contact modal</code> impose <code>data-portal="amusoire"</code> en dur, partagé par ses instances.</div></div>
+  <div class="row"><div class="k">Correctif</div><div class="v">Détacher (unlink) l'instance sur la page, puis <code>data-portal="blindtest"</code>.</div></div>
+  <div class="row"><div class="k">Étendre</div><div class="v">Toute page pro hérite d'<code>amusoire</code> : ne détacher que pour l'événementiel.</div></div>
+</div>
+
+## Référentiel d'IDs
+
+| Compte | Portal ID | Connexion Make |
+| --- | --- | --- |
+| AMUSOIRE | `25692189` | My Amusoire HubSpot CRM connection |
+| BLINDTEST | `147562037` | My Blindtest HubSpot CRM connection |
+
+<Callout type="note">
+  Ce référentiel évolue : nouveau formulaire = nouvelle ligne, à tenir à jour.
+</Callout>
+
+## Tracking & provenance
+
+**L'URL de la page = source unique de vérité.** Le script global injecte `page_uri` (= `window.location.href`, UTMs compris) dans tout `<form data-portal>` ; remontée dans la propriété contact `url_formulaire`, créée sur **les deux portails**. C'est elle qui dit d'où vient le lead et quel formulaire il a rempli. Les champs existants (Provenance, Comment connu…) restent en place pour le routage commercial.
+
+| Module Make (`url_formulaire` mappé) | Route | Portal / Form |
+| --- | --- | --- |
+| 15 (+ fallback 23) | Flux Amusoire | `25692189` / `4df88a0c-…` |
+| 26 (+ fallback 38) | Blindtest entreprises | `147562037` / `b108e60c-…` |
+| 46 | Blindtest particuliers | `147562037` / `45cb43a7-…` |
+
+<Callout type="piege" title="Piège — pageUri ≠ propriété">
+  Le paramètre natif `Page URL / pageUri` du module Make n'est qu'une métadonnée de timeline : ni filtrable en liste, ni utilisable en workflow. La source exploitable est la propriété `url_formulaire` mappée dans la collection `fields`.
+</Callout>
+
+<Callout type="piege" title="Piège — cookie hutk">
+  Le script de tracking chargé est celui du portail **25692189** → le `hubspotutk` lui appartient. Les forms du flux BLINDTEST reçoivent un `hutk` cross-portail ignoré. À aligner si on veut l'attribution parcours côté BLINDTEST.
+</Callout>
+
+## Récap simulateur dans HubSpot
+
+En parallèle du mail Resend, un récap textuel de la simulation est écrit dans la propriété contact `simulation_roi__recap` (multi-line, form `4df88a0c-…`) : les commerciaux le retrouvent dans la fiche sans dépendre du mail. Mapping présent dans le module **15 et son fallback 23**.
+
+<Callout type="danger" title="Danger — hutk vide = 400">
+  Le champ « HubSpot Tracking Cookie » du module 15 doit rester **complètement vide**. Un `hs_context` vide envoyé comme hutk → `400 — is not a valid Hutk`, le module 15 échoue, seul le fallback 23 tourne : sans le mapping dans le 23, le récap n'arrive jamais.
+</Callout>
+
+- Contenu du récap en **ASCII pur** (ni accents ni €) : un copy-paste avait corrompu l'encodage (`reçue → reÃ§ue`). Pour modifier : taper directement dans Make.
+- Champ ajouté côté form HubSpot invisible dans le mapper Make ? **Rafraîchir la structure** : module → champ « Form » → retirer puis re-sélectionner le form.
+
+## Pièges des dropdowns
+
+Un champ HubSpot de type menu déroulant rejette (ou stocke en valeur orpheline) toute valeur qui ne matche pas **caractère pour caractère**, casse comprise, une valeur interne. Webflow envoie l'attribut `value` de l'`<option>`, pas le texte affiché (le form UK affiche « Social media » mais envoie `Réseaux Sociaux`).
+
+| Champ HubSpot | Type | Statut |
+| --- | --- | --- |
+| `etablissement` | dropdown | <Pill kind="ok">OK</Pill> 6/6 valeurs alignées |
+| `heures_rappel` | texte libre | <Pill kind="ok">OK</Pill> aucune contrainte |
+| `comment_vous_nous_avez_connu__` | dropdown | <Pill kind="warn">Corrigé</Pill> `Réseaux sociaux` ≠ `Réseaux Sociaux` — réaligné dans les 3 forms Webflow |
+
+## Tester la pipeline (QA)
+
+Les forms Webflow rejettent les soumissions automatisées (`422 — Could not process the form submission`, anti-spam sans reCAPTCHA). Pour tester Make → HubSpot sans soumission manuelle : **POST directement sur le webhook** (hook « Webflow Leads », id `2445505` — URL à récupérer dans Make, jamais stockée dans le repo).
+
+<details>
+<summary>Payload de test (réplique du webhook Webflow `form_submission`)</summary>
+
+```json
+{
+  "triggerType": "form_submission",
+  "payload": {
+    "name": "Formulaire Licences",
+    "siteId": "696fc31b2211286a7d8ca4cf",
+    "pageUrl": "https://www.amusoire.com/pro",
+    "data": {
+      "firstname": "QA", "lastname": "Test", "email": "qa+test@coolbeans.cc",
+      "phone": "0600000000", "company": "QA - a supprimer", "zip": "75001",
+      "type": "Bar", "source": "Réseaux Sociaux", "message": "test - a supprimer",
+      "account_target": "amusoire", "form_type": "", "page_uri": "https://www.amusoire.com/pro",
+      "hs_context": "", "heure_rappel": "Matin (9h / 12h)", "RGPD": "true"
+    }
+  }
+}
+```
+
+</details>
+
+**Routage du test** : `account_target` au Router 12, puis `typologie` (`Entreprise`/`Particulier`) au Router 45. Pour viser le module 46 (particuliers) : `account_target=blindtest` + `typologie=Particulier`.
+
+<Callout type="warn">
+  Chaque POST crée un **vrai contact** dans le CRM du client → adresses `qa+…@` et suppression après vérif. La vérif finale se fait dans la fiche HubSpot (Make n'expose pas la valeur mappée).
+</Callout>
+
+<Callout type="danger">
+  La clé secrète du webhook Make n'est **jamais** dans la doc ni dans git → 1Password. Voir [Sécurité & conformité](/docs/amusoire/securite-et-conformite).
+</Callout>

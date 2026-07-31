@@ -1,0 +1,10 @@
+---
+// Pastille sémantique (statut, portail de routage…).
+// ok = vert (AMUSOIRE, final) · warn = or (BLINDTEST, attention) · bad = corail.
+interface Props {
+  kind?: "ok" | "warn" | "bad";
+}
+const { kind = "ok" } = Astro.props;
+---
+
+<span class={`pill ${kind}`}><slot /></span>

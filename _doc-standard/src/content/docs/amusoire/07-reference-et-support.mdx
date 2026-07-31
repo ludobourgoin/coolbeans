@@ -1,0 +1,180 @@
+---
+project: "amusoire"
+title: "Référence & support"
+order: 7
+status: "final"
+updated: 2026-07-31
+description: "Stack, sitemaps complets, maintenance, support, journal, liens et glossaire."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+import Pill from "../../../components/doc/Pill.astro";
+
+## Stack & environnements
+
+| Brique | Rôle |
+| --- | --- |
+| Webflow | Site + CMS (blog) + formulaires |
+| Make | 1 scénario : Webflow forms → HubSpot / Resend |
+| HubSpot ×2 | CRM (AMUSOIRE 25692189 · BLINDTEST 147562037) |
+| Resend | Email transactionnel (mail simulateur) |
+
+**Prod** : `amusoire.com` · **Staging** : `site-amusoire.webflow.io`. Le schéma de flux détaillé est dans [Leads & formulaires](/docs/amusoire/leads-et-formulaires).
+
+## Sitemap — amusoire.com
+
+Toutes les pages du site, vérifiées via l'API Webflow le 2026-07-28. [sitemap.xml](https://www.amusoire.com/sitemap.xml)
+
+<Callout type="note">
+  Le sitemap XML n'expose que 33 URLs : Team Building, les landings Réserver, `/pro/simulateur`, la page EN music-quiz et les pages légales sont **hors sitemap XML** mais bien publiées.
+</Callout>
+
+<Pill kind="ok">AMUSOIRE</Pill> / <Pill kind="warn">BLINDTEST</Pill> = page portant un formulaire de lead et son portail de remontée.
+
+### Pages principales (B2C)
+
+- [Home](https://www.amusoire.com/)
+- [Occasions](https://www.amusoire.com/occasions)
+- [Entreprises](https://www.amusoire.com/entreprises)
+- [Team Building](https://www.amusoire.com/team-building) <Pill kind="warn">BLINDTEST</Pill>
+- [Contact](https://www.amusoire.com/contact) <Pill kind="warn">BLINDTEST</Pill>
+- [App](https://www.amusoire.com/app)
+
+### Jeux (B2C)
+
+- [Blindtest](https://www.amusoire.com/jeux/blindtest)
+- [Quiz](https://www.amusoire.com/jeux/quiz)
+- [Karaoke](https://www.amusoire.com/jeux/karaoke)
+
+### Lieux (B2C)
+
+- [Drawing House — Paris 14](https://www.amusoire.com/lieux/drawing-house-paris-14)
+- [Trinquet Village — Paris 16](https://www.amusoire.com/lieux/trinquet-village-paris-16)
+- [Le Môm — Paris 17](https://www.amusoire.com/lieux/mom-paris-17)
+- [La Valentine — Marseille](https://www.amusoire.com/lieux/valentine-marseille)
+
+### Réserver (widget externe, sans formulaire Webflow)
+
+- [Réserver — Drawing House](https://www.amusoire.com/reserver-une-salle)
+- [Réserver — Trinquet Village](https://www.amusoire.com/reserver-au-trinquet-village)
+- [Réserver — Le Môm](https://www.amusoire.com/reserver-au-restaurant-le-mom)
+- [Réserver — La Valentine](https://www.amusoire.com/reserver-a-la-valentine)
+
+### Blog B2C
+
+- [Actus](https://www.amusoire.com/actus)
+- Gabarits CMS : article `/actu/:slug` · auteur `/auteurs/:slug` · tag `/tag/:slug`
+
+### Univers pro (B2B)
+
+- [Hub /pro](https://www.amusoire.com/pro) <Pill kind="ok">AMUSOIRE ×2</Pill> (Licences + Simulateur)
+- [Jeux pro — Blindtest](https://www.amusoire.com/pro/jeux/blindtest) <Pill kind="ok">AMUSOIRE</Pill>
+- [Jeux pro — Quiz](https://www.amusoire.com/pro/jeux/quiz) <Pill kind="ok">AMUSOIRE</Pill>
+- [Jeux pro — Karaoke](https://www.amusoire.com/pro/jeux/karaoke) <Pill kind="ok">AMUSOIRE</Pill>
+- [Établissements — Bars-restaurants](https://www.amusoire.com/pro/etablissements/bars-restaurants) <Pill kind="ok">AMUSOIRE</Pill>
+- [Établissements — Hôtels](https://www.amusoire.com/pro/etablissements/hotels) <Pill kind="ok">AMUSOIRE</Pill>
+- [Établissements — Camping](https://www.amusoire.com/pro/etablissements/camping) <Pill kind="ok">AMUSOIRE</Pill>
+- [Établissements — Loisirs indoor](https://www.amusoire.com/pro/etablissements/loisirs-indoor) <Pill kind="ok">AMUSOIRE</Pill>
+- [Établissements — Music-quiz (EN)](https://www.amusoire.com/pro/etablissements/music-quiz) <Pill kind="ok">AMUSOIRE (form UK)</Pill>
+- [Simulateur](https://www.amusoire.com/pro/simulateur) <Pill kind="ok">AMUSOIRE + mail Resend</Pill>
+- [Blog pro](https://www.amusoire.com/pro/blog)
+- [Pro recrutement](https://www.amusoire.com/pro-recrutement) <Pill kind="ok">AMUSOIRE</Pill>
+
+### Légal
+
+- [Mentions légales](https://www.amusoire.com/legal/mentions-legales)
+- [CGV](https://www.amusoire.com/legal/conditrions-generales-de-vente) (slug avec coquille, tel quel en prod)
+- [CGU](https://www.amusoire.com/legal/conditions-generales-dutilisation)
+- [Politique de confidentialité](https://www.amusoire.com/legal/politique-de-confidentialite)
+- [Politique des cookies](https://www.amusoire.com/legal/politique-des-cookies)
+
+### Système
+
+- [/modal](https://www.amusoire.com/modal) (contenu du popup, pas une page de nav)
+- /playground (page de test) · /404 · /401 · Style Guide (draft non publié)
+- Newsletter footer sur ~toutes les pages <Pill kind="warn">BLINDTEST</Pill>
+
+## Landing pages héritées — lp.pro.thisisblindtest.com
+
+L'ancien site `thisisblindtest.com` a été **supprimé** (remplacé par `amusoire.com`). Subsiste ce site Webflow dédié aux **landing pages des campagnes publicitaires** : ses pages ont été migrées sur le nouveau site, il sera supprimé après la bascule des campagnes. Pas de `sitemap.xml` et robots.txt bloquant (volontaire : pages de campagne, hors indexation).
+
+<Callout type="warn" title="Avertissement — ne pas supprimer encore">
+  Tant que des campagnes actives pointent vers ces URLs, le site doit rester en ligne. À la bascule : rediriger chaque LP vers sa page migrée ci-dessous.
+</Callout>
+
+- [Home](https://lp.pro.thisisblindtest.com/)
+- [/bars-restaurants](https://lp.pro.thisisblindtest.com/bars-restaurants) → migrée : `/pro/etablissements/bars-restaurants`
+- [/hotels](https://lp.pro.thisisblindtest.com/hotels) → migrée : `/pro/etablissements/hotels`
+- [/camping](https://lp.pro.thisisblindtest.com/camping) → migrée : `/pro/etablissements/camping`
+- [/loisirs-indoor](https://lp.pro.thisisblindtest.com/loisirs-indoor) → migrée : `/pro/etablissements/loisirs-indoor`
+- [/team-building](https://lp.pro.thisisblindtest.com/team-building) → migrée : `/team-building`
+
+Indépendant de ce site : les calendriers **HubSpot Meetings** restent servis sur `pro.thisisblindtest.com/meetings/*` (domaine connecté HubSpot) — ce sont les cibles du CTA dynamique du mail simulateur.
+
+## Maintenance & vigilance
+
+- Ne pas renommer une classe / un champ CMS technique.
+- Vérifier le routage HubSpot après tout ajout de formulaire.
+- Publier **staging d'abord**, toujours.
+
+**Rituel de mise à jour** : staging → validation → prod + backup nommé. Jamais de prod sans validation.
+
+## Support & demandes
+
+| Inclus (SAV) | Sur devis (évolutions) |
+| --- | --- |
+| Corrections de bugs, petites retouches | Nouvelles pages, features, intégrations |
+
+<span class="todo">(Périmètre exact + durée à compléter)</span>
+
+### Signaler un bug efficacement
+
+<ol class="steps">
+  <li>Le <b>lien</b> de la page concernée.</li>
+  <li>L'<b>appareil</b> + le <b>navigateur</b>.</li>
+  <li>Une capture ou un <b>Loom</b> (vidéo courte).</li>
+</ol>
+
+<Callout type="tip">
+  Cherche d'abord dans cette doc : la recherche (⌘K) fouille toutes les pages.
+</Callout>
+
+## Journal & log des bugs
+
+Journal de modifications, tenu par le client :
+
+| Date | Action | Impact | Backup ? |
+| --- | --- | --- | --- |
+| 2026-07-24 | MAJ visuels hero Home | Page | Oui |
+| <span class="todo">(date)</span> | <span class="todo">(action)</span> | <span class="todo">(page/global)</span> | <span class="todo">(oui/non)</span> |
+
+Bugs corrigés :
+
+| Bug | Cause racine | Correctif |
+| --- | --- | --- |
+| Form team-building mauvais portail | `data-portal` en dur dans la modale partagée | Unlink + `blindtest` |
+
+## Liens utiles
+
+| Ressource | Lien |
+| --- | --- |
+| Site prod | [amusoire.com](https://www.amusoire.com) |
+| Staging | [site-amusoire.webflow.io](https://site-amusoire.webflow.io) |
+| Repo simulateur | `ludobourgoin/amusoire` (GitHub, privé) — blueprints Make versionnés dans `make scenario blueprints/` |
+| Scénario Make | `Webflow forms to Hubspot` (webhook custom) |
+| Resend | Domaine `send.amusoire.com` · from `noreply@send.amusoire.com` · quota gratuit 3 000 mails/mois (100/jour) |
+| Demandes de modif (mail simulateur…) | `ludo@trigger.fr` |
+| Doc Docsify simulateur (live cliente) | [amusoire.pages.dev](https://amusoire.pages.dev/#/) |
+
+## Glossaire
+
+<dl>
+  <dt><code>account_target</code></dt><dd>Champ caché qui décide le portail HubSpot (amusoire / blindtest).</dd>
+  <dt><code>data-portal</code></dt><dd>Attribut du <code>&lt;form&gt;</code> Webflow qui alimente <code>account_target</code>.</dd>
+  <dt>typologie</dt><dd>Sous-critère de routage côté BLINDTEST (Entreprise / Particulier).</dd>
+  <dt><code>hutk</code></dt><dd>Cookie HubSpot (<code>hubspotutk</code>) liant un contact à son parcours. Ici lié au portail 25692189.</dd>
+  <dt><code>form_type</code></dt><dd>Champ caché (<code>simulateur</code>) qui déclenche la route mail — 2ᵉ filtre de la route 3 Make.</dd>
+  <dt>Inputflow</dt><dd>Librairie multi-step du formulaire simulateur (navigation entre étapes).</dd>
+  <dt>Catch-All</dt><dd>Formulaire HubSpot générique recevant les soumissions non dédiées.</dd>
+  <dt>Client-First</dt><dd>Convention de nommage des classes Webflow (Finsweet) qui rend le site maintenable.</dd>
+</dl>

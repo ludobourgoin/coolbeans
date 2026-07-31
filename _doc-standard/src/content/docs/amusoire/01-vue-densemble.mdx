@@ -1,0 +1,58 @@
+---
+project: "amusoire"
+title: "Vue d'ensemble"
+order: 1
+status: "final"
+updated: 2026-07-31
+description: "La porte d'entrée : identité du projet, contexte, marque et liens rapides."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+Le manuel pour faire vivre le site en autonomie sans casser la qualité pro. Blind test, quiz et karaoké : salles privées (B2C) et licences établissements (B2B).
+
+<div class="liens">
+  <a href="https://www.amusoire.com" target="_blank" rel="noopener">🌐 Prod <span class="ext">amusoire.com</span></a>
+  <a href="https://site-amusoire.webflow.io" target="_blank" rel="noopener">🧪 Staging <span class="ext">webflow.io</span></a>
+  <a href="https://webflow.com/dashboard/sites/site-amusoire" target="_blank" rel="noopener">✏️ Webflow <span class="ext">dashboard</span></a>
+</div>
+
+## En bref
+
+Site **Webflow**, automatisations **Make**, CRM **HubSpot** (2 portails), emails **Resend**. 39 pages publiées (+ gabarits CMS), 6 formulaires, 1 simulateur sur-mesure, 1 popup opt-in. Un site de landing pages hérité (`lp.pro.thisisblindtest.com`) reste en ligne en attendant sa suppression.
+
+<Callout type="note">
+  Cette doc est la seule **source de vérité**, tenue à jour (en-tête : statut + date). Une doc périmée fait plus de mal qu'une absence de doc.
+</Callout>
+
+## Contexte & objectifs
+
+Site vitrine + acquisition : réservation de salles privées côté grand public, démarchage d'établissements (bars, hôtels, campings…) pour la solution de licences.
+
+- Générer des **leads B2C** (réservations, événementiel) et **B2B** (licences).
+- Router chaque lead vers le **bon CRM** selon sa nature.
+- Rendre le client **autonome** sur le contenu sans casser le site.
+
+| Segment | Qui | Entrée |
+| --- | --- | --- |
+| B2C | Particuliers, EVG/EVJF, anniversaires, team building | Occasions, Lieux, Réserver |
+| B2B | Bars, restaurants, hôtels, campings, loisirs indoor | Pages `/pro/*`, simulateur |
+
+**Dans le périmètre** : site Webflow, formulaires, tracking, simulateur, popup, blog. **Hors** : campagnes payantes, production éditoriale.
+
+## La marque : de ThisIsBlindTest à Amusoire
+
+Une seule marque, renommée : l'activité s'appelait **ThisIsBlindTest** et s'appelle désormais **Amusoire**. L'ancien site `thisisblindtest.com` a été **supprimé** et remplacé par `amusoire.com`. Il subsiste un site Webflow de **landing pages** (`lp.pro.thisisblindtest.com`, 5 LPs créées pour les campagnes publicitaires) : ses pages ont été **migrées sur le nouveau site** et il sera supprimé après la bascule des campagnes. Détail : section Sitemap de [Référence & support](/docs/amusoire/reference-et-support).
+
+Héritage direct du renommage : **deux portails HubSpot** coexistent.
+
+| Portail | ID | Ce qui y remonte |
+| --- | --- | --- |
+| **AMUSOIRE** (nouveau) | `25692189` | Leads licences B2B : formulaires pro, simulateur, UK |
+| **BLINDTEST** (historique) | `147562037` | Événementiel (team building, contact events) + newsletter |
+
+<Callout type="piege">
+  Le nom du portail ne mappe pas intuitivement : les formulaires **pro/licences** remontent sur **AMUSOIRE**, l'événementiel et la newsletter sur **BLINDTEST**. Ne pas « corriger ». Détail : [Leads & formulaires](/docs/amusoire/leads-et-formulaires).
+</Callout>
+
+**Lieux B2C** : Drawing House (Paris 14) · Trinquet Village (Paris 16) · Le Môm (Paris 17) · La Valentine (Marseille).
