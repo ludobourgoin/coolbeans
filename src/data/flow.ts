@@ -19,7 +19,7 @@ export interface FlowBox {
 export const flowBoxes: FlowBox[] = [
   // connectées (plein) — colonne centrale
   {
-    title: "design",
+    title: "Design",
     left: 283,
     top: 38,
     icons: [
@@ -29,7 +29,7 @@ export const flowBoxes: FlowBox[] = [
     ],
   },
   {
-    title: "développement",
+    title: "Développement",
     left: 283,
     top: 133,
     icons: [
@@ -40,7 +40,7 @@ export const flowBoxes: FlowBox[] = [
     ],
   },
   {
-    title: "hébergement & déploiement",
+    title: "Hébergement & déploiement",
     left: 283,
     top: 228,
     icons: [
@@ -50,7 +50,7 @@ export const flowBoxes: FlowBox[] = [
     ],
   },
   {
-    title: "paiements & facturation",
+    title: "Paiements & facturation",
     left: 283,
     top: 323,
     icons: [
@@ -62,7 +62,7 @@ export const flowBoxes: FlowBox[] = [
   },
   // flottantes (tireté) — colonne gauche
   {
-    title: "cms & no-code",
+    title: "CMS & no-code",
     left: 80,
     top: 38,
     float: true,
@@ -74,7 +74,7 @@ export const flowBoxes: FlowBox[] = [
     ],
   },
   {
-    title: "automatisation",
+    title: "Automatisation",
     left: 80,
     top: 133,
     float: true,
@@ -85,7 +85,7 @@ export const flowBoxes: FlowBox[] = [
     ],
   },
   {
-    title: "email & crm",
+    title: "Email & CRM",
     left: 80,
     top: 228,
     float: true,
@@ -97,7 +97,7 @@ export const flowBoxes: FlowBox[] = [
     ],
   },
   {
-    title: "analyse & seo",
+    title: "Analyse & SEO",
     left: 80,
     top: 323,
     float: true,

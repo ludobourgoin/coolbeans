@@ -450,6 +450,81 @@ check(
 for (const entry of MARKUP_COLOR_ALLOW)
   check('exception couleur brute justifiée : ' + entry.file, !!entry.reason && entry.reason.length > 20);
 
+/* ── J · aucune var(--custom) référencée sans être définie dans src/ ──
+   Le bug qui a motivé cette section : Flow.astro stylait `.wires path`
+   avec `stroke: var(--line-2)`. --line-2 n'a jamais existé dans ce
+   projet — l'ancien design system l'avait, la migration l'a renommé
+   --line-strong, et Flow.astro n'a jamais été relu parce que son bloc
+   <style> était sur la liste blanche de la section F. Résultat : les
+   quatre câbles de gauche ne se rendaient pas du tout. La section D
+   existante ne couvrait que --ds-* ; un token de la couche Coolbeans
+   (ou tout autre) passait au travers. Cette section généralise : on
+   recense tout var(--xxx) référencé dans src/ (.astro, .css, .ts) et
+   on exige qu'il existe au moins une déclaration --xxx: quelque part
+   dans src/, tous fichiers confondus.
+
+   Deux limites assumées, documentées plutôt que masquées :
+
+   1. Faux positif écarté explicitement (pas une whitelist — une vraie
+      non-détection) : design-system.astro construit un nom de
+      propriété dynamique en template literal, `var(--ds-${s.key}-${n})`.
+      La regex qui capture `--[\w-]+` s'arrête au premier caractère non
+      autorisé et lit ça comme un usage de la propriété littérale
+      « --ds- », qui n'existe évidemment nulle part. Ce n'est pas un
+      token mort : c'est une interpolation JS, invisible pour une regex
+      statique. On ignore tout match immédiatement suivi de `$` dans la
+      source (signature d'une interpolation `${…}` tronquée par la
+      classe de caractères).
+
+   2. Whitelist réelle, deux trous latents dans geist-tokens.css (fichier
+      généré — jamais retouché à la main, donc hors scope de ce
+      correctif) : --geist-space-small/medium/large et
+      --geist-page-margin sont utilisés (dans les alias --ds-size-*
+      et --ds-page-width-with-margin) mais jamais déclarés — l'extraction
+      automatique n'a jamais tiré ces --geist-* bruts de la feuille
+      Vercel. Vrai trou, mais pas celui que ce correctif visait : à
+      signaler pour un futur passage sur le générateur. ─────────────── */
+const CUSTOM_PROP_ALLOW = {
+  '--geist-space-small':
+    "alias non résolu de --ds-size-small dans geist-tokens.css (fichier généré) : l'extraction n'a jamais tiré --geist-space-small de la feuille Vercel. Trou latent réel, hors scope de ce correctif.",
+  '--geist-space-medium':
+    "alias non résolu de --ds-size-medium / --ds-popover-row-height dans geist-tokens.css (fichier généré) : même trou d'extraction que --geist-space-small.",
+  '--geist-space-large':
+    "alias non résolu de --ds-size-large dans geist-tokens.css (fichier généré) : même trou d'extraction que --geist-space-small.",
+  '--geist-page-margin':
+    "utilisé par --ds-page-width-with-margin dans geist-tokens.css (fichier généré) mais jamais déclaré : même trou d'extraction, jamais tiré de la feuille Vercel.",
+};
+
+const customDefined = new Set();
+for (const f of files) for (const m of (read(f) || '').matchAll(/(--[\w-]+)\s*:/g)) customDefined.add(m[1]);
+
+const customUsedIn = new Map(); // nom → fichiers l'utilisant
+for (const f of files) {
+  const content = read(f) || '';
+  for (const m of content.matchAll(/var\((--[\w-]+)/g)) {
+    const name = m[1];
+    const nextChar = content[m.index + m[0].length];
+    if (nextChar === '$') continue; // interpolation JS tronquée, cf. note ci-dessus — pas un usage réel
+    if (!customUsedIn.has(name)) customUsedIn.set(name, []);
+    const list = customUsedIn.get(name);
+    if (!list.includes(f)) list.push(f);
+  }
+}
+
+const customUndefined = [...customUsedIn.keys()].filter(n => !customDefined.has(n) && !(n in CUSTOM_PROP_ALLOW));
+check(
+  'toute var(--custom) référencée dans src/ est définie quelque part dans src/',
+  customUndefined.length === 0,
+  customUndefined.map(n => n + ' (utilisé dans ' + customUsedIn.get(n).join(', ') + ')').join(' | '),
+);
+for (const [name, reason] of Object.entries(CUSTOM_PROP_ALLOW)) {
+  check(
+    'exception var(--custom) non définie justifiée : ' + name,
+    customUsedIn.has(name) && !customDefined.has(name) && reason.length > 20,
+    customUsedIn.has(name) ? 'reste non définie ? ' + !customDefined.has(name) : 'plus référencée nulle part — exception obsolète, à retirer',
+  );
+}
+
 /* ── sortie ────────────────────────────────────────────────────── */
 console.log(ok.map(s => '  ok    ' + s).join('\n'));
 if (fail.length) {

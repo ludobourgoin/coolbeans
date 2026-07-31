@@ -2,14 +2,14 @@
 import { flowBoxes } from "../data/flow";
 
 const deliverables = [
-  { label: "landing pages", svg: '<rect x="5" y="3" width="14" height="18"/><line x1="5" y1="8" x2="19" y2="8"/>' },
-  { label: "e-commerce", svg: '<path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>' },
-  { label: "applications web", svg: '<rect x="3" y="5" width="18" height="14"/><line x1="3" y1="9.5" x2="21" y2="9.5"/>' },
-  { label: "animations & interactions", svg: '<path d="M2 12c2.5-6 4.5-6 7 0s4.5 6 7 0 4.5-6 6-3"/>' },
-  { label: "intégration figma → code", svg: '<polyline points="8 7 3 12 8 17"/><polyline points="16 7 21 12 16 17"/>' },
-  { label: "automatisations", svg: '<path d="M13 2 4 14h7l-1 8 10-13h-7l1-7z"/>' },
-  { label: "refonte web", svg: '<polyline points="20 5 20 10 15 10"/><path d="M19 13a7 7 0 1 1-2-7l3 2"/>' },
-  { label: "blogs & médias", svg: '<rect x="4" y="4" width="16" height="16"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/>' },
+  { label: "Landing pages", svg: '<rect x="5" y="3" width="14" height="18"/><line x1="5" y1="8" x2="19" y2="8"/>' },
+  { label: "E-commerce", svg: '<path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>' },
+  { label: "Applications web", svg: '<rect x="3" y="5" width="18" height="14"/><line x1="3" y1="9.5" x2="21" y2="9.5"/>' },
+  { label: "Animations & interactions", svg: '<path d="M2 12c2.5-6 4.5-6 7 0s4.5 6 7 0 4.5-6 6-3"/>' },
+  { label: "Intégration Figma → code", svg: '<polyline points="8 7 3 12 8 17"/><polyline points="16 7 21 12 16 17"/>' },
+  { label: "Automatisations", svg: '<path d="M13 2 4 14h7l-1 8 10-13h-7l1-7z"/>' },
+  { label: "Refonte web", svg: '<polyline points="20 5 20 10 15 10"/><path d="M19 13a7 7 0 1 1-2-7l3 2"/>' },
+  { label: "Blogs & médias", svg: '<rect x="4" y="4" width="16" height="16"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/>' },
 ];
 ---
 
@@ -24,10 +24,48 @@ const deliverables = [
       <path class="live" d="M684 216 C 756 216, 788 178, 836 178"></path>
       <path class="live" d="M684 216 C 756 216, 788 230, 836 230"></path>
       <path class="live" d="M684 216 C 756 216, 788 282, 836 282"></path>
-      <circle class="tok" r="4"><animateMotion dur="2.4s" repeatCount="indefinite" path="M424 77 C 505 77, 545 216, 596 216"></animateMotion></circle>
-      <circle class="tok" r="4"><animateMotion dur="2.4s" begin="-0.6s" repeatCount="indefinite" path="M470 173 C 530 173, 560 216, 596 216"></animateMotion></circle>
-      <circle class="tok" r="4"><animateMotion dur="2.4s" begin="-1.2s" repeatCount="indefinite" path="M452 267 C 538 267, 556 216, 596 216"></animateMotion></circle>
-      <circle class="tok" r="4"><animateMotion dur="2.4s" begin="-1.8s" repeatCount="indefinite" path="M425 362 C 510 362, 550 216, 596 216"></animateMotion></circle>
+      <!--
+        Paquets qui glissent puis se reposent, au lieu du flux continu façon
+        tapis roulant : keyPoints "0;1;1" + keyTimes font parcourir le
+        segment [0, 0.3] du cycle puis tenir la position (immobile, invisible
+        via l'opacité ci-dessous) jusqu'à la reprise. calcMode="spline" avec
+        keySplines "0.2 0.7 0.2 1" reprend la même courbe que var(--ease)
+        (cubic-bezier(0.2, 0.7, 0.2, 1)) — SMIL ne sait pas lire les custom
+        properties CSS, donc les 4 valeurs sont dupliquées ici à la main et
+        doivent rester synchronisées si --ease change dans global.css.
+      -->
+      <circle class="tok" r="4">
+        <animateMotion dur="4s" begin="0s" repeatCount="indefinite" calcMode="spline" keyPoints="0;1;1" keyTimes="0;0.3;1" keySplines="0.2 0.7 0.2 1;0 0 1 1" path="M424 77 C 505 77, 545 216, 596 216"></animateMotion>
+        <animate attributeName="opacity" dur="4s" begin="0s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.24;0.3;1"></animate>
+      </circle>
+      <circle class="tok" r="4">
+        <animateMotion dur="4s" begin="-1s" repeatCount="indefinite" calcMode="spline" keyPoints="0;1;1" keyTimes="0;0.3;1" keySplines="0.2 0.7 0.2 1;0 0 1 1" path="M470 173 C 530 173, 560 216, 596 216"></animateMotion>
+        <animate attributeName="opacity" dur="4s" begin="-1s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.24;0.3;1"></animate>
+      </circle>
+      <circle class="tok" r="4">
+        <animateMotion dur="4s" begin="-2s" repeatCount="indefinite" calcMode="spline" keyPoints="0;1;1" keyTimes="0;0.3;1" keySplines="0.2 0.7 0.2 1;0 0 1 1" path="M452 267 C 538 267, 556 216, 596 216"></animateMotion>
+        <animate attributeName="opacity" dur="4s" begin="-2s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.24;0.3;1"></animate>
+      </circle>
+      <circle class="tok" r="4">
+        <animateMotion dur="4s" begin="-3s" repeatCount="indefinite" calcMode="spline" keyPoints="0;1;1" keyTimes="0;0.3;1" keySplines="0.2 0.7 0.2 1;0 0 1 1" path="M425 362 C 510 362, 550 216, 596 216"></animateMotion>
+        <animate attributeName="opacity" dur="4s" begin="-3s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.24;0.3;1"></animate>
+      </circle>
+      <circle class="tok" r="4">
+        <animateMotion dur="4s" begin="-0.5s" repeatCount="indefinite" calcMode="spline" keyPoints="0;1;1" keyTimes="0;0.3;1" keySplines="0.2 0.7 0.2 1;0 0 1 1" path="M684 216 C 756 216, 788 126, 836 126"></animateMotion>
+        <animate attributeName="opacity" dur="4s" begin="-0.5s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.24;0.3;1"></animate>
+      </circle>
+      <circle class="tok" r="4">
+        <animateMotion dur="4s" begin="-1.5s" repeatCount="indefinite" calcMode="spline" keyPoints="0;1;1" keyTimes="0;0.3;1" keySplines="0.2 0.7 0.2 1;0 0 1 1" path="M684 216 C 756 216, 788 178, 836 178"></animateMotion>
+        <animate attributeName="opacity" dur="4s" begin="-1.5s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.24;0.3;1"></animate>
+      </circle>
+      <circle class="tok" r="4">
+        <animateMotion dur="4s" begin="-2.5s" repeatCount="indefinite" calcMode="spline" keyPoints="0;1;1" keyTimes="0;0.3;1" keySplines="0.2 0.7 0.2 1;0 0 1 1" path="M684 216 C 756 216, 788 230, 836 230"></animateMotion>
+        <animate attributeName="opacity" dur="4s" begin="-2.5s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.24;0.3;1"></animate>
+      </circle>
+      <circle class="tok" r="4">
+        <animateMotion dur="4s" begin="-3.5s" repeatCount="indefinite" calcMode="spline" keyPoints="0;1;1" keyTimes="0;0.3;1" keySplines="0.2 0.7 0.2 1;0 0 1 1" path="M684 216 C 756 216, 788 282, 836 282"></animateMotion>
+        <animate attributeName="opacity" dur="4s" begin="-3.5s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.24;0.3;1"></animate>
+      </circle>
     </svg>
 
     {
@@ -49,10 +87,6 @@ const deliverables = [
       <div class="mark">
         <img class="m-light" src="/img/coolbeans-mark-black.svg" alt="coolbeans" />
         <img class="m-dark" src="/img/coolbeans-mark-white.svg" alt="coolbeans" />
-      </div>
-      <div class="read">
-        <p class="read-punch">vous briefez.<br />je fais le reste.</p>
-        <p class="read-sub">design · dev · maintenance</p>
       </div>
     </div>
 
@@ -101,21 +135,15 @@ const deliverables = [
   }
   .wires path {
     fill: none;
-    stroke: var(--line-2);
+    stroke: var(--line-strong);
     stroke-width: 1.5;
   }
   .wires path.live {
     stroke: var(--ink);
-    stroke-dasharray: 5 8;
-    animation: wire-flow 1.05s linear infinite;
   }
   .wires circle.tok {
     fill: var(--ink);
-  }
-  @keyframes wire-flow {
-    to {
-      stroke-dashoffset: -26;
-    }
+    opacity: 0;
   }
 
   /* boîtes catégories */
@@ -130,7 +158,6 @@ const deliverables = [
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.02em;
-    text-transform: lowercase;
     color: var(--ink);
     padding: 6px 9px;
     border-bottom: 1.5px solid var(--ink);
@@ -231,7 +258,7 @@ const deliverables = [
     inset: -34%;
     border-radius: 50%;
     background: radial-gradient(circle, color-mix(in oklab, var(--ink) 13%, transparent) 0%, transparent 70%);
-    animation: core-pulse 3.4s var(--ease) infinite;
+    animation: core-pulse 4.4s var(--ease) infinite;
   }
   .fcore .mark img {
     width: 100%;
@@ -247,42 +274,15 @@ const deliverables = [
   :global(.dark) .fcore .mark img.m-dark {
     display: block;
   }
-  .fcore .read {
-    width: 280px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 9px;
-    text-align: center;
-  }
-  .fcore .read-punch {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    text-transform: lowercase;
-    color: var(--ink);
-    margin: 0;
-  }
-  .fcore .read-sub {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--mute);
-    margin: 0;
-  }
   @keyframes core-pulse {
     0%,
     100% {
       transform: scale(1);
-      opacity: 0.6;
+      opacity: 0.5;
     }
     50% {
-      transform: scale(1.14);
-      opacity: 1;
+      transform: scale(1.06);
+      opacity: 0.85;
     }
   }
 
@@ -310,7 +310,6 @@ const deliverables = [
     font-weight: 600;
     font-size: 13px;
     letter-spacing: -0.01em;
-    text-transform: lowercase;
     line-height: 1.1;
     white-space: nowrap;
   }
@@ -326,12 +325,12 @@ const deliverables = [
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .wires path.live {
-      animation: none;
-    }
     .fcore .mark::before {
       animation: none;
     }
+    /* les paquets (circle.tok) sont animés en SMIL (animateMotion/animate),
+       pas en CSS : `animation: none` n'a pas prise dessus. Les masquer
+       reste le seul moyen fiable de couper le mouvement ici. */
     .wires circle.tok {
       display: none;
     }
