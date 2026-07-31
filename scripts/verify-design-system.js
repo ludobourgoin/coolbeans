@@ -79,7 +79,7 @@ if (glob) {
 }
 
 /* ── C · aucun token mort dans src/ ────────────────────────────── */
-const DEAD = ['surface-marque', 'card-frame', 'data-accent', 'bg-texture', 'accent-focus'];
+const DEAD = ['surface-marque', 'card-frame', 'data-accent', 'bg-texture', 'accent-focus', 'surface-brand'];
 const files = walk('src');
 for (const tok of DEAD) {
   const hits = files.filter(f => (read(f) || '').includes(tok));
@@ -251,6 +251,75 @@ if (badge && geist) {
   }
 } else {
   check('résolution des contrastes Badge', false, 'Badge.astro ou geist-tokens.css introuvable');
+}
+
+/* ── H · la table SEMANTIC de /design-system correspond à global.css ──
+   La page /design-system existe pour ne jamais mentir sur le système — mais
+   sa constante SEMANTIC recopie en dur la correspondance token → source
+   Geist (ex. --surface → --ds-background-100). Si un mapping change dans
+   global.css, la page continue d'afficher l'ancien et rien ne le signale :
+   même travers que la page existe pour éviter, appliqué aux tokens plutôt
+   qu'au markup. Comme en section G, on ne recopie pas les valeurs
+   attendues ici — on LIT la table réellement déclarée dans
+   design-system.astro et on la compare aux déclarations réelles de
+   global.css. ──────────────────────────────────────────────────────── */
+const designSystemPage = read('src/pages/design-system.astro');
+check('design-system.astro existe', !!designSystemPage);
+if (designSystemPage && glob) {
+  const tableMatch = designSystemPage.match(/const SEMANTIC = \[([\s\S]*?)\n\];/);
+  if (!tableMatch) {
+    check('table SEMANTIC lisible dans design-system.astro', false, 'introuvable ou format inattendu');
+  } else {
+    const rowRe = /\[\s*"(--[\w-]+)"\s*,\s*"(?:[^"\\]|\\.)*"\s*,\s*"((?:[^"\\]|\\.)*)"\s*\]/g;
+    const rows = [...tableMatch[1].matchAll(rowRe)];
+    check('lignes de la table SEMANTIC extraites', rows.length > 0, 'aucune ligne reconnue dans SEMANTIC');
+
+    const semRoot = declMap(extractBlock(glob, ':root {'));
+    const semDark = declMap(extractBlock(glob, '.dark {'));
+
+    for (const [, token, source] of rows) {
+      const declared = semRoot[token];
+      if (declared === undefined) {
+        check('SEMANTIC ' + token + ' : déclaré dans global.css', false, 'absent de :root dans global.css');
+        continue;
+      }
+      const dsMatch = source.match(/^(--ds-[\w-]+)$/);
+      if (dsMatch) {
+        /* la page annonce une simple indirection var(--ds-*) : global.css doit
+           déclarer très exactement ça, pas une autre source ou une valeur figée */
+        const expected = 'var(' + dsMatch[1] + ')';
+        check(
+          'SEMANTIC ' + token + ' → ' + dsMatch[1],
+          declared === expected,
+          'global.css déclare "' + declared + '", la page annonce "' + expected + '"'
+        );
+      } else {
+        /* source littérale (ex. --accent-hover: "hsl(0 0% 22%) · dark hsl(0 0% 80%)") :
+           on extrait les hsl() cités et on vérifie clair (:root) puis, s'il y en a un
+           second, sombre (.dark) contre les déclarations réelles. */
+        const hsls = source.match(/hsl\([^)]*\)/g) || [];
+        if (hsls.length === 0) {
+          check('SEMANTIC ' + token + ' : source analysable', false, 'ni --ds-* ni hsl() reconnaissable dans "' + source + '"');
+          continue;
+        }
+        check(
+          'SEMANTIC ' + token + ' clair → ' + hsls[0],
+          declared === hsls[0],
+          'global.css déclare "' + declared + '" en clair, la page annonce "' + hsls[0] + '"'
+        );
+        if (hsls[1]) {
+          const darkDeclared = semDark[token];
+          check(
+            'SEMANTIC ' + token + ' sombre → ' + hsls[1],
+            darkDeclared === hsls[1],
+            'global.css déclare "' + darkDeclared + '" en sombre, la page annonce "' + hsls[1] + '"'
+          );
+        }
+      }
+    }
+  }
+} else {
+  check('résolution de la table SEMANTIC', false, 'design-system.astro ou global.css introuvable');
 }
 
 /* ── sortie ────────────────────────────────────────────────────── */
