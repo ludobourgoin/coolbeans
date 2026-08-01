@@ -1,0 +1,9 @@
+// Config Worker du site Coolbeans (adapter @astrojs/cloudflare, cible WORKERS).
+// Déploiement : `npm run build` puis `npx wrangler deploy` (la config générée
+// dans dist/ est reprise via .wrangler/deploy/config.json).
+// `nodejs_compat` est requis par @clerk/astro (node:async_hooks, node:fs).
+{
+  "name": "coolbeans",
+  "compatibility_date": "2026-07-01",
+  "compatibility_flags": ["nodejs_compat"]
+}
