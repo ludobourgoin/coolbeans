@@ -158,6 +158,10 @@
   /* vignette toujours claire : les favicons des logos partenaires sont des
      marques encre sur fond transparent, invisibles sur surface sombre. */
   --color-tile: #fbfaf7;
+  /* encre associée, figée elle aussi : --ink s'inverse avec .dark (case
+     #ededed en sombre), ce qui rendrait bordure/texte illisibles sur le
+     fond clair fixe de --color-tile. */
+  --color-tile-ink: #171717;
 }
 
 /* ----------------------------------------------------------------------------
