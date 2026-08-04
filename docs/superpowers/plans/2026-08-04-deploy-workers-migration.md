@@ -14,7 +14,23 @@
 - `staging` → `staging.coolbeans.cc` obligatoirement (pas d'URL à hash) (spec §1 décision 4).
 - Toute étape qui touche le domaine `coolbeans.cc` en production, ou qui supprime une ressource Cloudflare, nécessite un feu vert explicite au moment de l'exécuter — ne jamais l'exécuter en enchaînement automatique même si le plan global a été approuvé (spec §3, règle projet sur les publications en production).
 - Ne pas toucher au rendu SSR/statique existant (`/espace` et `/docs` en SSR, tout le reste prérendu) — hors périmètre (spec §4).
-- Ne pas fusionner `staging` dans `main` — hors périmètre (spec §1 décision 6, spec §4).
+- ~~Ne pas fusionner `staging` dans `main` — hors périmètre~~ — **contrainte levée le
+  2026-08-04** suite à l'incident documenté en spec §3bis (Task 5 a promu le contenu de
+  `staging` en prod par effet de bord ; décision explicite de l'utilisateur d'assumer
+  et de fusionner `staging` → `main` plutôt que de revenir en arrière).
+
+## Résumé d'exécution (2026-08-04)
+
+Tasks 1 à 5 exécutées et review-clean (voir ledger `.superpowers/sdd/` pour le détail
+complet, non committé). Task 6 différée par décision explicite de l'utilisateur —
+projet Pages `coolbeans-1ta.pages.dev` gardé en dormance comme filet de sécurité,
+suppression prévue plus tard, pas de date fixée. Deux incidents découverts par la
+review finale de branche et corrigés le jour même : voir spec §3bis (contenu `staging`
+promu en prod par erreur d'exécution, pipeline `staging` cassé faute de variable de
+build publique). État final vérifié : `coolbeans.cc` / `www.coolbeans.cc` (prod) et
+`staging.coolbeans.cc` fonctionnels, `main` et `staging` alignés (fast-forward),
+auto-déploiement opérationnel des deux côtés via deux connexions Workers Builds
+séparées.
 
 ---
 
@@ -26,13 +42,13 @@
 **Interfaces:**
 - Produces: `wrangler.jsonc` avec un bloc top-level `routes` (production : `coolbeans.cc`, `www.coolbeans.cc`) et un bloc `env.staging.routes` (`staging.coolbeans.cc`), tous deux avec `custom_domain: true`. Les tasks suivantes déploient contre cette config via `wrangler deploy` / `wrangler deploy --env staging`.
 
-- [ ] **Step 1: Constater l'état actuel**
+- [x] **Step 1: Constater l'état actuel**
 
 Run: `cat wrangler.jsonc`
 
 Expected: pas de clé `routes`, pas de clé `env` — seulement `name`, `compatibility_date`, `compatibility_flags`.
 
-- [ ] **Step 2: Ajouter les routes de domaines custom**
+- [x] **Step 2: Ajouter les routes de domaines custom**
 
 Remplacer le contenu de `wrangler.jsonc` par :
 
@@ -59,13 +75,13 @@ Remplacer le contenu de `wrangler.jsonc` par :
 }
 ```
 
-- [ ] **Step 3: Valider la config sans déployer**
+- [x] **Step 3: Valider la config sans déployer**
 
 Run: `npm run build && npx wrangler deploy --dry-run`
 
 Expected: le build Astro réussit, puis Wrangler affiche un résumé de déploiement (routes `coolbeans.cc`, `www.coolbeans.cc` en Custom Domain) sans erreur de parsing JSONC et sans upload réel (`--dry-run`).
 
-- [ ] **Step 4: Valider la config de l'environnement staging**
+- [x] **Step 4: Valider la config de l'environnement staging**
 
 ⚠️ Correction post-review (voir spec §2.2) : `wrangler deploy --env staging` ne
 valide **rien** ici — l'adapter `@astrojs/cloudflare` résout l'environnement au
@@ -81,7 +97,7 @@ Domain, sans upload réel. **Après ce step, rebuild en production avant de cont
 `npm run build` (sans `CLOUDFLARE_ENV`), pour ne pas laisser le répertoire `dist/`
 dans un état "staging" avant la Task 2.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add wrangler.jsonc
@@ -126,7 +142,7 @@ pour le Worker `coolbeans` — la spec ne le couvrait pas, à traiter au même e
 `grep '^CLERK_SECRET_KEY=' .env | cut -d= -f2- | npx wrangler secret put CLERK_SECRET_KEY --name coolbeans` avant le `wrangler deploy` de production. Provisionner une vraie
 instance Clerk "production" reste hors périmètre de ce plan de déploiement.
 
-- [ ] **Step 1: Builder pour l'environnement staging, puis déployer**
+- [x] **Step 1: Builder pour l'environnement staging, puis déployer**
 
 ⚠️ Pas de `--env staging` sur le deploy (voir spec §2.2 et correction Task 1 Step 4) —
 c'est le **build** qui doit cibler staging, le deploy reste nu :
@@ -139,20 +155,20 @@ création du Custom Domain `staging.coolbeans.cc` (première exécution : provis
 du certificat, peut prendre jusqu'à quelques minutes avant que le HTTPS soit pleinement
 actif).
 
-- [ ] **Step 1bis: Rebuild en production pour ne pas polluer les tasks suivantes**
+- [x] **Step 1bis: Rebuild en production pour ne pas polluer les tasks suivantes**
 
 Run: `npm run build`
 
 Expected: build réussi, `dist/` reflète à nouveau la config de production
 (`name: "coolbeans"`), pas celle de staging.
 
-- [ ] **Step 2: Vérifier la page d'accueil**
+- [x] **Step 2: Vérifier la page d'accueil**
 
 Run: `curl -s -o /dev/null -w "%{http_code}\n" https://staging.coolbeans.cc/`
 
 Expected: `200`
 
-- [ ] **Step 3: Vérifier la page de devis (le cas qui a déclenché ce chantier)**
+- [x] **Step 3: Vérifier la page de devis (le cas qui a déclenché ce chantier)**
 
 Run: `curl -s https://staging.coolbeans.cc/devis/en-haut/ | grep -io "en haut" | head -1`
 
@@ -161,7 +177,7 @@ l'URL avec slash, sans corps exploitable, et la commande ne matchera rien.
 
 Expected: une ligne contenant `en haut` (ou `En Haut`) — preuve que c'est bien la vraie page de devis et pas un shell par défaut.
 
-- [ ] **Step 4: Vérifier que les routes protégées redirigent vers Clerk**
+- [x] **Step 4: Vérifier que les routes protégées redirigent vers Clerk**
 
 Nécessite que `CLERK_SECRET_KEY` et `PUBLIC_CLERK_PUBLISHABLE_KEY` soient configurés
 (secret Worker + `.env` au build — voir note ci-dessous si absent).
@@ -172,7 +188,7 @@ Expected: `307` (Clerk redirige vers son sign-in hébergé, ex.
 `https://<instance>.accounts.dev/sign-in?redirect_url=...`) — pas `200` ni `404`, ni
 `500`. Un `500` ici signale des secrets Clerk manquants sur le Worker.
 
-- [ ] **Step 5: Même vérification pour `/docs`, sur un vrai chemin de projet**
+- [x] **Step 5: Même vérification pour `/docs`, sur un vrai chemin de projet**
 
 ⚠️ Tester avec un slug de projet réel (ex. `/docs/amusoire/`), pas `/docs/` nu — ce
 dernier ne correspond à aucune route Astro (`src/pages/docs/[project]/[...slug].astro`
@@ -206,7 +222,7 @@ détail complet. Cette task est réécrite ci-dessous avec l'architecture corrig
 
 **⚠️ Action manuelle requise (dashboard Cloudflare) — à faire par l'utilisateur, ou à guider pas-à-pas en partageant l'écran :**
 
-- [ ] **Step 1: Simplifier la connexion existante sur `coolbeans` (production)**
+- [x] **Step 1: Simplifier la connexion existante sur `coolbeans` (production)**
 
 Dashboard Cloudflare → **Workers & Pages** → Worker `coolbeans` → **Settings** → **Build**.
 Si une connexion Git existe déjà (Git repository = `ludobourgoin/coolbeans`), éditer :
@@ -218,13 +234,13 @@ Si une connexion Git existe déjà (Git repository = `ludobourgoin/coolbeans`), 
 
 Enregistrer.
 
-- [ ] **Step 2: Créer la seconde connexion sur `coolbeans-staging`**
+- [x] **Step 2: Créer la seconde connexion sur `coolbeans-staging`**
 
 Dashboard Cloudflare → **Workers & Pages** → Worker `coolbeans-staging` → **Settings** →
 **Build** → **Connect** (ou équivalent) → sélectionner le même repo
 `ludobourgoin/coolbeans`.
 
-- [ ] **Step 3: Configurer la connexion `coolbeans-staging`**
+- [x] **Step 3: Configurer la connexion `coolbeans-staging`**
 
 - **Production branch** → `staging` (le champ s'appelle "Production branch" côté
   Cloudflare quelle que soit la branche choisie — ici il désigne simplement la branche
@@ -236,7 +252,7 @@ Dashboard Cloudflare → **Workers & Pages** → Worker `coolbeans-staging` → 
 
 Enregistrer.
 
-- [ ] **Step 4: Vérifier les deux connexions**
+- [x] **Step 4: Vérifier les deux connexions**
 
 Confirmer sur chaque page Settings → Build que les valeurs des Steps 1 et 3 sont bien
 enregistrées (Git repository, branche, build/deploy commands, toggle non-production
@@ -261,7 +277,7 @@ manuellement (`wrangler deploy` en CLI) après chaque incident, sans impact visi
 La Task 3 a depuis été réécrite avec deux connexions séparées. Ce qui suit est la
 vérification à mener **une fois la Task 3 (révisée) confirmée faite**.
 
-- [ ] **Step 1: Fusionner ce travail sur `staging` et pousser**
+- [x] **Step 1: Fusionner ce travail sur `staging` et pousser**
 
 Le worktree tourne sur `staging-deploy-workers-migration`, une branche de travail
 isolée — pas la vraie branche `staging` que Workers Builds surveille désormais.
@@ -279,7 +295,7 @@ Si le `--ff-only` échoue (historique divergent), s'arrêter et regarder avant d
 quoi que ce soit — ne pas utiliser `--no-ff` ni résoudre les conflits sans comprendre
 pourquoi `staging` a avancé de son côté.
 
-- [ ] **Step 2: Vérifier que `coolbeans-staging` (et lui seul) a reçu un build automatique**
+- [x] **Step 2: Vérifier que `coolbeans-staging` (et lui seul) a reçu un build automatique**
 
 Run: `npx wrangler deployments list --name=coolbeans-staging`
 
@@ -294,7 +310,7 @@ ne doit apparaître** ici suite à ce push sur `staging` (sinon la Task 3 n'est 
 correctement configurée : la connexion `coolbeans` réagit encore à autre chose que
 `main`).
 
-- [ ] **Step 3: Revérifier `staging.coolbeans.cc`**
+- [x] **Step 3: Revérifier `staging.coolbeans.cc`**
 
 Run: `curl -s -o /dev/null -w "%{http_code}\n" https://staging.coolbeans.cc/`
 
@@ -312,15 +328,15 @@ Expected: `200`, avec un contenu à jour (le déploiement automatique a bien rem
 
 **⚠️ NE PAS EXÉCUTER cette task sans confirmation explicite de l'utilisateur au moment de le faire, même si ce plan a été approuvé dans son ensemble.** C'est le seul moment où du trafic de production change de destination.
 
-- [ ] **Step 0: Demander confirmation explicite avant de continuer**
+- [x] **Step 0: Demander confirmation explicite avant de continuer**
 
 Ne pas passer à l'étape 1 sans un message clair de l'utilisateur du type « go », « lance la bascule prod », etc., obtenu dans la conversation au moment de l'exécution.
 
-- [ ] **Step 1: Détacher les domaines custom du projet Pages (dashboard, manuel)**
+- [x] **Step 1: Détacher les domaines custom du projet Pages (dashboard, manuel)**
 
 Dashboard Cloudflare → **Workers & Pages** → projet Pages `coolbeans` → **Custom domains** → retirer `coolbeans.cc` et `www.coolbeans.cc`.
 
-- [ ] **Step 1bis: Provisionner le secret Clerk sur le Worker de production**
+- [x] **Step 1bis: Provisionner le secret Clerk sur le Worker de production**
 
 Même prérequis que la Task 2 (voir sa note), pas encore fait pour `coolbeans` :
 
@@ -330,7 +346,7 @@ Si `.env` n'existe pas dans ce répertoire de travail, `clerk env pull --file .e
 d'abord. Sans ce secret, `/espace` et `/docs/<projet>` répondront `500` en prod au lieu
 de rediriger vers Clerk.
 
-- [ ] **Step 2: Rebuild en production (sécurité) puis rattacher les domaines au Worker**
+- [x] **Step 2: Rebuild en production (sécurité) puis rattacher les domaines au Worker**
 
 Run: `npm run build && npx wrangler deploy`
 
@@ -350,7 +366,7 @@ dans le dashboard, **DNS → Records**, supprimer les deux enregistrements `CNAM
 cadenas qu'a par exemple `staging.coolbeans.cc`), puis relancer `wrangler deploy` — il
 recrée alors les Custom Domains proprement en Type "Worker".
 
-- [ ] **Step 3: Vérifier la prod**
+- [x] **Step 3: Vérifier la prod**
 
 ```bash
 curl -s -o /dev/null -w "%{http_code}\n" https://coolbeans.cc/
