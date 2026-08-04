@@ -1,8 +1,8 @@
 # Spec — Bascule complète du déploiement : Cloudflare Pages → Worker unique
 
 Date : 2026-08-04
-Branche de travail : `staging`
-Statut : design validé, en attente d'implémentation
+Branche de travail : `staging` (fusionnée dans `main` le 2026-08-04, voir §3bis)
+Statut : implémenté le 2026-08-04 — plan `docs/superpowers/plans/2026-08-04-deploy-workers-migration.md`
 
 ---
 
@@ -40,8 +40,8 @@ site est prérendu statique par défaut ; seules `/espace` et `/docs` déclarent
 | 2 | Auto-déploiement via **Cloudflare Workers Builds** (intégration Git native) | Retrouve le confort de Pages : un `git push` suffit, pas de commande manuelle |
 | 3 | `main` → environnement `production` (`coolbeans.cc`, `www.coolbeans.cc`) | Convention existante, inchangée |
 | 4 | `staging` → environnement nommé `staging` (`staging.coolbeans.cc`) | Sous-domaine dédié plutôt qu'une URL de preview à hash — présentable à un client si besoin (ex. lien de devis) |
-| 5 | Ancien projet Pages `coolbeans` **supprimé** une fois la bascule validée | Plus de risque de confusion entre les deux systèmes |
-| 6 | La fusion `staging` → `main` (contenu réel en prod) est **hors périmètre** de cette spec | Décision de publication de contenu, distincte de la plomberie de déploiement — reste soumise à l'accord explicite du client avant toute mise en prod |
+| 5 | ~~Ancien projet Pages `coolbeans` supprimé une fois la bascule validée~~ → **révisé** : gardé en dormance (déconnecté d'usage, non supprimé), filet de sécurité le temps de confirmer que le Worker tient dans la durée. Suppression prévue "un jour prochain", décision de l'utilisateur, pas de date fixée | Coût de garder le projet ≈ nul, réversibilité en cas de souci imprévu sur le Worker |
+| 6 | ~~La fusion `staging` → `main` est hors périmètre~~ → **révisée** : faite le 2026-08-04, voir §3bis | Un effet de bord de la Task 5 (détaillé en §3bis) a mis le contenu réel de `staging` en production de fait, avant toute décision explicite sur ce point. Plutôt que de revenir en arrière, l'utilisateur a choisi d'assumer et d'aligner `main` sur la réalité — décision explicite, prise après coup, pas la décision par défaut de cette spec |
 
 ## 2. Architecture cible
 
@@ -52,12 +52,15 @@ site est prérendu statique par défaut ; seules `/espace` et `/docs` déclarent
   "name": "coolbeans",
   "compatibility_date": "2026-07-01",
   "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "workers_dev": false,
   "routes": [
     { "pattern": "coolbeans.cc", "custom_domain": true },
     { "pattern": "www.coolbeans.cc", "custom_domain": true }
   ],
   "env": {
     "staging": {
+      "workers_dev": false,
       "routes": [
         { "pattern": "staging.coolbeans.cc", "custom_domain": true }
       ]
@@ -65,6 +68,13 @@ site est prérendu statique par défaut ; seules `/espace` et `/docs` déclarent
   }
 }
 ```
+
+`observability` est une clé héritée (s'applique aux deux environnements depuis la
+déclaration top-level) — ajoutée après coup car son absence a rendu le diagnostic de
+l'incident §3bis plus lent qu'il n'aurait dû (erreurs 500 sans détail exploitable).
+`workers_dev` est non hérité (comme `routes`) donc déclaré aux deux niveaux : les
+Custom Domains couvrent tous les cas d'usage désormais, plus besoin d'exposer aussi
+les URLs `*.workers.dev`.
 
 `routes` est une clé non héritée par les environnements (comme les bindings) : chaque
 environnement déclare ses propres domaines, `staging` ne peut jamais hériter par
@@ -124,11 +134,12 @@ garde contre "non-production branches" désignant *toutes* les branches hors `ma
 (risque qu'une branche `feat/*` écrase `staging.coolbeans.cc`). Avec deux connexions
 séparées, chacune dédiée à une seule branche précise, ce risque disparaît.
 
-## 3. Séquence de bascule
+## 3. Séquence de bascule (exécutée le 2026-08-04)
 
 Ordre pensé pour valider la chaîne complète sur un domaine neuf avant de toucher au
 domaine de production, avec possibilité de revenir en arrière à chaque étape tant que
-l'étape 5 n'est pas exécutée.
+l'étape 5 n'est pas exécutée. Toutes les étapes ci-dessous ont été menées à bien ; les
+incidents rencontrés en cours de route sont détaillés en §3bis.
 
 1. Commit `wrangler.jsonc` (§2.1) sur `staging`.
 2. Connecter **les deux Workers séparément** au repo GitHub dans le dashboard, chacun
@@ -159,16 +170,66 @@ l'étape 5 n'est pas exécutée.
    l'étape 6 validée, avec feu vert explicite.
 
 Les étapes 5 et 7 sont les seules qui touchent la prod ou suppriment une ressource ;
-elles seront reconfirmées individuellement au moment de l'implémentation, conformément
-à la règle du projet sur les publications en production.
+elles ont chacune été reconfirmées individuellement au moment de l'exécution (étape 5
+le 2026-08-04 ; étape 7 différée, voir décision 5 révisée en §1), conformément à la
+règle du projet sur les publications en production.
+
+## 3bis. Incidents rencontrés et résolus (review finale, 2026-08-04)
+
+Deux problèmes réels ont été découverts par la review finale de branche, après
+l'exécution des étapes 1 à 7 ci-dessus, et corrigés le jour même.
+
+**Incident A — promotion involontaire du contenu de `staging` en production.** L'étape
+5 (`npm run build && npx wrangler deploy`) a été exécutée depuis un worktree Git dont
+le code source était celui de `staging`, pas celui de `main`. Le build "sans
+`CLOUDFLARE_ENV`" cible bien la config de production (nom du Worker, domaines — voir
+§2.2 point 1), mais ça ne dit rien du *contenu* buildé, qui dépend du code source
+présent sur la machine qui build, indépendamment de la variable d'environnement.
+Résultat : `coolbeans.cc` s'est mis à servir le vrai site (y compris la page de devis
+client `/devis/en-haut`) au lieu du stub de `main`, sans qu'aucune décision explicite
+de publication de contenu n'ait été prise à ce moment — alors que la décision 6
+originale de cette spec plaçait justement cette publication hors périmètre.
+
+Décision prise avec l'utilisateur une fois l'écart constaté : assumer l'état de fait
+plutôt que revenir en arrière, et **fusionner `staging` dans `main`** (fast-forward
+pur, `main` n'avait aucun commit que `staging` n'avait pas) pour que la branche
+`main` corresponde enfin à ce qui tourne réellement en prod. Poussé, un build
+automatique déclenché sur la Connexion 1 (`main` → `coolbeans`) a reconstruit et
+redéployé la prod depuis la vraie source — vérifié : `coolbeans.cc` et
+`www.coolbeans.cc` servent le site refondu, `/espace` et `/docs/<projet>` redirigent
+vers Clerk. Ceci **annule et remplace la décision 6** de cette spec (voir §1).
+
+**Incident B — pipeline CI de `staging` cassé (500 sur `/espace`, `/docs`) après le
+premier déploiement automatique.** Le secret `CLERK_SECRET_KEY` avait été posé
+correctement sur le Worker (Task 2 du plan), mais `PUBLIC_CLERK_PUBLISHABLE_KEY`
+(clé publique, inlinée dans le bundle client au *moment du build* par Astro) n'était
+disponible que dans un `.env` local — jamais transmis au runner Workers Builds, qui
+n'a pas accès aux fichiers gitignorés d'une machine de développement. Le premier
+déploiement automatique après la correction du secret runtime a donc reconstruit sans
+cette clé publique, cassant les routes protégées. Fix : `PUBLIC_CLERK_PUBLISHABLE_KEY`
+ajoutée comme **variable de build** (non-secrète, assumée publique) dans le panneau
+"Variables and secrets" des deux connexions Workers Builds (§2.2) — pas seulement dans
+`.env` local. Revérifié après un rebuild déclenché : `307` sur `/espace` et
+`/docs/<projet>`, staging comme prod.
 
 ## 4. Hors périmètre
 
-- Fusionner `staging` dans `main` pour publier le contenu réel du site (décision de
-  contenu séparée).
 - Revoir la répartition SSR/statique par route (déjà correcte : seuls `/espace` et
   `/docs` sont SSR).
 - Le différend `_doc-standard/SPEC.md` (qui mentionne Cloudflare Access sur `/docs/*`)
   vs l'implémentation actuelle (Clerk sur `/espace` et `/docs`) — l'implémentation
   fait foi, la spec `_doc-standard` semble ne pas avoir été mise à jour après le choix
   de Clerk. À signaler séparément si besoin de nettoyer la doc.
+- **Instance Clerk de production.** `coolbeans.cc` redirige aujourd'hui vers une
+  instance Clerk de **développement** (`*.accounts.dev`, limites et bannières propres
+  au mode dev) — la seule qui existe à ce jour (`clerk doctor` confirme l'absence
+  d'instance "production"). Acceptable tant que le site est en phase de rodage, mais à
+  traiter avant un vrai lancement public : créer l'instance Clerk production, poser ses
+  clés (`CLERK_SECRET_KEY` runtime + `PUBLIC_CLERK_PUBLISHABLE_KEY` build) sur le
+  Worker `coolbeans` uniquement. Tâche séparée, pas de la plomberie de déploiement.
+- **Nettoyage de `dist/` après un build local.** Un build fait sur une machine avec
+  `.env` local inline la valeur du secret Clerk directement dans le bundle serveur
+  buildé (`dist/server/**/*.mjs`). `dist/` est gitignoré donc rien ne fuite dans le
+  repo, mais c'est un rappel que le Worker actuellement déployé en prod contient une
+  copie figée de la clé de dev utilisée au moment du build CI — une rotation du secret
+  runtime seule ne la remplace pas, il faut un nouveau déploiement.
