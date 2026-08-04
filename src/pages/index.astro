@@ -70,12 +70,13 @@ const caseColSpan = (span: string) =>
       <h1
         class="mx-auto max-w-[22ch] text-[clamp(40px,4.6vw,64px)] leading-[1.02] tracking-[-0.03em] text-balance"
       >
-        Un studio, un seul interlocuteur,<br />zéro blabla.
+        Design et code,<br />pensés pour durer.
       </h1>
       <p
         class="mx-auto mt-6.5 max-w-[60ch] text-[19px] leading-[1.45] font-medium text-pretty text-mute"
       >
-        Design, développement et maintenance de sites performants, pensés pour vos objectifs
+        Vitrine, e-commerce, refonte, appli web, automatisation, IA : j'analyse le besoin avant
+        de choisir l'outil
       </p>
       <div class="mt-9 flex flex-wrap justify-center gap-5">
         <a class="btn btn-lg" href="#vous-etes">Discuter de votre projet</a>
@@ -204,7 +205,7 @@ const caseColSpan = (span: string) =>
             aria-hidden="true"
             ><path d="M12 20s-7-4.5-9-9a4 4 0 0 1 9-2 4 4 0 0 1 9 2c-2 4.5-9 9-9 9z"></path></svg
           >
-          <div class="min-w-0 [flex:1_1_340px]">
+          <div class="min-w-0 flex-[1_1_340px]">
             <h3 class="text-[19px] leading-[1.08]">Coopérative, association, intérêt général ?</h3>
             <p class="mt-2 max-w-[74ch] text-[15px] font-medium text-pretty">
               Je mets mes compétences au service de l'économie sociale et solidaire : offres et
@@ -258,7 +259,7 @@ const caseColSpan = (span: string) =>
       <div class="flex items-start gap-6">
         {
           columns.map((col) => (
-            <div class="flex h-[1240px] min-w-0 flex-1 flex-col gap-6 overflow-hidden [mask-image:linear-gradient(to_bottom,#000_calc(100%_-_230px),transparent)] [-webkit-mask-image:linear-gradient(to_bottom,#000_calc(100%_-_230px),transparent)] max-[900px]:h-[1080px] max-[900px]:[flex:1_1_45%] max-[680px]:h-auto max-[680px]:w-full max-[680px]:[flex:1_1_auto] max-[680px]:overflow-visible max-[680px]:[mask-image:none] max-[680px]:[-webkit-mask-image:none]">
+            <div class="flex h-310 min-w-0 flex-1 flex-col gap-6 overflow-hidden mask-[linear-gradient(to_bottom,#000_calc(100%-230px),transparent)] [-webkit-mask-image:linear-gradient(to_bottom,#000_calc(100%-230px),transparent)] max-[900px]:h-270 max-[900px]:flex-[1_1_45%] max-[680px]:h-auto max-[680px]:w-full max-[680px]:flex-[1_1_auto] max-[680px]:overflow-visible max-[680px]:mask-none max-[680px]:[-webkit-mask-image:none]">
               {col.map((t) => (
                 <figure class="flex flex-col gap-7 rounded-card border border-line bg-surface p-7">
                   <blockquote class="text-base leading-[1.55] font-medium text-pretty">
@@ -363,7 +364,7 @@ const caseColSpan = (span: string) =>
         <a class="link" href="/about">Lire la version longue →</a>
       </div>
       <figure
-        class="relative aspect-[4/5] overflow-hidden rounded-card border border-line bg-surface-subtle max-[1100px]:aspect-[16/11]"
+        class="relative aspect-4/5 overflow-hidden rounded-card border border-line bg-surface-subtle max-[1100px]:aspect-16/11"
       >
         <img
           src="/img/ludovic-home.jpg"
