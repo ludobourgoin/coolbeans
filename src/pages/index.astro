@@ -4,9 +4,17 @@ import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import CtaBand from "../components/CtaBand.astro";
 import Flow from "../components/Flow.astro";
+import Browser from "../components/Browser.astro";
 import GridBackdrop from "../components/GridBackdrop.astro";
 import Avatar from "../components/ui/Avatar.astro";
 import { testimonials, initials } from "../data/testimonials";
+import { cases } from "../data/cases";
+
+// sections masquées temporairement (urgence post-mise en prod, 2026-08-04) :
+// le contenu reste en place, juste pas rendu, à réactiver quand prêt.
+const SHOW_PROJETS = false;
+const SHOW_METHODE = false;
+const SHOW_EN_SAVOIR_PLUS = false;
 
 const stats = [
   { n: "40", small: "+", k: "projets livrés", h: "Depuis 2022" },
@@ -15,8 +23,39 @@ const stats = [
   { n: "97", small: "%", k: "renouvellement", h: "Care plans après 12 mois" },
 ];
 
+const steps = [
+  {
+    n: "01",
+    title: "Brief & cadrage",
+    text: "Formulaire + call 30-60 min. Scope, deadline et budget posés.",
+  },
+  { n: "02", title: "Devis", text: "Chiffré, daté, signé. Paiement 30 % à l'acceptation." },
+  {
+    n: "03",
+    title: "Développement",
+    text: "V1 sous 5 j. V2 finale sous 3 j. Validation par section.",
+  },
+  {
+    n: "04",
+    title: "Livraison",
+    text: "Mise en prod, transfert, documentation et formation. 30 j de support inclus.",
+  },
+];
+
 const columns: (typeof testimonials)[] = [[], [], []];
 testimonials.forEach((t, i) => columns[i % 3].push(t));
+
+// grille 12 colonnes des études de cas : cases.ts (Case.span) porte encore
+// les jetons historiques "span-8"/"span-6"/"span-4" ; on les fait
+// correspondre aux vraies utilitaires Tailwind col-span-* sans toucher à la
+// donnée. "tall" n'a plus d'effet visuel : Browser fixe l'aspect-ratio à
+// 16/10 quel que soit l'emplacement.
+const caseColSpan = (span: string) =>
+  span.startsWith("span-8")
+    ? "col-span-8"
+    : span.startsWith("span-6")
+      ? "col-span-6"
+      : "col-span-4";
 ---
 
 <BaseLayout title="Coolbeans — le studio web des agences créatives">
@@ -30,14 +69,8 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
     <div class="container-site relative text-center">
       <h1
         class="mx-auto max-w-[22ch] text-[clamp(40px,4.6vw,64px)] leading-[1.02] tracking-[-0.03em] text-balance"
-        aria-label="Le studio web des agences créatives, directeur·rices artistiques, PME ou scale up, TPE ou solopreneur"
       >
-        Le studio web des<br />
-        <span class="inline-block align-top leading-[1.02] whitespace-nowrap" aria-hidden="true"
-          ><span id="tw-word" class="inline-block whitespace-nowrap [will-change:transform,opacity]"
-            >agences créatives</span
-          ></span
-        >
+        Un studio, un seul interlocuteur,<br />zéro blabla.
       </h1>
       <p
         class="mx-auto mt-6.5 max-w-[60ch] text-[19px] leading-[1.45] font-medium text-pretty text-mute"
@@ -81,6 +114,13 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
               Vous concevez, j'exécute. Sous votre marque, en marque blanche, je suis comme une
               extension de votre équipe.
             </p>
+            {
+              SHOW_EN_SAVOIR_PLUS && (
+                <a class="link mt-5.5 inline-block text-sm" href="/about">
+                  En savoir plus →
+                </a>
+              )
+            }
           </div>
         </article>
         <article
@@ -98,6 +138,13 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
             <p class="mt-2.5 text-[15px] font-medium text-pretty">
               Votre design livré exactement comme pensé, au pixel près.
             </p>
+            {
+              SHOW_EN_SAVOIR_PLUS && (
+                <a class="link mt-5 inline-block text-sm" href="/about">
+                  En savoir plus →
+                </a>
+              )
+            }
           </div>
         </article>
         <article
@@ -115,6 +162,13 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
             <p class="mt-2.5 text-[15px] font-medium text-pretty">
               Votre site est un canal d'acquisition. Traitons-le comme tel.
             </p>
+            {
+              SHOW_EN_SAVOIR_PLUS && (
+                <a class="link mt-5 inline-block text-sm" href="/about">
+                  En savoir plus →
+                </a>
+              )
+            }
           </div>
         </article>
         <article
@@ -132,6 +186,13 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
             <p class="mt-2.5 text-[15px] font-medium text-pretty">
               Votre présence en ligne pro, livrée vite, prix fixe, zéro souci.
             </p>
+            {
+              SHOW_EN_SAVOIR_PLUS && (
+                <a class="link mt-5 inline-block text-sm" href="/about">
+                  En savoir plus →
+                </a>
+              )
+            }
           </div>
         </article>
         <article
@@ -156,6 +217,35 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
       </div>
     </div>
   </section>
+
+  {
+    SHOW_PROJETS && (
+      <section class="py-16x" id="projets">
+        <div class="container-site">
+          <div class="mb-10x flex flex-wrap items-center justify-between gap-6">
+            <h2>Projets récents.</h2>
+            <a class="link" href="#">
+              Voir tous les projets →
+            </a>
+          </div>
+          <div class="grid grid-cols-12 gap-8 max-[900px]:grid-cols-1">
+            {cases.map((c) => (
+              <article class:list={[caseColSpan(c.span), "max-[900px]:col-span-1"]}>
+                <Browser url={c.url} shot={c.shot} alt={c.title} label={c.tag} />
+                <div class="mt-4">
+                  <span class="label mb-1.5 block">{c.num}</span>
+                  <h3 class="text-[17px] leading-tight">{c.title}</h3>
+                  <a class="link mt-2 inline-block text-sm" href="#">
+                    Lire l'étude →
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   <!-- TÉMOIGNAGES (mur cappé + fondu) -->
   <section class="py-16x">
@@ -193,6 +283,39 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
       </div>
     </div>
   </section>
+
+  {
+    SHOW_METHODE && (
+      <section class="py-16x">
+        <div class="container-site">
+          <div class="mb-10x">
+            <h2>Du brief à la mise en production</h2>
+          </div>
+          <div class="flex items-stretch max-[1100px]:flex-col">
+            {steps.map((s, i) => (
+              <>
+                <div class="flex min-w-0 flex-1 flex-col rounded-card border border-line bg-surface p-7">
+                  <div class="font-display text-[72px] leading-[0.9] font-bold tracking-[-0.04em]">
+                    {s.n}
+                  </div>
+                  <h3 class="mt-3 text-xl leading-[1.15] tracking-[-0.01em]">{s.title}</h3>
+                  <p class="mt-2 max-w-[32ch] text-sm font-medium text-mute">{s.text}</p>
+                </div>
+                {i < steps.length - 1 && (
+                  <div
+                    class="flex flex-none items-center justify-center px-4.5 text-[28px] leading-none font-bold text-ink max-[1100px]:rotate-90 max-[1100px]:px-0 max-[1100px]:py-3.5"
+                    aria-hidden="true"
+                  >
+                    →
+                  </div>
+                )}
+              </>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   <!-- STATS -->
   <section class="py-16x">
@@ -263,81 +386,4 @@ testimonials.forEach((t, i) => columns[i % 3].push(t));
   />
 
   <Footer />
-
-  <script>
-    import gsap from "gsap";
-
-    const word = document.getElementById("tw-word");
-    const box = word?.parentElement; // .tw : conteneur dont on anime la largeur
-    const words = [
-      "agences créatives",
-      "directeur·rices artistiques",
-      "PME ou scale up",
-      "TPE ou solopreneur",
-    ];
-
-    // Mesure la largeur rendue de chaque mot dans un clone hors flux,
-    // pour animer .tw sans faire sauter le centrage de la ligne.
-    const measure = () => {
-      if (!word || !box) return [];
-      const probe = word.cloneNode(true) as HTMLElement;
-      probe.style.position = "absolute";
-      probe.style.visibility = "hidden";
-      probe.style.whiteSpace = "nowrap";
-      box.appendChild(probe);
-      const w = words.map((t) => {
-        probe.textContent = t;
-        return probe.getBoundingClientRect().width;
-      });
-      probe.remove();
-      return w;
-    };
-
-    if (word && box && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      let widths = measure();
-      let i = 0;
-
-      // Fige la largeur de départ pour que le premier cycle ne tressaute pas.
-      gsap.set(box, { width: widths[0] });
-
-      // La police de fallback fausse la mesure ; on recalcule quand la vraie est prête.
-      document.fonts?.ready.then(() => {
-        widths = measure();
-        gsap.set(box, { width: widths[i] });
-      });
-
-      // clamp() rend la taille de police dépendante du viewport → re-mesure au resize.
-      let rAF = 0;
-      window.addEventListener("resize", () => {
-        cancelAnimationFrame(rAF);
-        rAF = requestAnimationFrame(() => {
-          widths = measure();
-          gsap.set(box, { width: widths[i] });
-        });
-      });
-
-      const next = () => {
-        const j = (i + 1) % words.length;
-        gsap
-          .timeline({ onComplete: () => gsap.delayedCall(2.4, next) })
-          // le mot courant s'échappe vers le haut
-          .to(word, { yPercent: -40, opacity: 0, duration: 0.28, ease: "power2.in" })
-          // swap texte + largeur pendant que le mot est invisible
-          .add(() => {
-            i = j;
-            word.textContent = words[i];
-          })
-          .to(box, { width: widths[j], duration: 0.42, ease: "power2.out" }, "<")
-          // le nouveau mot entre par le bas
-          .fromTo(
-            word,
-            { yPercent: 40, opacity: 0 },
-            { yPercent: 0, opacity: 1, duration: 0.42, ease: "power2.out" },
-            "<",
-          );
-      };
-
-      gsap.delayedCall(2.4, next);
-    }
-  </script>
 </BaseLayout>
