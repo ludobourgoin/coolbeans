@@ -378,7 +378,10 @@ site refondu (middleware Clerk) au moment du test ; tant que `main` reste sur la
 stub (voir note ci-dessous), `/espace` renvoie `200` (même contenu stub que `/`) — pas
 un défaut, juste l'absence de la route protégée sur ce contenu-là.
 
-Note : à ce stade `main` contient toujours la page stub ("Update page title to Coolbeans"), pas le site refondu — c'est attendu, cf. spec §4 (la fusion `staging` → `main` est une décision de contenu séparée, hors périmètre de cette task).
+~~Note : à ce stade `main` contient toujours la page stub...~~ — **périmé** : `staging` a
+été fusionnée dans `main` le jour même suite à l'incident documenté en spec §3bis
+(Incident A). `main` sert désormais le même contenu que la prod, la note ci-dessus
+décrivait l'état attendu *avant* cet incident, pas l'état final.
 
 ---
 
