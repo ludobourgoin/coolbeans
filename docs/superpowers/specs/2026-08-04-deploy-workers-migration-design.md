@@ -70,46 +70,59 @@ site est prérendu statique par défaut ; seules `/espace` et `/docs` déclarent
 environnement déclare ses propres domaines, `staging` ne peut jamais hériter par
 accident des domaines de prod.
 
-### 2.2 Réglages Cloudflare Workers Builds (dashboard, Worker `coolbeans` → Settings → Build)
+### 2.2 Réglages Cloudflare Workers Builds (dashboard, **deux connexions séparées**)
 
-**Découvert en exécutant le plan (Task 1, 2026-08-04) : l'adapter `@astrojs/cloudflare`
-résout l'environnement — routes ET le nom du Worker lui-même (`coolbeans` →
-`coolbeans-staging`) — au moment du *build*, via la variable `CLOUDFLARE_ENV`, pas au
-moment du `wrangler deploy --env <x>`. Le flag `--env` sur `wrangler deploy` est un
-no-op silencieux une fois que le build a déjà "aplati" la config
-(`dist/server/wrangler.json`, mode "redirected configuration"). Vérifié empiriquement :
-build nu → `name: "coolbeans"` + routes prod ; `CLOUDFLARE_ENV=staging` →
-`name: "coolbeans-staging"` + routes `staging.coolbeans.cc` ; `CLOUDFLARE_ENV=production`
-(non déclaré dans `wrangler.jsonc`) → erreur explicite. C'est cohérent avec le pattern
-["Wrangler Environments" documenté par Cloudflare pour Workers
-Builds](https://developers.cloudflare.com/workers/ci-cd/builds/advanced-setups/#wrangler-environments)
-: un environnement nommé devient un Worker séparé `<nom>-<env>`. Le tableau ci-dessous
-est corrigé en conséquence — c'est la commande de **build**, pas de déploiement, qui
-doit varier selon la branche.**
+**Historique de cette section (deux corrections successives, découvertes en exécutant
+le plan le 2026-08-04) :**
+
+1. **Task 1** : l'adapter `@astrojs/cloudflare` résout l'environnement — routes ET le
+   nom du Worker lui-même (`coolbeans` → `coolbeans-staging`) — au moment du *build*,
+   via `CLOUDFLARE_ENV`, pas au moment du `wrangler deploy --env <x>` (no-op silencieux
+   une fois la config "redirected" déjà aplatie). Ça a mené à une première version de
+   cette section avec une commande de build conditionnelle sur `WORKERS_CI_BRANCH`,
+   sur une connexion Git unique — **remplacée par la version ci-dessous**.
+2. **Task 4** : cette première version a échoué en pratique. Workers Builds **verrouille
+   une connexion Git sur un seul nom de Worker cible** (celui du projet connecté dans
+   le dashboard) et **écrase de force** tout nom différent produit par le build — log
+   observé : *"Failed to match Worker name. Your config file is using the Worker name
+   'coolbeans-staging', but the CI system expected 'coolbeans'. Overriding using the CI
+   provided Worker name."* Un build déclenché par une branche non-`main` a ainsi
+   déployé sur `coolbeans` (production) avec les routes de `staging.coolbeans.cc`,
+   volant temporairement le Custom Domain à `coolbeans-staging` (reclaim manuel fait
+   via `wrangler deploy` en CLI, voir rapport Task 4).
+
+**Architecture retenue : deux connexions Git séparées, une par Worker**, conforme au
+pattern ["Wrangler Environments" documenté par
+Cloudflare](https://developers.cloudflare.com/workers/ci-cd/builds/advanced-setups/#wrangler-environments)
+pour Workers Builds — que la première version de cette section avait à tort écarté au
+profit d'un unique projet avec build conditionnel. Chaque connexion ne construit jamais
+que pour son propre nom de Worker, donc plus de conflit possible.
+
+**Connexion 1 — Worker `coolbeans` (production), Settings → Build :**
 
 | Réglage | Valeur |
 |---|---|
 | Git repository | `ludobourgoin/coolbeans` |
 | Production branch | `main` |
-| Build command | `if [ "$WORKERS_CI_BRANCH" = "main" ]; then npm run build; else CLOUDFLARE_ENV=staging npm run build; fi` |
-| Deploy command | `npx wrangler deploy` (nu — le build a déjà figé la cible, `--env` serait un no-op) |
-| Builds for non-production branches | activé |
-| Non-production branch deploy command | `npx wrangler deploy` (nu, même raison) |
+| Build command | `npm run build` (nu, plus de conditionnel) |
+| Deploy command | `npx wrangler deploy` |
+| Builds for non-production branches | **désactivé** (staging a sa propre connexion) |
 
-`WORKERS_CI_BRANCH` est une variable système injectée automatiquement par Workers
-Builds à chaque build (nom de la branche du push). À vérifier lors de la Task 4 du plan
-(premier build automatique réel) : que sa valeur est bien le nom court de branche
-(`main`, `staging`) et non une forme du type `refs/heads/main` — la doc Cloudflare ne
-le précise pas explicitement.
+**Connexion 2 — Worker `coolbeans-staging`, Settings → Build (nouvelle connexion, sur
+le même repo) :**
 
-**Gotcha à connaître** : "non-production branches" désigne *toutes* les branches
-autres que `main`, pas seulement `staging`. Avec la convention actuelle (`main` = prod,
-`staging` = seule branche longue durée, pas de feature branches poussées sur le
-remote), chaque push sur `staging` republie proprement `staging.coolbeans.cc` sans
-collision. Si l'usage change un jour (ex. des branches `feat/*` poussées sur le repo
-distant), elles écraseraient aussi `staging.coolbeans.cc` puisque le "non-production
-branch deploy command" s'applique à toute branche non-prod indifféremment. Pas un
-problème dans l'usage actuel — à surveiller si l'usage change.
+| Réglage | Valeur |
+|---|---|
+| Git repository | `ludobourgoin/coolbeans` |
+| Production branch | `staging` (oui — le champ s'appelle "Production branch" côté Cloudflare quelle que soit la branche choisie ; ici il désigne la branche que *cette* connexion déploie) |
+| Build command | `CLOUDFLARE_ENV=staging npm run build` (fixe, plus de conditionnel) |
+| Deploy command | `npx wrangler deploy` |
+| Builds for non-production branches | désactivé (pas nécessaire, une seule branche à surveiller pour cette connexion) |
+
+**Ancien gotcha, devenu sans objet** : la version précédente de cette section mettait en
+garde contre "non-production branches" désignant *toutes* les branches hors `main`
+(risque qu'une branche `feat/*` écrase `staging.coolbeans.cc`). Avec deux connexions
+séparées, chacune dédiée à une seule branche précise, ce risque disparaît.
 
 ## 3. Séquence de bascule
 
