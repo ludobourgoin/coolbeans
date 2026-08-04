@@ -4,30 +4,9 @@ import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import CtaBand from "../components/CtaBand.astro";
 import Flow from "../components/Flow.astro";
-import Browser from "../components/Browser.astro";
 import GridBackdrop from "../components/GridBackdrop.astro";
 import Avatar from "../components/ui/Avatar.astro";
 import { testimonials, initials } from "../data/testimonials";
-import { cases } from "../data/cases";
-
-const steps = [
-  {
-    n: "01",
-    title: "Brief & cadrage",
-    text: "Formulaire + call 30-60 min. Scope, deadline et budget posés.",
-  },
-  { n: "02", title: "Devis", text: "Chiffré, daté, signé. Paiement 30 % à l'acceptation." },
-  {
-    n: "03",
-    title: "Développement",
-    text: "V1 sous 5 j. V2 finale sous 3 j. Validation par section.",
-  },
-  {
-    n: "04",
-    title: "Livraison",
-    text: "Mise en prod, transfert, documentation et formation. 30 j de support inclus.",
-  },
-];
 
 const stats = [
   { n: "40", small: "+", k: "projets livrés", h: "Depuis 2022" },
@@ -38,18 +17,6 @@ const stats = [
 
 const columns: (typeof testimonials)[] = [[], [], []];
 testimonials.forEach((t, i) => columns[i % 3].push(t));
-
-// grille 12 colonnes des études de cas : cases.ts (Case.span) porte encore
-// les jetons historiques "span-8"/"span-6"/"span-4" ; on les fait
-// correspondre aux vraies utilitaires Tailwind col-span-* sans toucher à la
-// donnée. "tall" n'a plus d'effet visuel : Browser fixe l'aspect-ratio à
-// 16/10 quel que soit l'emplacement.
-const caseColSpan = (span: string) =>
-  span.startsWith("span-8")
-    ? "col-span-8"
-    : span.startsWith("span-6")
-      ? "col-span-6"
-      : "col-span-4";
 ---
 
 <BaseLayout title="Coolbeans — le studio web des agences créatives">
@@ -79,7 +46,6 @@ const caseColSpan = (span: string) =>
       </p>
       <div class="mt-9 flex flex-wrap justify-center gap-5">
         <a class="btn btn-lg" href="#vous-etes">Discuter de votre projet</a>
-        <a class="btn btn-lg btn-outline" href="#projets">Voir les projets récents</a>
       </div>
     </div>
     <Flow />
@@ -115,7 +81,6 @@ const caseColSpan = (span: string) =>
               Vous concevez, j'exécute. Sous votre marque, en marque blanche, je suis comme une
               extension de votre équipe.
             </p>
-            <a class="link mt-5.5 inline-block text-sm" href="/about">En savoir plus →</a>
           </div>
         </article>
         <article
@@ -133,10 +98,11 @@ const caseColSpan = (span: string) =>
             <p class="mt-2.5 text-[15px] font-medium text-pretty">
               Votre design livré exactement comme pensé, au pixel près.
             </p>
-            <a class="link mt-5 inline-block text-sm" href="/about">En savoir plus →</a>
           </div>
         </article>
-        <article class="relative flex flex-col rounded-card border border-line bg-surface-raise p-8">
+        <article
+          class="relative flex flex-col rounded-card border border-line bg-surface-raise p-8"
+        >
           <svg
             class="size-9.5 flex-none fill-none stroke-current stroke-[1.7]"
             viewBox="0 0 24 24"
@@ -149,10 +115,11 @@ const caseColSpan = (span: string) =>
             <p class="mt-2.5 text-[15px] font-medium text-pretty">
               Votre site est un canal d'acquisition. Traitons-le comme tel.
             </p>
-            <a class="link mt-5 inline-block text-sm" href="/about">En savoir plus →</a>
           </div>
         </article>
-        <article class="relative flex flex-col rounded-card border border-line bg-surface-raise p-8">
+        <article
+          class="relative flex flex-col rounded-card border border-line bg-surface-raise p-8"
+        >
           <svg
             class="size-9.5 flex-none fill-none stroke-current stroke-[1.7]"
             viewBox="0 0 24 24"
@@ -165,7 +132,6 @@ const caseColSpan = (span: string) =>
             <p class="mt-2.5 text-[15px] font-medium text-pretty">
               Votre présence en ligne pro, livrée vite, prix fixe, zéro souci.
             </p>
-            <a class="link mt-5 inline-block text-sm" href="/about">En savoir plus →</a>
           </div>
         </article>
         <article
@@ -187,32 +153,6 @@ const caseColSpan = (span: string) =>
           </div>
           <a class="link self-start text-sm whitespace-nowrap" href="#">L'accompagnement ESS →</a>
         </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROJETS (mosaic) -->
-  <section class="py-16x" id="projets">
-    <div class="container-site">
-      <div class="mb-10x flex flex-wrap items-center justify-between gap-6">
-        <h2>Projets récents.</h2>
-        <a class="link" href="#">Voir tous les projets →</a>
-      </div>
-      <div class="grid grid-cols-12 gap-8 max-[900px]:grid-cols-1">
-        {
-          cases.map((c) => (
-            <article class:list={[caseColSpan(c.span), "max-[900px]:col-span-1"]}>
-              <Browser url={c.url} shot={c.shot} alt={c.title} label={c.tag} />
-              <div class="mt-4">
-                <span class="label mb-1.5 block">{c.num}</span>
-                <h3 class="text-[17px] leading-tight">{c.title}</h3>
-                <a class="link mt-2 inline-block text-sm" href="#">
-                  Lire l'étude →
-                </a>
-              </div>
-            </article>
-          ))
-        }
       </div>
     </div>
   </section>
@@ -254,45 +194,15 @@ const caseColSpan = (span: string) =>
     </div>
   </section>
 
-  <!-- MÉTHODE -->
-  <section class="py-16x">
-    <div class="container-site">
-      <div class="mb-10x"><h2>Du brief à la mise en production</h2></div>
-      <div class="flex items-stretch max-[1100px]:flex-col">
-        {
-          steps.map((s, i) => (
-            <>
-              <div class="flex min-w-0 flex-1 flex-col rounded-card border border-line bg-surface p-7">
-                <div class="font-display text-[72px] leading-[0.9] font-bold tracking-[-0.04em]">
-                  {s.n}
-                </div>
-                <h3 class="mt-3 text-xl leading-[1.15] tracking-[-0.01em]">{s.title}</h3>
-                <p class="mt-2 max-w-[32ch] text-sm font-medium text-mute">{s.text}</p>
-              </div>
-              {i < steps.length - 1 && (
-                <div
-                  class="flex flex-none items-center justify-center px-4.5 text-[28px] leading-none font-bold text-ink max-[1100px]:rotate-90 max-[1100px]:px-0 max-[1100px]:py-3.5"
-                  aria-hidden="true"
-                >
-                  →
-                </div>
-              )}
-            </>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
   <!-- STATS -->
   <section class="py-16x">
     <div class="container-site">
       <div class="mb-10x">
         <span class="label mb-3 block">chiffres · depuis 2022</span>
-        <h2>Les preuves chiffrées.</h2>
+        <h2>J'accompagne agences, créatifs et entreprises sur leurs projets web depuis 2018</h2>
         <p class="mt-3 max-w-[60ch] text-lg leading-normal font-medium">
-          Depuis 2022, j'accompagne agences, créatifs et entreprises sur leurs projets web : de la
-          landing one-shot à l'application sur-mesure.
+          De la landing one-shot à l'application sur-mesure, en passant par la refonte de site et
+          l'automatisation, je m'occupe de toute la partie technique
         </p>
       </div>
       <div class="grid grid-cols-4 max-[1100px]:grid-cols-1 max-[1100px]:gap-6">
@@ -320,16 +230,12 @@ const caseColSpan = (span: string) =>
       class="container-site grid grid-cols-[1fr_440px] items-center gap-20 max-[1100px]:grid-cols-1 max-[1100px]:gap-6"
     >
       <div class="flex flex-col items-start gap-6">
-        <h3
-          class="max-w-[14ch] text-[clamp(40px,5vw,72px)] leading-[0.98] tracking-[-0.035em]"
-        >
+        <h3 class="max-w-[14ch] text-[clamp(40px,5vw,72px)] leading-[0.98] tracking-[-0.035em]">
           Je m'appelle Ludo,<br />j'ai créé coolbeans.
         </h3>
         <p class="max-w-[46ch] text-[19px] leading-[1.55] font-medium text-pretty">
-          Développeur web freelance à Sète, avec plus de 10 ans en agence et en indépendant :
-          direction de projet, design, développement. Je conçois autant que je code, et j'ai assez
-          roulé ma bosse côté business pour savoir qu'un site doit d'abord servir vos objectifs
-          avant de faire joli.
+          Développeur web freelance, avec plus de 10 ans en agence et en indépendant : direction
+          de projet, design, développement.
         </p>
         <a class="link" href="/about">Lire la version longue →</a>
       </div>

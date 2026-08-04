@@ -2,39 +2,12 @@
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
 
 // ordre du wireframe ; pages non construites → # pour l'instant
+// masqué temporairement (urgence post-mise en prod) : Projets, Services, Blog, Ressources
 const links = [
-  { href: "#", label: "Projets" },
-  { href: "#", label: "Services" },
-  { href: "#", label: "Blog" },
-  { href: "#", label: "Ressources" },
   { href: "/tools", label: "Boîte à outils" },
   { href: "/about", label: "À propos" },
 ];
 const isActive = (href: string) => href !== "#" && path.startsWith(href);
-
-// dropdown « vous êtes » — pictos + labels du wireframe
-const audience = [
-  {
-    href: "/#vous-etes",
-    label: "Agence créative",
-    svg: '<rect x="4" y="3" width="10" height="18"/><rect x="14" y="9" width="6" height="12"/><line x1="7" y1="7" x2="11" y2="7"/><line x1="7" y1="11" x2="11" y2="11"/><line x1="7" y1="15" x2="11" y2="15"/>',
-  },
-  {
-    href: "/#vous-etes",
-    label: "Directeur·rice artistique",
-    svg: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>',
-  },
-  {
-    href: "/#vous-etes",
-    label: "PME ou scale up",
-    svg: '<polyline points="3 17 9 11 13 15 21 7"/><polyline points="21 12 21 7 16 7"/>',
-  },
-  {
-    href: "/#vous-etes",
-    label: "TPE ou solopreneur",
-    svg: '<path d="M3 9h18l-1.4-5H4.4L3 9z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/>',
-  },
-];
 ---
 
 <header
@@ -63,69 +36,6 @@ const audience = [
       class="flex flex-nowrap items-center justify-center gap-1 whitespace-nowrap max-[980px]:hidden"
       aria-label="navigation principale"
     >
-      <div class="drop group relative" data-open="false">
-        <button
-          type="button"
-          aria-haspopup="true"
-          aria-expanded="false"
-          id="aud-trigger"
-          class="inline-flex cursor-pointer items-center gap-1.5 rounded-full px-3.5 py-2 text-sm leading-none font-medium text-mute transition-colors duration-150 ease-in-out group-data-[open=true]:text-ink hover:text-ink"
-        >
-          Vous êtes
-          <svg
-            viewBox="0 0 12 12"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.6"
-            aria-hidden="true"
-            class="h-2.5 w-2.5 transition-transform duration-150 ease-in-out group-hover:rotate-180 group-data-[open=true]:rotate-180"
-            ><path d="M2.5 4.5 6 8l3.5-3.5"></path></svg
-          >
-        </button>
-        <div
-          class="invisible absolute top-[calc(100%+10px)] left-1/2 z-60 flex w-67 -translate-x-1/2 -translate-y-1.5 flex-col rounded-control border-[1.5px] border-ink bg-surface p-1.5 text-ink opacity-0 shadow-[0_12px_32px_rgba(0,0,0,0.12)] transition-[opacity,transform,visibility] duration-150 ease-in-out group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-data-[open=true]:visible group-data-[open=true]:translate-y-0 group-data-[open=true]:opacity-100 before:absolute before:-inset-x-3 before:-top-3 before:h-3.5 before:content-['']"
-          role="menu"
-          aria-label="vous êtes"
-        >
-          {
-            audience.map((a) => (
-              <a
-                role="menuitem"
-                href={a.href}
-                class="flex items-center gap-2.25 rounded-sm px-3 py-2.5 text-[14px] leading-tight font-medium text-ink transition-[background-color,color] duration-120 ease-in-out hover:bg-accent hover:text-accent-ink"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  set:html={a.svg}
-                  class="h-4 w-4 flex-none fill-none stroke-current stroke-[1.7] [stroke-linecap:round] [stroke-linejoin:round]"
-                />
-                {a.label}
-              </a>
-            ))
-          }
-          <div class="mx-1 my-1.5 h-px bg-line" role="separator"></div>
-          <span
-            class="px-3 pt-1.5 pb-1 font-mono text-[10px] font-bold tracking-[0.08em] text-mute uppercase"
-          >
-            économie sociale &amp; solidaire
-          </span>
-          <a
-            role="menuitem"
-            class="ess flex items-center gap-2.25 rounded-sm px-3 py-2.5 text-[14px] leading-tight font-medium text-ink transition-[background-color,color] duration-120 ease-in-out hover:bg-accent hover:text-accent-ink"
-            href="#"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              class="h-4 w-4 flex-none fill-none stroke-current stroke-[1.7] [stroke-linecap:round] [stroke-linejoin:round]"
-              ><path d="M12 20s-7-4.5-9-9a4 4 0 0 1 9-2 4 4 0 0 1 9 2c-2 4.5-9 9-9 9z"></path></svg
-            >
-            Accompagnement ESS
-          </a>
-        </div>
-      </div>
-
       {
         links.map((l) => (
           <a
@@ -173,7 +83,7 @@ const audience = [
           ></path></svg
         >
       </button>
-      <a class="btn btn-sm" href="#">Contact</a>
+      <a class="btn btn-sm" href="/contact">Contact</a>
     </div>
   </div>
 </header>
