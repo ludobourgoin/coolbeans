@@ -154,7 +154,10 @@ Expected: `200`
 
 - [ ] **Step 3: Vérifier la page de devis (le cas qui a déclenché ce chantier)**
 
-Run: `curl -s https://staging.coolbeans.cc/devis/en-haut | grep -io "en haut" | head -1`
+Run: `curl -s https://staging.coolbeans.cc/devis/en-haut/ | grep -io "en haut" | head -1`
+
+Slash final obligatoire — sans lui, Astro renvoie un `307` de canonicalisation vers
+l'URL avec slash, sans corps exploitable, et la commande ne matchera rien.
 
 Expected: une ligne contenant `en haut` (ou `En Haut`) — preuve que c'est bien la vraie page de devis et pas un shell par défaut.
 
@@ -306,7 +309,7 @@ curl -s -o /dev/null -w "%{http_code}\n" https://coolbeans.cc/
 curl -s -o /dev/null -w "%{http_code}\n" https://coolbeans.cc/espace
 ```
 
-Expected : `200` sur `/`, `302`/`303` sur `/espace`.
+Expected : `200` sur `/`, `307` sur `/espace` (comportement Clerk réel, vérifié en Task 2 — pas `302`/`303`).
 
 Note : à ce stade `main` contient toujours la page stub ("Update page title to Coolbeans"), pas le site refondu — c'est attendu, cf. spec §4 (la fusion `staging` → `main` est une décision de contenu séparée, hors périmètre de cette task).
 
