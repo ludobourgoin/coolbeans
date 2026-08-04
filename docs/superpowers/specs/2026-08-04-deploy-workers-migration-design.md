@@ -72,14 +72,35 @@ accident des domaines de prod.
 
 ### 2.2 Réglages Cloudflare Workers Builds (dashboard, Worker `coolbeans` → Settings → Build)
 
+**Découvert en exécutant le plan (Task 1, 2026-08-04) : l'adapter `@astrojs/cloudflare`
+résout l'environnement — routes ET le nom du Worker lui-même (`coolbeans` →
+`coolbeans-staging`) — au moment du *build*, via la variable `CLOUDFLARE_ENV`, pas au
+moment du `wrangler deploy --env <x>`. Le flag `--env` sur `wrangler deploy` est un
+no-op silencieux une fois que le build a déjà "aplati" la config
+(`dist/server/wrangler.json`, mode "redirected configuration"). Vérifié empiriquement :
+build nu → `name: "coolbeans"` + routes prod ; `CLOUDFLARE_ENV=staging` →
+`name: "coolbeans-staging"` + routes `staging.coolbeans.cc` ; `CLOUDFLARE_ENV=production`
+(non déclaré dans `wrangler.jsonc`) → erreur explicite. C'est cohérent avec le pattern
+["Wrangler Environments" documenté par Cloudflare pour Workers
+Builds](https://developers.cloudflare.com/workers/ci-cd/builds/advanced-setups/#wrangler-environments)
+: un environnement nommé devient un Worker séparé `<nom>-<env>`. Le tableau ci-dessous
+est corrigé en conséquence — c'est la commande de **build**, pas de déploiement, qui
+doit varier selon la branche.**
+
 | Réglage | Valeur |
 |---|---|
 | Git repository | `ludobourgoin/coolbeans` |
 | Production branch | `main` |
-| Build command | `npm run build` |
-| Deploy command | `npx wrangler deploy` (déploie l'environnement `production` par défaut) |
+| Build command | `if [ "$WORKERS_CI_BRANCH" = "main" ]; then npm run build; else CLOUDFLARE_ENV=staging npm run build; fi` |
+| Deploy command | `npx wrangler deploy` (nu — le build a déjà figé la cible, `--env` serait un no-op) |
 | Builds for non-production branches | activé |
-| Non-production branch deploy command | `npx wrangler deploy --env staging` |
+| Non-production branch deploy command | `npx wrangler deploy` (nu, même raison) |
+
+`WORKERS_CI_BRANCH` est une variable système injectée automatiquement par Workers
+Builds à chaque build (nom de la branche du push). À vérifier lors de la Task 4 du plan
+(premier build automatique réel) : que sa valeur est bien le nom court de branche
+(`main`, `staging`) et non une forme du type `refs/heads/main` — la doc Cloudflare ne
+le précise pas explicitement.
 
 **Gotcha à connaître** : "non-production branches" désigne *toutes* les branches
 autres que `main`, pas seulement `staging`. Avec la convention actuelle (`main` = prod,
