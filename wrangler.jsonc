@@ -1,9 +1,20 @@
 // Config Worker du site Coolbeans (adapter @astrojs/cloudflare, cible WORKERS).
-// Déploiement : `npm run build` puis `npx wrangler deploy` (la config générée
-// dans dist/ est reprise via .wrangler/deploy/config.json).
+// Déploiement : Cloudflare Workers Builds (Git) — main -> production,
+// staging -> environnement `staging`. Voir docs/superpowers/specs/2026-08-04-deploy-workers-migration-design.md
 // `nodejs_compat` est requis par @clerk/astro (node:async_hooks, node:fs).
 {
   "name": "coolbeans",
   "compatibility_date": "2026-07-01",
-  "compatibility_flags": ["nodejs_compat"]
+  "compatibility_flags": ["nodejs_compat"],
+  "routes": [
+    { "pattern": "coolbeans.cc", "custom_domain": true },
+    { "pattern": "www.coolbeans.cc", "custom_domain": true }
+  ],
+  "env": {
+    "staging": {
+      "routes": [
+        { "pattern": "staging.coolbeans.cc", "custom_domain": true }
+      ]
+    }
+  }
 }
