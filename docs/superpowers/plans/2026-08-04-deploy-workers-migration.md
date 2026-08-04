@@ -224,6 +224,8 @@ push) :
 
 ⚠️ À vérifier concrètement en Task 4 (premier build automatique réel) : que `WORKERS_CI_BRANCH` vaut bien le nom court de la branche (`main`, `staging`) et pas une forme du type `refs/heads/main` — la doc Cloudflare ne le précise pas explicitement. Si le build échoue ou déploie le mauvais environnement en Task 4, commencer l'investigation par là.
 
+⚠️ **Confirmé en Task 4** : le tout premier build automatique après connexion du repo (déclenché par un push sur une branche non-`main`) a déployé sur `coolbeans` (production), pas sur l'environnement attendu. Sans impact réel (`coolbeans.cc` reste sur Pages tant que la Task 5 n'a pas eu lieu), mais à élucider avant la Task 5 — voir le rapport de la Task 4 pour le diagnostic complet.
+
 - [ ] **Step 5: Sauvegarder**
 
 Enregistrer les réglages. Confirmer que l'écran affiche bien les 5 valeurs de l'étape 4.
