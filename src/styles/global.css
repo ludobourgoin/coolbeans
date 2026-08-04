@@ -61,6 +61,12 @@
 
   --line: var(--ds-gray-400);
   --line-strong: var(--ds-gray-500);
+  /* grille pointillée décorative (GridBackdrop) : --line-strong est trop proche de
+     --surface-subtle en clair (#c9c9c9 sur #fafafa) pour rester visible sur une
+     grande surface. Un cran plus soutenu en clair ; en sombre --line-strong
+     (#454545 sur fond quasi noir) est déjà suffisamment lisible, donc figé plutôt
+     que suivre --ds-gray-600 qui deviendrait trop clair (#878787). */
+  --grid-line: var(--ds-gray-600);
 
   --ink: var(--ds-gray-1000);
   --mute: var(--ds-gray-900);
@@ -101,6 +107,7 @@
    dans les deux cas il se rapproche du fond au lieu de basculer dedans. */
 .dark {
   --accent-hover: hsl(0 0% 80%);
+  --grid-line: var(--line-strong);
 }
 
 @media (max-width: 1100px) {

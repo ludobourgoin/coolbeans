@@ -571,12 +571,12 @@ export const toolCategories: ToolCategory[] = [
         "logo": "/img/tools/dell.png"
       },
       {
-        "name": "iPhone 12 mini",
-        "desc": "Tests mobile réels : captures d'écran et recette responsive sur petit écran.",
+        "name": "iPhone 17",
+        "desc": "Tests mobile réels : captures d'écran et recette responsive sur iOS/Safari.",
         "chips": [
           "Mobile"
         ],
-        "href": "https://www.apple.com/iphone/",
+        "href": "https://www.apple.com/iphone-17/",
         "logo": "/img/tools/apple.png"
       }
     ]
