@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # cloudflare
 .wrangler/
+
+# git worktrees (scratch)
+.worktrees/
