@@ -339,6 +339,17 @@ Le `npm run build` sans `CLOUDFLARE_ENV` garantit que `dist/` cible bien la prod
 
 Expected: build réussi, déploiement réussi, Wrangler confirme la création des Custom Domains `coolbeans.cc` et `www.coolbeans.cc` sur le Worker `coolbeans`.
 
+⚠️ **Piège rencontré en exécutant cette task** : le premier `wrangler deploy` a échoué
+avec `Hostname 'coolbeans.cc' already has externally managed DNS records`. Cause :
+`coolbeans.cc` et `www.coolbeans.cc` avaient chacun un enregistrement **CNAME manuel**
+vers `coolbeans-1ta.pages.dev` (créé à l'origine hors du flux "Custom Domain" traçé par
+Cloudflare, donc invisible/non réutilisable par le système de Custom Domain du Worker).
+La suppression du Custom Domain côté Pages (Step 1) ne supprime pas ce CNAME. Fix :
+dans le dashboard, **DNS → Records**, supprimer les deux enregistrements `CNAME` vers
+`coolbeans-1ta.pages.dev` (repérables aussi car ils n'ont pas le Type "Worker" ni le
+cadenas qu'a par exemple `staging.coolbeans.cc`), puis relancer `wrangler deploy` — il
+recrée alors les Custom Domains proprement en Type "Worker".
+
 - [ ] **Step 3: Vérifier la prod**
 
 ```bash
@@ -346,7 +357,10 @@ curl -s -o /dev/null -w "%{http_code}\n" https://coolbeans.cc/
 curl -s -o /dev/null -w "%{http_code}\n" https://coolbeans.cc/espace
 ```
 
-Expected : `200` sur `/`, `307` sur `/espace` (comportement Clerk réel, vérifié en Task 2 — pas `302`/`303`).
+Expected : `200` sur `/`. Sur `/espace`, `307` seulement si `main` contient déjà le
+site refondu (middleware Clerk) au moment du test ; tant que `main` reste sur la page
+stub (voir note ci-dessous), `/espace` renvoie `200` (même contenu stub que `/`) — pas
+un défaut, juste l'absence de la route protégée sur ce contenu-là.
 
 Note : à ce stade `main` contient toujours la page stub ("Update page title to Coolbeans"), pas le site refondu — c'est attendu, cf. spec §4 (la fusion `staging` → `main` est une décision de contenu séparée, hors périmètre de cette task).
 
