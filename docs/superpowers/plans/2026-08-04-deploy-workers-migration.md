@@ -191,44 +191,56 @@ Expected: `307`, même logique qu'à l'étape 4.
 **Files:** aucun (config dashboard Cloudflare — nécessite une action manuelle dans le navigateur, l'OAuth GitHub ne peut pas être scripté)
 
 **Interfaces:**
-- Consumes: le Worker `coolbeans` existant (Task 2 l'a déjà déployé au moins une fois).
-- Produces: chaque `git push` sur `main` ou `staging` déclenche désormais un build + déploiement automatique. Les tasks suivantes vérifient ce comportement.
+- Consumes: le Worker `coolbeans` et le Worker `coolbeans-staging`, tous deux déjà déployés au moins une fois (Task 2).
+- Produces: un push sur `main` déclenche un build + déploiement automatique de `coolbeans` ; un push sur `staging` déclenche un build + déploiement automatique de `coolbeans-staging`, chacun via sa propre connexion Git. Les tasks suivantes vérifient ce comportement.
+
+⚠️ **Révision post-diagnostic (Task 4)** : la version initiale de cette task
+(commande de build conditionnelle sur `WORKERS_CI_BRANCH`, une seule connexion Git)
+a été testée et a échoué — Workers Builds verrouille une connexion sur un seul nom de
+Worker cible et écrase de force tout nom différent produit par le build. Un push de
+test sur une branche non-`main` a déployé sur `coolbeans` (production) avec les routes
+de staging, volant temporairement le Custom Domain à `coolbeans-staging` (sans impact
+visiteur — reclaim fait en Task 4 via `wrangler deploy` en CLI). Voir spec §2.2 pour le
+détail complet. Cette task est réécrite ci-dessous avec l'architecture corrigée :
+**deux connexions Git séparées**, une par Worker.
 
 **⚠️ Action manuelle requise (dashboard Cloudflare) — à faire par l'utilisateur, ou à guider pas-à-pas en partageant l'écran :**
 
-- [ ] **Step 1: Ouvrir les réglages de build du Worker**
+- [ ] **Step 1: Simplifier la connexion existante sur `coolbeans` (production)**
 
 Dashboard Cloudflare → **Workers & Pages** → Worker `coolbeans` → **Settings** → **Build**.
+Si une connexion Git existe déjà (Git repository = `ludobourgoin/coolbeans`), éditer :
 
-- [ ] **Step 2: Connecter le repo GitHub**
+- **Production branch** → `main`
+- **Build command** → `npm run build` (nu, retirer le conditionnel s'il est présent)
+- **Deploy command** → `npx wrangler deploy`
+- **Builds for non-production branches** → **désactiver** (décoché)
 
-Section **Git repository** → connecter le compte GitHub si pas déjà fait → sélectionner le repo `ludobourgoin/coolbeans`.
+Enregistrer.
 
-- [ ] **Step 3: Configurer la branche de production**
+- [ ] **Step 2: Créer la seconde connexion sur `coolbeans-staging`**
 
-**Production branch** → `main`.
+Dashboard Cloudflare → **Workers & Pages** → Worker `coolbeans-staging` → **Settings** →
+**Build** → **Connect** (ou équivalent) → sélectionner le même repo
+`ludobourgoin/coolbeans`.
 
-- [ ] **Step 4: Configurer les commandes de build/déploiement**
+- [ ] **Step 3: Configurer la connexion `coolbeans-staging`**
 
-⚠️ C'est la commande de **build** qui doit varier selon la branche, pas la commande de
-déploiement — voir spec §2.2 (correction post-Task 1). `WORKERS_CI_BRANCH` est une
-variable système injectée automatiquement par Workers Builds (nom de la branche du
-push) :
+- **Production branch** → `staging` (le champ s'appelle "Production branch" côté
+  Cloudflare quelle que soit la branche choisie — ici il désigne simplement la branche
+  que *cette* connexion surveille et déploie)
+- **Build command** → `CLOUDFLARE_ENV=staging npm run build` (fixe, pas de conditionnel)
+- **Deploy command** → `npx wrangler deploy`
+- **Builds for non-production branches** → laisser désactivé (une seule branche à
+  surveiller pour cette connexion)
 
-- **Build command** : `if [ "$WORKERS_CI_BRANCH" = "main" ]; then npm run build; else CLOUDFLARE_ENV=staging npm run build; fi`
-- **Deploy command** : `npx wrangler deploy` (nu — le build a déjà figé la cible)
-- **Builds for non-production branches** : activer la case
-- **Non-production branch deploy command** : `npx wrangler deploy` (nu, même raison)
+Enregistrer.
 
-⚠️ Gotcha (spec §2.2) : "non-production branches" désigne *toutes* les branches autres que `main`, pas seulement `staging`. Avec la convention actuelle (pas de feature branches poussées sur le remote), aucun risque. Si des branches `feat/*` commencent à être poussées sur GitHub, elles écraseront `staging.coolbeans.cc` au même titre que `staging` — à surveiller si l'usage change.
+- [ ] **Step 4: Vérifier les deux connexions**
 
-⚠️ À vérifier concrètement en Task 4 (premier build automatique réel) : que `WORKERS_CI_BRANCH` vaut bien le nom court de la branche (`main`, `staging`) et pas une forme du type `refs/heads/main` — la doc Cloudflare ne le précise pas explicitement. Si le build échoue ou déploie le mauvais environnement en Task 4, commencer l'investigation par là.
-
-⚠️ **Confirmé en Task 4** : le tout premier build automatique après connexion du repo (déclenché par un push sur une branche non-`main`) a déployé sur `coolbeans` (production), pas sur l'environnement attendu. Sans impact réel (`coolbeans.cc` reste sur Pages tant que la Task 5 n'a pas eu lieu), mais à élucider avant la Task 5 — voir le rapport de la Task 4 pour le diagnostic complet.
-
-- [ ] **Step 5: Sauvegarder**
-
-Enregistrer les réglages. Confirmer que l'écran affiche bien les 5 valeurs de l'étape 4.
+Confirmer sur chaque page Settings → Build que les valeurs des Steps 1 et 3 sont bien
+enregistrées (Git repository, branche, build/deploy commands, toggle non-production
+branches).
 
 ---
 
@@ -238,26 +250,49 @@ Enregistrer les réglages. Confirmer que l'écran affiche bien les 5 valeurs de 
 
 **Interfaces:**
 - Consumes: la connexion Git de la Task 3.
-- Produces: preuve que le pipeline `push → build → deploy` fonctionne sans intervention manuelle, pour `staging` comme pour `main`.
+- Produces: preuve que le pipeline `push → build → deploy` fonctionne sans intervention manuelle, pour `staging` comme pour `main`, chacun sur le bon Worker.
 
-- [ ] **Step 1: Déclencher un build en poussant ce plan sur `staging`**
+**Résumé du diagnostic déjà mené (2026-08-04)** — à ne pas rejouer, juste pour mémoire :
+deux pushs de test sur la branche du worktree (`staging-deploy-workers-migration`, qui
+compte comme "non-production" pour Cloudflare) ont tous les deux déployé sur `coolbeans`
+au lieu de `coolbeans-staging`, à cause du verrou "un nom de Worker par connexion" —
+voir spec §2.2 et Task 3. Le Custom Domain `staging.coolbeans.cc` a été reclaimé
+manuellement (`wrangler deploy` en CLI) après chaque incident, sans impact visiteur.
+La Task 3 a depuis été réécrite avec deux connexions séparées. Ce qui suit est la
+vérification à mener **une fois la Task 3 (révisée) confirmée faite**.
+
+- [ ] **Step 1: Fusionner ce travail sur `staging` et pousser**
+
+Le worktree tourne sur `staging-deploy-workers-migration`, une branche de travail
+isolée — pas la vraie branche `staging` que Workers Builds surveille désormais.
+Fusionner et pousser depuis le checkout principal (pas le worktree) :
 
 ```bash
-git add docs/superpowers/plans/2026-08-04-deploy-workers-migration.md
-git commit -m "$(cat <<'EOF'
-docs(plan): plan d'implémentation de la bascule Pages -> Worker
-
-Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
-EOF
-)"
+cd /Users/ludovicbourgoin/dev/coolbeans
+git fetch origin staging-deploy-workers-migration
+git checkout staging
+git merge --ff-only origin/staging-deploy-workers-migration
 git push origin staging
 ```
 
-- [ ] **Step 2: Vérifier qu'un build automatique démarre**
+Si le `--ff-only` échoue (historique divergent), s'arrêter et regarder avant de forcer
+quoi que ce soit — ne pas utiliser `--no-ff` ni résoudre les conflits sans comprendre
+pourquoi `staging` a avancé de son côté.
 
-Run: `npx wrangler deployments list --name=coolbeans`
+- [ ] **Step 2: Vérifier que `coolbeans-staging` (et lui seul) a reçu un build automatique**
 
-Expected: une nouvelle entrée apparaît avec **Source: Push** (ou équivalent Git, pas `Upload`), correspondant au commit de l'étape 1 — preuve que c'est bien Workers Builds qui a déclenché le déploiement, pas une action manuelle.
+Run: `npx wrangler deployments list --name=coolbeans-staging`
+
+Expected: une nouvelle entrée apparaît avec un Version ID récent correspondant au
+commit de l'étape 1 (pas de champ "Source" fiable dans cette CLI pour distinguer
+Git/manuel — croiser avec `gh api repos/ludobourgoin/coolbeans/commits/<sha>/check-runs`
+qui doit lister un check-run `Workers Builds: coolbeans-staging` avec
+`conclusion: success`).
+
+Run aussi : `npx wrangler deployments list --name=coolbeans` — **aucune nouvelle entrée
+ne doit apparaître** ici suite à ce push sur `staging` (sinon la Task 3 n'est pas
+correctement configurée : la connexion `coolbeans` réagit encore à autre chose que
+`main`).
 
 - [ ] **Step 3: Revérifier `staging.coolbeans.cc`**
 
