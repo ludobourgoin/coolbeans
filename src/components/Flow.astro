@@ -192,16 +192,11 @@ const deliverables = [
   .fbox.float .ic:not(:last-child) {
     border-right-style: dashed;
   }
-  /* dark : les boîtes restent claires (logos lisibles), comme le wireframe */
-  :global(.dark) .fbox {
-    background: var(--color-tile);
-    border-color: var(--color-tile-ink);
-  }
-  :global(.dark) .fbox .bl {
-    color: var(--color-tile-ink);
-    border-bottom-color: var(--color-tile-ink);
-  }
+  /* dark : la coquille suit le thème comme .fpill (fond sombre, bordure
+     claire) ; seules les vignettes logos restent en clair figé, sinon les
+     marques couleur/encre sombre deviennent illisibles sur fond sombre. */
   :global(.dark) .fbox .ic {
+    background: var(--color-tile);
     border-right-color: var(--color-tile-ink);
   }
   /* tooltip */
