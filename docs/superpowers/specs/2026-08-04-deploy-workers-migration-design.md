@@ -131,14 +131,24 @@ domaine de production, avec possibilité de revenir en arrière à chaque étape
 l'étape 5 n'est pas exécutée.
 
 1. Commit `wrangler.jsonc` (§2.1) sur `staging`.
-2. Connecter le Worker `coolbeans` au repo GitHub dans le dashboard (réglages §2.2).
-   Aucun domaine custom n'est encore attaché au Worker à ce stade — zéro impact
-   visiteur.
-3. Attacher `staging.coolbeans.cc` comme Custom Domain sur l'environnement `staging`
-   du Worker. Domaine neuf, aucun conflit possible avec l'ancien Pages. Un push sur
-   `staging` déploie automatiquement.
+2. Connecter **les deux Workers séparément** au repo GitHub dans le dashboard, chacun
+   avec sa propre connexion Build (réglages §2.2 — Connexion 1 sur `coolbeans` pour
+   `main`, Connexion 2 sur `coolbeans-staging` pour `staging`). Une connexion Git
+   unique avec build conditionnel a été essayée et a échoué (§2.2, historique) — les
+   deux connexions sont nécessaires, pas optionnelles. Aucun domaine custom n'est
+   encore attaché à ce stade — zéro impact visiteur.
+3. Attacher `staging.coolbeans.cc` comme Custom Domain sur le Worker `coolbeans-staging`
+   (le premier `wrangler deploy`, manuel ou via la Connexion 2, le fait automatiquement
+   grâce aux routes déclarées en §2.1). Domaine neuf, aucun conflit possible avec
+   l'ancien Pages. Une fois la Connexion 2 en place, un push sur `staging` redéploie
+   automatiquement.
 4. Vérification sur `staging.coolbeans.cc` : accueil, `/devis/en-haut`, `/espace`
-   (doit rediriger vers le sign-in Clerk), `/docs/...` (idem).
+   (doit rediriger vers le sign-in Clerk), `/docs/...` (idem). **`coolbeans.cc` n'est à
+   aucun moment de ces étapes attaché à un Worker ni modifié** — le build "aplati"
+   (§2.1, §2.2 point 1) confine chaque déploiement à un seul nom de Worker et un seul
+   jeu de routes ; même l'incident de vol temporaire de domaine (§2.2 point 2) est resté
+   circonscrit à `staging.coolbeans.cc` entre les deux Workers déjà en place, sans
+   jamais toucher `coolbeans.cc`/`www.coolbeans.cc` ni le projet Pages encore actif.
 5. **Bascule de la prod — nécessite un feu vert explicite au moment de l'exécuter** :
    détacher `coolbeans.cc` + `www.coolbeans.cc` du projet Pages, puis les attacher
    comme Custom Domains sur l'environnement `production` du Worker. Les deux domaines
