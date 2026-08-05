@@ -64,7 +64,7 @@ const ancre = (titre: string) => `${anchorPrefix}-${slugify(titre)}`;
               href={`#${ancre(section.titre)}`}
               data-section-link
               aria-current="false"
-              class="rounded-control px-2 py-1 font-mono text-[12px] font-semibold tracking-wide text-mute uppercase transition-colors duration-150 ease-in-out hover:bg-surface-raise hover:text-ink aria-current:bg-surface-raise aria-current:font-bold aria-current:text-ink"
+              class="rounded-control px-2 py-1 font-mono text-[12px] font-semibold tracking-wide text-mute uppercase transition-colors duration-150 ease-in-out hover:bg-surface-raise hover:text-ink aria-current:bg-ink aria-current:text-surface"
             >
               {section.titre}
             </a>
