@@ -1,0 +1,126 @@
+titre: En Haut x Coolbeans
+objet: Refonte du site Internet d'En Haut
+date: 2026-06-02
+
+versions:
+  - { slug: en-haut-v1, numero: V1 }
+  - { slug: en-haut, numero: V2 }
+
+sections:
+  - titre: Objectif
+    texte: >-
+      Conception et développement d'un **site moderne, sur la base de
+      l'existant** (refonte), reprenant et modernisant l'identité visuelle
+      actuelle d'En Haut, pour une meilleure lisibilité et une hiérarchie
+      plus claire.
+
+  - titre: Pages
+    texte: "**8 pages**, dont 2 templates reproductibles :"
+    liste:
+      - Accueil
+      - Projets (liste des projets)
+      - Projet X (template reproductible)
+      - Prestations (liste des prestations)
+      - "À propos / Qui sommes-nous ? (équipe, valeurs, ADN)"
+      - À propos / Les ateliers d'En Haut
+      - À propos / Photographies
+      - À propos / Photographies X (template reproductible)
+
+  - titre: Sitemap
+    sitemap:
+      image: /devis/en-haut-sitemap-v1.png
+      alt: Sitemap proposé pour En Haut, version du 2 juin 2026
+
+  - titre: Fonctionnalités
+    liste:
+      - Slider avant/après moderne et agréable à utiliser
+      - Intégration de cartes interactives pour contextualiser un projet
+
+  - titre: Stack technique
+    texte: >-
+      Ma recommandation : **Astro** (développement) + **Sanity** (CMS) +
+      **Cloudflare** (hébergement).
+    liste:
+      - Pages ultra-légères, site rapide
+      - "Coût d'usage nul : hébergement Cloudflare gratuit, aucun abonnement mensuel"
+      - "Autonomie : tu gères textes, images et projets toi-même via Sanity, sans toucher au code"
+      - >-
+        Tu restes libre : le code est dans un dépôt qui t'appartient, le
+        contenu Sanity est exportable, n'importe quel dev peut reprendre le
+        site
+      - Pas de plugins ni de mises à jour à gérer, contrairement à WordPress
+
+  - titre: Budget
+    budget:
+      lignes:
+        - label: >-
+            Refonte complète : conception UX/UI + développement de 8 pages
+            (wireframes, maquettes, intégration) · 350 € / page
+          prix: 2800
+        - label: Architecture technique
+          prix: 450
+        - label: Points hebdos de 30 min à 1 h jusqu'à la livraison
+      reglement: >-
+        Acompte de 30 % à la signature du devis (lance la prestation) pour
+        réserver les créneaux dans mon planning. Solde à la livraison du site
+        fonctionnel.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Responsive (desktop, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation de la vitesse
+      - Tests QA sur les 3 navigateurs principaux
+      - Setup tracking + GA4
+      - Certificat SSL, hébergement et DNS
+      - Pages légales et page de contact
+      - Doc de passation pour la prise en main du CMS
+      - Support 30 jours après mise en ligne
+
+  - titre: En option
+    liste:
+      - "Migration des contenus projets (que tu peux prendre en charge) : +450 €"
+      - >-
+        Réalisation sous Webflow plutôt qu'Astro/Sanity/Cloudflare : +600 €
+        (+ hébergement 240 €/an à ta charge)
+      - >-
+        Maintien du site en 3 langues (FR/ES/EN) : +600 € (+ si Webflow,
+        passage par Localize : 350 € côté dev, module payant chez Webflow,
+        en plus de l'hébergement)
+      - >-
+        Direction artistique approfondie, si tu veux aller plus loin qu'une
+        modernisation sobre : à voir ensemble
+
+  - titre: Planning
+    planning:
+      options:
+        - label: Planning
+          texte: >-
+            Planning proposé pour un **démarrage le lundi 15 juin**.
+          jalons:
+            - { date: Lun 15/06, label: "Démarrage : cadrage, accès, point contenu" }
+            - { date: Ven 19/06, label: Wireframes V1 (structure des 8 pages + templates) }
+            - { date: Mer 24/06, label: Retour de ta part sur les wireframes }
+            - { date: Lun 29/06, label: Wireframes V2 (ajustements) }
+            - { date: Ven 03/07, label: Maquettes UI V1 (pages clés + 1 template) }
+            - { date: Mer 08/07, label: Retour de ta part sur les maquettes }
+            - { date: Lun 13/07, label: Maquettes UI V2 et validation du design }
+            - { date: 15/07 → 24/07, label: Intégration et développement }
+            - { date: Jeu 23/07, label: Migration des contenus (ou prise en charge de ton côté) }
+            - { date: 27 → 28/07, label: Tests cross-device et performances }
+            - { date: Mer 29/07, label: "Recette, relecture finale de ton côté" }
+            - { date: Jeu 30/07, label: Corrections }
+            - { date: Ven 31/07, label: Livraison et démarrage du support 30 jours }
+          note: >-
+            Ces dates tiennent si les retours arrivent dans les délais indiqués.
+            Si une validation prend du retard, la livraison peut glisser de plus
+            que le retard lui-même, le temps que je recale le projet entre mes
+            autres clients.
+
+notes:
+  - texte: >-
+      Le design de base reprend ton identité actuelle et la modernise pour une
+      meilleure lisibilité et une hiérarchie plus claire.
+  - texte: >-
+      La prestation n'inclut pas la rédaction des textes ni les visuels : je
+      peux te proposer des reformulations, mais tu restes maître du contenu.

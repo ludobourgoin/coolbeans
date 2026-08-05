@@ -1,39 +1,38 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Nav from "../../components/Nav.astro";
 import Footer from "../../components/Footer.astro";
 import GridBackdrop from "../../components/GridBackdrop.astro";
-import Banner from "../../components/ui/Banner.astro";
 import Choicebox from "../../components/ui/Choicebox.astro";
+import DevisCorps from "../../components/devis/DevisCorps.astro";
+import { dateLongue } from "../../lib/devis";
 
 export async function getStaticPaths() {
   const entries = await getCollection("devis");
-  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+  const bySlug = new Map(entries.map((e) => [e.id, e]));
+  return entries.map((entry) => {
+    const versions = entry.data.versions
+      ?.map((v) => bySlug.get(v.slug))
+      .filter((e): e is CollectionEntry<"devis"> => e !== undefined);
+    return {
+      params: { slug: entry.id },
+      props: { entry, versions: versions?.length ? versions : [entry] },
+    };
+  });
 }
 
-const { entry } = Astro.props;
+const { entry, versions } = Astro.props;
 const d = entry.data;
 
-/* seul enrichissement autorisé dans les chaînes du YAML : **gras** */
-const esc = (s: string) =>
-  s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-const riche = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, '<b class="font-bold">$1</b>');
-
-const eur = new Intl.NumberFormat("fr-FR", {
-  style: "currency",
-  currency: "EUR",
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 2,
+const tabs = versions.map((v) => {
+  const numero = d.versions?.find((meta) => meta.slug === v.id)?.numero;
+  return {
+    id: v.id,
+    label: numero ? `${dateLongue(v.data.date)} (${numero})` : v.data.titre,
+    active: v.id === entry.id,
+  };
 });
-const dateLongue = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(d.date);
-
-/* totaux dérivés des lignes chiffrées ; les lignes sans prix sont « Inclus » */
-const totaux = (budget: NonNullable<(typeof d.sections)[number]["budget"]>) => {
-  const total = budget.lignes.reduce((somme, ligne) => somme + (ligne.prix ?? 0), 0);
-  const remise = budget.remisePct ? (total * budget.remisePct) / 100 : 0;
-  return { total, remise, totalFinal: total - remise, mention: budget.mention ?? "" };
-};
 ---
 
 <BaseLayout
@@ -50,137 +49,19 @@ const totaux = (budget: NonNullable<(typeof d.sections)[number]["budget"]>) => {
       <p class="label">Proposition commerciale</p>
       <h1 class="mx-auto mt-5 max-w-[18ch]">{d.titre}</h1>
       <p class="mx-auto mt-6 max-w-[46ch] text-xl leading-[1.45] font-medium">{d.objet}</p>
-      <p class="mt-6 font-mono text-[13px] text-mute">Émise le {dateLongue}</p>
     </div>
   </header>
 
-  <!-- CORPS DU DEVIS -->
+  <!-- CORPS DU DEVIS (une paire par version, une seule visible à la fois ; les
+       onglets de version vivent dans le bloc sticky de chaque DevisCorps). -->
   <div class="container-site">
-    <div class="mx-auto max-w-[880px] py-16x">
-      {
-        d.sections.map((section, index) => (
-          <section
-            class:list={[
-              "grid grid-cols-[180px_1fr] gap-10 py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4",
-              index > 0 && "border-t border-line",
-            ]}
-          >
-            <p class="label pt-1">{section.titre}</p>
-            <div>
-              {section.texte && (
-                <p
-                  class:list={[
-                    "max-w-[58ch] leading-[1.6]",
-                    (section.liste || section.budget || section.planning) && "mb-5",
-                  ]}
-                  set:html={riche(section.texte)}
-                />
-              )}
-
-              {section.liste && (
-                <ul class="flex list-none flex-col gap-3">
-                  {section.liste.map((item) => (
-                    <li class="flex items-start gap-3.5">
-                      <span
-                        class="mt-[0.55em] block size-1.5 flex-none bg-ink"
-                        aria-hidden="true"
-                      />
-                      <span class="max-w-[58ch]" set:html={riche(item)} />
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              {section.budget &&
-                (() => {
-                  const b = section.budget;
-                  const { total, remise, totalFinal, mention } = totaux(b);
-                  return (
-                    <div>
-                      {b.lignes.map((ligne) => (
-                        <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px]">
-                          <span set:html={riche(ligne.label)} />
-                          {ligne.prix !== undefined ? (
-                            <span class="font-mono whitespace-nowrap tabular-nums">
-                              {eur.format(ligne.prix)}
-                            </span>
-                          ) : (
-                            <span class="font-mono text-[13px] whitespace-nowrap text-mute">
-                              Inclus
-                            </span>
-                          )}
-                        </div>
-                      ))}
-                      {remise > 0 ? (
-                        <>
-                          <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] font-medium">
-                            <span>Total</span>
-                            <span class="font-mono whitespace-nowrap tabular-nums">
-                              {eur.format(total)} {mention}
-                            </span>
-                          </div>
-                          <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute">
-                            <span>Remise exceptionnelle (−{b.remisePct}&nbsp;%)</span>
-                            <span class="font-mono whitespace-nowrap tabular-nums">
-                              −{eur.format(remise)}
-                            </span>
-                          </div>
-                          <div class="flex items-baseline justify-between gap-4 py-4">
-                            <span class="text-[17px] font-bold">Total après remise</span>
-                            <span class="font-mono text-[20px] font-bold whitespace-nowrap tabular-nums">
-                              {eur.format(totalFinal)} {mention}
-                            </span>
-                          </div>
-                        </>
-                      ) : (
-                        <div class="flex items-baseline justify-between gap-4 py-4">
-                          <span class="text-[17px] font-bold">Total</span>
-                          <span class="font-mono text-[20px] font-bold whitespace-nowrap tabular-nums">
-                            {eur.format(total)} {mention}
-                          </span>
-                        </div>
-                      )}
-                      {b.reglement && (
-                        <p class="text-[13px] text-mute">
-                          Conditions de règlement : <Fragment set:html={riche(b.reglement)} />
-                        </p>
-                      )}
-                    </div>
-                  );
-                })()}
-
-              {section.planning && (
-                <div>
-                  <div>
-                    {section.planning.jalons.map((jalon) => (
-                      <div class="grid grid-cols-[150px_1fr] items-baseline gap-4 border-b border-line py-2.5 text-[15px] max-[700px]:grid-cols-[110px_1fr]">
-                        <span class="font-mono text-[13px] text-mute">{jalon.date}</span>
-                        <span set:html={riche(jalon.label)} />
-                      </div>
-                    ))}
-                  </div>
-                  {section.planning.note && (
-                    <p class="mt-4 text-[13px] text-mute" set:html={riche(section.planning.note)} />
-                  )}
-                </div>
-              )}
-            </div>
-          </section>
-        ))
-      }
-
-      {
-        d.notes.length > 0 && (
-          <div class="flex flex-col gap-3 border-t border-line pt-10">
-            {d.notes.map((note) => (
-              <Banner tone="info">
-                <Fragment set:html={riche(note)} />
-              </Banner>
-            ))}
-          </div>
-        )
-      }
-    </div>
+    {
+      versions.map((v) => (
+        <div data-version-pane={v.id} hidden={v.id !== entry.id}>
+          <DevisCorps d={v.data} anchorPrefix={v.id} tabs={tabs} />
+        </div>
+      ))
+    }
   </div>
 
   <!-- RÉPONSE -->
@@ -191,7 +72,7 @@ const totaux = (budget: NonNullable<(typeof d.sections)[number]["budget"]>) => {
         <p class="mx-auto mt-4 max-w-[44ch] text-center leading-[1.6] text-mute">
           Validez la proposition ou posez vos questions, je reviens vers vous rapidement.
         </p>
-        <form class="card mt-10 grid gap-6">
+        <form id="devis-form" class="card mt-10 grid gap-6" data-slug={entry.id}>
           <Choicebox
             name="reponse"
             options={[
@@ -240,7 +121,12 @@ const totaux = (budget: NonNullable<(typeof d.sections)[number]["budget"]>) => {
               name="message"
               placeholder="Une question, une remarque, un ajustement souhaité…"></textarea>
           </div>
-          <button class="btn btn-lg" type="button">Envoyer ma réponse</button>
+          <button class="btn btn-lg" type="submit">Envoyer ma réponse</button>
+          <p
+            data-devis-form-status
+            role="status"
+            class="hidden text-center text-[13px] font-medium"
+          />
         </form>
       </div>
     </div>
@@ -248,3 +134,62 @@ const totaux = (budget: NonNullable<(typeof d.sections)[number]["budget"]>) => {
 
   <Footer />
 </BaseLayout>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>("[data-version-tab]");
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const target = tab.dataset.versionTab;
+      tabs.forEach((t) => {
+        const active = t.dataset.versionTab === target;
+        t.setAttribute("aria-selected", String(active));
+        t.classList.toggle("bg-ink", active);
+        t.classList.toggle("text-surface", active);
+        t.classList.toggle("text-mute", !active);
+        t.classList.toggle("hover:text-ink", !active);
+      });
+      document.querySelectorAll<HTMLElement>("[data-version-pane]").forEach((pane) => {
+        pane.hidden = pane.dataset.versionPane !== target;
+      });
+    });
+  });
+
+  const form = document.querySelector<HTMLFormElement>("#devis-form");
+  const status = form?.querySelector<HTMLParagraphElement>("[data-devis-form-status]");
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (!status || !submitBtn) return;
+
+    const fd = new FormData(form);
+    const payload = {
+      slug: form.dataset.slug,
+      reponse: fd.get("reponse"),
+      nom: fd.get("nom"),
+      email: fd.get("email"),
+      message: fd.get("message"),
+    };
+
+    submitBtn.disabled = true;
+    status.hidden = false;
+    status.textContent = "Envoi en cours…";
+    status.className = "text-center text-[13px] font-medium text-mute";
+
+    try {
+      const res = await fetch("/api/devis-reponse", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error();
+      status.textContent = "Message envoyé, je reviens vers toi rapidement.";
+      status.className = "text-center text-[13px] font-medium text-success";
+      form.reset();
+    } catch {
+      status.textContent = "Envoi impossible, réessaie dans un instant ou écris-moi directement.";
+      status.className = "text-center text-[13px] font-medium text-error";
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+</script>

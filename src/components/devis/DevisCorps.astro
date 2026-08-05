@@ -1,0 +1,340 @@
+---
+import Banner from "../ui/Banner.astro";
+import {
+  riche,
+  eur,
+  slugify,
+  totaux,
+  OWNER_LABEL,
+  OWNER_DOT,
+  type DevisData,
+} from "../../lib/devis";
+
+interface Tab {
+  id: string;
+  label: string;
+  active: boolean;
+}
+
+interface Props {
+  d: DevisData;
+  /* préfixe des ancres de section, pour éviter les collisions d'id quand
+     plusieurs versions du même devis coexistent dans le DOM (onglets). */
+  anchorPrefix: string;
+  /* onglets de version (V1/V2…) affichés dans le même bloc sticky que la
+     nav de section, pour toujours savoir sur quelle version on se trouve. */
+  tabs?: Tab[];
+}
+const { d, anchorPrefix, tabs } = Astro.props;
+
+const ancre = (titre: string) => `${anchorPrefix}-${slugify(titre)}`;
+---
+
+<!-- BLOC STICKY sous la nav principale : version (si plusieurs) + sections -->
+<div
+  data-sticky-devis-nav
+  class="sticky top-16 z-40 -mx-[calc((100vw-100%)/2)] border-b border-line bg-surface/95 backdrop-blur-sm max-[700px]:top-14"
+>
+  {
+    tabs && tabs.length > 1 && (
+      <div class="flex justify-center gap-2 border-b border-line py-2.5">
+        {tabs.map((tab) => (
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab.active}
+            data-version-tab={tab.id}
+            class:list={[
+              "rounded-full px-3.5 py-1 text-[13px] font-semibold transition-colors duration-150 ease-in-out",
+              tab.active ? "bg-ink text-surface" : "text-mute hover:text-ink",
+            ]}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+    )
+  }
+  <nav class="overflow-x-auto" aria-label={`Sections du devis (${anchorPrefix})`}>
+    <ul class="mx-auto flex w-max max-w-260 gap-6 px-6 py-3.5 whitespace-nowrap">
+      {
+        d.sections.map((section) => (
+          <li>
+            <a
+              href={`#${ancre(section.titre)}`}
+              data-section-link
+              aria-current="false"
+              class="rounded-control px-2 py-1 font-mono text-[12px] font-semibold tracking-wide text-mute uppercase transition-colors duration-150 ease-in-out hover:bg-surface-raise hover:text-ink aria-current:bg-surface-raise aria-current:font-bold aria-current:text-ink"
+            >
+              {section.titre}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</div>
+
+<div class="mx-auto max-w-[880px] py-16x">
+  {
+    d.sections.map((section, index) => (
+      <section
+        id={ancre(section.titre)}
+        class:list={[
+          "grid grid-cols-[180px_1fr] gap-10 py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4",
+          tabs && tabs.length > 1 ? "scroll-mt-40" : "scroll-mt-32.5",
+          index > 0 && "border-t border-line",
+        ]}
+      >
+        <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">
+          {section.titre}
+        </p>
+        <div>
+          {section.texte && (
+            <p
+              class:list={[
+                "max-w-[58ch] leading-[1.6]",
+                (section.liste || section.budget || section.planning || section.sitemap) &&
+                  "mb-5",
+              ]}
+              set:html={riche(section.texte)}
+            />
+          )}
+
+          {section.liste && (
+            <ul class="flex list-none flex-col gap-3">
+              {section.liste.map((item) => (
+                <li class="flex items-start gap-3.5">
+                  <span class="mt-[0.55em] block size-1.5 flex-none bg-ink" aria-hidden="true" />
+                  <span class="max-w-[58ch]" set:html={riche(item)} />
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {section.sitemap && (
+            <a
+              href={section.sitemap.image}
+              target="_blank"
+              rel="noopener"
+              class="group block overflow-hidden rounded-card border border-line bg-surface-subtle"
+            >
+              <img
+                src={section.sitemap.image}
+                alt={section.sitemap.alt}
+                class="w-full transition-transform duration-300 ease-brand group-hover:scale-[1.01]"
+                loading="lazy"
+              />
+              <span class="flex items-center gap-1.5 border-t border-line px-4 py-2.5 font-mono text-[12px] text-mute">
+                Cliquer pour voir en plein format ↗
+              </span>
+            </a>
+          )}
+
+          {section.budget &&
+            (() => {
+              const b = section.budget;
+              const { total, remise, totalFinal, mention } = totaux(b);
+              return (
+                <div>
+                  {b.lignes.map((ligne) => (
+                    <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px]">
+                      <span set:html={riche(ligne.label)} />
+                      {ligne.prix !== undefined ? (
+                        <span class="font-mono whitespace-nowrap tabular-nums">
+                          {eur.format(ligne.prix)}
+                        </span>
+                      ) : (
+                        <span class="font-mono text-[13px] whitespace-nowrap text-mute">
+                          Inclus
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                  {remise > 0 ? (
+                    <>
+                      <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] font-medium">
+                        <span>Total</span>
+                        <span class="font-mono whitespace-nowrap tabular-nums">
+                          {eur.format(total)} {mention}
+                        </span>
+                      </div>
+                      <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute">
+                        <span>Remise exceptionnelle (−{b.remisePct}&nbsp;%)</span>
+                        <span class="font-mono whitespace-nowrap tabular-nums">
+                          −{eur.format(remise)}
+                        </span>
+                      </div>
+                      <div class="flex items-baseline justify-between gap-4 py-4">
+                        <span class="text-[17px] font-bold">Total après remise</span>
+                        <span class="font-mono text-[20px] font-bold whitespace-nowrap tabular-nums">
+                          {eur.format(totalFinal)} {mention}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <div class="flex items-baseline justify-between gap-4 py-4">
+                      <span class="text-[17px] font-bold">Total</span>
+                      <span class="font-mono text-[20px] font-bold whitespace-nowrap tabular-nums">
+                        {eur.format(total)} {mention}
+                      </span>
+                    </div>
+                  )}
+                  {b.reglement && (
+                    <p class="text-[13px] text-mute">
+                      Conditions de règlement : <Fragment set:html={riche(b.reglement)} />
+                    </p>
+                  )}
+                </div>
+              );
+            })()}
+
+          {section.planning &&
+            (() => {
+              const groupe = ancre(section.titre);
+              const { options } = section.planning;
+              return (
+                <div>
+                  {options.length > 1 && (
+                    <div class="mb-5 flex flex-wrap gap-2" role="tablist">
+                      {options.map((option, i) => (
+                        <button
+                          type="button"
+                          role="tab"
+                          aria-pressed={i === 0}
+                          data-planning-group={groupe}
+                          data-planning-option={`${groupe}-${i}`}
+                          class:list={[
+                            "rounded-full px-3 py-1 text-[13px] font-semibold transition-colors duration-150 ease-in-out",
+                            i === 0
+                              ? "bg-ink text-surface"
+                              : "text-mute hover:bg-surface-raise hover:text-ink",
+                          ]}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {options.map((option, i) => (
+                    <div data-planning-pane={`${groupe}-${i}`} hidden={i !== 0}>
+                      {option.texte && (
+                        <p
+                          class="mb-5 max-w-[58ch] leading-[1.6]"
+                          set:html={riche(option.texte)}
+                        />
+                      )}
+                      <div>
+                        {option.jalons.map((jalon) => (
+                          <div class="grid grid-cols-[150px_1fr_auto] items-baseline gap-x-4 border-b border-line py-2.5 text-[15px] max-[700px]:grid-cols-[90px_1fr]">
+                            <span class="font-mono text-[13px] font-bold text-ink">
+                              {jalon.date}
+                            </span>
+                            <span set:html={riche(jalon.label)} />
+                            {jalon.owner && (
+                              <span class="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold tracking-wide whitespace-nowrap uppercase text-mute max-[700px]:col-span-2 max-[700px]:mt-1">
+                                <span
+                                  class:list={[
+                                    "block size-1.5 rounded-full",
+                                    OWNER_DOT[jalon.owner],
+                                  ]}
+                                  aria-hidden="true"
+                                />
+                                {OWNER_LABEL[jalon.owner]}
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      {option.note && (
+                        <p class="mt-4 text-[13px] text-mute" set:html={riche(option.note)} />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+        </div>
+      </section>
+    ))
+  }
+
+  {
+    d.notes.length > 0 && (
+      <div class="grid grid-cols-[180px_1fr] gap-10 border-t border-line pt-10 max-[700px]:grid-cols-1 max-[700px]:gap-4">
+        <div aria-hidden="true" class="max-[700px]:hidden" />
+        <div class="flex max-w-[58ch] flex-col gap-3">
+          {d.notes.map((note) => (
+            <Banner tone={note.tone}>
+              <Fragment set:html={riche(note.texte)} />
+            </Banner>
+          ))}
+        </div>
+      </div>
+    )
+  }
+</div>
+
+<script>
+  /* scrollspy de la nav de section : surligne le lien qui correspond à la
+     section actuellement sous le bloc sticky, pour toujours savoir où on se
+     situe dans le devis. Fonctionne aussi tel quel quand plusieurs versions
+     coexistent dans le DOM : les sections d'un onglet masqué (hidden) ne
+     déclenchent jamais d'intersection. */
+  const sections = document.querySelectorAll<HTMLElement>("section[id]");
+  const links = document.querySelectorAll<HTMLAnchorElement>("[data-section-link]");
+  const stickyBars = document.querySelectorAll<HTMLElement>("[data-sticky-devis-nav]");
+
+  const setActive = (id: string) => {
+    links.forEach((link) => {
+      link.setAttribute("aria-current", link.getAttribute("href") === `#${id}` ? "true" : "false");
+    });
+  };
+
+  const stickyOffset = () => {
+    const visible = [...stickyBars].find((bar) => bar.offsetParent !== null);
+    return 64 + (visible?.offsetHeight ?? 0);
+  };
+
+  if (sections.length && links.length) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (!visible.length) return;
+        const top = visible.reduce((a, b) =>
+          a.boundingClientRect.top < b.boundingClientRect.top ? a : b,
+        );
+        setActive(top.target.id);
+      },
+      { rootMargin: `-${stickyOffset()}px 0px -70% 0px`, threshold: 0 },
+    );
+    sections.forEach((section) => observer.observe(section));
+  }
+
+  /* sélecteur local d'options de planning (ex. démarrage immédiat vs
+     démarrage différé) : même logique que les tabs de version, scopée par
+     groupe pour ne pas interférer avec les sections identiques masquées
+     d'un autre onglet de version. */
+  document.querySelectorAll<HTMLButtonElement>("[data-planning-option]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.planningOption;
+      const groupe = btn.dataset.planningGroup;
+      document
+        .querySelectorAll<HTMLButtonElement>(`[data-planning-group="${groupe}"]`)
+        .forEach((b) => {
+          const active = b.dataset.planningOption === target;
+          b.setAttribute("aria-pressed", String(active));
+          b.classList.toggle("bg-ink", active);
+          b.classList.toggle("text-surface", active);
+          b.classList.toggle("text-mute", !active);
+          b.classList.toggle("hover:bg-surface-raise", !active);
+          b.classList.toggle("hover:text-ink", !active);
+        });
+      document.querySelectorAll<HTMLElement>("[data-planning-pane]").forEach((pane) => {
+        if (pane.dataset.planningPane?.startsWith(`${groupe}-`)) {
+          pane.hidden = pane.dataset.planningPane !== target;
+        }
+      });
+    });
+  });
+</script>

@@ -16,6 +16,10 @@ const devis = defineCollection({
     titre: z.string(),
     objet: z.string(),
     date: z.coerce.date(),
+    // Versions sœurs à afficher en onglets sur la même page (ex. V1 archivée / V2 actuelle) ;
+    // absent = devis à version unique, comportement inchangé. Le libellé d'onglet
+    // combine la date propre de chaque entrée avec ce numéro ("2 juin 2026 (V1)").
+    versions: z.array(z.object({ slug: z.string(), numero: z.string() })).optional(),
     sections: z.array(
       z.object({
         titre: z.string(),
@@ -29,15 +33,42 @@ const devis = defineCollection({
             reglement: z.string().optional(),
           })
           .optional(),
+        // `options` : un seul planning la plupart du temps, mais peut porter
+        // plusieurs scénarios de calendrier alternatifs (ex. démarrage
+        // immédiat vs démarrage différé) affichés en petit sélecteur local ;
+        // le premier est affiché par défaut.
         planning: z
           .object({
-            jalons: z.array(z.object({ date: z.string(), label: z.string() })),
-            note: z.string().optional(),
+            options: z
+              .array(
+                z.object({
+                  label: z.string(),
+                  texte: z.string().optional(),
+                  jalons: z.array(
+                    z.object({
+                      date: z.string(),
+                      label: z.string(),
+                      owner: z.enum(["coolbeans", "client"]).optional(),
+                    }),
+                  ),
+                  note: z.string().optional(),
+                }),
+              )
+              .min(1),
           })
           .optional(),
+        // Image de sitemap, cliquable vers la version plein format (nouvel onglet).
+        sitemap: z.object({ image: z.string(), alt: z.string() }).optional(),
       }),
     ),
-    notes: z.array(z.string()).default([]),
+    notes: z
+      .array(
+        z.object({
+          texte: z.string(),
+          tone: z.enum(["neutral", "info", "success", "warning", "error"]).default("info"),
+        }),
+      )
+      .default([]),
   }),
 });
 
