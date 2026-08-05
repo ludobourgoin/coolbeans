@@ -15,7 +15,7 @@ export const testimonials: Testimonial[] = [
     // regard neutre et franc pour présenter au mieux mon activité. Je suis ravie du
     // résultat et je le recommande chaudement."
     quote:
-      "J'avais besoin d'un regard neutre et franc pour présenter mon activité. Avec Ludovic, j'ai trouvé les mots justes et un design qui me ressemble vraiment. Résultat : je suis ravie, et je le recommande sans hésiter.",
+      "J'avais besoin d'un regard neutre et franc pour présenter mon activité. Avec Ludovic, j'ai trouvé les mots justes et un design qui me ressemble vraiment. Résultat : je suis ravie, et je le recommande sans hésiter.",
     name: "Mathilde Chevalier",
     role: "Consultante en Gestion de Conflits · Montpellier",
     photo: "/img/testimonials/mathilde-chevalier.avif",
@@ -50,7 +50,7 @@ export const testimonials: Testimonial[] = [
     // "Super collaboration avec Ludovic qui a été à l'écoute et qui va au-delà de
     // l'exécution. Tout était très fluide !"
     quote:
-      "Ludovic ne se contente pas d'exécuter : il questionne, il propose, il fait avancer le projet. Une collaboration vraiment agréable.",
+      "Ludovic ne se contente pas d'exécuter : il questionne, il propose, il fait avancer le projet. Une collaboration vraiment agréable.",
     name: "Gaelle Céalac Pappo",
     role: "CMO Freelance · Toulouse",
     photo: "/img/testimonials/gaelle-cealac-pappo.jpg",
@@ -73,7 +73,7 @@ export const testimonials: Testimonial[] = [
     // opérationnelle, tout en étant fiable, impliqué et à l'écoute. Nos clients se
     // sentent en confiance du début à la fin."
     quote:
-      "Nos landing pages sont intégrées avec une précision qu'on ne trouve pas partout. Impliqué, fiable, et nos clients le sentent : ils sont en confiance du premier brief à la mise en ligne.",
+      "Nos landing pages sont intégrées avec une précision qu'on ne trouve pas partout. Impliqué, fiable, et nos clients le sentent : ils sont en confiance du premier brief à la mise en ligne.",
     name: "Baptiste Garnot",
     role: "Fondateur de l'agence Trigger · Toulouse",
     photo: "/img/testimonials/baptiste-garnot.avif",
@@ -85,7 +85,7 @@ export const testimonials: Testimonial[] = [
     // Impliqué et à l'écoute, il a transformé un projet complexe en une
     // collaboration fluide et efficace."
     quote:
-      "Refonte de notre site Webflow menée avec clarté : nos idées enfin structurées, notre message clarifié, un résultat qui nous ressemble vraiment. Un projet complexe rendu simple.",
+      "Refonte de notre site Webflow menée avec clarté : nos idées enfin structurées, notre message clarifié, un résultat qui nous ressemble vraiment. Un projet complexe rendu simple.",
     name: "Arnaud Maynadié",
     role: "Associé Fondateur @ Talenvia · Paris",
     photo: "/img/testimonials/arnaud-maynadie.avif",
@@ -119,7 +119,7 @@ export const testimonials: Testimonial[] = [
     // rapide, et pensé pour convertir. On a gagné en crédibilité dès la mise en
     // ligne, et le suivi post-lancement a été impeccable."
     quote:
-      "Site refait de zéro, et le résultat dépasse ce qu'on espérait : clair, rapide, pensé pour convertir. On a gagné en crédibilité dès le lancement, avec un suivi impeccable derrière.",
+      "Site refait de zéro, et le résultat dépasse ce qu'on espérait : clair, rapide, pensé pour convertir. On a gagné en crédibilité dès le lancement, avec un suivi impeccable derrière.",
     name: "Julien Reboul",
     role: "Cofondateur @ Maison Vela · Bordeaux",
   },
@@ -164,7 +164,7 @@ export const testimonials: Testimonial[] = [
     // disponibilité constante. Il est à la fois agréable, à l'écoute, et toujours
     // dans un échange de qualité."
     quote:
-      "Sa souplesse a fait toute la différence sur ce projet : toujours disponible, toujours partant pour ajuster. Des échanges agréables du début à la fin, sans jamais bâcler.",
+      "Sa souplesse a fait toute la différence sur ce projet : toujours disponible, toujours partant pour ajuster. Des échanges agréables du début à la fin, sans jamais bâcler.",
     name: "Margaux Billet",
     role: "Directrice artistique @ Studio Caperky · Paris",
     photo: "/img/testimonials/margaux-billet.avif",

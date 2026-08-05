@@ -15,13 +15,13 @@ sections:
       plus claire.
 
   - titre: Pages
-    texte: "**8 pages**, dont 2 templates reproductibles :"
+    texte: "**8 pages**, dont 2 templates reproductibles :"
     liste:
       - Accueil
       - Projets (liste des projets)
       - Projet X (template reproductible)
       - Prestations (liste des prestations)
-      - "À propos / Qui sommes-nous ? (équipe, valeurs, ADN)"
+      - "À propos / Qui sommes-nous ? (équipe, valeurs, ADN)"
       - À propos / Les ateliers d'En Haut
       - À propos / Photographies
       - À propos / Photographies X (template reproductible)
@@ -38,14 +38,14 @@ sections:
 
   - titre: Stack technique
     texte: >-
-      Ma recommandation : **Astro** (développement) + **Sanity** (CMS) +
+      Ma recommandation : **Astro** (développement) + **Sanity** (CMS) +
       **Cloudflare** (hébergement).
     liste:
       - Pages ultra-légères, site rapide
-      - "Coût d'usage nul : hébergement Cloudflare gratuit, aucun abonnement mensuel"
-      - "Autonomie : tu gères textes, images et projets toi-même via Sanity, sans toucher au code"
+      - "Coût d'usage nul : hébergement Cloudflare gratuit, aucun abonnement mensuel"
+      - "Autonomie : tu gères textes, images et projets toi-même via Sanity, sans toucher au code"
       - >-
-        Tu restes libre : le code est dans un dépôt qui t'appartient, le
+        Tu restes libre : le code est dans un dépôt qui t'appartient, le
         contenu Sanity est exportable, n'importe quel dev peut reprendre le
         site
       - Pas de plugins ni de mises à jour à gérer, contrairement à WordPress
@@ -54,7 +54,7 @@ sections:
     budget:
       lignes:
         - label: >-
-            Refonte complète : conception UX/UI + développement de 8 pages
+            Refonte complète : conception UX/UI + développement de 8 pages
             (wireframes, maquettes, intégration) · 350 € / page
           prix: 2800
         - label: Architecture technique
@@ -79,17 +79,17 @@ sections:
 
   - titre: En option
     liste:
-      - "Migration des contenus projets (que tu peux prendre en charge) : +450 €"
+      - "Migration des contenus projets (que tu peux prendre en charge) : +450 €"
       - >-
-        Réalisation sous Webflow plutôt qu'Astro/Sanity/Cloudflare : +600 €
+        Réalisation sous Webflow plutôt qu'Astro/Sanity/Cloudflare : +600 €
         (+ hébergement 240 €/an à ta charge)
       - >-
-        Maintien du site en 3 langues (FR/ES/EN) : +600 € (+ si Webflow,
-        passage par Localize : 350 € côté dev, module payant chez Webflow,
+        Maintien du site en 3 langues (FR/ES/EN) : +600 € (+ si Webflow,
+        passage par Localize : 350 € côté dev, module payant chez Webflow,
         en plus de l'hébergement)
       - >-
         Direction artistique approfondie, si tu veux aller plus loin qu'une
-        modernisation sobre : à voir ensemble
+        modernisation sobre : à voir ensemble
 
   - titre: Planning
     planning:
@@ -98,7 +98,7 @@ sections:
           texte: >-
             Planning proposé pour un **démarrage le lundi 15 juin**.
           jalons:
-            - { date: Lun 15/06, label: "Démarrage : cadrage, accès, point contenu" }
+            - { date: Lun 15/06, label: "Démarrage : cadrage, accès, point contenu" }
             - { date: Ven 19/06, label: Wireframes V1 (structure des 8 pages + templates) }
             - { date: Mer 24/06, label: Retour de ta part sur les wireframes }
             - { date: Lun 29/06, label: Wireframes V2 (ajustements) }
@@ -122,5 +122,5 @@ notes:
       Le design de base reprend ton identité actuelle et la modernise pour une
       meilleure lisibilité et une hiérarchie plus claire.
   - texte: >-
-      La prestation n'inclut pas la rédaction des textes ni les visuels : je
+      La prestation n'inclut pas la rédaction des textes ni les visuels : je
       peux te proposer des reformulations, mais tu restes maître du contenu.
