@@ -5,57 +5,25 @@ import {
   eur,
   slugify,
   totaux,
-  OWNER_LABEL,
+  ownerLabel,
   OWNER_DOT,
   type DevisData,
 } from "../../lib/devis";
 
-interface Tab {
-  id: string;
-  label: string;
-  active: boolean;
-}
-
 interface Props {
   d: DevisData;
-  /* préfixe des ancres de section, pour éviter les collisions d'id quand
-     plusieurs versions du même devis coexistent dans le DOM (onglets). */
-  anchorPrefix: string;
-  /* onglets de version (V1/V2…) affichés dans le même bloc sticky que la
-     nav de section, pour toujours savoir sur quelle version on se trouve. */
-  tabs?: Tab[];
 }
-const { d, anchorPrefix, tabs } = Astro.props;
+const { d } = Astro.props;
 
-const ancre = (titre: string) => `${anchorPrefix}-${slugify(titre)}`;
+const ancre = (titre: string) => slugify(titre);
 ---
 
-<!-- BLOC STICKY sous la nav principale : version (si plusieurs) + sections -->
+<!-- BLOC STICKY sous la nav principale : nav de sections -->
 <div
   data-sticky-devis-nav
   class="sticky top-16 z-40 -mx-[calc((100vw-100%)/2)] border-b border-line bg-surface/95 backdrop-blur-sm max-[700px]:top-14"
 >
-  {
-    tabs && tabs.length > 1 && (
-      <div class="flex justify-center gap-2 border-b border-line py-2.5">
-        {tabs.map((tab) => (
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab.active}
-            data-version-tab={tab.id}
-            class:list={[
-              "rounded-full px-3.5 py-1 text-[13px] font-semibold transition-colors duration-150 ease-in-out",
-              tab.active ? "bg-ink text-surface" : "text-mute hover:text-ink",
-            ]}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-    )
-  }
-  <nav class="overflow-x-auto" aria-label={`Sections du devis (${anchorPrefix})`}>
+  <nav class="overflow-x-auto" aria-label="Sections du devis">
     <ul class="mx-auto flex w-max max-w-260 gap-6 px-6 py-3.5 whitespace-nowrap">
       {
         d.sections.map((section) => (
@@ -81,8 +49,7 @@ const ancre = (titre: string) => `${anchorPrefix}-${slugify(titre)}`;
       <section
         id={ancre(section.titre)}
         class:list={[
-          "grid grid-cols-[180px_1fr] gap-10 py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4",
-          tabs && tabs.length > 1 ? "scroll-mt-40" : "scroll-mt-32.5",
+          "grid grid-cols-[180px_1fr] gap-10 py-10 scroll-mt-32.5 max-[700px]:grid-cols-1 max-[700px]:gap-4",
           index > 0 && "border-t border-line",
         ]}
       >
@@ -94,7 +61,7 @@ const ancre = (titre: string) => `${anchorPrefix}-${slugify(titre)}`;
             <p
               class:list={[
                 "max-w-[58ch] leading-[1.6]",
-                (section.liste || section.budget || section.planning || section.sitemap) &&
+                (section.liste || section.budget || section.planning || section.diagram) &&
                   "mb-5",
               ]}
               set:html={riche(section.texte)}
@@ -112,16 +79,19 @@ const ancre = (titre: string) => `${anchorPrefix}-${slugify(titre)}`;
             </ul>
           )}
 
-          {section.sitemap && (
+          {section.diagram && (
             <a
-              href={section.sitemap.image}
+              href={section.diagram.image}
               target="_blank"
               rel="noopener"
-              class="group block overflow-hidden rounded-card border border-line bg-surface-subtle"
+              class:list={[
+                "group block overflow-hidden rounded-card border border-line bg-surface-subtle",
+                section.liste && "mt-5",
+              ]}
             >
               <img
-                src={section.sitemap.image}
-                alt={section.sitemap.alt}
+                src={section.diagram.image}
+                alt={section.diagram.alt}
                 class="w-full transition-transform duration-300 ease-brand group-hover:scale-[1.01]"
                 loading="lazy"
               />
@@ -142,7 +112,7 @@ const ancre = (titre: string) => `${anchorPrefix}-${slugify(titre)}`;
                       <span set:html={riche(ligne.label)} />
                       {ligne.prix !== undefined ? (
                         <span class="font-mono whitespace-nowrap tabular-nums">
-                          {eur.format(ligne.prix)}
+                          {eur.format(ligne.prix)} {mention}
                         </span>
                       ) : (
                         <span class="font-mono text-[13px] whitespace-nowrap text-mute">
@@ -240,7 +210,7 @@ const ancre = (titre: string) => `${anchorPrefix}-${slugify(titre)}`;
                                   ]}
                                   aria-hidden="true"
                                 />
-                                {OWNER_LABEL[jalon.owner]}
+                                {ownerLabel(d, jalon.owner)}
                               </span>
                             )}
                           </div>
@@ -262,7 +232,9 @@ const ancre = (titre: string) => `${anchorPrefix}-${slugify(titre)}`;
   {
     d.notes.length > 0 && (
       <div class="grid grid-cols-[180px_1fr] gap-10 border-t border-line pt-10 max-[700px]:grid-cols-1 max-[700px]:gap-4">
-        <div aria-hidden="true" class="max-[700px]:hidden" />
+        <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">
+          NB
+        </p>
         <div class="flex max-w-[58ch] flex-col gap-3">
           {d.notes.map((note) => (
             <Banner tone={note.tone}>
@@ -278,9 +250,7 @@ const ancre = (titre: string) => `${anchorPrefix}-${slugify(titre)}`;
 <script>
   /* scrollspy de la nav de section : surligne le lien qui correspond à la
      section actuellement sous le bloc sticky, pour toujours savoir où on se
-     situe dans le devis. Fonctionne aussi tel quel quand plusieurs versions
-     coexistent dans le DOM : les sections d'un onglet masqué (hidden) ne
-     déclenchent jamais d'intersection. */
+     situe dans le devis. */
   const sections = document.querySelectorAll<HTMLElement>("section[id]");
   const links = document.querySelectorAll<HTMLAnchorElement>("[data-section-link]");
   const stickyBars = document.querySelectorAll<HTMLElement>("[data-sticky-devis-nav]");
@@ -312,9 +282,8 @@ const ancre = (titre: string) => `${anchorPrefix}-${slugify(titre)}`;
   }
 
   /* sélecteur local d'options de planning (ex. démarrage immédiat vs
-     démarrage différé) : même logique que les tabs de version, scopée par
-     groupe pour ne pas interférer avec les sections identiques masquées
-     d'un autre onglet de version. */
+     démarrage différé), scopé par groupe pour gérer plusieurs plannings sur
+     la même page. */
   document.querySelectorAll<HTMLButtonElement>("[data-planning-option]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const target = btn.dataset.planningOption;

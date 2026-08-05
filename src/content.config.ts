@@ -16,10 +16,9 @@ const devis = defineCollection({
     titre: z.string(),
     objet: z.string(),
     date: z.coerce.date(),
-    // Versions sœurs à afficher en onglets sur la même page (ex. V1 archivée / V2 actuelle) ;
-    // absent = devis à version unique, comportement inchangé. Le libellé d'onglet
-    // combine la date propre de chaque entrée avec ce numéro ("2 juin 2026 (V1)").
-    versions: z.array(z.object({ slug: z.string(), numero: z.string() })).optional(),
+    // Prénom du contact côté client, affiché sur les jalons de planning
+    // attribués à "client" (owner: client). Chaque devis a son propre client.
+    contact: z.string().optional(),
     sections: z.array(
       z.object({
         titre: z.string(),
@@ -57,8 +56,10 @@ const devis = defineCollection({
               .min(1),
           })
           .optional(),
-        // Image de sitemap, cliquable vers la version plein format (nouvel onglet).
-        sitemap: z.object({ image: z.string(), alt: z.string() }).optional(),
+        // Image de schéma (sitemap, diagramme de flux Make…), cliquable vers
+        // la version plein format (nouvel onglet). Générique : tous les devis
+        // ne sont pas des refontes web (ex. automatisation Make × HubSpot).
+        diagram: z.object({ image: z.string(), alt: z.string() }).optional(),
       }),
     ),
     notes: z

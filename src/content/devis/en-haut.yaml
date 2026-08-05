@@ -1,10 +1,7 @@
 titre: En Haut x Coolbeans
 objet: Refonte du site Internet d'En Haut
 date: 2026-08-05
-
-versions:
-  - { slug: en-haut-v1, numero: V1 }
-  - { slug: en-haut, numero: V2 }
+contact: Simon
 
 sections:
   - titre: Objectif
@@ -26,9 +23,7 @@ sections:
       - Prestations (liste des prestations)
       - "À propos / Qui sommes-nous ? (équipe, valeurs, ADN)"
       - À propos / Les ateliers d'En Haut
-
-  - titre: Sitemap
-    sitemap:
+    diagram:
       image: /devis/en-haut-sitemap-v2.png
       alt: Sitemap proposé pour En Haut, version actuelle
 
@@ -62,6 +57,7 @@ sections:
         - label: Architecture technique
           prix: 450
         - label: Points hebdos de 30 min à 1 h jusqu'à la livraison
+      mention: HT
       reglement: >-
         **30 %** à la signature du devis (lance la prestation, réserve les
         créneaux dans mon planning) · **40 %** à mi-projet · **30 %** de
@@ -187,9 +183,6 @@ sections:
                 label: "Corrections et livraison, démarrage du support 30 jours",
                 owner: coolbeans,
               }
-          note: >-
-            Planning resserré, sans jour tampon : une validation qui prend un
-            jour de retard fait glisser la livraison début octobre.
 
 notes:
   - tone: success
@@ -203,11 +196,6 @@ notes:
       Cet accompagnement n'inclut pas les contenus (images et textes) ni la
       conception d'une charte graphique poussée (il s'agit bien de moderniser
       le design visuel existant)
-  - texte: >-
-      La création ou la commande de nouvelles illustrations, photographies,
-      typographies, animations ou vidéos, ainsi que l'achat de licences pour des
-      visuels issus de banques d'images ne sont pas inclus dans cette
-      proposition et pourront être ajoutés en option.
   - texte: >-
       Notre approche collaborative inclut jusqu'à 2 rounds d'itération par
       livrable, afin d'assurer un équilibre entre exigence créative et

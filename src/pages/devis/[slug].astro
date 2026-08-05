@@ -1,38 +1,22 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Nav from "../../components/Nav.astro";
 import Footer from "../../components/Footer.astro";
 import GridBackdrop from "../../components/GridBackdrop.astro";
 import Choicebox from "../../components/ui/Choicebox.astro";
 import DevisCorps from "../../components/devis/DevisCorps.astro";
-import { dateLongue } from "../../lib/devis";
 
 export async function getStaticPaths() {
   const entries = await getCollection("devis");
-  const bySlug = new Map(entries.map((e) => [e.id, e]));
-  return entries.map((entry) => {
-    const versions = entry.data.versions
-      ?.map((v) => bySlug.get(v.slug))
-      .filter((e): e is CollectionEntry<"devis"> => e !== undefined);
-    return {
-      params: { slug: entry.id },
-      props: { entry, versions: versions?.length ? versions : [entry] },
-    };
-  });
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
 }
 
-const { entry, versions } = Astro.props;
+const { entry } = Astro.props;
 const d = entry.data;
-
-const tabs = versions.map((v) => {
-  const numero = d.versions?.find((meta) => meta.slug === v.id)?.numero;
-  return {
-    id: v.id,
-    label: numero ? `${dateLongue(v.data.date)} (${numero})` : v.data.titre,
-    active: v.id === entry.id,
-  };
-});
 ---
 
 <BaseLayout
@@ -52,16 +36,9 @@ const tabs = versions.map((v) => {
     </div>
   </header>
 
-  <!-- CORPS DU DEVIS (une paire par version, une seule visible à la fois ; les
-       onglets de version vivent dans le bloc sticky de chaque DevisCorps). -->
+  <!-- CORPS DU DEVIS -->
   <div class="container-site">
-    {
-      versions.map((v) => (
-        <div data-version-pane={v.id} hidden={v.id !== entry.id}>
-          <DevisCorps d={v.data} anchorPrefix={v.id} tabs={tabs} />
-        </div>
-      ))
-    }
+    <DevisCorps d={d} />
   </div>
 
   <!-- RÉPONSE -->
@@ -113,6 +90,56 @@ const tabs = versions.map((v) => {
               />
             </div>
           </div>
+          <div data-facturation-fields hidden class="grid gap-4 border-t border-line pt-6">
+            <p class="text-[13px] text-mute">
+              Informations nécessaires pour éditer la facture d'acompte.
+            </p>
+            <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
+              <div class="grid gap-2">
+                <label class="label" for="devis-raison-sociale">Raison sociale</label>
+                <input
+                  class="field"
+                  type="text"
+                  id="devis-raison-sociale"
+                  name="raisonSociale"
+                  autocomplete="organization"
+                  placeholder="Nom de la société"
+                />
+              </div>
+              <div class="grid gap-2">
+                <label class="label" for="devis-siren">Numéro SIREN</label>
+                <input
+                  class="field"
+                  type="text"
+                  id="devis-siren"
+                  name="siren"
+                  inputmode="numeric"
+                  placeholder="123456789"
+                />
+              </div>
+            </div>
+            <div class="grid gap-2">
+              <label class="label" for="devis-adresse">Adresse du siège social</label>
+              <input
+                class="field"
+                type="text"
+                id="devis-adresse"
+                name="adresse"
+                autocomplete="street-address"
+                placeholder="Numéro, rue, code postal, ville"
+              />
+            </div>
+            <div class="grid gap-2">
+              <label class="label" for="devis-tva">Numéro de TVA intracommunautaire</label>
+              <input
+                class="field"
+                type="text"
+                id="devis-tva"
+                name="tva"
+                placeholder="FR12345678900 (si applicable, hors France)"
+              />
+            </div>
+          </div>
           <div class="grid gap-2">
             <label class="label" for="devis-message">Message</label>
             <textarea
@@ -136,26 +163,20 @@ const tabs = versions.map((v) => {
 </BaseLayout>
 
 <script>
-  const tabs = document.querySelectorAll<HTMLButtonElement>("[data-version-tab]");
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      const target = tab.dataset.versionTab;
-      tabs.forEach((t) => {
-        const active = t.dataset.versionTab === target;
-        t.setAttribute("aria-selected", String(active));
-        t.classList.toggle("bg-ink", active);
-        t.classList.toggle("text-surface", active);
-        t.classList.toggle("text-mute", !active);
-        t.classList.toggle("hover:text-ink", !active);
-      });
-      document.querySelectorAll<HTMLElement>("[data-version-pane]").forEach((pane) => {
-        pane.hidden = pane.dataset.versionPane !== target;
-      });
-    });
-  });
-
   const form = document.querySelector<HTMLFormElement>("#devis-form");
   const status = form?.querySelector<HTMLParagraphElement>("[data-devis-form-status]");
+  const facturationFields = form?.querySelector<HTMLElement>("[data-facturation-fields]");
+
+  const syncFacturationFields = () => {
+    if (!form || !facturationFields) return;
+    const reponse = new FormData(form).get("reponse");
+    facturationFields.hidden = reponse !== "validation";
+  };
+  form?.querySelectorAll<HTMLInputElement>('input[name="reponse"]').forEach((input) => {
+    input.addEventListener("change", syncFacturationFields);
+  });
+  syncFacturationFields();
+
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
@@ -168,7 +189,27 @@ const tabs = versions.map((v) => {
       nom: fd.get("nom"),
       email: fd.get("email"),
       message: fd.get("message"),
+      raisonSociale: fd.get("raisonSociale"),
+      siren: fd.get("siren"),
+      adresse: fd.get("adresse"),
+      tva: fd.get("tva"),
     };
+
+    if (payload.reponse === "validation") {
+      const manquants = [
+        [payload.raisonSociale, "la raison sociale"],
+        [payload.siren, "le numéro SIREN"],
+        [payload.adresse, "l'adresse du siège social"],
+      ]
+        .filter(([valeur]) => !String(valeur ?? "").trim())
+        .map(([, label]) => label);
+      if (manquants.length) {
+        status.hidden = false;
+        status.textContent = `Merci de renseigner ${manquants.join(", ")} pour éditer la facture d'acompte.`;
+        status.className = "text-center text-[13px] font-medium text-error";
+        return;
+      }
+    }
 
     submitBtn.disabled = true;
     status.hidden = false;

@@ -36,6 +36,9 @@ export const totaux = (budget: DevisBudget) => {
 export const dateLongue = (date: Date) =>
   new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(date);
 
-/* qui porte chaque jalon du planning, en clair */
-export const OWNER_LABEL = { coolbeans: "Ludo", client: "Simon" } as const;
+/* qui porte chaque jalon du planning, en clair ; le contact client varie
+   selon le devis, "Ludo" reste fixe côté Coolbeans. */
 export const OWNER_DOT = { coolbeans: "bg-ink", client: "bg-info" } as const;
+
+export const ownerLabel = (d: DevisData, owner: "coolbeans" | "client") =>
+  owner === "coolbeans" ? "Ludo" : (d.contact ?? "Client");

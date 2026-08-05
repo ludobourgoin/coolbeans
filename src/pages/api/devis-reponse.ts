@@ -11,9 +11,21 @@ export const POST: APIRoute = async ({ request }) => {
   const data = await request.json().catch(() => null);
   if (!data || typeof data !== "object") return json({ error: "Requête invalide." }, 400);
 
-  const { slug, reponse, nom, email, message } = data as Record<string, unknown>;
+  const { slug, reponse, nom, email, message, raisonSociale, siren, adresse, tva } =
+    data as Record<string, unknown>;
   if (typeof slug !== "string" || (reponse !== "validation" && reponse !== "question")) {
     return json({ error: "Requête invalide." }, 400);
+  }
+  if (
+    reponse === "validation" &&
+    (typeof raisonSociale !== "string" ||
+      !raisonSociale.trim() ||
+      typeof siren !== "string" ||
+      !siren.trim() ||
+      typeof adresse !== "string" ||
+      !adresse.trim())
+  ) {
+    return json({ error: "Informations de facturation manquantes." }, 400);
   }
 
   const objetReponse =
@@ -31,6 +43,12 @@ export const POST: APIRoute = async ({ request }) => {
         `Réponse : ${objetReponse}`,
         typeof nom === "string" && nom ? `Nom : ${nom}` : null,
         typeof email === "string" && email ? `Email : ${email}` : null,
+        typeof raisonSociale === "string" && raisonSociale
+          ? `Raison sociale : ${raisonSociale}`
+          : null,
+        typeof siren === "string" && siren ? `SIREN : ${siren}` : null,
+        typeof adresse === "string" && adresse ? `Adresse : ${adresse}` : null,
+        typeof tva === "string" && tva ? `TVA intracommunautaire : ${tva}` : null,
         "",
         typeof message === "string" && message ? message : "(pas de message)",
       ]
