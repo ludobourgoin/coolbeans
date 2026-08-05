@@ -528,7 +528,7 @@ export const toolCategories: ToolCategory[] = [
       },
       {
         "name": "NuPhy Air75",
-        "desc": "Clavier mécanique bas profil, Bluetooth + USB-C. Layout 75 %, switches bien cliquetants — désolé pour l'open space.",
+        "desc": "Clavier mécanique bas profil, Bluetooth + USB-C. Layout 75 %, switches bien cliquetants, désolé pour l'open space.",
         "chips": [
           "Clavier",
           "Mécanique"

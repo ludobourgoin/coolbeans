@@ -40,7 +40,7 @@ export const testimonials: Testimonial[] = [
     // le départ. Il nous a transmis les bonnes pratiques pour rester autonomes, tout
     // en restant disponible et réactif."
     quote:
-      "Notre site e-commerce a généré des ventes dès sa mise en ligne — exactement ce qu'il nous fallait. Ludovic nous a aussi appris à rester autonomes sur la suite, sans jamais nous laisser sans réponse.",
+      "Notre site e-commerce a généré des ventes dès sa mise en ligne, exactement ce qu'il nous fallait. Ludovic nous a aussi appris à rester autonomes sur la suite, sans jamais nous laisser sans réponse.",
     name: "Thomas Mogharaei",
     role: "Fondateur @ Le Tapis de Laine · Millau",
     photo: "/img/testimonials/thomas-mogharaei.avif",
@@ -108,7 +108,7 @@ export const testimonials: Testimonial[] = [
     // la place du client. Il comprend vite les enjeux, propose toujours des pistes
     // pertinentes, et son enthousiasme est aussi motivant que rassurant."
     quote:
-      "Un vrai partenaire, pas juste un prestataire — il se met à la place du client. Comprend les enjeux en un échange, et son enthousiasme donne autant confiance qu'il motive.",
+      "Un vrai partenaire, pas juste un prestataire : il se met à la place du client. Comprend les enjeux en un échange, et son enthousiasme donne autant confiance qu'il motive.",
     name: "Alexandre Cahagne",
     role: "Digital Media Specialist @ Havas · Zürich",
     photo: "/img/testimonials/alexandre-cahagne.avif",
@@ -153,7 +153,7 @@ export const testimonials: Testimonial[] = [
     // concrètes, cohérentes et durables. Un accompagnement précieux du début à la
     // fin."
     quote:
-      "Notre présence en ligne a été repensée avec une justesse qu'on n'attendait pas. Dès le premier échange, il avait compris nos enjeux — et les solutions proposées ont tenu dans la durée.",
+      "Notre présence en ligne a été repensée avec une justesse qu'on n'attendait pas. Dès le premier échange, il avait compris nos enjeux, et les solutions proposées ont tenu dans la durée.",
     name: "Camille Laurent",
     role: "Fondatrice @ Atelier Nord · Nantes",
   },
