@@ -18,10 +18,11 @@ const { d } = Astro.props;
 const ancre = (titre: string) => slugify(titre);
 ---
 
-<!-- BLOC STICKY sous la nav principale : nav de sections -->
+<!-- BLOC STICKY : nav de sections. Colle au sommet du viewport, la page
+     devis n'a pas de Nav Coolbeans au-dessus. -->
 <div
   data-sticky-devis-nav
-  class="sticky top-16 z-40 -mx-[calc((100vw-100%)/2)] border-b border-line bg-surface/95 backdrop-blur-sm max-[700px]:top-14"
+  class="sticky top-0 z-40 -mx-[calc((100vw-100%)/2)] border-b border-line bg-surface/95 backdrop-blur-sm"
 >
   <nav class="overflow-x-auto" aria-label="Sections du devis">
     <ul class="mx-auto flex w-max max-w-260 gap-6 px-6 py-3.5 whitespace-nowrap">
@@ -49,7 +50,7 @@ const ancre = (titre: string) => slugify(titre);
       <section
         id={ancre(section.titre)}
         class:list={[
-          "grid grid-cols-[180px_1fr] gap-10 py-10 scroll-mt-32.5 max-[700px]:grid-cols-1 max-[700px]:gap-4",
+          "grid grid-cols-[180px_1fr] gap-10 py-10 scroll-mt-16.5 max-[700px]:grid-cols-1 max-[700px]:gap-4",
           index > 0 && "border-t border-line",
         ]}
       >
@@ -263,7 +264,7 @@ const ancre = (titre: string) => slugify(titre);
 
   const stickyOffset = () => {
     const visible = [...stickyBars].find((bar) => bar.offsetParent !== null);
-    return 64 + (visible?.offsetHeight ?? 0);
+    return visible?.offsetHeight ?? 0;
   };
 
   if (sections.length && links.length) {

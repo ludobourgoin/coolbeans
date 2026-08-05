@@ -1,8 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Nav from "../../components/Nav.astro";
-import Footer from "../../components/Footer.astro";
 import GridBackdrop from "../../components/GridBackdrop.astro";
 import Choicebox from "../../components/ui/Choicebox.astro";
 import DevisCorps from "../../components/devis/DevisCorps.astro";
@@ -24,8 +22,6 @@ const d = entry.data;
   description={`Proposition commerciale : ${d.objet}`}
   noindex
 >
-  <Nav />
-
   <!-- EN-TÊTE -->
   <header class="relative overflow-hidden bg-surface-subtle">
     <GridBackdrop />
@@ -158,8 +154,6 @@ const d = entry.data;
       </div>
     </div>
   </section>
-
-  <Footer />
 </BaseLayout>
 
 <script>

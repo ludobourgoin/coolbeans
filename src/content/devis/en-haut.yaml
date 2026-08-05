@@ -135,54 +135,56 @@ sections:
             Si une validation prend du retard, la livraison peut glisser de plus
             que le retard lui-même, le temps que je recale le projet entre mes
             autres clients.
-        - label: Démarrage début septembre
-          texte: >-
-            Planning alternatif avec un **démarrage début septembre (mardi
-            1er)**. Rythme plus soutenu pour tenir une livraison fin
-            septembre malgré un départ plus tardif. **Sans marge** : le
-            moindre retard sur un retour ou une validation fait glisser la
-            livraison en octobre.
-          jalons:
-            - {
-                date: Mar 01/09,
-                label: "Démarrage : cadrage, accès, point contenu",
-                owner: coolbeans,
-              }
-            - {
-                date: Jeu 03/09,
-                label: Wireframes V1 (structure des 8 pages + templates),
-                owner: coolbeans,
-              }
-            - { date: Lun 07/09, label: Retour de Simon sur les wireframes, owner: client }
-            - { date: Mer 09/09, label: Wireframes V2 (ajustements), owner: coolbeans }
-            - {
-                date: Ven 11/09,
-                label: Maquettes UI V1 (pages clés + 1 template),
-                owner: coolbeans,
-              }
-            - { date: Mar 15/09, label: Retour de Simon sur les maquettes, owner: client }
-            - {
-                date: Jeu 17/09,
-                label: Maquettes UI V2 et validation du design,
-                owner: coolbeans,
-              }
-            - { date: 18/09 → 24/09, label: Intégration et développement, owner: coolbeans }
-            - {
-                date: Ven 25/09,
-                label: "Migration des contenus (offerte, via Claude Code)",
-                owner: coolbeans,
-              }
-            - { date: Lun 28/09, label: Tests cross-device et performances, owner: coolbeans }
-            - {
-                date: Mar 29/09,
-                label: "Recette, relecture finale de la part de Simon",
-                owner: client,
-              }
-            - {
-                date: Mer 30/09,
-                label: "Corrections et livraison, démarrage du support 30 jours",
-                owner: coolbeans,
-              }
+        # Planning alternatif (démarrage début septembre), conservé en
+        # commentaire au cas où le client demande à repousser le démarrage.
+#         - label: Démarrage début septembre
+#           texte: >-
+#             Planning alternatif avec un **démarrage début septembre (mardi
+#             1er)**. Rythme plus soutenu pour tenir une livraison fin
+#             septembre malgré un départ plus tardif. **Sans marge** : le
+#             moindre retard sur un retour ou une validation fait glisser la
+#             livraison en octobre.
+#           jalons:
+#             - {
+#                 date: Mar 01/09,
+#                 label: "Démarrage : cadrage, accès, point contenu",
+#                 owner: coolbeans,
+#               }
+#             - {
+#                 date: Jeu 03/09,
+#                 label: Wireframes V1 (structure des 8 pages + templates),
+#                 owner: coolbeans,
+#               }
+#             - { date: Lun 07/09, label: Retour de Simon sur les wireframes, owner: client }
+#             - { date: Mer 09/09, label: Wireframes V2 (ajustements), owner: coolbeans }
+#             - {
+#                 date: Ven 11/09,
+#                 label: Maquettes UI V1 (pages clés + 1 template),
+#                 owner: coolbeans,
+#               }
+#             - { date: Mar 15/09, label: Retour de Simon sur les maquettes, owner: client }
+#             - {
+#                 date: Jeu 17/09,
+#                 label: Maquettes UI V2 et validation du design,
+#                 owner: coolbeans,
+#               }
+#             - { date: 18/09 → 24/09, label: Intégration et développement, owner: coolbeans }
+#             - {
+#                 date: Ven 25/09,
+#                 label: "Migration des contenus (offerte, via Claude Code)",
+#                 owner: coolbeans,
+#               }
+#             - { date: Lun 28/09, label: Tests cross-device et performances, owner: coolbeans }
+#             - {
+#                 date: Mar 29/09,
+#                 label: "Recette, relecture finale de la part de Simon",
+#                 owner: client,
+#               }
+#             - {
+#                 date: Mer 30/09,
+#                 label: "Corrections et livraison, démarrage du support 30 jours",
+#                 owner: coolbeans,
+#               }
 
 notes:
   - tone: success
