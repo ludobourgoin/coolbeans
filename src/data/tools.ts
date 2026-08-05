@@ -32,8 +32,7 @@ export const toolCategories: ToolCategory[] = [
         "name": "Astro",
         "desc": "Framework rendu statique + island hydration. 100/100 PageSpeed par défaut.",
         "chips": [
-          "Framework",
-          "Stack ★"
+          "Framework"
         ],
         "href": "https://astro.build",
         "logo": "/img/tools/astro.svg"
@@ -42,8 +41,7 @@ export const toolCategories: ToolCategory[] = [
         "name": "VS Code",
         "desc": "Éditeur principal. Extensions Astro, ESLint, GitHub Copilot, Biome. Dotfiles versionnés.",
         "chips": [
-          "Éditeur",
-          "Stack ★"
+          "Éditeur"
         ],
         "href": "https://code.visualstudio.com",
         "logo": "/img/tools/vs-code.png"
@@ -62,8 +60,7 @@ export const toolCategories: ToolCategory[] = [
         "name": "Claude Code",
         "desc": "Agent terminal pour pair-coding. Refactors, tests, scripts de migration. Un vrai game changer !",
         "chips": [
-          "AI coding",
-          "Stack ★"
+          "AI coding"
         ],
         "href": "https://www.anthropic.com/claude-code",
         "logo": "/img/tools/claude.png"
@@ -72,8 +69,7 @@ export const toolCategories: ToolCategory[] = [
         "name": "GSAP",
         "desc": "Librairie d'animation web. Transitions, scroll-triggered, timelines. Entièrement gratuite depuis le rachat par Webflow.",
         "chips": [
-          "Animation",
-          "Stack ★"
+          "Animation"
         ],
         "href": "https://gsap.com",
         "logo": "/img/tools/gsap.png"
@@ -82,8 +78,7 @@ export const toolCategories: ToolCategory[] = [
         "name": "React",
         "desc": "Librairie UI à composants pour les interfaces riches et les apps. En island Astro ou en SPA complète.",
         "chips": [
-          "Librairie",
-          "Stack ★"
+          "Librairie"
         ],
         "href": "https://react.dev",
         "logo": "/img/tools/react.png"
@@ -92,8 +87,7 @@ export const toolCategories: ToolCategory[] = [
         "name": "Tailwind CSS",
         "desc": "CSS utility-first : styling rapide, cohérent et purgé à la compilation. Zéro feuille de style qui dérive.",
         "chips": [
-          "CSS",
-          "Stack ★"
+          "CSS"
         ],
         "href": "https://tailwindcss.com",
         "logo": "/img/tools/tailwind.png"
@@ -102,8 +96,7 @@ export const toolCategories: ToolCategory[] = [
         "name": "Clerk",
         "desc": "Authentification clé-en-main : connexion, SSO, gestion des utilisateurs et sessions. Mon défaut pour les apps clientes.",
         "chips": [
-          "Auth",
-          "Stack ★"
+          "Auth"
         ],
         "href": "https://clerk.com",
         "logo": "/img/tools/clerk.svg"
@@ -119,8 +112,7 @@ export const toolCategories: ToolCategory[] = [
         "name": "Sanity Studio",
         "desc": "CMS structuré, customisable, avec un studio React. Mon CMS par défaut pour tous les projets ≥ standard.",
         "chips": [
-          "CMS",
-          "Stack ★"
+          "CMS"
         ],
         "href": "https://www.sanity.io/studio",
         "logo": "/img/tools/sanity.png"
@@ -177,8 +169,7 @@ export const toolCategories: ToolCategory[] = [
         "desc": "Scénarios d'automatisation visuels entre outils. La colonne vertébrale des workflows clients.",
         "chips": [
           "Automatisation",
-          "No-code",
-          "Stack ★"
+          "No-code"
         ],
         "href": "https://www.make.com",
         "logo": "/img/tools/make.png"
@@ -215,8 +206,7 @@ export const toolCategories: ToolCategory[] = [
         "desc": "Hébergement edge gratuit pour 95 % des projets. Workers + D1 pour la partie dynamique. ~10 €/mois max.",
         "chips": [
           "Hosting",
-          "Edge",
-          "Stack ★"
+          "Edge"
         ],
         "href": "https://pages.cloudflare.com",
         "logo": "/img/tools/cloudflare.png"
@@ -236,8 +226,7 @@ export const toolCategories: ToolCategory[] = [
         "desc": "Base SQLite serverless sur l'edge Cloudflare. La partie dynamique de mes sites Astro.",
         "chips": [
           "DB",
-          "Edge",
-          "Stack ★"
+          "Edge"
         ],
         "href": "https://www.cloudflare.com/developer-platform/d1/",
         "logo": "/img/tools/cloudflare.png"
@@ -274,8 +263,7 @@ export const toolCategories: ToolCategory[] = [
         "desc": "Prototypage hi-fi rapide à partir du design system coolbeans. Le pont entre wireframes et intégration.",
         "chips": [
           "Design",
-          "Prototype",
-          "Stack ★"
+          "Prototype"
         ],
         "href": "https://claude.ai",
         "logo": "/img/tools/claude.png"
@@ -385,8 +373,7 @@ export const toolCategories: ToolCategory[] = [
         "name": "MailerLite",
         "desc": "Newsletter et email transactionnel. Utilisé sur la moitié des projets clients comme CMS email léger.",
         "chips": [
-          "Email",
-          "Stack ★"
+          "Email"
         ],
         "href": "https://www.mailerlite.com",
         "logo": "/img/tools/mailerlite.png"
@@ -412,8 +399,7 @@ export const toolCategories: ToolCategory[] = [
         "name": "Stripe",
         "desc": "Paiement clients (acomptes, mensualités care plan), checkout sur les projets e-commerce.",
         "chips": [
-          "Paiement",
-          "Stack ★"
+          "Paiement"
         ],
         "href": "https://stripe.com",
         "logo": "/img/tools/stripe.svg"
@@ -547,7 +533,7 @@ export const toolCategories: ToolCategory[] = [
           "Clavier",
           "Mécanique"
         ],
-        "href": "https://nuphy.com",
+        "href": "https://nuphy.com/products/air75",
         "logo": "/img/tools/nuphy.png"
       },
       {
@@ -557,7 +543,7 @@ export const toolCategories: ToolCategory[] = [
           "Écran",
           "4K"
         ],
-        "href": "https://www.dell.com",
+        "href": "https://www.dell.com/en-us/shop/dell-27-plus-4k-usb-c-monitor-s2725qc/apd/210-brnc/monitors-monitor-accessories",
         "logo": "/img/tools/dell.png"
       },
       {
@@ -567,7 +553,7 @@ export const toolCategories: ToolCategory[] = [
           "Écran",
           "Portrait"
         ],
-        "href": "https://www.dell.com",
+        "href": "https://www.dell.com/support/product-details/en-us/product/dell-u2415/overview",
         "logo": "/img/tools/dell.png"
       },
       {
@@ -602,7 +588,7 @@ export const toolCategories: ToolCategory[] = [
           "Micro",
           "Vidéo"
         ],
-        "href": "https://www.dji.com",
+        "href": "https://www.dji.com/mic-mini",
         "logo": "/img/tools/dji.png"
       },
       {
@@ -612,7 +598,7 @@ export const toolCategories: ToolCategory[] = [
           "Micro",
           "Audio"
         ],
-        "href": "https://www.logitechg.com",
+        "href": "https://www.logitechg.com/en-us/shop/p/yeti-premium-usb-microphone",
         "logo": "/img/tools/logitech-g.png"
       },
       {
@@ -622,7 +608,7 @@ export const toolCategories: ToolCategory[] = [
           "Caméra",
           "Vidéo"
         ],
-        "href": "https://www.dell.com",
+        "href": "https://www.dell.com/en-us/shop/dell-pro-webcam-wb5023/apd/319-bbjj/pc-accessories",
         "logo": "/img/tools/dell.png"
       }
     ]

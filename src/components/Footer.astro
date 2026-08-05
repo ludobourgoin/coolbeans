@@ -14,7 +14,7 @@ const exploreLinks = [
 <footer class="relative overflow-hidden border-t border-line bg-surface-subtle">
   <GridBackdrop />
   <div
-    class="container-site relative grid grid-cols-1 gap-10 py-16 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-[1fr_1fr_1fr_1.6fr] lg:gap-10"
+    class="container-site relative grid grid-cols-1 gap-10 py-16 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-[1fr_auto_1.5fr] lg:gap-x-20 lg:gap-y-10"
   >
     <div class="sm:col-span-2 lg:col-span-1">
       <a href="/" aria-label="coolbeans — accueil" class="inline-flex items-center leading-0">
@@ -37,55 +37,49 @@ const exploreLinks = [
       </p>
     </div>
 
-    <nav aria-label="explorer">
-      <h4 class="text-sm font-medium text-ink">Explorer</h4>
-      <ul class="mt-4 flex flex-col gap-3">
-        {
-          exploreLinks.map((l) => (
-            <li>
-              <a
-                href={l.href}
-                class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
-              >
-                {l.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
+    <div class="flex gap-10 sm:col-span-2 lg:col-span-1">
+      <nav aria-label="explorer">
+        <h4 class="text-sm font-medium text-ink">Explorer</h4>
+        <ul class="mt-4 flex flex-col gap-3">
+          {
+            exploreLinks.map((l) => (
+              <li>
+                <a
+                  href={l.href}
+                  class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
+                >
+                  {l.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
 
-    <nav aria-label="contact">
-      <h4 class="text-sm font-medium text-ink">Contact</h4>
-      <ul class="mt-4 flex flex-col gap-3">
-        <li>
-          <a
-            href="/contact"
-            class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
-          >
-            Discuter d'un projet
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://linkedin.com/in/ludovicbourgoin"
-            target="_blank"
-            rel="noopener"
-            class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
-          >
-            LinkedIn ↗
-          </a>
-        </li>
-        <li>
-          <a
-            href="/mentions-legales"
-            class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
-          >
-            Mentions légales
-          </a>
-        </li>
-      </ul>
-    </nav>
+      <nav aria-label="contact">
+        <h4 class="text-sm font-medium text-ink">Contact</h4>
+        <ul class="mt-4 flex flex-col gap-3">
+          <li>
+            <a
+              href="/contact"
+              class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
+            >
+              Discuter d'un projet
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://linkedin.com/in/ludovicbourgoin"
+              target="_blank"
+              rel="noopener"
+              class="text-sm text-mute transition-colors duration-150 ease-in-out hover:text-ink"
+            >
+              LinkedIn ↗
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
 
     <div class="sm:col-span-2 lg:col-span-1">
       <h4 class="text-sm font-medium text-ink">Newsletter</h4>
@@ -119,142 +113,34 @@ const exploreLinks = [
     </div>
   </div>
 
-  <div
-    class="container-site relative flex flex-col gap-8 pt-14 pb-10 sm:flex-row sm:items-end sm:justify-between"
-  >
-    <div class="flex flex-col gap-4">
-      <p class="text-sm text-mute">© {year} coolbeans · Ludovic Bourgoin · Sète · France</p>
-      <div class="flex items-center gap-3">
-        <a
-          href="https://linkedin.com/in/ludovicbourgoin"
-          target="_blank"
-          rel="noopener"
-          aria-label="linkedin"
-          class="text-mute transition-colors duration-150 ease-in-out hover:text-ink"
-        >
-          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path
-              d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8.34 18.34H5.67V9.75h2.67v8.59zM7 8.6a1.55 1.55 0 1 1 0-3.1 1.55 1.55 0 0 1 0 3.1zM18.34 18.34h-2.67v-4.2c0-1-.02-2.29-1.4-2.29-1.4 0-1.61 1.09-1.61 2.22v4.27H10V9.75h2.56v1.17h.04c.36-.68 1.23-1.4 2.53-1.4 2.7 0 3.21 1.78 3.21 4.09v4.73z"
-            ></path>
-          </svg>
-        </a>
-      </div>
-    </div>
-
-    <div
-      class="inline-flex w-fit items-center gap-0.5 rounded-full border border-line bg-surface p-0.5"
-      role="group"
-      aria-label="thème"
+  <div class="container-site relative flex items-center justify-between gap-4 pt-14 pb-10">
+    <p class="text-sm text-mute">
+      © {year} Coolbeans, Ludovic Bourgoin ·{" "}
+      <a
+        href="/mentions-legales"
+        class="text-mute transition-colors duration-150 ease-in-out hover:text-ink"
+      >
+        Mentions légales
+      </a>
+    </p>
+    <a
+      href="https://linkedin.com/in/ludovicbourgoin"
+      target="_blank"
+      rel="noopener"
+      aria-label="linkedin"
+      class="text-mute transition-colors duration-150 ease-in-out hover:text-ink"
     >
-      <button
-        type="button"
-        data-theme-choice="light"
-        aria-pressed="false"
-        aria-label="thème clair"
-        class="flex h-7 w-7 items-center justify-center rounded-full text-mute transition-colors duration-150 ease-in-out hover:text-ink aria-pressed:bg-surface-raise aria-pressed:text-ink"
-      >
-        <svg
-          class="h-4 w-4"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <circle cx="12" cy="12" r="4.2"></circle><path
-            d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"
-          ></path>
-        </svg>
-      </button>
-      <button
-        type="button"
-        data-theme-choice="system"
-        aria-pressed="true"
-        aria-label="thème système"
-        class="flex h-7 w-7 items-center justify-center rounded-full text-mute transition-colors duration-150 ease-in-out hover:text-ink aria-pressed:bg-surface-raise aria-pressed:text-ink"
-      >
-        <svg
-          class="h-4 w-4"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <rect x="3" y="4" width="18" height="12" rx="1.5"></rect><path d="M8 20h8M12 16v4"></path>
-        </svg>
-      </button>
-      <button
-        type="button"
-        data-theme-choice="dark"
-        aria-pressed="false"
-        aria-label="thème sombre"
-        class="flex h-7 w-7 items-center justify-center rounded-full text-mute transition-colors duration-150 ease-in-out hover:text-ink aria-pressed:bg-surface-raise aria-pressed:text-ink"
-      >
-        <svg
-          class="h-4 w-4"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
-        </svg>
-      </button>
-    </div>
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path
+          d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8.34 18.34H5.67V9.75h2.67v8.59zM7 8.6a1.55 1.55 0 1 1 0-3.1 1.55 1.55 0 0 1 0 3.1zM18.34 18.34h-2.67v-4.2c0-1-.02-2.29-1.4-2.29-1.4 0-1.61 1.09-1.61 2.22v4.27H10V9.75h2.56v1.17h.04c.36-.68 1.23-1.4 2.53-1.4 2.7 0 3.21 1.78 3.21 4.09v4.73z"
+        ></path>
+      </svg>
+    </a>
   </div>
 </footer>
 
 <script is:inline>
   (function () {
-    var KEY = "theme";
-    var buttons = Array.prototype.slice.call(document.querySelectorAll("[data-theme-choice]"));
-    if (!buttons.length) return;
-
-    function systemPrefersDark() {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches;
-    }
-
-    function currentChoice() {
-      try {
-        var stored = localStorage.getItem(KEY);
-        if (stored === "dark" || stored === "light") return stored;
-      } catch (e) {}
-      return "system";
-    }
-
-    function reflect(choice) {
-      buttons.forEach(function (b) {
-        b.setAttribute("aria-pressed", String(b.getAttribute("data-theme-choice") === choice));
-      });
-    }
-
-    function applyChoice(choice) {
-      try {
-        if (choice === "system") localStorage.removeItem(KEY);
-        else localStorage.setItem(KEY, choice);
-      } catch (e) {}
-      var dark = choice === "dark" || (choice === "system" && systemPrefersDark());
-      document.documentElement.classList.toggle("dark", dark);
-      reflect(choice);
-    }
-
-    buttons.forEach(function (b) {
-      b.addEventListener("click", function () {
-        applyChoice(b.getAttribute("data-theme-choice"));
-      });
-    });
-
-    // état initial : reflète le localStorage déjà appliqué par le script anti-flash de BaseLayout
-    reflect(currentChoice());
-
     // newsletter : pas encore branchée, on bloque la soumission native (voir commentaire au-dessus du <form>)
     var newsletterForm = document.getElementById("footer-newsletter-form");
     if (newsletterForm) {
