@@ -39,9 +39,9 @@ sections:
     liste:
       - Pages ultra-légères, site rapide
       - "Coût d'usage nul : hébergement Cloudflare gratuit, aucun abonnement mensuel"
-      - "Autonomie : tu gères textes, images et projets toi-même via Sanity, sans toucher au code"
+      - "Autonomie : Simon gère textes, images et projets directement via Sanity, sans toucher au code"
       - >-
-        Tu restes libre : le code est dans un dépôt qui t'appartient, le
+        Simon reste libre : le code est dans un dépôt qui lui appartient, le
         contenu Sanity est exportable, n'importe quel dev peut reprendre le
         site
       - Pas de plugins ni de mises à jour à gérer, contrairement à WordPress
@@ -78,13 +78,13 @@ sections:
   - titre: En option
     liste:
       - >-
-        **Migration des contenus : offerte, pour l'ensemble de tes projets
-        existants.** Je m'appuie sur Claude Code pour analyser chaque projet
+        **Migration des contenus : offerte, pour l'ensemble des projets
+        existants de Simon.** Je m'appuie sur Claude Code pour analyser chaque projet
         et le faire correspondre aux nouveaux templates (textes et images).
         Je ne peux pas garantir que
-        le résultat (titres, paragraphes) corresponde exactement à ce que tu
-        as en tête : si des ajustements sont nécessaires, soit tu les fais
-        toi-même, soit je les budgète au temps passé.
+        le résultat (titres, paragraphes) corresponde exactement à ce que
+        Simon a en tête : si des ajustements sont nécessaires, soit Simon les
+        fait, soit je les budgète au temps passé.
 
   - titre: Planning
     planning:
@@ -92,9 +92,9 @@ sections:
         - label: Démarrage immédiat (10 août)
           texte: >-
             Planning proposé avec un point de cadrage et présentation des
-            premiers wireframes le **lundi 10 août**, juste avant ton départ.
-            Tes retours pendant ce rendez-vous suffisent pour que j'avance
-            seul pendant ton absence du 11 au 17 août.
+            premiers wireframes le **lundi 10 août**, juste avant son départ.
+            Ses retours pendant ce rendez-vous suffisent pour que j'avance
+            seul pendant son absence du 11 au 17 août.
           jalons:
             - {
                 date: Lun 10/08,
@@ -190,8 +190,8 @@ notes:
   - tone: success
     texte: >-
       Deux gestes offerts sur cette proposition : le template 2 (page projet
-      supplémentaire) et la migration des contenus de l'ensemble de tes
-      projets existants.
+      supplémentaire) et la migration des contenus de l'ensemble des
+      projets existants de Simon.
   - tone: error
     texte: "Simon n'est pas disponible du 11 au 17 août : dates à recaler en conséquence."
   - texte: >-

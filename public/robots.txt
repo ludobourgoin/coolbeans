@@ -1,3 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /design-system
+
+Sitemap: https://coolbeans.cc/sitemap-index.xml

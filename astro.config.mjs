@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
 import clerk from "@clerk/astro";
 import cloudflare from "@astrojs/cloudflare";
+import sitemap from "@astrojs/sitemap";
 
 // Hébergement : Cloudflare WORKERS (décision 2026-07-31, pour l'espace client
 // Clerk qui exige du rendu serveur — cf. _doc-standard/SPEC.md).
@@ -23,7 +24,21 @@ import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [clerk(), mdx()],
+  site: "https://coolbeans.cc",
+  integrations: [
+    clerk(),
+    mdx(),
+    sitemap({
+      // Pages privées/utilitaires exclues du sitemap : espace client (SSR,
+      // déjà noindex), doc de passation (noindex), devis (pages noindex par
+      // définition), design-system (référence interne, bloquée par robots.txt).
+      filter: (page) =>
+        !page.includes("/espace") &&
+        !page.includes("/docs/") &&
+        !page.includes("/devis/") &&
+        !page.includes("/design-system"),
+    }),
+  ],
   adapter: cloudflare(),
   markdown: {
     shikiConfig: { theme: "github-dark" },

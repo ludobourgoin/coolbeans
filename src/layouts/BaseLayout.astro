@@ -5,13 +5,33 @@ interface Props {
   title: string;
   description?: string;
   noindex?: boolean;
+  image?: string;
 }
 
 const {
   title,
   description = "Studio web indépendant basé à Sète. Design, développement et maintenance de sites performants, pensés pour vos objectifs et prêts pour l'ère de l'IA.",
   noindex = false,
+  image = "/og-image.png",
 } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(image, Astro.site);
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: "Coolbeans",
+  url: "https://coolbeans.cc",
+  description:
+    "Studio web indépendant basé à Sète. Design, développement et maintenance de sites performants pour agences créatives.",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Sète",
+    addressCountry: "FR",
+  },
+  sameAs: ["https://linkedin.com/in/ludovicbourgoin"],
+};
 ---
 
 <!doctype html>
@@ -25,11 +45,24 @@ const {
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:site_name" content="Coolbeans" />
+    <meta property="og:locale" content="fr_FR" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+    {
+      !noindex && (
+        <script is:inline type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+      )
+    }
     {/* anti-flash : applique .dark avant le premier paint */}
     <script is:inline>
       (function () {
