@@ -3,7 +3,7 @@ project: "amusoire"
 title: "Leads & formulaires"
 order: 3
 status: "final"
-updated: 2026-07-31
+updated: 2026-08-06
 description: "Routage Webflow → Make → HubSpot, référentiels d'IDs, tracking et QA."
 ---
 
@@ -104,6 +104,36 @@ Un champ HubSpot de type menu déroulant rejette (ou stocke en valeur orpheline)
 | `etablissement` | dropdown | <Pill kind="ok">OK</Pill> 6/6 valeurs alignées |
 | `heures_rappel` | texte libre | <Pill kind="ok">OK</Pill> aucune contrainte |
 | `comment_vous_nous_avez_connu__` | dropdown | <Pill kind="warn">Corrigé</Pill> `Réseaux sociaux` ≠ `Réseaux Sociaux` — réaligné dans les 3 forms Webflow |
+
+## Formulaire recrutement — Statut, Date de naissance, Secteur
+
+Le form "Formulaire Recrutement" (`/pro-recrutement`) créait bien les contacts, mais 3 champs (`status`, `anniversaire_ou_date_de_naissance`, `zone_geographique_detaillee`) restaient vides sur la fiche HubSpot. <Pill kind="ok">Corrigé le 2026-08-06</Pill>
+
+**Cause** : mapper du module `submitDataToFormV3` jamais mis à jour avec ces 3 champs à l'ajout du formulaire — oubli d'intégration, pas un bug du formulaire.
+
+<Callout type="piege" title="Piège — collision de nom de champ générique">
+  Ce scénario Make est un **catch-all partagé** entre plusieurs formulaires Webflow (simulateur, licences, recrutement…). Le champ Select "Secteur géographique" du form recrutement avait gardé son nom Webflow par défaut, `Field` — **exactement la même clé** qu'un champ Select du simulateur (jour de rappel). Mapper `Field` en dur aurait fait remonter "Mardi" dans la propriété secteur géographique selon quel formulaire déclenchait le scénario. Fix : renommer le champ dans le Designer Webflow (`Field` → `location`) plutôt que de filtrer côté Make — supprime la collision à la source.
+</Callout>
+
+| Champ Webflow | Type | Clé webhook |
+| --- | --- | --- |
+| Secteur géographique | Select | `location` *(renommé depuis `Field`)* |
+| Statut | Select | `status` |
+| Date de naissance | Plain | `date-of-birth` |
+
+Mapping ajouté dans le module **15** (primaire) et son fallback **23** :
+
+```
+status                            = {{3.payload.data.status}}
+anniversaire_ou_date_de_naissance = {{3.payload.data.`date-of-birth`}}
+zone_geographique_detaillee       = {{3.payload.data.location}}
+```
+
+<Callout type="warn" title="Coquille connue, non bloquante">
+  L'option Select `status` "Pas encoe de satut" contient une faute de frappe (au lieu de "Pas encore de statut") côté Webflow — ne matche aucune valeur de l'enum HubSpot. À corriger dans les settings du champ sur `/pro-recrutement`.
+</Callout>
+
+Validé le 2026-08-06 par soumission réelle sur `amusoire.com/pro-recrutement`, contact vérifié via l'API HubSpot (lecture directe par ID, pas seulement l'index de recherche qui peut avoir un délai de propagation).
 
 ## Tester la pipeline (QA)
 
