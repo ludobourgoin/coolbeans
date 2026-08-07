@@ -46,11 +46,9 @@ export const testimonials: Testimonial[] = [
     photo: "/img/testimonials/thomas-mogharaei.avif",
   },
   {
-    // version validée avant la passe de diversification du 2026-08-04 :
-    // "Super collaboration avec Ludovic qui a été à l'écoute et qui va au-delà de
-    // l'exécution. Tout était très fluide !"
+    // version d'origine restaurée le 2026-08-07 (exclue de la passe de diversification)
     quote:
-      "Ludovic ne se contente pas d'exécuter : il questionne, il propose, il fait avancer le projet. Une collaboration vraiment agréable.",
+      "Super collaboration avec Ludovic qui a été à l'écoute et qui va au-delà de l'exécution. Tout était très fluide !",
     name: "Gaelle Céalac Pappo",
     role: "CMO Freelance · Toulouse",
     photo: "/img/testimonials/gaelle-cealac-pappo.jpg",
