@@ -1,6 +1,4 @@
 ---
-import GridBackdrop from "./GridBackdrop.astro";
-
 const year = 2026;
 
 // contenu conservé du footer précédent, réorganisé en colonnes
@@ -11,10 +9,9 @@ const exploreLinks = [
 ];
 ---
 
-<footer class="relative overflow-hidden border-t border-line bg-surface-subtle">
-  <GridBackdrop />
+<footer class="border-t border-line bg-surface-raise">
   <div
-    class="container-site relative grid grid-cols-1 gap-10 py-16 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-[1fr_auto_1.5fr] lg:gap-x-20 lg:gap-y-10"
+    class="container-site grid grid-cols-1 gap-10 py-16 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-[1fr_auto_1.5fr] lg:gap-x-20 lg:gap-y-10"
   >
     <div class="sm:col-span-2 lg:col-span-1">
       <a href="/" aria-label="coolbeans — accueil" class="inline-flex items-center leading-0">
@@ -81,7 +78,7 @@ const exploreLinks = [
       </nav>
     </div>
 
-    <div class="sm:col-span-2 lg:col-span-1">
+    <div class="sm:col-span-2 lg:col-span-1 lg:justify-self-end">
       <h4 class="text-sm font-medium text-ink">Newsletter</h4>
       <p class="mt-4 max-w-[36ch] text-sm text-mute">
         Conseils et recommandations sur le web design, la perf web et l'IA. Une fois par mois,
@@ -113,7 +110,7 @@ const exploreLinks = [
     </div>
   </div>
 
-  <div class="container-site relative flex items-center justify-between gap-4 pt-14 pb-10">
+  <div class="container-site flex items-center justify-between gap-4 pt-14 pb-10">
     <p class="text-sm text-mute">
       © {year} Coolbeans, Ludovic Bourgoin ·{" "}
       <a
