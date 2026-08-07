@@ -25,6 +25,10 @@ import sitemap from "@astrojs/sitemap";
 // https://astro.build/config
 export default defineConfig({
   site: "https://coolbeans.cc",
+  // compressHTML (défaut true) supprime les retours à la ligne du HTML, y
+  // compris ceux qui séparent un mot d'un <b>/<a> inline quand Prettier
+  // replie la ligne — ce qui colle les mots au rendu (« etcommunication »).
+  compressHTML: false,
   integrations: [
     clerk(),
     mdx(),
