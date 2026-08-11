@@ -22,6 +22,18 @@ import sitemap from "@astrojs/sitemap";
 // middleware Clerk — une page prérendue le contournerait).
 // Secrets en prod : CLERK_SECRET_KEY = secret du Worker, jamais dans le repo.
 
+// En CI (Workers Builds), la publishable key Clerk est fixée ici par
+// environnement : instance production pour la prod, instance dev pour staging.
+// Ce n'est pas un secret (elle est embarquée dans chaque page envoyée au
+// navigateur). En local, .env fait foi. CLERK_SECRET_KEY reste un secret du
+// Worker, jamais dans le repo.
+if (process.env.WORKERS_CI || process.env.CI) {
+  process.env.PUBLIC_CLERK_PUBLISHABLE_KEY =
+    process.env.CLOUDFLARE_ENV === "staging"
+      ? "pk_test_cHJlY2lzZS1yYW0tNTIuY2xlcmsuYWNjb3VudHMuZGV2JA"
+      : "pk_live_Y2xlcmsuY29vbGJlYW5zLmNjJA";
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://coolbeans.cc",
