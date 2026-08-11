@@ -1,0 +1,19 @@
+# Secrets du portail client, en local uniquement.
+#
+# Copier en `.dev.vars` (ignoré par git) et remplir. `wrangler dev` les injecte
+# dans env ; `astro dev` continue de lire `.env` pour les clés Clerk/Resend.
+#
+# En staging et en production, ces valeurs sont posées comme secrets du Worker :
+#   npx wrangler secret put ASANA_PAT                    # production
+#   npx wrangler secret put ASANA_PAT --env staging      # staging
+# Elles ne doivent jamais apparaître dans le repo ni dans wrangler.jsonc.
+#
+# ASANA_WORKSPACE_GID n'est pas un secret : il est en clair dans wrangler.jsonc.
+
+# Personal Access Token Asana (Bearer). Lecture des teams, projets et tâches.
+# https://app.asana.com/0/my-apps
+ASANA_PAT=
+
+# Secret partagé protégeant POST /api/admin/sync (brief §8, requis).
+# Valeur au hasard, par exemple : openssl rand -hex 32
+ADMIN_SYNC_SECRET=
