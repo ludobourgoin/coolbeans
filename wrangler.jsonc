@@ -23,7 +23,14 @@
       "!/img/*",
       "!/favicon.ico",
       "!/favicon.svg",
-      "!/apple-touch-icon.png"
+      "!/apple-touch-icon.png",
+      // Sans ces deux exclusions, le manifest et ses icônes passeraient par le
+      // Worker, qui les réécrirait en /espace/... sur my.* — donc 404, et une
+      // installation A2HS sans icône. Ce sont des fichiers publics : les
+      // laisser à la couche assets est aussi ce qui les garde hors de Clerk,
+      // le manifest étant récupéré sans cookie de session.
+      "!/manifest.webmanifest",
+      "!/icons/*"
     ]
   },
   "routes": [

@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { isPortalHost } from "../lib/portail/nav";
 
 interface Props {
   title: string;
@@ -17,6 +18,12 @@ const {
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = new URL(image, Astro.site);
+
+// Le manifest A2HS n'est annoncé que sur les hôtes du portail. Son `start_url`
+// vaut "/", ce qui n'est juste que là : sur coolbeans.cc, installer depuis
+// /docs/{slug} — seule page du portail servie par l'hôte principal —
+// donnerait une app qui démarre sur la home marketing.
+const withManifest = isPortalHost(Astro.url.hostname);
 
 const organizationSchema = {
   "@context": "https://schema.org",
@@ -42,6 +49,17 @@ const organizationSchema = {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {
+      withManifest && (
+        <>
+          <link rel="manifest" href="/manifest.webmanifest" />
+          {/* iOS ignore le manifest : display et titre de l'app s'y déclarent en meta. */}
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-title" content="my Coolbeans" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        </>
+      )
+    }
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
