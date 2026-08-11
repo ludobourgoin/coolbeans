@@ -13,6 +13,7 @@ import Choicebox from "../components/ui/Choicebox.astro";
 import ClearableInput from "../components/ui/ClearableInput.astro";
 import ContextCard from "../components/ui/ContextCard.astro";
 import CommandMenu from "../components/ui/CommandMenu.astro";
+import EmptyState from "../components/portail/EmptyState.astro";
 
 const SCALES = [
   { key: "background", label: "Backgrounds", steps: [100, 200] },
@@ -465,6 +466,34 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
           Maintenance mensuelle et un point trimestriel sur les performances.
         </Collapse>
       </div>
+
+      <p class="label mb-4x mt-16x">Portail client · my.coolbeans.cc</p>
+      <div class="grid gap-6x md:grid-cols-2">
+        <div>
+          <p class="label mb-3x">Empty state · vu par le client</p>
+          <EmptyState title="Aucun projet pour le moment">
+            Vos projets apparaîtront ici dès qu'ils seront ouverts. Rien à faire de
+            votre côté.
+          </EmptyState>
+        </div>
+        <div>
+          <p class="label mb-3x">Empty state · le même, vu par un admin</p>
+          <EmptyState
+            title="Aucun projet pour le moment"
+            isAdmin
+            missingKeys={["asana_team_gid"]}
+          >
+            Vos projets apparaîtront ici dès qu'ils seront ouverts. Rien à faire de
+            votre côté.
+          </EmptyState>
+        </div>
+      </div>
+      <p class="mt-3x max-w-[62ch] text-sm text-mute">
+        Même écran, deux lectures. Le diagnostic nomme la clé de
+        <code class="font-mono">publicMetadata</code> qui manque, et n'est rendu que pour
+        <code class="font-mono">role: "admin"</code> — les trois mappings Clerk étant
+        posés à la main, l'oubli est structurel et doit se voir sur place.
+      </p>
 
       <p class="label mb-4x mt-16x">Mobilier d'application · non posé sur le site</p>
       <div class="grid gap-6x lg:grid-cols-3">

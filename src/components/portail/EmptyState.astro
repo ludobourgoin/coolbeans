@@ -1,0 +1,55 @@
+---
+// Empty state d'un module du portail (tâche S0.6).
+//
+// Deux lectures d'un même écran. Le client lit un message accueillant et
+// n'apprend rien de l'implémentation — le brief est explicite : « message
+// accueillant, pas une erreur » (§7), et un utilisateur sans mapping obtient
+// cet état, pas une 500 (critère d'acceptation 7).
+//
+// L'admin lit en plus la clé de publicMetadata qui manque. C'est la réponse au
+// garde-fou 03 : les trois mappings sont posés à la main dans le dashboard
+// Clerk, donc l'oubli est structurel et doit se diagnostiquer sur place, sans
+// ouvrir les logs.
+import type { PortalMetadataKey } from "../../lib/portail/metadata";
+
+interface Props {
+  /** Titre lu par le client. */
+  title: string;
+  /** Clés absentes du publicMetadata, via missingKeysFor(). */
+  missingKeys?: PortalMetadataKey[];
+  /** N'afficher le diagnostic qu'aux admins. */
+  isAdmin?: boolean;
+}
+
+const { title, missingKeys = [], isAdmin = false } = Astro.props;
+const showDiagnostic = isAdmin && missingKeys.length > 0;
+---
+
+<div class="card flex flex-col items-start gap-3x">
+  <h2 class="text-lg font-semibold tracking-[-0.02em]">{title}</h2>
+  <div class="max-w-[58ch] text-sm text-mute"><slot /></div>
+
+  {
+    showDiagnostic && (
+      <p
+        class="mt-3x w-full rounded-control px-3 py-2.5 text-sm"
+        style="background:var(--ds-amber-200);color:var(--ds-amber-900)"
+      >
+        <span class="label" style="color:inherit">
+          Admin · mapping manquant
+        </span>
+        <span class="mt-1 block">
+          {missingKeys.map((key, i) => (
+            <>
+              {i > 0 && ", "}
+              <code class="font-mono">{key}</code>
+            </>
+          ))}
+          {missingKeys.length > 1 ? " sont absentes" : " est absente"} du
+          <code class="font-mono"> publicMetadata</code> de cet utilisateur. À poser
+          dans le dashboard Clerk.
+        </span>
+      </p>
+    )
+  }
+</div>
