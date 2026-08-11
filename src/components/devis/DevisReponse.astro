@@ -1,0 +1,201 @@
+---
+// Formulaire de réponse au devis (valider / question), partagé entre les devis
+// YAML ([slug].astro) et les devis publiés depuis /espace/chiffrages.
+import Choicebox from "../ui/Choicebox.astro";
+
+interface Props {
+  slug: string; // identifiant envoyé dans l'email via /api/devis-reponse
+}
+const { slug } = Astro.props;
+---
+
+<!-- RÉPONSE -->
+<section class="border-t border-line bg-surface-subtle">
+  <div class="container-site py-24x">
+    <div class="mx-auto max-w-[640px]">
+      <h2 class="text-center">Répondre à cette proposition</h2>
+      <p class="mx-auto mt-4 max-w-[44ch] text-center leading-[1.6] text-mute">
+        Validez la proposition ou posez vos questions, je reviens vers vous rapidement.
+      </p>
+      <form id="devis-form" class="card mt-10 grid gap-6" data-slug={slug}>
+        <Choicebox
+          name="reponse"
+          options={[
+            {
+              value: "validation",
+              title: "Je valide cette proposition",
+              hint: "Le projet démarre à réception de l'acompte.",
+              checked: true,
+            },
+            {
+              value: "question",
+              title: "J'ai une question ou une remarque",
+              hint: "Précisez-la dans le message ci-dessous.",
+            },
+          ]}
+        />
+        <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
+          <div class="grid gap-2">
+            <label class="label" for="devis-nom">Nom</label>
+            <input
+              class="field"
+              type="text"
+              id="devis-nom"
+              name="nom"
+              autocomplete="name"
+              placeholder="Votre nom"
+            />
+          </div>
+          <div class="grid gap-2">
+            <label class="label" for="devis-email">Email</label>
+            <input
+              class="field"
+              type="email"
+              id="devis-email"
+              name="email"
+              autocomplete="email"
+              placeholder="vous@entreprise.com"
+            />
+          </div>
+        </div>
+        <div data-facturation-fields hidden class="grid gap-4 border-t border-line pt-6">
+          <p class="text-[13px] text-mute">
+            Informations nécessaires pour éditer la facture d'acompte.
+          </p>
+          <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
+            <div class="grid gap-2">
+              <label class="label" for="devis-raison-sociale">Raison sociale</label>
+              <input
+                class="field"
+                type="text"
+                id="devis-raison-sociale"
+                name="raisonSociale"
+                autocomplete="organization"
+                placeholder="Nom de la société"
+              />
+            </div>
+            <div class="grid gap-2">
+              <label class="label" for="devis-siren">Numéro SIREN</label>
+              <input
+                class="field"
+                type="text"
+                id="devis-siren"
+                name="siren"
+                inputmode="numeric"
+                placeholder="123456789"
+              />
+            </div>
+          </div>
+          <div class="grid gap-2">
+            <label class="label" for="devis-adresse">Adresse du siège social</label>
+            <input
+              class="field"
+              type="text"
+              id="devis-adresse"
+              name="adresse"
+              autocomplete="street-address"
+              placeholder="Numéro, rue, code postal, ville"
+            />
+          </div>
+          <div class="grid gap-2">
+            <label class="label" for="devis-tva">Numéro de TVA intracommunautaire</label>
+            <input
+              class="field"
+              type="text"
+              id="devis-tva"
+              name="tva"
+              placeholder="FR12345678900 (si applicable, hors France)"
+            />
+          </div>
+        </div>
+        <div class="grid gap-2">
+          <label class="label" for="devis-message">Message</label>
+          <textarea
+            class="field h-auto min-h-[120px] py-3"
+            id="devis-message"
+            name="message"
+            placeholder="Une question, une remarque, un ajustement souhaité…"></textarea>
+        </div>
+        <button class="btn btn-lg" type="submit">Envoyer ma réponse</button>
+        <p
+          data-devis-form-status
+          role="status"
+          class="hidden text-center text-[13px] font-medium"
+        />
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#devis-form");
+  const status = form?.querySelector<HTMLParagraphElement>("[data-devis-form-status]");
+  const facturationFields = form?.querySelector<HTMLElement>("[data-facturation-fields]");
+
+  const syncFacturationFields = () => {
+    if (!form || !facturationFields) return;
+    const reponse = new FormData(form).get("reponse");
+    facturationFields.hidden = reponse !== "validation";
+  };
+  form?.querySelectorAll<HTMLInputElement>('input[name="reponse"]').forEach((input) => {
+    input.addEventListener("change", syncFacturationFields);
+  });
+  syncFacturationFields();
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (!status || !submitBtn) return;
+
+    const fd = new FormData(form);
+    const payload = {
+      slug: form.dataset.slug,
+      reponse: fd.get("reponse"),
+      nom: fd.get("nom"),
+      email: fd.get("email"),
+      message: fd.get("message"),
+      raisonSociale: fd.get("raisonSociale"),
+      siren: fd.get("siren"),
+      adresse: fd.get("adresse"),
+      tva: fd.get("tva"),
+    };
+
+    if (payload.reponse === "validation") {
+      const manquants = [
+        [payload.raisonSociale, "la raison sociale"],
+        [payload.siren, "le numéro SIREN"],
+        [payload.adresse, "l'adresse du siège social"],
+      ]
+        .filter(([valeur]) => !String(valeur ?? "").trim())
+        .map(([, label]) => label);
+      if (manquants.length) {
+        status.hidden = false;
+        status.textContent = `Merci de renseigner ${manquants.join(", ")} pour éditer la facture d'acompte.`;
+        status.className = "text-center text-[13px] font-medium text-error";
+        return;
+      }
+    }
+
+    submitBtn.disabled = true;
+    status.hidden = false;
+    status.textContent = "Envoi en cours…";
+    status.className = "text-center text-[13px] font-medium text-mute";
+
+    try {
+      const res = await fetch("/api/devis-reponse", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error();
+      status.textContent = "Message envoyé, je reviens vers toi rapidement.";
+      status.className = "text-center text-[13px] font-medium text-success";
+      form.reset();
+    } catch {
+      status.textContent = "Envoi impossible, réessaie dans un instant ou écris-moi directement.";
+      status.className = "text-center text-[13px] font-medium text-error";
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+</script>

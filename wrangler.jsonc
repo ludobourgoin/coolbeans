@@ -31,13 +31,15 @@
     { "pattern": "www.coolbeans.cc", "custom_domain": true },
     { "pattern": "my.coolbeans.cc", "custom_domain": true }
   ],
+  "kv_namespaces": [{ "binding": "PORTAL_KV", "id": "f720076d62fc4fd28422209c16326776" }],
   "env": {
     "staging": {
       "workers_dev": false,
       "routes": [
         { "pattern": "staging.coolbeans.cc", "custom_domain": true },
         { "pattern": "my-staging.coolbeans.cc", "custom_domain": true }
-      ]
+      ],
+      "kv_namespaces": [{ "binding": "PORTAL_KV", "id": "684d2093bab2413bb840bdc6443f6f50" }]
     }
   }
 }

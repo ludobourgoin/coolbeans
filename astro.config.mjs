@@ -7,6 +7,8 @@ import { frFR } from "@clerk/localizations";
 import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
 
+import preact from "@astrojs/preact";
+
 // Hébergement : Cloudflare WORKERS (décision 2026-07-31, pour l'espace client
 // Clerk qui exige du rendu serveur — cf. _doc-standard/SPEC.md).
 //
@@ -57,6 +59,7 @@ export default defineConfig({
         !page.includes("/devis/") &&
         !page.includes("/design-system"),
     }),
+    preact(),
   ],
   adapter: cloudflare(),
   markdown: {
