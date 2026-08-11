@@ -1,0 +1,69 @@
+// Point d'entrée du Worker (déclaré via `main` dans wrangler.jsonc).
+//
+// Le portail client vit sur my.coolbeans.cc avec des URLs propres :
+// my.coolbeans.cc/chiffrages est servie en interne par /espace/chiffrages.
+// La réécriture se fait ici et non dans le middleware Astro, car les pages
+// prérendues (home, /projets/*…) sont servies par la couche assets sans
+// jamais passer par le middleware — seul le Worker voit tous les hostnames
+// (combiné à `assets.run_worker_first`, cf. wrangler.jsonc).
+//
+// Règles :
+// - my.*/            → /espace (accueil du portail)
+// - my.*/<x>         → /espace/<x>, sauf /docs/* (servi tel quel : la doc
+//   fait partie du portail mais garde ses routes propres) et les chemins
+//   internes d'Astro (/_actions, /_server-islands, /_image…)
+// - my.*/espace/<x>  → 301 vers my.*/<x> (URL canonique sans préfixe)
+// - coolbeans.cc/espace/<x> → 301 vers my.coolbeans.cc/<x>
+import { handle } from "@astrojs/cloudflare/handler";
+
+const PORTAL_OF: Record<string, string> = {
+  "coolbeans.cc": "my.coolbeans.cc",
+  "www.coolbeans.cc": "my.coolbeans.cc",
+  "staging.coolbeans.cc": "my-staging.coolbeans.cc",
+};
+
+const MAIN_OF: Record<string, string> = {
+  "my.coolbeans.cc": "coolbeans.cc",
+  "my-staging.coolbeans.cc": "staging.coolbeans.cc",
+};
+
+const inEspace = (p: string) => p === "/espace" || p.startsWith("/espace/");
+const stripEspace = (p: string) => p.slice("/espace".length) || "/";
+
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    const { hostname, pathname } = url;
+
+    if (MAIN_OF[hostname]) {
+      // Le portail est un espace privé : jamais indexé, quel que soit
+      // le robots.txt du site principal.
+      if (pathname === "/robots.txt") {
+        return new Response("User-agent: *\nDisallow: /\n", {
+          headers: { "content-type": "text/plain; charset=utf-8" },
+        });
+      }
+      // Hôte portail : préfixe /espace interdit dans l'URL publique.
+      if (inEspace(pathname)) {
+        url.pathname = stripEspace(pathname);
+        return Response.redirect(url.href, 301);
+      }
+      const passthrough =
+        pathname.startsWith("/_") ||
+        pathname.startsWith("/api/") ||
+        pathname === "/docs" ||
+        pathname.startsWith("/docs/");
+      if (!passthrough) {
+        url.pathname = pathname === "/" ? "/espace" : `/espace${pathname}`;
+        request = new Request(url, request);
+      }
+    } else if (PORTAL_OF[hostname] && inEspace(pathname)) {
+      // Hôte principal : l'espace a déménagé sur le sous-domaine.
+      url.hostname = PORTAL_OF[hostname];
+      url.pathname = stripEspace(pathname);
+      return Response.redirect(url.href, 301);
+    }
+
+    return handle(request, env, ctx);
+  },
+} satisfies ExportedHandler<Env>;
