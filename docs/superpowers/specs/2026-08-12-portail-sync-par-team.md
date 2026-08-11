@@ -66,14 +66,15 @@ Même protection par `ADMIN_SYNC_SECRET` en en-tête dans les deux cas (brief §
 
 Sur `/espace/projets`, visible des seuls `role: "admin"`, déclenchant le sync de la team affichée.
 
-Sa justification a faibli avec la cadence à 15 minutes : il ne rattrape plus une heure de retard,
-seulement quinze minutes. Il garde son intérêt pour le moment de démonstration (« regarde, c'est à
-jour ») et évite qu'un `curl` avec un secret dans la commande soit le seul geste possible. Ludo étant
-le client zéro, il vit dans son espace, à côté du projet concerné — cohérent avec « espace admin =
-même structure que le portail client, entrées admin-only additives ».
+Sa justification s'est effondrée avec la cadence à 5 minutes : il ne rattrape plus une heure de
+retard, mais cinq minutes. Le garde-fou 01 du doc master, qui le motivait (« jusqu'à 59 min
+d'attente après un regarde ton portail »), n'a plus d'objet.
 
-À trancher en S1.6 selon le temps disponible. La route admin, elle, reste requise : elle sert aussi
-l'amorçage du premier snapshot et les tests.
+Ce qu'il reste : éviter qu'un `curl` avec un secret dans la commande soit le seul geste manuel
+possible, et servir le moment de démonstration. **À ne faire que s'il reste du temps en S1.6.**
+
+La route admin, elle, reste requise pour d'autres raisons : amorçage du premier snapshot au
+déploiement, et tests sans attendre le cron.
 
 ### 4. Le cron reste le régime permanent
 
@@ -137,22 +138,87 @@ sert à rien — le budget est par invocation, pas par unité de temps.
 
 </details>
 
-## Cadence : toutes les 15 minutes
+## Cadence : toutes les 5 minutes
 
-`triggers.crons = ["*/15 * * * *"]` en remplacement de l'horaire, une fois le plan payant actif.
+`triggers.crons = ["*/5 * * * *"]`, balayage complet à chaque passage, une fois le plan payant actif.
 
-Le confort du client passe de « au pire 59 minutes de retard » à « au pire 15 ». Le coût reste nul :
-96 invocations par jour, à comparer aux 10 M de requêtes et 30 M de ms de CPU inclus.
+Le client voit au pire **5 minutes de retard**. Côté Cloudflare c'est gratuit : 288 invocations par
+jour, à comparer aux 10 M de requêtes et 30 M de ms de CPU incluses. Côté KV, `meta:last_sync` écrit
+à chaque passage fait 8 640 écritures par mois, contre 1 M incluses.
 
-Un seul point de vigilance à cette cadence, côté Asana : le sync devient une rafale de
-`1 + T × (1 + P)` requêtes toutes les 15 minutes, contre une limite de 150 req/min sur l'API Asana.
-La marge reste large (81 requêtes à 20 clients), et la limite de 6 connexions sortantes simultanées
-étale naturellement la rafale — mais le **retry avec backoff sur 429** du brief §4 reste obligatoire.
+Pas de découpage en tranches à ce stade : le balayage complet toutes les 5 minutes est plus simple
+*et* plus frais qu'un roulement sur 15 minutes. Le découpage ne devient utile qu'au-delà de
+37 clients (voir ci-dessous).
 
-**Précondition :** la bascule vers le plan payant doit précéder S1. Sur le plan gratuit, une cadence
-à 15 minutes rapprocherait le plafond d'écritures KV (1 000/jour) — `meta:last_sync` étant écrit à
-chaque passage, soit 96/jour, plus les snapshots modifiés. Aujourd'hui le handler est un no-op :
-la cadence peut donc être posée sans risque, mais pas le sync réel.
+**Précondition :** la bascule vers le plan payant doit précéder S1. Sur le plan gratuit, cette
+cadence mettrait les 288 écritures quotidiennes de `meta:last_sync`, plus les snapshots modifiés,
+face à un plafond de 1 000/jour. Aujourd'hui le handler est un no-op : la cadence peut donc être
+posée sans risque, mais pas le sync réel.
+
+## La contrainte suivante est Asana, pas Cloudflare
+
+Le plan payant Cloudflare ayant levé ses propres plafonds, **la limite de débit de l'API Asana
+devient la seule contrainte externe qui compte**.
+
+| | Asana gratuit | Asana payant |
+| --- | --- | --- |
+| Requêtes par minute | **150** | 1 500 |
+| GET concurrents | 50 | 50 |
+| API de recherche | 60/min | 60/min |
+
+Deux précisions décisives :
+
+- **C'est un débit par minute, pas une taille de rafale.** Un balayage qui émet 80 requêtes en
+  3 secondes puis ne fait plus rien pendant 5 minutes reste à 80 sur toute fenêtre de 60 secondes.
+  Le mur n'apparaît que lorsqu'un seul passage dépasse 150 à lui seul.
+- **Une réponse 429 consomme quand même du quota.** Retenter sans respecter `Retry-After` aggrave la
+  situation au lieu de la résoudre. Le backoff du brief §4 n'est pas une politesse, c'est la seule
+  sortie possible.
+
+La limite de 50 GET concurrents n'est jamais atteinte : Cloudflare plafonne déjà à 6 connexions
+sortantes simultanées.
+
+### Où est le mur
+
+Un balayage coûte `T × (1 + P)` requêtes Asana — une pour la liste des projets de la team, une par
+projet pour ses tâches. À 3 projets par client :
+
+| Clients | Requêtes par passage | Contre 150/min |
+| --- | --- | --- |
+| 20 | 80 | passe largement |
+| **37** | **148** | **limite atteinte** |
+| 50 | 200 | dépassement de 33 % |
+
+### La sortie, le jour venu : la tranche tournante
+
+Garder `*/5` et ne traiter qu'**une fraction des clients à chaque passage**, chacun revenant tous
+les 15 minutes. La contrainte Asana étant un débit *dans le temps*, l'étalement est ici la bonne
+réponse — contrairement au plafond Cloudflare, par invocation, que l'étalement ne déplaçait pas d'un
+pouce.
+
+| Découpage | Fraîcheur client | Plafond en clients |
+| --- | --- | --- |
+| Aucun (`*/5`, balayage complet) | 5 min | 37 |
+| 3 tranches sur 15 min (`*/5`) | 15 min | **112** |
+| 15 tranches sur 15 min (`* * * * *`) | 15 min | ~560 |
+
+Le passage de la première à la deuxième ligne échange de la fraîcheur contre du volume, et ne
+demande qu'un modulo sur le rang du team GID trié. Aucune logique d'attente à écrire :
+l'ordonnanceur *est* le régulateur, ce qui est plus robuste qu'un `sleep` dans l'invocation, lequel
+risquerait de mordre sur la limite de 15 minutes de wall clock d'un Cron Trigger.
+
+### Ce que je n'ai pas retenu
+
+- **Webhooks Asana.** Structurellement la bonne réponse — Asana pousse les changements, le polling
+  disparaît, on passe de ~11 500 requêtes/jour à quelques centaines. Mais cela ajoute le handshake
+  `X-Hook-Secret`, le stockage du secret, le cycle de vie d'un webhook par projet et leur
+  réétablissement à expiration. Et des rapports de **402 Payment Required** à la création laissent
+  planer un doute sur leur disponibilité en plan gratuit, à lever avant tout engagement. Beaucoup de
+  complexité pour un problème que la tranche tournante règle en quelques lignes.
+- **`modified_since` sur `GET /tasks`, ou l'API Events.** Allègent la charge utile mais **pas le
+  nombre de requêtes** : on interroge toujours chaque projet. Mauvaise contrainte attaquée.
+- **Asana payant** (1 500 req/min). Facturé par utilisateur et par mois, donc bien plus cher que les
+  5 $ de Cloudflare, pour un problème qui se résout gratuitement.
 
 ## Ce que ça change dans les tâches S1
 
@@ -172,8 +238,11 @@ Deux points transverses que le plan payant déplace sans annuler :
 - **L'écriture KV conditionnelle** (correction §3) n'est plus une question de quota — 1 M
   d'écritures par mois sont incluses. Elle reste **requise** pour une autre raison, désormais la
   principale : elle fait de « Dernière mise à jour » la date du dernier *changement* et non de la
-  dernière vérification. À 15 minutes, un horodatage qui bouge quatre fois par heure sans que rien
+  dernière vérification. À 5 minutes, un horodatage qui bougerait douze fois par heure sans que rien
   n'ait changé serait un mensonge visible pour le client.
+- **Le retry avec backoff sur 429** (brief §4) devient la seule protection restante côté Asana, et
+  il ne dépend pas de l'échelle : un 429 consomme du quota, donc une retentative naïve creuse le
+  trou. Non négociable en S1.2.
 
 ## Ce que ça ne change pas
 
