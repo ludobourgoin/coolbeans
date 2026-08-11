@@ -31,6 +31,12 @@
     { "pattern": "www.coolbeans.cc", "custom_domain": true },
     { "pattern": "my.coolbeans.cc", "custom_domain": true }
   ],
+  // Sync horaire du portail : 1 cron sur les 5 du plan gratuit.
+  // `triggers` est une clé héritable — l'environnement staging reprend donc
+  // ce cron, et alimente son propre PORTAL_KV. Voir le handler `scheduled`
+  // dans src/worker.ts et le budget dans
+  // docs/superpowers/specs/2026-08-11-portail-cpu-scheduled.md.
+  "triggers": { "crons": ["0 * * * *"] },
   "kv_namespaces": [{ "binding": "PORTAL_KV", "id": "f720076d62fc4fd28422209c16326776" }],
   // GID du workspace Asana : public, pas un secret. Les secrets du portail
   // (ASANA_PAT, ADMIN_SYNC_SECRET) se posent par `wrangler secret put`, jamais ici.

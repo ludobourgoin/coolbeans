@@ -67,4 +67,35 @@ export default {
 
     return handle(request, env, ctx);
   },
+
+  // Sync horaire du portail client (cron "0 * * * *", cf. wrangler.jsonc).
+  //
+  // Squelette S0.5 : le handler ne fait encore que tracer son passage et
+  // l'état de ses dépendances. Le sync Asana réel arrive en S1 (voir
+  // docs/superpowers/specs/brief-portail-client-asana.md §5).
+  //
+  // Deux plafonds encadrent ce qu'on pourra faire ici, sur le plan gratuit :
+  // 10 ms de CPU et 50 subrequests par invocation — les opérations KV
+  // comptant dans les subrequests. Analyse et échappatoire dans
+  // docs/superpowers/specs/2026-08-11-portail-cpu-scheduled.md.
+  async scheduled(controller, env, _ctx) {
+    const startedAt = new Date(controller.scheduledTime).toISOString();
+
+    // Un secret manquant est la panne la plus probable au premier déploiement
+    // (les `wrangler secret put` sont un geste manuel). On trace sa présence,
+    // jamais sa valeur — critère d'acceptation 6.
+    console.log(
+      JSON.stringify({
+        event: "portal_sync",
+        status: "skipped_not_implemented",
+        cron: controller.cron,
+        scheduled_at: startedAt,
+        bindings: {
+          portal_kv: Boolean(env.PORTAL_KV),
+          asana_pat: Boolean(env.ASANA_PAT),
+          asana_workspace_gid: Boolean(env.ASANA_WORKSPACE_GID),
+        },
+      }),
+    );
+  },
 } satisfies ExportedHandler<Env>;
