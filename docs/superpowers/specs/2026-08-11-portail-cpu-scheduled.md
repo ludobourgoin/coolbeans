@@ -73,9 +73,15 @@ Conséquences à retenir pour S1 :
 - **Compter les subrequests dans le résumé de `meta:last_sync`** et logger un warning au-delà de 40.
   C'est le signal qui déclenche la bascule, pas une surveillance manuelle.
 
-> **Suite donnée (2026-08-12) :** le sync sera paramétrable par team et le déclenchement manuel
-> devient le chemin normal, ce qui ramène une invocation à ~7 subrequests quel que soit le nombre de
-> clients. Voir [Sync par team + déclenchement manuel](2026-08-12-portail-sync-par-team.md).
+> **Suite donnée (2026-08-12) — ce document décrit le plan gratuit, qui n'est plus la cible.**
+> Décision de passer au plan **Workers Paid (5 $/mois)** avant S1 : les subrequests passent de 50 à
+> 10 000 par invocation, le CPU de 10 ms à 30 s, les écritures KV de 1 000/jour à 1 M/mois. Le
+> plafond analysé ci-dessous disparaît donc, et les contournements deviennent des plans de secours.
+> Le sync reste néanmoins paramétrable par team, pour le déclenchement à la demande.
+> Voir [Sync par team + déclenchement manuel](2026-08-12-portail-sync-par-team.md).
+>
+> Ce document reste la référence sur *ce que coûte* le sync et sur les limites du plan gratuit, au
+> cas où l'abonnement serait abandonné.
 
 ## Échappatoire, le jour où l'un des deux plafonds est atteint
 

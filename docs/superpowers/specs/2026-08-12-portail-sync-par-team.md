@@ -25,9 +25,13 @@ qu'il faut avoir en tête pour lire la suite.
 couvre l'immédiateté.** Ce sont deux besoins distincts, à ne pas confondre :
 
 - Le **périmètre par team** (`syncTeam(gid)`) répond au plafond de subrequests.
-- Le **déclenchement manuel** répond au délai d'une heure après un « regarde ton portail »
-  (garde-fou 01, déjà acté par la promotion de la route admin en « requis »). Il n'a jamais eu
-  vocation à remplacer l'automatisme.
+- Le **déclenchement manuel** répond au délai après un « regarde ton portail » (garde-fou 01, déjà
+  acté par la promotion de la route admin en « requis »). Il n'a jamais eu vocation à remplacer
+  l'automatisme.
+
+Deux décisions du 2026-08-12 encadrent le tout : **passage au plan Workers Paid (5 $/mois)**, qui
+efface les plafonds plutôt que de les contourner, et **cadence portée à 15 minutes**. Détail plus
+bas.
 
 ### 1. `syncTeam(gid)` est l'unité de base
 
@@ -58,58 +62,97 @@ dépendance en moins.
 
 Même protection par `ADMIN_SYNC_SECRET` en en-tête dans les deux cas (brief §8).
 
-### 3. Un bouton « Synchroniser maintenant » dans l'espace admin
+### 3. Un bouton « Synchroniser maintenant » dans l'espace admin — recommandé, pas requis
 
 Sur `/espace/projets`, visible des seuls `role: "admin"`, déclenchant le sync de la team affichée.
 
-Ce n'est pas du confort : sans lui, le geste manuel est un `curl` avec un secret dans la commande,
-et il ne sera pas fait. Ludo étant le client zéro, le bouton vit dans son espace, à côté du projet
-concerné — cohérent avec « espace admin = même structure que le portail client, entrées admin-only
-additives ».
+Sa justification a faibli avec la cadence à 15 minutes : il ne rattrape plus une heure de retard,
+seulement quinze minutes. Il garde son intérêt pour le moment de démonstration (« regarde, c'est à
+jour ») et évite qu'un `curl` avec un secret dans la commande soit le seul geste possible. Ludo étant
+le client zéro, il vit dans son espace, à côté du projet concerné — cohérent avec « espace admin =
+même structure que le portail client, entrées admin-only additives ».
 
-### 4. Le cron horaire reste le régime permanent
+À trancher en S1.6 selon le temps disponible. La route admin, elle, reste requise : elle sert aussi
+l'amorçage du premier snapshot et les tests.
 
-`triggers.crons = ["0 * * * *"]`, balayage complet, inchangé.
+### 4. Le cron reste le régime permanent
+
+Balayage complet, à la cadence définie plus bas.
 
 **Pourquoi ne pas basculer en tout-manuel :** le risque n'est pas technique, il est humain. Le jour
 où une tâche est cochée dans Asana depuis un téléphone sans que le sync soit déclenché, le portail
 reste faux **indéfiniment** — alors que le cron borne l'écart à une heure. Le bandeau « Dernière
 mise à jour » afficherait une date ancienne, et c'est le genre de détail qu'un client remarque.
 
-À l'échelle actuelle il coûte ~6 subrequests par passage : il ne gêne rien, et le supprimer
-n'apporterait aucune marge, le plafond n'étant pas lié à la fréquence.
+Le supprimer n'apporterait de toute façon aucune marge, le plafond n'étant pas lié à la fréquence.
 
-## Quand le cron deviendra un problème
+## Le plafond se règle en payant, pas en codant
 
-À 7-8 clients, son balayage complet atteindra les 50 subrequests. L'issue générale est toujours la
-même — **une invocation par team, étalées dans le temps**, chaque invocation repartant avec son
-propre budget de 50. Deux contraintes de plateforme encadrent les mises en œuvre possibles :
+**Décision du 2026-08-12 : passage au plan Workers Paid (5 $/mois) avant d'écrire S1.**
+Amendement assumé au principe « 0 €/mois » du doc master, qui rangeait Cloudflare parmi les free
+tiers.
 
-- **La granularité du cron Cloudflare est la minute.** Pas de décalage à la seconde.
-- **La limite est de 5 Cron Triggers *par compte*, pas par Worker.** Prod et staging en consomment
-  déjà un chacun : il en reste **3**, moins ceux d'éventuels autres Workers du compte (à vérifier
-  dans le dashboard). Le « découpage sur les 5 crons » du §0 des corrections est donc plus étroit
-  qu'annoncé là-bas.
+Ce que les 5 $ effacent :
 
-Piège à écarter : enchaîner `sync(team1)`, attendre, `sync(team2)` **dans une même invocation** ne
-sert à rien. Le budget est par invocation, pas par unité de temps — attendre ne le remet pas à zéro.
-Il faut de vraies invocations distinctes.
+| Limite | Free | Paid |
+| --- | --- | --- |
+| **Subrequests par invocation** | 50 | **10 000** |
+| CPU par invocation | 10 ms | 30 s (jusqu'à 5 min) |
+| **Cron Triggers par compte** | 5 | **250** |
+| Écritures KV | 1 000/jour | 1 M/mois |
 
-Trois issues, par ordre de préférence, **le jour où le warning se déclenche** :
+C'est-à-dire : le mur des 7-8 clients, le plafond d'écritures KV à ~40 clients visé par la
+correction §3, la contrainte des crons par compte, et le budget CPU du §0 — tout disparaît d'un
+coup. Le balayage complet tient sans effort à plusieurs centaines de clients.
 
-1. **Le cron devient un répartiteur.** Une invocation horaire qui, au lieu de synchroniser, émet un
-   `fetch` vers `/api/admin/sync?team_gid=…` par client. Chaque `fetch` coûte 1 subrequest au parent
-   mais ouvre une invocation neuve avec ses propres 50. Parent : `1 + T` → plafond vers ~48 clients.
-   Enfant : `P + 4`, constant. Aucun cron ni service supplémentaire.
-   *Réserve : un Worker qui s'appelle lui-même par `fetch` se heurte à des limites de profondeur de
-   sous-requêtes chez Cloudflare. Non testé ici — à valider avant de s'y engager.*
-2. **Tranche tournante.** Un seul cron horaire traitant les teams 0-9 à l'heure paire, 10-19 à
-   l'impaire. Aucun cron en plus, au prix d'une fraîcheur qui se dégrade avec le nombre de clients.
-3. **Lots sur les crons restants.** Le repli du §0, borné à 3 lots ici et non 5.
+À l'échelle du projet, les 5 $ sont la facture complète : 10 M de requêtes, 30 M de ms de CPU et
+1 M d'écritures KV sont inclus, et le site vitrine comme le portail en sont très loin.
 
-**Ne rien pré-implémenter.** Le déclencheur est le warning à 40 subrequests posé en S1 (voir
-ci-dessous), pas une surveillance manuelle. Ce que S1 doit garantir, c'est que les trois issues
-restent ouvertes — c'est tout l'objet de `syncTeam(gid)`.
+**Pourquoi payer plutôt que construire.** Contourner les limites du plan gratuit (répartiteur,
+lots, tranche tournante) coûte une demi-journée, porte une réserve non validée sur l'auto-appel d'un
+Worker, et laisse une complexité permanente dans le sync. Face à 60 $ par an, l'arbitrage n'est pas
+disputable — et au moment où le plafond mordrait, 7-8 clients factureraient largement de quoi le
+couvrir.
+
+**Conséquence :** les trois contournements ci-dessous ne sont plus une trajectoire, mais des plans
+de secours si le plan payant devait être abandonné. Ne rien en implémenter.
+
+<details>
+<summary>Contournements du plan gratuit, conservés pour mémoire</summary>
+
+L'issue générale est toujours la même — une invocation par team, étalées dans le temps, chacune
+repartant avec son propre budget. Deux contraintes de plateforme l'encadrent : le cron Cloudflare a
+une **granularité à la minute**, et la limite de **5 Cron Triggers vaut par compte**, prod et
+staging en consommant déjà un chacun.
+
+Piège à écarter : enchaîner `sync(team1)`, attendre, `sync(team2)` dans une **même** invocation ne
+sert à rien — le budget est par invocation, pas par unité de temps.
+
+1. **Cron répartiteur.** Une invocation qui émet un `fetch` vers `/api/admin/sync?team_gid=…` par
+   client ; chaque `fetch` coûte 1 subrequest au parent et ouvre une invocation neuve. Parent
+   `1 + T`, enfant `P + 4`. *Réserve : limites de profondeur de sous-requêtes sur l'auto-appel, non
+   testées.*
+2. **Tranche tournante.** Un cron qui traite les teams 0-9 à l'heure paire, 10-19 à l'impaire.
+3. **Lots sur les crons restants.** Borné à 3 lots ici, pas 5.
+
+</details>
+
+## Cadence : toutes les 15 minutes
+
+`triggers.crons = ["*/15 * * * *"]` en remplacement de l'horaire, une fois le plan payant actif.
+
+Le confort du client passe de « au pire 59 minutes de retard » à « au pire 15 ». Le coût reste nul :
+96 invocations par jour, à comparer aux 10 M de requêtes et 30 M de ms de CPU inclus.
+
+Un seul point de vigilance à cette cadence, côté Asana : le sync devient une rafale de
+`1 + T × (1 + P)` requêtes toutes les 15 minutes, contre une limite de 150 req/min sur l'API Asana.
+La marge reste large (81 requêtes à 20 clients), et la limite de 6 connexions sortantes simultanées
+étale naturellement la rafale — mais le **retry avec backoff sur 429** du brief §4 reste obligatoire.
+
+**Précondition :** la bascule vers le plan payant doit précéder S1. Sur le plan gratuit, une cadence
+à 15 minutes rapprocherait le plafond d'écritures KV (1 000/jour) — `meta:last_sync` étant écrit à
+chaque passage, soit 96/jour, plus les snapshots modifiés. Aujourd'hui le handler est un no-op :
+la cadence peut donc être posée sans risque, mais pas le sync réel.
 
 ## Ce que ça change dans les tâches S1
 
@@ -121,13 +164,22 @@ restent ouvertes — c'est tout l'objet de `syncTeam(gid)`.
 | **S1.6** Page `/espace/projets` | Ajouter le bouton « Synchroniser maintenant », admin uniquement. |
 | **S1.8** DoD design system | Le bouton et son état de chargement rejoignent la Bibliothèque. |
 
-Ajout transverse : **compter les subrequests consommés et les écrire dans le résumé de
-`meta:last_sync`**, avec un warning loggé au-delà de 40. C'est le signal qui déclenchera la bascule
-vers le découpage en lots — sans lui, on découvrira le plafond par un sync qui échoue.
+Deux points transverses que le plan payant déplace sans annuler :
+
+- **Le compteur de subrequests** dans le résumé de `meta:last_sync` perd son urgence (le seuil passe
+  de 50 à 10 000). Le garder reste utile comme donnée d'observabilité, mais le warning à 40 n'a plus
+  d'objet.
+- **L'écriture KV conditionnelle** (correction §3) n'est plus une question de quota — 1 M
+  d'écritures par mois sont incluses. Elle reste **requise** pour une autre raison, désormais la
+  principale : elle fait de « Dernière mise à jour » la date du dernier *changement* et non de la
+  dernière vérification. À 15 minutes, un horodatage qui bouge quatre fois par heure sans que rien
+  n'ait changé serait un mensonge visible pour le client.
 
 ## Ce que ça ne change pas
 
-Les principes du doc master tiennent : miroir et pas outil, snapshot et pas runtime, 0 €/mois.
+Les principes du doc master tiennent, à un amendement près : miroir et pas outil, snapshot et pas
+runtime. Le « 0 €/mois » devient **5 $/mois**, arbitré ci-dessus. Clerk, Asana, UptimeRobot et Resend
+restent sur leurs free tiers.
 La route admin reste ce que le garde-fou 01 en avait fait : le moyen de combler le délai d'une heure,
 pas un remplacement du cron. Le sync demeure automatique. Le paramétrage par team ne change rien à la
 fraîcheur en régime permanent, et l'améliore ponctuellement : après une grosse mise à jour, le client
