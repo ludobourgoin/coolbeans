@@ -5,6 +5,8 @@ import type { Catalogue, Chiffrage } from "../../lib/chiffrage/types";
 import type { CalcResult } from "../../lib/chiffrage/calc";
 import Configurateur from "./Configurateur";
 import BlocCalcul from "./BlocCalcul";
+import ModeLibre from "./ModeLibre";
+import DevisPreview from "./DevisPreview";
 
 export interface SectionProps {
   c: Chiffrage;
@@ -77,9 +79,10 @@ export default function ChiffrageEditor({ initial, catalogue }: { initial: Chiff
       </section>
 
       {c.mode === "configurateur" && <Configurateur c={c} patch={patch} catalogue={catalogue} calc={calc} />}
-      {/* Task 8 branche ici <ModeLibre> et <DevisPreview> */}
+      {c.mode === "libre" && <ModeLibre c={c} patch={patch} catalogue={catalogue} calc={calc} />}
 
       <BlocCalcul c={c} patch={patch} catalogue={catalogue} calc={calc} />
+      {c.mode === "configurateur" && <DevisPreview c={c} patch={patch} catalogue={catalogue} calc={calc} />}
 
       <div class="flex flex-wrap items-center gap-3">
         <button type="button" class="btn" onClick={sauvegarder}>Enregistrer</button>
