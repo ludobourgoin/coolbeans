@@ -21,8 +21,13 @@ qu'il faut avoir en tête pour lire la suite.
 
 ## Décision
 
-**Le sync est paramétrable par team, et le déclenchement manuel devient le chemin normal.
-Le cron est conservé comme filet.**
+**Le sync est paramétrable par team. Le cron reste le régime permanent ; le déclenchement manuel
+couvre l'immédiateté.** Ce sont deux besoins distincts, à ne pas confondre :
+
+- Le **périmètre par team** (`syncTeam(gid)`) répond au plafond de subrequests.
+- Le **déclenchement manuel** répond au délai d'une heure après un « regarde ton portail »
+  (garde-fou 01, déjà acté par la promotion de la route admin en « requis »). Il n'a jamais eu
+  vocation à remplacer l'automatisme.
 
 ### 1. `syncTeam(gid)` est l'unité de base
 
@@ -62,29 +67,49 @@ et il ne sera pas fait. Ludo étant le client zéro, le bouton vit dans son espa
 concerné — cohérent avec « espace admin = même structure que le portail client, entrées admin-only
 additives ».
 
-### 4. Le cron horaire reste, inchangé
+### 4. Le cron horaire reste le régime permanent
 
-`triggers.crons = ["0 * * * *"]`, balayage complet.
+`triggers.crons = ["0 * * * *"]`, balayage complet, inchangé.
 
-**Pourquoi ne pas le supprimer alors que le manuel devient le chemin normal :** le risque du
-tout-manuel n'est pas technique, il est humain. Le jour où une tâche est cochée dans Asana depuis un
-téléphone sans que le sync soit déclenché, le portail reste faux **indéfiniment** — alors que le
-cron borne l'écart à une heure. Le bandeau « Dernière mise à jour » afficherait une date ancienne,
-et c'est le genre de détail qu'un client remarque.
+**Pourquoi ne pas basculer en tout-manuel :** le risque n'est pas technique, il est humain. Le jour
+où une tâche est cochée dans Asana depuis un téléphone sans que le sync soit déclenché, le portail
+reste faux **indéfiniment** — alors que le cron borne l'écart à une heure. Le bandeau « Dernière
+mise à jour » afficherait une date ancienne, et c'est le genre de détail qu'un client remarque.
 
-À l'échelle actuelle le cron coûte ~6 subrequests par passage : il ne gêne rien.
+À l'échelle actuelle il coûte ~6 subrequests par passage : il ne gêne rien, et le supprimer
+n'apporterait aucune marge, le plafond n'étant pas lié à la fréquence.
 
 ## Quand le cron deviendra un problème
 
-À 7-8 clients, son balayage complet atteindra les 50 subrequests. Deux issues, à ce moment-là
-seulement :
+À 7-8 clients, son balayage complet atteindra les 50 subrequests. L'issue générale est toujours la
+même — **une invocation par team, étalées dans le temps**, chaque invocation repartant avec son
+propre budget de 50. Deux contraintes de plateforme encadrent les mises en œuvre possibles :
 
-1. Découper les teams en lots déterministes sur les 5 crons du plan gratuit (option 3 du §0 des
-   corrections) — chaque invocation traite un cinquième des teams.
-2. Baisser sa fréquence, le manuel étant devenu le chemin principal.
+- **La granularité du cron Cloudflare est la minute.** Pas de décalage à la seconde.
+- **La limite est de 5 Cron Triggers *par compte*, pas par Worker.** Prod et staging en consomment
+  déjà un chacun : il en reste **3**, moins ceux d'éventuels autres Workers du compte (à vérifier
+  dans le dashboard). Le « découpage sur les 5 crons » du §0 des corrections est donc plus étroit
+  qu'annoncé là-bas.
+
+Piège à écarter : enchaîner `sync(team1)`, attendre, `sync(team2)` **dans une même invocation** ne
+sert à rien. Le budget est par invocation, pas par unité de temps — attendre ne le remet pas à zéro.
+Il faut de vraies invocations distinctes.
+
+Trois issues, par ordre de préférence, **le jour où le warning se déclenche** :
+
+1. **Le cron devient un répartiteur.** Une invocation horaire qui, au lieu de synchroniser, émet un
+   `fetch` vers `/api/admin/sync?team_gid=…` par client. Chaque `fetch` coûte 1 subrequest au parent
+   mais ouvre une invocation neuve avec ses propres 50. Parent : `1 + T` → plafond vers ~48 clients.
+   Enfant : `P + 4`, constant. Aucun cron ni service supplémentaire.
+   *Réserve : un Worker qui s'appelle lui-même par `fetch` se heurte à des limites de profondeur de
+   sous-requêtes chez Cloudflare. Non testé ici — à valider avant de s'y engager.*
+2. **Tranche tournante.** Un seul cron horaire traitant les teams 0-9 à l'heure paire, 10-19 à
+   l'impaire. Aucun cron en plus, au prix d'une fraîcheur qui se dégrade avec le nombre de clients.
+3. **Lots sur les crons restants.** Le repli du §0, borné à 3 lots ici et non 5.
 
 **Ne rien pré-implémenter.** Le déclencheur est le warning à 40 subrequests posé en S1 (voir
-ci-dessous), pas une surveillance manuelle.
+ci-dessous), pas une surveillance manuelle. Ce que S1 doit garantir, c'est que les trois issues
+restent ouvertes — c'est tout l'objet de `syncTeam(gid)`.
 
 ## Ce que ça change dans les tâches S1
 
@@ -103,7 +128,7 @@ vers le découpage en lots — sans lui, on découvrira le plafond par un sync q
 ## Ce que ça ne change pas
 
 Les principes du doc master tiennent : miroir et pas outil, snapshot et pas runtime, 0 €/mois.
-La route admin avait déjà été promue de « bonus » à « requis » (garde-fou 01) pour combler le délai
-d'une heure ; cet arbitrage en fait le chemin normal plutôt que le rattrapage. Le paramétrage par
-team ne réduit pas non plus la fraîcheur perçue : elle s'améliore, le client voyant le changement
-dès la fin de la mise à jour au lieu d'attendre jusqu'à 59 minutes.
+La route admin reste ce que le garde-fou 01 en avait fait : le moyen de combler le délai d'une heure,
+pas un remplacement du cron. Le sync demeure automatique. Le paramétrage par team ne change rien à la
+fraîcheur en régime permanent, et l'améliore ponctuellement : après une grosse mise à jour, le client
+voit le changement dès que tu déclenches, au lieu d'attendre jusqu'à 59 minutes.
