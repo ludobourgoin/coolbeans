@@ -137,9 +137,9 @@ Le bloc de calcul de l'éditeur affiche **chaque étape en clair** avec son mont
 `(chiffrage, catalog) → DevisData` (le type de `src/lib/devis.ts`), exécutée à la publication et pour l'aperçu live. Règles de contenu non négociables :
 
 - **Jamais** de prix par ligne, de jours ou d'heures. Un seul total HT (section budget avec une ligne unique portant `prixRetenu`), suivi des conditions de règlement (`devisTexts.conditionsReglement`).
-- Ordre fixe des sections : Objectif, Pages, Fonctionnalités, Stack technique, Budget, Ce que ça comprend, Planning, Hors périmètre.
+- L'objectif (texte libre rédigé par Ludo, jamais généré) alimente l'en-tête de la page publique : `titre` = nom du chiffrage, `objet` = objectif, affichés en tête par le header DevisCorps — pas de section « Objectif » dupliquée dans le corps.
+- Ordre fixe des sections du corps : Pages, Fonctionnalités, Stack technique, Budget, Ce que ça comprend, Planning, Hors périmètre.
 - **Une section vide n'apparaît pas du tout** (pas de placeholder). Stack technique ne s'affiche que s'il y a ≥ 1 page.
-- Objectif : texte libre rédigé par Ludo (`chiffrage.objectif`), jamais généré.
 - Pages : libellés des lignes pages à jours > 0. Fonctionnalités : libellés des devLines + lignes libres.
 - Ce que ça comprend = base fixe (`devisTexts.ceQueCaComprend`, une ligne par item) + `clientLabel` des setup cochés + « Suivi de projet : points hebdomadaires jusqu'à la livraison, comptes-rendus, planning à jour » si gestion activée.
 - Hors périmètre = base fixe + une ligne par page UX-sans-UI (« Le design UI de la page « X » (fourni par un tiers) ») ou UI-sans-UX (wireframes fournis par un tiers).
