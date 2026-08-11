@@ -30,6 +30,15 @@ const label = (p: string) => p.charAt(0).toUpperCase() + p.slice(1);
     }
     {
       isAdmin && (
+        <a class="card" href="/espace/chiffrages">
+          <div class="k">Interne</div>
+          <div class="t">Chiffrages</div>
+          <div class="d">Pilotage tarifaire : configurateur, devis publiés, historique.</div>
+        </a>
+      )
+    }
+    {
+      isAdmin && (
         <a class="card" href="/docs/_template">
           <div class="k">Doc · interne</div>
           <div class="t">Gabarit du standard</div>
