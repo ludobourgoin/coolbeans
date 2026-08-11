@@ -25,7 +25,16 @@ const { title, missingKeys = [], isAdmin = false } = Astro.props;
 const showDiagnostic = isAdmin && missingKeys.length > 0;
 ---
 
-<div class="card flex flex-col items-start gap-3x">
+{/*
+  Surtout pas la classe `card` de doc.css : `.doc-root .card` y vaut
+  `display:block` avec une spécificité de (0,2,0), qui bat le `.flex` (0,1,0)
+  des utilitaires. Dans /espace, la carte perdrait sa colonne et son gap, et
+  hériterait du survol prévu pour les cartes-liens. On la compose donc en
+  utilitaires, sur les mêmes tokens.
+*/}
+<div
+  class="flex flex-col items-start gap-3x rounded-card border border-line bg-surface p-6x"
+>
   <h2 class="text-lg font-semibold tracking-[-0.02em]">{title}</h2>
   <div class="max-w-[58ch] text-sm text-mute"><slot /></div>
 

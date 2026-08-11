@@ -11,10 +11,10 @@ export const prerender = false;
 
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import EmptyState from "../../components/portail/EmptyState.astro";
-import { isAdmin, missingKeysFor, readPortalMetadata } from "../../lib/portail/metadata";
+import { isAdmin, missingKeysFor } from "../../lib/portail/metadata";
+import { getPortalMeta } from "../../lib/portail/context";
 
-const user = await Astro.locals.currentUser();
-const meta = readPortalMetadata(user?.publicMetadata);
+const meta = await getPortalMeta(Astro.locals);
 const missingKeys = missingKeysFor("support", meta);
 
 Astro.response.headers.set("Cache-Control", "no-store");

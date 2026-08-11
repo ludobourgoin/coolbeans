@@ -10,17 +10,19 @@ export const prerender = false;
 
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import EmptyState from "../../components/portail/EmptyState.astro";
-import { isAdmin, missingKeysFor, readPortalMetadata } from "../../lib/portail/metadata";
+import { isAdmin, missingKeysFor } from "../../lib/portail/metadata";
+import { getPortalMeta } from "../../lib/portail/context";
 
-const user = await Astro.locals.currentUser();
-const meta = readPortalMetadata(user?.publicMetadata);
+const meta = await getPortalMeta(Astro.locals);
+
+// Posé avant la redirection : celle-ci dépend de l'utilisateur et ne doit pas
+// être mise en cache par un intermédiaire.
+Astro.response.headers.set("Cache-Control", "no-store");
 
 // Le cas normal avec doc : on n'affiche pas un empty state, on y emmène.
 if (meta.projects.length > 0) {
   return Astro.redirect(`/docs/${meta.projects[0]}`, 302);
 }
-
-Astro.response.headers.set("Cache-Control", "no-store");
 ---
 
 <EspaceLayout title="Doc">

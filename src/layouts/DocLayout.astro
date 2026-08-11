@@ -6,7 +6,7 @@ import BaseLayout from "./BaseLayout.astro";
 import SidebarNav from "../components/doc/SidebarNav.astro";
 import TocRight from "../components/doc/TocRight.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
-import { readPortalMetadata } from "../lib/portail/metadata";
+import { getPortalMeta } from "../lib/portail/context";
 import "../styles/doc.css";
 
 interface NavItem {
@@ -40,8 +40,7 @@ const projectLabel = project.charAt(0).toUpperCase() + project.slice(1);
 const indexJson = JSON.stringify(searchIndex).replaceAll("<", "\\u003c");
 
 // La doc fait partie du portail : même topbar, donc même lecture du metadata.
-const user = await Astro.locals.currentUser();
-const portalMeta = readPortalMetadata(user?.publicMetadata);
+const portalMeta = await getPortalMeta(Astro.locals);
 ---
 
 <BaseLayout title={`${title} · la doc — ${projectLabel}`} description={`Documentation de passation ${projectLabel}`} noindex>

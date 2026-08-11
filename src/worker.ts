@@ -52,6 +52,7 @@ export default {
         pathname.startsWith("/_") ||
         pathname.startsWith("/api/") ||
         pathname === "/connexion" ||
+      pathname === "/connexion/" ||
         pathname === "/docs" ||
         pathname.startsWith("/docs/");
       if (!passthrough) {

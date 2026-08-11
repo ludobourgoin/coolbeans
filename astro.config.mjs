@@ -52,11 +52,13 @@ export default defineConfig({
     sitemap({
       // Pages privées/utilitaires exclues du sitemap : espace client (SSR,
       // déjà noindex), doc de passation (noindex), devis (pages noindex par
-      // définition), design-system (référence interne, bloquée par robots.txt).
+      // définition), connexion (noindex ; `prerender = false` ne suffit pas à
+      // l'exclure), design-system (référence interne, bloquée par robots.txt).
       filter: (page) =>
         !page.includes("/espace") &&
         !page.includes("/docs/") &&
         !page.includes("/devis/") &&
+        !page.includes("/connexion") &&
         !page.includes("/design-system"),
     }),
     preact(),
