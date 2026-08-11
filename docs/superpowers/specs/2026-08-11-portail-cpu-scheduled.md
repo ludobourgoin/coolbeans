@@ -73,6 +73,10 @@ Conséquences à retenir pour S1 :
 - **Compter les subrequests dans le résumé de `meta:last_sync`** et logger un warning au-delà de 40.
   C'est le signal qui déclenche la bascule, pas une surveillance manuelle.
 
+> **Suite donnée (2026-08-12) :** le sync sera paramétrable par team et le déclenchement manuel
+> devient le chemin normal, ce qui ramène une invocation à ~7 subrequests quel que soit le nombre de
+> clients. Voir [Sync par team + déclenchement manuel](2026-08-12-portail-sync-par-team.md).
+
 ## Échappatoire, le jour où l'un des deux plafonds est atteint
 
 Celle de §0 option 3, inchangée, et elle traite les deux limites d'un coup : répartir les teams en
