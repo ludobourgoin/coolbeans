@@ -9,9 +9,9 @@
 //
 // Règles :
 // - my.*/            → /espace (accueil du portail)
-// - my.*/<x>         → /espace/<x>, sauf /docs/* (servi tel quel : la doc
-//   fait partie du portail mais garde ses routes propres) et les chemins
-//   internes d'Astro (/_actions, /_server-islands, /_image…)
+// - my.*/<x>         → /espace/<x>, sauf /connexion et /docs/* (servis tels
+//   quels : la connexion et la doc font partie du portail mais gardent leurs
+//   routes propres) et les chemins internes d'Astro (/_actions, /_image…)
 // - my.*/espace/<x>  → 301 vers my.*/<x> (URL canonique sans préfixe)
 // - coolbeans.cc/espace/<x> → 301 vers my.coolbeans.cc/<x>
 import { handle } from "@astrojs/cloudflare/handler";
@@ -51,6 +51,7 @@ export default {
       const passthrough =
         pathname.startsWith("/_") ||
         pathname.startsWith("/api/") ||
+        pathname === "/connexion" ||
         pathname === "/docs" ||
         pathname.startsWith("/docs/");
       if (!passthrough) {

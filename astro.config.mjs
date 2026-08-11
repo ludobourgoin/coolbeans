@@ -3,6 +3,7 @@ import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
 import clerk from "@clerk/astro";
+import { frFR } from "@clerk/localizations";
 import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
 
@@ -42,7 +43,9 @@ export default defineConfig({
   // replie la ligne — ce qui colle les mots au rendu (« etcommunication »).
   compressHTML: false,
   integrations: [
-    clerk(),
+    // Composants Clerk en français (la page hébergée accounts.* reste en
+    // anglais chez Clerk — d'où la page /connexion hébergée dans l'app).
+    clerk({ localization: frFR }),
     mdx(),
     sitemap({
       // Pages privées/utilitaires exclues du sitemap : espace client (SSR,

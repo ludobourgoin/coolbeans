@@ -11,7 +11,11 @@ export const onRequest = clerkMiddleware((auth, context, next) => {
   if (PROTECTED.some((re) => re.test(pathname))) {
     const authObject = auth();
     if (!authObject.userId) {
-      return authObject.redirectToSignIn();
+      // Page de connexion maison (/connexion, en français) plutôt que la
+      // page hébergée Clerk (accounts.*, anglais uniquement).
+      const signIn = new URL("/connexion", context.request.url);
+      signIn.searchParams.set("redirect_url", context.request.url);
+      return context.redirect(signIn.href);
     }
   }
   return next();

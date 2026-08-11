@@ -1,0 +1,20 @@
+---
+// Page de connexion du portail, hébergée dans l'app pour être en français —
+// la page hébergée Clerk (accounts.*) n'existe qu'en anglais (cf. doc Clerk,
+// localisation limitée aux composants embarqués). Le middleware redirige ici
+// les visiteurs non connectés ; <SignIn /> lit redirect_url tout seul.
+export const prerender = false;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { SignIn } from "@clerk/astro/components";
+---
+
+<BaseLayout
+  title="Connexion · Coolbeans"
+  description="Connexion à l'espace client Coolbeans"
+  noindex
+>
+  <main class="grid min-h-[80vh] place-items-center px-4 py-10">
+    <SignIn routing="hash" fallbackRedirectUrl="/espace" />
+  </main>
+</BaseLayout>
