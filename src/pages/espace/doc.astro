@@ -1,0 +1,38 @@
+---
+// Cible de l'entrée « Doc » quand l'utilisateur n'a aucun slug de doc
+// (tâche S0.7). Un utilisateur correctement onboardé n'atterrit jamais ici :
+// la nav pointe directement sur /docs/{slug}.
+//
+// Cette page existe pour que l'entrée ne soit ni un lien mort (/docs n'est pas
+// une route) ni une entrée qui disparaît de la nav — auquel cas l'oubli de
+// mapping ne se verrait nulle part.
+export const prerender = false;
+
+import EspaceLayout from "../../layouts/EspaceLayout.astro";
+import EmptyState from "../../components/portail/EmptyState.astro";
+import { isAdmin, missingKeysFor, readPortalMetadata } from "../../lib/portail/metadata";
+
+const user = await Astro.locals.currentUser();
+const meta = readPortalMetadata(user?.publicMetadata);
+
+// Le cas normal avec doc : on n'affiche pas un empty state, on y emmène.
+if (meta.projects.length > 0) {
+  return Astro.redirect(`/docs/${meta.projects[0]}`, 302);
+}
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<EspaceLayout title="Doc">
+  <h1>Doc</h1>
+  <p class="sub">La documentation de passation de votre projet.</p>
+
+  <EmptyState
+    title="Aucune documentation associée à votre compte"
+    missingKeys={missingKeysFor("doc", meta)}
+    isAdmin={isAdmin(meta)}
+  >
+    La doc de passation est ouverte à la livraison du projet. Si vous pensez
+    qu'elle devrait être là, écrivez à ludo@coolbeans.cc.
+  </EmptyState>
+</EspaceLayout>

@@ -1,0 +1,30 @@
+---
+// Page-souche du module « Support » (tâche S0.7).
+//
+// Le shell de navigation se livre en S0 avec ses cinq entrées : chacune doit
+// mener quelque part. Le module lui-même arrive en Sprint S2.
+//
+// L'encart de diagnostic n'est visible que des admins et sert dès maintenant :
+// le runbook d'onboarding demande de vérifier les empty states de chaque
+// module après avoir posé le publicMetadata d'un nouveau client.
+export const prerender = false;
+
+import EspaceLayout from "../../layouts/EspaceLayout.astro";
+import EmptyState from "../../components/portail/EmptyState.astro";
+import { isAdmin, missingKeysFor, readPortalMetadata } from "../../lib/portail/metadata";
+
+const user = await Astro.locals.currentUser();
+const meta = readPortalMetadata(user?.publicMetadata);
+const missingKeys = missingKeysFor("support", meta);
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<EspaceLayout title="Support">
+  <h1>Support</h1>
+  <p class="sub">Le module arrive au sprint S2.</p>
+
+  <EmptyState title="Bientôt disponible" missingKeys={missingKeys} isAdmin={isAdmin(meta)}>
+    Le formulaire de demande arrivera ici. En attendant, un email à ludo@coolbeans.cc fait tout aussi bien l'affaire.
+  </EmptyState>
+</EspaceLayout>

@@ -1,0 +1,30 @@
+---
+// Page-souche du module « Mon site » (tâche S0.7).
+//
+// Le shell de navigation se livre en S0 avec ses cinq entrées : chacune doit
+// mener quelque part. Le module lui-même arrive en Sprint S3.
+//
+// L'encart de diagnostic n'est visible que des admins et sert dès maintenant :
+// le runbook d'onboarding demande de vérifier les empty states de chaque
+// module après avoir posé le publicMetadata d'un nouveau client.
+export const prerender = false;
+
+import EspaceLayout from "../../layouts/EspaceLayout.astro";
+import EmptyState from "../../components/portail/EmptyState.astro";
+import { isAdmin, missingKeysFor, readPortalMetadata } from "../../lib/portail/metadata";
+
+const user = await Astro.locals.currentUser();
+const meta = readPortalMetadata(user?.publicMetadata);
+const missingKeys = missingKeysFor("site", meta);
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<EspaceLayout title="Mon site">
+  <h1>Mon site</h1>
+  <p class="sub">Le module arrive au sprint S3.</p>
+
+  <EmptyState title="Bientôt disponible" missingKeys={missingKeys} isAdmin={isAdmin(meta)}>
+    La santé de votre site en production arrivera ici : disponibilité, dernière vérification, et le détail de vos statistiques d'audience.
+  </EmptyState>
+</EspaceLayout>

@@ -1,0 +1,99 @@
+---
+// Topbar commune du portail client (tâche S0.7) : nav haute 5 entrées,
+// emplacement de recherche, bascule de thème, menu compte Clerk.
+//
+// Conforme au wireframe : la colonne gauche appartient à la doc, la navigation
+// entre modules vit en haut. Utilisée par EspaceLayout et par DocLayout — le
+// portail doit être le même objet, qu'on soit sur un module ou dans la doc.
+//
+// Hauteur figée à 56px (h-14) : doc.css cale dessus les colonnes collantes de
+// la doc (`top: 56px`, `calc(100vh - 56px)`). La changer ici désaligne la doc.
+import { UserButton } from "@clerk/astro/components";
+import { buildPortalNav, isActive, portalHref } from "../../lib/portail/nav";
+import type { PortalMetadata } from "../../lib/portail/metadata";
+
+interface Props {
+  meta: PortalMetadata;
+  /**
+   * Le menu compte exige une session Clerk. La Bibliothèque de
+   * design-system.astro est prérendue et n'en a pas : elle passe `false` pour
+   * montrer la topbar sans le dupliquer en maquette morte.
+   */
+  withAccount?: boolean;
+}
+
+const { meta, withAccount = true } = Astro.props;
+const { hostname, pathname } = Astro.url;
+const items = buildPortalNav(hostname, meta);
+const home = portalHref("/", hostname);
+---
+
+<header
+  class="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-line bg-surface px-4 md:px-6"
+>
+  <a
+    href={home}
+    class="flex-none font-display text-base font-bold tracking-[-0.02em] text-ink no-underline"
+  >
+    my <span class="font-normal">coolbeans.</span>
+  </a>
+
+  <nav
+    aria-label="Navigation du portail"
+    class="-mx-2 flex min-w-0 flex-1 items-center gap-1 overflow-x-auto px-2 md:mx-0 md:ml-3 md:px-0"
+  >
+    {
+      items.map((item) => {
+        const on = isActive(item, pathname);
+        return (
+          <a
+            href={item.href}
+            aria-current={on ? "page" : undefined}
+            class:list={[
+              "whitespace-nowrap rounded-control px-2.5 py-1.5 text-sm no-underline transition-colors duration-150 ease-in-out",
+              on ? "font-semibold text-ink" : "text-mute hover:bg-surface-raise hover:text-ink",
+            ]}
+          >
+            {item.label}
+          </a>
+        );
+      })
+    }
+  </nav>
+
+  {/*
+    Emplacement de la recherche ⌘K. Le doc master en fixe la portée à la doc,
+    où elle est déjà branchée (DocLayout) : cet emplacement attend la recherche
+    globale. Rendu non interactif plutôt que faussement cliquable.
+  */}
+  <span
+    class="hidden flex-none items-center gap-2 rounded-control border border-line px-2.5 py-1.5 text-sm text-mute lg:flex"
+    title="Recherche globale à venir. Dans la doc, ⌘K est déjà actif."
+  >
+    Rechercher
+    <kbd class="rounded border border-line bg-surface-subtle px-1.5 py-px font-mono text-[11px]">
+      ⌘K
+    </kbd>
+  </span>
+
+  <button
+    class="flex-none cursor-pointer rounded-control border border-line bg-surface px-2.5 py-1.5 text-sm text-ink"
+    data-portal-theme
+    type="button"
+    aria-label="Basculer le thème"
+  >
+    ☀︎ / ☾
+  </button>
+
+  {withAccount && <span class="flex flex-none items-center"><UserButton /></span>}
+</header>
+
+<script>
+  // Même clé localStorage que l'anti-flash de BaseLayout.
+  document.querySelector("[data-portal-theme]")?.addEventListener("click", () => {
+    const dark = document.documentElement.classList.toggle("dark");
+    try {
+      localStorage.setItem("theme", dark ? "dark" : "light");
+    } catch {}
+  });
+</script>

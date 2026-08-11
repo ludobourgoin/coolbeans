@@ -1,36 +1,61 @@
 ---
-// Accueil de l'espace client : une carte par service accessible.
-// Les projets visibles viennent de publicMetadata.projects (dashboard Clerk).
+// Accueil de l'espace client : une carte par module accessible.
+// La grille reprend les entrées de la nav — la home est la même carte que le
+// shell, en plus large. Le bloc A2HS dismissible s'y ajoutera en S3.5.
 export const prerender = false;
 
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
+import { isAdmin, readPortalMetadata } from "../../lib/portail/metadata";
+import { portalHref } from "../../lib/portail/nav";
 
 const user = await Astro.locals.currentUser();
-const meta = (user?.publicMetadata ?? {}) as { projects?: string[]; role?: string };
-const projects = meta.projects ?? [];
-const isAdmin = meta.role === "admin";
+const meta = readPortalMetadata(user?.publicMetadata);
+const admin = isAdmin(meta);
 const prenom = user?.firstName ?? "";
+const at = (path: string) => portalHref(path, Astro.url.hostname);
 
 const label = (p: string) => p.charAt(0).toUpperCase() + p.slice(1);
+
+Astro.response.headers.set("Cache-Control", "no-store");
 ---
 
 <EspaceLayout title="Espace client">
   <h1>Bonjour{prenom ? ` ${prenom}` : ""}.</h1>
-  <p class="sub">Votre espace Coolbeans : documentation et services liés à votre projet.</p>
+  <p class="sub">Votre espace Coolbeans : documentation et services liés à votre projet.</p>
 
   <div class="cards">
+    <a class="card" href={at("/projets")}>
+      <div class="k">Projets</div>
+      <div class="t">Où en sont vos chantiers</div>
+      <div class="d">L'avancement colonne par colonne, et ce qui attend votre validation.</div>
+    </a>
+    <a class="card" href={at("/site")}>
+      <div class="k">Mon site</div>
+      <div class="t">La santé de votre site</div>
+      <div class="d">Disponibilité, dernière vérification, statistiques d'audience.</div>
+    </a>
     {
-      projects.map((p) => (
+      meta.projects.map((p) => (
         <a class="card" href={`/docs/${p}`}>
           <div class="k">Doc</div>
           <div class="t">{label(p)} — passation & référence</div>
-          <div class="d">Le document de vérité du projet : édition, leads, features, support.</div>
+          <div class="d">Le document de vérité du projet : édition, leads, features, support.</div>
         </a>
       ))
     }
+    <a class="card" href={at("/ressources")}>
+      <div class="k">Ressources</div>
+      <div class="t">Guides et outils</div>
+      <div class="d">Installer le portail sur votre téléphone, outils recommandés, FAQ.</div>
+    </a>
+    <a class="card" href={at("/support")}>
+      <div class="k">Support</div>
+      <div class="t">Demander quelque chose</div>
+      <div class="d">Une demande, un sujet. Elle rejoint vos projets après validation.</div>
+    </a>
     {
-      isAdmin && (
-        <a class="card" href="/espace/chiffrages">
+      admin && (
+        <a class="card" href={at("/chiffrages")}>
           <div class="k">Interne</div>
           <div class="t">Chiffrages</div>
           <div class="d">Pilotage tarifaire : configurateur, devis publiés, historique.</div>
@@ -38,22 +63,13 @@ const label = (p: string) => p.charAt(0).toUpperCase() + p.slice(1);
       )
     }
     {
-      isAdmin && (
+      admin && (
         <a class="card" href="/docs/_template">
           <div class="k">Doc · interne</div>
           <div class="t">Gabarit du standard</div>
-          <div class="d">Le squelette vierge « la doc », visible des admins seulement.</div>
+          <div class="d">Le squelette vierge « la doc », visible des admins seulement.</div>
         </a>
       )
     }
   </div>
-
-  {
-    projects.length === 0 && !isAdmin && (
-      <p class="sub">
-        Aucun projet n'est encore associé à votre compte. Contactez Coolbeans :
-        ludo@coolbeans.cc.
-      </p>
-    )
-  }
 </EspaceLayout>

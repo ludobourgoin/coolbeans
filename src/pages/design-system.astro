@@ -14,6 +14,15 @@ import ClearableInput from "../components/ui/ClearableInput.astro";
 import ContextCard from "../components/ui/ContextCard.astro";
 import CommandMenu from "../components/ui/CommandMenu.astro";
 import EmptyState from "../components/portail/EmptyState.astro";
+import PortalNav from "../components/portail/PortalNav.astro";
+import { readPortalMetadata } from "../lib/portail/metadata";
+
+// Un client onboardé : les cinq entrées, sans les entrées admin.
+const NAV_DEMO_META = readPortalMetadata({
+  role: "client",
+  projects: ["amusoire"],
+  asana_team_gid: "1217116359107690",
+});
 
 const SCALES = [
   { key: "background", label: "Backgrounds", steps: [100, 200] },
@@ -468,6 +477,17 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
       </div>
 
       <p class="label mb-4x mt-16x">Portail client · my.coolbeans.cc</p>
+
+      <p class="label mb-3x">Topbar · nav haute</p>
+      <div class="doc-root overflow-hidden rounded-card border border-line">
+        <PortalNav meta={NAV_DEMO_META} withAccount={false} />
+      </div>
+      <p class="mb-10x mt-3x max-w-[62ch] text-sm text-mute">
+        Cinq entrées, plus celles réservées aux admins. Hauteur figée à 56px :
+        <code class="font-mono">doc.css</code> cale dessus les colonnes collantes de la doc.
+        Le menu compte Clerk est masqué ici, cette page étant prérendue et sans session.
+      </p>
+
       <div class="grid gap-6x md:grid-cols-2">
         <div>
           <p class="label mb-3x">Empty state · vu par le client</p>

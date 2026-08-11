@@ -1,0 +1,26 @@
+---
+// Page-souche du module « Ressources » (tâche S0.7).
+//
+// Le shell de navigation se livre en S0 avec ses cinq entrées : chacune doit
+// mener quelque part. Le contenu lui-même arrive en S3.
+//
+// Seul module à ne dépendre d'aucun mapping publicMetadata : son contenu est
+// commun à tous les clients. Pas de diagnostic admin ici, donc.
+export const prerender = false;
+
+import EspaceLayout from "../../layouts/EspaceLayout.astro";
+import EmptyState from "../../components/portail/EmptyState.astro";
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<EspaceLayout title="Ressources">
+  <h1>Ressources</h1>
+  <p class="sub">Le module arrive au sprint S3.</p>
+
+  <EmptyState title="Bientôt disponible">
+    Les guides et outils utiles arriveront ici : installer ce portail sur votre
+    téléphone, les outils que nous recommandons, et le fonctionnement du plan de
+    maintenance.
+  </EmptyState>
+</EspaceLayout>

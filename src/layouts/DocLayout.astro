@@ -5,7 +5,8 @@
 import BaseLayout from "./BaseLayout.astro";
 import SidebarNav from "../components/doc/SidebarNav.astro";
 import TocRight from "../components/doc/TocRight.astro";
-import { UserButton } from "@clerk/astro/components";
+import PortalNav from "../components/portail/PortalNav.astro";
+import { readPortalMetadata } from "../lib/portail/metadata";
 import "../styles/doc.css";
 
 interface NavItem {
@@ -37,20 +38,15 @@ const projectLabel = project.charAt(0).toUpperCase() + project.slice(1);
 // `</script>` peut apparaître dans le texte indexé (extraits de code) : on
 // neutralise tous les `<` pour que le JSON inline ne casse pas la balise.
 const indexJson = JSON.stringify(searchIndex).replaceAll("<", "\\u003c");
+
+// La doc fait partie du portail : même topbar, donc même lecture du metadata.
+const user = await Astro.locals.currentUser();
+const portalMeta = readPortalMetadata(user?.publicMetadata);
 ---
 
 <BaseLayout title={`${title} · la doc — ${projectLabel}`} description={`Documentation de passation ${projectLabel}`} noindex>
   <div class="doc-root">
-    <header class="doc-topbar">
-      <a class="brand" href="/">coolbeans.</a>
-      <nav class="topnav">
-        <a href="/espace">Espace</a>
-        <a href={`/docs/${project}`} class="on">Doc</a>
-      </nav>
-      <span class="spacer"></span>
-      <button class="tgl" id="doc-theme" type="button" aria-label="Basculer le thème">☀︎ / ☾</button>
-      <UserButton />
-    </header>
+    <PortalNav meta={portalMeta} />
 
     <div class="doc-shell">
       <aside class="doc-left">
@@ -96,14 +92,6 @@ const indexJson = JSON.stringify(searchIndex).replaceAll("<", "\\u003c");
   <script type="application/json" id="doc-search-index" set:html={indexJson} />
 
   <script>
-    /* ---- Thème (même clé localStorage que l'anti-flash de BaseLayout) ---- */
-    document.getElementById("doc-theme")?.addEventListener("click", () => {
-      const dark = document.documentElement.classList.toggle("dark");
-      try {
-        localStorage.setItem("theme", dark ? "dark" : "light");
-      } catch {}
-    });
-
     /* ---- Scroll-spy du sommaire droit ---- */
     const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>("#doc-toc a")];
     const h2s = [...document.querySelectorAll<HTMLElement>(".doc-main h2[id]")];
