@@ -1,0 +1,23 @@
+---
+export const prerender = false;
+
+import EspaceLayout from "../../../layouts/EspaceLayout.astro";
+import ChiffrageEditor from "../../../components/chiffrage/ChiffrageEditor";
+import { getCatalogue, getChiffrage } from "../../../lib/chiffrage/store";
+
+const user = await Astro.locals.currentUser();
+const isAdmin = ((user?.publicMetadata ?? {}) as { role?: string }).role === "admin";
+if (!isAdmin) return Astro.redirect("/espace");
+
+const { id } = Astro.params;
+const chiffrage = id ? await getChiffrage(id) : null;
+if (!chiffrage) return Astro.redirect("/espace/chiffrages");
+const catalogue = await getCatalogue();
+---
+
+<EspaceLayout title={`Chiffrage — ${chiffrage.nom || chiffrage.id}`}>
+  <p class="label">Pilotage tarifaire</p>
+  <h1>{chiffrage.nom || `Chiffrage ${chiffrage.id}`}</h1>
+  <p class="sub"><a class="link" href="/espace/chiffrages">← Tous les chiffrages</a></p>
+  <ChiffrageEditor client:load initial={chiffrage} catalogue={catalogue} />
+</EspaceLayout>
