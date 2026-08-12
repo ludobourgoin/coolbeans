@@ -122,9 +122,16 @@ export const server = {
       accept: "form",
       input: z.object({
         client: z.string().regex(SLUG_STRICT, "Slug invalide."),
-        // Chemin de retour, forcément interne : une URL absolue permettrait
-        // une redirection ouverte.
-        retour: z.string().startsWith("/").default("/"),
+        // Chemin de retour, forcément interne. `startsWith("/")` ne suffit
+        // pas : "//evil.example/x" commence par une barre et est pourtant
+        // une URL protocole-relative, que le navigateur résout vers
+        // https://evil.example/x — et "/\evil.example" est normalisé en
+        // "//evil.example" par plusieurs navigateurs. On exige donc une barre
+        // initiale NON suivie d'une seconde barre ni d'un antislash.
+        retour: z
+          .string()
+          .regex(/^\/(?![/\\])/, "Chemin de retour invalide.")
+          .default("/"),
       }),
       handler: async ({ client, retour }, context) => {
         await requireAdmin(context);
