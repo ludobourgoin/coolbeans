@@ -51,9 +51,21 @@ const clients = defineCollection({
     doc: z.string().optional(),
     asana_team_gid: z.string().optional(),
     uptimerobot_monitor_ids: z.array(z.string()).default([]),
+    archive: z.boolean().default(false),
   }),
 });
 ```
+
+Un cinquième champ, `archive: true`, sort le client du sélecteur **sans rien supprimer** : sa fiche,
+sa doc et ses instantanés KV restent, et il reste résoluble par son slug. Archiver n'est pas
+supprimer — c'est ce qui permet de garder un ancien client accessible sans allonger la liste
+indéfiniment. Un client archivé reparaît dans le sélecteur s'il se trouve être le client courant,
+sans quoi le `<select>` afficherait sa première option alors qu'on est ailleurs.
+
+Ce qui reste attaché au client survit donc à tout : **la suppression du compte Clerk n'emporte
+rien**. Le compte ne porte qu'un rôle et un slug, jamais de contenu. Le point de fragilité est le
+fichier YAML, pas le compte — supprimer la fiche rend la doc inaccessible et orpheline
+l'instantané KV. D'où `archive` plutôt qu'une suppression.
 
 Les trois mappings sont optionnels : un client sans doc, sans Asana ou sans monitor est un état
 normal, raconté par l'`EmptyState` de S0.6 — à ceci près que les clés manquantes se lisent

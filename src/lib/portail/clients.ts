@@ -16,6 +16,13 @@ export interface PortalClient {
   doc?: string;
   asana_team_gid?: string;
   uptimerobot_monitor_ids: string[];
+  /**
+   * Sort le client du sélecteur sans rien supprimer : sa fiche, sa doc et ses
+   * instantanés KV restent, et il reste résoluble par son slug. Archiver n'est
+   * pas supprimer — c'est ce qui permet de garder un ancien client accessible
+   * sans allonger la liste indéfiniment.
+   */
+  archive: boolean;
 }
 
 /** Client affiché par défaut à l'admin, et tête de liste du sélecteur. */
@@ -45,6 +52,18 @@ export function sortClients(clients: PortalClient[]): PortalClient[] {
     if (b.slug === DEFAULT_CLIENT) return 1;
     return a.nom.localeCompare(b.nom, "fr");
   });
+}
+
+/**
+ * Les clients à proposer dans le sélecteur : les actifs, plus le client courant
+ * s'il est archivé. Sans cette exception, le `<select>` afficherait sa première
+ * option alors qu'on se trouve ailleurs — l'écran mentirait sur son contexte.
+ */
+export function selectableClients(
+  clients: PortalClient[],
+  current: PortalClient | null,
+): PortalClient[] {
+  return sortClients(clients.filter((c) => !c.archive || c.slug === current?.slug));
 }
 
 export function getClientIn(

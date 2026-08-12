@@ -3,12 +3,13 @@ import type { PortalClient } from "./clients";
 import { readPortalMetadata } from "./metadata";
 import { CLIENT_COOKIE, resolveCurrentClient } from "./current-client";
 
-const coolbeans: PortalClient = { slug: "coolbeans", nom: "Coolbeans", uptimerobot_monitor_ids: [] };
+const coolbeans: PortalClient = { slug: "coolbeans", nom: "Coolbeans", uptimerobot_monitor_ids: [], archive: false };
 const amusoire: PortalClient = {
   slug: "amusoire",
   nom: "Amusoire",
   doc: "amusoire",
   uptimerobot_monitor_ids: [],
+  archive: false,
 };
 const tous = [coolbeans, amusoire];
 

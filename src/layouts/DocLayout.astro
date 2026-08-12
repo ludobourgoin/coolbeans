@@ -7,7 +7,7 @@ import SidebarNav from "../components/doc/SidebarNav.astro";
 import TocRight from "../components/doc/TocRight.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
 import PortalSidebar from "../components/portail/PortalSidebar.astro";
-import { listClients } from "../lib/portail/clients";
+import { listClients, selectableClients } from "../lib/portail/clients";
 import { getPortalContext } from "../lib/portail/context";
 import { isAdmin } from "../lib/portail/metadata";
 import "../styles/doc.css";
@@ -45,7 +45,10 @@ const indexJson = JSON.stringify(searchIndex).replaceAll("<", "\\u003c");
 // La doc fait partie du portail : même topbar, même colonne.
 const { user, meta: portalMeta, client: portalClient } = await getPortalContext(Astro);
 const portalAdmin = isAdmin(portalMeta);
-const portalClients = portalAdmin ? await listClients() : [];
+// Les archivés sortent du sélecteur, sauf s'ils sont le client courant.
+const portalClients = portalAdmin
+  ? selectableClients(await listClients(), portalClient)
+  : [];
 ---
 
 <BaseLayout title={`${title} · la doc — ${projectLabel}`} description={`Documentation de passation ${projectLabel}`} noindex>

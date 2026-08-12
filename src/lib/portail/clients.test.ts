@@ -4,19 +4,21 @@ import {
   findClientByDocIn,
   getClientIn,
   missingKeysFor,
+  selectableClients,
   sortClients,
   type PortalClient,
 } from "./clients";
 
-const coolbeans: PortalClient = { slug: "coolbeans", nom: "Coolbeans", uptimerobot_monitor_ids: [] };
+const coolbeans: PortalClient = { slug: "coolbeans", nom: "Coolbeans", archive: false, uptimerobot_monitor_ids: [] };
 const amusoire: PortalClient = {
   slug: "amusoire",
   nom: "Amusoire",
   doc: "amusoire",
   asana_team_gid: "1217116359107690",
   uptimerobot_monitor_ids: [],
+  archive: false,
 };
-const zebre: PortalClient = { slug: "zebre", nom: "Zèbre", uptimerobot_monitor_ids: [] };
+const zebre: PortalClient = { slug: "zebre", nom: "Zèbre", archive: false, uptimerobot_monitor_ids: [] };
 const tous = [zebre, amusoire, coolbeans];
 
 describe("sortClients", () => {
@@ -79,5 +81,54 @@ describe("missingKeysFor", () => {
 describe("DEFAULT_CLIENT", () => {
   it("vaut coolbeans", () => {
     expect(DEFAULT_CLIENT).toBe("coolbeans");
+  });
+});
+
+// Archiver un client, ce n'est pas le supprimer : sa fiche, sa doc et ses
+// instantanés KV restent, et il reste résoluble. Il sort seulement du
+// sélecteur, pour que la liste ne s'allonge pas indéfiniment.
+describe("clients archivés", () => {
+  const ancien: PortalClient = {
+    slug: "ancien",
+    nom: "Ancien Client",
+    doc: "ancien",
+    archive: true,
+    uptimerobot_monitor_ids: [],
+  };
+  const avecArchive = [coolbeans, amusoire, ancien];
+
+  it("reste résoluble par son slug", () => {
+    expect(getClientIn(avecArchive, "ancien")).toEqual(ancien);
+  });
+
+  it("garde l'accès à sa doc", () => {
+    expect(findClientByDocIn(avecArchive, "ancien")).toEqual(ancien);
+  });
+
+  it("sort du sélecteur", () => {
+    expect(selectableClients(avecArchive, null).map((c) => c.slug)).toEqual([
+      "coolbeans",
+      "amusoire",
+    ]);
+  });
+
+  // Sinon le <select> afficherait la première option alors qu'on est ailleurs.
+  it("reparaît dans le sélecteur quand c'est le client courant", () => {
+    expect(selectableClients(avecArchive, ancien).map((c) => c.slug)).toEqual([
+      "coolbeans",
+      "amusoire",
+      "ancien",
+    ]);
+  });
+
+  it("n'apparaît pas deux fois si le client courant n'est pas archivé", () => {
+    expect(selectableClients(avecArchive, amusoire).map((c) => c.slug)).toEqual([
+      "coolbeans",
+      "amusoire",
+    ]);
+  });
+
+  it("un client sans champ archive est actif", () => {
+    expect(selectableClients([amusoire], null).map((c) => c.slug)).toEqual(["amusoire"]);
   });
 });

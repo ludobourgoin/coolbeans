@@ -156,6 +156,8 @@ const clients = defineCollection({
     doc: z.string().optional(),
     asana_team_gid: z.string().optional(),
     uptimerobot_monitor_ids: z.array(z.string()).default([]),
+    // Sort le client du sélecteur sans rien supprimer. Voir PortalClient.
+    archive: z.boolean().default(false),
   }),
 });
 

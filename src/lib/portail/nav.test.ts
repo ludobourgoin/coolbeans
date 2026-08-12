@@ -8,8 +8,9 @@ const avecDoc: PortalClient = {
   nom: "Amusoire",
   doc: "amusoire",
   uptimerobot_monitor_ids: [],
+  archive: false,
 };
-const sansDoc: PortalClient = { slug: "coolbeans", nom: "Coolbeans", uptimerobot_monitor_ids: [] };
+const sansDoc: PortalClient = { slug: "coolbeans", nom: "Coolbeans", uptimerobot_monitor_ids: [], archive: false };
 
 const client = readPortalMetadata({ role: "client", client: "amusoire" });
 const admin = readPortalMetadata({ role: "admin", client: "coolbeans" });
