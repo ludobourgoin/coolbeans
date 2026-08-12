@@ -19,8 +19,12 @@ import {
 
 export interface DevisConfirmationProps {
   slug: string;
-  /** Prénom seul : le « Bonjour » d'un accusé de réception se veut chaleureux. */
-  prenom?: string;
+  /**
+   * Prénom seul, jamais le nom complet : le « Bonjour » d'un accusé de réception
+   * se veut chaleureux. Obligatoire côté formulaire et côté API, donc pas de
+   * formulation de repli ici.
+   */
+  prenom: string;
   message?: string;
   /** Récap de facturation, repris tel quel du formulaire (variante validation). */
   raisonSociale?: string;
@@ -38,10 +42,6 @@ export interface EmailPret {
 const urlDevis = (slug: string): string =>
   `https://coolbeans.cc/devis/${encodeURIComponent(slug)}`;
 
-const bonjour = (prenom?: string): string =>
-  prenom ? `Bonjour ${esc(prenom)},` : "Bonjour,";
-const bonjourTexte = (prenom?: string): string => (prenom ? `Bonjour ${prenom},` : "Bonjour,");
-
 const PIED = "Vous recevez cet email suite &agrave; votre r&eacute;ponse sur coolbeans.cc.";
 
 /** Accusé de réception quand le client valide la proposition. */
@@ -54,7 +54,7 @@ export function renderConfirmationValidation(props: DevisConfirmationProps): Ema
     kicker: `Devis · ${esc(slug)}`,
     titre: "Merci, c'est validé !",
     contenu: [
-      p(bonjour(prenom)),
+      p(`Bonjour ${esc(prenom)},`),
       p(
         "Votre validation de la proposition est bien enregistrée. Merci pour votre confiance, j'ai hâte de commencer.",
       ),
@@ -80,7 +80,7 @@ export function renderConfirmationValidation(props: DevisConfirmationProps): Ema
   });
 
   const text = [
-    bonjourTexte(prenom),
+    `Bonjour ${prenom},`,
     "",
     "Votre validation de la proposition est bien enregistrée. Merci pour votre confiance, j'ai hâte de commencer.",
     "",
@@ -117,7 +117,7 @@ export function renderConfirmationQuestion(props: DevisConfirmationProps): Email
     kicker: `Devis · ${esc(slug)}`,
     titre: "Bien reçu, je regarde ça",
     contenu: [
-      p(bonjour(prenom)),
+      p(`Bonjour ${esc(prenom)},`),
       p(
         "Votre message est bien arrivé. Je le lis attentivement et je reviens vers vous très vite avec une réponse.",
       ),
@@ -133,7 +133,7 @@ export function renderConfirmationQuestion(props: DevisConfirmationProps): Email
   });
 
   const text = [
-    bonjourTexte(prenom),
+    `Bonjour ${prenom},`,
     "",
     "Votre message est bien arrivé. Je le lis attentivement et je reviens vers vous très vite avec une réponse.",
     message ? "" : null,

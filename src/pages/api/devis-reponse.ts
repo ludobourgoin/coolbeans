@@ -28,6 +28,11 @@ export const POST: APIRoute = async ({ request }) => {
   if (typeof slug !== "string" || (reponse !== "validation" && reponse !== "question")) {
     return json({ error: "Requête invalide." }, 400);
   }
+  // Prénom obligatoire : il ouvre les accusés de réception, qui n'ont pas de
+  // formulation de repli.
+  if (typeof prenom !== "string" || !prenom.trim()) {
+    return json({ error: "Merci de renseigner votre prénom." }, 400);
+  }
   // L'email est obligatoire : il sert d'adresse de réponse ET de destinataire de
   // l'accusé de réception envoyé au client.
   if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
@@ -51,15 +56,18 @@ export const POST: APIRoute = async ({ request }) => {
   const champ = (valeur: unknown): string | undefined =>
     typeof valeur === "string" && valeur ? valeur : undefined;
 
+  const prenomClient = prenom.trim();
+  const emailClient = email.trim();
+
   const html = renderTransactionnel({
     preheader: `${objetReponse} — devis ${esc(slug)}`,
     kicker: `Devis · ${esc(slug)}`,
     titre: objetReponse,
     contenu: [
       kv([
-        ["Prénom", champ(prenom) && esc(champ(prenom)!)],
+        ["Prénom", esc(prenomClient)],
         ["Nom", champ(nom) && esc(champ(nom)!)],
-        ["Email", champ(email) && esc(champ(email)!)],
+        ["Email", esc(emailClient)],
         ["Raison sociale", champ(raisonSociale) && esc(champ(raisonSociale)!)],
         ["SIREN", champ(siren) && esc(champ(siren)!)],
         ["Adresse", champ(adresse) && esc(champ(adresse)!)],
@@ -77,8 +85,6 @@ export const POST: APIRoute = async ({ request }) => {
     piedContexte: "R&eacute;ponse re&ccedil;ue via la page publique du devis.",
   });
 
-  const emailClient = email.trim();
-
   try {
     const resend = new Resend(env.RESEND_API_KEY);
     const { error } = await resend.emails.send({
@@ -90,19 +96,17 @@ export const POST: APIRoute = async ({ request }) => {
       text: [
         `Devis : ${slug}`,
         `Réponse : ${objetReponse}`,
-        typeof prenom === "string" && prenom ? `Prénom : ${prenom}` : null,
-        typeof nom === "string" && nom ? `Nom : ${nom}` : null,
-        typeof email === "string" && email ? `Email : ${email}` : null,
-        typeof raisonSociale === "string" && raisonSociale
-          ? `Raison sociale : ${raisonSociale}`
-          : null,
-        typeof siren === "string" && siren ? `SIREN : ${siren}` : null,
-        typeof adresse === "string" && adresse ? `Adresse : ${adresse}` : null,
-        typeof tva === "string" && tva ? `TVA intracommunautaire : ${tva}` : null,
+        `Prénom : ${prenomClient}`,
+        champ(nom) && `Nom : ${champ(nom)}`,
+        `Email : ${emailClient}`,
+        champ(raisonSociale) && `Raison sociale : ${champ(raisonSociale)}`,
+        champ(siren) && `SIREN : ${champ(siren)}`,
+        champ(adresse) && `Adresse : ${champ(adresse)}`,
+        champ(tva) && `TVA intracommunautaire : ${champ(tva)}`,
         "",
-        typeof message === "string" && message ? message : "(pas de message)",
+        champ(message) ?? "(pas de message)",
       ]
-        .filter((ligne) => ligne !== null)
+        .filter((ligne) => ligne !== undefined)
         .join("\n"),
     });
 
@@ -114,7 +118,7 @@ export const POST: APIRoute = async ({ request }) => {
       reponse === "validation" ? renderConfirmationValidation : renderConfirmationQuestion
     )({
       slug,
-      prenom: champ(prenom),
+      prenom: prenomClient,
       message: champ(message),
       raisonSociale: champ(raisonSociale),
       siren: champ(siren),
