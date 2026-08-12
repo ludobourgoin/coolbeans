@@ -12,6 +12,9 @@ import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import DocLayout from "../../../layouts/DocLayout.astro";
 import Meta from "../../../components/doc/Meta.astro";
+import { findClientByDoc } from "../../../lib/portail/clients";
+import { CLIENT_COOKIE } from "../../../lib/portail/current-client";
+import { getPortalContext } from "../../../lib/portail/context";
 
 type Doc = CollectionEntry<"docs">;
 const slugOf = (e: Doc) => e.id.split("/").pop()!.replace(/^\d+-/, "");
@@ -19,11 +22,36 @@ const hrefOf = (e: Doc) => `/docs/${e.data.project}/${slugOf(e)}`;
 
 const { project, slug } = Astro.params;
 
-// Droit par projet : publicMetadata.projects = ["amusoire", …] sur l'utilisateur
-// (dashboard Clerk). role = "admin" voit tout (y compris /docs/_template).
-const user = await Astro.locals.currentUser();
-const meta = (user?.publicMetadata ?? {}) as { projects?: string[]; role?: string };
-const allowed = meta.role === "admin" || (meta.projects ?? []).includes(project ?? "");
+// Droit d'accès : on voit la doc de son client courant. Pour un admin, le
+// client courant est celui qu'il a choisi — ou celui que l'URL impose, voir
+// juste en dessous — donc l'accès reste total sans clause d'exception.
+//
+// _template n'appartient à aucun client : il reste réservé aux admins par un
+// test de rôle explicite.
+const { meta, client } = await getPortalContext(Astro);
+const isAdminUser = meta.role === "admin";
+
+// L'URL gagne sur le sélecteur : un admin qui ouvre /docs/amusoire alors que
+// son contexte est Coolbeans voit la page ET bascule dessus. Sans ça, le
+// sélecteur afficherait un client pendant que l'écran en montre un autre.
+// Une requête GET pose donc un cookie : ce n'est pas pur, mais il s'agit d'une
+// préférence d'affichage, sans effet sur les données.
+let effectif = client;
+if (isAdminUser && project && client?.doc !== project) {
+  const proprietaire = await findClientByDoc(project);
+  if (proprietaire) {
+    Astro.cookies.set(CLIENT_COOKIE, proprietaire.slug, {
+      path: "/",
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 365,
+    });
+    effectif = proprietaire;
+  }
+}
+
+const allowed = project === "_template" ? isAdminUser : effectif?.doc === project;
 if (!allowed) return Astro.redirect("/espace");
 
 const entries = (await getCollection("docs", (e) => e.data.project === project)).sort(
