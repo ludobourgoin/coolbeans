@@ -1,31 +1,116 @@
 ---
-// Page-souche du module « Projets » (tâche S0.7).
+// Module « Projets » du portail client (sprint S1).
 //
-// Le shell de navigation se livre en S0 avec ses cinq entrées : chacune doit
-// mener quelque part. Le module lui-même arrive en Sprint S1.
+// Miroir, pas outil : la page ne fait que LIRE le snapshot KV écrit par le
+// cron. Aucun appel Asana au runtime des requêtes — le PAT ne doit apparaître
+// dans aucune réponse réseau côté navigateur (critère 6).
 //
-// L'encart de diagnostic n'est visible que des admins et sert dès maintenant :
-// le runbook d'onboarding demande de vérifier les empty states de chaque
-// module après avoir posé le publicMetadata d'un nouveau client.
+// Quatre états, dans cet ordre de test :
+//   1. pas de client courant, ou client sans asana_team_gid → EmptyState (le
+//      diagnostic de la clé manquante n'est visible que de l'admin) ;
+//   2. snapshot absent → « Synchronisation en cours » (premier déploiement,
+//      cron pas encore passé) ;
+//   3. snapshot sans projet → empty state accueillant ;
+//   4. les projets.
+//
+// Aucun de ces états n'est une erreur : un utilisateur sans mapping obtient
+// l'empty state, jamais une 500 (critère 7).
 export const prerender = false;
 
+import { actions } from "astro:actions";
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import EmptyState from "../../components/portail/EmptyState.astro";
+import ProjetCard from "../../components/portail/projets/ProjetCard.astro";
 import { missingKeysFor } from "../../lib/portail/clients";
 import { getPortalContext } from "../../lib/portail/context";
 import { isAdmin } from "../../lib/portail/metadata";
+import { portalKv, readTeamSnapshot } from "../../lib/portail/asana/kv";
+import { formatSyncedAt } from "../../lib/portail/asana/format";
 
 const { meta, client } = await getPortalContext(Astro);
+const admin = isAdmin(meta);
 const missingKeys = missingKeysFor("projets", client);
+const resultatSync = Astro.getActionResult(actions.portail.synchroniser);
+
+const snapshot =
+  missingKeys.length === 0 && client?.asana_team_gid
+    ? await readTeamSnapshot(portalKv(), client.asana_team_gid)
+    : null;
+
+const projets = snapshot?.projects ?? [];
+const derniereMaj = snapshot ? formatSyncedAt(snapshot.synced_at) : "";
 
 Astro.response.headers.set("Cache-Control", "no-store");
 ---
 
 <EspaceLayout title="Projets">
   <h1>Projets</h1>
-  <p class="sub">Le module arrive au sprint S1.</p>
+  <p class="sub">L'avancement de vos chantiers, tel qu'il est suivi de notre côté.</p>
 
-  <EmptyState title="Bientôt disponible" missingKeys={missingKeys} isAdmin={isAdmin(meta)}>
-    Le suivi de vos projets arrivera ici : l'avancement de chaque chantier, colonne par colonne, et ce qui attend votre validation.
-  </EmptyState>
+  {
+    admin && client?.asana_team_gid && (
+      <form method="POST" action={actions.portail.synchroniser} class="mb-6x flex items-center gap-3x">
+        <input type="hidden" name="client" value={client.slug} />
+        <input type="hidden" name="retour" value={Astro.url.pathname} />
+        <button type="submit" class="btn btn-sm btn-outline" data-sync>Synchroniser maintenant</button>
+        {resultatSync?.error && <span class="text-sm text-error">{resultatSync.error.message}</span>}
+        {resultatSync?.data && (
+          <span class="text-sm text-mute">
+            {resultatSync.data.written ? "Mis à jour." : "Aucun changement depuis le dernier sync."}
+          </span>
+        )}
+      </form>
+    )
+  }
+
+  <script>
+    // Un sync prend quelques secondes : sans retour, on double-clique.
+    document.querySelector<HTMLFormElement>("form:has([data-sync])")?.addEventListener("submit", (e) => {
+      const bouton = (e.currentTarget as HTMLFormElement).querySelector<HTMLButtonElement>("[data-sync]");
+      if (!bouton) return;
+      bouton.disabled = true;
+      bouton.textContent = "Synchronisation…";
+    });
+  </script>
+
+  {
+    missingKeys.length > 0 && (
+      <EmptyState title="Aucun projet pour le moment" missingKeys={missingKeys} isAdmin={admin}>
+        Dès qu'un chantier démarre, son avancement s'affiche ici : ce qui est fait, ce qui
+        est en cours, et ce qui attend votre validation.
+      </EmptyState>
+    )
+  }
+
+  {
+    missingKeys.length === 0 && snapshot === null && (
+      <EmptyState title="Synchronisation en cours">
+        Les données arrivent. Revenez dans quelques minutes.
+      </EmptyState>
+    )
+  }
+
+  {
+    missingKeys.length === 0 && snapshot !== null && projets.length === 0 && (
+      <EmptyState title="Aucun projet pour le moment">
+        Dès qu'un chantier démarre, son avancement s'affiche ici : ce qui est fait, ce qui
+        est en cours, et ce qui attend votre validation.
+      </EmptyState>
+    )
+  }
+
+  {
+    projets.length > 0 && (
+      <>
+        <div class="grid gap-6x">
+          {projets.map((projet) => (
+            <ProjetCard projet={projet} />
+          ))}
+        </div>
+        {derniereMaj && (
+          <p class="mt-8x text-xs text-mute">Dernière mise à jour le {derniereMaj}</p>
+        )}
+      </>
+    )
+  }
 </EspaceLayout>

@@ -16,6 +16,7 @@ import CommandMenu from "../components/ui/CommandMenu.astro";
 import EmptyState from "../components/portail/EmptyState.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
 import ClientSwitcher from "../components/portail/ClientSwitcher.astro";
+import ProjetCard from "../components/portail/projets/ProjetCard.astro";
 import { readPortalMetadata } from "../lib/portail/metadata";
 
 // Un client onboardé : les cinq entrées, sans les entrées admin.
@@ -471,6 +472,49 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
         <Collapse question="Que se passe-t-il après la mise en ligne ?">
           Maintenance mensuelle et un point trimestriel sur les performances.
         </Collapse>
+      </div>
+
+      <div class="card mt-6x">
+        <p class="label mb-4x">Projet · carte du portail</p>
+        <p class="mb-6x max-w-[62ch] text-sm text-mute">
+          Mobilier du module Projets. Rendu ici hors de <code class="font-mono">.doc-root</code> :
+          en situation réelle, <code class="font-mono">doc.css</code> s'applique par-dessus, d'où
+          l'absence totale de classe maison sur ces deux composants. La ligne de tâche
+          (<code class="font-mono">TacheLigne</code>) n'a pas de démo propre : elle n'existe
+          qu'à l'intérieur d'une carte.
+        </p>
+        <div class="mb-6x flex items-center gap-3x">
+          <button type="button" class="btn btn-sm btn-outline">Synchroniser maintenant</button>
+          <button type="button" class="btn btn-sm btn-outline" disabled>Synchronisation…</button>
+          <span class="text-sm text-mute">Aucun changement depuis le dernier sync.</span>
+        </div>
+        <div class="grid gap-6x">
+          <ProjetCard
+            projet={{
+              gid: "1",
+              name: "Site web Coolbeans",
+              description: "Refonte du site vitrine et de l'espace client.",
+              due_on: "2026-09-30",
+              status: "in_progress",
+              tasks: [
+                { gid: "a", name: "Maquette de la home", due_on: "2026-08-20", status: "todo" },
+                { gid: "b", name: "Intégration du portail", due_on: "2026-08-25", status: "in_progress" },
+                { gid: "c", name: "Relire les textes de la page tarifs", due_on: "2026-08-18", status: "to_validate" },
+                { gid: "d", name: "Poser le nom de domaine", due_on: "2026-08-04", status: "done" },
+              ],
+            }}
+          />
+          <ProjetCard
+            projet={{
+              gid: "2",
+              name: "Automatisation des devis",
+              description: "",
+              due_on: null,
+              status: "done",
+              tasks: [{ gid: "e", name: "Recette finale", due_on: "2026-07-30", status: "done" }],
+            }}
+          />
+        </div>
       </div>
 
       <p class="label mb-4x mt-16x">Portail client · my.coolbeans.cc</p>
