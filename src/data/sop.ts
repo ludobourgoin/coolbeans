@@ -9,6 +9,11 @@
  *
  * Le rendu est data-driven : ajouter une étape ici suffit à la faire apparaître
  * dans le schéma et dans les fiches, sans retoucher Sop.astro.
+ *
+ * Convention structurante : une carte du CRM représente une affaire. Elle n'a
+ * ni date d'échéance ni case à cocher — elle avance de colonne, puis se ferme.
+ * Ce sont ses SOUS-TÂCHES qui portent la date et l'assignation, remontent dans
+ * « Mes tâches » et se cochent. C'est ce que décrit le champ `echeance`.
  */
 
 export type Phase =
@@ -37,7 +42,7 @@ export interface Etape {
   outils: string[];
   faire: string[]; // actions concrètes, à l'impératif
   sortie: string; // ce qui prouve que l'étape est finie
-  echeance?: string; // ce que porte la date d'échéance de la carte
+  echeance?: string; // la sous-tâche « prochaine action » à assigner et à dater
   suivants: { vers: string; si: string }[];
   note?: string;
 }
@@ -133,13 +138,14 @@ export const etapes: Etape[] = [
     qui: "coolbeans",
     outils: ["Asana — 🎯 crm", "Notion Calendar"],
     faire: [
-      "Créer la carte au format « [budget évoqué €] Client — Objet ».",
+      "Dupliquer 🧬 [MODÈLE] Lead depuis 🧰 Modèles, la renommer « [budget évoqué €] Client — Objet » et la déposer en 👋 Contacté.",
       "Poser l'étiquette de source : source-inbound, source-recommandation ou source-prospection.",
       "Coller le contexte de l'échange dans la description de la carte.",
       "Envoyer le lien de réservation Notion Calendar.",
     ],
     sortie: "Lien de réservation envoyé.",
-    echeance: "J+2, relance si aucun créneau n'est réservé.",
+    echeance:
+      "« Envoyer le lien de réservation », assignée et datée à J+2 : relance si aucun créneau n'est réservé.",
     suivants: [
       { vers: "S2", si: "un créneau est réservé" },
       { vers: "S20", si: "le client dit « plus tard »" },
@@ -156,11 +162,12 @@ export const etapes: Etape[] = [
     qui: "coolbeans",
     outils: ["Asana — 🎯 crm", "Notion Calendar"],
     faire: [
-      "Passer l'échéance de la carte à la date du rendez-vous.",
+      "Cocher « Envoyer le lien de réservation ».",
+      "Dater « Faire le rendez-vous de découverte » au jour du créneau réservé.",
       "Préparer : site actuel, secteur, concurrents, questions à poser.",
     ],
     sortie: "Rendez-vous en agenda, préparation faite.",
-    echeance: "Date du rendez-vous.",
+    echeance: "« Faire le rendez-vous de découverte », datée au jour du créneau.",
     suivants: [{ vers: "S3", si: "le rendez-vous a lieu" }],
   },
   {
@@ -175,8 +182,10 @@ export const etapes: Etape[] = [
       "Cadrer le besoin, le budget, l'échéance, et vérifier qu'on parle au décideur.",
       "Annoncer la suite et le délai d'envoi du devis.",
       "Demander l'accord de principe pour présenter le projet en étude de cas.",
+      "Cocher « Qualifier » et « Faire le rendez-vous de découverte ».",
     ],
     sortie: "Trois issues possibles : qualifié, reporté, ou hors cible.",
+    echeance: "« Cadrer le périmètre et chiffrer », datée au délai d'envoi du devis annoncé.",
     suivants: [
       { vers: "S4", si: "l'affaire est qualifiée" },
       { vers: "S20", si: "l'affaire est reportée, avec une date de rappel" },
@@ -197,8 +206,10 @@ export const etapes: Etape[] = [
       "Chiffrer.",
       "Construire l'échéancier — acompte de 30 %, éventuelles factures intermédiaires, solde — chaque ligne datée.",
       "Construire le planning de jalons.",
+      "Cocher « Cadrer le périmètre et chiffrer », reporter le montant obtenu dans le titre de la carte.",
     ],
     sortie: "Chiffrage et échéancier arrêtés.",
+    echeance: "« Rédiger et publier le devis », datée au jour d'envoi promis.",
     suivants: [{ vers: "S5", si: "le chiffrage est prêt" }],
   },
   {
@@ -217,7 +228,7 @@ export const etapes: Etape[] = [
     ],
     sortie: "Le client a reçu le lien du devis.",
     echeance:
-      "J+3 relance 1, J+7 relance 2, J+14 relance 3, avec les étiquettes ☄️ relance-n correspondantes.",
+      "« Relancer à J+3, J+7, J+14 », redatée à chaque tour ; l'étiquette ☄️ relance-n se pose sur la carte.",
     suivants: [
       { vers: "S6", si: "le client répond" },
       { vers: "S20", si: "le client annonce un report" },
@@ -273,7 +284,7 @@ export const etapes: Etape[] = [
       "Saisir les échéances suivantes aux dates du devis.",
     ],
     sortie: "Facture d'acompte envoyée, échéancier saisi dans Tiime.",
-    echeance: "Date d'échéance de la facture d'acompte.",
+    echeance: "« Vérifier l'encaissement de l'acompte », datée à l'échéance de la facture.",
     suivants: [{ vers: "S9", si: "la facture est envoyée" }],
     note: "Rien ne démarre avant encaissement.",
   },
@@ -286,7 +297,7 @@ export const etapes: Etape[] = [
     qui: "client",
     outils: ["Tiime", "Asana — 🎯 crm"],
     faire: [
-      "Vérifier l'encaissement.",
+      "Cocher « Vérifier l'encaissement de l'acompte ».",
       "Déplacer la carte en 🚀 Acompte réglé.",
     ],
     sortie: "Feu vert de production. C'est le seul déclencheur du démarrage.",
@@ -412,7 +423,8 @@ export const etapes: Etape[] = [
       "Passer en mise en demeure au-delà.",
     ],
     sortie: "Solde réglé. La carte CRM se ferme ici.",
-    echeance: "J+8 relance 1, J+15 relance 2, puis mise en demeure.",
+    echeance:
+      "« Émettre la facture de solde » dans le projet client, puis une relance redatée à J+8 et J+15.",
     suivants: [{ vers: "S17", si: "le solde est réglé" }],
   },
 
@@ -430,7 +442,8 @@ export const etapes: Etape[] = [
       "Proposer le care plan : 65 €/h au lieu de 90 €/h.",
     ],
     sortie: "Garantie close, care plan proposé.",
-    echeance: "Date de fin de garantie, J+30 après la livraison.",
+    echeance:
+      "« J+30 : clôture de la garantie et proposition du care plan », du projet client, datée dès la livraison.",
     suivants: [{ vers: "S18", si: "la garantie est close" }],
     note: "Le contenu exact de l'offre de care plan n'est pas arrêté. Le SOP décrit le moment et l'intention ; la définition des formules est un chantier séparé.",
   },
@@ -480,11 +493,12 @@ export const etapes: Etape[] = [
     outils: ["Asana — 🎯 crm"],
     faire: [
       "Déplacer la carte en 🧊 En veille.",
-      "Poser obligatoirement une date de rappel en échéance.",
+      "Créer la sous-tâche « Relancer », se l'assigner et la dater au jour du rappel convenu.",
       "Noter en commentaire ce qui bloque et ce qui débloquerait.",
     ],
-    sortie: "Carte dormante, mais datée.",
-    echeance: "Date de rappel convenue avec le client. Sans date, la carte bascule en 🪦 PERDU.",
+    sortie: "Carte dormante, mais tenue par une sous-tâche datée.",
+    echeance:
+      "« Relancer », datée au jour convenu. Sans sous-tâche datée, la carte bascule en 🪦 PERDU.",
     suivants: [
       { vers: "S1", si: "la date de rappel arrive et le projet redémarre" },
       { vers: "S21", si: "la date passe sans nouvelle, ou aucune date n'a été posée" },

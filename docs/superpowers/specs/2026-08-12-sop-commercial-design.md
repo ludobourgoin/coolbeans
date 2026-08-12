@@ -85,16 +85,22 @@ taux de transformation en haut de tunnel.
 
 ### Trois conventions remplacent les champs personnalisés absents
 
-1. **Toute carte porte en permanence une date d'échéance égale à la prochaine action
-   à mener.** Pas de date signifie carte morte. C'est le seul filet de relance
-   disponible sur le plan gratuit, et la vue « Mes tâches » d'Asana devient de fait
-   la liste de travail du jour.
+1. **La carte ne porte ni date d'échéance ni case cochée : ce sont ses sous-tâches
+   qui portent la date et l'assignation.** Une carte représente une affaire, pas une
+   action ; elle avance de colonne et se ferme au règlement du solde, sans jamais être
+   cochée. Lui coller une échéance la ferait apparaître en retard permanent dans
+   « Mes tâches ». C'est la sous-tâche matérialisant la prochaine action qui est
+   assignée et datée, remonte dans « Mes tâches » — de fait la liste de travail du
+   jour — et se coche une fois faite. Le filet de relance devient : une affaire vivante
+   a toujours au moins une sous-tâche assignée et datée.
 2. **Étiquettes** pour ce qui se cumule avec l'état : `source-inbound`,
    `source-recommandation`, `source-prospection`, puis `☄️ relance-1`,
    `☄️ relance-2`, `☄️ relance-3`.
 3. **Montant dans le titre de la carte** : `[3 500 €] Amusoire — Refonte site`.
    Inélégant, mais c'est le seul moyen de lire le pipeline d'un coup d'œil et de le
-   chercher sans champ dédié.
+   chercher sans champ dédié. Un titre sans montant signifie que l'affaire n'est pas
+   encore estimée : c'est une information, pas un oubli. Le montant s'écrit en S4,
+   quand le chiffrage s'arrête.
 
 ### Le pipeline CRM cible
 
@@ -125,7 +131,8 @@ redispatchées à la main dans leur état réel avant suppression de la colonne.
 
 `🧊 En veille` sépare « pas maintenant, rappelle-moi en septembre » de « perdu ».
 Mélangées, les affaires reportées ne sont jamais rouvertes. Une carte en veille porte
-obligatoirement une date de rappel ; sans date elle bascule en `🪦 PERDU`.
+obligatoirement une sous-tâche de rappel assignée et datée ; sans elle, la carte
+bascule en `🪦 PERDU`.
 
 ### Rendu du schéma : grille CSS, pas SVG à coordonnées
 
@@ -177,7 +184,7 @@ export interface Etape {
   outils: string[];
   faire: string[];         // actions concrètes, à l'impératif
   sortie: string;          // ce qui prouve que l'étape est finie
-  echeance?: string;       // ce que porte la date d'échéance de la carte
+  echeance?: string;       // la sous-tâche « prochaine action » à assigner et à dater
   suivants: { vers: string; si: string }[];
   note?: string;
 }
@@ -228,14 +235,14 @@ réservation d'un créneau depuis la page de contact) ou issue du vivier (S0).
 Faire : créer la carte au format `[budget évoqué €] Client — Objet` ; poser l'étiquette
 de source ; coller le contexte dans la description ; envoyer le lien de réservation
 Notion Calendar.
-Échéance : J+2, relance si aucun créneau réservé.
+Prochaine action datée : sous-tâche « Envoyer le lien de réservation », à J+2, relance si aucun créneau réservé.
 Sortie : lien de réservation envoyé.
 Suivants : S2 si réservation ; S20 si « plus tard » ; S21 si hors cible ou silence
 après deux relances.
 
 **S2 · Rendez-vous pris** — colonne `📆 Rdv pris`
 Déclencheur : créneau réservé.
-Faire : passer l'échéance de la carte à la date du rendez-vous ; préparer le site
+Faire : cocher « Envoyer le lien de réservation » ; dater « Faire le rendez-vous de découverte » au jour du créneau ; préparer le site
 actuel, le secteur, les concurrents, les questions.
 Sortie : rendez-vous en agenda.
 
@@ -259,8 +266,8 @@ Outils : `src/content/devis/<slug>.yaml`, publié sur `/devis/<slug>`.
 Faire : rédiger le YAML (sections, budget, planning, notes) ; vérifier que l'échéancier
 figure ligne par ligne avec ses dates et que le bloc d'acceptation des CGV est présent ;
 publier et envoyer le lien.
-Échéance : J+3 relance 1, J+7 relance 2, J+14 relance 3, avec les étiquettes
-`☄️ relance-n` correspondantes.
+Prochaine action datée : sous-tâche « Relancer », redatée à J+3, J+7 puis J+14, avec
+les étiquettes `☄️ relance-n` posées sur la carte.
 Sortie : le client a reçu le lien.
 Suivants : S6 si réponse ; S20 ou S21 si silence après la relance 3.
 
@@ -283,7 +290,7 @@ Sortie : commande ferme.
 **S8 · Facture d'acompte** — outil Tiime
 Faire : créer le client dans Tiime avec les informations reçues ; émettre la facture
 d'acompte de 30 % ; saisir les échéances suivantes aux dates du devis.
-Échéance de la carte : date d'échéance de la facture d'acompte.
+Prochaine action datée : sous-tâche « Vérifier l'encaissement de l'acompte », à l'échéance de la facture.
 Règle : rien ne démarre avant encaissement.
 
 **S9 · Acompte encaissé** — colonne `🚀 Acompte réglé`
@@ -305,8 +312,8 @@ Faire, dans l'ordre :
 Sortie : le client peut se connecter, le projet est prêt.
 
 **S11 · Exécution**
-Faire : travailler par sprints ; les tâches traversent Backlog, Sprint, En cours, Pour
-validation, Terminé ; tenir le point client au rythme convenu. Toute demande hors
+Faire : travailler par sprints ; les tâches traversent 🧱 Backlog, 🚀 Sprint, 🚧 En
+cours, ☝️ Pour validation, ✅ Terminé ; tenir le point client au rythme convenu. Toute demande hors
 périmètre part en Inbox et donne lieu à un avenant.
 Note : la carte CRM ne bouge plus, elle attend en `🏗️ En production`.
 
@@ -364,8 +371,8 @@ automatisation, care plan).
 ### Sorties latérales
 
 **S20 · En veille** — colonne `🧊 En veille`
-Une carte en veille porte obligatoirement une date de rappel en échéance. Sans date,
-elle bascule en `🪦 PERDU`.
+Une carte en veille porte obligatoirement une sous-tâche « Relancer », assignée et
+datée au jour du rappel convenu. Sans elle, la carte bascule en `🪦 PERDU`.
 
 **S21 · Perdu** — colonne `🪦 PERDU`
 Noter la raison en commentaire : prix, timing, concurrent, silence, hors cible. Sur le
@@ -398,8 +405,9 @@ Sous-tâches, dans l'ordre :
 ### Modèle B : le projet `🧱 [MODÈLE] Projet client`
 
 Vit dans la team Coolbeans et se duplique dans la team du client au démarrage. Sections
-identiques aux projets existants : `📥 Inbox`, `🍫 Backlog`, `🚀 Sprint`, `🚧 En cours`,
-`🤙 Pour validation`, `✅ Terminé`.
+identiques aux projets existants : `📥 Inbox`, `🧱 Backlog`, `🚀 Sprint`, `🚧 En cours`,
+`☝️ Pour validation`, `✅ Terminé`. Noms relevés sur « Site web Coolbeans » et
+« myCoolbeans » : ce sont eux qui font foi.
 
 Tâches pré-remplies dans le Backlog, en trois familles.
 

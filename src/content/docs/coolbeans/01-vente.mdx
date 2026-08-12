@@ -39,15 +39,19 @@ Le **pipeline**, c'est le projet Asana **🎯 crm**. Une carte y naît **dès qu
 
 Asana est en plan gratuit et le restera : pas de champ personnalisé, pas de règle, pas d'automatisation, pas de modèle de projet, pas de dépendance ni de jalon. Trois conventions manuelles remplacent ce qui manque.
 
-**1 · Toute carte porte en permanence une date d'échéance, égale à la prochaine action à mener.**
-Pas de date signifie carte morte. C'est le seul filet de relance disponible sur le plan gratuit, et la vue « Mes tâches » d'Asana devient de fait la liste de travail du jour.
+**1 · La carte ne porte ni date ni case cochée. Ce sont ses sous-tâches qui travaillent.**
+Une carte du CRM représente **une affaire**, pas une action : elle n'a pas de deadline et ne se coche jamais. Elle avance de colonne, puis se ferme au règlement du solde. Lui coller une échéance la ferait apparaître en retard permanent dans « Mes tâches ».
+
+Ce qui porte une **date** et une **assignation**, c'est la sous-tâche qui matérialise la prochaine action. Elle remonte alors dans « Mes tâches », qui devient de fait la liste de travail du jour, et se coche une fois l'action faite. Les huit sous-tâches viennent du modèle de lead, dupliqué à la création de la carte.
+
+Le filet de relance n'est donc pas « une carte sans date est morte », mais : **une affaire vivante a toujours au moins une sous-tâche assignée et datée.** Aucune sous-tâche datée, quelle que soit la colonne, signifie affaire oubliée.
 
 **2 · Les étiquettes portent ce qui se cumule avec l'état.**
 Source : `source-inbound`, `source-recommandation`, `source-prospection`.
 Relances : `☄️ relance-1`, `☄️ relance-2`, `☄️ relance-3`.
 
 **3 · Le montant va dans le titre de la carte**, au format `[3 500 €] Amusoire — Refonte site`.
-Inélégant, mais c'est le seul moyen de lire le pipeline d'un coup d'œil et de le chercher sans champ dédié.
+Inélégant, mais c'est le seul moyen de lire le pipeline d'un coup d'œil et de le chercher sans champ dédié. **Un titre sans montant veut dire que l'affaire n'est pas encore estimée** — c'est une information, pas un oubli. Le montant s'écrit au titre en même temps que le chiffrage s'arrête, en S4.
 
 ## Le pipeline cible
 
