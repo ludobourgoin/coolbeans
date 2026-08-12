@@ -60,6 +60,16 @@ export const sep = (): string =>
 export const cta = (label: string, url: string): string =>
   `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 8px;"><tr><td style="background:${INK};border-radius:6px;"><a href="${url}" style="display:inline-block;padding:12px 20px;font-family:${FONT_SANS};font-size:15px;font-weight:500;line-height:1;color:${SURFACE};text-decoration:none;">${label}</a></td></tr></table>`;
 
+/**
+ * Bloc de citation : reprend un texte écrit par quelqu'un d'autre (message d'un
+ * client dans un formulaire) en le dissociant nettement de la prose de l'email.
+ * Le liseré est une cellule pleine plutôt qu'un border-left : Outlook rend le
+ * moteur Word, qui avale les bordures de td de façon imprévisible.
+ * Le contenu doit déjà être échappé (esc()).
+ */
+export const citation = (html: string): string =>
+  `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;background:${SURFACE_SUBTLE};border-radius:6px;"><tr><td width="3" bgcolor="${INK}" style="width:3px;background:${INK};border-radius:6px 0 0 6px;font-size:0;line-height:0;">&nbsp;</td><td style="padding:16px 20px;font-family:${FONT_SANS};font-size:15px;line-height:1.6;color:${MUTE};">${html}</td></tr></table>`;
+
 /** Étiquette mono uppercase, le .label du site (kicker, en-têtes de champs). */
 export const label = (texte: string): string =>
   `<div style="font-family:${FONT_MONO};font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${MUTE};margin:0 0 16px;">${texte}</div>`;

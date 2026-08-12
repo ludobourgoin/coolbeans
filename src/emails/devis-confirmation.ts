@@ -7,11 +7,12 @@
    Chaque renderer retourne l'objet, le HTML et la version texte prêts pour Resend.
    ========================================================================== */
 
-import { esc, kv, p, renderTransactionnel, sep } from "./transactionnel";
+import { citation, esc, kv, label, p, renderTransactionnel, sep } from "./transactionnel";
 
 export interface DevisConfirmationProps {
   slug: string;
-  nom?: string;
+  /** Prénom seul : le « Bonjour » d'un accusé de réception se veut chaleureux. */
+  prenom?: string;
   message?: string;
   /** Récap de facturation, repris tel quel du formulaire (variante validation). */
   raisonSociale?: string;
@@ -29,14 +30,15 @@ export interface EmailPret {
 const urlDevis = (slug: string): string =>
   `https://coolbeans.cc/devis/${encodeURIComponent(slug)}`;
 
-const bonjour = (nom?: string): string => (nom ? `Bonjour ${esc(nom)},` : "Bonjour,");
-const bonjourTexte = (nom?: string): string => (nom ? `Bonjour ${nom},` : "Bonjour,");
+const bonjour = (prenom?: string): string =>
+  prenom ? `Bonjour ${esc(prenom)},` : "Bonjour,";
+const bonjourTexte = (prenom?: string): string => (prenom ? `Bonjour ${prenom},` : "Bonjour,");
 
 const PIED = "Vous recevez cet email suite &agrave; votre r&eacute;ponse sur coolbeans.cc.";
 
 /** Accusé de réception quand le client valide la proposition. */
 export function renderConfirmationValidation(props: DevisConfirmationProps): EmailPret {
-  const { slug, nom, message, raisonSociale, siren, adresse, tva } = props;
+  const { slug, prenom, message, raisonSociale, siren, adresse, tva } = props;
   const lien = urlDevis(slug);
 
   const html = renderTransactionnel({
@@ -44,7 +46,7 @@ export function renderConfirmationValidation(props: DevisConfirmationProps): Ema
     kicker: `Devis · ${esc(slug)}`,
     titre: "Merci, c'est validé !",
     contenu: [
-      p(bonjour(nom)),
+      p(bonjour(prenom)),
       p(
         "Votre validation de la proposition est bien enregistrée. Merci pour votre confiance, j'ai hâte de commencer.",
       ),
@@ -60,7 +62,7 @@ export function renderConfirmationValidation(props: DevisConfirmationProps): Ema
         ["Adresse", adresse && esc(adresse)],
         ["TVA intracom.", tva && esc(tva)],
       ]),
-      message ? p("<strong>Votre message</strong>") + p(esc(message).replace(/\n/g, "<br>")) : "",
+      message ? sep() + label("Votre message") + citation(esc(message).replace(/\n/g, "<br>")) : "",
       p("Une coquille dans ces informations, ou une question&nbsp;? Répondez simplement à cet email."),
       p("À très vite,<br>Ludo"),
     ].join(""),
@@ -69,7 +71,7 @@ export function renderConfirmationValidation(props: DevisConfirmationProps): Ema
   });
 
   const text = [
-    bonjourTexte(nom),
+    bonjourTexte(prenom),
     "",
     "Votre validation de la proposition est bien enregistrée. Merci pour votre confiance, j'ai hâte de commencer.",
     "",
@@ -98,7 +100,7 @@ export function renderConfirmationValidation(props: DevisConfirmationProps): Ema
 
 /** Accusé de réception quand le client pose une question ou fait une remarque. */
 export function renderConfirmationQuestion(props: DevisConfirmationProps): EmailPret {
-  const { slug, nom, message } = props;
+  const { slug, prenom, message } = props;
   const lien = urlDevis(slug);
 
   const html = renderTransactionnel({
@@ -106,13 +108,12 @@ export function renderConfirmationQuestion(props: DevisConfirmationProps): Email
     kicker: `Devis · ${esc(slug)}`,
     titre: "Bien reçu, je regarde ça",
     contenu: [
-      p(bonjour(nom)),
+      p(bonjour(prenom)),
       p(
         "Votre message est bien arrivé. Je le lis attentivement et je reviens vers vous très vite avec une réponse.",
       ),
-      message ? sep() + p("<strong>Ce que vous m'avez écrit</strong>") : "",
-      message ? p(esc(message).replace(/\n/g, "<br>")) : "",
-      message ? sep() : "",
+      message ? sep() + label("Ce que vous m'avez écrit") : "",
+      message ? citation(esc(message).replace(/\n/g, "<br>")) : "",
       p(
         "Rien n'est engagé tant que vous n'avez pas validé la proposition. Si vous voulez ajouter quelque chose, répondez simplement à cet email.",
       ),
@@ -123,7 +124,7 @@ export function renderConfirmationQuestion(props: DevisConfirmationProps): Email
   });
 
   const text = [
-    bonjourTexte(nom),
+    bonjourTexte(prenom),
     "",
     "Votre message est bien arrivé. Je le lis attentivement et je reviens vers vous très vite avec une réponse.",
     message ? "" : null,

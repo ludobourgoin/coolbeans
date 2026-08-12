@@ -36,28 +36,39 @@ const { slug } = Astro.props;
         />
         <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
           <div class="grid gap-2">
+            <label class="label" for="devis-prenom">Prénom</label>
+            <input
+              class="field"
+              type="text"
+              id="devis-prenom"
+              name="prenom"
+              autocomplete="given-name"
+              placeholder="Votre prénom"
+            />
+          </div>
+          <div class="grid gap-2">
             <label class="label" for="devis-nom">Nom</label>
             <input
               class="field"
               type="text"
               id="devis-nom"
               name="nom"
-              autocomplete="name"
+              autocomplete="family-name"
               placeholder="Votre nom"
             />
           </div>
-          <div class="grid gap-2">
-            <label class="label" for="devis-email">Email</label>
-            <input
-              class="field"
-              type="email"
-              id="devis-email"
-              name="email"
-              autocomplete="email"
-              placeholder="vous@entreprise.com"
-              required
-            />
-          </div>
+        </div>
+        <div class="grid gap-2">
+          <label class="label" for="devis-email">Email</label>
+          <input
+            class="field"
+            type="email"
+            id="devis-email"
+            name="email"
+            autocomplete="email"
+            placeholder="vous@entreprise.com"
+            required
+          />
         </div>
         <div data-facturation-fields hidden class="grid gap-4 border-t border-line pt-6">
           <p class="text-[13px] text-mute">
@@ -152,6 +163,7 @@ const { slug } = Astro.props;
     const payload = {
       slug: form.dataset.slug,
       reponse: fd.get("reponse"),
+      prenom: fd.get("prenom"),
       nom: fd.get("nom"),
       email: fd.get("email"),
       message: fd.get("message"),

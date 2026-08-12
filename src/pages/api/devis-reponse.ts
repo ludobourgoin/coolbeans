@@ -5,7 +5,15 @@ import {
   renderConfirmationQuestion,
   renderConfirmationValidation,
 } from "../../emails/devis-confirmation";
-import { esc, kv, p, renderTransactionnel, sep } from "../../emails/transactionnel";
+import {
+  citation,
+  esc,
+  kv,
+  label,
+  p,
+  renderTransactionnel,
+  sep,
+} from "../../emails/transactionnel";
 
 export const prerender = false;
 
@@ -16,7 +24,7 @@ export const POST: APIRoute = async ({ request }) => {
   const data = await request.json().catch(() => null);
   if (!data || typeof data !== "object") return json({ error: "Requête invalide." }, 400);
 
-  const { slug, reponse, nom, email, message, raisonSociale, siren, adresse, tva } =
+  const { slug, reponse, prenom, nom, email, message, raisonSociale, siren, adresse, tva } =
     data as Record<string, unknown>;
   if (typeof slug !== "string" || (reponse !== "validation" && reponse !== "question")) {
     return json({ error: "Requête invalide." }, 400);
@@ -50,6 +58,7 @@ export const POST: APIRoute = async ({ request }) => {
     titre: objetReponse,
     contenu: [
       kv([
+        ["Prénom", champ(prenom) && esc(champ(prenom)!)],
         ["Nom", champ(nom) && esc(champ(nom)!)],
         ["Email", champ(email) && esc(champ(email)!)],
         ["Raison sociale", champ(raisonSociale) && esc(champ(raisonSociale)!)],
@@ -58,7 +67,9 @@ export const POST: APIRoute = async ({ request }) => {
         ["TVA intracom.", champ(tva) && esc(champ(tva)!)],
       ]),
       champ(message)
-        ? sep() + p(esc(champ(message)!).replace(/\n/g, "<br>"))
+        ? sep() +
+          label("Message du client") +
+          citation(esc(champ(message)!).replace(/\n/g, "<br>"))
         : p("(pas de message)"),
     ].join(""),
     cta: {
@@ -81,6 +92,7 @@ export const POST: APIRoute = async ({ request }) => {
       text: [
         `Devis : ${slug}`,
         `Réponse : ${objetReponse}`,
+        typeof prenom === "string" && prenom ? `Prénom : ${prenom}` : null,
         typeof nom === "string" && nom ? `Nom : ${nom}` : null,
         typeof email === "string" && email ? `Email : ${email}` : null,
         typeof raisonSociale === "string" && raisonSociale
@@ -104,7 +116,7 @@ export const POST: APIRoute = async ({ request }) => {
       reponse === "validation" ? renderConfirmationValidation : renderConfirmationQuestion
     )({
       slug,
-      nom: champ(nom),
+      prenom: champ(prenom),
       message: champ(message),
       raisonSociale: champ(raisonSociale),
       siren: champ(siren),
