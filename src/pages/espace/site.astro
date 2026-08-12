@@ -13,6 +13,7 @@ import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import EmptyState from "../../components/portail/EmptyState.astro";
 import { missingKeysFor } from "../../lib/portail/clients";
 import { getPortalContext } from "../../lib/portail/context";
+import { isAdmin } from "../../lib/portail/metadata";
 
 const { meta, client } = await getPortalContext(Astro);
 const missingKeys = missingKeysFor("site", client);
@@ -24,7 +25,7 @@ Astro.response.headers.set("Cache-Control", "no-store");
   <h1>Mon site</h1>
   <p class="sub">Le module arrive au sprint S3.</p>
 
-  <EmptyState title="Bientôt disponible" missingKeys={missingKeys} isAdmin={meta.role === "admin"}>
+  <EmptyState title="Bientôt disponible" missingKeys={missingKeys} isAdmin={isAdmin(meta)}>
     La santé de votre site en production arrivera ici : disponibilité, dernière vérification, et le détail de vos statistiques d'audience.
   </EmptyState>
 </EspaceLayout>

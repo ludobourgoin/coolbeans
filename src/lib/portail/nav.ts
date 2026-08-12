@@ -14,7 +14,7 @@
 // pas un hôte portail : il faut y garder le préfixe /espace).
 
 import type { PortalClient } from "./clients";
-import type { PortalMetadata } from "./metadata";
+import { isAdmin, type PortalMetadata } from "./metadata";
 
 /** Hôtes sur lesquels le préfixe /espace est retiré de l'URL publique. */
 const PORTAL_HOSTS = ["my.coolbeans.cc", "my-staging.coolbeans.cc"];
@@ -84,7 +84,7 @@ export function buildPortalNav(
     { label: "Support", href: at("/support"), activePrefix: "/espace/support" },
   ];
 
-  if (meta.role === "admin") {
+  if (isAdmin(meta)) {
     items.push({
       label: "Chiffrages",
       href: at("/chiffrages"),

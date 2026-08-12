@@ -6,10 +6,11 @@ export const prerender = false;
 
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import { getPortalContext } from "../../lib/portail/context";
+import { isAdmin } from "../../lib/portail/metadata";
 import { portalHref } from "../../lib/portail/nav";
 
 const { user, meta, client } = await getPortalContext(Astro);
-const admin = meta.role === "admin";
+const admin = isAdmin(meta);
 const prenom = user?.firstName ?? "";
 const at = (path: string) => portalHref(path, Astro.url.hostname);
 

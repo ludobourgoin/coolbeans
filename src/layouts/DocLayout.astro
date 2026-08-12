@@ -9,6 +9,7 @@ import PortalNav from "../components/portail/PortalNav.astro";
 import PortalSidebar from "../components/portail/PortalSidebar.astro";
 import { listClients } from "../lib/portail/clients";
 import { getPortalContext } from "../lib/portail/context";
+import { isAdmin } from "../lib/portail/metadata";
 import "../styles/doc.css";
 
 interface NavItem {
@@ -43,7 +44,8 @@ const indexJson = JSON.stringify(searchIndex).replaceAll("<", "\\u003c");
 
 // La doc fait partie du portail : même topbar, même colonne.
 const { user, meta: portalMeta, client: portalClient } = await getPortalContext(Astro);
-const portalClients = portalMeta.role === "admin" ? await listClients() : [];
+const portalAdmin = isAdmin(portalMeta);
+const portalClients = portalAdmin ? await listClients() : [];
 ---
 
 <BaseLayout title={`${title} · la doc — ${projectLabel}`} description={`Documentation de passation ${projectLabel}`} noindex>
@@ -59,7 +61,7 @@ const portalClients = portalMeta.role === "admin" ? await listClients() : [];
       <PortalSidebar
         clients={portalClients}
         current={portalClient}
-        isAdmin={portalMeta.role === "admin"}
+        isAdmin={portalAdmin}
       >
         <SidebarNav items={nav} />
       </PortalSidebar>

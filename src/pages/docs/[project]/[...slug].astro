@@ -15,6 +15,7 @@ import Meta from "../../../components/doc/Meta.astro";
 import { findClientByDoc } from "../../../lib/portail/clients";
 import { CLIENT_COOKIE } from "../../../lib/portail/current-client";
 import { getPortalContext, overrideCurrentClient } from "../../../lib/portail/context";
+import { isAdmin } from "../../../lib/portail/metadata";
 
 type Doc = CollectionEntry<"docs">;
 const slugOf = (e: Doc) => e.id.split("/").pop()!.replace(/^\d+-/, "");
@@ -29,7 +30,7 @@ const { project, slug } = Astro.params;
 // _template n'appartient à aucun client : il reste réservé aux admins par un
 // test de rôle explicite.
 const { meta, client } = await getPortalContext(Astro);
-const isAdminUser = meta.role === "admin";
+const isAdminUser = isAdmin(meta);
 
 // L'URL gagne sur le sélecteur : un admin qui ouvre /docs/amusoire alors que
 // son contexte est Coolbeans voit la page ET bascule dessus. Sans ça, le

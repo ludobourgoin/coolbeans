@@ -8,6 +8,8 @@ import { catalogueSchema, chiffrageSchema } from "../lib/chiffrage/schemas";
 import type { Chiffrage } from "../lib/chiffrage/types";
 import { getClient } from "../lib/portail/clients";
 import { CLIENT_COOKIE } from "../lib/portail/current-client";
+import { portalHref } from "../lib/portail/nav";
+import { retourSchema } from "../lib/portail/retour";
 import { requireAdmin as requireAdminGuard } from "../lib/portail/require-admin";
 
 /* Garde systématique : session Clerk + rôle admin (publicMetadata), même
@@ -136,10 +138,10 @@ export const server = {
         //   contraint nulle part après le premier caractère. D'où le `$`
         //   qui ancre toute la chaîne et l'exclusion des caractères de
         //   contrôle (CR, LF, tabulation, NUL, DEL) sur toute sa longueur.
-        retour: z
-          .string()
-          .regex(/^\/(?![/\\])[^\x00-\x1f\x7f]*$/, "Chemin de retour invalide.")
-          .default("/"),
+        //
+        // Schéma partagé (src/lib/portail/retour.ts) : le test Vitest de ce
+        // champ l'importe directement plutôt que de recopier la regex.
+        retour: retourSchema,
       }),
       handler: async ({ client, retour }, context) => {
         await requireAdmin(context);
@@ -157,7 +159,24 @@ export const server = {
           maxAge: 60 * 60 * 24 * 365,
         });
 
-        return { client: cible.slug, retour };
+        // Depuis une page de doc, revenir sur `retour` (la doc elle-même)
+        // relance aussitôt la règle « l'URL gagne » de
+        // src/pages/docs/[project]/[...slug].astro : cette route réécrirait
+        // le cookie vers le propriétaire de LA DOC AFFICHÉE, annulant la
+        // bascule qu'on vient de faire. On atterrit donc sur l'accueil du
+        // portail du nouveau client — décision produit du 2026-08-12.
+        // Toutes les autres bascules (nav, sidebar) reviennent sur la page
+        // courante, sans changement de comportement.
+        //
+        // `context.url` reflète l'hôte de la requête entrante ; ActionAPIContext
+        // n'expose pas de méthode redirect() — c'est au niveau du middleware
+        // qui appelle ce handler (src/middleware.ts) que la redirection 303
+        // est effectivement émise.
+        const redirectTo = retour.startsWith("/docs/")
+          ? portalHref("/", context.url.hostname)
+          : retour;
+
+        return { client: cible.slug, redirectTo };
       },
     }),
   },

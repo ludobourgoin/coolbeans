@@ -67,15 +67,20 @@ export function getPortalContext(context: PortalRequestContext): Promise<PortalC
  * de doc quand l'URL impose un contexte : sans ça, tout appelant ultérieur
  * de getPortalContext — le layout, notamment — verrait le client d'avant la
  * bascule, et la nav contredirait la page.
+ *
+ * Suppose que getPortalContext a déjà été appelé une première fois dans la
+ * requête (c'est le cas au point d'appel actuel, qui lit `meta` et `client`
+ * juste avant) : sans ça, on n'a ni user ni meta réels à partir desquels
+ * dériver un contexte, et les fabriquer à vide produirait un contexte faux
+ * plutôt qu'une erreur visible.
  */
 export function overrideCurrentClient(context: PortalRequestContext, client: PortalClient): void {
   const cache = context.locals as WithCache;
   const previous = cache[CACHE_KEY];
-  cache[CACHE_KEY] = previous
-    ? previous.then((ctx) => ({ ...ctx, client }))
-    : Promise.resolve({ user: null, meta: readPortalMetadata(null), client });
-}
-
-export async function getCurrentClient(context: PortalRequestContext): Promise<PortalClient | null> {
-  return (await getPortalContext(context)).client;
+  if (!previous) {
+    throw new Error(
+      "overrideCurrentClient : appeler getPortalContext avant, pour amorcer le contexte de la requête.",
+    );
+  }
+  cache[CACHE_KEY] = previous.then((ctx) => ({ ...ctx, client }));
 }

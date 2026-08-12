@@ -12,6 +12,7 @@ import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import EmptyState from "../../components/portail/EmptyState.astro";
 import { missingKeysFor } from "../../lib/portail/clients";
 import { getPortalContext } from "../../lib/portail/context";
+import { isAdmin } from "../../lib/portail/metadata";
 
 const { meta, client } = await getPortalContext(Astro);
 
@@ -32,7 +33,7 @@ if (client?.doc) {
   <EmptyState
     title="Aucune documentation associée à cet espace"
     missingKeys={missingKeysFor("doc", client)}
-    isAdmin={meta.role === "admin"}
+    isAdmin={isAdmin(meta)}
   >
     La doc de passation est ouverte à la livraison du projet. Si vous pensez
     qu'elle devrait être là, écrivez à ludo@coolbeans.cc.

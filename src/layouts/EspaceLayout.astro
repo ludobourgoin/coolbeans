@@ -7,6 +7,7 @@ import PortalNav from "../components/portail/PortalNav.astro";
 import PortalSidebar from "../components/portail/PortalSidebar.astro";
 import { listClients } from "../lib/portail/clients";
 import { getPortalContext } from "../lib/portail/context";
+import { isAdmin } from "../lib/portail/metadata";
 import "../styles/doc.css";
 
 interface Props {
@@ -15,7 +16,7 @@ interface Props {
 const { title } = Astro.props;
 
 const { user, meta, client } = await getPortalContext(Astro);
-const admin = meta.role === "admin";
+const admin = isAdmin(meta);
 // Le registre n'est lu que pour l'admin : lui seul voit le sélecteur.
 const clients = admin ? await listClients() : [];
 ---

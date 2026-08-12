@@ -1,28 +1,15 @@
 // Verrouille la validation du paramètre `retour` de l'Action
 // `portail.choisirClient` (src/actions/index.ts) sur les deux choses qu'elle
-// doit empêcher :
-// - un hôte externe : `startsWith("/")` seul laissait passer les URL
-//   protocole-relatives ("//evil.example/x", résolue par le navigateur en
-//   "https://evil.example/x") et les variantes à antislash
-//   ("/\evil.example", que plusieurs navigateurs normalisent en
-//   "//evil.example").
-// - une injection d'en-tête / response-splitting : sans `$` de fin ni
-//   exclusion des caractères de contrôle, une valeur comme
-//   "/x\r\nLocation: https://evil.example" passait la validation, le CRLF
-//   n'étant contraint nulle part après le premier caractère.
+// doit empêcher : hôte externe et injection d'en-tête / response-splitting.
+// Le détail des deux règles est documenté dans src/lib/portail/retour.ts.
 //
-// Reconstruit le schéma ici plutôt que de l'importer depuis
-// src/actions/index.ts : ce fichier importe `astro:actions`, un module
-// virtuel non résolvable sous Vitest (même contrainte que `astro:content`,
-// déjà rencontrée sur cette tâche pour `requireAdmin`, cf. task-5-report.md).
-// Cette regex doit rester identique à celle de src/actions/index.ts.
+// Importe le schéma partagé plutôt que de recopier la regex : sans ça, un
+// relâchement de la vraie regex (dans retour.ts, utilisée par l'Action)
+// laisserait les assertions ci-dessous vertes tant que la copie locale
+// n'était pas mise à jour en miroir — c'est exactement ce qui s'est produit
+// ici avant l'extraction. Même schéma qu'utilise src/actions/index.ts.
 import { describe, expect, it } from "vitest";
-import { z } from "zod";
-
-const retourSchema = z
-  .string()
-  .regex(/^\/(?![/\\])[^\x00-\x1f\x7f]*$/, "Chemin de retour invalide.")
-  .default("/");
+import { retourSchema } from "../lib/portail/retour";
 
 describe("retour (portail.choisirClient)", () => {
   it.each(["/", "/projets", "/espace/projets", "/espace/projets?q=%C3%A9"])(
