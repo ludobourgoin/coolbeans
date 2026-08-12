@@ -483,6 +483,11 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
           (<code class="font-mono">TacheLigne</code>) n'a pas de démo propre : elle n'existe
           qu'à l'intérieur d'une carte.
         </p>
+        <div class="mb-6x flex items-center gap-3x">
+          <button type="button" class="btn btn-sm btn-outline">Synchroniser maintenant</button>
+          <button type="button" class="btn btn-sm btn-outline" disabled>Synchronisation…</button>
+          <span class="text-sm text-mute">Aucun changement depuis le dernier sync.</span>
+        </div>
         <div class="grid gap-6x">
           <ProjetCard
             projet={{

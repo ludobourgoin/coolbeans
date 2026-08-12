@@ -17,6 +17,7 @@
 // l'empty state, jamais une 500 (critère 7).
 export const prerender = false;
 
+import { actions } from "astro:actions";
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import EmptyState from "../../components/portail/EmptyState.astro";
 import ProjetCard from "../../components/portail/projets/ProjetCard.astro";
@@ -29,6 +30,7 @@ import { formatSyncedAt } from "../../lib/portail/asana/format";
 const { meta, client } = await getPortalContext(Astro);
 const admin = isAdmin(meta);
 const missingKeys = missingKeysFor("projets", client);
+const resultatSync = Astro.getActionResult(actions.portail.synchroniser);
 
 const snapshot =
   missingKeys.length === 0 && client?.asana_team_gid
@@ -44,6 +46,32 @@ Astro.response.headers.set("Cache-Control", "no-store");
 <EspaceLayout title="Projets">
   <h1>Projets</h1>
   <p class="sub">L'avancement de vos chantiers, tel qu'il est suivi de notre côté.</p>
+
+  {
+    admin && client?.asana_team_gid && (
+      <form method="POST" action={actions.portail.synchroniser} class="mb-6x flex items-center gap-3x">
+        <input type="hidden" name="client" value={client.slug} />
+        <input type="hidden" name="retour" value={Astro.url.pathname} />
+        <button type="submit" class="btn btn-sm btn-outline" data-sync>Synchroniser maintenant</button>
+        {resultatSync?.error && <span class="text-sm text-error">{resultatSync.error.message}</span>}
+        {resultatSync?.data && (
+          <span class="text-sm text-mute">
+            {resultatSync.data.written ? "Mis à jour." : "Aucun changement depuis le dernier sync."}
+          </span>
+        )}
+      </form>
+    )
+  }
+
+  <script>
+    // Un sync prend quelques secondes : sans retour, on double-clique.
+    document.querySelector<HTMLFormElement>("form:has([data-sync])")?.addEventListener("submit", (e) => {
+      const bouton = (e.currentTarget as HTMLFormElement).querySelector<HTMLButtonElement>("[data-sync]");
+      if (!bouton) return;
+      bouton.disabled = true;
+      bouton.textContent = "Synchronisation…";
+    });
+  </script>
 
   {
     missingKeys.length > 0 && (
