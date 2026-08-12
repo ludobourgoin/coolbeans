@@ -1,6 +1,10 @@
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 import { Resend } from "resend";
+import {
+  renderConfirmationQuestion,
+  renderConfirmationValidation,
+} from "../../emails/devis-confirmation";
 import { esc, kv, p, renderTransactionnel, sep } from "../../emails/transactionnel";
 
 export const prerender = false;
@@ -16,6 +20,11 @@ export const POST: APIRoute = async ({ request }) => {
     data as Record<string, unknown>;
   if (typeof slug !== "string" || (reponse !== "validation" && reponse !== "question")) {
     return json({ error: "Requête invalide." }, 400);
+  }
+  // L'email est obligatoire : il sert d'adresse de réponse ET de destinataire de
+  // l'accusé de réception envoyé au client.
+  if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+    return json({ error: "Merci de renseigner un email valide." }, 400);
   }
   if (
     reponse === "validation" &&
@@ -59,12 +68,14 @@ export const POST: APIRoute = async ({ request }) => {
     piedContexte: "R&eacute;ponse re&ccedil;ue via la page publique du devis.",
   });
 
+  const emailClient = email.trim();
+
   try {
     const resend = new Resend(env.RESEND_API_KEY);
     const { error } = await resend.emails.send({
       from: "Devis Coolbeans <devis@coolbeans.cc>",
       to: "ludo@coolbeans.cc",
-      replyTo: typeof email === "string" && email ? email : undefined,
+      replyTo: emailClient,
       subject: `Devis ${slug} — ${objetReponse}`,
       html,
       text: [
@@ -86,6 +97,33 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
     if (error) throw error;
+
+    // Accusé de réception au client. Un échec ici ne doit pas faire échouer la
+    // requête : le message est déjà arrivé chez Ludo, c'est ce qui compte.
+    const confirmation = (
+      reponse === "validation" ? renderConfirmationValidation : renderConfirmationQuestion
+    )({
+      slug,
+      nom: champ(nom),
+      message: champ(message),
+      raisonSociale: champ(raisonSociale),
+      siren: champ(siren),
+      adresse: champ(adresse),
+      tva: champ(tva),
+    });
+
+    const { error: erreurConfirmation } = await resend.emails.send({
+      from: "Ludo de Coolbeans <devis@coolbeans.cc>",
+      to: emailClient,
+      replyTo: "ludo@coolbeans.cc",
+      subject: confirmation.subject,
+      html: confirmation.html,
+      text: confirmation.text,
+    });
+    if (erreurConfirmation) {
+      console.error("devis-reponse: accusé de réception non envoyé", erreurConfirmation);
+    }
+
     return json({ ok: true }, 200);
   } catch (err) {
     console.error("devis-reponse: envoi Resend échoué", err);

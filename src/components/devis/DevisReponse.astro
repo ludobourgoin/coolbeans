@@ -55,6 +55,7 @@ const { slug } = Astro.props;
               name="email"
               autocomplete="email"
               placeholder="vous@entreprise.com"
+              required
             />
           </div>
         </div>
@@ -188,11 +189,13 @@ const { slug } = Astro.props;
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error();
-      status.textContent = "Message envoyé, je reviens vers toi rapidement.";
+      status.textContent = "Message envoyé, vous recevez une confirmation par email à l'instant.";
       status.className = "text-center text-[13px] font-medium text-success";
       form.reset();
+      syncFacturationFields(); // reset() remet la case "validation" : réaffiche la facturation
     } catch {
-      status.textContent = "Envoi impossible, réessaie dans un instant ou écris-moi directement.";
+      status.textContent =
+        "Envoi impossible, réessayez dans un instant ou écrivez-moi directement.";
       status.className = "text-center text-[13px] font-medium text-error";
     } finally {
       submitBtn.disabled = false;
