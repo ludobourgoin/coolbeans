@@ -23,15 +23,34 @@ export const POST: APIRoute = async ({ request }) => {
   const data = await request.json().catch(() => null);
   if (!data || typeof data !== "object") return json({ error: "Requête invalide." }, 400);
 
-  const { slug, reponse, prenom, nom, email, message, raisonSociale, siren, adresse, tva } =
-    data as Record<string, unknown>;
+  const {
+    slug,
+    reponse,
+    prenom,
+    nom,
+    email,
+    message,
+    consentement,
+    raisonSociale,
+    siren,
+    adresse,
+    tva,
+  } = data as Record<string, unknown>;
   if (typeof slug !== "string" || (reponse !== "validation" && reponse !== "question")) {
     return json({ error: "Requête invalide." }, 400);
   }
   // Prénom obligatoire : il ouvre les accusés de réception, qui n'ont pas de
-  // formulation de repli.
+  // formulation de repli. Nom obligatoire aussi, quelle que soit la réponse.
   if (typeof prenom !== "string" || !prenom.trim()) {
     return json({ error: "Merci de renseigner votre prénom." }, 400);
+  }
+  if (typeof nom !== "string" || !nom.trim()) {
+    return json({ error: "Merci de renseigner votre nom." }, 400);
+  }
+  // Le consentement conditionne l'envoi : la case du formulaire ne protège que
+  // le navigateur, un POST direct doit être refusé de la même façon.
+  if (consentement !== true) {
+    return json({ error: "Merci d'accepter la conservation de vos informations." }, 400);
   }
   // L'email est obligatoire : il sert d'adresse de réponse ET de destinataire de
   // l'accusé de réception envoyé au client.
@@ -57,7 +76,11 @@ export const POST: APIRoute = async ({ request }) => {
     typeof valeur === "string" && valeur ? valeur : undefined;
 
   const prenomClient = prenom.trim();
+  const nomClient = nom.trim();
   const emailClient = email.trim();
+  // Trace du consentement : sans base de données, l'email de notification est le
+  // seul endroit où il en reste une preuve horodatée.
+  const traceConsentement = "Accord&eacute; via le formulaire du devis";
 
   const html = renderTransactionnel({
     preheader: `${objetReponse} — devis ${esc(slug)}`,
@@ -66,12 +89,13 @@ export const POST: APIRoute = async ({ request }) => {
     contenu: [
       kv([
         ["Prénom", esc(prenomClient)],
-        ["Nom", champ(nom) && esc(champ(nom)!)],
+        ["Nom", esc(nomClient)],
         ["Email", esc(emailClient)],
         ["Raison sociale", champ(raisonSociale) && esc(champ(raisonSociale)!)],
         ["SIREN", champ(siren) && esc(champ(siren)!)],
         ["Adresse", champ(adresse) && esc(champ(adresse)!)],
         ["TVA intracom.", champ(tva) && esc(champ(tva)!)],
+        ["Consentement", traceConsentement],
       ]),
       champ(message)
         ? titreSection("Message du client") +
@@ -97,12 +121,13 @@ export const POST: APIRoute = async ({ request }) => {
         `Devis : ${slug}`,
         `Réponse : ${objetReponse}`,
         `Prénom : ${prenomClient}`,
-        champ(nom) && `Nom : ${champ(nom)}`,
+        `Nom : ${nomClient}`,
         `Email : ${emailClient}`,
         champ(raisonSociale) && `Raison sociale : ${champ(raisonSociale)}`,
         champ(siren) && `SIREN : ${champ(siren)}`,
         champ(adresse) && `Adresse : ${champ(adresse)}`,
         champ(tva) && `TVA intracommunautaire : ${champ(tva)}`,
+        "Consentement : accordé via le formulaire du devis",
         "",
         champ(message) ?? "(pas de message)",
       ]

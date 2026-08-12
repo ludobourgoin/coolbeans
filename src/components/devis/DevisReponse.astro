@@ -34,9 +34,12 @@ const { slug } = Astro.props;
             },
           ]}
         />
+        <p class="text-[13px] text-mute">Les champs marqués d'une étoile sont obligatoires.</p>
         <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
           <div class="grid gap-2">
-            <label class="label" for="devis-prenom">Prénom</label>
+            <label class="label" for="devis-prenom">
+              Prénom <span class="text-ink" aria-hidden="true">*</span>
+            </label>
             <input
               class="field"
               type="text"
@@ -48,7 +51,9 @@ const { slug } = Astro.props;
             />
           </div>
           <div class="grid gap-2">
-            <label class="label" for="devis-nom">Nom</label>
+            <label class="label" for="devis-nom">
+              Nom <span class="text-ink" aria-hidden="true">*</span>
+            </label>
             <input
               class="field"
               type="text"
@@ -56,11 +61,14 @@ const { slug } = Astro.props;
               name="nom"
               autocomplete="family-name"
               placeholder="Votre nom"
+              required
             />
           </div>
         </div>
         <div class="grid gap-2">
-          <label class="label" for="devis-email">Email</label>
+          <label class="label" for="devis-email">
+            Email <span class="text-ink" aria-hidden="true">*</span>
+          </label>
           <input
             class="field"
             type="email"
@@ -77,7 +85,9 @@ const { slug } = Astro.props;
           </p>
           <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
             <div class="grid gap-2">
-              <label class="label" for="devis-raison-sociale">Raison sociale</label>
+              <label class="label" for="devis-raison-sociale">
+                Raison sociale <span class="text-ink" aria-hidden="true">*</span>
+              </label>
               <input
                 class="field"
                 type="text"
@@ -88,7 +98,9 @@ const { slug } = Astro.props;
               />
             </div>
             <div class="grid gap-2">
-              <label class="label" for="devis-siren">Numéro SIREN</label>
+              <label class="label" for="devis-siren">
+                Numéro SIREN <span class="text-ink" aria-hidden="true">*</span>
+              </label>
               <input
                 class="field"
                 type="text"
@@ -100,7 +112,9 @@ const { slug } = Astro.props;
             </div>
           </div>
           <div class="grid gap-2">
-            <label class="label" for="devis-adresse">Adresse du siège social</label>
+            <label class="label" for="devis-adresse">
+              Adresse du siège social <span class="text-ink" aria-hidden="true">*</span>
+            </label>
             <input
               class="field"
               type="text"
@@ -128,6 +142,29 @@ const { slug } = Astro.props;
             id="devis-message"
             name="message"
             placeholder="Une question, une remarque, un ajustement souhaité…"></textarea>
+        </div>
+        <div class="grid gap-2 border-t border-line pt-6">
+          <label
+            class="flex cursor-pointer items-start gap-3 text-[13px] leading-[1.6] text-mute"
+            for="devis-consentement"
+          >
+            <input
+              class="mt-0.75 size-4 shrink-0 accent-ink"
+              type="checkbox"
+              id="devis-consentement"
+              name="consentement"
+              required
+            />
+            <span>
+              J'accepte que Coolbeans conserve ces informations pour traiter ma demande et
+              assurer le suivi de notre collaboration.
+              <span class="text-ink" aria-hidden="true">*</span>
+            </span>
+          </label>
+          <p class="pl-7 text-[13px] leading-[1.6] text-mute">
+            Elles ne sont ni revendues ni transmises à des tiers, et peuvent être supprimées
+            sur simple demande à <a class="link" href="mailto:ludo@coolbeans.cc">ludo@coolbeans.cc</a>.
+          </p>
         </div>
         <button class="btn btn-lg" type="submit">Envoyer ma réponse</button>
         <p
@@ -172,6 +209,7 @@ const { slug } = Astro.props;
       siren: fd.get("siren"),
       adresse: fd.get("adresse"),
       tva: fd.get("tva"),
+      consentement: fd.get("consentement") === "on",
     };
 
     if (payload.reponse === "validation") {
