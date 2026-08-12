@@ -144,4 +144,19 @@ const docs = defineCollection({
   }),
 });
 
-export const collections = { devis, projets, docs };
+/* Un fichier YAML par client dans src/content/clients/ ; le nom du fichier est
+   le slug du client. Source de vérité des mappings d'un client : sa doc, sa
+   team Asana, ses monitors. Le publicMetadata Clerk ne porte plus qu'un
+   pointeur `client` vers ce registre — voir
+   docs/superpowers/specs/2026-08-12-selecteur-de-client-admin-design.md */
+const clients = defineCollection({
+  loader: glob({ pattern: "*.yaml", base: "./src/content/clients" }),
+  schema: z.object({
+    nom: z.string(),
+    doc: z.string().optional(),
+    asana_team_gid: z.string().optional(),
+    uptimerobot_monitor_ids: z.array(z.string()).default([]),
+  }),
+});
+
+export const collections = { devis, projets, docs, clients };

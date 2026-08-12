@@ -1,0 +1,100 @@
+// Registre des clients du portail (spec 2026-08-12).
+//
+// Un client est l'unité à laquelle se rattachent une doc, une team Asana et des
+// monitors. Avant ce registre, ces trois mappings vivaient sur chaque
+// utilisateur Clerk : deux contacts d'un même client pouvaient diverger, et
+// rien ne permettait d'énumérer les clients — donc pas de sélecteur possible.
+//
+// Les fonctions `*In` prennent la liste en argument : c'est ce qui les rend
+// testables sans `astro:content`, indisponible sous Vitest.
+
+export interface PortalClient {
+  /** Nom du fichier YAML, sans extension. */
+  slug: string;
+  nom: string;
+  /** Slug dans la collection `docs`. Absent = ce client n'a pas de doc. */
+  doc?: string;
+  asana_team_gid?: string;
+  uptimerobot_monitor_ids: string[];
+}
+
+/** Client affiché par défaut à l'admin, et tête de liste du sélecteur. */
+export const DEFAULT_CLIENT = "coolbeans";
+
+/** Modules dont l'affichage dépend d'un mapping du client. */
+export type PortalModule = "projets" | "site" | "doc" | "support";
+
+/** Clés de mapping d'un client, telles que nommées dans le YAML. */
+export type ClientMappingKey = "doc" | "asana_team_gid" | "uptimerobot_monitor_ids";
+
+/**
+ * Mapping sans lequel un module ne peut rien afficher.
+ * Ressources n'y figure pas : son contenu est commun à tous les clients.
+ */
+export const MODULE_REQUIREMENTS: Record<PortalModule, readonly ClientMappingKey[]> = {
+  projets: ["asana_team_gid"],
+  support: ["asana_team_gid"],
+  site: ["uptimerobot_monitor_ids"],
+  doc: ["doc"],
+};
+
+/** Coolbeans en tête — c'est le défaut — puis les autres par nom. */
+export function sortClients(clients: PortalClient[]): PortalClient[] {
+  return [...clients].sort((a, b) => {
+    if (a.slug === DEFAULT_CLIENT) return -1;
+    if (b.slug === DEFAULT_CLIENT) return 1;
+    return a.nom.localeCompare(b.nom, "fr");
+  });
+}
+
+export function getClientIn(
+  clients: PortalClient[],
+  slug: string | null | undefined,
+): PortalClient | null {
+  if (!slug) return null;
+  return clients.find((c) => c.slug === slug) ?? null;
+}
+
+export function findClientByDocIn(clients: PortalClient[], docSlug: string): PortalClient | null {
+  return clients.find((c) => c.doc === docSlug) ?? null;
+}
+
+function hasMapping(client: PortalClient, key: ClientMappingKey): boolean {
+  switch (key) {
+    case "doc":
+      return Boolean(client.doc);
+    case "asana_team_gid":
+      return Boolean(client.asana_team_gid);
+    case "uptimerobot_monitor_ids":
+      return client.uptimerobot_monitor_ids.length > 0;
+  }
+}
+
+/**
+ * Clés manquantes pour ce module. Tableau vide = le module peut s'afficher.
+ * Sans client du tout, tout est réputé manquant plutôt que de lever.
+ */
+export function missingKeysFor(
+  module: PortalModule,
+  client: PortalClient | null,
+): ClientMappingKey[] {
+  const required = MODULE_REQUIREMENTS[module];
+  if (!client) return [...required];
+  return required.filter((key) => !hasMapping(client, key));
+}
+
+/* ---- Accès à la collection ------------------------------------------- */
+
+export async function listClients(): Promise<PortalClient[]> {
+  const { getCollection } = await import("astro:content");
+  const entries = await getCollection("clients");
+  return sortClients(entries.map((e) => ({ slug: e.id, ...e.data })));
+}
+
+export async function getClient(slug: string | null | undefined): Promise<PortalClient | null> {
+  return getClientIn(await listClients(), slug);
+}
+
+export async function findClientByDoc(docSlug: string): Promise<PortalClient | null> {
+  return findClientByDocIn(await listClients(), docSlug);
+}
