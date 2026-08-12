@@ -9,7 +9,7 @@ import { isAdmin } from "../../lib/portail/metadata";
 import { getPortalContext } from "../../lib/portail/context";
 import { portalHref } from "../../lib/portail/nav";
 
-const { user, meta } = await getPortalContext(Astro.locals);
+const { user, meta } = await getPortalContext(Astro);
 const admin = isAdmin(meta);
 const prenom = user?.firstName ?? "";
 const at = (path: string) => portalHref(path, Astro.url.hostname);
