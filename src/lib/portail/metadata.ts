@@ -1,28 +1,24 @@
-// Schéma canonique du publicMetadata Clerk (tâche S0.6).
+// Schéma canonique du publicMetadata Clerk.
 //
-// Trois mappings relient un utilisateur Clerk à ses données, et ils sont posés
-// À LA MAIN dans le dashboard Clerk à l'onboarding. C'est le garde-fou 03 du
-// doc master : « trois mappings posés à la main = incohérences garanties ».
-// Ce fichier est la contrepartie exécutable du bloc de référence — il est la
-// seule source de vérité sur la forme attendue et sur ce qui manque.
+// Depuis la spec 2026-08-12, il ne porte plus que deux clés : le rôle et un
+// pointeur vers le registre des clients. Les mappings (doc, team Asana,
+// monitors) ont migré sur le client — voir src/lib/portail/clients.ts. Un
+// mapping vit donc une fois par client, plus une fois par contact, ce qui
+// règle le garde-fou 03 au lieu de l'aggraver.
 //
-// Bloc de référence (documentation : docs/superpowers/specs/2026-08-11-portail-publicmetadata.md) :
+//   { "role": "client", "client": "amusoire" }
 //
-//   {
-//     "role": "client",                        // ou "admin"
-//     "projects": ["amusoire"],                // slugs doc  → module Doc
-//     "asana_team_gid": "1217116359107690",    // team Asana → modules Projets + Support
-//     "uptimerobot_monitor_ids": ["800123456"] // monitors   → module Mon site
-//   }
-//
-// La lecture est volontairement tolérante : la saisie est manuelle, dans un
-// éditeur JSON libre. Une valeur mal typée doit dégrader vers un empty state
-// qui nomme la clé, jamais vers une 500 (critère d'acceptation 7).
+// La lecture reste tolérante : la saisie se fait à la main dans un éditeur
+// JSON sans validation, et une forme inattendue doit mener à un empty state,
+// jamais à une 500 (critère d'acceptation 7).
 
 /** Rôle applicatif. Tout ce qui n'est pas exactement "admin" est un client. */
 export type PortalRole = "client" | "admin";
 
-/** Les clés du schéma canonique, telles qu'écrites dans le dashboard Clerk. */
+/**
+ * @deprecated Les clés de mapping décrivent le client, pas l'utilisateur.
+ * Voir clients.ts. Retiré en Task 9.
+ */
 export type PortalMetadataKey =
   | "role"
   | "projects"
@@ -31,18 +27,25 @@ export type PortalMetadataKey =
 
 export interface PortalMetadata {
   role: PortalRole;
-  /** Slugs de doc autorisés. Vide = aucun accès doc. */
+  /** Slug dans le registre des clients. `null` si le mapping n'est pas posé. */
+  client: string | null;
+
+  /** @deprecated Migré vers le registre. Retiré en Task 9. */
   projects: string[];
-  /** GID de la team Asana du client. `null` si le mapping n'est pas posé. */
+  /** @deprecated Migré vers le registre. Retiré en Task 9. */
   asana_team_gid: string | null;
-  /** IDs des monitors UptimeRobot. Tableau dès la V1 pour préparer le multi-sites. */
+  /** @deprecated Migré vers le registre. Retiré en Task 9. */
   uptimerobot_monitor_ids: string[];
 }
 
-/** Modules du portail qui dépendent d'au moins une clé de metadata. */
+/**
+ * @deprecated Les mappings décrivent le client, pas l'utilisateur. Voir clients.ts. Retiré en Task 9.
+ */
 export type PortalModule = "projets" | "site" | "doc" | "support";
 
 /**
+ * @deprecated Les mappings décrivent le client, pas l'utilisateur. Voir clients.ts. Retiré en Task 9.
+ *
  * Clé(s) sans lesquelles un module ne peut rien afficher.
  *
  * Ressources n'y figure pas : son contenu est commun à tous les clients et ne
@@ -87,6 +90,26 @@ function asIdList(value: unknown): string[] {
   return out;
 }
 
+function asSlug(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return trimmed === "" ? null : trimmed;
+}
+
+/**
+ * TEMPORAIRE — à retirer une fois tous les comptes migrés.
+ *
+ * Entre le déploiement de cette spec et la mise à jour manuelle des comptes
+ * dans le dashboard Clerk, un utilisateur n'a pas encore de clé `client`. On
+ * lit alors l'ancien `projects[0]`, sans quoi son portail casse pendant la
+ * fenêtre. Voir la section Migration de la spec.
+ */
+function legacyClient(meta: Record<string, unknown>): string | null {
+  const raw = meta.projects;
+  const first = Array.isArray(raw) ? raw[0] : raw;
+  return asSlug(first);
+}
+
 /**
  * Lit le publicMetadata d'un utilisateur Clerk. Ne lève jamais : toute forme
  * inattendue dégrade vers la valeur vide de la clé concernée.
@@ -95,6 +118,8 @@ export function readPortalMetadata(raw: unknown): PortalMetadata {
   const meta = (raw ?? {}) as Record<string, unknown>;
   return {
     role: meta.role === "admin" ? "admin" : "client",
+    client: asSlug(meta.client) ?? legacyClient(meta),
+    // Champs dépréciés, conservés le temps que les appelants migrent (Task 9).
     projects: asIdList(meta.projects),
     asana_team_gid: asId(meta.asana_team_gid),
     uptimerobot_monitor_ids: asIdList(meta.uptimerobot_monitor_ids),
@@ -120,6 +145,8 @@ function hasKey(meta: PortalMetadata, key: PortalMetadataKey): boolean {
 }
 
 /**
+ * @deprecated Les mappings décrivent le client, pas l'utilisateur. Voir clients.ts. Retiré en Task 9.
+ *
  * Clés manquantes pour ce module. Tableau vide = le module peut s'afficher.
  * C'est ce que l'empty state montre à un admin, et tait à un client.
  */

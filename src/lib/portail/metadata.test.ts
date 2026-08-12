@@ -12,6 +12,9 @@ describe("readPortalMetadata", () => {
       }),
     ).toEqual({
       role: "client",
+      // Pas de clé `client` explicite dans l'entrée : retombée temporaire sur
+      // projects[0], voir describe("retombée temporaire sur projects[0]").
+      client: "amusoire",
       projects: ["amusoire"],
       asana_team_gid: "1217116359107690",
       uptimerobot_monitor_ids: ["800123456"],
@@ -22,6 +25,7 @@ describe("readPortalMetadata", () => {
     for (const raw of [undefined, null, {}]) {
       expect(readPortalMetadata(raw)).toEqual({
         role: "client",
+        client: null,
         projects: [],
         asana_team_gid: null,
         uptimerobot_monitor_ids: [],
@@ -61,6 +65,43 @@ describe("readPortalMetadata", () => {
   it("rogne les espaces autour des identifiants", () => {
     expect(readPortalMetadata({ asana_team_gid: " 1217116359107690 " }).asana_team_gid)
       .toBe("1217116359107690");
+  });
+
+  it("lit la nouvelle clé client", () => {
+    expect(readPortalMetadata({ role: "admin", client: "coolbeans" }).client).toBe("coolbeans");
+  });
+
+  it("rend client nul quand la clé est absente, vide ou mal typée", () => {
+    expect(readPortalMetadata({}).client).toBeNull();
+    expect(readPortalMetadata({ client: "   " }).client).toBeNull();
+    expect(readPortalMetadata({ client: 42 }).client).toBeNull();
+  });
+
+  it("rogne les espaces autour du slug de client", () => {
+    expect(readPortalMetadata({ client: "  amusoire  " }).client).toBe("amusoire");
+  });
+
+  // Retombée TEMPORAIRE : entre le déploiement et la mise à jour des comptes
+  // dans le dashboard Clerk, un utilisateur n'a pas encore de clé `client`.
+  // Sans ça, son portail casse pendant la fenêtre. À retirer ensuite.
+  describe("retombée temporaire sur projects[0]", () => {
+    it("adopte le premier slug de projects quand client est absent", () => {
+      expect(readPortalMetadata({ projects: ["amusoire"] }).client).toBe("amusoire");
+    });
+
+    it("tolère un scalaire au lieu d'un tableau", () => {
+      expect(readPortalMetadata({ projects: "amusoire" }).client).toBe("amusoire");
+    });
+
+    it("ne prend pas le pas sur un client explicite", () => {
+      expect(readPortalMetadata({ client: "coolbeans", projects: ["amusoire"] }).client).toBe(
+        "coolbeans",
+      );
+    });
+
+    it("reste null si projects est vide", () => {
+      expect(readPortalMetadata({ projects: [] }).client).toBeNull();
+    });
   });
 });
 
