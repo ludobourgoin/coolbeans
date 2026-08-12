@@ -122,15 +122,23 @@ export const server = {
       accept: "form",
       input: z.object({
         client: z.string().regex(SLUG_STRICT, "Slug invalide."),
-        // Chemin de retour, forcément interne. `startsWith("/")` ne suffit
-        // pas : "//evil.example/x" commence par une barre et est pourtant
-        // une URL protocole-relative, que le navigateur résout vers
-        // https://evil.example/x — et "/\evil.example" est normalisé en
-        // "//evil.example" par plusieurs navigateurs. On exige donc une barre
-        // initiale NON suivie d'une seconde barre ni d'un antislash.
+        // Chemin de retour, forcément interne, sur toute sa longueur. Deux
+        // choses à empêcher :
+        // - un hôte externe : "//evil.example/x" commence par une barre et
+        //   est pourtant une URL protocole-relative, que le navigateur
+        //   résout vers https://evil.example/x ; "/\evil.example" est
+        //   normalisé en "//evil.example" par plusieurs navigateurs. D'où
+        //   l'exigence d'une barre initiale NON suivie d'une seconde barre
+        //   ni d'un antislash.
+        // - une injection d'en-tête / response-splitting si `retour` finit
+        //   un jour dans un `Location:` : sans `$` de fin, une valeur comme
+        //   "/x\r\nLocation: https://evil.example" passait, le CRLF n'étant
+        //   contraint nulle part après le premier caractère. D'où le `$`
+        //   qui ancre toute la chaîne et l'exclusion des caractères de
+        //   contrôle (CR, LF, tabulation, NUL, DEL) sur toute sa longueur.
         retour: z
           .string()
-          .regex(/^\/(?![/\\])/, "Chemin de retour invalide.")
+          .regex(/^\/(?![/\\])[^\x00-\x1f\x7f]*$/, "Chemin de retour invalide.")
           .default("/"),
       }),
       handler: async ({ client, retour }, context) => {
