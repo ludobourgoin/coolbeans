@@ -6,15 +6,27 @@ import { toDevis } from "../lib/chiffrage/toDevis";
 import * as store from "../lib/chiffrage/store";
 import { catalogueSchema, chiffrageSchema } from "../lib/chiffrage/schemas";
 import type { Chiffrage } from "../lib/chiffrage/types";
+import { getClient } from "../lib/portail/clients";
+import { CLIENT_COOKIE } from "../lib/portail/current-client";
+import { requireAdmin as requireAdminGuard } from "../lib/portail/require-admin";
 
 /* Garde systématique : session Clerk + rôle admin (publicMetadata), même
    contrôle que les pages /espace/chiffrages. Une requête forgée sans le rôle
-   est rejetée ici, indépendamment du middleware. */
-async function requireAdmin(context: ActionAPIContext): Promise<void> {
-  const user = await context.locals.currentUser();
-  const role = ((user?.publicMetadata ?? {}) as { role?: string }).role;
-  if (!user || role !== "admin") {
-    throw new ActionError({ code: "FORBIDDEN", message: "Réservé à l'administrateur." });
+   est rejetée ici, indépendamment du middleware.
+
+   La vérification elle-même vit dans lib/portail/require-admin.ts, sans
+   dépendance à `astro:actions` : ce module virtuel n'est pas résolvable sous
+   Vitest (même contrainte que `astro:content`), et c'est cette garde que la
+   spec exige de tester. Ici, on ne fait que convertir l'Error ordinaire
+   qu'elle lève en ActionError. */
+export async function requireAdmin(context: ActionAPIContext): Promise<void> {
+  try {
+    await requireAdminGuard(context.locals);
+  } catch (err) {
+    throw new ActionError({
+      code: "FORBIDDEN",
+      message: err instanceof Error ? err.message : "Réservé à l'administrateur.",
+    });
   }
 }
 
@@ -97,6 +109,40 @@ export const server = {
         await requireAdmin(context);
         await store.saveCatalogue(input);
         return { ok: true as const };
+      },
+    }),
+  },
+
+  portail: {
+    /* Bascule l'admin d'un espace client à un autre. Le cookie posé ici est
+       une préférence d'affichage : la résolution côté serveur l'ignore pour
+       un non-admin, et cette action refuse de le poser. Deux barrières
+       indépendantes plutôt qu'une. */
+    choisirClient: defineAction({
+      accept: "form",
+      input: z.object({
+        client: z.string().regex(SLUG_STRICT, "Slug invalide."),
+        // Chemin de retour, forcément interne : une URL absolue permettrait
+        // une redirection ouverte.
+        retour: z.string().startsWith("/").default("/"),
+      }),
+      handler: async ({ client, retour }, context) => {
+        await requireAdmin(context);
+
+        const cible = await getClient(client);
+        if (!cible) {
+          throw new ActionError({ code: "NOT_FOUND", message: "Client inconnu." });
+        }
+
+        context.cookies.set(CLIENT_COOKIE, cible.slug, {
+          path: "/",
+          httpOnly: true,
+          secure: true,
+          sameSite: "lax",
+          maxAge: 60 * 60 * 24 * 365,
+        });
+
+        return { client: cible.slug, retour };
       },
     }),
   },
