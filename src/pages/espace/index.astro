@@ -5,16 +5,13 @@
 export const prerender = false;
 
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
-import { isAdmin } from "../../lib/portail/metadata";
 import { getPortalContext } from "../../lib/portail/context";
 import { portalHref } from "../../lib/portail/nav";
 
-const { user, meta } = await getPortalContext(Astro);
-const admin = isAdmin(meta);
+const { user, meta, client } = await getPortalContext(Astro);
+const admin = meta.role === "admin";
 const prenom = user?.firstName ?? "";
 const at = (path: string) => portalHref(path, Astro.url.hostname);
-
-const label = (p: string) => p.charAt(0).toUpperCase() + p.slice(1);
 
 Astro.response.headers.set("Cache-Control", "no-store");
 ---
@@ -35,13 +32,13 @@ Astro.response.headers.set("Cache-Control", "no-store");
       <div class="d">Disponibilité, dernière vérification, statistiques d'audience.</div>
     </a>
     {
-      meta.projects.map((p) => (
-        <a class="card" href={`/docs/${p}`}>
+      client?.doc && (
+        <a class="card" href={`/docs/${client.doc}`}>
           <div class="k">Doc</div>
-          <div class="t">{label(p)} — passation & référence</div>
+          <div class="t">{client.nom} — passation & référence</div>
           <div class="d">Le document de vérité du projet : édition, leads, features, support.</div>
         </a>
-      ))
+      )
     }
     <a class="card" href={at("/ressources")}>
       <div class="k">Ressources</div>

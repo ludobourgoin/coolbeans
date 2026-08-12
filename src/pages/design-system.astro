@@ -15,14 +15,11 @@ import ContextCard from "../components/ui/ContextCard.astro";
 import CommandMenu from "../components/ui/CommandMenu.astro";
 import EmptyState from "../components/portail/EmptyState.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
+import ClientSwitcher from "../components/portail/ClientSwitcher.astro";
 import { readPortalMetadata } from "../lib/portail/metadata";
 
 // Un client onboardé : les cinq entrées, sans les entrées admin.
-const NAV_DEMO_META = readPortalMetadata({
-  role: "client",
-  projects: ["amusoire"],
-  asana_team_gid: "1217116359107690",
-});
+const NAV_DEMO_META = readPortalMetadata({ role: "client", client: "amusoire" });
 
 const SCALES = [
   { key: "background", label: "Backgrounds", steps: [100, 200] },
@@ -480,12 +477,27 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
 
       <p class="label mb-3x">Topbar · nav haute</p>
       <div class="doc-root overflow-hidden rounded-card border border-line">
-        <PortalNav meta={NAV_DEMO_META} withAccount={false} />
+        <PortalNav meta={NAV_DEMO_META} client={null} clients={[]} withAccount={false} />
       </div>
       <p class="mb-10x mt-3x max-w-[62ch] text-sm text-mute">
         Cinq entrées, plus celles réservées aux admins. Hauteur figée à 56px :
         <code class="font-mono">doc.css</code> cale dessus les colonnes collantes de la doc.
         Le menu compte Clerk est masqué ici, cette page étant prérendue et sans session.
+      </p>
+
+      <p class="label mb-3x mt-10x">Sélecteur de client · admin uniquement</p>
+      <div class="card max-w-80">
+        <ClientSwitcher
+          clients={[
+            { slug: "coolbeans", nom: "Coolbeans", uptimerobot_monitor_ids: [] },
+            { slug: "amusoire", nom: "Amusoire", doc: "amusoire", uptimerobot_monitor_ids: [] },
+          ]}
+          current={{ slug: "coolbeans", nom: "Coolbeans", uptimerobot_monitor_ids: [] }}
+        />
+      </div>
+      <p class="mt-3x max-w-[62ch] text-sm text-mute">
+        Rendu pour les seuls admins. Le bouton « Afficher » disparaît quand le script prend la
+        main ; sans JavaScript il reste et le formulaire fonctionne quand même.
       </p>
 
       <div class="grid gap-6x md:grid-cols-2">

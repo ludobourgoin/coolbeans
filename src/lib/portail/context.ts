@@ -76,15 +76,6 @@ export function overrideCurrentClient(context: PortalRequestContext, client: Por
     : Promise.resolve({ user: null, meta: readPortalMetadata(null), client });
 }
 
-/**
- * @deprecated Ne résout pas le client courant. Conservée le temps que les pages
- * de l'espace migrent vers `getPortalContext(Astro)` (Task 9). Partage la
- * mémoïsation de l'appel Clerk, donc aucun aller-retour supplémentaire.
- */
-export async function getPortalMeta(locals: APIContext["locals"]): Promise<PortalMetadata> {
-  return readPortalMetadata((await getUser(locals))?.publicMetadata);
-}
-
 export async function getCurrentClient(context: PortalRequestContext): Promise<PortalClient | null> {
   return (await getPortalContext(context)).client;
 }

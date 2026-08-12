@@ -10,13 +10,13 @@
 // garde-fou 03 : les trois mappings sont posés à la main dans le dashboard
 // Clerk, donc l'oubli est structurel et doit se diagnostiquer sur place, sans
 // ouvrir les logs.
-import type { PortalMetadataKey } from "../../lib/portail/metadata";
+import type { ClientMappingKey } from "../../lib/portail/clients";
 
 interface Props {
   /** Titre lu par le client. */
   title: string;
-  /** Clés absentes du publicMetadata, via missingKeysFor(). */
-  missingKeys?: PortalMetadataKey[];
+  /** Clés absentes du registre client, via missingKeysFor(). */
+  missingKeys?: ClientMappingKey[];
   /** N'afficher le diagnostic qu'aux admins. */
   isAdmin?: boolean;
 }
@@ -54,9 +54,8 @@ const showDiagnostic = isAdmin && missingKeys.length > 0;
               <code class="font-mono">{key}</code>
             </>
           ))}
-          {missingKeys.length > 1 ? " sont absentes" : " est absente"} du
-          <code class="font-mono"> publicMetadata</code> de cet utilisateur. À poser
-          dans le dashboard Clerk.
+          {missingKeys.length > 1 ? " sont absentes" : " est absente"} de la fiche de ce
+          client. À poser dans <code class="font-mono">src/content/clients/</code>.
         </span>
       </p>
     )

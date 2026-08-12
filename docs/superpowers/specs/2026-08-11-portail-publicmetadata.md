@@ -6,6 +6,13 @@ main = incohérences garanties ». Ce document est le bloc de référence ; son 
 [`src/lib/portail/metadata.ts`](../../../src/lib/portail/metadata.ts), qui fait foi sur la forme
 réellement acceptée.
 
+> **Amendé le 2026-08-12.** Les trois clés de mapping (`projects`, `asana_team_gid`,
+> `uptimerobot_monitor_ids`) ont quitté l'utilisateur pour le registre des clients
+> (`src/content/clients/*.yaml`). Le `publicMetadata` ne porte plus que `{ role, client }`.
+> Ce document reste la référence sur la tolérance de lecture et sur les empty states ; le schéma
+> lui-même est décrit dans
+> [2026-08-12-selecteur-de-client-admin-design.md](2026-08-12-selecteur-de-client-admin-design.md).
+
 ## Bloc de référence
 
 ```json

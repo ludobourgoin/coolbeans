@@ -209,28 +209,6 @@
 }
 
 /* ---- Recherche ------------------------------------------------------------ */
-.doc-root .doc-search {
-  position: relative;
-  margin-bottom: 20px;
-}
-.doc-root .doc-search input {
-  width: 100%;
-  box-sizing: border-box;
-  font: inherit;
-  font-size: 13px;
-  padding: 8px 11px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-control);
-  background: var(--surface);
-  color: var(--ink);
-}
-.doc-root .doc-search input:focus {
-  outline: none;
-  border-color: var(--ink);
-}
-.doc-root .doc-search input::placeholder {
-  color: var(--mute);
-}
 .doc-root #doc-qres {
   position: absolute;
   top: calc(100% + 4px);
@@ -754,13 +732,6 @@
   }
 }
 @media (max-width: 860px) {
-  .doc-root .doc-left {
-    position: static;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 16px;
-  }
   .doc-root .doc-shell {
     grid-template-columns: 1fr;
   }

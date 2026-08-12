@@ -181,7 +181,8 @@ sortantes simultanées.
 ### Où est le mur
 
 Un balayage coûte `T × (1 + P)` requêtes Asana — une pour la liste des projets de la team, une par
-projet pour ses tâches. À 3 projets par client :
+projet pour ses tâches. L'appel Clerk de listage des utilisateurs a disparu avec S1.1. À 3 projets
+par client :
 
 | Clients | Requêtes par passage | Contre 150/min |
 | --- | --- | --- |
@@ -224,7 +225,7 @@ risquerait de mordre sur la limite de 15 minutes de wall clock d'un Cron Trigger
 
 | Tâche | Ajustement |
 | --- | --- |
-| **S1.1** Connecteur teams via Clerk | Sert le balayage complet uniquement. `syncTeam()` ne doit pas en dépendre. |
+| **S1.1** ~~Connecteur teams via Clerk~~ | **Supprimée** le 2026-08-12 : les teams se lisent dans le registre des clients (`src/content/clients/*.yaml`), plus dans l'API Clerk. Fait tomber aussi le point « pagination des utilisateurs Clerk » du §5 des corrections. Voir [le design du sélecteur de client](2026-08-12-selecteur-de-client-admin-design.md). |
 | **S1.2** Sync par team | Devient explicitement `syncTeam(gid)`, appelable seule. La correction §2 (1 requête par projet) reste structurelle : sans elle, le budget serait atteint dès ~2 clients. |
 | **S1.5** Route admin sync | Accepte un `team_gid` optionnel. |
 | **S1.6** Page `/espace/projets` | Ajouter le bouton « Synchroniser maintenant », admin uniquement. |
