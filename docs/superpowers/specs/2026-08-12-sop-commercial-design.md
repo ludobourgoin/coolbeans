@@ -54,14 +54,34 @@ de l'acompte et vit au-delà de la clôture de la carte CRM, puisque l'après-ve
 Le projet `👨‍💼 projects` de la team `Personal` est un vestige. Le SOP ne le mentionne
 pas et il n'est plus alimenté.
 
-### Le CRM démarre au premier contact, pas après le rendez-vous
+### Deux étages : le vivier et le pipeline
 
-La pratique actuelle consistait à créer la carte seulement après un rendez-vous de
+Le **vivier** est une feuille Google tenue à part : entourage, agences repérées,
+directeurs artistiques à contacter pour des collaborations. Ce sont des relations à
+entretenir, pas des affaires en cours. Aucun de ces contacts n'a de projet identifié.
+
+Le **pipeline**, c'est le projet Asana `🎯 crm`. Une carte y naît **dès qu'un projet
+réel est identifié**, quelle que soit la source : quelqu'un qui appelle, écrit, réserve
+un créneau depuis la page de contact, ou un contact du vivier qui remonte un besoin.
+
+Les deux étages restent séparés. Verser le vivier dans le CRM noierait le pipeline sous
+des dizaines de cartes dormantes et rendrait la colonne `👋 Contacté` illisible.
+
+Faiblesse connue du vivier : une feuille de calcul n'a ni échéance ni rappel, et le
+mode d'échec d'une liste de réseau est de ne jamais être relue. Correctif retenu, et
+le seul : **une tâche récurrente mensuelle dans « Mes tâches » d'Asana**, hors de tout
+projet, qui déclenche la revue de la feuille. Une seule tâche, aucune pollution du
+pipeline. Elle suppose que la feuille porte au minimum une date de dernier contact et
+une colonne « prochaine action ».
+
+### Le CRM démarre au premier contact qualifiant, pas après le rendez-vous
+
+La pratique antérieure consistait à créer la carte seulement après un rendez-vous de
 découverte concluant, ce qui rendait les colonnes `👋 Contacté` et `📆 Rdv pris`
-fictives. Désormais toute personne qui entre en contact, ou qui est prospectée,
-obtient une carte. Le coût est de vingt secondes ; le gain est de pouvoir relancer
-ceux qui disparaissent avant le rendez-vous, de connaître le taux de transformation
-en haut de tunnel, et de donner un domicile à la prospection sortante.
+fictives. Désormais la carte naît dès qu'un projet réel est évoqué, avant même le
+rendez-vous. Le coût est de vingt secondes ; le gain est de pouvoir relancer ceux qui
+disparaissent entre la première prise de contact et le rendez-vous, et de connaître le
+taux de transformation en haut de tunnel.
 
 ### Trois conventions remplacent les champs personnalisés absents
 
@@ -124,6 +144,10 @@ Les deux étapes de phase `sortie` (mise en veille, perte) ne sont pas une cinqu
 colonne : elles se rendent en bandeau sous la grille, les boîtes qui y mènent portant
 une flèche latérale étiquetée vers elles.
 
+L'unique étape de phase `amont` (le vivier) se rend en une seule boîte en tête de la
+colonne avant-vente, visuellement distincte, avec une flèche vers S1. Elle rappelle que
+la moitié des affaires vient d'un contact entretenu de longue date, pas d'un formulaire.
+
 ## Architecture
 
 Trois unités, chacune avec une responsabilité unique.
@@ -135,11 +159,12 @@ celle des colonnes CRM. Aucun rendu, aucun style.
 
 ```ts
 export type Phase =
+  | "amont"       // S0 : le vivier, en amont du pipeline
   | "avant-vente"
   | "signature"
   | "production"
   | "apres-vente"
-  | "sortie"; // S20 et S21 : mise en veille et perte, hors des quatre phases
+  | "sortie";     // S20 et S21 : mise en veille et perte, hors des quatre phases
 export type Owner = "coolbeans" | "client" | "les-deux";
 
 export interface Etape {
@@ -181,11 +206,25 @@ modèles Asana en fin de page. Requiert d'ajouter `doc: coolbeans` dans
 
 ## Le process, étape par étape
 
+### Phase 0 : amont
+
+**S0 · Vivier de prospection** — aucune colonne CRM
+Support : feuille Google tenue à part. Entourage, agences repérées, directeurs
+artistiques visés pour des collaborations.
+Déclencheur : une personne ou une structure vaut la peine d'être connue.
+Faire : l'ajouter à la feuille avec sa date de dernier contact et sa prochaine action ;
+la contacter pour faire savoir que Coolbeans existe ; entretenir la relation.
+Échéance : tâche récurrente mensuelle dans « Mes tâches » d'Asana pour relire la feuille.
+Sortie : rien tant qu'aucun projet n'est évoqué. Le vivier n'a pas vocation à se vider.
+Suivants : S1, quand un contact du vivier remonte un projet réel.
+Note : ces contacts n'entrent **jamais** dans le CRM tant qu'il n'y a pas de projet
+identifié. C'est la frontière entre les deux étages.
+
 ### Phase 1 : avant-vente
 
 **S1 · Premier contact** — colonne `👋 Contacté`
-Déclencheur : quelqu'un appelle, écrit, réserve un créneau depuis la page de contact,
-ou est prospecté.
+Déclencheur : un projet réel est évoqué. Deux sources : entrante (appel, mail,
+réservation d'un créneau depuis la page de contact) ou issue du vivier (S0).
 Faire : créer la carte au format `[budget évoqué €] Client — Objet` ; poser l'étiquette
 de source ; coller le contexte dans la description ; envoyer le lien de réservation
 Notion Calendar.
@@ -411,11 +450,15 @@ process appelé à bouger plusieurs fois dans les mois à venir :
 - **Restructuration du projet `🎯 crm`** : redispatch manuel des cartes de
   `☄️ Lead relancé`, puis suppression de la colonne, création de `🏗️ En production`,
   `🧊 En veille` et `🧰 Modèles`.
+- **Feuille de prospection** : la spec suppose qu'elle porte une date de dernier
+  contact et une colonne « prochaine action ». Si ce n'est pas le cas, ces deux
+  colonnes sont à ajouter, sinon la revue mensuelle n'a rien sur quoi mordre. La
+  structure de la feuille elle-même reste hors périmètre de cette implémentation.
 
 ## Critères de réussite
 
-1. La page `/docs/coolbeans/vente` affiche le schéma des quatre phases et les vingt et
-   une fiches d'étape, et reste lisible sur mobile.
+1. La page `/docs/coolbeans/vente` affiche le vivier en amont, le schéma des quatre
+   phases et les vingt-deux fiches d'étape (S0 à S21), et reste lisible sur mobile.
 2. Ajouter une étape dans `src/data/sop.ts` la fait apparaître dans le schéma et dans
    les fiches sans aucune retouche de mise en page.
 3. Le contenu de chaque étape répond à quatre questions : ce qui la déclenche, qui
