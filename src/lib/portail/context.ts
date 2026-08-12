@@ -63,6 +63,20 @@ export function getPortalContext(context: PortalRequestContext): Promise<PortalC
 }
 
 /**
+ * Force le client courant pour le reste de la requête. Utilisé par la route
+ * de doc quand l'URL impose un contexte : sans ça, tout appelant ultérieur
+ * de getPortalContext — le layout, notamment — verrait le client d'avant la
+ * bascule, et la nav contredirait la page.
+ */
+export function overrideCurrentClient(context: PortalRequestContext, client: PortalClient): void {
+  const cache = context.locals as WithCache;
+  const previous = cache[CACHE_KEY];
+  cache[CACHE_KEY] = previous
+    ? previous.then((ctx) => ({ ...ctx, client }))
+    : Promise.resolve({ user: null, meta: readPortalMetadata(null), client });
+}
+
+/**
  * @deprecated Ne résout pas le client courant. Conservée le temps que les pages
  * de l'espace migrent vers `getPortalContext(Astro)` (Task 9). Partage la
  * mémoïsation de l'appel Clerk, donc aucun aller-retour supplémentaire.

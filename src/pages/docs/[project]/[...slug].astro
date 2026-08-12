@@ -14,7 +14,7 @@ import DocLayout from "../../../layouts/DocLayout.astro";
 import Meta from "../../../components/doc/Meta.astro";
 import { findClientByDoc } from "../../../lib/portail/clients";
 import { CLIENT_COOKIE } from "../../../lib/portail/current-client";
-import { getPortalContext } from "../../../lib/portail/context";
+import { getPortalContext, overrideCurrentClient } from "../../../lib/portail/context";
 
 type Doc = CollectionEntry<"docs">;
 const slugOf = (e: Doc) => e.id.split("/").pop()!.replace(/^\d+-/, "");
@@ -47,6 +47,7 @@ if (isAdminUser && project && client?.doc !== project) {
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 365,
     });
+    overrideCurrentClient(Astro, proprietaire);
     effectif = proprietaire;
   }
 }
