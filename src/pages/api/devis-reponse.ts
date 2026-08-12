@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 import { Resend } from "resend";
+import { esc, kv, p, renderTransactionnel, sep } from "../../emails/transactionnel";
 
 export const prerender = false;
 
@@ -31,6 +32,33 @@ export const POST: APIRoute = async ({ request }) => {
   const objetReponse =
     reponse === "validation" ? "Validation de la proposition" : "Question / remarque";
 
+  const champ = (valeur: unknown): string | undefined =>
+    typeof valeur === "string" && valeur ? valeur : undefined;
+
+  const html = renderTransactionnel({
+    preheader: `${objetReponse} — devis ${esc(slug)}`,
+    kicker: `Devis · ${esc(slug)}`,
+    titre: objetReponse,
+    contenu: [
+      kv([
+        ["Nom", champ(nom) && esc(champ(nom)!)],
+        ["Email", champ(email) && esc(champ(email)!)],
+        ["Raison sociale", champ(raisonSociale) && esc(champ(raisonSociale)!)],
+        ["SIREN", champ(siren) && esc(champ(siren)!)],
+        ["Adresse", champ(adresse) && esc(champ(adresse)!)],
+        ["TVA intracom.", champ(tva) && esc(champ(tva)!)],
+      ]),
+      champ(message)
+        ? sep() + p(esc(champ(message)!).replace(/\n/g, "<br>"))
+        : p("(pas de message)"),
+    ].join(""),
+    cta: {
+      label: "Voir le devis",
+      url: `https://coolbeans.cc/devis/${encodeURIComponent(slug)}`,
+    },
+    piedContexte: "R&eacute;ponse re&ccedil;ue via la page publique du devis.",
+  });
+
   try {
     const resend = new Resend(env.RESEND_API_KEY);
     const { error } = await resend.emails.send({
@@ -38,6 +66,7 @@ export const POST: APIRoute = async ({ request }) => {
       to: "ludo@coolbeans.cc",
       replyTo: typeof email === "string" && email ? email : undefined,
       subject: `Devis ${slug} — ${objetReponse}`,
+      html,
       text: [
         `Devis : ${slug}`,
         `Réponse : ${objetReponse}`,
