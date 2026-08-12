@@ -13,6 +13,7 @@
 // Sans ça, le portail est incliquable en `astro dev` local (localhost n'est
 // pas un hôte portail : il faut y garder le préfixe /espace).
 
+import type { PortalClient } from "./clients";
 import type { PortalMetadata } from "./metadata";
 
 /** Hôtes sur lesquels le préfixe /espace est retiré de l'URL publique. */
@@ -57,22 +58,27 @@ export function isActive(item: PortalNavItem, pathname: string): boolean {
  * (l'espace admin est le même portail, avec du contenu en plus — pas une autre
  * interface).
  *
- * La doc est le cas particulier : ses routes sont `/docs/{slug}`, hors /espace
- * et non réécrites par le Worker. Quand l'utilisateur n'a aucun slug, l'entrée
- * pointe vers une page de l'espace qui explique pourquoi — plutôt qu'un lien
- * mort ou une entrée qui disparaît de la nav.
+ * L'entrée Doc suit le CLIENT COURANT et non l'utilisateur : un admin basculé
+ * sur Amusoire doit voir la doc d'Amusoire. Quand le client courant n'a pas de
+ * doc — ou qu'il n'y a pas de client courant — l'entrée mène à une page de
+ * l'espace qui l'explique, plutôt qu'à un lien mort (/docs n'est pas une
+ * route) ou à une entrée qui disparaît de la nav.
  */
-export function buildPortalNav(hostname: string, meta: PortalMetadata): PortalNavItem[] {
+export function buildPortalNav(
+  hostname: string,
+  meta: PortalMetadata,
+  client: PortalClient | null,
+): PortalNavItem[] {
   const at = (path: string) => portalHref(path, hostname);
-  const firstDoc = meta.projects[0];
+  const docSlug = client?.doc;
 
   const items: PortalNavItem[] = [
     { label: "Projets", href: at("/projets"), activePrefix: "/espace/projets" },
     { label: "Mon site", href: at("/site"), activePrefix: "/espace/site" },
     {
       label: "Doc",
-      href: firstDoc ? `/docs/${firstDoc}` : at("/doc"),
-      activePrefix: firstDoc ? "/docs" : "/espace/doc",
+      href: docSlug ? `/docs/${docSlug}` : at("/doc"),
+      activePrefix: docSlug ? "/docs" : "/espace/doc",
     },
     { label: "Ressources", href: at("/ressources"), activePrefix: "/espace/ressources" },
     { label: "Support", href: at("/support"), activePrefix: "/espace/support" },
