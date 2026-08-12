@@ -152,14 +152,6 @@
   max-width: 1400px;
   margin: 0 auto;
 }
-.doc-root .doc-left {
-  position: sticky;
-  top: 56px;
-  height: calc(100vh - 56px);
-  overflow: auto;
-  border-right: 1px solid var(--line);
-  padding: 28px 20px 60px;
-}
 .doc-root .doc-main {
   padding: 44px 56px 110px;
   min-width: 0;
@@ -779,5 +771,41 @@
 @media (max-width: 640px) {
   .doc-main .pf-nav {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Gabarit du portail : colonne gauche partagée -------------------------
+   La colonne reprend la géométrie de .doc-left (264 px, collante sous la
+   topbar de 56 px) pour que l'espace et la doc s'alignent au pixel. */
+.doc-root .portal-left {
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow: auto;
+  border-right: 1px solid var(--line);
+  padding: 28px 20px 60px;
+}
+.doc-root .espace-shell {
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+  align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+/* Sans colonne (client sans nav contextuelle), le contenu reprend sa largeur. */
+.doc-root .espace-shell.solo {
+  grid-template-columns: minmax(0, 1fr);
+}
+.doc-root .espace-shell .espace-main {
+  padding: 56px 40px 110px;
+}
+
+@media (max-width: 900px) {
+  .doc-root .portal-left {
+    display: none;
+  }
+  .doc-root .espace-shell,
+  .doc-root .doc-shell {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

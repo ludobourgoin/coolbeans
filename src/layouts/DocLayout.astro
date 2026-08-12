@@ -6,7 +6,9 @@ import BaseLayout from "./BaseLayout.astro";
 import SidebarNav from "../components/doc/SidebarNav.astro";
 import TocRight from "../components/doc/TocRight.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
-import { getPortalMeta } from "../lib/portail/context";
+import PortalSidebar from "../components/portail/PortalSidebar.astro";
+import { listClients } from "../lib/portail/clients";
+import { getPortalContext } from "../lib/portail/context";
 import "../styles/doc.css";
 
 interface NavItem {
@@ -39,22 +41,28 @@ const projectLabel = project.charAt(0).toUpperCase() + project.slice(1);
 // neutralise tous les `<` pour que le JSON inline ne casse pas la balise.
 const indexJson = JSON.stringify(searchIndex).replaceAll("<", "\\u003c");
 
-// La doc fait partie du portail : même topbar, donc même lecture du metadata.
-const portalMeta = await getPortalMeta(Astro.locals);
+// La doc fait partie du portail : même topbar, même colonne.
+const { user, meta: portalMeta, client: portalClient } = await getPortalContext(Astro);
+const portalClients = portalMeta.role === "admin" ? await listClients() : [];
 ---
 
 <BaseLayout title={`${title} · la doc — ${projectLabel}`} description={`Documentation de passation ${projectLabel}`} noindex>
   <div class="doc-root">
-    <PortalNav meta={portalMeta} />
+    <PortalNav
+      meta={portalMeta}
+      client={portalClient}
+      clients={portalClients}
+      prenom={user?.firstName ?? ""}
+    />
 
     <div class="doc-shell">
-      <aside class="doc-left">
-        <div class="doc-search">
-          <input id="doc-q" type="search" placeholder="Rechercher… (⌘K)" autocomplete="off" />
-          <div id="doc-qres" hidden></div>
-        </div>
+      <PortalSidebar
+        clients={portalClients}
+        current={portalClient}
+        isAdmin={portalMeta.role === "admin"}
+      >
         <SidebarNav items={nav} />
-      </aside>
+      </PortalSidebar>
 
       <main class="doc-main">
         <slot />
@@ -199,7 +207,8 @@ const portalMeta = await getPortalMeta(Astro.locals);
         if (e.key === "Escape") qRes.hidden = true;
       });
       document.addEventListener("click", (e) => {
-        if (!(e.target as HTMLElement).closest(".doc-search")) qRes.hidden = true;
+        const t = e.target as HTMLElement;
+        if (t !== qIn && !t.closest("#doc-qres")) qRes.hidden = true;
       });
     }
   </script>

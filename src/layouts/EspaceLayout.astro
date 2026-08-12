@@ -1,13 +1,12 @@
 ---
-// Espace client Coolbeans : topbar commune (PortalNav) au-dessus des pages
-// protégées. La doc a son propre layout (DocLayout) avec la même topbar.
-//
-// Le layout lit lui-même le publicMetadata : la nav dépend du rôle (entrées
-// admin) et des slugs de doc, et aucune page ne doit avoir à le repasser.
+// Espace client Coolbeans : topbar commune (PortalNav) et colonne gauche
+// partagée (PortalSidebar) au-dessus des pages protégées. La doc a son propre
+// layout, avec la même topbar et la même colonne.
 import BaseLayout from "./BaseLayout.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
-import type { PortalMetadata } from "../lib/portail/metadata";
-import { getPortalMeta } from "../lib/portail/context";
+import PortalSidebar from "../components/portail/PortalSidebar.astro";
+import { listClients } from "../lib/portail/clients";
+import { getPortalContext } from "../lib/portail/context";
 import "../styles/doc.css";
 
 interface Props {
@@ -15,14 +14,23 @@ interface Props {
 }
 const { title } = Astro.props;
 
-const meta: PortalMetadata = await getPortalMeta(Astro.locals);
+const { user, meta, client } = await getPortalContext(Astro);
+const admin = meta.role === "admin";
+// Le registre n'est lu que pour l'admin : lui seul voit le sélecteur.
+const clients = admin ? await listClients() : [];
 ---
 
 <BaseLayout title={`${title} · Coolbeans`} description="Espace client Coolbeans" noindex>
   <div class="doc-root">
-    <PortalNav meta={meta} />
-    <main class="espace-main">
-      <slot />
-    </main>
+    <PortalNav meta={meta} client={client} clients={clients} prenom={user?.firstName ?? ""} />
+    {/* `solo` doit refléter la visibilité décidée par PortalSidebar
+        (isAdmin || slot). EspaceLayout ne passe pas de slot : les deux
+        conditions coïncident. À revoir le jour où une page en passera un. */}
+    <div class:list={["espace-shell", !admin && "solo"]}>
+      <PortalSidebar clients={clients} current={client} isAdmin={admin} />
+      <main class="espace-main">
+        <slot />
+      </main>
+    </div>
   </div>
 </BaseLayout>

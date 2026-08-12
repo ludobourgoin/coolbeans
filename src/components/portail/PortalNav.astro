@@ -10,22 +10,29 @@
 // la doc (`top: 56px`, `calc(100vh - 56px)`). La changer ici désaligne la doc.
 import { UserButton } from "@clerk/astro/components";
 import { buildPortalNav, isActive, portalHref } from "../../lib/portail/nav";
+import ClientSwitcher from "./ClientSwitcher.astro";
+import type { PortalClient } from "../../lib/portail/clients";
 import type { PortalMetadata } from "../../lib/portail/metadata";
 
 interface Props {
   meta: PortalMetadata;
   /**
-   * Le menu compte exige une session Clerk. La Bibliothèque de
-   * design-system.astro est prérendue et n'en a pas : elle passe `false` pour
-   * montrer la topbar sans le dupliquer en maquette morte.
+   * Optionnelles avec repli : design-system.astro (prérendue, Task 9 la met à
+   * jour) appelle encore PortalNav sans client ni clients.
    */
+  client?: PortalClient | null;
+  clients?: PortalClient[];
+  /** Le menu compte exige une session Clerk : la Bibliothèque passe false. */
   withAccount?: boolean;
+  /** Prénom affiché dans la salutation. */
+  prenom?: string;
 }
 
-const { meta, withAccount = true } = Astro.props;
+const { meta, client = null, clients = [], withAccount = true, prenom = "" } = Astro.props;
 const { hostname, pathname } = Astro.url;
-const items = buildPortalNav(hostname, meta);
+const items = buildPortalNav(hostname, meta, client);
 const home = portalHref("/", hostname);
+const admin = meta.role === "admin";
 ---
 
 <header
@@ -33,9 +40,10 @@ const home = portalHref("/", hostname);
 >
   <a
     href={home}
-    class="flex-none font-display text-base font-bold tracking-[-0.02em] text-ink no-underline"
+    class="flex flex-none items-center gap-2 font-display text-base font-bold tracking-[-0.02em] text-ink no-underline"
   >
-    my <span class="font-normal">coolbeans.</span>
+    <span class="block size-4 rounded-[3px] bg-ink" aria-hidden="true"></span>
+    myCoolbeans
   </a>
 
   <nav
@@ -62,19 +70,29 @@ const home = portalHref("/", hostname);
   </nav>
 
   {/*
-    Emplacement de la recherche ⌘K. Le doc master en fixe la portée à la doc,
-    où elle est déjà branchée (DocLayout) : cet emplacement attend la recherche
-    globale. Rendu non interactif plutôt que faussement cliquable.
+    La recherche remonte du panneau de doc vers la topbar (maquette du
+    2026-08-12). Le champ est rendu partout ; DocLayout l'active quand un
+    index de doc est présent, il reste inerte ailleurs.
   */}
-  <span
-    class="hidden flex-none items-center gap-2 rounded-control border border-line px-2.5 py-1.5 text-sm text-mute lg:flex"
-    title="Recherche globale à venir. Dans la doc, ⌘K est déjà actif."
-  >
-    Rechercher
-    <kbd class="rounded border border-line bg-surface-subtle px-1.5 py-px font-mono text-[11px]">
-      ⌘K
-    </kbd>
-  </span>
+  <div class="relative hidden flex-none lg:block">
+    <input
+      id="doc-q"
+      type="search"
+      autocomplete="off"
+      placeholder="Rechercher dans la doc ⌘K"
+      class="h-9 w-64 rounded-control border border-line bg-surface px-3 text-sm text-ink outline-none placeholder:text-mute"
+    />
+    <div id="doc-qres" hidden></div>
+  </div>
+
+  {/* Sous 900 px la colonne gauche se replie : le sélecteur la suit ici. */}
+  {
+    admin && (
+      <span class="flex-none lg:hidden">
+        <ClientSwitcher clients={clients} current={client} compact />
+      </span>
+    )
+  }
 
   <button
     class="flex-none cursor-pointer rounded-control border border-line bg-surface px-2.5 py-1.5 text-sm text-ink"
@@ -85,7 +103,14 @@ const home = portalHref("/", hostname);
     ☀︎ / ☾
   </button>
 
-  {withAccount && <span class="flex flex-none items-center"><UserButton /></span>}
+  {
+    withAccount && (
+      <span class="flex flex-none items-center gap-2">
+        {prenom && <span class="hidden text-sm text-mute md:inline">Hello, {prenom}</span>}
+        <UserButton />
+      </span>
+    )
+  }
 </header>
 
 <script>
