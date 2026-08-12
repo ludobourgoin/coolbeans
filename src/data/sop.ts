@@ -316,7 +316,7 @@ export const etapes: Etape[] = [
     outils: ["Asana", "Google Drive", "Clerk", "src/content/clients/<slug>.yaml"],
     faire: [
       "Créer la team Asana du client.",
-      "Dupliquer 🧱 [MODÈLE] Projet client dans cette team, renommer, dater les jalons et les tâches d'après-vente.",
+      "Dupliquer .🧱 [MODÈLE] Projet client dans cette team, renommer la copie en retirant le point initial, dater les jalons et la tâche J+30.",
       "Créer src/content/clients/<slug>.yaml avec nom, asana_team_gid et doc.",
       "Créer l'utilisateur Clerk avec le mail du contact et son publicMetadata.",
       "Créer le dossier Drive et le lier dans les notes du projet Asana.",
@@ -324,7 +324,7 @@ export const etapes: Etape[] = [
     ],
     sortie: "Le client peut se connecter au portail, le projet Asana est prêt.",
     suivants: [{ vers: "S11", si: "l'onboarding est terminé" }],
-    note: "Les six actions sont dans l'ordre : la team Asana conditionne la duplication du projet, dont le GID alimente la fiche client, qui conditionne le portail.",
+    note: "Les six actions sont dans l'ordre : la team Asana conditionne la duplication du projet, dont le GID alimente la fiche client, qui conditionne le portail. Elles vivent en sous-tâches de la carte CRM, pas dans le projet du client — trois d'entre elles s'exécutent avant même que ce projet existe. Retirer le point initial du nom de la copie : il masque le projet du portail, le client verrait un espace vide.",
   },
   {
     id: "S11",

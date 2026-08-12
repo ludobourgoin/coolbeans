@@ -98,13 +98,15 @@ Quatre phases, vingt-deux étapes. Chaque boîte du schéma renvoie à sa fiche 
 
 Les modèles personnalisés sont payants. Les deux passent donc par la **duplication**, qui fonctionne sur le plan gratuit et conserve les sous-tâches.
 
+Le partage entre les deux suit une seule ligne : **ce qui est dans le projet du client, le client le voit.** Le travail interne descend donc dans les sous-tâches de la carte CRM, que personne d'autre que Ludo ne consulte.
+
 ### Modèle A · la tâche 🧬 [MODÈLE] Lead
 
 Rangée dans la section **🧰 Modèles** du projet **🎯 crm**, hors pipeline. On la duplique, on la renomme au format `[montant €] Client — Objet`, on la place dans **👋 Contacté**.
 
 Description pré-remplie : source, contexte, besoin exprimé, budget évoqué, échéance souhaitée, décideur, lien du devis, lien du dossier Drive.
 
-Sous-tâches, dans l'ordre :
+Quatorze sous-tâches, dans l'ordre. Les huit premières couvrent l'avant-vente et la signature ; les six dernières portent l'onboarding et la facture de solde, qui n'ont rien à faire chez le client.
 
 1. Qualifier : besoin, budget, échéance, décideur
 2. Envoyer le lien de réservation
@@ -114,40 +116,39 @@ Sous-tâches, dans l'ordre :
 6. Relancer à J+3, J+7, J+14
 7. Émettre la facture d'acompte dans Tiime
 8. Vérifier l'encaissement de l'acompte
+9. Créer la team Asana du client et y dupliquer le modèle de projet
+10. Créer le dossier Drive et le lier dans les notes du projet
+11. Créer la fiche client `src/content/clients/<slug>.yaml`
+12. Créer l'utilisateur Clerk et le portail
+13. Envoyer le mail de bienvenue
+14. Émettre la facture de solde dans Tiime
 
-### Modèle B · le projet 🧱 [MODÈLE] Projet client
+Les sous-tâches 9 à 13 s'exécutent **avant** que le projet du client existe — la 9 le crée. Elles n'auraient donc pas pu y vivre de toute façon. La 14 suit la règle d'ouverture de cette page : la carte CRM suit l'argent.
+
+### Modèle B · le projet .🧱 [MODÈLE] Projet client
 
 Vit dans la team Coolbeans et se duplique dans la team du client au démarrage. Sections identiques aux projets existants — relevées sur « Site web Coolbeans » et « myCoolbeans » : **📥 Inbox**, **🧱 Backlog**, **🚀 Sprint**, **🚧 En cours**, **☝️ Pour validation**, **✅ Terminé**.
 
-Tâches pré-remplies dans le Backlog, en trois familles.
+<Callout type="piege" title="Le point initial du nom, et pourquoi il doit disparaître à la duplication">
+  Le modèle vit dans la team Coolbeans, qui est aussi la team du client zéro. Sans le point, `src/lib/portail/asana/sync.ts` le prendrait pour un vrai projet et l'afficherait sur `/espace/projets` de Coolbeans, avec ses six tâches.
 
-**Onboarding**
+  Conséquence symétrique : **si la copie garde le point, le client verra un portail vide.** Le retirer fait partie de la sous-tâche 9.
+</Callout>
 
-- Créer la team Asana du client
-- Créer le dossier Drive et le lier dans les notes du projet
-- Créer la fiche client `src/content/clients/<slug>.yaml`
-- Créer l'utilisateur Clerk et le portail
-- Envoyer le mail de bienvenue
-
-**Production**
+Six tâches pré-remplies dans **🧱 Backlog**, toutes légitimes aux yeux du client :
 
 - Recette avec le client
 - Mise en ligne
 - Rédiger la doc de passation
 - Envoyer le mail de livraison et les trois questions du témoignage
-- Émettre la facture de solde
-
-**Après-vente**
-
-- J+30 : clôture de la garantie et proposition du care plan
-- Rédiger l'étude de cas en brouillon
-- Faire valider l'étude de cas par le client
-- Publier l'étude de cas et mettre à jour le SEO
+- J+30 : point de clôture de la garantie et proposition du care plan
 - Point trimestriel
 
-<Callout type="warn" title="Les tâches d'après-vente naissent à la duplication">
-  Pas à la fin du projet. C'est la seule façon qu'elles ne soient jamais oubliées, puisque le plan gratuit n'offre aucune règle d'automatisation. Elles sont datées au moment de la duplication, en même temps que les jalons.
+<Callout type="warn" title="La tâche J+30 se date à la duplication">
+  Pas à la fin du projet. C'est la seule façon qu'elle ne soit jamais oubliée, puisque le plan gratuit n'offre aucune règle d'automatisation. Elle se date en même temps que les jalons.
 </Callout>
+
+Les trois tâches de l'**étude de cas** — rédiger le brouillon, faire valider par le client, publier et mettre à jour le SEO — ne figurent nulle part pour l'instant. C'est du contenu marketing Coolbeans, pas un livrable du client, et leur emplacement reste à trancher.
 
 ## Ce qui reste ouvert
 
