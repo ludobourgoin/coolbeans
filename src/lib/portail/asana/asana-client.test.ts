@@ -77,15 +77,15 @@ describe("createAsanaClient", () => {
   });
 
   it("retombe sur un backoff exponentiel sans Retry-After exploitable", async () => {
-    const sleep = vi.fn(async () => {}) as unknown as ReturnType<typeof vi.fn>;
+    const sleep = vi.fn(async () => {});
     let appel = 0;
     const fetchImpl = vi.fn(async () => {
       appel += 1;
       return appel <= 2 ? new Response("", { status: 429 }) : json({ data: [] });
     }) as unknown as typeof fetch;
 
-    await createAsanaClient({ token: "PAT", fetchImpl, sleep: sleep as any }).listProjects("T1");
-    expect((sleep as any).mock.calls.map(([ms]: [number]) => ms)).toEqual([1000, 2000]);
+    await createAsanaClient({ token: "PAT", fetchImpl, sleep }).listProjects("T1");
+    expect(sleep.mock.calls.map(([ms]) => ms)).toEqual([1000, 2000]);
   });
 
   it("abandonne après maxRetries et remonte l'erreur", async () => {
