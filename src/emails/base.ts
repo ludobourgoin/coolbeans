@@ -52,6 +52,13 @@ export const liste = (items: string[]): string =>
     )
     .join("")}</ul>`;
 
+/**
+ * Espace vertical explicite. Les marges de blocs voisins ne fusionnent pas de
+ * façon fiable d'un client mail à l'autre : quand il faut de l'air, on la pose.
+ */
+export const espace = (hauteur = 24): string =>
+  `<div style="height:${hauteur}px;line-height:${hauteur}px;font-size:0;">&nbsp;</div>`;
+
 /** Séparateur horizontal, comme hr du site. */
 export const sep = (): string =>
   `<hr style="border:none;border-top:1px solid ${LINE};margin:24px 0;">`;
@@ -75,18 +82,32 @@ export const label = (texte: string): string =>
   `<div style="font-family:${FONT_MONO};font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${MUTE};margin:0 0 16px;">${texte}</div>`;
 
 /**
+ * Titre de section interne à une carte (au-dessus d'un kv, d'une citation).
+ * Plus discret qu'un h2, mais avec assez d'air au-dessus pour ouvrir une
+ * section sans avoir besoin d'un sep() : c'est l'espace qui sépare, pas le trait.
+ */
+export const titreSection = (texte: string): string =>
+  `<p style="margin:36px 0 14px;font-family:${FONT_SANS};font-size:16px;font-weight:600;line-height:1.4;color:${INK};">${texte}</p>`;
+
+/**
  * Tableau de faits label → valeur (récap transactionnel).
  * Les valeurs doivent déjà être échappées (esc()) si elles viennent de
  * l'extérieur. Les paires à valeur vide sont ignorées.
+ * Le label et la valeur partagent la même line-height : leurs tailles de police
+ * diffèrent (11 vs 15px), c'est la seule façon fiable en email de faire coïncider
+ * leurs centres optiques. La dernière ligne n'a pas de filet, sinon le tableau
+ * se termine sur un trait qui flotte sous la donnée.
  */
-export const kv = (paires: Array<[string, string | undefined | null]>): string =>
-  `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 16px;">${paires
-    .filter((paire): paire is [string, string] => !!paire[1])
-    .map(
-      ([cle, valeur]) =>
-        `<tr><td style="padding:8px 16px 8px 0;font-family:${FONT_MONO};font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${MUTE};white-space:nowrap;vertical-align:top;">${cle}</td><td width="100%" style="padding:8px 0;font-family:${FONT_SANS};font-size:15px;line-height:1.5;color:${INK};border-bottom:1px solid ${LINE};">${valeur}</td></tr>`,
-    )
+export const kv = (paires: Array<[string, string | undefined | null]>): string => {
+  const lignes = paires.filter((paire): paire is [string, string] => !!paire[1]);
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0;">${lignes
+    .map(([cle, valeur], index) => {
+      const filet =
+        index === lignes.length - 1 ? "" : `border-bottom:1px solid ${LINE};`;
+      return `<tr><td style="padding:9px 20px 9px 0;font-family:${FONT_MONO};font-size:11px;font-weight:700;letter-spacing:0.1em;line-height:24px;text-transform:uppercase;color:${MUTE};white-space:nowrap;vertical-align:top;">${cle}</td><td width="100%" style="padding:9px 0;font-family:${FONT_SANS};font-size:15px;line-height:24px;color:${INK};${filet}">${valeur}</td></tr>`;
+    })
     .join("")}</table>`;
+};
 
 export interface ShellProps {
   /** Texte d'aperçu affiché après l'objet dans la boîte de réception. */

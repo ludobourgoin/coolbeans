@@ -16,7 +16,20 @@
 
 import { FONT_DISPLAY, INK, MUTE, cta, label, renderShell } from "./base";
 
-export { p, h2, lien, liste, sep, cta, kv, esc, citation, label } from "./base";
+export {
+  p,
+  h2,
+  lien,
+  liste,
+  sep,
+  espace,
+  cta,
+  kv,
+  esc,
+  citation,
+  label,
+  titreSection,
+} from "./base";
 
 export interface TransactionnelProps {
   /** Texte d'aperçu affiché après l'objet dans la boîte de réception. */

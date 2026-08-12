@@ -7,7 +7,15 @@
    Chaque renderer retourne l'objet, le HTML et la version texte prêts pour Resend.
    ========================================================================== */
 
-import { citation, esc, kv, label, p, renderTransactionnel, sep } from "./transactionnel";
+import {
+  citation,
+  esc,
+  espace,
+  kv,
+  p,
+  renderTransactionnel,
+  titreSection,
+} from "./transactionnel";
 
 export interface DevisConfirmationProps {
   slug: string;
@@ -54,15 +62,16 @@ export function renderConfirmationValidation(props: DevisConfirmationProps): Ema
       p(
         "Son règlement valide la prestation et bloque vos créneaux dans mon planning. Ensuite, on démarre.",
       ),
-      sep(),
-      p("<strong>Les informations que vous m'avez transmises</strong>"),
+      titreSection("Les informations que vous m'avez transmises"),
       kv([
         ["Raison sociale", raisonSociale && esc(raisonSociale)],
         ["SIREN", siren && esc(siren)],
         ["Adresse", adresse && esc(adresse)],
         ["TVA intracom.", tva && esc(tva)],
       ]),
-      message ? sep() + label("Votre message") + citation(esc(message).replace(/\n/g, "<br>")) : "",
+      message
+        ? titreSection("Votre message") + citation(esc(message).replace(/\n/g, "<br>"))
+        : espace(28),
       p("Une coquille dans ces informations, ou une question&nbsp;? Répondez simplement à cet email."),
       p("À très vite,<br>Ludo"),
     ].join(""),
@@ -112,7 +121,7 @@ export function renderConfirmationQuestion(props: DevisConfirmationProps): Email
       p(
         "Votre message est bien arrivé. Je le lis attentivement et je reviens vers vous très vite avec une réponse.",
       ),
-      message ? sep() + label("Ce que vous m'avez écrit") : "",
+      message ? titreSection("Ce que vous m'avez écrit") : "",
       message ? citation(esc(message).replace(/\n/g, "<br>")) : "",
       p(
         "Rien n'est engagé tant que vous n'avez pas validé la proposition. Si vous voulez ajouter quelque chose, répondez simplement à cet email.",

@@ -9,10 +9,9 @@ import {
   citation,
   esc,
   kv,
-  label,
   p,
   renderTransactionnel,
-  sep,
+  titreSection,
 } from "../../emails/transactionnel";
 
 export const prerender = false;
@@ -67,10 +66,9 @@ export const POST: APIRoute = async ({ request }) => {
         ["TVA intracom.", champ(tva) && esc(champ(tva)!)],
       ]),
       champ(message)
-        ? sep() +
-          label("Message du client") +
+        ? titreSection("Message du client") +
           citation(esc(champ(message)!).replace(/\n/g, "<br>"))
-        : p("(pas de message)"),
+        : titreSection("Message du client") + p("(pas de message)"),
     ].join(""),
     cta: {
       label: "Voir le devis",
