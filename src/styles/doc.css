@@ -800,7 +800,7 @@
   padding: 56px 40px 110px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1023.98px) {
   .doc-root .portal-left {
     display: none;
   }

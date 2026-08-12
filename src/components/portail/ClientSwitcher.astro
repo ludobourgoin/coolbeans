@@ -18,6 +18,10 @@ interface Props {
 
 const { clients, current, compact = false } = Astro.props;
 const retour = Astro.url.pathname;
+// Deux instances (sidebar + topbar mobile) coexistent dans le DOM même si une
+// seule est visible à la fois : id unique par variante pour ne jamais dupliquer
+// l'id et pour que `label[for]` pointe toujours sur le bon champ.
+const selectId = compact ? "portal-client-compact" : "portal-client";
 ---
 
 <form
@@ -27,9 +31,9 @@ const retour = Astro.url.pathname;
   data-client-switcher
 >
   <input type="hidden" name="retour" value={retour} />
-  <label class="sr-only" for="portal-client">Espace client affiché</label>
+  <label class="sr-only" for={selectId}>Espace client affiché</label>
   <select
-    id="portal-client"
+    id={selectId}
     name="client"
     class:list={[
       "h-9 rounded-control border border-line bg-surface px-2 text-sm text-ink",
