@@ -1,0 +1,33 @@
+// Résolution du client courant (spec 2026-08-12, §3).
+//
+// Fonction pure : elle reçoit le registre, le metadata et la valeur du cookie,
+// et n'accède ni à Astro ni au réseau. C'est ce qui rend la règle de sécurité
+// testable directement.
+//
+// LA règle : pour un non-admin, le cookie est IGNORÉ. Pas masqué, pas filtré —
+// ignoré. Un cookie forgé chez un client ne produit donc rien. L'Action qui le
+// pose revérifie le rôle de son côté : deux barrières indépendantes.
+
+import { DEFAULT_CLIENT, getClientIn, sortClients, type PortalClient } from "./clients";
+import { type PortalMetadata } from "./metadata";
+
+/** Cookie de préférence d'affichage. Jamais une autorisation. */
+export const CLIENT_COOKIE = "portal_client";
+
+export function resolveCurrentClient(
+  clients: PortalClient[],
+  meta: PortalMetadata,
+  cookieValue: string | null,
+): PortalClient | null {
+  // Un client ne voit que le sien, quoi qu'il envoie.
+  if (meta.role !== "admin") return getClientIn(clients, meta.client);
+
+  // Admin : cookie → son propre client → défaut → premier du registre.
+  return (
+    getClientIn(clients, cookieValue) ??
+    getClientIn(clients, meta.client) ??
+    getClientIn(clients, DEFAULT_CLIENT) ??
+    sortClients(clients)[0] ??
+    null
+  );
+}
