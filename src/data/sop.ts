@@ -323,7 +323,7 @@ export const etapes: Etape[] = [
     outils: ["Asana — projet du client", "Portail client"],
     faire: [
       "Travailler par sprints.",
-      "Faire traverser aux tâches : 🍫 Backlog, 🚀 Sprint, 🚧 En cours, 🤙 Pour validation, ✅ Terminé.",
+      "Faire traverser aux tâches : 🧱 Backlog, 🚀 Sprint, 🚧 En cours, ☝️ Pour validation, ✅ Terminé.",
       "Tenir le point client au rythme convenu.",
       "Envoyer toute demande hors périmètre en 📥 Inbox et la traiter par avenant.",
     ],
