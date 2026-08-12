@@ -33,6 +33,19 @@ describe("resolveCurrentClient · non-admin", () => {
   it("renvoie null s'il n'a aucun client", () => {
     expect(resolveCurrentClient(tous, readPortalMetadata({}), null)).toBeNull();
   });
+
+  // Discrimine « cookie ignoré » de « cookie utilisé en repli » : sans ces deux
+  // cas, une régression du type `getClientIn(meta.client) ?? getClientIn(cookieValue)`
+  // passerait les tests ci-dessus tout en violant la règle de sécurité.
+  it("renvoie null, pas le cookie, quand il n'a aucun client et que le cookie est valide", () => {
+    const sansClient = readPortalMetadata({ role: "client" });
+    expect(resolveCurrentClient(tous, sansClient, "coolbeans")).toBeNull();
+  });
+
+  it("renvoie null, pas le cookie, quand son client est inconnu et que le cookie est valide", () => {
+    const orphelin = readPortalMetadata({ role: "client", client: "disparu" });
+    expect(resolveCurrentClient(tous, orphelin, "amusoire")).toBeNull();
+  });
 });
 
 describe("resolveCurrentClient · admin", () => {
