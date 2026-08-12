@@ -66,7 +66,7 @@ Inélégant, mais c'est le seul moyen de lire le pipeline d'un coup d'œil et de
   <tbody>
     {colonnesCrm.map((c, i) => (
       <tr>
-        <td>{c.changement === "supprimée" ? "—" : i + 1}</td>
+        <td>{i + 1}</td>
         <td>{c.nom}</td>
         <td>{c.changement}</td>
       </tr>
@@ -74,13 +74,19 @@ Inélégant, mais c'est le seul moyen de lire le pipeline d'un coup d'œil et de
   </tbody>
 </table>
 
-**☄️ Lead relancé disparaît** parce qu'une relance est une action, pas un état. Déplacer une carte dans cette colonne effaçait l'information de l'état d'où l'on relançait, ce qui rendait impossible la seule question qui rapporte de l'argent dans un CRM : « quels devis dorment depuis plus de quinze jours ? ». Ses cartes existantes sont à redispatcher à la main dans leur état réel **avant** de supprimer la colonne.
+**☄️ Lead relancé reste.** Elle dit une chose que rien d'autre ne dit d'un coup d'œil sur le board : « j'ai relancé, j'attends toujours une réponse ». Sa contrepartie assumée est qu'une carte qui y entre perd la trace de la colonne d'où elle venait — on ne peut donc pas répondre en un filtre à « quels devis dorment depuis quinze jours ? ». Ce que l'étiquette `☄️ relance-n` et la sous-tâche datée compensent en partie : combien de relances, et quand tombe la suivante.
 
 **🏗️ En production est ajoutée** pour éviter qu'une carte stagne plusieurs semaines dans **🚀 Acompte réglé** sans qu'on distingue ce qui tourne de ce qui attend.
 
 **🧊 En veille est ajoutée** pour séparer « pas maintenant, rappelle-moi en septembre » de « perdu ». Mélangées, les affaires reportées ne sont jamais rouvertes. Une carte en veille porte obligatoirement une date de rappel ; sans date, elle bascule en **🪦 PERDU**.
 
 **🧰 Modèles est ajoutée en dernière position, hors pipeline** : elle héberge la tâche modèle décrite en fin de page.
+
+<Callout type="piege" title="Ce que voit le client, et ce qu'il ne voit pas">
+  Le projet `🎯 crm` n'est jamais synchronisé vers le portail : c'est le board de Ludo, seul.
+
+  Le projet Asana **de la team du client**, lui, l'est. Le sync ne masque que la section `📥 Inbox` et les tâches dont le nom commence par un point — tout le reste de `🧱 Backlog` s'affiche sur `/espace/projets`. Une tâche interne (créer un compte Clerk, émettre une facture, rédiger une étude de cas) posée dans ce projet est donc **publiée au client**. Ces tâches-là vivent en sous-tâches de la carte CRM, pas dans le projet du client.
+</Callout>
 
 ## Le process, de bout en bout
 

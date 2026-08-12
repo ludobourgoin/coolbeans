@@ -47,11 +47,11 @@ export interface Etape {
   note?: string;
 }
 
-/** Colonne du projet Asana `🎯 crm`. `changement` documente la restructuration
- *  en cours ; il disparaîtra une fois le board à jour. */
+/** Colonne du projet Asana `🎯 crm`, dans l'ordre du board. `changement`
+ *  documente la restructuration en cours ; il disparaîtra une fois faite. */
 export interface ColonneCrm {
   nom: string;
-  changement: "inchangée" | "ajoutée" | "supprimée";
+  changement: "inchangée" | "ajoutée";
 }
 
 /** L'ordre fait foi : `amont` d'abord, `sortie` en dernier. Les quatre phases
@@ -94,6 +94,7 @@ export const colonnesCrm: ColonneCrm[] = [
   { nom: "📆 Rdv pris", changement: "inchangée" },
   { nom: "🎯 Besoins définis", changement: "inchangée" },
   { nom: "📝 Devis envoyé", changement: "inchangée" },
+  { nom: "☄️ Lead relancé", changement: "inchangée" },
   { nom: "💪 Négo entamée", changement: "inchangée" },
   { nom: "🚀 Acompte réglé", changement: "inchangée" },
   { nom: "🏗️ En production", changement: "ajoutée" },
@@ -102,7 +103,6 @@ export const colonnesCrm: ColonneCrm[] = [
   { nom: "🧊 En veille", changement: "ajoutée" },
   { nom: "🪦 PERDU", changement: "inchangée" },
   { nom: "🧰 Modèles", changement: "ajoutée" },
-  { nom: "☄️ Lead relancé", changement: "supprimée" },
 ];
 
 export const etapes: Etape[] = [
@@ -234,6 +234,7 @@ export const etapes: Etape[] = [
       { vers: "S20", si: "le client annonce un report" },
       { vers: "S21", si: "silence total après la relance 3" },
     ],
+    note: "Une fois la première relance partie, la carte passe en ☄️ Lead relancé et y reste tant qu'aucune réponse n'arrive : la colonne dit « j'ai relancé, j'attends », l'étiquette ☄️ relance-n dit combien de fois, la sous-tâche datée dit quand est la suivante.",
   },
   {
     id: "S6",

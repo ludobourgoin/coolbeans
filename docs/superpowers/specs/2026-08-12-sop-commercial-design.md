@@ -110,21 +110,24 @@ taux de transformation en haut de tunnel.
 | 2 | `📆 Rdv pris` | inchangée |
 | 3 | `🎯 Besoins définis` | inchangée |
 | 4 | `📝 Devis envoyé` | inchangée |
-| 5 | `💪 Négo entamée` | inchangée |
-| 6 | `🚀 Acompte réglé` | inchangée |
-| 7 | `🏗️ En production` | **ajoutée** |
-| 8 | `📝 Facture de solde envoyée` | inchangée |
-| 9 | `✅ Facture de solde réglée` | inchangée |
-| 10 | `🧊 En veille` | **ajoutée** |
-| 11 | `🪦 PERDU` | inchangée |
-| 12 | `🧰 Modèles` | **ajoutée**, en dernière position, hors pipeline |
-| — | `☄️ Lead relancé` | **supprimée** |
+| 5 | `☄️ Lead relancé` | inchangée (voir ci-dessous) |
+| 6 | `💪 Négo entamée` | inchangée |
+| 7 | `🚀 Acompte réglé` | inchangée |
+| 8 | `🏗️ En production` | **ajoutée** |
+| 9 | `📝 Facture de solde envoyée` | inchangée |
+| 10 | `✅ Facture de solde réglée` | inchangée |
+| 11 | `🧊 En veille` | **ajoutée** |
+| 12 | `🪦 PERDU` | inchangée |
+| 13 | `🧰 Modèles` | **ajoutée**, en dernière position, hors pipeline |
 
-`☄️ Lead relancé` disparaît parce qu'une relance est une action, pas un état :
-déplacer une carte dans cette colonne effaçait l'information de l'état d'où l'on
-relançait, rendant impossible la seule question qui rapporte de l'argent dans un CRM
-(« quels devis dorment depuis plus de quinze jours ? »). Ses cartes existantes seront
-redispatchées à la main dans leur état réel avant suppression de la colonne.
+`☄️ Lead relancé` était donnée pour supprimée dans la première version de ce design,
+au motif qu'une relance est une action et non un état. **Décision inverse tranchée par
+Ludo le 2026-08-12 : la colonne reste.** Elle dit d'un coup d'œil sur le board « j'ai
+relancé, j'attends toujours une réponse », ce que rien d'autre ne montre à la même
+vitesse. Sa contrepartie est assumée : une carte qui y entre perd la trace de la
+colonne d'où elle venait, donc « quels devis dorment depuis quinze jours ? » ne se
+répond pas en un filtre. L'étiquette `☄️ relance-n` et la sous-tâche datée compensent
+en partie — combien de relances, et quand tombe la suivante.
 
 `🏗️ En production` évite qu'une carte stagne plusieurs semaines dans
 `🚀 Acompte réglé` sans qu'on distingue ce qui tourne de ce qui attend.
@@ -455,9 +458,9 @@ process appelé à bouger plusieurs fois dans les mois à venir :
   L'échéancier ferme et l'autorisation d'étude de cas doivent y figurer.
 - **Formules du care plan** : à définir séparément. Le SOP décrit le moment de la
   proposition, pas le contenu de l'offre.
-- **Restructuration du projet `🎯 crm`** : redispatch manuel des cartes de
-  `☄️ Lead relancé`, puis suppression de la colonne, création de `🏗️ En production`,
-  `🧊 En veille` et `🧰 Modèles`.
+- **Restructuration du projet `🎯 crm`** : création de `🏗️ En production`,
+  `🧊 En veille` et `🧰 Modèles`. `☄️ Lead relancé` est conservée (elle est vide au
+  2026-08-12, il n'y a donc rien à redispatcher).
 - **Feuille de prospection** : la spec suppose qu'elle porte une date de dernier
   contact et une colonne « prochaine action ». Si ce n'est pas le cas, ces deux
   colonnes sont à ajouter, sinon la revue mensuelle n'a rien sur quoi mordre. La
