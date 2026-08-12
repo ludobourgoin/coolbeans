@@ -21,6 +21,11 @@
 - **Aucun secret dans le repo.**
 - **Après toute modification de `wrangler.jsonc` :** relancer `npm run build` avant de se fier à un `wrangler deploy --dry-run`, l'adapter aplatissant la config au build.
 - Vérification finale de chaque tâche : `npx vitest run`, `npm run build`, `npm run verify`.
+- **Le build doit rester vert à chaque tâche.** La migration de types se fait par
+  dépréciation : les tâches 2 et 4 conservent l'ancien contrat à côté du nouveau, marqué
+  `@deprecated`, et la tâche 9 le supprime une fois tous les appelants migrés. Ne jamais
+  retirer un export encore importé ailleurs — Vite échoue au build, contrairement à une
+  simple incompatibilité de signature, que seul `tsc` voit.
 
 ---
 
@@ -355,44 +360,35 @@ testables sans astro:content, indisponible sous Vitest."
 **Interfaces:**
 - Consomme : rien de Task 1 (volontairement découplé — le metadata ne connaît pas le registre).
 - Produit :
-  - `interface PortalMetadata { role: PortalRole; client: string | null }`
-  - `readPortalMetadata(raw: unknown): PortalMetadata`
-  - `isAdmin(meta: PortalMetadata): boolean`
+  - `interface PortalMetadata` — gagne `client: string | null`, **conserve** `projects`,
+    `asana_team_gid` et `uptimerobot_monitor_ids`, marqués `@deprecated`.
+  - `readPortalMetadata(raw: unknown): PortalMetadata` — remplit les deux jeux de champs.
+  - `isAdmin(meta: PortalMetadata): boolean` — inchangé.
+  - `PortalMetadataKey`, `MODULE_REQUIREMENTS`, `missingKeysFor` — **conservés tels quels**,
+    marqués `@deprecated`.
 
-Les exports `PortalMetadataKey`, `MODULE_REQUIREMENTS` et `missingKeysFor` **quittent ce fichier** : ils décrivent le client, et vivent désormais dans `clients.ts` (Task 1).
+Rien n'est supprimé ici : les pages de l'espace importent `missingKeysFor` comme valeur, et
+la retirer casserait le build. Task 9 fait le ménage une fois les appelants migrés.
 
-- [ ] **Step 1: Réécrire les tests**
+- [ ] **Step 1: Compléter les tests existants**
 
-Remplacer intégralement `src/lib/portail/metadata.test.ts` par :
+**Ne pas remplacer le fichier** : les tests actuels couvrent les champs dépréciés, qui restent
+en service jusqu'à Task 9. Ajouter dans `src/lib/portail/metadata.test.ts`, à l'intérieur du
+`describe("readPortalMetadata")` existant, les cas de la nouvelle clé :
 
 ```ts
-import { describe, expect, it } from "vitest";
-import { isAdmin, readPortalMetadata } from "./metadata";
-
-describe("readPortalMetadata", () => {
-  it("lit le schéma canonique", () => {
-    expect(readPortalMetadata({ role: "admin", client: "coolbeans" })).toEqual({
-      role: "admin",
-      client: "coolbeans",
-    });
+  it("lit la nouvelle clé client", () => {
+    expect(readPortalMetadata({ role: "admin", client: "coolbeans" }).client).toBe("coolbeans");
   });
 
-  it("ne lève pas sur un metadata absent ou vide", () => {
-    for (const raw of [undefined, null, {}]) {
-      expect(readPortalMetadata(raw)).toEqual({ role: "client", client: null });
-    }
-  });
-
-  it("retombe sur client pour tout rôle non reconnu", () => {
-    expect(readPortalMetadata({ role: "Admin" }).role).toBe("client");
-    expect(readPortalMetadata({ role: "superadmin" }).role).toBe("client");
-    expect(readPortalMetadata({ role: 42 }).role).toBe("client");
-  });
-
-  it("rogne les espaces et écarte les valeurs vides", () => {
-    expect(readPortalMetadata({ client: "  amusoire  " }).client).toBe("amusoire");
+  it("rend client nul quand la clé est absente, vide ou mal typée", () => {
+    expect(readPortalMetadata({}).client).toBeNull();
     expect(readPortalMetadata({ client: "   " }).client).toBeNull();
     expect(readPortalMetadata({ client: 42 }).client).toBeNull();
+  });
+
+  it("rogne les espaces autour du slug de client", () => {
+    expect(readPortalMetadata({ client: "  amusoire  " }).client).toBe("amusoire");
   });
 
   // Retombée TEMPORAIRE : entre le déploiement et la mise à jour des comptes
@@ -417,24 +413,19 @@ describe("readPortalMetadata", () => {
       expect(readPortalMetadata({ projects: [] }).client).toBeNull();
     });
   });
-});
-
-describe("isAdmin", () => {
-  it("distingue admin et client", () => {
-    expect(isAdmin(readPortalMetadata({ role: "admin" }))).toBe(true);
-    expect(isAdmin(readPortalMetadata({ role: "client" }))).toBe(false);
-  });
-});
 ```
+
+Le `describe("isAdmin")` existant et les tests des champs dépréciés restent inchangés.
 
 - [ ] **Step 2: Lancer les tests pour vérifier qu'ils échouent**
 
 Run: `npx vitest run src/lib/portail/metadata.test.ts`
 Expected: FAIL — la propriété `client` n'existe pas sur le résultat.
 
-- [ ] **Step 3: Réécrire `src/lib/portail/metadata.ts`**
+- [ ] **Step 3: Compléter `src/lib/portail/metadata.ts`**
 
-Remplacer intégralement le contenu par :
+**Ne rien supprimer.** Ajouter la clé `client` et sa lecture, et marquer l'ancien contrat
+déprécié. Le fichier devient :
 
 ```ts
 // Schéma canonique du publicMetadata Clerk.
@@ -458,6 +449,13 @@ export interface PortalMetadata {
   role: PortalRole;
   /** Slug dans le registre des clients. `null` si le mapping n'est pas posé. */
   client: string | null;
+
+  /** @deprecated Migré vers le registre. Retiré en Task 9. */
+  projects: string[];
+  /** @deprecated Migré vers le registre. Retiré en Task 9. */
+  asana_team_gid: string | null;
+  /** @deprecated Migré vers le registre. Retiré en Task 9. */
+  uptimerobot_monitor_ids: string[];
 }
 
 function asSlug(value: unknown): string | null {
@@ -485,6 +483,10 @@ export function readPortalMetadata(raw: unknown): PortalMetadata {
   return {
     role: meta.role === "admin" ? "admin" : "client",
     client: asSlug(meta.client) ?? legacyClient(meta),
+    // Champs dépréciés, conservés le temps que les appelants migrent (Task 9).
+    projects: asIdList(meta.projects),
+    asana_team_gid: asId(meta.asana_team_gid),
+    uptimerobot_monitor_ids: asIdList(meta.uptimerobot_monitor_ids),
   };
 }
 
@@ -493,17 +495,26 @@ export function isAdmin(meta: PortalMetadata): boolean {
 }
 ```
 
+**Conserver sans y toucher** le reste du fichier existant : `asId`, `asIdList`,
+`PortalMetadataKey`, `PortalModule`, `MODULE_REQUIREMENTS`, `hasKey` et `missingKeysFor`.
+Ajouter simplement au-dessus de chacun des trois derniers :
+
+```ts
+/** @deprecated Les mappings décrivent le client, pas l'utilisateur. Voir clients.ts. Retiré en Task 9. */
+```
+
 - [ ] **Step 4: Lancer les tests pour vérifier qu'ils passent**
 
 Run: `npx vitest run src/lib/portail/metadata.test.ts`
 Expected: PASS — 10 tests.
 
-- [ ] **Step 5: Vérifier que rien d'autre n'importe les exports supprimés**
+- [ ] **Step 5: Vérifier que rien n'est cassé**
 
-Run: `grep -rn "missingKeysFor\|MODULE_REQUIREMENTS\|PortalMetadataKey" src/ --include=*.astro --include=*.ts`
-Expected: des occurrences dans `src/pages/espace/*.astro` et `src/components/portail/EmptyState.astro`. Elles seront corrigées en Task 6 et Task 9 — **le build est cassé jusque-là, c'est attendu.** Ne pas commiter avant l'étape suivante.
+Run: `npx vitest run && npm run build 2>&1 | tail -2`
+Expected: tests verts et `[build] Complete!`. Aucun export n'ayant été retiré, les pages de
+l'espace et `EmptyState.astro` continuent de compiler.
 
-- [ ] **Step 6: Commit (tests seuls verts, build encore cassé)**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add src/lib/portail/metadata.ts src/lib/portail/metadata.test.ts
@@ -517,8 +528,9 @@ Une retombée temporaire sur projects[0] couvre la fenêtre entre ce
 déploiement et la mise à jour manuelle des comptes dans Clerk, sans
 laquelle le portail du client casserait dans l'intervalle.
 
-Les consommateurs de missingKeysFor sont corrigés dans les tâches
-suivantes ; le build est volontairement cassé entre les deux."
+L'ancien contrat reste en place, marqué déprécié, le temps que les
+appelants migrent : retirer missingKeysFor maintenant casserait le
+build, les pages l'important comme valeur. Task 9 fait le ménage."
 ```
 
 ---
@@ -689,9 +701,13 @@ coolbeans.yaml venait à disparaître."
 - Produit :
   - `interface PortalContext { user: User | null; meta: PortalMetadata; client: PortalClient | null }`
   - `type PortalRequestContext = Pick<APIContext, "locals" | "cookies">`
-  - `getPortalContext(context: PortalRequestContext): Promise<PortalContext>` — **la signature change** : elle prend `Astro` entier et non plus `Astro.locals`, la résolution ayant besoin des cookies.
-  - `getPortalMeta(context: PortalRequestContext): Promise<PortalMetadata>`
+  - `getPortalContext(context: PortalRequestContext): Promise<PortalContext>` — **la signature change** : elle prend `Astro` entier et non plus `Astro.locals`, la résolution ayant besoin des cookies. `PortalContext` gagne `client`.
   - `getCurrentClient(context: PortalRequestContext): Promise<PortalClient | null>`
+  - `getPortalMeta(locals): Promise<PortalMetadata>` — **conservé tel quel**, marqué
+    `@deprecated`. Quatre pages de l'espace l'appellent encore ; Task 9 les migre.
+
+Un seul appelant est à corriger dans cette tâche : `src/pages/espace/index.astro`, qui
+appelle `getPortalContext(Astro.locals)` et doit passer à `getPortalContext(Astro)`.
 
 - [ ] **Step 1: Réécrire `src/lib/portail/context.ts`**
 
@@ -718,6 +734,7 @@ export type PortalRequestContext = Pick<APIContext, "locals" | "cookies">;
 import { CLIENT_COOKIE, resolveCurrentClient } from "./current-client";
 import { readPortalMetadata, type PortalMetadata } from "./metadata";
 
+const USER_CACHE_KEY = "__portalUser";
 const CACHE_KEY = "__portalContext";
 
 export interface PortalContext {
@@ -728,7 +745,17 @@ export interface PortalContext {
   client: PortalClient | null;
 }
 
-type WithCache = APIContext["locals"] & { [CACHE_KEY]?: Promise<PortalContext> };
+type WithCache = APIContext["locals"] & {
+  [USER_CACHE_KEY]?: Promise<User | null>;
+  [CACHE_KEY]?: Promise<PortalContext>;
+};
+
+/** L'appel Clerk lui-même, mémoïsé — les deux entrées ci-dessous le partagent. */
+function getUser(locals: APIContext["locals"]): Promise<User | null> {
+  const cache = locals as WithCache;
+  cache[USER_CACHE_KEY] ??= locals.currentUser().then((u) => u ?? null);
+  return cache[USER_CACHE_KEY];
+}
 
 /**
  * L'utilisateur, son metadata et le client courant, résolus une seule fois par
@@ -740,7 +767,7 @@ export function getPortalContext(context: PortalRequestContext): Promise<PortalC
   // On mémoïse la promesse, pas sa valeur : deux appels concurrents dans le
   // même rendu partagent le même aller-retour réseau.
   cache[CACHE_KEY] ??= (async () => {
-    const user = (await context.locals.currentUser()) ?? null;
+    const user = await getUser(context.locals);
     const meta = readPortalMetadata(user?.publicMetadata);
     const clients = await listClients();
     const cookie = context.cookies.get(CLIENT_COOKIE)?.value ?? null;
@@ -749,8 +776,13 @@ export function getPortalContext(context: PortalRequestContext): Promise<PortalC
   return cache[CACHE_KEY];
 }
 
-export async function getPortalMeta(context: PortalRequestContext): Promise<PortalMetadata> {
-  return (await getPortalContext(context)).meta;
+/**
+ * @deprecated Ne résout pas le client courant. Conservée le temps que les pages
+ * de l'espace migrent vers `getPortalContext(Astro)` (Task 9). Partage la
+ * mémoïsation de l'appel Clerk, donc aucun aller-retour supplémentaire.
+ */
+export async function getPortalMeta(locals: APIContext["locals"]): Promise<PortalMetadata> {
+  return readPortalMetadata((await getUser(locals))?.publicMetadata);
 }
 
 export async function getCurrentClient(context: PortalRequestContext): Promise<PortalClient | null> {
@@ -758,15 +790,32 @@ export async function getCurrentClient(context: PortalRequestContext): Promise<P
 }
 ```
 
-- [ ] **Step 2: Vérifier que le typage tient**
+- [ ] **Step 2: Migrer l'unique appelant de `getPortalContext`**
+
+Dans `src/pages/espace/index.astro`, remplacer :
+
+```ts
+const { user, meta } = await getPortalContext(Astro.locals);
+```
+
+par :
+
+```ts
+const { user, meta } = await getPortalContext(Astro);
+```
+
+- [ ] **Step 3: Vérifier que le typage et le build tiennent**
 
 Run: `npx --yes -p typescript@5 tsc --noEmit -p tsconfig.json 2>&1 | grep 'error TS'`
-Expected: des erreurs sur les appelants de `getPortalMeta(Astro.locals)` (signature changée) et sur `missingKeysFor`. **Attendu** — corrigé en Tasks 6 et 9. Seule erreur tolérée en fin de plan : `src/worker.ts(60,9)`, antérieure.
+Expected: uniquement `src/worker.ts(60,9)`, antérieure au plan.
 
-- [ ] **Step 3: Commit**
+Run: `npx vitest run && npm run build 2>&1 | tail -2`
+Expected: tests verts, `[build] Complete!`.
+
+- [ ] **Step 4: Commit**
 
 ```bash
-git add src/lib/portail/context.ts
+git add src/lib/portail/context.ts "src/pages/espace/index.astro"
 git commit -m "feat(portail): le contexte résout et mémoïse le client courant
 
 getPortalContext prend désormais l'APIContext complet et non locals
@@ -774,7 +823,9 @@ seul : la résolution du client a besoin des cookies. Elle reste
 mémoïsée par requête, la mémoïsation existant pour éviter le double
 appel Clerk du layout et de la page.
 
-Les appelants sont mis à jour dans les tâches suivantes."
+getPortalMeta est conservée en déprécié pour les quatre pages qui
+l'appellent encore, et partage la mémoïsation de l'appel Clerk : pas
+d'aller-retour supplémentaire pendant la transition. Task 9 la retire."
 ```
 
 ---
@@ -910,7 +961,9 @@ Le cookie est HttpOnly, Secure, SameSite=Lax, un an."
 **Files:**
 - Modify: `src/lib/portail/nav.ts`
 - Modify: `src/lib/portail/nav.test.ts`
-- Modify: `src/components/portail/EmptyState.astro`
+
+`EmptyState.astro` n'est **pas** touché ici : son type de clés ne peut changer qu'en même temps
+que les pages qui le nourrissent, en Task 9. Le modifier maintenant casserait leur typage.
 
 **Interfaces:**
 - Consomme : `PortalClient`, `ClientMappingKey` (Task 1) ; `PortalMetadata` (Task 2).
@@ -1035,51 +1088,18 @@ export function buildPortalNav(
 Run: `npx vitest run src/lib/portail/nav.test.ts`
 Expected: PASS — 17 tests.
 
-- [ ] **Step 5: Adapter le type des clés dans `EmptyState.astro`**
+- [ ] **Step 5: Lancer toute la suite**
 
-Dans `src/components/portail/EmptyState.astro`, remplacer la ligne d'import :
+Run: `npx vitest run && npm run build 2>&1 | tail -2`
+Expected: tests verts, `[build] Complete!`. `PortalNav.astro` appelle encore `buildPortalNav`
+avec deux arguments : `client` y vaut `undefined`, l'entrée Doc retombe donc sur `/doc`. C'est
+une incompatibilité de signature que seul `tsc` voit, sans effet sur le build ; Task 8 la
+résout en passant le troisième argument.
 
-```ts
-import type { PortalMetadataKey } from "../../lib/portail/metadata";
-```
-
-par :
-
-```ts
-import type { ClientMappingKey } from "../../lib/portail/clients";
-```
-
-et la propriété correspondante :
-
-```ts
-  /** Clés absentes du registre client, via missingKeysFor(). */
-  missingKeys?: ClientMappingKey[];
-```
-
-Adapter aussi le texte du diagnostic, qui parlait du `publicMetadata` de l'utilisateur alors que les clés décrivent maintenant le client. Remplacer le contenu du `<span class="mt-1 block">` par :
-
-```astro
-        <span class="mt-1 block">
-          {missingKeys.map((key, i) => (
-            <>
-              {i > 0 && ", "}
-              <code class="font-mono">{key}</code>
-            </>
-          ))}
-          {missingKeys.length > 1 ? " sont absentes" : " est absente"} de la fiche de ce
-          client. À poser dans <code class="font-mono">src/content/clients/</code>.
-        </span>
-```
-
-- [ ] **Step 6: Lancer toute la suite**
-
-Run: `npx vitest run`
-Expected: PASS. Le build reste cassé (pages de l'espace), corrigé en Task 9.
-
-- [ ] **Step 7: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
-git add src/lib/portail/nav.ts src/lib/portail/nav.test.ts src/components/portail/EmptyState.astro
+git add src/lib/portail/nav.ts src/lib/portail/nav.test.ts
 git commit -m "feat(portail): la nav et les empty states suivent le client courant
 
 Corrige le défaut relevé après le déploiement de S0 : la nav dérivait de
@@ -1088,8 +1108,8 @@ admins, si bien qu'un admin sans projects lisait « aucune documentation »
 tout en pouvant ouvrir /docs/amusoire. L'entrée Doc suit désormais le
 client courant.
 
-Le diagnostic admin renvoie vers la fiche du client plutôt que vers le
-publicMetadata de l'utilisateur, les clés ayant changé de porteur."
+EmptyState n'est pas touché ici : son type de clés ne peut changer qu'avec
+les pages qui le nourrissent, en Task 9."
 ```
 
 ---
@@ -1587,8 +1607,14 @@ sans quoi il disparaîtrait avec elle."
 
 **Files:**
 - Modify: `src/pages/espace/index.astro`, `projets.astro`, `site.astro`, `support.astro`, `doc.astro`
+- Modify: `src/components/portail/EmptyState.astro`
+- Modify: `src/lib/portail/metadata.ts`, `src/lib/portail/metadata.test.ts`
+- Modify: `src/lib/portail/context.ts`
 - Modify: `src/pages/design-system.astro`
-- Modify: `docs/superpowers/specs/2026-08-11-portail-publicmetadata.md`
+- Modify: `docs/superpowers/specs/2026-08-11-portail-publicmetadata.md`, `2026-08-12-portail-sync-par-team.md`
+
+C'est la tâche qui referme la migration : une fois les pages passées au client courant, tout le
+contrat déprécié posé en Tasks 2 et 4 disparaît.
 
 **Interfaces:**
 - Consomme : tout ce qui précède.
@@ -1716,7 +1742,61 @@ et `NAV_DEMO_META` devient :
 const NAV_DEMO_META = readPortalMetadata({ role: "client", client: "amusoire" });
 ```
 
-- [ ] **Step 5: Mettre à jour la doc du schéma S0.6**
+- [ ] **Step 5: Adapter le type des clés dans `EmptyState.astro`**
+
+Remplacer la ligne d'import :
+
+```ts
+import type { PortalMetadataKey } from "../../lib/portail/metadata";
+```
+
+par :
+
+```ts
+import type { ClientMappingKey } from "../../lib/portail/clients";
+```
+
+et la propriété correspondante :
+
+```ts
+  /** Clés absentes du registre client, via missingKeysFor(). */
+  missingKeys?: ClientMappingKey[];
+```
+
+Adapter le texte du diagnostic, qui parlait du `publicMetadata` de l'utilisateur alors que les
+clés décrivent maintenant le client. Remplacer le contenu du `<span class="mt-1 block">` par :
+
+```astro
+        <span class="mt-1 block">
+          {missingKeys.map((key, i) => (
+            <>
+              {i > 0 && ", "}
+              <code class="font-mono">{key}</code>
+            </>
+          ))}
+          {missingKeys.length > 1 ? " sont absentes" : " est absente"} de la fiche de ce
+          client. À poser dans <code class="font-mono">src/content/clients/</code>.
+        </span>
+```
+
+- [ ] **Step 6: Retirer le contrat déprécié**
+
+Dans `src/lib/portail/metadata.ts`, supprimer désormais que plus rien ne les importe :
+les trois champs `@deprecated` de `PortalMetadata` et leur affectation dans
+`readPortalMetadata`, ainsi que `PortalMetadataKey`, `PortalModule`, `MODULE_REQUIREMENTS`,
+`hasKey`, `missingKeysFor`, et `asId`/`asIdList` s'ils ne servent plus qu'à eux. Conserver
+`legacyClient` : elle couvre la fenêtre de migration Clerk, pas celle du code.
+
+Dans `src/lib/portail/context.ts`, supprimer `getPortalMeta`.
+
+Dans `src/lib/portail/metadata.test.ts`, supprimer les tests des champs retirés. Conserver ceux
+de `client`, du rôle et de la retombée `projects[0]`.
+
+Run: `grep -rn "missingKeysFor\|MODULE_REQUIREMENTS\|PortalMetadataKey\|getPortalMeta" src/`
+Expected: `missingKeysFor` uniquement depuis `lib/portail/clients`, et plus aucune occurrence
+des trois autres.
+
+- [ ] **Step 7: Mettre à jour la doc du schéma S0.6**
 
 En tête de `docs/superpowers/specs/2026-08-11-portail-publicmetadata.md`, insérer après le premier paragraphe :
 
@@ -1729,7 +1809,7 @@ En tête de `docs/superpowers/specs/2026-08-11-portail-publicmetadata.md`, insé
 > [2026-08-12-selecteur-de-client-admin-design.md](2026-08-12-selecteur-de-client-admin-design.md).
 ```
 
-- [ ] **Step 6: Répercuter la disparition de S1.1 sur la spec du sync**
+- [ ] **Step 8: Répercuter la disparition de S1.1 sur la spec du sync**
 
 Dans `docs/superpowers/specs/2026-08-12-portail-sync-par-team.md`, remplacer la ligne
 du tableau « Ce que ça change dans les tâches S1 » concernant S1.1 par :
@@ -1746,7 +1826,7 @@ projet pour ses tâches. L'appel Clerk de listage des utilisateurs a disparu ave
 par client :
 ```
 
-- [ ] **Step 7: Vérification complète**
+- [ ] **Step 9: Vérification complète**
 
 Run: `npx vitest run && npm run build && CLOUDFLARE_ENV=staging npm run build && npm run verify 2>&1 | tail -3`
 Expected: tests verts, les deux builds complets, `verify` avec le seul échec antérieur.
@@ -1754,18 +1834,20 @@ Expected: tests verts, les deux builds complets, `verify` avec le seul échec an
 Run: `npx --yes -p typescript@5 tsc --noEmit -p tsconfig.json 2>&1 | grep 'error TS'`
 Expected: uniquement `src/worker.ts(60,9)`, antérieure au plan.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 10: Commit**
 
 ```bash
-git add src/pages docs/superpowers/specs/
+git add src/pages src/lib/portail src/components/portail docs/superpowers/specs/
 git commit -m "feat(portail): les pages de l'espace lisent le client courant
 
 Les modules réclament leurs mappings au client et non plus à
 l'utilisateur, l'accueil affiche la doc du client courant, et le
 sélecteur rejoint la Bibliothèque (definition of done).
 
-La spec du schéma canonique de S0.6 porte désormais l'amendement en
-tête, pour qu'on ne la lise pas comme encore en vigueur."
+Referme la migration : le contrat déprécié posé en tâches 2 et 4
+disparaît maintenant que plus rien ne l'importe. La spec du schéma
+canonique de S0.6 porte l'amendement en tête, pour qu'on ne la lise pas
+comme encore en vigueur."
 ```
 
 ---
