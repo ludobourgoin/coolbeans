@@ -75,8 +75,9 @@ describe("syncTeam", () => {
     expect(JSON.stringify(snap)).not.toContain("secret");
   });
 
-  // Le coût annoncé dans la spec : P + 4 subrequests, constant quel que soit
-  // le nombre de clients. 1 projets + 1 tâches + 1 getWithMetadata + 1 put.
+  // Le coût annoncé dans la spec : P + 3 subrequests, constant quel que soit
+  // le nombre de clients. Ici P=1 : 1 liste de projets + 1 liste de tâches +
+  // 1 getWithMetadata + 1 put = 4.
   it("consomme 2 requêtes Asana et 4 subrequests pour un projet", async () => {
     const r = await syncTeam("T1", deps);
     expect(r.asana_requests).toBe(2);
@@ -128,6 +129,36 @@ describe("syncTeam", () => {
 
     expect(r.projects).toBe(1);
     expect(r.asana_requests).toBe(2); // 1 liste de projets + 1 seule liste de tâches
+    const demandes = (fetchImpl as unknown as ReturnType<typeof vi.fn>).mock.calls
+      .map(([u]) => new URL(String(u)).searchParams.get("project"))
+      .filter(Boolean);
+    expect(demandes).toEqual(["p1"]);
+  });
+
+  // Un board archivé n'est pas exclu par GID (ce n'est pas le Support), mais
+  // isVisibleProject doit quand même l'écarter avant la requête de tâches :
+  // `GET /teams/{gid}/projects` renvoie aussi les projets archivés.
+  it("exclut un projet archivé et ne va pas chercher ses tâches", async () => {
+    const fetchImpl = vi.fn(async (input: RequestInfo | URL) => {
+      const url = new URL(String(input));
+      if (url.pathname.endsWith("/projects")) {
+        return json({
+          data: [
+            { gid: "p1", name: "Site web", notes: "", due_on: null, completed: false, archived: false },
+            { gid: "old", name: "Ancien projet", notes: "", due_on: null, completed: false, archived: true },
+          ],
+        });
+      }
+      return json({ data: [] });
+    }) as unknown as typeof fetch;
+
+    const r = await syncTeam("T1", { ...deps, fetchImpl });
+
+    expect(r.projects).toBe(1);
+    // 1 liste de projets + 1 seule liste de tâches (le projet archivé n'en
+    // déclenche aucune) + 1 getWithMetadata + 1 put.
+    expect(r.asana_requests).toBe(2);
+    expect(r.subrequests).toBe(4);
     const demandes = (fetchImpl as unknown as ReturnType<typeof vi.fn>).mock.calls
       .map(([u]) => new URL(String(u)).searchParams.get("project"))
       .filter(Boolean);

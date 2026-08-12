@@ -5,7 +5,7 @@
 // DÉCOUPAGE, pas de travail supplémentaire — mais elle doit être posée dès S1,
 // sinon elle impose une refonte le jour où le volume l'exige.
 //
-// Coût d'une team : P + 4 subrequests (1 liste de projets + P listes de tâches
+// Coût d'une team : P + 3 subrequests (1 liste de projets + P listes de tâches
 // + 1 getWithMetadata + au plus 1 put). Constant, quel que soit le nombre de
 // clients. Le seuil de découpage en tranches et le raisonnement complet sont
 // dans docs/superpowers/plans/2026-08-12-portail-projets-sync-asana.md.
@@ -17,6 +17,7 @@
 
 import { createAsanaClient } from "./asana-client";
 import { writeSnapshotIfChanged, writeSyncReport, type PortalKV } from "./kv";
+import { isVisibleProject } from "./rules";
 import { normalizeSectionName } from "./sections";
 import { buildTeamSnapshot, type ProjectInput } from "./snapshot";
 import type { LogFn, SyncReport } from "./types";
@@ -86,6 +87,12 @@ export async function syncTeam(
       // Le board Support est exclu ICI et non dans buildTeamSnapshot : filtrer
       // avant la requête de tâches économise une requête Asana par team.
       if (exclus.has(project.gid)) continue;
+
+      // Un projet archivé ou masqué (préfixe « . ») ne sera de toute façon pas
+      // retenu par buildTeamSnapshot : autant ne pas payer sa requête de
+      // tâches pour rien. Après l'exclusion explicite, avant le warning
+      // Support ci-dessous — un board Support archivé n'a rien à signaler.
+      if (!isVisibleProject(project)) continue;
 
       // On ne devine pas à partir du nom — « 🛟 Support Coolbeans » ne
       // s'attrape par aucun test d'égalité, et un test de préfixe masquerait

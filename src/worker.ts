@@ -115,7 +115,7 @@ export default {
     // « formulaire » (`application/x-www-form-urlencoded`, `multipart/form-data`,
     // `text/plain`) fait sortir cette requête interne du champ de ce contrôle,
     // quelle que soit l'origine. Sans lui, le cron ne synchroniserait jamais
-    // rien (constaté en local : cf. task-7-report.md).
+    // rien (constaté en local pendant l'implémentation).
     const request = new Request("https://my.coolbeans.cc/api/admin/sync", {
       method: "POST",
       headers: { "x-admin-sync-secret": secret, "content-type": "application/json" },
