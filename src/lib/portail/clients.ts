@@ -15,6 +15,8 @@ export interface PortalClient {
   /** Slug dans la collection `docs`. Absent = ce client n'a pas de doc. */
   doc?: string;
   asana_team_gid?: string;
+  /** Board Support de la team. Exclu du module Projets — voir corrections §7. */
+  asana_support_project_gid?: string;
   uptimerobot_monitor_ids: string[];
   /**
    * Sort le client du sélecteur sans rien supprimer : sa fiche, sa doc et ses
