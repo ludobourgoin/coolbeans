@@ -80,14 +80,13 @@ const { slug } = Astro.props;
           />
         </div>
         <div data-facturation-fields hidden class="grid gap-4 border-t border-line pt-6">
-          <p class="text-[13px] text-mute">
-            Informations nécessaires pour éditer la facture d'acompte.
+          <p class="text-[13px] leading-[1.6] text-mute">
+            Informations nécessaires pour éditer la facture d'acompte. Raison sociale et
+            SIREN uniquement si vous répondez pour une société, laissez-les vides sinon.
           </p>
           <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
             <div class="grid gap-2">
-              <label class="label" for="devis-raison-sociale">
-                Raison sociale <span class="text-ink" aria-hidden="true">*</span>
-              </label>
+              <label class="label" for="devis-raison-sociale">Raison sociale</label>
               <input
                 class="field"
                 type="text"
@@ -98,9 +97,7 @@ const { slug } = Astro.props;
               />
             </div>
             <div class="grid gap-2">
-              <label class="label" for="devis-siren">
-                Numéro SIREN <span class="text-ink" aria-hidden="true">*</span>
-              </label>
+              <label class="label" for="devis-siren">Numéro SIREN</label>
               <input
                 class="field"
                 type="text"
@@ -113,7 +110,7 @@ const { slug } = Astro.props;
           </div>
           <div class="grid gap-2">
             <label class="label" for="devis-adresse">
-              Adresse du siège social <span class="text-ink" aria-hidden="true">*</span>
+              Adresse de facturation <span class="text-ink" aria-hidden="true">*</span>
             </label>
             <input
               class="field"
@@ -212,20 +209,14 @@ const { slug } = Astro.props;
       consentement: fd.get("consentement") === "on",
     };
 
-    if (payload.reponse === "validation") {
-      const manquants = [
-        [payload.raisonSociale, "la raison sociale"],
-        [payload.siren, "le numéro SIREN"],
-        [payload.adresse, "l'adresse du siège social"],
-      ]
-        .filter(([valeur]) => !String(valeur ?? "").trim())
-        .map(([, label]) => label);
-      if (manquants.length) {
-        status.hidden = false;
-        status.textContent = `Merci de renseigner ${manquants.join(", ")} pour éditer la facture d'acompte.`;
-        status.className = "text-center text-[13px] font-medium text-error";
-        return;
-      }
+    // Raison sociale et SIREN restent facultatifs : un particulier n'en a pas.
+    // Seule l'adresse est indispensable pour éditer la facture d'acompte.
+    if (payload.reponse === "validation" && !String(payload.adresse ?? "").trim()) {
+      status.hidden = false;
+      status.textContent =
+        "Merci de renseigner l'adresse de facturation pour éditer la facture d'acompte.";
+      status.className = "text-center text-[13px] font-medium text-error";
+      return;
     }
 
     submitBtn.disabled = true;

@@ -57,16 +57,10 @@ export const POST: APIRoute = async ({ request }) => {
   if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
     return json({ error: "Merci de renseigner un email valide." }, 400);
   }
-  if (
-    reponse === "validation" &&
-    (typeof raisonSociale !== "string" ||
-      !raisonSociale.trim() ||
-      typeof siren !== "string" ||
-      !siren.trim() ||
-      typeof adresse !== "string" ||
-      !adresse.trim())
-  ) {
-    return json({ error: "Informations de facturation manquantes." }, 400);
+  // Pour facturer, seule l'adresse est indispensable : raison sociale et SIREN
+  // n'existent pas quand le client répond en tant que particulier.
+  if (reponse === "validation" && (typeof adresse !== "string" || !adresse.trim())) {
+    return json({ error: "Merci de renseigner l'adresse de facturation." }, 400);
   }
 
   const objetReponse =
