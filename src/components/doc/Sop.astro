@@ -1,0 +1,466 @@
+---
+// Schéma + fiches du SOP commercial. Ne connaît rien du contenu : il rend
+// n'importe quel tableau d'étapes conforme au type `Etape` de src/data/sop.ts.
+//
+// Le schéma est une grille CSS d'une colonne par phase, pas un SVG à
+// coordonnées : les connecteurs verticaux sont des pseudo-éléments, les
+// branches des sorties latérales étiquetées. Une étape ajoutée aux données se
+// place d'elle-même.
+//
+// Classes préfixées `sop-` : `doc.css` porte des sélecteurs `.doc-root .card`
+// & consorts dont la spécificité (0,2,0) bat les utilitaires Tailwind.
+import { etapes, phases, type Etape, type Owner } from "../../data/sop";
+
+const parId = new Map(etapes.map((e) => [e.id, e]));
+
+// Les quatre colonnes du schéma : toutes les phases sauf le vivier (rendu en
+// tête de la colonne avant-vente) et les sorties (rendues en bandeau dessous).
+const colonnes = phases.filter((p) => p.id !== "amont" && p.id !== "sortie");
+const amont = etapes.filter((e) => e.phase === "amont");
+const sorties = etapes.filter((e) => e.phase === "sortie");
+
+// Le schéma n'affiche en branche que ce qui quitte le pipeline : les suivants
+// dont la cible est une étape de phase `sortie`. Le reste est le flux vertical,
+// déjà rendu par l'empilement de la colonne.
+const branchesDe = (e: Etape) =>
+  e.phase === "sortie" ? [] : e.suivants.filter((s) => parId.get(s.vers)?.phase === "sortie");
+
+// Les étapes d'une colonne, le vivier en tête de l'avant-vente.
+const etapesDe = (phaseId: string) => [
+  ...(phaseId === "avant-vente" ? amont : []),
+  ...etapes.filter((e) => e.phase === phaseId),
+];
+
+const labelQui: Record<Owner, string> = {
+  coolbeans: "Coolbeans",
+  client: "Client",
+  "les-deux": "Coolbeans + client",
+};
+const nomPhase = (id: string) => phases.find((p) => p.id === id)?.nom ?? id;
+---
+
+<div class="sop">
+  {/* ---- Schéma ------------------------------------------------------------ */}
+  <div class="sop-grille" role="group" aria-label="Schéma du cycle de vie d'une affaire">
+    {
+      colonnes.map((phase, i) => (
+        <section class="sop-colonne">
+          <header class="sop-tete">
+            <div class="flex items-baseline gap-2">
+              {i > 0 && (
+                <span class="sop-vers text-mute" aria-hidden="true">
+                  →
+                </span>
+              )}
+              <span class="font-mono text-[10.5px] font-bold tracking-[0.09em] text-mute uppercase">
+                Phase {i + 1}
+              </span>
+            </div>
+            <div class="mt-1 font-display text-[15px] font-bold tracking-[-0.02em] text-ink">
+              {phase.nom}
+            </div>
+            <div class="mt-1 text-[12px] leading-snug text-mute">{phase.resume}</div>
+          </header>
+
+          {etapesDe(phase.id).map((e) => (
+            <div class={`sop-etape${e.phase === "amont" ? " sop-etape-amont" : ""}`}>
+              <a href={`#${e.id}`} class="sop-boite">
+                <span class="flex items-center gap-2">
+                  <span class="sop-pastille">{e.id}</span>
+                  {e.phase === "amont" && (
+                    <span class="font-mono text-[9.5px] tracking-[0.08em] text-mute uppercase">
+                      hors CRM
+                    </span>
+                  )}
+                </span>
+                <span class="mt-1.5 block text-[13.5px] leading-snug font-semibold text-ink">
+                  {e.titre}
+                </span>
+                {e.colonneCrm && (
+                  <span class="mt-1.5 block text-[11.5px] leading-snug text-mute">
+                    {e.colonneCrm}
+                  </span>
+                )}
+              </a>
+
+              {branchesDe(e).length > 0 && (
+                <div class="sop-branches">
+                  {branchesDe(e).map((s) => (
+                    <a href={`#${s.vers}`} class="sop-branche">
+                      <span aria-hidden="true">↳</span> {parId.get(s.vers)?.titre}
+                      <span class="sop-branche-si"> — si {s.si}</span>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </section>
+      ))
+    }
+  </div>
+
+  {/* ---- Bandeau des sorties latérales ------------------------------------- */}
+  <div class="sop-bandeau">
+    <div class="font-mono text-[10.5px] font-bold tracking-[0.09em] text-mute uppercase">
+      Sorties latérales
+    </div>
+    <div class="mt-1 text-[12px] leading-snug text-mute">
+      {phases.find((p) => p.id === "sortie")?.resume}
+    </div>
+    <div class="sop-bandeau-boites">
+      {
+        sorties.map((e) => (
+          <a href={`#${e.id}`} class="sop-boite sop-boite-sortie">
+            <span class="sop-pastille">{e.id}</span>
+            <span class="mt-1.5 block text-[13.5px] leading-snug font-semibold text-ink">
+              {e.titre}
+            </span>
+            {e.colonneCrm && (
+              <span class="mt-1.5 block text-[11.5px] leading-snug text-mute">{e.colonneCrm}</span>
+            )}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+
+  {/* ---- Fiches ------------------------------------------------------------ */}
+  <div class="sop-fiches">
+    {
+      etapes.map((e) => (
+        <article class="sop-fiche" id={e.id}>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="sop-pastille">{e.id}</span>
+            <span class="font-display text-[17px] font-bold tracking-[-0.02em] text-ink">
+              {e.titre}
+            </span>
+          </div>
+
+          <div class="sop-tags">
+            <span class="sop-tag">{nomPhase(e.phase)}</span>
+            <span class="sop-tag">{labelQui[e.qui]}</span>
+            {e.colonneCrm ? (
+              <span class="sop-tag">{e.colonneCrm}</span>
+            ) : (
+              <span class="sop-tag sop-tag-vide">aucune colonne CRM</span>
+            )}
+          </div>
+
+          <dl class="sop-dl">
+            <dt>Déclencheur</dt>
+            <dd>{e.declencheur}</dd>
+
+            <dt>Outils</dt>
+            <dd>
+              {e.outils.map((o, i) => (
+                <>
+                  {i > 0 && <span class="text-mute"> · </span>}
+                  <span class="sop-outil">{o}</span>
+                </>
+              ))}
+            </dd>
+
+            <dt>À faire</dt>
+            <dd>
+              <ol class="list-decimal">
+                {e.faire.map((f) => (
+                  <li>{f}</li>
+                ))}
+              </ol>
+            </dd>
+
+            {e.echeance && (
+              <>
+                <dt>Échéance</dt>
+                <dd>{e.echeance}</dd>
+              </>
+            )}
+
+            <dt>Terminé quand</dt>
+            <dd>{e.sortie}</dd>
+
+            <dt>Ensuite</dt>
+            <dd>
+              {e.suivants.length === 0 ? (
+                <span class="text-mute">Étape terminale.</span>
+              ) : (
+                <ul class="list-disc">
+                  {e.suivants.map((s) => (
+                    <li>
+                      <a href={`#${s.vers}`} class="sop-suivant">
+                        {s.vers} · {parId.get(s.vers)?.titre}
+                      </a>{" "}
+                      <span class="text-mute">— si {s.si}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </dd>
+          </dl>
+
+          {e.note && <div class="sop-note">{e.note}</div>}
+        </article>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  /* Irréductible : la géométrie du schéma (grille en requête de conteneur,
+     connecteurs en pseudo-éléments) et les quelques surcharges nécessaires
+     face aux sélecteurs d'élément de doc.css, qui pèsent (0,1,1) et battent
+     donc un utilitaire Tailwind seul. */
+  .sop {
+    container-type: inline-size;
+    --sop-gy: 26px; /* gouttière verticale = longueur des connecteurs */
+  }
+
+  /* ---- Grille des phases ------------------------------------------------- */
+  .sop-grille {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px 16px;
+    margin-top: 24px;
+  }
+  @container (min-width: 560px) {
+    .sop-grille {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @container (min-width: 900px) {
+    .sop-grille {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0 16px;
+    }
+  }
+
+  .sop-colonne {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sop-gy);
+    min-width: 0;
+  }
+  .sop-tete {
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  /* La flèche d'enchaînement pointe à droite en grille, vers le bas en pile. */
+  .sop-vers {
+    display: inline-block;
+    transform: rotate(90deg);
+  }
+  @container (min-width: 560px) {
+    .sop-vers {
+      transform: none;
+    }
+  }
+
+  /* ---- Connecteurs verticaux --------------------------------------------- */
+  .sop-etape {
+    position: relative;
+  }
+  .sop-etape + .sop-etape::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: calc(-1 * var(--sop-gy));
+    height: var(--sop-gy);
+    width: 1px;
+    background: var(--line-strong);
+  }
+  .sop-etape + .sop-etape::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -6px;
+    transform: translateX(-50%);
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid var(--line-strong);
+  }
+
+  /* ---- Boîtes ------------------------------------------------------------ */
+  .sop-boite {
+    display: block;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    transition: border-color 0.15s var(--ease-brand);
+  }
+  .sop-boite:hover {
+    border-color: var(--line-strong);
+  }
+  /* Le vivier n'est pas une carte CRM : contour tireté, fond en retrait. */
+  .sop-etape-amont .sop-boite {
+    border-style: dashed;
+    background: var(--surface-subtle);
+  }
+
+  .sop-pastille {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--mute);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-control);
+    padding: 1px 5px;
+  }
+
+  /* ---- Branches ---------------------------------------------------------- */
+  .sop-branches {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    margin-top: 6px;
+    padding-left: 14px;
+  }
+  .sop-branche {
+    color: var(--mute);
+    text-decoration: none;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+  .sop-branche:hover {
+    color: var(--ink);
+  }
+  /* La condition alourdit le schéma : elle reste dans la fiche, et n'apparaît
+     ici que sur les écrans qui ont la place. */
+  .sop-branche-si {
+    display: none;
+  }
+  @container (min-width: 900px) {
+    .sop-branche-si {
+      display: inline;
+    }
+  }
+
+  /* ---- Bandeau des sorties ----------------------------------------------- */
+  .sop-bandeau {
+    margin-top: 32px;
+    padding: 16px;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius-card);
+    background: var(--surface-subtle);
+  }
+  .sop-bandeau-boites {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+  }
+  @container (min-width: 560px) {
+    .sop-bandeau-boites {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* ---- Fiches ------------------------------------------------------------ */
+  .sop-fiches {
+    margin-top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .sop-fiche {
+    scroll-margin-top: 80px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: var(--surface);
+  }
+  .sop-fiche:target {
+    border-color: var(--line-strong);
+    background: var(--surface-raise);
+  }
+
+  .sop-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .sop-tag {
+    font-size: 11px;
+    color: var(--mute);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 1px 8px;
+  }
+  .sop-tag-vide {
+    border-style: dashed;
+  }
+
+  /* doc.css réserve dl/dt/dd au glossaire : max-width 70ch sur la liste et
+     margin-top 16px sur les termes. Ici la fiche est déjà bornée par sa carte,
+     et l'espacement vient de la gouttière de grille. */
+  .sop-dl {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px 16px;
+    margin-top: 14px;
+    max-width: none;
+  }
+  @container (min-width: 620px) {
+    .sop-dl {
+      grid-template-columns: 8.5rem minmax(0, 1fr);
+      gap: 8px 16px;
+    }
+  }
+  .sop-dl dt {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mute);
+    margin: 0;
+    padding-top: 3px;
+  }
+  .sop-dl dd {
+    color: var(--ink);
+    margin: 0 0 10px;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  @container (min-width: 620px) {
+    .sop-dl dd {
+      margin-bottom: 0;
+    }
+  }
+  /* doc.css impose max-width: 70ch et margin: 10px 0 aux listes de la doc :
+     dans une fiche, la colonne est déjà étroite et la gouttière déjà posée. */
+  .sop-dl :is(ul, ol) {
+    max-width: none;
+    margin: 0;
+  }
+  .sop-dl li {
+    margin: 2px 0;
+  }
+  .sop-outil {
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .sop-suivant {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .sop-note {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-left: 2px solid var(--line-strong);
+    background: var(--surface-subtle);
+    border-radius: 0 var(--radius-control) var(--radius-control) 0;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--mute);
+  }
+</style>
