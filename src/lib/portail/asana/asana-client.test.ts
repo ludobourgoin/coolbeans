@@ -77,7 +77,7 @@ describe("createAsanaClient", () => {
   });
 
   it("retombe sur un backoff exponentiel sans Retry-After exploitable", async () => {
-    const sleep = vi.fn(async () => {});
+    const sleep = vi.fn(async (ms: number) => {});
     let appel = 0;
     const fetchImpl = vi.fn(async () => {
       appel += 1;
