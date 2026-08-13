@@ -149,7 +149,9 @@
   display: grid;
   grid-template-columns: 264px minmax(0, 1fr) 232px;
   align-items: start;
-  max-width: 1400px;
+  /* Largeur Geist (--container, global.css) : même conteneur que le reste
+     du site, au lieu d'une valeur ad hoc propre au portail. */
+  max-width: var(--container);
   margin: 0 auto;
 }
 .doc-root .doc-main {
@@ -760,7 +762,8 @@
   display: grid;
   grid-template-columns: 264px minmax(0, 1fr);
   align-items: start;
-  max-width: 1400px;
+  /* Largeur Geist (--container, global.css), alignée sur .doc-shell. */
+  max-width: var(--container);
   margin: 0 auto;
 }
 /* Sans colonne (client sans nav contextuelle), le contenu reprend sa largeur. */
