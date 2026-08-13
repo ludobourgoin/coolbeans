@@ -4,7 +4,7 @@ title: "Vente"
 order: 1
 status: "final"
 updated: 2026-08-12
-description: "Le cycle de vie d'une affaire, du vivier de prospection au suivi d'après-vente : les vingt-deux étapes, les conventions du CRM et les deux modèles Asana."
+description: "Le cycle de vie d'une affaire, du vivier de prospection au suivi d'après-vente : les vingt-deux étapes, les conventions du CRM, le modèle Asana du lead et le modèle Linear d'onboarding client."
 ---
 
 import Callout from "../../../components/doc/Callout.astro";
@@ -85,7 +85,9 @@ Inélégant, mais c'est le seul moyen de lire le pipeline d'un coup d'œil et de
 <Callout type="piege" title="Ce que voit le client, et ce qu'il ne voit pas">
   Le projet `🎯 crm` n'est jamais synchronisé vers le portail : c'est le board de Ludo, seul.
 
-  Le projet Asana **de la team du client**, lui, l'est. Le sync ne masque que la section `📥 Inbox` et les tâches dont le nom commence par un point — tout le reste de `🧱 Backlog` s'affiche sur `/espace/projets`. Une tâche interne (créer un compte Clerk, émettre une facture, rédiger une étude de cas) posée dans ce projet est donc **publiée au client**. Ces tâches-là vivent en sous-tâches de la carte CRM, pas dans le projet du client.
+  Pour un client dont le travail vit encore sur Asana (onboardé avant la migration vers Linear, 2026-08-13), le projet Asana **de sa team**, lui, est synchronisé. Le sync ne masque que la section `📥 Inbox` et les tâches dont le nom commence par un point — tout le reste de `🧱 Backlog` s'affiche sur `/espace/projets`. Une tâche interne (créer un compte Clerk, émettre une facture, rédiger une étude de cas) posée dans ce projet est donc **publiée au client**. Ces tâches-là vivent en sous-tâches de la carte CRM, pas dans le projet du client.
+
+  Pour un client onboardé depuis la migration, le travail vit dans sa team Linear — non synchronisée au portail pour l'instant (chantier engineering séparé, non commencé). En attendant, ne rien poser dans ses issues Linear qui ne devrait pas un jour être vu du client : mettre les remarques internes en commentaire, jamais en description.
 </Callout>
 
 ## Le process, de bout en bout
@@ -94,7 +96,7 @@ Quatre phases, vingt-deux étapes. Chaque boîte du schéma renvoie à sa fiche 
 
 <Sop />
 
-## Les deux modèles Asana
+## Les deux modèles
 
 Les modèles personnalisés sont payants. Les deux passent donc par la **duplication**, qui fonctionne sur le plan gratuit et conserve les sous-tâches.
 
@@ -116,7 +118,7 @@ Quatorze sous-tâches, dans l'ordre. Les huit premières couvrent l'avant-vente 
 6. Relancer à J+3, J+7, J+14
 7. Émettre la facture d'acompte dans Tiime
 8. Vérifier l'encaissement de l'acompte
-9. Créer la team Asana du client et y dupliquer le modèle de projet
+9. Créer la team Linear du client (« Copy team settings » depuis la team « Modèle client ») et y créer le premier projet
 10. Créer le dossier Drive et le lier dans les notes du projet
 11. Créer la fiche client `src/content/clients/<slug>.yaml`
 12. Créer l'utilisateur Clerk et le portail
@@ -125,34 +127,36 @@ Quatorze sous-tâches, dans l'ordre. Les huit premières couvrent l'avant-vente 
 
 Les sous-tâches 9 à 13 s'exécutent **avant** que le projet du client existe — la 9 le crée. Elles n'auraient donc pas pu y vivre de toute façon. La 14 suit la règle d'ouverture de cette page : la carte CRM suit l'argent.
 
-### Modèle B · le projet .🧱 [MODÈLE] Projet client
-
-Vit dans la team Coolbeans et se duplique dans la team du client au démarrage. Sections identiques aux projets existants — relevées sur « Site web Coolbeans » et « myCoolbeans » : **📥 Inbox**, **🧱 Backlog**, **🚀 Sprint**, **🚧 En cours**, **☝️ Pour validation**, **✅ Terminé**.
-
-<Callout type="piege" title="Le point initial du nom, et pourquoi il doit disparaître à la duplication">
-  Le modèle vit dans la team Coolbeans, qui est aussi la team du client zéro. Sans le point, `src/lib/portail/asana/sync.ts` le prendrait pour un vrai projet et l'afficherait sur `/espace/projets` de Coolbeans, avec ses six tâches.
-
-  Conséquence symétrique : **si la copie garde le point, le client verra un portail vide.** Le retirer fait partie de la sous-tâche 9.
+<Callout type="tip" title="Ce que couvre réellement la sous-tâche 9">
+  Créer la team et le premier projet ne suffit pas à finir l'onboarding technique : il faut aussi connecter le repo GitHub du client à l'intégration Git du workspace Linear (Settings > Integrations > GitHub), et ajouter son `linearTeamId` au registre `src/content/clients/<slug>.yaml`. Ce dernier champ reste à créer côté code — le portail ne lit encore que Asana, le rebranchement sur Linear est un chantier engineering séparé, non commencé.
 </Callout>
 
-Six tâches pré-remplies dans **🧱 Backlog**, toutes légitimes aux yeux du client :
+### Modèle B · la team Linear « Modèle client »
 
-- Recette avec le client
-- Mise en ligne
-- Rédiger la doc de passation
-- Envoyer le mail de livraison et les trois questions du témoignage
-- J+30 : point de clôture de la garantie et proposition du care plan
-- Point trimestriel
+Team Linear dormante, séparée de Coolbeans, que Ludo ne rejoint pas — elle n'existe que comme config de référence. Au démarrage d'un client, sa team se crée par **« Copy team settings »** depuis Modèle client (Workspace Settings → Teams → New team → champ *Copy from team*) : ça reprend les statuts, les cycles et les settings d'équipe, pas les membres.
 
-<Callout type="warn" title="La tâche J+30 se date à la duplication">
-  Pas à la fin du projet. C'est la seule façon qu'elle ne soit jamais oubliée, puisque le plan gratuit n'offre aucune règle d'automatisation. Elle se date en même temps que les jalons.
+Ce qu'elle porte :
+
+- Statuts par défaut Linear (Backlog, Todo, In Progress, In Review, Done, Canceled) — rien à recréer, ils collent déjà au kanban historique.
+- Triage activé, Cycles hebdomadaires (même jour de démarrage que Coolbeans, pour que « mon sprint » désigne la même semaine partout), Estimates activé.
+- Les labels `Bug` / `Feature` / `Improvement` sont au niveau workspace : ils apparaissent automatiquement sur toute nouvelle team, rien à dupliquer non plus.
+- Un template de ticket **« Livraison et suivi client »** (Team Settings → Modèle client → Templates), avec la checklist :
+  - Mise en ligne (après correction des retours de recette)
+  - Recette avec le client (sur le périmètre du devis uniquement ; tout débordement part en Triage et donne lieu à un avenant)
+  - Envoyer le mail de livraison + les trois questions du témoignage — rappeler la garantie 30 jours avec date de fin explicite
+  - Rédiger la doc de passation (depuis `_template`, purement technique)
+  - J+30 : clôture de la garantie, lister les bugs traités, proposer le care plan
+  - Point trimestriel : veille sur les opportunités (nouvelle page, refonte, automatisation, care plan)
+
+<Callout type="warn" title="La tâche J+30 se date à la création, pas à la fin du projet">
+  C'est la seule façon qu'elle ne soit jamais oubliée. Elle se date en même temps que les autres jalons de livraison.
 </Callout>
 
 Les trois tâches de l'**étude de cas** — rédiger le brouillon, faire valider par le client, publier et mettre à jour le SEO — ne figurent nulle part pour l'instant. C'est du contenu marketing Coolbeans, pas un livrable du client, et leur emplacement reste à trancher.
 
 ## Ce qui reste ouvert
 
-- **CGV et case d'acceptation sur la page de devis** : rédaction des CGV, page `/cgv`, case bloquante côté client et côté serveur, traçage de l'horodatage et de la version acceptée. L'échéancier ferme et l'autorisation d'étude de cas doivent y figurer. Suivi dans le backlog du projet « Site web Coolbeans ».
+- **CGV et case d'acceptation sur la page de devis** : rédaction des CGV, page `/cgv`, case bloquante côté client et côté serveur, traçage de l'horodatage et de la version acceptée. L'échéancier ferme et l'autorisation d'étude de cas doivent y figurer. Suivi dans le projet « Site web Coolbeans » sur Linear (team Coolbeans, `COO-5`).
 - **Formules du care plan** : le SOP décrit le moment de la proposition (S17) et l'intention, pas le contenu de l'offre. Chantier séparé.
 - **Restructuration du projet 🎯 crm** : redispatch des cartes de **☄️ Lead relancé**, puis suppression de la colonne, création de **🏗️ En production**, **🧊 En veille** et **🧰 Modèles**.
 - **Feuille de prospection** : elle doit porter une date de dernier contact et une colonne « prochaine action », sinon la revue mensuelle n'a rien sur quoi mordre.
