@@ -9,12 +9,10 @@
 // Hauteur figée à 56px (h-14) : doc.css cale dessus les colonnes collantes de
 // la doc (`top: 56px`, `calc(100vh - 56px)`). La changer ici désaligne la doc.
 //
-// Trois pistes de grille (1fr / auto / 1fr, COO-13) plutôt qu'un simple flex :
-// avec deux flancs de largeur égale, la piste centrale — le sélecteur de
-// client, admin seulement — tombe au milieu de la barre quel que soit le
-// nombre d'entrées de nav à gauche ou de contrôles à droite. Elle reste
-// unique à toutes les largeurs : plus de variante « compact » réservée au
-// mobile, la nav se réduit elle-même via son propre overflow-x-auto.
+// Le sélecteur de client (admin seulement, COO-13) n'est plus dans la
+// topbar : c'est une barre à part, fixée en bas de VIEWPORT (pas de la
+// colonne), sur toute la largeur — cf. le bloc après </header>. Unique à
+// toutes les largeurs, plus de variante « compact » réservée au mobile.
 import { UserButton } from "@clerk/astro/components";
 import { buildPortalNav, isActive, portalHref } from "../../lib/portail/nav";
 import ClientSwitcher from "./ClientSwitcher.astro";
@@ -43,95 +41,94 @@ const admin = isAdmin(meta);
 ---
 
 <header
-  class="sticky top-0 z-20 grid h-14 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-line bg-surface px-4 md:px-6"
+  class="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-line bg-surface px-4 md:px-6"
 >
-  <div class="flex min-w-0 items-center gap-1">
-    <a
-      href={home}
-      class="flex flex-none items-center gap-2 font-display text-base font-bold tracking-[-0.02em] text-ink no-underline"
-      aria-label="myCoolbeans — accueil"
-    >
-      {/* Vrai wordmark de marque (identique à Nav.astro), plus le repli
-          « my » : le fichier ne porte que « coolbeans », pas de variante
-          myCoolbeans dédiée. COO-14 remplace ici le carré décoratif d'origine. */}
-      <img class="block h-5 w-auto dark:hidden" src="/img/coolbeans-wordmark.svg" alt="" height="20" />
-      <img
-        class="hidden h-5 w-auto dark:block"
-        src="/img/coolbeans-wordmark-white.svg"
-        alt=""
-        height="20"
-      />
-      my
-    </a>
+  <a
+    href={home}
+    class="flex flex-none items-center gap-2 font-display text-base font-bold tracking-[-0.02em] text-ink no-underline"
+    aria-label="myCoolbeans — accueil"
+  >
+    {/* Vrai wordmark de marque (identique à Nav.astro), plus le repli
+        « my » : le fichier ne porte que « coolbeans », pas de variante
+        myCoolbeans dédiée. COO-14 remplace ici le carré décoratif d'origine. */}
+    <img class="block h-5 w-auto dark:hidden" src="/img/coolbeans-wordmark.svg" alt="" height="20" />
+    <img
+      class="hidden h-5 w-auto dark:block"
+      src="/img/coolbeans-wordmark-white.svg"
+      alt=""
+      height="20"
+    />
+    my
+  </a>
 
-    <nav
-      aria-label="Navigation du portail"
-      class="-mx-2 flex min-w-0 flex-1 items-center gap-1 overflow-x-auto px-2 md:mx-0 md:ml-3 md:px-0"
-    >
-      {
-        items.map((item) => {
-          const on = isActive(item, pathname);
-          return (
-            <a
-              href={item.href}
-              aria-current={on ? "page" : undefined}
-              class:list={[
-                "whitespace-nowrap rounded-control px-2.5 py-1.5 text-sm no-underline transition-colors duration-150 ease-in-out",
-                on ? "font-semibold text-ink" : "text-mute hover:bg-surface-raise hover:text-ink",
-              ]}
-            >
-              {item.label}
-            </a>
-          );
-        })
-      }
-    </nav>
+  <nav
+    aria-label="Navigation du portail"
+    class="-mx-2 flex min-w-0 flex-1 items-center gap-1 overflow-x-auto px-2 md:mx-0 md:ml-3 md:px-0"
+  >
+    {
+      items.map((item) => {
+        const on = isActive(item, pathname);
+        return (
+          <a
+            href={item.href}
+            aria-current={on ? "page" : undefined}
+            class:list={[
+              "whitespace-nowrap rounded-control px-2.5 py-1.5 text-sm no-underline transition-colors duration-150 ease-in-out",
+              on ? "font-semibold text-ink" : "text-mute hover:bg-surface-raise hover:text-ink",
+            ]}
+          >
+            {item.label}
+          </a>
+        );
+      })
+    }
+  </nav>
+
+  {/*
+    La recherche remonte du panneau de doc vers la topbar (maquette du
+    2026-08-12). Le champ est rendu partout ; DocLayout l'active quand un
+    index de doc est présent, il reste inerte ailleurs.
+  */}
+  <div class="relative hidden flex-none lg:block">
+    <input
+      id="doc-q"
+      type="search"
+      autocomplete="off"
+      placeholder="Rechercher dans la doc ⌘K"
+      class="h-9 w-64 rounded-control border border-line bg-surface px-3 text-sm text-ink outline-none placeholder:text-mute"
+    />
+    <div id="doc-qres" hidden></div>
   </div>
+
+  <button
+    class="flex-none cursor-pointer rounded-control border border-line bg-surface px-2.5 py-1.5 text-sm text-ink"
+    data-portal-theme
+    type="button"
+    aria-label="Basculer le thème"
+  >
+    ☀︎ / ☾
+  </button>
 
   {
-    admin && (
-      <div class="flex-none">
-        <ClientSwitcher clients={clients} current={client} compact />
-      </div>
+    withAccount && (
+      <span class="flex flex-none items-center gap-2">
+        {prenom && <span class="hidden text-sm text-mute md:inline">Hello, {prenom}</span>}
+        <UserButton />
+      </span>
     )
   }
-
-  <div class="flex flex-none items-center justify-self-end gap-2">
-    {/*
-      La recherche remonte du panneau de doc vers la topbar (maquette du
-      2026-08-12). Le champ est rendu partout ; DocLayout l'active quand un
-      index de doc est présent, il reste inerte ailleurs.
-    */}
-    <div class="relative hidden flex-none lg:block">
-      <input
-        id="doc-q"
-        type="search"
-        autocomplete="off"
-        placeholder="Rechercher dans la doc ⌘K"
-        class="h-9 w-64 rounded-control border border-line bg-surface px-3 text-sm text-ink outline-none placeholder:text-mute"
-      />
-      <div id="doc-qres" hidden></div>
-    </div>
-
-    <button
-      class="flex-none cursor-pointer rounded-control border border-line bg-surface px-2.5 py-1.5 text-sm text-ink"
-      data-portal-theme
-      type="button"
-      aria-label="Basculer le thème"
-    >
-      ☀︎ / ☾
-    </button>
-
-    {
-      withAccount && (
-        <span class="flex flex-none items-center gap-2">
-          {prenom && <span class="hidden text-sm text-mute md:inline">Hello, {prenom}</span>}
-          <UserButton />
-        </span>
-      )
-    }
-  </div>
 </header>
+
+{/* Barre admin, fixée en bas du VIEWPORT (pas de la colonne) sur toute la
+    largeur — mockup Ludo du 2026-08-13. espace-main / doc-main réservent
+    déjà 110px de padding-bottom pour elle (doc.css). */}
+{
+  admin && (
+    <div class="fixed inset-x-0 bottom-0 z-20 flex justify-center border-t border-line bg-surface-subtle px-4 py-3">
+      <ClientSwitcher clients={clients} current={client} compact />
+    </div>
+  )
+}
 
 <script>
   // Même clé localStorage que l'anti-flash de BaseLayout.
