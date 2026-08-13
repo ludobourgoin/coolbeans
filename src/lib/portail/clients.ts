@@ -14,9 +14,6 @@ export interface PortalClient {
   nom: string;
   /** Slug dans la collection `docs`. Absent = ce client n'a pas de doc. */
   doc?: string;
-  asana_team_gid?: string;
-  /** Board Support de la team. Exclu du module Projets — voir corrections §7. */
-  asana_support_project_gid?: string;
   uptimerobot_monitor_ids: string[];
   /**
    * Sort le client du sélecteur sans rien supprimer : sa fiche, sa doc et ses
@@ -34,15 +31,21 @@ export const DEFAULT_CLIENT = "coolbeans";
 export type PortalModule = "projets" | "site" | "doc" | "support";
 
 /** Clés de mapping d'un client, telles que nommées dans le YAML. */
-export type ClientMappingKey = "doc" | "asana_team_gid" | "uptimerobot_monitor_ids";
+export type ClientMappingKey = "doc" | "uptimerobot_monitor_ids";
 
 /**
  * Mapping sans lequel un module ne peut rien afficher.
  * Ressources n'y figure pas : son contenu est commun à tous les clients.
+ *
+ * Projets et Support ne réclament plus rien depuis le retrait du sync Asana :
+ * ils ne dépendaient que d'`asana_team_gid`, dont plus aucun code ne se sert.
+ * Leur empty state ne relève donc plus d'un mapping manquant mais d'un module
+ * à refaire — c'est ce que dit leur page. Le futur `linear_team_id` (COO-30)
+ * rétablira l'exigence sur Support.
  */
 export const MODULE_REQUIREMENTS: Record<PortalModule, readonly ClientMappingKey[]> = {
-  projets: ["asana_team_gid"],
-  support: ["asana_team_gid"],
+  projets: [],
+  support: [],
   site: ["uptimerobot_monitor_ids"],
   doc: ["doc"],
 };
@@ -84,8 +87,6 @@ function hasMapping(client: PortalClient, key: ClientMappingKey): boolean {
   switch (key) {
     case "doc":
       return Boolean(client.doc);
-    case "asana_team_gid":
-      return Boolean(client.asana_team_gid);
     case "uptimerobot_monitor_ids":
       return client.uptimerobot_monitor_ids.length > 0;
   }

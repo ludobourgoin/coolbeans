@@ -179,40 +179,5 @@ export const server = {
         return { client: cible.slug, redirectTo };
       },
     }),
-
-    /* Sync à la demande de la team du client affiché. Réservé à l'admin par
-       requireAdmin — le rôle Clerk est une garde plus fine qu'ADMIN_SYNC_SECRET,
-       et le secret n'a donc aucune raison de traverser le navigateur.
-       Le sync passe par syncTeam() en direct : appeler la route HTTP coûterait
-       un aller-retour réseau pour le même résultat. */
-    synchroniser: defineAction({
-      accept: "form",
-      input: z.object({ client: z.string().regex(SLUG_STRICT, "Slug invalide."), retour: retourSchema }),
-      handler: async ({ client }, context) => {
-        await requireAdmin(context);
-
-        const cible = await getClient(client);
-        if (!cible?.asana_team_gid) {
-          throw new ActionError({ code: "BAD_REQUEST", message: "Ce client n'a pas de team Asana." });
-        }
-
-        const { env } = await import("cloudflare:workers");
-        const token = (env as { ASANA_PAT?: string }).ASANA_PAT;
-        if (!token) {
-          throw new ActionError({ code: "BAD_REQUEST", message: "ASANA_PAT absent de cet environnement." });
-        }
-
-        const { syncTeam } = await import("../lib/portail/asana/sync");
-        const { portalKv } = await import("../lib/portail/asana/kv");
-        const r = await syncTeam(cible.asana_team_gid, {
-          kv: portalKv(),
-          token,
-          log: (entry) => console.log(JSON.stringify(entry)),
-        }, cible.asana_support_project_gid ? [cible.asana_support_project_gid] : []);
-
-        if (!r.ok) throw new ActionError({ code: "INTERNAL_SERVER_ERROR", message: r.error ?? "Sync en échec." });
-        return { written: r.written, projects: r.projects };
-      },
-    }),
   },
 };
