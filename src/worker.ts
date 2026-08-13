@@ -71,64 +71,26 @@ export default {
 
   // Sync du portail client, cron "*/5 * * * *" (cf. wrangler.jsonc).
   //
-  // Le handler ne synchronise pas lui-même : il appelle la route Astro
-  // /api/admin/sync via `handle()`. La liste des teams se lit dans le registre
-  // des clients (src/content/clients/*.yaml) via `astro:content`, dont la
-  // résolution depuis ce point d'entrée custom — hors du bundle serveur
-  // d'Astro — n'est pas garantie. Passer par la route lève l'incertitude et
-  // laisse un seul chemin de code pour le sync.
+  // Squelette, à nouveau : le sync Asana livré en S1 a été retiré (l'outil de
+  // gestion de projet est passé à Linear) et son remplaçant est un chantier
+  // séparé, à ouvrir une fois Linear paramétré. Le handler ne fait donc que
+  // tracer son passage et l'état de ses dépendances.
   //
-  // `handle()` est un appel de fonction, pas un fetch : aucun subrequest.
-  //
-  // Un secret manquant est la panne la plus probable au premier déploiement
-  // (les `wrangler secret put` sont un geste manuel). On trace sa présence,
-  // jamais sa valeur — critère d'acceptation 6.
-  async scheduled(controller, env, ctx) {
+  // Il reste en place plutôt que d'être supprimé parce que le cron de
+  // wrangler.jsonc, lui, est conservé : un trigger sans handler échoue à
+  // chaque tick. C'est aussi le point d'accroche du futur sync Linear.
+  async scheduled(controller, env, _ctx) {
     const scheduledAt = new Date(controller.scheduledTime).toISOString();
-    const secret = env.ADMIN_SYNC_SECRET;
 
-    if (!secret || !env.ASANA_PAT || !env.PORTAL_KV) {
-      console.log(
-        JSON.stringify({
-          event: "portal_sync",
-          status: "skipped_missing_bindings",
-          cron: controller.cron,
-          scheduled_at: scheduledAt,
-          bindings: {
-            portal_kv: Boolean(env.PORTAL_KV),
-            asana_pat: Boolean(env.ASANA_PAT),
-            admin_sync_secret: Boolean(secret),
-          },
-        }),
-      );
-      return;
-    }
-
-    // L'hôte n'a pas d'importance : /api/* est en passthrough dans le handler
-    // fetch ci-dessus, et la route ne lit pas le hostname.
-    //
-    // `content-type: application/json` n'est pas décoratif : sans en-tête
-    // `origin` ET sans content-type, le middleware CSRF natif d'Astro
-    // (`security.checkOrigin`, actif par défaut) rejette toute requête
-    // POST/PUT/PATCH/DELETE en 403 AVANT d'atteindre la route — donc avant
-    // même le contrôle du secret. Un content-type qui n'est pas un type
-    // « formulaire » (`application/x-www-form-urlencoded`, `multipart/form-data`,
-    // `text/plain`) fait sortir cette requête interne du champ de ce contrôle,
-    // quelle que soit l'origine. Sans lui, le cron ne synchroniserait jamais
-    // rien (constaté en local pendant l'implémentation).
-    const request = new Request("https://my.coolbeans.cc/api/admin/sync", {
-      method: "POST",
-      headers: { "x-admin-sync-secret": secret, "content-type": "application/json" },
-    });
-
-    const res = await handle(request, env, ctx);
     console.log(
       JSON.stringify({
         event: "portal_sync",
-        status: res.ok ? "done" : "failed",
-        http_status: res.status,
+        status: "skipped_not_implemented",
         cron: controller.cron,
         scheduled_at: scheduledAt,
+        bindings: {
+          portal_kv: Boolean(env.PORTAL_KV),
+        },
       }),
     );
   },

@@ -38,32 +38,23 @@
     { "pattern": "www.coolbeans.cc", "custom_domain": true },
     { "pattern": "my.coolbeans.cc", "custom_domain": true }
   ],
-  // Sync du portail toutes les 5 minutes : au pire 5 minutes de retard côté
-  // client, pour 288 invocations par jour — négligeable devant les 10 M de
-  // requêtes incluses au plan payant.
+  // Cron du portail, toutes les 5 minutes. Le sync qu'il déclenchait (Asana,
+  // sprint S1) a été retiré : le handler `scheduled` de src/worker.ts est
+  // redevenu un no-op qui trace son passage, en attendant le sync Linear.
   //
-  // Balayage complet à chaque passage, sans découpage : c'est plus simple et
-  // plus frais qu'un roulement, et ça tient jusqu'à ~37 clients. Au-delà, la
-  // contrainte n'est plus Cloudflare mais le débit de l'API Asana (150 req/min
-  // en plan gratuit) : on passera alors à une tranche tournante, sans toucher
-  // à cette cadence.
+  // Le trigger est conservé plutôt que supprimé : c'est le point d'accroche du
+  // futur sync, et un no-op toutes les 5 minutes ne coûte rien. La cadence sera
+  // à réévaluer quand le sync réel reviendra — les écritures KV, elles, ont un
+  // plafond de 1 000/jour sur le plan gratuit.
   //
-  // `triggers` est une clé héritable : l'environnement staging reprend ce cron
-  // et alimente son propre PORTAL_KV. Un seul trigger, donc 1 sur les 5 par
-  // COMPTE du plan gratuit (prod + staging en consomment déjà 2).
-  //
-  // Précondition avant le sync réel de S1 : bascule sur le plan Workers Paid.
-  // À cette cadence, le plan gratuit mettrait les 288 écritures quotidiennes de
-  // meta:last_sync face à un plafond de 1 000/jour. Aujourd'hui le handler est
-  // un no-op, donc sans risque. Voir
-  // docs/superpowers/specs/2026-08-12-portail-sync-par-team.md.
+  // `triggers` est une clé héritable : l'environnement staging reprend ce cron.
+  // Un seul trigger, donc 1 sur les 5 par COMPTE du plan gratuit (prod +
+  // staging en consomment déjà 2).
   "triggers": { "crons": ["*/5 * * * *"] },
-  "kv_namespaces": [{ "binding": "PORTAL_KV", "id": "f720076d62fc4fd28422209c16326776" }],
-  // GID du workspace Asana : public, pas un secret. Les secrets du portail
-  // (ASANA_PAT, ADMIN_SYNC_SECRET) se posent par `wrangler secret put`, jamais ici.
-  // `vars` et `kv_namespaces` ne sont PAS hérités par les environnements nommés
+  // `kv_namespaces` n'est PAS hérité par les environnements nommés
   // (contrairement à `triggers`, `assets` et `routes`) : d'où la duplication.
-  "vars": { "ASANA_WORKSPACE_GID": "1201457508335146" },
+  // PORTAL_KV sert aussi au module chiffrage/devis — ne pas retirer ce binding.
+  "kv_namespaces": [{ "binding": "PORTAL_KV", "id": "f720076d62fc4fd28422209c16326776" }],
   "env": {
     "staging": {
       "workers_dev": false,
@@ -71,8 +62,7 @@
         { "pattern": "staging.coolbeans.cc", "custom_domain": true },
         { "pattern": "my-staging.coolbeans.cc", "custom_domain": true }
       ],
-      "kv_namespaces": [{ "binding": "PORTAL_KV", "id": "684d2093bab2413bb840bdc6443f6f50" }],
-      "vars": { "ASANA_WORKSPACE_GID": "1201457508335146" }
+      "kv_namespaces": [{ "binding": "PORTAL_KV", "id": "684d2093bab2413bb840bdc6443f6f50" }]
     }
   }
 }

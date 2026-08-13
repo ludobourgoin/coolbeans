@@ -154,12 +154,6 @@ const clients = defineCollection({
   schema: z.object({
     nom: z.string(),
     doc: z.string().optional(),
-    asana_team_gid: z.string().optional(),
-    // Board Support de la team (corrections §7). Renseigné, ce projet est
-    // exclu du module Projets : il alimente une section distincte de
-    // l'interface et n'a pas à recevoir un badge de statut de projet.
-    // Le sprint Support s'en servira aussi comme cible d'écriture des tickets.
-    asana_support_project_gid: z.string().optional(),
     uptimerobot_monitor_ids: z.array(z.string()).default([]),
     // Sort le client du sélecteur sans rien supprimer. Voir PortalClient.
     archive: z.boolean().default(false),
