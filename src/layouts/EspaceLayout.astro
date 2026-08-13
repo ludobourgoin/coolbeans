@@ -25,11 +25,11 @@ const clients = admin ? selectableClients(await listClients(), client) : [];
 <BaseLayout title={`${title} · Coolbeans`} description="Espace client Coolbeans" noindex>
   <div class="doc-root">
     <PortalNav meta={meta} client={client} clients={clients} prenom={user?.firstName ?? ""} />
-    {/* `solo` doit refléter la visibilité décidée par PortalSidebar
-        (isAdmin || slot). EspaceLayout ne passe pas de slot : les deux
-        conditions coïncident. À revoir le jour où une page en passera un. */}
-    <div class:list={["espace-shell", !admin && "solo"]}>
-      <PortalSidebar clients={clients} current={client} isAdmin={admin} />
+    {/* Toujours solo : PortalSidebar ne se rend que si elle reçoit un slot
+        (nav contextuelle de module), et EspaceLayout n'en passe aucun
+        aujourd'hui. À revoir le jour où une page en passera un. */}
+    <div class="espace-shell solo">
+      <PortalSidebar />
       <main class="espace-main">
         <slot />
       </main>

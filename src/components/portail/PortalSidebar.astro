@@ -3,32 +3,16 @@
 // (spec 2026-08-12, §6). Un seul composant pour que les deux gabarits ne
 // divergent pas.
 //
-// Elle ne se rend que si elle a quelque chose à porter : pour un client sur
-// /projets aujourd'hui — ni sélecteur, ni nav contextuelle — elle disparaît
-// au lieu d'afficher 264 px de vide. Le slot accueille la nav contextuelle
+// Elle ne se rend que si elle a quelque chose à porter : le sélecteur de
+// client est parti dans la topbar (COO-13, PortalNav), donc une colonne sans
+// nav contextuelle n'a plus rien à afficher. Le slot accueille cette nav
 // des modules à mesure qu'ils arrivent.
-import ClientSwitcher from "./ClientSwitcher.astro";
-import type { PortalClient } from "../../lib/portail/clients";
-
-interface Props {
-  clients: PortalClient[];
-  current: PortalClient | null;
-  isAdmin: boolean;
-}
-
-const { clients, current, isAdmin } = Astro.props;
 const hasSlot = Astro.slots.has("default");
-const visible = isAdmin || hasSlot;
 ---
 
 {
-  visible && (
+  hasSlot && (
     <aside class="portal-left">
-      {isAdmin && (
-        <div class="mb-6x">
-          <ClientSwitcher clients={clients} current={current} />
-        </div>
-      )}
       <slot />
     </aside>
   )
