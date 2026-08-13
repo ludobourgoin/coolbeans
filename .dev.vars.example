@@ -3,17 +3,12 @@
 # Copier en `.dev.vars` (ignoré par git) et remplir. `wrangler dev` les injecte
 # dans env ; `astro dev` continue de lire `.env` pour les clés Clerk/Resend.
 #
-# En staging et en production, ces valeurs sont posées comme secrets du Worker :
-#   npx wrangler secret put ASANA_PAT                    # production
-#   npx wrangler secret put ASANA_PAT --env staging      # staging
-# Elles ne doivent jamais apparaître dans le repo ni dans wrangler.jsonc.
+# En staging et en production, ces valeurs sont posées comme secrets du Worker
+# (`npx wrangler secret put <NOM>`, avec `--env staging` pour l'autre
+# environnement). Elles ne doivent jamais apparaître dans le repo ni dans
+# wrangler.jsonc.
 #
-# ASANA_WORKSPACE_GID n'est pas un secret : il est en clair dans wrangler.jsonc.
-
-# Personal Access Token Asana (Bearer). Lecture des teams, projets et tâches.
-# https://app.asana.com/0/my-apps
-ASANA_PAT=
-
-# Secret partagé protégeant POST /api/admin/sync (brief §8, requis).
-# Valeur au hasard, par exemple : openssl rand -hex 32
-ADMIN_SYNC_SECRET=
+# Aucun secret de Worker n'est requis aujourd'hui : ASANA_PAT et
+# ADMIN_SYNC_SECRET, les deux seuls, sont partis avec le sync Asana du sprint
+# S1. Le fichier reste comme point d'accroche du prochain — le futur sync
+# Linear en apportera un.

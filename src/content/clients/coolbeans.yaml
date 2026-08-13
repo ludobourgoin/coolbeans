@@ -5,11 +5,3 @@ nom: Coolbeans
 # technique. Elle n'est visible que de Ludo et des admins : l'autorisation se
 # fait sur `doc === project` dans src/pages/docs/[project]/[...slug].astro.
 doc: coolbeans
-# Team « Coolbeans » du workspace coolbeans.cc. Porte « Site web Coolbeans »
-# (1217361878516618) et « myCoolbeans » (1217409019426531), sur lesquels les
-# six colonnes canoniques de corrections §6 ont été relevées.
-asana_team_gid: "1217361878516615"
-# « 🛟 Support Coolbeans ». Exclu du module Projets : sans ce GID, il
-# s'afficherait comme un projet ordinaire, avec un badge de statut qui n'a
-# pas de sens sur un board de support.
-asana_support_project_gid: "1217414522363591"

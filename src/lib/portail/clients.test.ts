@@ -14,7 +14,6 @@ const amusoire: PortalClient = {
   slug: "amusoire",
   nom: "Amusoire",
   doc: "amusoire",
-  asana_team_gid: "1217116359107690",
   uptimerobot_monitor_ids: [],
   archive: false,
 };
@@ -56,21 +55,25 @@ describe("findClientByDocIn", () => {
 
 describe("missingKeysFor", () => {
   it("ne réclame rien quand le mapping du module est posé", () => {
-    expect(missingKeysFor("projets", amusoire)).toEqual([]);
     expect(missingKeysFor("doc", amusoire)).toEqual([]);
   });
 
   it("nomme la clé attendue par chaque module", () => {
-    expect(missingKeysFor("projets", coolbeans)).toEqual(["asana_team_gid"]);
-    expect(missingKeysFor("support", coolbeans)).toEqual(["asana_team_gid"]);
     expect(missingKeysFor("site", coolbeans)).toEqual(["uptimerobot_monitor_ids"]);
     expect(missingKeysFor("doc", coolbeans)).toEqual(["doc"]);
   });
 
+  // Projets et Support ne dépendent plus d'aucun mapping depuis le retrait du
+  // sync Asana : leur empty state dit « module à refaire », pas « clé absente ».
+  it("ne réclame rien pour les modules sans dépendance au registre", () => {
+    expect(missingKeysFor("projets", coolbeans)).toEqual([]);
+    expect(missingKeysFor("support", coolbeans)).toEqual([]);
+  });
+
   // Un utilisateur sans client du tout : tout manque, rien ne plante.
   it("réclame tout quand il n'y a pas de client", () => {
-    expect(missingKeysFor("projets", null)).toEqual(["asana_team_gid"]);
     expect(missingKeysFor("site", null)).toEqual(["uptimerobot_monitor_ids"]);
+    expect(missingKeysFor("doc", null)).toEqual(["doc"]);
   });
 
   it("traite un tableau de monitors vide comme une clé manquante", () => {
