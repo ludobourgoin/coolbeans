@@ -209,6 +209,48 @@ Meeus/Butcher) : Lundi de Pâques (+1), Ascension (+39), Lundi de Pentecôte (+5
 Alsace-Moselle. Cas de test : ticket créé un vendredi → deadline au lundi ; ticket créé la veille
 d'un férié → deadline au jour ouvré suivant.
 
+## §8 · Filtre de contenu client-safe (vaut pour toute implémentation future, Linear inclus)
+
+Décidé avec Ludovic le 2026-08-14, en anticipation du rebranchement du portail sur Linear (hors
+scope de `2026-08-13-migration-asana-linear-design.md`, mais consigné ici pour ne pas être perdu
+d'ici là). Double garde-fou voulu : la skill `linear` (réécriture des issues à la création) est
+censée neutraliser tout contenu inapproprié en amont, mais le portail doit avoir sa **propre**
+défense, indépendante de cette skill — au cas où un item créé avant elle, ou saisi un jour de
+fatigue hors du flux normal, contienne quelque chose comme « faire ce que demande le client même
+si je pense que c'est de la merde ».
+
+### Liste blanche de champs exposés
+
+| Objet | Champs exposés | Jamais exposé |
+| --- | --- | --- |
+| **Projet** | nom, statut, deadline, description (voir ci-dessous) | commentaires |
+| **Issue** | nom, statut | deadline, description, commentaires |
+
+La description d'un projet s'affiche dans un **toggle fermé par défaut** (le client doit cliquer
+pour la déplier), et reste soumise à la règle de troncature/séparateur du §4 (portée à Linear :
+lire uniquement le texte avant un séparateur `---`, sinon tronquer à 300 caractères).
+
+### Filtre de contenu, indépendant de la liste blanche de champs
+
+Même dans un champ autorisé (nom ou description), bloquer et signaler à Ludovic tout contenu :
+- vulgaire ou grossier ;
+- insultant ou dénigrant envers le client, nommément ou par euphémisme reconnaissable.
+
+Implémentation attendue lors du chantier Linear : passer le texte candidat (nom + description
+tronquée) dans un filtre de mots-clés/expression avant de l'écrire dans le snapshot. En cas de
+détection : exclure l'item du snapshot **et** notifier Ludovic (log Worker visible, ou entrée
+dédiée côté admin) plutôt qu'échouer silencieusement. Ne jamais tenter de « nettoyer » ou
+réécrire automatiquement le texte détecté — exclure et signaler, la correction reste manuelle.
+
+### Critères d'acceptation à ajouter (19 à 21) lors de l'implémentation Linear
+
+19. Un projet ou une issue dont le nom ou la description contient un terme vulgaire ou insultant
+    envers le client n'apparaît jamais sur le portail ; le cas est signalé à Ludovic plutôt que
+    silencieusement ignoré.
+20. Les commentaires (Linear : comments) d'une issue ou d'un projet ne sont jamais lus par le
+    sync, ni exposés par l'API du portail.
+21. La description d'un projet s'affiche repliée par défaut côté client.
+
 ## Récapitulatif · critères d'acceptation 9 à 18
 
 9. Un projet dont toutes les tâches sont cochées, mais non marqué terminé dans Asana, s'affiche
