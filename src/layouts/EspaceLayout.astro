@@ -23,7 +23,7 @@ const clients = admin ? selectableClients(await listClients(), client) : [];
 ---
 
 <BaseLayout title={`${title} · Coolbeans`} description="Espace client Coolbeans" noindex>
-  <div class="doc-root">
+  <div class="doc-root portal-frame">
     <PortalNav meta={meta} client={client} clients={clients} prenom={user?.firstName ?? ""} />
     {/* Toujours solo : PortalSidebar ne se rend que si elle reçoit un slot
         (nav contextuelle de module), et EspaceLayout n'en passe aucun

@@ -33,6 +33,18 @@
   --doc-corail-bg: rgba(245, 78, 80, 0.15);
 }
 
+/* ---- Cadre Geist (COO-12) --------------------------------------------------
+   Tout le portail — topbar comprise — vit dans un conteneur centré et bordé
+   à gauche/droite, comme vercel.com/geist : rien n'est pleine largeur.
+   Scopé .portal-frame car design-system.astro réutilise .doc-root dans une
+   carte où ce cadre n'a pas de sens. */
+.doc-root.portal-frame {
+  max-width: var(--container);
+  margin: 0 auto;
+  min-height: 100dvh;
+  border-inline: 1px solid var(--line);
+}
+
 /* ---- Topbar minimale : logo + toggle thème -------------------------------- */
 .doc-root .doc-topbar {
   position: sticky;
@@ -149,10 +161,7 @@
   display: grid;
   grid-template-columns: 264px minmax(0, 1fr) 232px;
   align-items: start;
-  /* Largeur Geist (--container, global.css) : même conteneur que le reste
-     du site, au lieu d'une valeur ad hoc propre au portail. */
-  max-width: var(--container);
-  margin: 0 auto;
+  /* La largeur vient du cadre parent (.portal-frame), topbar alignée. */
 }
 .doc-root .doc-main {
   padding: 44px 56px 110px;
@@ -762,9 +771,7 @@
   display: grid;
   grid-template-columns: 264px minmax(0, 1fr);
   align-items: start;
-  /* Largeur Geist (--container, global.css), alignée sur .doc-shell. */
-  max-width: var(--container);
-  margin: 0 auto;
+  /* La largeur vient du cadre parent (.portal-frame), alignée sur .doc-shell. */
 }
 /* Sans colonne (client sans nav contextuelle), le contenu reprend sa largeur. */
 .doc-root .espace-shell.solo {
