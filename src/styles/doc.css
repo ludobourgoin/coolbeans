@@ -156,6 +156,53 @@
   margin-top: 4px;
 }
 
+/* ---- Hub Ressources (COO-37) ----------------------------------------------
+   Cards de liens externes par catégorie : rangée d'ancres sous le sub,
+   sections titrées d'un filet, cartes .card standard (domaine en kicker). */
+.doc-root .espace-main .res-anchors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -12px 0 8px;
+}
+.doc-root .espace-main .res-anchors a {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--mute);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 12px;
+  transition:
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+.doc-root .espace-main .res-anchors a:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.doc-root .espace-main .res-section {
+  margin-top: 40px;
+  scroll-margin-top: 80px;
+}
+.doc-root .espace-main .res-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.doc-root .espace-main .res-section h2::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: var(--line);
+}
+
 /* ---- Grille 3 colonnes ---------------------------------------------------- */
 .doc-root .doc-shell {
   display: grid;
