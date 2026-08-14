@@ -128,14 +128,15 @@ const projets = defineCollection({
   }),
 });
 
-/* Un fichier MDX par page de doc de passation dans src/content/docs/<projet>/ ;
+/* Un fichier MDX par page de doc de passation dans src/content/docs/<client>/ ;
    le préfixe numérique du fichier fixe l'ordre, le reste devient le slug de
-   l'URL (/docs/<projet>/<slug>). Rendu par src/pages/docs/[project]/[...slug].astro,
-   derrière Clerk (voir src/middleware.ts). _template/ = gabarit du standard. */
+   l'URL (/docs/<client>/<slug>). Rendu par src/pages/docs/[client]/[...slug].astro,
+   derrière Clerk (voir src/middleware.ts). _template/ = gabarit du standard.
+   1 client = 1 doc : ses projets successifs incrémentent la même doc. */
 const docs = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/docs" }),
   schema: z.object({
-    project: z.string(), // clé projet = dossier ("amusoire")
+    client: z.string(), // clé client = dossier ("amusoire")
     title: z.string(),
     order: z.number(), // position dans la nav gauche
     status: z.enum(["draft", "review", "final"]).default("final"),

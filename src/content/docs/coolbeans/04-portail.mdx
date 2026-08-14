@@ -1,0 +1,81 @@
+---
+client: "coolbeans"
+title: "Portail myCoolbeans"
+order: 4
+status: "draft"
+updated: 2026-08-14
+description: "L'espace client my.coolbeans.cc : adresses, authentification, registre des clients et modules."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+L'espace connecté des clients, sur `my.coolbeans.cc`. Pour comprendre qui
+voit quoi, comment un client s'ajoute, et comment les adresses propres du
+portail sont servies.
+
+## Ce que c'est
+
+Chaque client se connecte sur `my.coolbeans.cc` et voit son espace : accueil,
+doc de son projet, projets en cours, site, ressources, support. Les admins
+voient en plus le module Chiffrages et un sélecteur pour basculer d'un client
+à l'autre. Les adresses sont propres : `my.coolbeans.cc/chiffrages`, sans
+préfixe technique.
+
+## Ce que vous pouvez modifier vous-même
+
+**Ajouter ou modifier un client** = un fichier YAML dans
+`src/content/clients/`. Le nom du fichier est l'identifiant du client. Champs :
+
+| Champ | Rôle |
+| --- | --- |
+| `nom` | Nom affiché dans le portail et le sélecteur admin |
+| `doc` | Identifiant de sa doc (dossier dans `src/content/docs/`) — absent, le module Doc affiche un état vide |
+| `uptimerobot_monitor_ids` | Monitors de disponibilité de ses sites (prévu pour le module Site) |
+| `archive` | `true` sort le client du sélecteur sans rien supprimer |
+
+Un module dont le mapping est absent affiche un **état vide** explicite, pas
+une erreur : on peut créer un client incomplet et compléter ensuite. Un
+encart de diagnostic, visible des seuls admins, liste ce qui manque — c'est
+le contrôle prévu par le runbook d'onboarding après la création d'un client.
+
+## Comment ça marche
+
+**Les adresses.** Le portail et le site partagent le même hébergement. À
+l'arrivée d'une requête, le point d'entrée (`src/worker.ts`) regarde le nom
+de domaine : sur `my.coolbeans.cc`, il sert en interne les pages `/espace/…`
+sous des adresses courtes ; sur `coolbeans.cc`, il sert le site marketing.
+Les anciennes adresses redirigent vers les canoniques. Cette réécriture vit
+dans le Worker et non dans Astro, car les pages statiques du site sont
+servies avant même qu'Astro ne s'exécute — seul le Worker voit tous les noms
+de domaine. Staging suit le même schéma avec `staging.coolbeans.cc` et
+`my-staging.coolbeans.cc`.
+
+**L'authentification.** Clerk protège tout `/espace` et tout `/docs`
+(`src/middleware.ts`). Chaque utilisateur porte deux informations : son rôle
+(`admin` ou non) et l'identifiant de son client — un simple pointeur vers le
+registre YAML ci-dessus, qui reste la source de vérité. La page de connexion
+est hébergée dans l'app (`/connexion`) pour rester en français.
+
+**Le sélecteur admin.** Un admin choisit son « client courant » ; le choix
+est mémorisé dans un cookie. Règle d'arbitrage : **l'URL gagne** — un admin
+qui ouvre la doc d'un client alors que son sélecteur est ailleurs bascule
+automatiquement sur ce client, pour que l'écran et le sélecteur racontent la
+même chose.
+
+**Le module Projets** est une page-souche avec état vide : l'outil de
+gestion de projet est Linear, et le branchement du module sur Linear est un
+chantier à part entière (voir la spec de migration dans
+`docs/superpowers/specs/`).
+
+## Référence technique
+
+| Élément | Emplacement |
+| --- | --- |
+| Réécriture d'hôte et redirections | `src/worker.ts`, règles `run_worker_first` dans `wrangler.jsonc` |
+| Protection Clerk | `src/middleware.ts` |
+| Registre clients | `src/content/clients/*.yaml`, schéma dans `src/content.config.ts` |
+| Lecture métadonnées / client courant | `src/lib/portail/metadata.ts`, `current-client.ts`, `context.ts` |
+| Navigation et retours | `src/lib/portail/nav.ts`, `retour.ts` |
+| Garde admin (pages et actions) | `src/lib/portail/require-admin.ts` |
+| Pages des modules | `src/pages/espace/*.astro` |
+| États vides et diagnostic | `src/components/portail/EmptyState.astro`, `missingKeysFor` dans `src/lib/portail/clients.ts` |

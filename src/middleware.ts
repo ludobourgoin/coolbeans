@@ -2,8 +2,8 @@ import { clerkMiddleware } from "@clerk/astro/server";
 import { getActionContext } from "astro:actions";
 
 // L'espace client et toute la doc exigent une session Clerk.
-// Le contrôle par projet (qui voit quelle doc) se fait dans la route doc,
-// via publicMetadata — voir src/pages/docs/[project]/[...slug].astro.
+// Le contrôle par client (qui voit quelle doc) se fait dans la route doc,
+// via publicMetadata — voir src/pages/docs/[client]/[...slug].astro.
 // NB : @clerk/astro v4 n'exporte plus createRouteMatcher, d'où le matcher maison.
 const PROTECTED = [/^\/espace(\/|$)/, /^\/docs(\/|$)/];
 

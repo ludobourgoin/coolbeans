@@ -1,7 +1,7 @@
 ---
 // « la doc » — rendu d'une page de doc de passation, derrière Clerk.
-// /docs/<projet>            → première page du projet (order le plus bas)
-// /docs/<projet>/<slug>     → page correspondante (slug = id sans préfixe numérique)
+// /docs/<client>            → première page du client (order le plus bas)
+// /docs/<client>/<slug>     → page correspondante (slug = id sans préfixe numérique)
 //
 // Rendu à la demande (pas de prerender) : une page prérendue contournerait le
 // middleware Clerk. L'authentification est garantie par src/middleware.ts ;
@@ -19,9 +19,11 @@ import { isAdmin } from "../../../lib/portail/metadata";
 
 type Doc = CollectionEntry<"docs">;
 const slugOf = (e: Doc) => e.id.split("/").pop()!.replace(/^\d+-/, "");
-const hrefOf = (e: Doc) => `/docs/${e.data.project}/${slugOf(e)}`;
+const hrefOf = (e: Doc) => `/docs/${e.data.client}/${slugOf(e)}`;
 
-const { project, slug } = Astro.params;
+// `client` (ligne 32) est le client courant du portail : le paramètre d'URL
+// prend donc le nom `clientParam` pour éviter la collision.
+const { client: clientParam, slug } = Astro.params;
 
 // Droit d'accès : on voit la doc de son client courant. Pour un admin, le
 // client courant est celui qu'il a choisi — ou celui que l'URL impose, voir
@@ -38,8 +40,8 @@ const isAdminUser = isAdmin(meta);
 // Une requête GET pose donc un cookie : ce n'est pas pur, mais il s'agit d'une
 // préférence d'affichage, sans effet sur les données.
 let effectif = client;
-if (isAdminUser && project && client?.doc !== project) {
-  const proprietaire = await findClientByDoc(project);
+if (isAdminUser && clientParam && client?.doc !== clientParam) {
+  const proprietaire = await findClientByDoc(clientParam);
   if (proprietaire) {
     Astro.cookies.set(CLIENT_COOKIE, proprietaire.slug, {
       path: "/",
@@ -53,10 +55,10 @@ if (isAdminUser && project && client?.doc !== project) {
   }
 }
 
-const allowed = project === "_template" ? isAdminUser : effectif?.doc === project;
+const allowed = clientParam === "_template" ? isAdminUser : effectif?.doc === clientParam;
 if (!allowed) return Astro.redirect("/espace");
 
-const entries = (await getCollection("docs", (e) => e.data.project === project)).sort(
+const entries = (await getCollection("docs", (e) => e.data.client === clientParam)).sort(
   (a, b) => a.data.order - b.data.order
 );
 if (entries.length === 0) return new Response(null, { status: 404 });
@@ -93,7 +95,7 @@ for (const e of entries) {
 
 <DocLayout
   title={entry.data.title}
-  project={entry.data.project}
+  client={entry.data.client}
   nav={nav}
   headings={headings}
   prev={prev}

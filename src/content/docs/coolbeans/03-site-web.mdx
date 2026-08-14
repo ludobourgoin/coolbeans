@@ -1,0 +1,77 @@
+---
+client: "coolbeans"
+title: "Site web"
+order: 3
+status: "draft"
+updated: 2026-08-14
+description: "coolbeans.cc : les pages, les études de cas, le design system Geist et les règles SEO."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+La vitrine `coolbeans.cc` : comment son contenu s'édite, comment son design
+system fonctionne, et les règles à respecter pour ne rien casser. Pour qui
+touche au site, du texte d'une page au style d'un composant.
+
+## Ce que c'est
+
+Un site prérendu (chaque page est générée à l'avance, servie comme un
+fichier statique, donc rapide et robuste) : accueil, à propos, contact,
+outils, études de cas, mentions légales. Les études de cas vivent sur
+`/projets/<slug>`.
+
+## Ce que vous pouvez modifier vous-même
+
+**Une étude de cas** = un fichier Markdown dans `src/content/projets/`. Le
+nom du fichier devient l'adresse de la page. L'en-tête du fichier porte la
+fiche (client, secteur, stack, captures, témoignage), le corps porte le
+récit. Deux comportements à connaître :
+
+- une capture absente n'est pas bloquante : le composant affiche
+  « capture à fournir » ;
+- `brouillon: true` publie la page en la masquant des moteurs de recherche,
+  le temps de la validation.
+
+## Comment ça marche : le design system
+
+`src/styles/global.css` est la **source de vérité unique** du style : une
+couche sémantique posée sur la fondation de tokens Geist
+(`src/styles/geist-tokens.css`). Signature typographique : Geomanist tient
+les grands titres, Geist prend tout le reste. Le mode sombre s'active par la
+classe `dark` sur la balise racine.
+
+La convention d'écriture des styles : les composants utilisent les classes
+utilitaires Tailwind branchées sur ces tokens ; un bloc de style local dans
+un composant est réservé à ce que les utilitaires ne savent pas exprimer
+(seule exception assumée : `src/components/Flow.astro`). Raison : un token
+modifié dans `global.css` se propage partout, un style local ne se voit pas.
+
+Deux commandes gardent le système honnête : `npm run verify` contrôle la
+conformité des composants au design system, `npm run tokens` ré-extrait les
+tokens Geist. La page `/design-system` est la référence visuelle interne
+(exclue des moteurs de recherche et du sitemap).
+
+## SEO
+
+Le sitemap est généré automatiquement et exclut les pages privées ou
+utilitaires : l'espace client, la doc, les devis, la connexion et le
+design system. Chaque nouvelle page publique doit soigner son titre et sa
+méta-description au moment où elle part en production.
+
+<Callout type="piege">
+  La compression HTML d'Astro est désactivée (`compressHTML: false` dans
+  `astro.config.mjs`). La réactiver collerait des mots au rendu (« et » +
+  lien devient « etcommunication ») à cause du repli de lignes de Prettier.
+  Ce n'est pas une optimisation à « remettre ».
+</Callout>
+
+## Référence technique
+
+| Élément | Emplacement |
+| --- | --- |
+| Pages | `src/pages/*.astro` |
+| Études de cas (contenu) | `src/content/projets/*.md`, schéma dans `src/content.config.ts` |
+| Rendu d'une étude de cas | `src/pages/projets/[slug].astro` |
+| Design system | `src/styles/global.css` + `src/styles/geist-tokens.css` |
+| Vérification design system | `scripts/verify-design-system.js`, `scripts/extract-geist-tokens.js` |
+| Config du site (sitemap, intégrations) | `astro.config.mjs` |

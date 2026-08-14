@@ -1,0 +1,48 @@
+---
+client: "coolbeans"
+title: "Vue d'ensemble"
+order: 1
+status: "draft"
+updated: 2026-08-14
+description: "La porte d'entrée : ce que couvre cette doc, les deux produits du repo, la stack et les liens rapides."
+---
+
+Le manuel d'exploitation de Coolbeans et la doc technique de ses deux
+produits. Pour toute personne qui travaille sur le studio : y trouver comment
+l'entreprise vend, comment le site et le portail sont construits, et pourquoi.
+
+<div class="liens">
+  <a href="https://coolbeans.cc" target="_blank" rel="noopener">Site <span class="ext">coolbeans.cc</span></a>
+  <a href="https://my.coolbeans.cc" target="_blank" rel="noopener">Portail <span class="ext">my.coolbeans.cc</span></a>
+  <a href="https://staging.coolbeans.cc" target="_blank" rel="noopener">Staging <span class="ext">staging.coolbeans.cc</span></a>
+</div>
+
+## En bref
+
+Un seul repo porte deux produits : le **site marketing** `coolbeans.cc`
+(vitrine, études de cas, outils) et le **portail client** `my.coolbeans.cc`
+(espace connecté : doc, projets, chiffrages, devis). Stack : Astro 7,
+Tailwind 4 sur une fondation de tokens Geist, authentification Clerk,
+hébergement Cloudflare Workers. Le site vitrine est prérendu (statique) ;
+seuls l'espace client et la doc sont rendus serveur, parce que le contrôle
+d'accès l'exige.
+
+## Le principe : Coolbeans est le client zéro
+
+Coolbeans figure dans le registre clients du portail comme n'importe quel
+client (`src/content/clients/coolbeans.yaml`). Même navigation, mêmes
+modules, mêmes règles d'accès. Raison d'être : chaque évolution du portail se
+teste d'abord sur soi, dans les conditions réelles d'un client, avant
+d'exister pour un vrai client.
+
+Cette doc suit la même logique : c'est la doc « client » de Coolbeans. Elle
+combine le manuel d'exploitation (la page Vente) et la doc technique des deux
+produits (les pages suivantes). Elle n'est visible que des admins.
+
+## Périmètre
+
+**Dans cette doc** : le site, le portail, la chaîne chiffrage-devis, le
+système de doc, le déploiement, le processus de vente. **Ailleurs** : les
+décisions d'architecture détaillées vivent dans `docs/superpowers/specs/`
+(voir Référence & support) ; la doc de chaque client vit dans sa propre
+section du portail.
