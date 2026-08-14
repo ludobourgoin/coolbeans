@@ -161,7 +161,7 @@ export const server = {
 
         // Depuis une page de doc, revenir sur `retour` (la doc elle-même)
         // relance aussitôt la règle « l'URL gagne » de
-        // src/pages/docs/[project]/[...slug].astro : cette route réécrirait
+        // src/pages/docs/[client]/[...slug].astro : cette route réécrirait
         // le cookie vers le propriétaire de LA DOC AFFICHÉE, annulant la
         // bascule qu'on vient de faire. On atterrit donc sur l'accueil du
         // portail du nouveau client — décision produit du 2026-08-12.

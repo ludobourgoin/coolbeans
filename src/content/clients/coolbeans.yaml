@@ -1,7 +1,8 @@
 # Coolbeans est un client comme les autres : Ludo est le client zéro.
 # Les mappings sont optionnels ; absents, les modules affichent un empty state.
 nom: Coolbeans
-# Doc Coolbeans = manuel d'exploitation de l'entreprise, pas une passation
-# technique. Elle n'est visible que de Ludo et des admins : l'autorisation se
-# fait sur `doc === project` dans src/pages/docs/[project]/[...slug].astro.
+# Doc Coolbeans = manuel d'exploitation de l'entreprise + doc technique du
+# site et du portail (spec 2026-08-14-doc-client-design.md §7). Elle n'est
+# visible que de Ludo et des admins : l'autorisation se fait sur
+# `doc === client` dans src/pages/docs/[client]/[...slug].astro.
 doc: coolbeans

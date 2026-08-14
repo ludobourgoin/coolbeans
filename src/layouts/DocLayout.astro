@@ -29,15 +29,15 @@ interface SearchEntry {
 }
 interface Props {
   title: string;
-  project: string;
+  client: string;
   nav: NavItem[];
   headings: { depth: number; slug: string; text: string }[];
   prev: PrevNext | null;
   next: PrevNext | null;
   searchIndex: SearchEntry[];
 }
-const { title, project, nav, headings, prev, next, searchIndex } = Astro.props;
-const projectLabel = project.charAt(0).toUpperCase() + project.slice(1);
+const { title, client, nav, headings, prev, next, searchIndex } = Astro.props;
+const clientLabel = client.charAt(0).toUpperCase() + client.slice(1);
 // `</script>` peut apparaître dans le texte indexé (extraits de code) : on
 // neutralise tous les `<` pour que le JSON inline ne casse pas la balise.
 const indexJson = JSON.stringify(searchIndex).replaceAll("<", "\\u003c");
@@ -51,7 +51,7 @@ const portalClients = portalAdmin
   : [];
 ---
 
-<BaseLayout title={`${title} · la doc — ${projectLabel}`} description={`Documentation de passation ${projectLabel}`} noindex>
+<BaseLayout title={`${title} · la doc — ${clientLabel}`} description={`Documentation de passation ${clientLabel}`} noindex>
   <div class="doc-root">
     <PortalNav
       meta={portalMeta}
