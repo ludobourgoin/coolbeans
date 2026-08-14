@@ -13,7 +13,7 @@ Contraintes structurantes exprimées :
 - Les clients créeront des tickets depuis leur portail (my.coolbeans.cc) et ces tickets doivent arriver dans l'espace du client, pas mélangés aux autres.
 - Budget accepté pour le plan Linear Business (~14-16 $/mois pour un siège).
 
-**Hors scope explicite** : rebrancher le portail `myCoolbeans` (`/espace/projets`, `src/lib/portail/asana/`) sur Linear. Le portail continue de lire Asana, dont les données seront figées : assumé, chantier engineering séparé. La migration du premier client est aussi une session séparée.
+**Hors scope explicite** : rebrancher le portail `myCoolbeans` (`/espace/projets`, `src/lib/portail/asana/`) sur Linear. Le portail continue de lire Asana, dont les données seront figées : assumé, chantier engineering séparé. La migration du premier client est aussi une session séparée. **À la relance de ce chantier**, appliquer le filtre de contenu client-safe consigné dans `corrections-spec-portail-client.md` §8 (liste blanche de champs projet/issue + détection de contenu vulgaire/insultant envers le client, garde-fou indépendant de la skill `linear`).
 
 ## 2. Décision structurante : une team Linear par client
 
