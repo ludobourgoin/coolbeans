@@ -1,26 +1,44 @@
 ---
-// Page-souche du module « Ressources » (tâche S0.7).
-//
-// Le shell de navigation se livre en S0 avec ses cinq entrées : chacune doit
-// mener quelque part. Le contenu lui-même arrive en S3.
+// Hub Ressources (COO-37) : cards de liens statiques par catégorie, mise en
+// page façon boîte à outils du site public (/tools), adaptée à l'idiome du
+// portail (.cards/.card de doc.css).
 //
 // Seul module à ne dépendre d'aucun mapping publicMetadata : son contenu est
-// commun à tous les clients. Pas de diagnostic admin ici, donc.
+// commun à tous les clients. Les liens vivent dans src/data/ressources.ts,
+// gérés par Coolbeans — aucune édition côté client.
 export const prerender = false;
 
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
-import EmptyState from "../../components/portail/EmptyState.astro";
+import { ressourceCategories } from "../../data/ressources";
 
 Astro.response.headers.set("Cache-Control", "no-store");
 ---
 
 <EspaceLayout title="Ressources">
   <h1>Ressources</h1>
-  <p class="sub">Le module arrive au sprint S3.</p>
+  <p class="sub">
+    Les outils gratuits (ou presque) que nous recommandons pour gérer votre site au quotidien :
+    images, vidéos, emails, mesure d'audience.
+  </p>
 
-  <EmptyState title="Bientôt disponible">
-    Les guides et outils utiles arriveront ici : installer ce portail sur votre
-    téléphone, les outils que nous recommandons, et le fonctionnement du plan de
-    maintenance.
-  </EmptyState>
+  <nav class="res-anchors" aria-label="Catégories">
+    {ressourceCategories.map((cat) => <a href={`#${cat.id}`}>{cat.title}</a>)}
+  </nav>
+
+  {
+    ressourceCategories.map((cat) => (
+      <section class="res-section" id={cat.id}>
+        <h2>{cat.title}</h2>
+        <div class="cards">
+          {cat.cards.map((r) => (
+            <a class="card" href={r.href} target="_blank" rel="noopener">
+              <div class="k">{r.domain}</div>
+              <div class="t">{r.name}</div>
+              <div class="d">{r.desc}</div>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))
+  }
 </EspaceLayout>
