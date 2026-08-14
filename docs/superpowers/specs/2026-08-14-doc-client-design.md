@@ -16,6 +16,14 @@ invoquée explicitement par Ludo (jamais en session de code normale), qui
 scanne l'état réel d'un projet et propose des mises à jour validées avant
 écriture.
 
+**Exigence de fond sur le contenu** (posée en relecture du 2026-08-14) : la
+doc est lisible de bout en bout par le client, y compris les détails
+d'implémentation — vocabulaire accessible à une équipe marketing même sur les
+points très techniques. Elle doit permettre au client de confier le projet à
+un autre développeur et que la reprise soit fluide. **Pas de filtrage par
+audience** (option envisagée puis rejetée) : tout le monde voit tout, c'est
+l'écriture qui porte l'accessibilité, pas un cloisonnement de pages.
+
 **Découverte en cours de brainstorming** : une bonne partie de l'infrastructure
 existe déjà dans `coolbeans` et n'a pas besoin d'être redesignée — voir §2.
 
@@ -121,14 +129,58 @@ Corollaires :
    `review`.
 8. Ne jamais commit, ne jamais passer en `final`.
 
-### 4.5 Références externalisées
+### 4.5 Structure du contenu : par feature, profondeur progressive
+
+Décision (2026-08-14, remplace une option « doc simple + annexes techniques »
+écartée — l'annexe recrée la ségrégation d'audience et pourrit en silence) :
+
+- **Une page par feature** : tout ce qui touche une feature — usage simple et
+  détail technique — vit sur la même page (modèle déjà en place :
+  `amusoire/04-simulateur-roi.mdx`, `05-popup-opt-in.mdx`).
+- **Profondeur progressive dans la page**, dans cet ordre : (1) ce que c'est
+  et à quoi ça sert ; (2) ce que le client peut modifier lui-même ;
+  (3) comment ça fonctionne, en langage clair ; (4) référence technique
+  exacte en bas de page (sélecteurs, IDs, chemins de fichiers). Le lecteur
+  s'arrête où son besoin s'arrête ; le dev repreneur descend jusqu'au fond.
+
+### 4.6 Références externalisées
 
 | Fichier | Contient |
 |---|---|
-| `references/structure.md` | Les 6 pages canoniques du gabarit, quand ajouter une page hors gabarit |
-| `references/redaction.md` | Voix instantané obligatoire, patterns interdits (« on vient de… », « l'ancienne procédure n'est plus utilisée »), règle secrets/clés API, conventions de code inline vs. référence |
+| `references/structure.md` | Pages canoniques du gabarit, modèle « une page par feature » + ordre de profondeur progressive (§4.5), quand ajouter une page hors gabarit, règle « une page = un sujet, lisible en 5 min » (au-delà : scinder en sortant la référence pure) |
+| `references/redaction.md` | Règles d'écriture, voir §4.7 |
 
-### 4.6 Cas particuliers
+### 4.7 Règles de rédaction (contenu de `references/redaction.md`)
+
+Tirées de l'audit des pages Amusoire existantes (relecture 2026-08-14) :
+
+- **Langage clair partout, même au fond de la couche technique** : chaque
+  terme technique est expliqué dans la phrase même ou remplacé, jamais
+  supposé connu. Étalon : une équipe marketing comprend la section. Ex. :
+  « Make évalue toute chaîne non vide comme truthy » → « une case non cochée
+  doit envoyer une valeur vide, jamais le texte "false" : Make considère
+  n'importe quel texte comme un oui ».
+- **Rationale ≠ narration** : le *pourquoi* intemporel d'une décision se
+  garde (ex. « pourquoi Resend : l'add-on HubSpot coûte ~600 $/mois ») ;
+  l'*actualité* d'un changement se jette (« confirmée le 2026-07-24 »,
+  « l'ancienne procédure n'est plus utilisée », « en attendant sa
+  suppression »).
+- **Aucun TODO dans la doc** : un écart constaté entre le réel et le souhaité
+  devient une issue Linear (la skill la propose pendant le scan), jamais une
+  annotation « à faire » dans une page. La doc décrit ce qui est ; Linear
+  porte ce qui doit changer.
+- **Sobriété (cible Geist)** : un encart (callout) par écran maximum ; le
+  gras réservé à l'unique chose à ne pas rater ; zéro emoji dans le corps de
+  texte et les liens.
+- **Politique du code** : on n'inline que ce que le lecteur va *éditer*
+  (ex. coefficients en Custom Attributes Webflow). Tout le reste se référence
+  par chemin de fichier vers le repo, jamais collé — le code cité en doc ment
+  dès le commit suivant.
+- **Première ligne de chaque page** : à qui elle s'adresse et ce qu'on peut
+  en faire.
+- **Secrets** : jamais recopiés (cf. §4.3).
+
+### 4.8 Cas particuliers
 
 - **Premier scan d'un client** : mode `init`, page vierge depuis `_template`.
 - **Rien de neuf détecté** : le dire explicitement, ne pas inventer de contenu
