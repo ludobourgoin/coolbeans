@@ -47,6 +47,13 @@
   font-weight: 800;
   font-display: swap;
 }
+/* Inter Tight regular : uniquement le « my » du logo myCoolbeans (COO-14). */
+@font-face {
+  font-family: "Inter Tight";
+  src: url("/fonts/InterTight-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
 
 /* ----------------------------------------------------------------------------
    COUCHE SÉMANTIQUE
@@ -138,6 +145,7 @@
   --font-sans: "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: "Geomanist", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-logo: "Inter Tight", "Geist Sans", sans-serif;
 
   --radius-control: 6px;
   --radius-card: 8px;
