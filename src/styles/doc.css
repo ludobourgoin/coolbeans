@@ -7,6 +7,10 @@
    ========================================================================== */
 
 .doc-root {
+  /* Largeur partagée par la colonne sidebar ET la zone logo de la topbar
+     (structure Geist, COO-80) : les deux doivent bouger ensemble. */
+  --portal-col: 264px;
+
   /* palette Folk — uniquement les couleurs employées (admonitions, pastilles, todo) */
   --doc-iris: #c1aaf9;
   --doc-iris-bg: #f6dff6;
@@ -106,7 +110,9 @@
 .doc-root .espace-main {
   max-width: 880px;
   margin: 0 auto;
-  padding: 56px 24px 110px;
+  min-width: 0;
+  width: 100%;
+  padding: 56px 40px 80px;
 }
 .doc-root .espace-main h1 {
   font-family: var(--font-display);
@@ -206,7 +212,7 @@
 /* ---- Grille 3 colonnes ---------------------------------------------------- */
 .doc-root .doc-shell {
   display: grid;
-  grid-template-columns: 264px minmax(0, 1fr) 232px;
+  grid-template-columns: var(--portal-col) minmax(0, 1fr) 232px;
   align-items: start;
   /* La largeur vient du cadre parent (.portal-frame), topbar alignée. */
 }
@@ -220,6 +226,9 @@
   height: calc(100vh - 56px);
   overflow: auto;
   padding: 36px 20px 60px;
+  /* Trait fin entre contenu et ancres (COO-80) — la colonne est TOUJOURS
+     rendue, même sans H2, pour que le contenu ne saute pas entre pages. */
+  border-left: 1px solid var(--line);
 }
 .doc-root .doc-right .h {
   font-family: var(--font-mono);
@@ -786,7 +795,7 @@
     display: none;
   }
   .doc-root .doc-shell {
-    grid-template-columns: 250px minmax(0, 1fr);
+    grid-template-columns: var(--portal-col) minmax(0, 1fr);
   }
 }
 @media (max-width: 860px) {
@@ -803,37 +812,36 @@
   }
 }
 
-/* ---- Gabarit du portail : colonne gauche partagée -------------------------
-   La colonne reprend la géométrie de .doc-left (264 px, collante sous la
-   topbar de 56 px) pour que l'espace et la doc s'alignent au pixel. */
+/* ---- Sidebar du portail (COO-80) -------------------------------------------
+   L'unique nav du portail : collante sous la topbar de 56 px, alignée au
+   pixel sur la zone logo via --portal-col. Le contenu des sections vient de
+   PortalSidebar.astro (utilitaires Tailwind), ici seulement la géométrie. */
 .doc-root .portal-left {
   position: sticky;
   top: 56px;
   height: calc(100vh - 56px);
   overflow: auto;
   border-right: 1px solid var(--line);
-  padding: 28px 20px 60px;
-}
-.doc-root .espace-shell {
-  display: grid;
-  grid-template-columns: 264px minmax(0, 1fr);
-  align-items: start;
-  /* La largeur vient du cadre parent (.portal-frame), alignée sur .doc-shell. */
-}
-/* Sans colonne (client sans nav contextuelle), le contenu reprend sa largeur. */
-.doc-root .espace-shell.solo {
-  grid-template-columns: minmax(0, 1fr);
-}
-.doc-root .espace-shell .espace-main {
-  padding: 56px 40px 110px;
+  padding: 28px 14px 60px;
 }
 
 @media (max-width: 1023.98px) {
   .doc-root .portal-left {
     display: none;
   }
-  .doc-root .espace-shell,
   .doc-root .doc-shell {
     grid-template-columns: minmax(0, 1fr);
+  }
+  /* Drawer : la sidebar en panneau au-dessus du contenu (bouton ☰ topbar). */
+  .doc-root.nav-open .portal-left {
+    display: block;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    bottom: 0;
+    width: min(300px, 85vw);
+    z-index: 30;
+    background: var(--surface);
+    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.12);
   }
 }

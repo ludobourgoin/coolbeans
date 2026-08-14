@@ -15,11 +15,15 @@
 //
 // Toute nouvelle entrée ici doit rester un secret : les valeurs publiques
 // vont dans `vars` de wrangler.jsonc, où wrangler sait les typer seul.
-//
-// Vide depuis le retrait du sync Asana (S1) : ASANA_PAT et ADMIN_SYNC_SECRET
-// étaient les deux seuls. Le squelette reste pour le prochain secret.
 
-interface PortalSecrets {}
+interface PortalSecrets {
+  /**
+   * Clé API Linear (personnelle, workspace coolbeans-hq) : création des
+   * tickets support depuis /api/support (COO-30). `wrangler secret put
+   * LINEAR_API_KEY` sur chaque environnement, `.dev.vars` en local.
+   */
+  LINEAR_API_KEY?: string;
+}
 
 interface Env extends PortalSecrets {}
 

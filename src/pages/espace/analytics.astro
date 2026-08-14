@@ -1,0 +1,21 @@
+---
+// Page-souche « Analytics » (section Mon site, spec sidebar 2026-08-14).
+// Entrée `wip` du registre : invisible côté client tant que l'outil n'est pas
+// choisi et branché (COO-16, en pause ; structure de page : COO-36).
+export const prerender = false;
+
+import EspaceLayout from "../../layouts/EspaceLayout.astro";
+import EmptyState from "../../components/portail/EmptyState.astro";
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<EspaceLayout title="Analytics">
+  <h1>Analytics</h1>
+  <p class="sub">L'audience de votre site.</p>
+
+  <EmptyState title="Bientôt disponible">
+    Les statistiques de fréquentation de votre site arriveront ici : visiteurs, pages vues,
+    provenance — sans cookies ni bannière.
+  </EmptyState>
+</EspaceLayout>

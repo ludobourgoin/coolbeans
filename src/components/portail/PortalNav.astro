@@ -1,29 +1,30 @@
 ---
-// Topbar commune du portail client (tâche S0.7) : nav haute 5 entrées,
-// emplacement de recherche, bascule de thème, menu compte Clerk.
+// Topbar du portail — refonte COO-80 (spec 2026-08-14-portail-sidebar-design.md).
 //
-// Conforme au wireframe : la colonne gauche appartient à la doc, la navigation
-// entre modules vit en haut. Utilisée par EspaceLayout et par DocLayout — le
-// portail doit être le même objet, qu'on soit sur un module ou dans la doc.
+// La navigation entre modules a quitté la topbar pour la sidebar : ici ne
+// restent que la marque, la recherche ⌘K, le switch de client (admin), le
+// thème et le compte. Structure Geist stricte : la zone logo fait EXACTEMENT
+// la largeur de la colonne sidebar (264px, --portal-col) avec une border-right
+// continue — c'est ce qui aligne la topbar sur la grille en dessous.
 //
-// Hauteur figée à 56px (h-14) : doc.css cale dessus les colonnes collantes de
-// la doc (`top: 56px`, `calc(100vh - 56px)`). La changer ici désaligne la doc.
+// Hauteur figée à 56px (h-14) : doc.css cale dessus les colonnes collantes
+// (`top: 56px`, `calc(100vh - 56px)`). La changer ici désaligne tout.
 //
-// Le sélecteur de client (admin seulement, COO-13) n'est plus dans la
-// topbar : c'est une barre à part, fixée en bas de VIEWPORT (pas de la
-// colonne), sur toute la largeur — cf. le bloc après </header>. Unique à
-// toutes les largeurs, plus de variante « compact » réservée au mobile.
+// Le menu compte insère « Support » entre « Gérer mon compte » et
+// « Se déconnecter » (décision brainstorm 2026-08-14) via les custom menu
+// items de @clerk/astro (UserButton.Action réordonne les items natifs).
 import { UserButton } from "@clerk/astro/components";
-import { buildPortalNav, isActive, portalHref } from "../../lib/portail/nav";
+import { portalHref } from "../../lib/portail/nav";
 import ClientSwitcher from "./ClientSwitcher.astro";
+import Icon from "./Icon.astro";
 import type { PortalClient } from "../../lib/portail/clients";
 import { isAdmin, type PortalMetadata } from "../../lib/portail/metadata";
 
 interface Props {
   meta: PortalMetadata;
   /**
-   * Optionnelles avec repli : design-system.astro (prérendue, Task 9 la met à
-   * jour) appelle encore PortalNav sans client ni clients.
+   * Optionnelles avec repli : design-system.astro (prérendue) appelle encore
+   * PortalNav sans client ni clients.
    */
   client?: PortalClient | null;
   clients?: PortalClient[];
@@ -34,112 +35,106 @@ interface Props {
 }
 
 const { meta, client = null, clients = [], withAccount = true, prenom = "" } = Astro.props;
-const { hostname, pathname } = Astro.url;
-const items = buildPortalNav(hostname, meta, client);
+const { hostname } = Astro.url;
 const home = portalHref("/", hostname);
+const support = portalHref("/support", hostname);
 const admin = isAdmin(meta);
 ---
 
-<header
-  class="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-line bg-surface px-4 md:px-6"
->
-  <a
-    href={home}
-    class="flex flex-none items-center gap-2 text-ink no-underline"
-    aria-label="myCoolbeans — accueil"
-  >
-    {/* Lockup COO-14 : picto rond (blanc sur noir, inversé en sombre) puis
-        « my » À GAUCHE du wordmark — le contraste Inter Tight regular vs
-        wordmark bold fait la marque. Les fichiers -text-* sont recadrés sur
-        les seules lettres (sans le picto {} embarqué), leur bas ≈ la
-        baseline : le span reste en flux inline (pas flex) pour que la
-        baseline du texte s'aligne d'elle-même dessus. Le corps de « my »
-        (23px) reste un poil sous la x-height du wordmark en h-5. */}
-    <img class="block size-7 dark:hidden" src="/img/coolbeans-mark-black.svg" alt="" width="28" height="28" />
-    <img class="hidden size-7 dark:block" src="/img/coolbeans-mark-white.svg" alt="" width="28" height="28" />
-    <span class="whitespace-nowrap leading-none">
-      <span class="font-logo text-[23px] font-normal">my</span><img
-        class="ml-0.5 inline-block h-5 w-auto align-baseline dark:hidden"
-        src="/img/coolbeans-wordmark-text.svg"
-        alt=""
-        height="20"
-      /><img
-        class="ml-0.5 hidden h-5 w-auto align-baseline dark:inline-block"
-        src="/img/coolbeans-wordmark-text-white.svg"
-        alt=""
-        height="20"
-      />
-    </span>
-  </a>
-
-  <nav
-    aria-label="Navigation du portail"
-    class="-mx-2 flex min-w-0 flex-1 items-center gap-1 overflow-x-auto px-2 md:mx-0 md:ml-3 md:px-0"
-  >
-    {
-      items.map((item) => {
-        const on = isActive(item, pathname);
-        return (
-          <a
-            href={item.href}
-            aria-current={on ? "page" : undefined}
-            class:list={[
-              "whitespace-nowrap rounded-control px-2.5 py-1.5 text-sm no-underline transition-colors duration-150 ease-in-out",
-              on ? "font-semibold text-ink" : "text-mute hover:bg-surface-raise hover:text-ink",
-            ]}
-          >
-            {item.label}
-          </a>
-        );
-      })
-    }
-  </nav>
-
-  {/*
-    La recherche remonte du panneau de doc vers la topbar (maquette du
-    2026-08-12). Le champ est rendu partout ; DocLayout l'active quand un
-    index de doc est présent, il reste inerte ailleurs.
-  */}
-  <div class="relative hidden flex-none lg:block">
-    <input
-      id="doc-q"
-      type="search"
-      autocomplete="off"
-      placeholder="Rechercher dans la doc ⌘K"
-      class="h-9 w-64 rounded-control border border-line bg-surface px-3 text-sm text-ink outline-none placeholder:text-mute"
-    />
-    <div id="doc-qres" hidden></div>
+<header class="sticky top-0 z-20 flex h-14 items-stretch border-b border-line bg-surface">
+  {/* Zone marque : même largeur que la colonne sidebar, bordure continue. */}
+  <div class="flex flex-none items-center px-4 md:px-6 lg:w-(--portal-col) lg:border-r lg:border-line">
+    <a
+      href={home}
+      class="flex flex-none items-center gap-2 text-ink no-underline"
+      aria-label="myCoolbeans — accueil"
+    >
+      {/* Lockup COO-14 : picto rond (blanc sur noir, inversé en sombre) puis
+          « my » À GAUCHE du wordmark — le contraste Inter Tight regular vs
+          wordmark bold fait la marque. Les fichiers -text-* sont recadrés sur
+          les seules lettres (sans le picto {} embarqué), leur bas ≈ la
+          baseline : le span reste en flux inline (pas flex) pour que la
+          baseline du texte s'aligne d'elle-même dessus. Le corps de « my »
+          (23px) reste un poil sous la x-height du wordmark en h-5. */}
+      <img class="block size-7 dark:hidden" src="/img/coolbeans-mark-black.svg" alt="" width="28" height="28" />
+      <img class="hidden size-7 dark:block" src="/img/coolbeans-mark-white.svg" alt="" width="28" height="28" />
+      <span class="whitespace-nowrap leading-none">
+        <span class="font-logo text-[23px] font-normal">my</span><img
+          class="ml-0.5 inline-block h-5 w-auto align-baseline dark:hidden"
+          src="/img/coolbeans-wordmark-text.svg"
+          alt=""
+          height="20"
+        /><img
+          class="ml-0.5 hidden h-5 w-auto align-baseline dark:inline-block"
+          src="/img/coolbeans-wordmark-text-white.svg"
+          alt=""
+          height="20"
+        />
+      </span>
+    </a>
   </div>
 
-  <button
-    class="flex-none cursor-pointer rounded-control border border-line bg-surface px-2.5 py-1.5 text-sm text-ink"
-    data-portal-theme
-    type="button"
-    aria-label="Basculer le thème"
-  >
-    ☀︎ / ☾
-  </button>
+  <div class="flex min-w-0 flex-1 items-center gap-2 px-4 md:px-6">
+    {/* Ouvre la sidebar en drawer sous 1024px (script dans PortalLayout). */}
+    <button
+      type="button"
+      class="flex-none cursor-pointer rounded-control border border-line bg-surface p-2 text-ink lg:hidden"
+      data-portal-menu
+      aria-label="Ouvrir la navigation"
+      aria-expanded="false"
+    >
+      <Icon name="menu" size={16} />
+    </button>
 
-  {
-    withAccount && (
-      <span class="flex flex-none items-center gap-2">
-        {prenom && <span class="hidden text-sm text-mute md:inline">Hello, {prenom}</span>}
-        <UserButton />
-      </span>
-    )
-  }
-</header>
+    <div class="flex-1"></div>
 
-{/* Barre admin, fixée en bas du VIEWPORT (pas de la colonne) sur toute la
-    largeur — mockup Ludo du 2026-08-13. espace-main / doc-main réservent
-    déjà 110px de padding-bottom pour elle (doc.css). */}
-{
-  admin && (
-    <div class="fixed inset-x-0 bottom-0 z-20 flex justify-center border-t border-line bg-surface-subtle px-4 py-3">
-      <ClientSwitcher clients={clients} current={client} compact />
+    {/*
+      La recherche vit dans la topbar (maquette du 2026-08-12). Le champ est
+      rendu partout ; le layout l'active quand un index de doc est présent,
+      il reste inerte ailleurs.
+    */}
+    <div class="relative hidden flex-none lg:block">
+      <input
+        id="doc-q"
+        type="search"
+        autocomplete="off"
+        placeholder="Rechercher dans la doc ⌘K"
+        class="h-9 w-64 rounded-control border border-line bg-surface px-3 text-sm text-ink outline-none placeholder:text-mute"
+      />
+      <div id="doc-qres" hidden></div>
     </div>
-  )
-}
+
+    {/* Switch de client, à droite de la recherche (décision 2026-08-14,
+        remplace la barre fixée en bas du viewport). */}
+    {admin && clients.length > 0 && <ClientSwitcher clients={clients} current={client} compact />}
+
+    <button
+      class="flex-none cursor-pointer rounded-control border border-line bg-surface px-2.5 py-1.5 text-sm text-ink"
+      data-portal-theme
+      type="button"
+      aria-label="Basculer le thème"
+    >
+      ☀︎ / ☾
+    </button>
+
+    {
+      withAccount && (
+        <span class="flex flex-none items-center gap-2">
+          {prenom && <span class="hidden text-sm text-mute md:inline">Hello, {prenom}</span>}
+          <UserButton>
+            <UserButton.MenuItems>
+              <UserButton.Action label="manageAccount" />
+              <UserButton.Link label="Support" href={support}>
+                <Icon slot="label-icon" name="help" size={14} />
+              </UserButton.Link>
+              <UserButton.Action label="signOut" />
+            </UserButton.MenuItems>
+          </UserButton>
+        </span>
+      )
+    }
+  </div>
+</header>
 
 <script>
   // Même clé localStorage que l'anti-flash de BaseLayout.

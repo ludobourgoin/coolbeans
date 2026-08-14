@@ -147,7 +147,7 @@ const docs = defineCollection({
 
 /* Un fichier YAML par client dans src/content/clients/ ; le nom du fichier est
    le slug du client. Source de vérité des mappings d'un client : sa doc, sa
-   team Asana, ses monitors. Le publicMetadata Clerk ne porte plus qu'un
+   team Linear, ses monitors. Le publicMetadata Clerk ne porte plus qu'un
    pointeur `client` vers ce registre — voir
    docs/superpowers/specs/2026-08-12-selecteur-de-client-admin-design.md */
 const clients = defineCollection({
@@ -155,6 +155,9 @@ const clients = defineCollection({
   schema: z.object({
     nom: z.string(),
     doc: z.string().optional(),
+    // UUID de la team Linear du client : le formulaire support y crée ses
+    // tickets. Absent = module Support en empty state (COO-30).
+    linearTeamId: z.string().optional(),
     uptimerobot_monitor_ids: z.array(z.string()).default([]),
     // Sort le client du sélecteur sans rien supprimer. Voir PortalClient.
     archive: z.boolean().default(false),

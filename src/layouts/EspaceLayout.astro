@@ -1,38 +1,19 @@
 ---
-// Espace client Coolbeans : topbar commune (PortalNav) et colonne gauche
-// partagée (PortalSidebar) au-dessus des pages protégées. La doc a son propre
-// layout, avec la même topbar et la même colonne.
-import BaseLayout from "./BaseLayout.astro";
-import PortalNav from "../components/portail/PortalNav.astro";
-import PortalSidebar from "../components/portail/PortalSidebar.astro";
-import { listClients, selectableClients } from "../lib/portail/clients";
-import { getPortalContext } from "../lib/portail/context";
-import { isAdmin } from "../lib/portail/metadata";
-import "../styles/doc.css";
+// Espace client Coolbeans — délègue toute la coquille (topbar, sidebar,
+// colonne d'ancres) à PortalLayout (COO-80). Ne reste ici que le suffixe de
+// titre et la classe de contenu.
+import PortalLayout from "./PortalLayout.astro";
 
 interface Props {
   title: string;
 }
 const { title } = Astro.props;
-
-const { user, meta, client } = await getPortalContext(Astro);
-const admin = isAdmin(meta);
-// Le registre n'est lu que pour l'admin : lui seul voit le sélecteur.
-// Les archivés sortent du sélecteur, sauf s'ils sont le client courant.
-const clients = admin ? selectableClients(await listClients(), client) : [];
 ---
 
-<BaseLayout title={`${title} · Coolbeans`} description="Espace client Coolbeans" noindex>
-  <div class="doc-root portal-frame">
-    <PortalNav meta={meta} client={client} clients={clients} prenom={user?.firstName ?? ""} />
-    {/* Toujours solo : PortalSidebar ne se rend que si elle reçoit un slot
-        (nav contextuelle de module), et EspaceLayout n'en passe aucun
-        aujourd'hui. À revoir le jour où une page en passera un. */}
-    <div class="espace-shell solo">
-      <PortalSidebar />
-      <main class="espace-main">
-        <slot />
-      </main>
-    </div>
-  </div>
-</BaseLayout>
+<PortalLayout
+  title={`${title} · Coolbeans`}
+  description="Espace client Coolbeans"
+  mainClass="espace-main"
+>
+  <slot />
+</PortalLayout>

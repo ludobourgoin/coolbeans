@@ -63,17 +63,23 @@ describe("missingKeysFor", () => {
     expect(missingKeysFor("doc", coolbeans)).toEqual(["doc"]);
   });
 
-  // Projets et Support ne dépendent plus d'aucun mapping depuis le retrait du
-  // sync Asana : leur empty state dit « module à refaire », pas « clé absente ».
+  // Projets ne dépend plus d'aucun mapping depuis le retrait du sync Asana :
+  // son empty state dit « module à refaire », pas « clé absente ».
   it("ne réclame rien pour les modules sans dépendance au registre", () => {
     expect(missingKeysFor("projets", coolbeans)).toEqual([]);
-    expect(missingKeysFor("support", coolbeans)).toEqual([]);
+  });
+
+  // Support crée ses tickets dans la team Linear du client (COO-30).
+  it("réclame la team Linear pour le support", () => {
+    expect(missingKeysFor("support", coolbeans)).toEqual(["linearTeamId"]);
+    expect(missingKeysFor("support", { ...coolbeans, linearTeamId: "uuid" })).toEqual([]);
   });
 
   // Un utilisateur sans client du tout : tout manque, rien ne plante.
   it("réclame tout quand il n'y a pas de client", () => {
     expect(missingKeysFor("site", null)).toEqual(["uptimerobot_monitor_ids"]);
     expect(missingKeysFor("doc", null)).toEqual(["doc"]);
+    expect(missingKeysFor("support", null)).toEqual(["linearTeamId"]);
   });
 
   it("traite un tableau de monitors vide comme une clé manquante", () => {
