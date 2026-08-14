@@ -1,0 +1,47 @@
+---
+client: "coolbeans"
+title: "Référence & support"
+order: 8
+status: "draft"
+updated: 2026-08-14
+description: "Les commandes, l'annuaire des services et où trouver les décisions d'architecture."
+---
+
+La page à ouvrir quand on cherche « où est quoi » : commandes du projet,
+services externes, et l'emplacement des décisions écrites.
+
+## Commandes
+
+| Commande | Effet |
+| --- | --- |
+| `npm run dev` | Serveur de développement (démon : `npx astro dev status` / `logs` / `stop`) |
+| `npm run build` | Construction complète (valide aussi les en-têtes de toutes les docs) |
+| `npm run preview` | Prévisualisation du build |
+| `npm test` | Tests unitaires vitest |
+| `npm run verify` | Contrôle de conformité au design system |
+| `npm run tokens` | Ré-extraction des tokens Geist |
+
+## Annuaire des services
+
+| Service | Usage | Accès |
+| --- | --- | --- |
+| Cloudflare | DNS, Workers (prod + staging), secrets de prod | dashboard Cloudflare |
+| Clerk | Authentification du portail (2 instances : production et développement) | dashboard Clerk |
+| Linear | Gestion de projet — une team par client, Coolbeans est une team comme les autres | app Linear |
+| GitHub | Repo du site + repo des skills (`coolbeans-claude-skills`) | GitHub |
+| UptimeRobot | Surveillance de disponibilité des sites clients (module Site du portail) | dashboard UptimeRobot |
+| Resend, SendGrid, MailerLite, Google Workspace | Mail — voir la page Déploiement | dashboards respectifs |
+
+## Où vivent les décisions
+
+Les décisions d'architecture validées sont écrites dans
+`docs/superpowers/specs/` (une spec datée par chantier : hébergement
+Workers, design system Geist, portail, sélecteur admin, migration Linear,
+système de doc…) et les plans d'exécution dans `docs/superpowers/plans/`.
+Devant un « pourquoi c'est fait comme ça ? », le réflexe est : chercher la
+spec du chantier, elle contient le contexte et les options écartées.
+
+## Support
+
+Le canal d'entrée des demandes clients est le module Support du portail ;
+les demandes internes passent par la Triage de la team Linear Coolbeans.

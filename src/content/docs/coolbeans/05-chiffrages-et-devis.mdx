@@ -1,0 +1,66 @@
+---
+client: "coolbeans"
+title: "Chiffrages & devis"
+order: 5
+status: "draft"
+updated: 2026-08-14
+description: "La chaîne commerciale outillée : composer un chiffrage en admin, le publier en devis consultable par le client."
+---
+
+La chaîne qui va d'une estimation interne à un devis présentable : composer
+un chiffrage dans le module admin, le convertir en devis, le faire lire au
+client. Pour qui prépare une proposition commerciale.
+
+## Ce que c'est
+
+Deux objets distincts. Le **chiffrage** est l'outil de travail interne :
+lignes tirées d'un catalogue de prestations, calcul des jours et des
+montants, réglages. Le **devis** est le document que lit le client : sections
+rédigées, budget, planning à jalons, notes. Un devis peut naître d'un
+chiffrage (conversion) ou s'écrire directement.
+
+## Ce que vous pouvez modifier vous-même
+
+**Le catalogue et les réglages** du chiffrage s'éditent dans le module
+lui-même : `my.coolbeans.cc/chiffrages` → Réglages (taux journalier,
+catalogue de prestations).
+
+**Un devis rédigé à la main** = un fichier YAML dans `src/content/devis/` ;
+le nom du fichier devient l'adresse `/devis/<nom>`. Le format est fait pour
+écrire vite :
+
+- des sections libres combinant texte, liste, budget et planning ;
+- dans un budget, une ligne sans prix s'affiche « Inclus » ;
+- un planning peut proposer plusieurs scénarios de calendrier (démarrage
+  immédiat ou différé), chaque jalon étant attribué à Coolbeans ou au client ;
+- le gras s'écrit comme en Markdown dans n'importe quelle chaîne.
+
+## Comment ça marche
+
+Le module Chiffrages est réservé aux admins, et doublement : les pages
+vérifient le rôle, et chaque action serveur (créer, modifier, supprimer)
+refait la même vérification de son côté. Raison : une requête forgée qui
+contournerait la page est rejetée quand même — la sécurité ne repose jamais
+sur la seule interface.
+
+La logique métier vit dans `src/lib/chiffrage/` : le calcul des montants
+(`calc.ts`), le stockage (`store.ts`), la validation des données
+(`schemas.ts`) et la conversion d'un chiffrage en devis (`toDevis.ts`). Le
+devis issu d'un chiffrage est servi sur `/devis/<client>/<projet>`, le devis
+rédigé à la main sur `/devis/<nom>`.
+
+La réponse du client à un devis passe par un point d'entrée dédié
+(`src/pages/api/devis-reponse.ts`) qui déclenche une notification par mail
+via Resend. Toutes les pages devis sont exclues des moteurs de recherche et
+du sitemap : elles ne sont accessibles qu'à qui possède le lien.
+
+## Référence technique
+
+| Élément | Emplacement |
+| --- | --- |
+| Pages du module admin | `src/pages/espace/chiffrages/` (index, nouveau, `[id]`, reglages) |
+| Actions serveur (garde admin incluse) | `src/actions/index.ts` |
+| Logique chiffrage | `src/lib/chiffrage/` (calc, store, schemas, toDevis, format, types) |
+| Devis YAML (contenu) | `src/content/devis/*.yaml`, schéma dans `src/content.config.ts` |
+| Rendu devis | `src/pages/devis/[slug].astro` et `src/pages/devis/[client]/[projetId].astro` |
+| Réponse au devis | `src/pages/api/devis-reponse.ts` |

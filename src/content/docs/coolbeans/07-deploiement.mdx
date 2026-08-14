@@ -1,0 +1,82 @@
+---
+client: "coolbeans"
+title: "Déploiement & environnements"
+order: 7
+status: "draft"
+updated: 2026-08-14
+description: "Comment le site part en ligne : branches, environnements, secrets, développement local, infra."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+Le chemin du code vers la production, et tout ce qui l'entoure : branches,
+environnements, secrets, poste de travail. Pour qui déploie ou reprend le
+projet.
+
+## Ce que c'est
+
+Deux environnements, pilotés par les branches git :
+
+| Branche | Environnement | Adresses |
+| --- | --- | --- |
+| `main` | Production | `coolbeans.cc`, `my.coolbeans.cc` |
+| `staging` | Staging | `staging.coolbeans.cc`, `my-staging.coolbeans.cc` |
+
+Le déploiement est automatique : **`git push` suffit**. Deux Workers
+Cloudflare sont connectés au repo GitHub (Workers Builds) et reconstruisent
+à chaque poussée sur leur branche. `staging` est une branche longue durée,
+pas une branche de feature : elle ne se supprime jamais.
+
+<Callout type="danger">
+  Pousser sur `main` publie en production. C'est un acte volontaire et
+  explicite, jamais un réflexe de fin de session : le travail courant se
+  pousse sur `staging`.
+</Callout>
+
+## Développement local
+
+- `npm run dev` : serveur de développement — il tourne en démon persistant
+  (`npx astro dev status`, `logs`, `stop`).
+- `npm test` : tests unitaires (vitest).
+- `npm run build` puis `npm run preview` : construction et prévisualisation.
+- Le fichier `.env` local porte les clés Clerk de développement ; il est
+  hors git et doit être recopié à la main dans tout espace de travail
+  parallèle (worktree), sinon l'authentification ne démarre pas.
+
+## Comment ça marche
+
+**La configuration Worker** (`wrangler.jsonc`) : le point d'entrée est
+`src/worker.ts` (réécriture d'hôte du portail, voir la page Portail) ; le
+mode de compatibilité Node est activé parce que Clerk en a besoin ; la règle
+`run_worker_first` force le passage par le Worker pour les pages tout en
+laissant les fichiers statiques (polices, images, bundles) servis
+directement.
+
+**Les clés Clerk** suivent une règle simple : la clé *publiable* n'est pas
+un secret (elle est embarquée dans chaque page envoyée au navigateur) et
+elle est fixée par environnement dans `astro.config.mjs` au moment de la
+construction — instance de production pour `main`, instance de développement
+pour `staging`. La clé *secrète* (`CLERK_SECRET_KEY`) est un secret du
+Worker, posé dans Cloudflare, jamais dans le repo.
+
+## Infra autour du repo
+
+Éléments hors de ce repo, listés ici pour la vue d'ensemble (source : gestion
+courante, à vérifier dans les dashboards concernés) :
+
+| Service | Rôle |
+| --- | --- |
+| Cloudflare | DNS de `coolbeans.cc` + hébergement des deux Workers |
+| Google Workspace | Boîtes mail `@coolbeans.cc` |
+| SendGrid | Envoi transactionnel — subuser actif `u44751929` ; le subuser `u28242587` est hors service, ne pas l'utiliser |
+| MailerLite | Emailing marketing |
+| Resend | Notifications applicatives du site (réponse aux devis, newsletter — `src/emails/newsletter.ts`) |
+
+## Référence technique
+
+| Élément | Emplacement |
+| --- | --- |
+| Config Worker | `wrangler.jsonc` |
+| Point d'entrée | `src/worker.ts` |
+| Config Astro (adapter, clés par environnement) | `astro.config.mjs` |
+| Décision d'hébergement Workers | `docs/superpowers/specs/2026-08-04-deploy-workers-migration-design.md` |
