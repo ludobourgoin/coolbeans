@@ -3,7 +3,7 @@ client: "coolbeans"
 title: "Vente"
 order: 2
 status: "final"
-updated: 2026-08-12
+updated: 2026-08-14
 description: "Le cycle de vie d'une affaire, du vivier de prospection au suivi d'après-vente : les vingt-deux étapes, les conventions du CRM, le modèle Asana du lead et le modèle Linear d'onboarding client."
 ---
 
@@ -128,7 +128,7 @@ Quatorze sous-tâches, dans l'ordre. Les huit premières couvrent l'avant-vente 
 Les sous-tâches 9 à 13 s'exécutent **avant** que le projet du client existe — la 9 le crée. Elles n'auraient donc pas pu y vivre de toute façon. La 14 suit la règle d'ouverture de cette page : la carte CRM suit l'argent.
 
 <Callout type="tip" title="Ce que couvre réellement la sous-tâche 9">
-  Créer la team et le premier projet ne suffit pas à finir l'onboarding technique : il faut aussi connecter le repo GitHub du client à l'intégration Git du workspace Linear (Settings > Integrations > GitHub), et ajouter son `linearTeamId` au registre `src/content/clients/<slug>.yaml`. Ce dernier champ reste à créer côté code — le portail ne lit encore que Asana, le rebranchement sur Linear est un chantier engineering séparé, non commencé.
+  Créer la team et le premier projet ne suffit pas à finir l'onboarding technique : il faut aussi connecter le repo GitHub du client à l'intégration Git du workspace Linear (Settings > Integrations > GitHub), et ajouter son `linearTeamId` au registre `src/content/clients/<slug>.yaml`. Sans ce champ, le module Support du portail reste en empty state : c'est lui qui dit au formulaire support dans quelle team créer ses tickets (COO-30).
 </Callout>
 
 ### Modèle B · la team Linear « Modèle client »

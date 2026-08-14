@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { PortalClient } from "./clients";
 import { readPortalMetadata } from "./metadata";
-import { buildPortalNav, isActive, isPortalHost, portalHref } from "./nav";
+import { buildSidebar, isActive, isPortalHost, portalHref, type DocPageLink } from "./nav";
 
 const avecDoc: PortalClient = {
   slug: "amusoire",
@@ -10,10 +10,23 @@ const avecDoc: PortalClient = {
   uptimerobot_monitor_ids: [],
   archive: false,
 };
-const sansDoc: PortalClient = { slug: "coolbeans", nom: "Coolbeans", uptimerobot_monitor_ids: [], archive: false };
+const sansDoc: PortalClient = {
+  slug: "coolbeans",
+  nom: "Coolbeans",
+  uptimerobot_monitor_ids: [],
+  archive: false,
+};
 
 const client = readPortalMetadata({ role: "client", client: "amusoire" });
 const admin = readPortalMetadata({ role: "admin", client: "coolbeans" });
+
+const docPages: DocPageLink[] = [
+  { title: "Vue d'ensemble", href: "/docs/amusoire/vue-densemble" },
+  { title: "Édition", href: "/docs/amusoire/edition" },
+];
+
+const flat = (sections: ReturnType<typeof buildSidebar>) =>
+  sections.flatMap((s) => s.pages.map((p) => ({ section: s.key, ...p })));
 
 describe("isPortalHost", () => {
   it("reconnaît les deux hôtes portail", () => {
@@ -48,65 +61,113 @@ describe("portalHref", () => {
   });
 });
 
-describe("buildPortalNav", () => {
-  it("expose les cinq entrées du wireframe, dans l'ordre", () => {
-    expect(buildPortalNav("my.coolbeans.cc", client, avecDoc).map((i) => i.label)).toEqual([
-      "Projets",
-      "Mon site",
-      "Doc",
+describe("buildSidebar · visibilité côté client", () => {
+  // La règle à deux étages (spec sidebar 2026-08-14, COO-80) : un client ne
+  // voit que les pages `live` ET configurées pour lui. Aujourd'hui seules
+  // Introduction, la doc et Ressources sont lancées.
+  it("ne montre que les pages live et configurées", () => {
+    const pages = flat(buildSidebar("my.coolbeans.cc", client, avecDoc, docPages));
+    expect(pages.map((p) => p.label)).toEqual([
+      "Introduction",
+      "Vue d'ensemble",
+      "Édition",
       "Ressources",
-      "Support",
     ]);
   });
 
-  it("ajoute Chiffrages pour un admin, sans rien retirer", () => {
-    expect(buildPortalNav("my.coolbeans.cc", admin, avecDoc).map((i) => i.label)).toEqual([
-      "Projets",
-      "Mon site",
-      "Doc",
-      "Ressources",
-      "Support",
-      "Chiffrages",
+  it("ne marque jamais une page wip côté client", () => {
+    const pages = flat(buildSidebar("my.coolbeans.cc", client, avecDoc, docPages));
+    expect(pages.every((p) => !p.wip)).toBe(true);
+  });
+
+  it("masque le bloc Admin", () => {
+    const sections = buildSidebar("my.coolbeans.cc", client, avecDoc, docPages);
+    expect(sections.find((s) => s.key === "admin")).toBeUndefined();
+  });
+
+  it("masque la section Documentation d'un client sans doc", () => {
+    const sections = buildSidebar("my.coolbeans.cc", client, sansDoc, []);
+    expect(sections.find((s) => s.key === "doc")).toBeUndefined();
+  });
+
+  it("fait disparaître une section dont aucune page n'est prête", () => {
+    const sections = buildSidebar("my.coolbeans.cc", client, avecDoc, docPages);
+    // Mon site et Projets : tout est wip aujourd'hui.
+    expect(sections.map((s) => s.key)).toEqual(["bienvenue", "doc", "aide"]);
+  });
+});
+
+describe("buildSidebar · côté admin", () => {
+  const sections = buildSidebar("my.coolbeans.cc", admin, avecDoc, docPages);
+  const pages = flat(sections);
+
+  it("montre toutes les sections, bloc Admin en dernier", () => {
+    expect(sections.map((s) => s.key)).toEqual([
+      "bienvenue",
+      "site",
+      "doc",
+      "projets",
+      "aide",
+      "admin",
     ]);
   });
 
-  it("pointe la doc sur le premier slug accessible", () => {
-    const doc = buildPortalNav("my.coolbeans.cc", client, avecDoc).find((i) => i.label === "Doc");
-    expect(doc?.href).toBe("/docs/amusoire");
+  it("badge wip les pages non lancées, pas les autres", () => {
+    const wip = pages.filter((p) => p.wip).map((p) => p.label);
+    expect(wip).toContain("Monitoring");
+    expect(wip).toContain("Liens utiles");
+    expect(wip).not.toContain("Introduction");
+    expect(wip).not.toContain("Ressources");
+    expect(wip).not.toContain("Chiffrages");
   });
 
-  // /docs n'existe pas comme route : sans slug, l'entrée doit mener à une page
-  // qui explique, pas à un 404 ni disparaître de la nav.
-  it("bascule la doc sur une page de l'espace quand aucun slug n'est posé", () => {
-    const doc = buildPortalNav("my.coolbeans.cc", client, sansDoc).find((i) => i.label === "Doc");
-    expect(doc?.href).toBe("/doc");
-    expect(buildPortalNav("my.coolbeans.cc", client, sansDoc)).toHaveLength(5);
+  it("badge wip une page dont le mapping client manque", () => {
+    // Monitoring est wip pour deux raisons chez Amusoire : flag global ET
+    // aucun monitor configuré. Le badge reste un seul et même signal.
+    const monitoring = pages.find((p) => p.label === "Monitoring");
+    expect(monitoring?.wip).toBe(true);
+    expect(monitoring?.dot).toBe(true);
   });
 
+  it("pointe la doc absente vers la page d'explication, en wip", () => {
+    const sections = buildSidebar("my.coolbeans.cc", admin, sansDoc, []);
+    const doc = sections.find((s) => s.key === "doc");
+    expect(doc?.pages).toHaveLength(1);
+    expect(doc?.pages[0].href).toBe("/doc");
+    expect(doc?.pages[0].wip).toBe(true);
+  });
+});
+
+describe("buildSidebar · liens et préfixe d'hôte", () => {
   it("préfixe tous les liens hors doc en dehors de l'hôte portail", () => {
-    expect(buildPortalNav("localhost", client, avecDoc).map((i) => i.href)).toEqual([
-      "/espace/projets",
-      "/espace/site",
-      "/docs/amusoire",
+    const pages = flat(buildSidebar("localhost", client, avecDoc, docPages));
+    expect(pages.map((p) => p.href)).toEqual([
+      "/espace",
+      "/docs/amusoire/vue-densemble",
+      "/docs/amusoire/edition",
       "/espace/ressources",
-      "/espace/support",
     ]);
+  });
+
+  it("rend des liens courts sur l'hôte portail", () => {
+    const pages = flat(buildSidebar("my.coolbeans.cc", client, avecDoc, docPages));
+    expect(pages.find((p) => p.label === "Introduction")?.href).toBe("/");
+    expect(pages.find((p) => p.label === "Ressources")?.href).toBe("/ressources");
   });
 });
 
 describe("isActive", () => {
-  const nav = buildPortalNav("my.coolbeans.cc", client, avecDoc);
-  const item = (label: string) => nav.find((i) => i.label === label)!;
+  const pages = flat(buildSidebar("my.coolbeans.cc", admin, avecDoc, docPages));
+  const page = (label: string) => pages.find((p) => p.label === label)!;
 
   it("s'allume sur la page et ses sous-pages", () => {
-    expect(isActive(item("Projets"), "/espace/projets")).toBe(true);
-    expect(isActive(item("Projets"), "/espace/projets/1217")).toBe(true);
-    expect(isActive(item("Doc"), "/docs/amusoire/01-vue-densemble")).toBe(true);
+    expect(isActive(page("Actifs"), "/espace/projets")).toBe(true);
+    expect(isActive(page("Actifs"), "/espace/projets/1217")).toBe(true);
   });
 
   it("ne s'allume pas sur une autre entrée", () => {
-    expect(isActive(item("Projets"), "/espace/support")).toBe(false);
-    expect(isActive(item("Mon site"), "/espace/projets")).toBe(false);
+    expect(isActive(page("Actifs"), "/espace/support")).toBe(false);
+    expect(isActive(page("Monitoring"), "/espace/projets")).toBe(false);
   });
 
   // Le piège du préfixe nu : /espace/site ne doit pas allumer une entrée /espace/s.
@@ -116,30 +177,17 @@ describe("isActive", () => {
     );
   });
 
-  it("n'allume la racine que sur elle-même", () => {
-    const racine = { label: "Espace", href: "/", activePrefix: "/espace" };
-    expect(isActive(racine, "/espace")).toBe(true);
-    expect(isActive(racine, "/espace/")).toBe(true);
-    expect(isActive(racine, "/espace/projets")).toBe(false);
-  });
-});
-
-describe("buildPortalNav · l'entrée Doc suit le client courant", () => {
-  // Le défaut relevé le 2026-08-12 : la nav dérivait de publicMetadata.projects
-  // alors que l'accès à la doc se décide sur le client. Un admin basculé sur
-  // Amusoire doit voir la doc d'Amusoire, quel que soit son propre client.
-  it("pointe la doc du client courant, pas celle de l'utilisateur", () => {
-    const doc = buildPortalNav("my.coolbeans.cc", admin, avecDoc).find((i) => i.label === "Doc");
-    expect(doc?.href).toBe("/docs/amusoire");
+  it("n'allume Introduction que sur la racine", () => {
+    const intro = page("Introduction");
+    expect(isActive(intro, "/espace")).toBe(true);
+    expect(isActive(intro, "/espace/")).toBe(true);
+    expect(isActive(intro, "/espace/projets")).toBe(false);
   });
 
-  it("bascule sur la page d'explication quand le client courant n'a pas de doc", () => {
-    const nav = buildPortalNav("my.coolbeans.cc", admin, sansDoc);
-    expect(nav.find((i) => i.label === "Doc")?.href).toBe("/doc");
-  });
-
-  it("bascule aussi quand il n'y a aucun client courant", () => {
-    const nav = buildPortalNav("my.coolbeans.cc", client, null);
-    expect(nav.find((i) => i.label === "Doc")?.href).toBe("/doc");
+  // Chaque page de doc ne s'allume que sur elle-même : toutes partagent le
+  // préfixe /docs/<client>, un préfixe commun les allumerait toutes.
+  it("n'allume qu'une seule page de doc à la fois", () => {
+    expect(isActive(page("Édition"), "/docs/amusoire/edition")).toBe(true);
+    expect(isActive(page("Vue d'ensemble"), "/docs/amusoire/edition")).toBe(false);
   });
 });

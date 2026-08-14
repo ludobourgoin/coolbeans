@@ -1,0 +1,19 @@
+---
+// Page-souche « Projets terminés » (section Projets, spec sidebar 2026-08-14).
+// Entrée `wip` du registre : les données Linear arrivent avec COO-69.
+export const prerender = false;
+
+import EspaceLayout from "../../../layouts/EspaceLayout.astro";
+import EmptyState from "../../../components/portail/EmptyState.astro";
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<EspaceLayout title="Projets terminés">
+  <h1>Projets terminés</h1>
+  <p class="sub">L'historique de vos chantiers livrés.</p>
+
+  <EmptyState title="Bientôt disponible">
+    Les projets terminés arriveront ici, avec leur date de livraison et ce qu'ils ont couvert.
+  </EmptyState>
+</EspaceLayout>

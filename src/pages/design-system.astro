@@ -15,11 +15,17 @@ import ContextCard from "../components/ui/ContextCard.astro";
 import CommandMenu from "../components/ui/CommandMenu.astro";
 import EmptyState from "../components/portail/EmptyState.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
+import PortalSidebar from "../components/portail/PortalSidebar.astro";
+import { buildSidebar } from "../lib/portail/nav";
 import ClientSwitcher from "../components/portail/ClientSwitcher.astro";
+import SupportForm from "../components/portail/SupportForm.astro";
 import { readPortalMetadata } from "../lib/portail/metadata";
 
 // Un client onboardé : les cinq entrées, sans les entrées admin.
 const NAV_DEMO_META = readPortalMetadata({ role: "client", client: "amusoire" });
+// La démo sidebar se montre côté admin : c'est la seule vue où tout apparaît
+// (badges wip compris) — la vue client filtre presque tout aujourd'hui.
+const ADMIN_DEMO_META = readPortalMetadata({ role: "admin", client: "coolbeans" });
 
 const SCALES = [
   { key: "background", label: "Backgrounds", steps: [100, 200] },
@@ -475,14 +481,34 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
 
       <p class="label mb-4x mt-16x">Portail client · my.coolbeans.cc</p>
 
-      <p class="label mb-3x">Topbar · nav haute</p>
+      <p class="label mb-3x">Topbar · structure Geist</p>
       <div class="doc-root overflow-hidden rounded-card border border-line">
         <PortalNav meta={NAV_DEMO_META} client={null} clients={[]} withAccount={false} />
       </div>
       <p class="mb-10x mt-3x max-w-[62ch] text-sm text-mute">
-        Cinq entrées, plus celles réservées aux admins. Hauteur figée à 56px :
-        <code class="font-mono">doc.css</code> cale dessus les colonnes collantes de la doc.
+        La nav a déménagé dans la sidebar (COO-80) : ne restent que la marque — dans une zone
+        de la largeur exacte de la colonne sidebar (<code class="font-mono">--portal-col</code>)
+        — la recherche ⌘K, le switch client (admin), le thème et le compte. Hauteur figée à
+        56px : <code class="font-mono">doc.css</code> cale dessus les colonnes collantes.
         Le menu compte Clerk est masqué ici, cette page étant prérendue et sans session.
+      </p>
+
+      <p class="label mb-3x mt-10x">Sidebar · l'unique nav du portail</p>
+      <div class="doc-root grid max-w-80 overflow-hidden rounded-card border border-line">
+        <PortalSidebar
+          sections={buildSidebar("my.coolbeans.cc", ADMIN_DEMO_META, null, [
+            { title: "Vue d'ensemble", href: "/docs/demo/vue-densemble" },
+            { title: "Édition", href: "/docs/demo/edition" },
+          ])}
+        />
+      </div>
+      <p class="mb-10x mt-3x max-w-[62ch] text-sm text-mute">
+        Titres de section bold avec icône Iconoir, liens à hover souligné, page active en
+        <code class="font-mono">text-ink</code> medium. Vue admin : tout est visible, badge
+        <code class="font-mono">wip</code> sur les entrées non lancées, pastille de statut sur
+        Monitoring (grise tant qu'UptimeRobot n'est pas branché). Côté client, le registre
+        (<code class="font-mono">src/lib/portail/nav.ts</code>) ne laisse passer que les pages
+        live et configurées pour lui.
       </p>
 
       <p class="label mb-3x mt-10x">Sélecteur de client · admin uniquement</p>
@@ -525,6 +551,30 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
         <code class="font-mono">publicMetadata</code> qui manque, et n'est rendu que pour
         <code class="font-mono">role: "admin"</code> — les trois mappings Clerk étant
         posés à la main, l'oubli est structurel et doit se voir sur place.
+      </p>
+
+      <p class="label mb-3x mt-10x">Formulaire support · /espace/support</p>
+      <div class="grid items-start gap-6x xl:grid-cols-2">
+        <div>
+          <p class="label mb-3x">Au repos</p>
+          <SupportForm demo="repos" />
+        </div>
+        <div class="grid gap-6x">
+          <div>
+            <p class="label mb-3x">État de confirmation</p>
+            <SupportForm demo="succes" />
+          </div>
+          <div>
+            <p class="label mb-3x">État d'erreur</p>
+            <SupportForm demo="erreur" />
+          </div>
+        </div>
+      </div>
+      <p class="mt-3x max-w-[62ch] text-sm text-mute">
+        Soumission fetch vers <code class="font-mono">/api/support</code>, qui crée un
+        ticket dans la team Linear du client. Les messages d'erreur de l'API (quota
+        atteint, module non raccordé) s'affichent tels quels dans le statut. Instances
+        neutralisées ici : la page est prérendue, sans session.
       </p>
 
       <p class="label mb-4x mt-16x">Mobilier d'application · non posé sur le site</p>

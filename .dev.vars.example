@@ -8,7 +8,6 @@
 # environnement). Elles ne doivent jamais apparaître dans le repo ni dans
 # wrangler.jsonc.
 #
-# Aucun secret de Worker n'est requis aujourd'hui : ASANA_PAT et
-# ADMIN_SYNC_SECRET, les deux seuls, sont partis avec le sync Asana du sprint
-# S1. Le fichier reste comme point d'accroche du prochain — le futur sync
-# Linear en apportera un.
+# Clé API Linear personnelle (workspace coolbeans-hq, Settings > Security &
+# access > Personal API keys) : /api/support crée les tickets avec (COO-30).
+LINEAR_API_KEY=

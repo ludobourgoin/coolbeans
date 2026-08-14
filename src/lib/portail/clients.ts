@@ -14,6 +14,8 @@ export interface PortalClient {
   nom: string;
   /** Slug dans la collection `docs`. Absent = ce client n'a pas de doc. */
   doc?: string;
+  /** UUID de la team Linear où le formulaire support crée ses tickets. */
+  linearTeamId?: string;
   uptimerobot_monitor_ids: string[];
   /**
    * Sort le client du sélecteur sans rien supprimer : sa fiche, sa doc et ses
@@ -31,21 +33,21 @@ export const DEFAULT_CLIENT = "coolbeans";
 export type PortalModule = "projets" | "site" | "doc" | "support";
 
 /** Clés de mapping d'un client, telles que nommées dans le YAML. */
-export type ClientMappingKey = "doc" | "uptimerobot_monitor_ids";
+export type ClientMappingKey = "doc" | "linearTeamId" | "uptimerobot_monitor_ids";
 
 /**
  * Mapping sans lequel un module ne peut rien afficher.
  * Ressources n'y figure pas : son contenu est commun à tous les clients.
  *
- * Projets et Support ne réclament plus rien depuis le retrait du sync Asana :
- * ils ne dépendaient que d'`asana_team_gid`, dont plus aucun code ne se sert.
- * Leur empty state ne relève donc plus d'un mapping manquant mais d'un module
- * à refaire — c'est ce que dit leur page. Le futur `linear_team_id` (COO-30)
- * rétablira l'exigence sur Support.
+ * Projets ne réclame plus rien depuis le retrait du sync Asana : il ne
+ * dépendait que d'`asana_team_gid`, dont plus aucun code ne se sert. Son empty
+ * state ne relève donc plus d'un mapping manquant mais d'un module à refaire —
+ * c'est ce que dit sa page. Support exige la team Linear du client : sans elle,
+ * le formulaire n'a nulle part où créer ses tickets (COO-30).
  */
 export const MODULE_REQUIREMENTS: Record<PortalModule, readonly ClientMappingKey[]> = {
   projets: [],
-  support: [],
+  support: ["linearTeamId"],
   site: ["uptimerobot_monitor_ids"],
   doc: ["doc"],
 };
@@ -87,6 +89,8 @@ function hasMapping(client: PortalClient, key: ClientMappingKey): boolean {
   switch (key) {
     case "doc":
       return Boolean(client.doc);
+    case "linearTeamId":
+      return Boolean(client.linearTeamId);
     case "uptimerobot_monitor_ids":
       return client.uptimerobot_monitor_ids.length > 0;
   }

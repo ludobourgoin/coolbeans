@@ -1,0 +1,21 @@
+---
+// Page-souche « Disponibilités » (section Aide, spec sidebar 2026-08-14).
+// Entrée `wip` du registre : l'alpha (planning 3 mois lun-ven, vacances YAML
+// + jours fériés français) arrive avec COO-11.
+export const prerender = false;
+
+import EspaceLayout from "../../layouts/EspaceLayout.astro";
+import EmptyState from "../../components/portail/EmptyState.astro";
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<EspaceLayout title="Disponibilités">
+  <h1>Disponibilités</h1>
+  <p class="sub">Quand Coolbeans est disponible pour vos demandes.</p>
+
+  <EmptyState title="Bientôt disponible">
+    Le planning des trois prochains mois arrivera ici : jours travaillés, congés et jours fériés,
+    pour savoir quand attendre une réponse.
+  </EmptyState>
+</EspaceLayout>

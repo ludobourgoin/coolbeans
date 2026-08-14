@@ -1,0 +1,20 @@
+---
+// Page-souche « Documents » (section Projets, spec sidebar 2026-08-14).
+// Entrée `wip` du registre : l'espace façon Drive arrive avec COO-70.
+export const prerender = false;
+
+import EspaceLayout from "../../../layouts/EspaceLayout.astro";
+import EmptyState from "../../../components/portail/EmptyState.astro";
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<EspaceLayout title="Documents">
+  <h1>Documents</h1>
+  <p class="sub">Vos devis, contrats et comptes rendus.</p>
+
+  <EmptyState title="Bientôt disponible">
+    Vos documents arriveront ici : devis, contrats, comptes rendus — téléchargeables, avec une
+    icône par type de fichier.
+  </EmptyState>
+</EspaceLayout>

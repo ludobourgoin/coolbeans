@@ -1,0 +1,21 @@
+---
+// Page-souche « Liens utiles » (section Bienvenue, spec sidebar 2026-08-14).
+// Entrée `wip` du registre : la vraie page (liens depuis le YAML client)
+// arrive avec COO-81.
+export const prerender = false;
+
+import EspaceLayout from "../../layouts/EspaceLayout.astro";
+import EmptyState from "../../components/portail/EmptyState.astro";
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<EspaceLayout title="Liens utiles">
+  <h1>Liens utiles</h1>
+  <p class="sub">Les accès de votre projet, au même endroit.</p>
+
+  <EmptyState title="Bientôt disponible">
+    Les liens de votre projet arriveront ici : site en production, environnement de test,
+    interface d'administration de vos contenus.
+  </EmptyState>
+</EspaceLayout>

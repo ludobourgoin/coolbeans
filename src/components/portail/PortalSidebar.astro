@@ -1,19 +1,79 @@
 ---
-// Colonne gauche du portail, partagée par EspaceLayout et DocLayout
-// (spec 2026-08-12, §6). Un seul composant pour que les deux gabarits ne
-// divergent pas.
+// Sidebar gauche du portail — l'unique nav depuis la refonte COO-80
+// (spec 2026-08-14-portail-sidebar-design.md).
 //
-// Elle ne se rend que si elle a quelque chose à porter : le sélecteur de
-// client est parti dans la topbar (COO-13, PortalNav), donc une colonne sans
-// nav contextuelle n'a plus rien à afficher. Le slot accueille cette nav
-// des modules à mesure qu'ils arrivent.
-const hasSlot = Astro.slots.has("default");
+// Titres de section : bold, non cliquables, icône Iconoir à gauche. Liens :
+// text-mute, hover souligné sobre, page active en text-ink medium (sans fond,
+// sans souligné permanent). Les entrées `wip` n'arrivent ici que pour un
+// admin (le registre filtre côté client) : le badge peut donc s'afficher sans
+// re-tester le rôle.
+//
+// La géométrie (264px, collante sous la topbar de 56px, border-right) vient
+// de `.portal-left` dans doc.css — c'est elle qui aligne la colonne sur la
+// zone logo de la topbar.
+import { isActive, type SidebarSection } from "../../lib/portail/nav";
+import Icon from "./Icon.astro";
+
+interface Props {
+  sections: SidebarSection[];
+  /** Statut UptimeRobot du client courant — pas encore branché (COO-15). */
+  uptimeStatus?: "up" | "degraded" | "down" | null;
+}
+
+const { sections, uptimeStatus = null } = Astro.props;
+const { pathname } = Astro.url;
+
+const DOT_CLASS: Record<string, string> = {
+  up: "bg-success",
+  degraded: "bg-warning",
+  down: "bg-error",
+};
+const dotClass = (uptimeStatus && DOT_CLASS[uptimeStatus]) || "bg-line-strong";
 ---
 
-{
-  hasSlot && (
-    <aside class="portal-left">
-      <slot />
-    </aside>
-  )
-}
+<aside class="portal-left" aria-label="Navigation du portail">
+  <nav class="flex flex-col gap-6x">
+    {
+      sections.map((section) => (
+        <div>
+          <div class="flex items-center gap-2 px-2.5 text-sm font-bold tracking-[-0.01em] text-ink">
+            <Icon name={section.icon} size={16} class="flex-none text-ink" />
+            {section.label}
+          </div>
+          <ul class="mt-1.5 flex list-none flex-col p-0">
+            {section.pages.map((page) => {
+              const on = isActive(page, pathname);
+              return (
+                <li>
+                  <a
+                    href={page.href}
+                    aria-current={on ? "page" : undefined}
+                    class:list={[
+                      "flex items-center gap-2 py-1.25 pl-8.5 pr-2 text-sm no-underline underline-offset-4",
+                      on
+                        ? "font-medium text-ink"
+                        : "text-mute hover:text-ink hover:underline",
+                    ]}
+                  >
+                    {page.label}
+                    {page.dot && (
+                      <span
+                        class:list={["size-1.75 flex-none rounded-full", dotClass]}
+                        aria-hidden="true"
+                      />
+                    )}
+                    {page.wip && (
+                      <span class="rounded-full border border-line px-1.5 font-mono text-[9px] uppercase tracking-[0.06em] text-mute">
+                        wip
+                      </span>
+                    )}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))
+    }
+  </nav>
+</aside>

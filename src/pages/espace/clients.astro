@@ -1,0 +1,26 @@
+---
+// Page-souche « Mes clients » (bloc Admin, spec sidebar 2026-08-14).
+// Réservée aux admins ; le tableau (tag « projets actifs », clic = switch)
+// arrive avec COO-81.
+export const prerender = false;
+
+import EspaceLayout from "../../layouts/EspaceLayout.astro";
+import EmptyState from "../../components/portail/EmptyState.astro";
+import { getPortalContext } from "../../lib/portail/context";
+import { isAdmin } from "../../lib/portail/metadata";
+
+const { meta } = await getPortalContext(Astro);
+if (!isAdmin(meta)) return Astro.redirect("/espace");
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<EspaceLayout title="Mes clients">
+  <h1>Mes clients</h1>
+  <p class="sub">Vue d'ensemble des espaces clients.</p>
+
+  <EmptyState title="Bientôt disponible">
+    Le tableau des clients arrivera ici : projets actifs, et bascule d'un clic vers le portail de
+    chacun. En attendant, le sélecteur de la topbar fait le switch.
+  </EmptyState>
+</EspaceLayout>

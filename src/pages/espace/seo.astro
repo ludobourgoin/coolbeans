@@ -1,0 +1,21 @@
+---
+// Page-souche « SEO » (section Mon site, spec sidebar 2026-08-14).
+// Entrée `wip` du registre : invisible côté client tant que COO-55 (mini-audit
+// Ahrefs hebdomadaire) n'est pas cadré et livré.
+export const prerender = false;
+
+import EspaceLayout from "../../layouts/EspaceLayout.astro";
+import EmptyState from "../../components/portail/EmptyState.astro";
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<EspaceLayout title="SEO">
+  <h1>SEO</h1>
+  <p class="sub">L'état du référencement de votre site.</p>
+
+  <EmptyState title="Bientôt disponible">
+    Un mini-audit de référencement, mis à jour chaque semaine, arrivera ici avec la date de sa
+    dernière mise à jour.
+  </EmptyState>
+</EspaceLayout>

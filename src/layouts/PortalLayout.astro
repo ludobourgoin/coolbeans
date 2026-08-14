@@ -1,0 +1,236 @@
+---
+// Coquille unique du portail (COO-80) : topbar Geist + grille 3 colonnes
+// (sidebar / contenu / ancres H2), partagée par l'espace ET la doc — les deux
+// anciens gabarits (EspaceLayout, DocLayout) délèguent ici et n'apportent que
+// leur classe de contenu et leurs extras.
+//
+// Structure Geist : la zone logo de la topbar et la colonne sidebar partagent
+// --portal-col (doc.css), bordures verticales continues. La colonne d'ancres
+// est TOUJOURS rendue (réservée même sans H2) pour que le contenu ne saute
+// pas d'une page à l'autre ; son sommaire est construit côté client depuis
+// les H2 du main — doc et espace confondus.
+import BaseLayout from "./BaseLayout.astro";
+import PortalNav from "../components/portail/PortalNav.astro";
+import PortalSidebar from "../components/portail/PortalSidebar.astro";
+import { listClients, selectableClients } from "../lib/portail/clients";
+import { getPortalContext } from "../lib/portail/context";
+import { hrefOf, listDocEntries } from "../lib/portail/doc";
+import { isAdmin } from "../lib/portail/metadata";
+import { buildSidebar } from "../lib/portail/nav";
+import "../styles/doc.css";
+
+interface SearchEntry {
+  title: string;
+  href: string;
+  sections: { title: string; anchor: string }[];
+  text: string;
+}
+
+interface Props {
+  /** Titre complet de l'onglet (les délégants composent leur suffixe). */
+  title: string;
+  description: string;
+  /** Classe du <main> : espace-main (espace) ou doc-main (doc). */
+  mainClass: string;
+  /** Index de recherche ⌘K — seule la doc en fournit un. */
+  searchIndex?: SearchEntry[];
+}
+
+const { title, description, mainClass, searchIndex } = Astro.props;
+
+const { user, meta, client } = await getPortalContext(Astro);
+const admin = isAdmin(meta);
+// Le registre n'est lu que pour l'admin : lui seul voit le sélecteur.
+// Les archivés sortent du sélecteur, sauf s'ils sont le client courant.
+const clients = admin ? selectableClients(await listClients(), client) : [];
+
+// La sidebar liste les pages de doc du CLIENT COURANT, à plat (jamais
+// repliées) : même source et même ordre que la route /docs.
+const docEntries = await listDocEntries(client?.doc);
+const sections = buildSidebar(
+  Astro.url.hostname,
+  meta,
+  client,
+  docEntries.map((e) => ({ title: e.data.title, href: hrefOf(e) })),
+);
+
+// `</script>` peut apparaître dans le texte indexé (extraits de code) : on
+// neutralise tous les `<` pour que le JSON inline ne casse pas la balise.
+const indexJson = searchIndex ? JSON.stringify(searchIndex).replaceAll("<", "\\u003c") : null;
+---
+
+<BaseLayout title={title} description={description} noindex>
+  <div class="doc-root portal-frame">
+    <PortalNav meta={meta} client={client} clients={clients} prenom={user?.firstName ?? ""} />
+
+    <div class="doc-shell">
+      <PortalSidebar sections={sections} />
+
+      <main class={mainClass}>
+        <slot />
+      </main>
+
+      {/* « Sur cette page » : rempli côté client depuis les H2 du main. */}
+      <aside class="doc-right" aria-label="Sommaire de la page">
+        <div class="h" hidden data-toc-title>Sur cette page</div>
+        <nav id="doc-toc"></nav>
+      </aside>
+    </div>
+  </div>
+
+  {indexJson && <script type="application/json" id="doc-search-index" set:html={indexJson} />}
+
+  <script>
+    /* ---- Drawer mobile : la sidebar en panneau sous 1024px ---- */
+    const root = document.querySelector(".doc-root");
+    const menuBtn = document.querySelector<HTMLButtonElement>("[data-portal-menu]");
+    if (root && menuBtn) {
+      menuBtn.addEventListener("click", () => {
+        const open = root.classList.toggle("nav-open");
+        menuBtn.setAttribute("aria-expanded", String(open));
+      });
+      // Un clic sur un lien de la sidebar referme le panneau.
+      root.querySelector(".portal-left")?.addEventListener("click", (e) => {
+        if ((e.target as HTMLElement).closest("a")) {
+          root.classList.remove("nav-open");
+          menuBtn.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+
+    /* ---- Sommaire droit : construit depuis les H2 du main ---- */
+    const toc = document.getElementById("doc-toc");
+    const tocTitle = document.querySelector<HTMLElement>("[data-toc-title]");
+    const h2s = [...document.querySelectorAll<HTMLElement>(".doc-shell main h2")];
+    if (toc && h2s.length) {
+      const taken = new Set<string>();
+      h2s.forEach((h) => {
+        if (!h.id) {
+          // Les pages MDX ont déjà leurs ids (rehype) ; les pages .astro non.
+          let id = (h.textContent ?? "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+          while (taken.has(id)) id += "-2";
+          h.id = id;
+        }
+        taken.add(h.id);
+        const a = document.createElement("a");
+        a.href = `#${h.id}`;
+        a.textContent = h.textContent;
+        toc.append(a);
+      });
+      if (tocTitle) tocTitle.hidden = false;
+
+      /* scroll-spy */
+      const links = [...toc.querySelectorAll<HTMLAnchorElement>("a")];
+      const spy = () => {
+        let idx = 0;
+        h2s.forEach((h, i) => {
+          if (h.getBoundingClientRect().top < 130) idx = i;
+        });
+        links.forEach((l, i) => l.classList.toggle("on", i === idx));
+      };
+      spy();
+      addEventListener("scroll", spy, { passive: true });
+    }
+
+    /* ---- Blocs de code : bandeau langage + bouton copier ---- */
+    const LANG_LABELS: Record<string, string> = {
+      js: "JavaScript",
+      ts: "TypeScript",
+      css: "CSS",
+      json: "JSON",
+      html: "HTML",
+      bash: "Shell",
+      sh: "Shell",
+      text: "Texte",
+      plaintext: "Texte",
+    };
+    document.querySelectorAll<HTMLPreElement>(".doc-main pre.astro-code").forEach((pre) => {
+      const lang = pre.dataset.language ?? "";
+      const fig = document.createElement("figure");
+      fig.className = "codefig";
+      const cap = document.createElement("figcaption");
+      const label = document.createElement("span");
+      label.textContent = LANG_LABELS[lang] ?? lang ?? "Code";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "copybtn";
+      btn.textContent = "⧉ Copier";
+      btn.addEventListener("click", () => {
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+          btn.textContent = "✓ Copié";
+          setTimeout(() => (btn.textContent = "⧉ Copier"), 1500);
+        });
+      });
+      cap.append(label, btn);
+      pre.parentNode?.insertBefore(fig, pre);
+      fig.append(cap, pre);
+    });
+
+    /* ---- Recherche client-side (active seulement avec un index de doc) ---- */
+    const idxEl = document.getElementById("doc-search-index");
+    const qIn = document.getElementById("doc-q") as HTMLInputElement | null;
+    const qRes = document.getElementById("doc-qres");
+    if (idxEl && qIn && qRes) {
+      type Entry = {
+        title: string;
+        href: string;
+        sections: { title: string; anchor: string }[];
+        text: string;
+      };
+      const entries: Entry[] = JSON.parse(idxEl.textContent ?? "[]");
+      // Aplatit : la page elle-même + chaque section H2.
+      const flat = entries.flatMap((e) => [
+        { page: e.title, title: e.title, href: e.href, text: e.text },
+        ...e.sections.map((s) => ({
+          page: e.title,
+          title: s.title,
+          href: `${e.href}#${s.anchor}`,
+          text: "",
+        })),
+      ]);
+      const esc = (s: string) =>
+        s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const search = () => {
+        const v = qIn.value.trim().toLowerCase();
+        if (v.length < 2) {
+          qRes.hidden = true;
+          qRes.innerHTML = "";
+          return;
+        }
+        const hits: [number, (typeof flat)[number]][] = [];
+        flat.forEach((f) => {
+          if (f.title.toLowerCase().includes(v)) hits.push([0, f]);
+          else if (f.text.includes(v)) hits.push([1, f]);
+        });
+        hits.sort((a, b) => a[0] - b[0]);
+        qRes.innerHTML =
+          hits
+            .slice(0, 8)
+            .map(
+              ([, f]) =>
+                `<a href="${f.href}"><span class="rp">${esc(f.page)}</span><div class="rt">${esc(f.title)}</div></a>`
+            )
+            .join("") || '<div class="empty">Aucun résultat</div>';
+        qRes.hidden = false;
+      };
+      qIn.addEventListener("input", search);
+      document.addEventListener("keydown", (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+          e.preventDefault();
+          qIn.focus();
+          qIn.select();
+        }
+        if (e.key === "Escape") qRes.hidden = true;
+      });
+      document.addEventListener("click", (e) => {
+        const t = e.target as HTMLElement;
+        if (t !== qIn && !t.closest("#doc-qres")) qRes.hidden = true;
+      });
+    }
+  </script>
+</BaseLayout>

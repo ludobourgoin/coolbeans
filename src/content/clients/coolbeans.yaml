@@ -6,3 +6,6 @@ nom: Coolbeans
 # visible que de Ludo et des admins : l'autorisation se fait sur
 # `doc === client` dans src/pages/docs/[client]/[...slug].astro.
 doc: coolbeans
+# Team « Coolbeans » du workspace Linear coolbeans-hq : les demandes de
+# support posées depuis l'espace admin (client zéro) atterrissent chez Ludo.
+linearTeamId: 64bf4683-6650-4250-96bc-0e7cb7df7ea2
