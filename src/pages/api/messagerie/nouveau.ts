@@ -95,45 +95,56 @@ export const POST: APIRoute = async (context) => {
 
   const maintenant = new Date().toISOString();
   const ticketId = crypto.randomUUID();
-  await creerTicket(env.PORTAL_DB, {
-    id: ticketId,
-    client: client.slug,
-    linear_issue_uuid: null,
-    linear_issue_url: null,
-    author_clerk_id: user.id,
-    author_prenom: user.firstName ?? "Client",
-    author_email: emailClient ?? "",
-    created_via: "portail",
-    objet,
-    created_at: maintenant,
-    last_message_at: maintenant,
-  });
   const messageId = crypto.randomUUID();
-  if (description) {
-    await ajouterMessage(env.PORTAL_DB, {
-      id: messageId,
-      ticket_id: ticketId,
-      direction: "client",
-      body: description,
-      linear_comment_id: null,
-      email_status: "none",
-      created_at: maintenant,
-    });
-  }
   const liens: string[] = [];
-  for (const f of fichiers) {
-    const cle = cleR2(client.slug, ticketId, f.name);
-    await env.PORTAL_FILES.put(cle, f.stream(), { httpMetadata: { contentType: f.type } });
-    const pieceId = crypto.randomUUID();
-    await ajouterPieceJointe(env.PORTAL_DB, {
-      id: pieceId,
-      message_id: messageId,
-      r2_key: cle,
-      filename: f.name,
-      size: f.size,
-      mime: f.type,
+  try {
+    await creerTicket(env.PORTAL_DB, {
+      id: ticketId,
+      client: client.slug,
+      linear_issue_uuid: null,
+      linear_issue_url: null,
+      author_clerk_id: user.id,
+      author_prenom: user.firstName ?? "Client",
+      author_email: emailClient ?? "",
+      created_via: "portail",
+      objet,
+      created_at: maintenant,
+      last_message_at: maintenant,
     });
-    liens.push(`[${f.name}](https://my.coolbeans.cc/api/messagerie/fichier/${pieceId})`);
+    // Message porteur : posé dès qu'il y a une description OU des fichiers, sinon
+    // les pièces jointes n'auraient aucune ligne `messages` à référencer (FK,
+    // invisibles au JOIN de piecesJointesDuTicket) — body vide accepté ici.
+    if (description || fichiers.length > 0) {
+      await ajouterMessage(env.PORTAL_DB, {
+        id: messageId,
+        ticket_id: ticketId,
+        direction: "client",
+        body: description,
+        linear_comment_id: null,
+        email_status: "none",
+        created_at: maintenant,
+      });
+    }
+    for (const f of fichiers) {
+      const cle = cleR2(client.slug, ticketId, f.name);
+      await env.PORTAL_FILES.put(cle, f.stream(), { httpMetadata: { contentType: f.type } });
+      const pieceId = crypto.randomUUID();
+      await ajouterPieceJointe(env.PORTAL_DB, {
+        id: pieceId,
+        message_id: messageId,
+        r2_key: cle,
+        filename: f.name,
+        size: f.size,
+        mime: f.type,
+      });
+      liens.push(`[${f.name}](https://my.coolbeans.cc/api/messagerie/fichier/${pieceId})`);
+    }
+  } catch (err) {
+    // Chaîne bloquante D1/R2 : le front attend du JSON, pas la page d'erreur
+    // générique Astro. Pas de rollback R2 en v1 — un log suffit, ça reste
+    // rattrapable à la main vu le faible volume attendu.
+    console.error("messagerie: création du ticket (D1/R2) échouée", err);
+    return json({ error: `Envoi impossible pour le moment — ${CONTACT_DIRECT}.` }, 500);
   }
 
   // Best-effort : le ticket existe déjà côté client (D1), un échec Linear ici
