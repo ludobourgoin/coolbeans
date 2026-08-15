@@ -95,6 +95,10 @@ export async function ajouterMessage(db: D1Database, m: MessageRow): Promise<boo
   return insere;
 }
 
+export async function messageParId(db: D1Database, id: string): Promise<MessageRow | null> {
+  return db.prepare(`SELECT * FROM messages WHERE id = ?`).bind(id).first<MessageRow>();
+}
+
 export async function messagesDuTicket(db: D1Database, ticketId: string): Promise<MessageRow[]> {
   const { results } = await db
     .prepare(`SELECT * FROM messages WHERE ticket_id = ? ORDER BY created_at`)

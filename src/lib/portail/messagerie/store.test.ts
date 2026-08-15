@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { ajouterMessage, publicationsDues, ticketsDuClient } from "./store";
+import { ajouterMessage, messageParId, publicationsDues, ticketsDuClient } from "./store";
 
 /** Faux D1 : rejoue des résultats fixés et capture sql + bindings. */
 function fakeDb(results: unknown[] = [], changes = 1) {
@@ -56,6 +56,13 @@ test("ajouterMessage renvoie false et ne touche pas last_message_at quand le com
   });
   expect(insere).toBe(false);
   expect(calls).toHaveLength(1);
+});
+
+test("messageParId sélectionne par clé primaire", async () => {
+  const { db, calls } = fakeDb([]);
+  await messageParId(db, "m1");
+  expect(calls[0].sql).toMatch(/SELECT \* FROM messages WHERE id = \?/);
+  expect(calls[0].binds).toEqual(["m1"]);
 });
 
 test("publicationsDues compare publish_after au temps fourni", async () => {
