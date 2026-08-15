@@ -10,6 +10,8 @@
 const LINEAR_GRAPHQL = "https://api.linear.app/graphql";
 
 export interface SupportTicket {
+  /** UUID interne de l'issue — sert de clé pour les commentaires/statuts. */
+  issueId: string;
   /** Identifiant lisible, ex. « AMU-12 ». */
   identifier: string;
   /** URL du ticket dans Linear, pour l'email de notification. */
@@ -60,22 +62,115 @@ export async function createSupportTicket(options: {
   title: string;
   /** Markdown : corps de la demande + email du client + date. */
   description: string;
+  /** Projet « Support » de la team (spec messagerie §5). */
+  projectId?: string;
+  /** Auto-assignation (Ludo) — spec messagerie §5. */
+  assigneeId?: string;
+  /** Priorité Linear 1-4 issue du champ urgence. */
+  priority?: number;
 }): Promise<SupportTicket> {
   const { apiKey, teamId, title, description } = options;
   const stateId = await triageStateId(apiKey, teamId);
 
   const data = await graphql<{
-    issueCreate: { success: boolean; issue: { identifier: string; url: string } | null };
+    issueCreate: {
+      success: boolean;
+      issue: { id: string; identifier: string; url: string } | null;
+    };
   }>(
     apiKey,
     `mutation CreateSupportTicket($input: IssueCreateInput!) {
-      issueCreate(input: $input) { success issue { identifier url } }
+      issueCreate(input: $input) { success issue { id identifier url } }
     }`,
-    { input: { teamId, title, description, ...(stateId ? { stateId } : {}) } },
+    {
+      input: {
+        teamId,
+        title,
+        description,
+        ...(stateId ? { stateId } : {}),
+        ...(options.projectId ? { projectId: options.projectId } : {}),
+        ...(options.assigneeId ? { assigneeId: options.assigneeId } : {}),
+        ...(options.priority ? { priority: options.priority } : {}),
+      },
+    },
   );
   const issue = data.issueCreate.issue;
   if (!data.issueCreate.success || !issue) {
     throw new Error("Linear : issueCreate a échoué sans erreur GraphQL.");
   }
-  return issue;
+  return { issueId: issue.id, identifier: issue.identifier, url: issue.url };
+}
+
+/** UUID Linear de Ludo (workspace coolbeans-hq) — auto-assignation des tickets. */
+export const LUDO_LINEAR_USER_ID = "a0b540c7-877f-484b-84cf-b768b457ef36";
+
+/** Réponse d'un client depuis le portail → commentaire sur l'issue. */
+export async function createComment(options: {
+  apiKey: string;
+  issueId: string;
+  body: string;
+}): Promise<{ id: string }> {
+  const data = await graphql<{
+    commentCreate: { success: boolean; comment: { id: string } | null };
+  }>(
+    options.apiKey,
+    `mutation CreateComment($input: CommentCreateInput!) {
+      commentCreate(input: $input) { success comment { id } }
+    }`,
+    { input: { issueId: options.issueId, body: options.body } },
+  );
+  if (!data.commentCreate.success || !data.commentCreate.comment) {
+    throw new Error("Linear : commentCreate a échoué sans erreur GraphQL.");
+  }
+  return data.commentCreate.comment;
+}
+
+/**
+ * Contenu ACTUEL d'un commentaire — appelé par le cron à la fin du délai de
+ * grâce : c'est ce re-fetch qui fait qu'une édition corrige l'envoi et
+ * qu'une suppression l'annule (spec §7). null = commentaire disparu.
+ */
+export async function fetchComment(
+  apiKey: string,
+  commentId: string,
+): Promise<{ body: string; issueId: string } | null> {
+  try {
+    const data = await graphql<{ comment: { body: string; issue: { id: string } } | null }>(
+      apiKey,
+      `query Comment($id: String!) { comment(id: $id) { body issue { id } } }`,
+      { id: commentId },
+    );
+    if (!data.comment) return null;
+    return { body: data.comment.body, issueId: data.comment.issue.id };
+  } catch {
+    // L'API Linear répond par une erreur "entity not found" plutôt que par
+    // null quand le commentaire est supprimé : même signification pour nous.
+    return null;
+  }
+}
+
+/**
+ * statusType des issues du board, archivées comprises (une issue auto-archivée
+ * reste « Traité », spec §9). Un UUID absent de la Map = issue introuvable
+ * (supprimée) → statut « — » côté client.
+ */
+export async function fetchIssueStateTypes(
+  apiKey: string,
+  uuids: string[],
+): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
+  if (uuids.length === 0) return map;
+  const data = await graphql<{
+    issues: { nodes: Array<{ id: string; state: { type: string } }> };
+  }>(
+    apiKey,
+    `query IssueStates($ids: [ID!]!) {
+      issues(filter: { id: { in: $ids } }, includeArchived: true) {
+        nodes { id state { type } }
+      }
+    }`,
+    { ids: uuids },
+  );
+  for (const node of data.issues.nodes) map.set(node.id, node.state.type);
+  return map;
 }
