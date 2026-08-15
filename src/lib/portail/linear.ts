@@ -90,6 +90,9 @@ export async function createSupportTicket(options: {
         ...(stateId ? { stateId } : {}),
         ...(options.projectId ? { projectId: options.projectId } : {}),
         ...(options.assigneeId ? { assigneeId: options.assigneeId } : {}),
+        // priority=0 (« Aucune ») est intentionnellement omis ici : la spec
+        // interdit cette valeur en entrée, ce n'est pas un oubli à corriger
+        // en `!== undefined`.
         ...(options.priority ? { priority: options.priority } : {}),
       },
     },
@@ -142,10 +145,15 @@ export async function fetchComment(
     );
     if (!data.comment) return null;
     return { body: data.comment.body, issueId: data.comment.issue.id };
-  } catch {
+  } catch (err) {
     // L'API Linear répond par une erreur "entity not found" plutôt que par
-    // null quand le commentaire est supprimé : même signification pour nous.
-    return null;
+    // null quand le commentaire est supprimé : on traite ce cas précis comme
+    // une annulation délibérée. Toute autre erreur (réseau, 429, 401...) est
+    // une panne, pas une suppression : on la relance pour que le cron
+    // réessaie au tick suivant, plutôt que d'annuler à tort une publication
+    // légitime.
+    if (err instanceof Error && /not found/i.test(err.message)) return null;
+    throw err;
   }
 }
 
