@@ -98,11 +98,13 @@ assignée et datée.
   de réservation envoyé sous 4 h ouvrées** (un lead contacté en < 5 min
   convertit ~21× mieux qu'à 30 min ; 4 h est le réalisme solo).
 - **Vivier (Google Sheet)** : gate de qualification = signal d'achat (projet
-  réel évoqué) **+ fit ICP + aucun disqualifieur**. Le Sheet gagne deux
-  colonnes : `signal` (événement justifiant un contact) et `température`
-  (chaud / tiède / froid) pour prioriser la revue mensuelle. Quand un contact
-  passe le gate, Claude crée la carte (source `prospection`, contexte recopié
-  de la ligne).
+  réel évoqué) **+ fit ICP + aucun disqualifieur**. Sheet :
+  `1FPeeYGhASmynYBR64jDVLJGu8Zw_ZpWfrwBLAD-RpEg` (accès lecture vérifié le
+  2026-08-15). L'onglet vivier a déjà `Type`, `Action`, `Statut`,
+  `Température` ; il gagne une colonne `Signal` (événement justifiant un
+  contact) et, à terme, un tri du premier onglet (~250 contacts bruts, mélange
+  pro/perso) vers le vivier. Quand un contact passe le gate, Claude crée la
+  carte (source `prospection`, contexte recopié de la ligne).
 - **Création directe** en session : Ludo colle un contexte, Claude crée la
   carte depuis le template.
 
@@ -159,8 +161,8 @@ des titres, raisons de perte et win rate par source sur la période.
 - Mettre à jour `src/data/sop.ts` (outils « Asana — 🎯 crm » → « Linear —
   team CRM », `colonnesCrm` → statuts, étape S10 « team Asana » → « team
   Linear ») et `02-vente.mdx`.
-- Action Ludo : partager le Google Sheet vivier (ou son URL) pour l'accès en
-  lecture, et calibrer le mini-ICP (§5).
+- Action Ludo : calibrer le mini-ICP (§5). (Sheet vivier partagé le
+  2026-08-15, accès vérifié.)
 - Mettre à jour la mémoire Claude (décision CRM → Linear actée).
 
 ## 9. Hors périmètre explicite
