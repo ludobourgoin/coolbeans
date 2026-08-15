@@ -1,8 +1,8 @@
-import { describe, expect, test } from "vitest";
+import { expect, test } from "vitest";
 import { ajouterMessage, publicationsDues, ticketsDuClient } from "./store";
 
 /** Faux D1 : rejoue des résultats fixés et capture sql + bindings. */
-function fakeDb(results: unknown[] = []) {
+function fakeDb(results: unknown[] = [], changes = 1) {
   const calls: Array<{ sql: string; binds: unknown[] }> = [];
   const db = {
     prepare(sql: string) {
@@ -12,7 +12,7 @@ function fakeDb(results: unknown[] = []) {
           return {
             all: async () => ({ results }),
             first: async () => results[0] ?? null,
-            run: async () => ({ meta: { changes: 1 } }),
+            run: async () => ({ meta: { changes } }),
           };
         },
       };
@@ -41,6 +41,21 @@ test("ajouterMessage est idempotent sur linear_comment_id", async () => {
     created_at: "2026-08-15T10:00:00.000Z",
   });
   expect(calls[0].sql).toMatch(/INSERT OR IGNORE INTO messages/);
+});
+
+test("ajouterMessage renvoie false et ne touche pas last_message_at quand le commentaire est déjà publié (webhook rejoué)", async () => {
+  const { db, calls } = fakeDb([], 0);
+  const insere = await ajouterMessage(db, {
+    id: "m1",
+    ticket_id: "t1",
+    direction: "coolbeans",
+    body: "Bonjour",
+    linear_comment_id: "c1",
+    email_status: "none",
+    created_at: "2026-08-15T10:00:00.000Z",
+  });
+  expect(insere).toBe(false);
+  expect(calls).toHaveLength(1);
 });
 
 test("publicationsDues compare publish_after au temps fourni", async () => {
