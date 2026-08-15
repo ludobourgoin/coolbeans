@@ -4,18 +4,33 @@
 // aux clients — c'est la garde non négociable de la spec.
 import { corpsPublie } from "./regles";
 
+/** Décode un hex en bytes, ou null si la chaîne n'est pas un hex bien formé. */
+function hexVersBytes(hex: string): Uint8Array | null {
+  if (hex.length % 2 !== 0 || !/^[0-9a-fA-F]*$/.test(hex)) return null;
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+  }
+  return bytes;
+}
+
 export async function signatureValide(
   secret: string,
   rawBody: string,
   signature: string | null,
 ): Promise<boolean> {
   if (!signature) return false;
+  const signatureBytes = hexVersBytes(signature);
+  // 32 octets = taille d'un HMAC-SHA256 ; toute autre longueur est rejetée
+  // avant même d'appeler la primitive crypto.
+  if (!signatureBytes || signatureBytes.length !== 32) return false;
   const cle = await crypto.subtle.importKey(
-    "raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"],
+    "raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["verify"],
   );
-  const mac = await crypto.subtle.sign("HMAC", cle, new TextEncoder().encode(rawBody));
-  const hex = [...new Uint8Array(mac)].map((b) => b.toString(16).padStart(2, "0")).join("");
-  return hex === signature;
+  // crypto.subtle.verify compare en temps constant côté runtime : une
+  // comparaison `===` sur la version hex fuiterait le préfixe commun via le
+  // timing, un boulevard pour deviner la signature octet par octet.
+  return crypto.subtle.verify("HMAC", cle, signatureBytes, new TextEncoder().encode(rawBody));
 }
 
 interface EvenementCommentaire {

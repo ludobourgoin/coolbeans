@@ -21,7 +21,15 @@ export const POST: APIRoute = async ({ request }) => {
   const ok = await signatureValide(secret, rawBody, request.headers.get("linear-signature"));
   if (!ok) return new Response(null, { status: 401 });
 
-  const evenement = analyserEvenement(JSON.parse(rawBody));
+  let payload: unknown;
+  try {
+    payload = JSON.parse(rawBody);
+  } catch {
+    // Body signé mais pas du JSON valide : rien à publier, pas un 500 (Linear retenterait pour rien).
+    return new Response(null, { status: 200 });
+  }
+
+  const evenement = analyserEvenement(payload);
   if (!evenement) return new Response(null, { status: 200 });
 
   const ticket = await ticketParIssueUuid(env.PORTAL_DB, evenement.issueId);

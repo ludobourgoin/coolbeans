@@ -12,6 +12,10 @@ describe("signatureValide", () => {
     expect(await signatureValide("secret", "corps", null)).toBe(false);
     expect(await signatureValide("secret", "corps", "deadbeef")).toBe(false);
   });
+  test("refuse un hex malformé (longueur impaire ou caractères invalides)", async () => {
+    expect(await signatureValide("secret", "corps", "abc")).toBe(false);
+    expect(await signatureValide("secret", "corps", "zz".repeat(32))).toBe(false);
+  });
 });
 
 describe("analyserEvenement", () => {
