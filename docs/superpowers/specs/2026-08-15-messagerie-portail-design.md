@@ -67,7 +67,8 @@ Seule donnée lue en live depuis Linear : le statut des issues pour le board
 | `id` | PK |
 | `client` | slug du client (registre `src/content/clients/`) |
 | `linear_issue_uuid` | **UUID interne**, jamais l'identifiant `AMU-36` (survit au déplacement de team) ; nullable le temps de la création, ré-appairable |
-| `author_clerk_id` | utilisateur Clerk auteur du ticket |
+| `author_clerk_id` | utilisateur Clerk auteur du ticket (toujours un utilisateur du client, même en création admin) |
+| `created_via` | `portail` (défaut) ou `admin` (ticket ouvert par Ludo au nom du client) |
 | `objet` | titre |
 | `created_at` | |
 
@@ -182,15 +183,28 @@ OAuth (« Noémie via portail »).
 ## 8. Politique de canaux et intake
 
 - **Canal privilégié** : la messagerie du portail.
+- **Réflexe de redirection** : si une demande arrive par un autre canal,
+  Ludo envoie d'abord l'URL de la page Messagerie pour que le client crée
+  le ticket lui-même (le canal privilégié s'apprend par l'usage).
 - **Email accepté** si le client préfère : Ludo crée alors le ticket
   lui-même **depuis l'espace admin du portail** (« ouvrir un ticket au nom
-  de {utilisateur} ») — ce qui crée la ligne D1 + l'issue Linear — puis
-  envoie au client l'URL de la page du ticket. Une issue créée directement
-  dans Linear n'aurait **pas** de page portail (pas de ligne D1) : la
-  création au nom du client est donc une fonctionnalité **V1**.
-- **Slack / WhatsApp** : pour discuter. Si une demande y émerge, même
-  mécanique : ticket créé au nom du client, URL envoyée dans la
-  conversation.
+  de {utilisateur} ») — ce qui crée la ligne D1 + l'issue Linear. Une issue
+  créée directement dans Linear n'aurait **pas** de page portail (pas de
+  ligne D1) : la création au nom du client est donc une fonctionnalité
+  **V1**. Détails :
+  - `author_clerk_id` = l'utilisateur du client (il reste l'auteur : c'est
+    lui qui reçoit les notifications du fil) ; `created_via = admin`.
+  - Marqueur de provenance **discret et honnête** sur la page du ticket,
+    sous l'objet : « Ouvert par Ludo pour {prénom} » — pas de mimétisme,
+    on ne fait pas passer le ticket pour une saisie du client.
+  - Un email part au client à la création : « Ludo a ouvert un ticket pour
+    vous suite à votre demande », avec le lien du ticket — ça clôt la
+    boucle et ça enseigne la messagerie.
+  - La description de l'issue Linear mentionne la provenance (« saisi par
+    Ludo depuis une demande email »).
+- **Slack / WhatsApp** : pour discuter. Si une demande y émerge : URL de la
+  Messagerie, ou ticket créé au nom du client si c'est plus fluide sur le
+  moment.
 
 ## 9. Éventualités et défaillances
 
