@@ -158,6 +158,9 @@ const clients = defineCollection({
     // UUID de la team Linear du client : le formulaire support y crée ses
     // tickets. Absent = module Support en empty state (COO-30).
     linearTeamId: z.string().optional(),
+    // UUID du projet « Support » (evergreen) de la team du client : la
+    // messagerie y crée ses tickets. Absent = module Messagerie en empty state.
+    linearSupportProjectId: z.string().optional(),
     uptimerobot_monitor_ids: z.array(z.string()).default([]),
     // Sort le client du sélecteur sans rien supprimer. Voir PortalClient.
     archive: z.boolean().default(false),

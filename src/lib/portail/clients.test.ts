@@ -1,8 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, test } from "vitest";
 import {
   DEFAULT_CLIENT,
   findClientByDocIn,
   getClientIn,
+  MODULE_REQUIREMENTS,
   missingKeysFor,
   selectableClients,
   sortClients,
@@ -69,17 +70,32 @@ describe("missingKeysFor", () => {
     expect(missingKeysFor("projets", coolbeans)).toEqual([]);
   });
 
-  // Support crée ses tickets dans la team Linear du client (COO-30).
+  // Support crée ses tickets dans la team Linear du client, et la messagerie
+  // dans son projet Support (COO-30).
   it("réclame la team Linear pour le support", () => {
-    expect(missingKeysFor("support", coolbeans)).toEqual(["linearTeamId"]);
-    expect(missingKeysFor("support", { ...coolbeans, linearTeamId: "uuid" })).toEqual([]);
+    expect(missingKeysFor("support", coolbeans)).toEqual([
+      "linearTeamId",
+      "linearSupportProjectId",
+    ]);
+    expect(
+      missingKeysFor("support", {
+        ...coolbeans,
+        linearTeamId: "uuid",
+        linearSupportProjectId: "uuid-projet",
+      }),
+    ).toEqual([]);
+  });
+
+  // La messagerie a aussi besoin du projet Support Linear où créer ses tickets.
+  test("le module support exige la team ET le projet Support Linear", () => {
+    expect(MODULE_REQUIREMENTS.support).toEqual(["linearTeamId", "linearSupportProjectId"]);
   });
 
   // Un utilisateur sans client du tout : tout manque, rien ne plante.
   it("réclame tout quand il n'y a pas de client", () => {
     expect(missingKeysFor("site", null)).toEqual(["uptimerobot_monitor_ids"]);
     expect(missingKeysFor("doc", null)).toEqual(["doc"]);
-    expect(missingKeysFor("support", null)).toEqual(["linearTeamId"]);
+    expect(missingKeysFor("support", null)).toEqual(["linearTeamId", "linearSupportProjectId"]);
   });
 
   it("traite un tableau de monitors vide comme une clé manquante", () => {
