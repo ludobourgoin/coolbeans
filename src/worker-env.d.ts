@@ -23,6 +23,13 @@ interface PortalSecrets {
    * LINEAR_API_KEY` sur chaque environnement, `.dev.vars` en local.
    */
   LINEAR_API_KEY?: string;
+
+  /**
+   * Secret de signature du webhook Linear (Settings → API → Webhooks) :
+   * vérification HMAC-SHA256 dans /api/linear-webhook. `wrangler secret put
+   * LINEAR_WEBHOOK_SECRET` sur chaque environnement, `.dev.vars` en local.
+   */
+  LINEAR_WEBHOOK_SECRET?: string;
 }
 
 interface Env extends PortalSecrets {}

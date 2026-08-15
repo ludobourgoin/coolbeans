@@ -55,6 +55,14 @@
   // (contrairement à `triggers`, `assets` et `routes`) : d'où la duplication.
   // PORTAL_KV sert aussi au module chiffrage/devis — ne pas retirer ce binding.
   "kv_namespaces": [{ "binding": "PORTAL_KV", "id": "f720076d62fc4fd28422209c16326776" }],
+  // Messagerie du portail : D1 pour les tickets + le journal publié (spec
+  // 2026-08-15-messagerie-portail-design.md §4). Le bucket R2 des pièces
+  // jointes viendra dans une tâche ultérieure, une fois R2 activé sur le
+  // compte. Comme kv_namespaces, cette clé n'est PAS héritée par les
+  // environnements nommés : duplication obligatoire dans env.staging.
+  "d1_databases": [
+    { "binding": "PORTAL_DB", "database_name": "coolbeans-portal", "database_id": "5c5a4d6a-2174-404f-a5e0-2137c40fa45b" }
+  ],
   "env": {
     "staging": {
       "workers_dev": false,
@@ -62,7 +70,10 @@
         { "pattern": "staging.coolbeans.cc", "custom_domain": true },
         { "pattern": "my-staging.coolbeans.cc", "custom_domain": true }
       ],
-      "kv_namespaces": [{ "binding": "PORTAL_KV", "id": "684d2093bab2413bb840bdc6443f6f50" }]
+      "kv_namespaces": [{ "binding": "PORTAL_KV", "id": "684d2093bab2413bb840bdc6443f6f50" }],
+      "d1_databases": [
+        { "binding": "PORTAL_DB", "database_name": "coolbeans-portal-staging", "database_id": "4d66b69a-effd-46eb-ba10-c0416b065618" }
+      ]
     }
   }
 }
