@@ -61,14 +61,21 @@ export async function publierLesDues(
           prenom: ticket.author_prenom,
           urlTicket: `https://my.coolbeans.cc/messagerie/${ticket.id}`,
         });
-        const { error } = await resend.emails.send({
-          from: "Ludo de Coolbeans <support@coolbeans.cc>",
-          to: ticket.author_email,
-          replyTo: "ludo@coolbeans.cc",
-          subject: email.subject,
-          html: email.html,
-          text: email.text,
-        });
+        // Un throw (panne réseau...) doit être traité comme {error} : sans ce
+        // catch, le message resterait "none" à vie (insere=false au retry).
+        let error: unknown = null;
+        try {
+          ({ error } = await resend.emails.send({
+            from: "Ludo de Coolbeans <support@coolbeans.cc>",
+            to: ticket.author_email,
+            replyTo: "ludo@coolbeans.cc",
+            subject: email.subject,
+            html: email.html,
+            text: email.text,
+          }));
+        } catch (envoiErr) {
+          error = envoiErr;
+        }
         await majEmailStatus(db, messageId, error ? "failed" : "sent");
         if (error) console.error("messagerie: email de réponse non envoyé", error);
         if (decision.imagesRetirees > 0) {
