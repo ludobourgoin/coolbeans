@@ -66,7 +66,8 @@ export const POST: APIRoute = async (context) => {
         size: f.size,
         mime: f.type,
       });
-      liens.push(`[${f.name}](https://my.coolbeans.cc/api/messagerie/fichier/${pieceId})`);
+      // Repli sur l'URL de prod : évite de casser en local si la var n'est pas définie (wrangler dev sans .dev.vars complet).
+      liens.push(`[${f.name}](${env.PORTAL_BASE_URL || "https://my.coolbeans.cc"}/api/messagerie/fichier/${pieceId})`);
     }
   } catch (err) {
     // Chaîne bloquante D1/R2 : le front attend du JSON, pas la page d'erreur
@@ -75,6 +76,12 @@ export const POST: APIRoute = async (context) => {
     return json({ error: `Envoi impossible pour le moment — ${CONTACT_DIRECT}.` }, 500);
   }
 
+  // Prénom de l'émetteur RÉEL de cette réponse (portée organisation, spec §6 :
+  // n'importe quel membre du client peut répondre sur un ticket, pas
+  // seulement son auteur) — distinct de ticket.author_prenom, qui reste le
+  // créateur du ticket et n'a rien à voir avec qui répond ici.
+  const prenomRepondeur = user.firstName ?? "Client";
+
   // Commentaire Linear : posté via le token de Ludo, donc Linear ne le
   // notifiera pas — c'est l'email Resend ci-dessous qui prévient (spec §7).
   if (ticket.linear_issue_uuid && env.LINEAR_API_KEY) {
@@ -82,7 +89,7 @@ export const POST: APIRoute = async (context) => {
       await createComment({
         apiKey: env.LINEAR_API_KEY,
         issueId: ticket.linear_issue_uuid,
-        body: `**${ticket.author_prenom} (portail)** :\n\n${message}` +
+        body: `**${prenomRepondeur} (portail)** :\n\n${message}` +
           (liens.length ? `\n\nPièces jointes :\n${liens.join("\n")}` : ""),
       });
     } catch (err) {
@@ -96,7 +103,7 @@ export const POST: APIRoute = async (context) => {
     const html = renderTransactionnel({
       preheader: `${client.nom} — ${ticket.objet}`,
       kicker: `Messagerie · ${esc(client.nom)}`,
-      titre: `Réponse de ${esc(ticket.author_prenom)}`,
+      titre: `Réponse de ${esc(prenomRepondeur)}`,
       contenu: citation(esc(message).replace(/\n/g, "<br>")),
       cta: ticket.linear_issue_url
         ? { label: "Ouvrir dans Linear", url: ticket.linear_issue_url }

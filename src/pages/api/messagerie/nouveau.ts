@@ -82,6 +82,11 @@ export const POST: APIRoute = async (context) => {
       console.error("messagerie: utilisateur cible introuvable (pourClerkId périmé/forgé)", err);
       return json({ error: "Utilisateur introuvable." }, 400);
     }
+    // Garde-fou : un pourClerkId forgé ou périmé pourrait pointer vers un
+    // utilisateur d'un AUTRE client que celui sélectionné dans l'admin.
+    if ((cible.publicMetadata as { client?: string }).client !== client.slug) {
+      return json({ error: "Cet utilisateur n'appartient pas au client sélectionné." }, 400);
+    }
     auteur = {
       id: cible.id,
       prenom: cible.firstName ?? "Client",
@@ -117,7 +122,11 @@ export const POST: APIRoute = async (context) => {
           emailClient ? ` (${emailClient})` : ""
         } le ${jour}.`;
 
-  const descriptionTicket = [description, "", "---", provenanceTicket].join("\n");
+  // Le séparateur "---" n'a de sens qu'après un corps réel : sans description,
+  // l'issue Linear ne doit pas s'ouvrir sur un filet suivi de la provenance seule.
+  const descriptionTicket = description
+    ? [description, "", "---", provenanceTicket].join("\n")
+    : provenanceTicket;
 
   // Le compteur ne bouge qu'une fois le ticket D1 posé : un échec plus loin
   // dans la requête (R2, Linear) laisse quand même une trace consommée, mais
@@ -175,7 +184,8 @@ export const POST: APIRoute = async (context) => {
         size: f.size,
         mime: f.type,
       });
-      liens.push(`[${f.name}](https://my.coolbeans.cc/api/messagerie/fichier/${pieceId})`);
+      // Repli sur l'URL de prod : évite de casser en local si la var n'est pas définie (wrangler dev sans .dev.vars complet).
+      liens.push(`[${f.name}](${env.PORTAL_BASE_URL || "https://my.coolbeans.cc"}/api/messagerie/fichier/${pieceId})`);
     }
   } catch (err) {
     // Chaîne bloquante D1/R2 : le front attend du JSON, pas la page d'erreur
@@ -251,7 +261,7 @@ export const POST: APIRoute = async (context) => {
     if (auteur.email && createdVia === "admin") {
       // Boucle email → portail de la spec §8 : remplace l'accusé de réception
       // standard quand c'est Ludo qui a ouvert le ticket pour le client.
-      const urlTicket = `https://my.coolbeans.cc/messagerie/${ticketId}`;
+      const urlTicket = `${env.PORTAL_BASE_URL || "https://my.coolbeans.cc"}/messagerie/${ticketId}`;
       const html = renderTransactionnel({
         preheader: "Suite à votre demande, votre ticket est ouvert et suivi.",
         kicker: "Messagerie",

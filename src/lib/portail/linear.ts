@@ -152,6 +152,12 @@ export async function fetchComment(
     // une panne, pas une suppression : on la relance pour que le cron
     // réessaie au tick suivant, plutôt que d'annuler à tort une publication
     // légitime.
+    //
+    // Libellé vérifié en direct (sonde jetable, 2026-08-15) : supprimer un
+    // commentaire puis le re-requêter renvoie l'erreur GraphQL exacte
+    // "Entity not found: Comment" (pas de data.comment === null sans erreur).
+    // Une fois enveloppée par graphql() ci-dessus ("Linear : <message>"),
+    // /not found/i la matche déjà — aucun ajustement de motif nécessaire.
     if (err instanceof Error && /not found/i.test(err.message)) return null;
     throw err;
   }
@@ -172,8 +178,12 @@ export async function fetchIssueStateTypes(
     issues: { nodes: Array<{ id: string; state: { type: string } }> };
   }>(
     apiKey,
+    // first: 250 : Linear tronque à 50 nœuds par défaut. Le board n'a pas
+    // encore assez de tickets pour dépasser 250 non plus, mais au-delà il
+    // faudra découper par lots avec la pagination (curseur `after`) déjà
+    // utilisée côté board — follow-up, pas géré ici.
     `query IssueStates($ids: [ID!]!) {
-      issues(filter: { id: { in: $ids } }, includeArchived: true) {
+      issues(filter: { id: { in: $ids } }, includeArchived: true, first: 250) {
         nodes { id state { type } }
       }
     }`,
