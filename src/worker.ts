@@ -15,6 +15,7 @@
 // - my.*/espace/<x>  → 301 vers my.*/<x> (URL canonique sans préfixe)
 // - coolbeans.cc/espace/<x> → 301 vers my.coolbeans.cc/<x>
 import { handle } from "@astrojs/cloudflare/handler";
+import { publierLesDues } from "./lib/portail/messagerie/publier";
 
 const PORTAL_OF: Record<string, string> = {
   "coolbeans.cc": "my.coolbeans.cc",
@@ -69,29 +70,23 @@ export default {
     return handle(request, env, ctx);
   },
 
-  // Sync du portail client, cron "*/5 * * * *" (cf. wrangler.jsonc).
-  //
-  // Squelette, à nouveau : le sync Asana livré en S1 a été retiré (l'outil de
-  // gestion de projet est passé à Linear) et son remplaçant est un chantier
-  // séparé, à ouvrir une fois Linear paramétré. Le handler ne fait donc que
-  // tracer son passage et l'état de ses dépendances.
-  //
-  // Il reste en place plutôt que d'être supprimé parce que le cron de
-  // wrangler.jsonc, lui, est conservé : un trigger sans handler échoue à
-  // chaque tick. C'est aussi le point d'accroche du futur sync Linear.
-  async scheduled(controller, env, _ctx) {
+  // Publication de la messagerie, cron "*/5 * * * *" : consomme la file
+  // pending_publications alimentée par /api/linear-webhook (délai de grâce
+  // 3 min → latence effective 3-8 min, assumée par la spec §7).
+  async scheduled(controller, env, ctx) {
     const scheduledAt = new Date(controller.scheduledTime).toISOString();
-
-    console.log(
-      JSON.stringify({
-        event: "portal_sync",
-        status: "skipped_not_implemented",
-        cron: controller.cron,
-        scheduled_at: scheduledAt,
-        bindings: {
-          portal_kv: Boolean(env.PORTAL_KV),
-        },
-      }),
+    if (!env.LINEAR_API_KEY || !env.RESEND_API_KEY || !env.PORTAL_DB) {
+      console.log(JSON.stringify({ event: "messagerie_publication", status: "skipped_missing_bindings", scheduled_at: scheduledAt }));
+      return;
+    }
+    ctx.waitUntil(
+      publierLesDues(env.PORTAL_DB, {
+        apiKey: env.LINEAR_API_KEY,
+        resendKey: env.RESEND_API_KEY,
+        maintenant: new Date().toISOString(),
+      }).then((r) =>
+        console.log(JSON.stringify({ event: "messagerie_publication", status: "ok", ...r, scheduled_at: scheduledAt })),
+      ),
     );
   },
 } satisfies ExportedHandler<Env>;
