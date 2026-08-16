@@ -21,10 +21,25 @@ export const GET: APIRoute = async (context) => {
 
   const objet = await env.PORTAL_FILES.get(piece.r2_key);
   if (!objet) return new Response("Fichier absent du stockage", { status: 404 });
+
+  // Le MIME et le nom de fichier sont fournis par le client au moment de
+  // l'upload (nouveau.ts/reponse.ts) : servir tel quel ouvre à du XSS stocké
+  // (ex. mime "text/html" affiché inline sur l'origine my.coolbeans.cc, qui
+  // porte le cookie de session Clerk). On ne fait confiance qu'à une
+  // allowlist restreinte pour l'affichage inline ; tout le reste part en
+  // téléchargement forcé, jamais exécuté par le navigateur.
+  const mimeSur = piece.mime.startsWith("image/") || piece.mime === "application/pdf";
+  const contentType = mimeSur ? piece.mime : "application/octet-stream";
+  const filenameEncode = encodeURIComponent(piece.filename);
+  const disposition = mimeSur
+    ? `inline; filename*=UTF-8''${filenameEncode}`
+    : `attachment; filename*=UTF-8''${filenameEncode}`;
+
   return new Response(objet.body, {
     headers: {
-      "content-type": piece.mime || "application/octet-stream",
-      "content-disposition": `inline; filename="${piece.filename.replace(/"/g, "")}"`,
+      "content-type": contentType,
+      "content-disposition": disposition,
+      "x-content-type-options": "nosniff",
       "cache-control": "private, max-age=3600",
     },
   });
