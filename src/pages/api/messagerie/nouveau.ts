@@ -57,13 +57,47 @@ export const POST: APIRoute = async (context) => {
     return json({ error: `Envoi impossible pour le moment — ${CONTACT_DIRECT}.` }, 503);
   }
 
+  const jour = new Date().toISOString().slice(0, 10);
+  const emailClient = user.primaryEmailAddress?.emailAddress ?? null;
+  const nomClient =
+    [user.firstName, user.lastName].filter(Boolean).join(" ") || emailClient || user.id;
+
+  // Création au nom d'un client (spec §8) : réservée à l'admin. L'auteur
+  // reste l'utilisateur du client — c'est lui qui reçoit les notifications —
+  // created_via = 'admin' porte la provenance, affichée sans mimétisme.
+  // Résolu AVANT le quota : le garde-fou anti-abus vise les clients, pas
+  // l'opérateur (voir plus bas, chemin admin exempté).
+  const pourClerkId = String(fd.get("pourClerkId") ?? "");
+  let auteur = { id: user.id, prenom: user.firstName ?? "Client", email: emailClient ?? "" };
+  // Prénom optionnel réservé aux emails — distinct d'auteur.prenom (non-null,
+  // pour la ligne D1) : "Bonjour ," ne doit pas devenir "Bonjour Client,".
+  let prenomEmail: string | undefined = user.firstName ?? undefined;
+  let createdVia: "portail" | "admin" = "portail";
+  if (pourClerkId && pourClerkId !== user.id) {
+    if (!isAdmin(meta)) return json({ error: "Réservé à l'administrateur." }, 403);
+    let cible;
+    try {
+      cible = await clerkClient(context).users.getUser(pourClerkId);
+    } catch (err) {
+      console.error("messagerie: utilisateur cible introuvable (pourClerkId périmé/forgé)", err);
+      return json({ error: "Utilisateur introuvable." }, 400);
+    }
+    auteur = {
+      id: cible.id,
+      prenom: cible.firstName ?? "Client",
+      email: cible.emailAddresses[0]?.emailAddress ?? "",
+    };
+    prenomEmail = cible.firstName ?? undefined;
+    createdVia = "admin";
+  }
+
   // Quota : clé datée, donc remise à zéro naturelle à minuit UTC ; le TTL ne
   // sert qu'à nettoyer. KV est en cohérence différée — assez bon pour un
-  // garde-fou, ce n'est pas un compteur comptable.
-  const jour = new Date().toISOString().slice(0, 10);
+  // garde-fou, ce n'est pas un compteur comptable. Exempté côté admin.
   const quotaKey = `support:quota:${user.id}:${jour}`;
-  const dejaEnvoyees = Number((await env.PORTAL_KV.get(quotaKey)) ?? "0");
-  if (dejaEnvoyees >= QUOTA_PAR_JOUR) {
+  const dejaEnvoyees =
+    createdVia === "admin" ? 0 : Number((await env.PORTAL_KV.get(quotaKey)) ?? "0");
+  if (createdVia !== "admin" && dejaEnvoyees >= QUOTA_PAR_JOUR) {
     return json(
       {
         error: `Vous avez atteint la limite de ${QUOTA_PAR_JOUR} demandes pour aujourd'hui. Pour une urgence, ${CONTACT_DIRECT}.`,
@@ -72,44 +106,29 @@ export const POST: APIRoute = async (context) => {
     );
   }
 
-  const emailClient = user.primaryEmailAddress?.emailAddress ?? null;
-  const nomClient =
-    [user.firstName, user.lastName].filter(Boolean).join(" ") || emailClient || user.id;
+  // Provenance embarquée dans l'issue Linear (spec §8) : porte la cible côté
+  // admin, l'auteur réel côté portail — inchangée sur ce second cas.
+  const provenanceTicket =
+    createdVia === "admin"
+      ? `Ticket ouvert par Ludo pour **${auteur.prenom}**${
+          auteur.email ? ` (${auteur.email})` : ""
+        } le ${jour} — demande reçue hors portail.`
+      : `Demande envoyée depuis le portail myCoolbeans par **${nomClient}**${
+          emailClient ? ` (${emailClient})` : ""
+        } le ${jour}.`;
 
-  // Création au nom d'un client (spec §8) : réservée à l'admin. L'auteur
-  // reste l'utilisateur du client — c'est lui qui reçoit les notifications —
-  // created_via = 'admin' porte la provenance, affichée sans mimétisme.
-  const pourClerkId = String(fd.get("pourClerkId") ?? "");
-  let auteur = { id: user.id, prenom: user.firstName ?? "Client", email: emailClient ?? "" };
-  let createdVia: "portail" | "admin" = "portail";
-  if (pourClerkId && pourClerkId !== user.id) {
-    if (!isAdmin(meta)) return json({ error: "Réservé à l'administrateur." }, 403);
-    const cible = await clerkClient(context).users.getUser(pourClerkId);
-    auteur = {
-      id: cible.id,
-      prenom: cible.firstName ?? "Client",
-      email: cible.emailAddresses[0]?.emailAddress ?? "",
-    };
-    createdVia = "admin";
-  }
-
-  const descriptionTicket = [
-    description,
-    "",
-    "---",
-    `Demande envoyée depuis le portail myCoolbeans par **${nomClient}**${
-      emailClient ? ` (${emailClient})` : ""
-    } le ${jour}.`,
-  ].join("\n");
+  const descriptionTicket = [description, "", "---", provenanceTicket].join("\n");
 
   // Le compteur ne bouge qu'une fois le ticket D1 posé : un échec plus loin
   // dans la requête (R2, Linear) laisse quand même une trace consommée, mais
   // c'est le même compromis que l'ancien /api/support — un garde-fou, pas un
-  // compteur comptable.
-  try {
-    await env.PORTAL_KV.put(quotaKey, String(dejaEnvoyees + 1), { expirationTtl: 60 * 60 * 48 });
-  } catch (err) {
-    console.error("messagerie: quota KV non incrémenté", err);
+  // compteur comptable. Skippé côté admin, à l'unisson du chemin quota.
+  if (createdVia !== "admin") {
+    try {
+      await env.PORTAL_KV.put(quotaKey, String(dejaEnvoyees + 1), { expirationTtl: 60 * 60 * 48 });
+    } catch (err) {
+      console.error("messagerie: quota KV non incrémenté", err);
+    }
   }
 
   const maintenant = new Date().toISOString();
@@ -255,7 +274,7 @@ export const POST: APIRoute = async (context) => {
       const confirmation = renderConfirmationSupport({
         objet,
         description,
-        prenom: auteur.prenom,
+        prenom: prenomEmail,
       });
       const { error: erreurConfirmation } = await resend.emails.send({
         from: "Ludo de Coolbeans <support@coolbeans.cc>",
