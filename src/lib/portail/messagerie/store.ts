@@ -167,3 +167,17 @@ export async function supprimerPublication(db: D1Database, linearCommentId: stri
     .bind(linearCommentId)
     .run();
 }
+
+/**
+ * Purge les pending encore là après `avant` : borne le retry infini d'un due
+ * empoisonné (fetchComment qui échoue systématiquement, ticket disparu...) —
+ * sans ça une ligne pending peut retenter toutes les 5 min indéfiniment.
+ * Retourne le nombre de lignes supprimées.
+ */
+export async function purgerPublicationsAbandonnees(db: D1Database, avant: string): Promise<number> {
+  const res = await db
+    .prepare(`DELETE FROM pending_publications WHERE created_at < ?`)
+    .bind(avant)
+    .run();
+  return res.meta.changes;
+}

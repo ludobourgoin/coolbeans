@@ -84,9 +84,17 @@ export default {
         apiKey: env.LINEAR_API_KEY,
         resendKey: env.RESEND_API_KEY,
         maintenant: new Date().toISOString(),
-      }).then((r) =>
-        console.log(JSON.stringify({ event: "messagerie_publication", status: "ok", ...r, scheduled_at: scheduledAt })),
-      ),
+        baseUrl: env.PORTAL_BASE_URL || "https://my.coolbeans.cc",
+      })
+        .then((r) =>
+          console.log(JSON.stringify({ event: "messagerie_publication", status: "ok", ...r, scheduled_at: scheduledAt })),
+        )
+        // Un throw non catché ici disparaîtrait silencieusement (waitUntil
+        // n'a personne pour le recueillir) : on le journalise pour ne pas
+        // perdre la visibilité sur un cron qui casse.
+        .catch((err) =>
+          console.log(JSON.stringify({ event: "messagerie_publication", status: "error", message: String(err), scheduled_at: scheduledAt })),
+        ),
     );
   },
 } satisfies ExportedHandler<Env>;

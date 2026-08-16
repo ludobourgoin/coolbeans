@@ -1,5 +1,11 @@
 import { expect, test } from "vitest";
-import { ajouterMessage, messageParId, publicationsDues, ticketsDuClient } from "./store";
+import {
+  ajouterMessage,
+  messageParId,
+  publicationsDues,
+  purgerPublicationsAbandonnees,
+  ticketsDuClient,
+} from "./store";
 
 /** Faux D1 : rejoue des résultats fixés et capture sql + bindings. */
 function fakeDb(results: unknown[] = [], changes = 1) {
@@ -70,4 +76,12 @@ test("publicationsDues compare publish_after au temps fourni", async () => {
   await publicationsDues(db, "2026-08-15T10:00:00.000Z");
   expect(calls[0].sql).toMatch(/publish_after <= \?/);
   expect(calls[0].binds).toEqual(["2026-08-15T10:00:00.000Z"]);
+});
+
+test("purgerPublicationsAbandonnees supprime les pending antérieures à la borne et renvoie le nombre de lignes touchées", async () => {
+  const { db, calls } = fakeDb([], 3);
+  const nb = await purgerPublicationsAbandonnees(db, "2026-08-14T10:00:00.000Z");
+  expect(calls[0].sql).toMatch(/DELETE FROM pending_publications WHERE created_at < \?/);
+  expect(calls[0].binds).toEqual(["2026-08-14T10:00:00.000Z"]);
+  expect(nb).toBe(3);
 });

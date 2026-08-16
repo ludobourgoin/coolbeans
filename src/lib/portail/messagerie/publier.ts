@@ -6,8 +6,16 @@ import { fetchComment } from "../linear";
 import { renderReponseMessagerie } from "../../../emails/messagerie-reponse";
 import { corpsPublie, retireImagesLinear } from "./regles";
 import {
-  ajouterMessage, majEmailStatus, publicationsDues, supprimerPublication, ticketParId,
+  ajouterMessage,
+  majEmailStatus,
+  publicationsDues,
+  purgerPublicationsAbandonnees,
+  supprimerPublication,
+  ticketParId,
 } from "./store";
+
+/** Un due retenté sans succès pendant plus de 24 h est abandonné (voir purgerPublicationsAbandonnees). */
+const DELAI_ABANDON_MS = 24 * 60 * 60 * 1000;
 
 export function decisionPublication(
   commentaire: { body: string } | null,
@@ -22,8 +30,14 @@ export function decisionPublication(
 
 export async function publierLesDues(
   db: D1Database,
-  options: { apiKey: string; resendKey: string; maintenant: string },
-): Promise<{ publies: number; annules: number; reportes: number }> {
+  options: { apiKey: string; resendKey: string; maintenant: string; baseUrl: string },
+): Promise<{ publies: number; annules: number; reportes: number; abandonnes: number }> {
+  // Purge en tête de run : borne le retry infini d'un due empoisonné (spec
+  // §7 — sans ça, une ligne pending qui échoue systématiquement au re-fetch
+  // Linear serait retentée toutes les 5 min indéfiniment).
+  const avant = new Date(Date.parse(options.maintenant) - DELAI_ABANDON_MS).toISOString();
+  const abandonnes = await purgerPublicationsAbandonnees(db, avant);
+
   const dues = await publicationsDues(db, options.maintenant);
   let publies = 0;
   let annules = 0;
@@ -53,39 +67,52 @@ export async function publierLesDues(
         created_at: options.maintenant,
       });
       // insere=false : webhook rejoué, le message existe déjà — ne pas renvoyer l'email.
-      if (insere && ticket.author_email) {
-        const resend = new Resend(options.resendKey);
-        const email = renderReponseMessagerie({
-          objet: ticket.objet,
-          corps: decision.corps,
-          prenom: ticket.author_prenom,
-          urlTicket: `https://my.coolbeans.cc/messagerie/${ticket.id}`,
-        });
-        // Un throw (panne réseau...) doit être traité comme {error} : sans ce
-        // catch, le message resterait "none" à vie (insere=false au retry).
-        let error: unknown = null;
-        try {
-          ({ error } = await resend.emails.send({
-            from: "Ludo de Coolbeans <support@coolbeans.cc>",
-            to: ticket.author_email,
-            replyTo: "ludo@coolbeans.cc",
-            subject: email.subject,
-            html: email.html,
-            text: email.text,
-          }));
-        } catch (envoiErr) {
-          error = envoiErr;
-        }
-        await majEmailStatus(db, messageId, error ? "failed" : "sent");
-        if (error) console.error("messagerie: email de réponse non envoyé", error);
-        if (decision.imagesRetirees > 0) {
-          // Alerte Ludo : une image Linear (CDN privé) a été retirée du message.
-          await resend.emails.send({
-            from: "Support Coolbeans <support@coolbeans.cc>",
-            to: "ludo@coolbeans.cc",
-            subject: `Messagerie — ${decision.imagesRetirees} image(s) retirée(s) (${ticket.objet})`,
-            text: `Le message publié sur « ${ticket.objet} » contenait ${decision.imagesRetirees} image(s) uploads.linear.app, invisibles côté client. Renvoie-les en pièce jointe si nécessaire.`,
+      if (insere) {
+        if (!ticket.author_email) {
+          // Aucun email à notifier : sans ce chemin, le statut restait "none"
+          // à vie (aucun code ne le faisait jamais transiter vers "failed").
+          await majEmailStatus(db, messageId, "failed");
+          console.error("messagerie: pas d'email de réponse envoyé, author_email vide", ticket.id);
+        } else {
+          const resend = new Resend(options.resendKey);
+          const email = renderReponseMessagerie({
+            objet: ticket.objet,
+            corps: decision.corps,
+            prenom: ticket.author_prenom,
+            urlTicket: `${options.baseUrl}/messagerie/${ticket.id}`,
           });
+          // Un throw (panne réseau...) doit être traité comme {error} : sans ce
+          // catch, le message resterait "none" à vie (insere=false au retry).
+          let error: unknown = null;
+          try {
+            ({ error } = await resend.emails.send({
+              from: "Ludo de Coolbeans <support@coolbeans.cc>",
+              to: ticket.author_email,
+              replyTo: "ludo@coolbeans.cc",
+              subject: email.subject,
+              html: email.html,
+              text: email.text,
+            }));
+          } catch (envoiErr) {
+            error = envoiErr;
+          }
+          await majEmailStatus(db, messageId, error ? "failed" : "sent");
+          if (error) console.error("messagerie: email de réponse non envoyé", error);
+          if (decision.imagesRetirees > 0) {
+            // Alerte Ludo, best-effort : une image Linear (CDN privé) a été
+            // retirée du message. Sous try/catch pour ne pas faire échouer
+            // toute la publication (déjà actée en D1) si Resend est en panne.
+            try {
+              await resend.emails.send({
+                from: "Support Coolbeans <support@coolbeans.cc>",
+                to: "ludo@coolbeans.cc",
+                subject: `Messagerie — ${decision.imagesRetirees} image(s) retirée(s) (${ticket.objet})`,
+                text: `Le message publié sur « ${ticket.objet} » contenait ${decision.imagesRetirees} image(s) uploads.linear.app, invisibles côté client. Renvoie-les en pièce jointe si nécessaire.`,
+              });
+            } catch (alerteErr) {
+              console.error("messagerie: alerte « images retirées » non envoyée", alerteErr);
+            }
+          }
         }
       }
       await supprimerPublication(db, due.linear_comment_id);
@@ -100,5 +127,5 @@ export async function publierLesDues(
       continue;
     }
   }
-  return { publies, annules, reportes };
+  return { publies, annules, reportes, abandonnes };
 }
