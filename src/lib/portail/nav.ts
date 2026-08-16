@@ -19,8 +19,7 @@
 //   · portalHref()  construit un lien   → dépend de l'HÔTE
 //   · isActive()    surligne l'entrée   → dépend du PATHNAME interne
 
-import type { PortalClient } from "./clients";
-import { missingKeysFor } from "./clients";
+import { missingKeysFor, type PortalClient } from "./clients";
 import { isAdmin, type PortalMetadata } from "./metadata";
 
 /** Hôtes sur lesquels le préfixe /espace est retiré de l'URL publique. */
