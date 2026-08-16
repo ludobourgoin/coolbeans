@@ -18,11 +18,12 @@ import { URGENCES } from "../../lib/portail/messagerie/regles";
 
 <dialog
   data-nouvelle-demande
+  aria-labelledby="nd-titre"
   class="w-full max-w-[560px] rounded-card border border-line bg-surface p-0 text-ink backdrop:bg-overlay"
 >
   <form data-nouvelle-demande-form enctype="multipart/form-data" class="grid gap-6 p-6x">
     <div class="flex items-start justify-between gap-4">
-      <h2 class="text-lg font-semibold tracking-[-0.02em]">Nouvelle demande</h2>
+      <h2 id="nd-titre" class="text-lg font-semibold tracking-[-0.02em]">Nouvelle demande</h2>
       <button
         type="button"
         class="text-mute hover:text-ink"
