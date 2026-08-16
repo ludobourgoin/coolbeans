@@ -18,7 +18,6 @@ import PortalNav from "../components/portail/PortalNav.astro";
 import PortalSidebar from "../components/portail/PortalSidebar.astro";
 import { buildSidebar } from "../lib/portail/nav";
 import ClientSwitcher from "../components/portail/ClientSwitcher.astro";
-import SupportForm from "../components/portail/SupportForm.astro";
 import { readPortalMetadata } from "../lib/portail/metadata";
 
 // Un client onboardé : les cinq entrées, sans les entrées admin.
@@ -551,30 +550,6 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
         <code class="font-mono">publicMetadata</code> qui manque, et n'est rendu que pour
         <code class="font-mono">role: "admin"</code> — les trois mappings Clerk étant
         posés à la main, l'oubli est structurel et doit se voir sur place.
-      </p>
-
-      <p class="label mb-3x mt-10x">Formulaire support · /espace/support</p>
-      <div class="grid items-start gap-6x xl:grid-cols-2">
-        <div>
-          <p class="label mb-3x">Au repos</p>
-          <SupportForm demo="repos" />
-        </div>
-        <div class="grid gap-6x">
-          <div>
-            <p class="label mb-3x">État de confirmation</p>
-            <SupportForm demo="succes" />
-          </div>
-          <div>
-            <p class="label mb-3x">État d'erreur</p>
-            <SupportForm demo="erreur" />
-          </div>
-        </div>
-      </div>
-      <p class="mt-3x max-w-[62ch] text-sm text-mute">
-        Soumission fetch vers <code class="font-mono">/api/support</code>, qui crée un
-        ticket dans la team Linear du client. Les messages d'erreur de l'API (quota
-        atteint, module non raccordé) s'affichent tels quels dans le statut. Instances
-        neutralisées ici : la page est prérendue, sans session.
       </p>
 
       <p class="label mb-4x mt-16x">Mobilier d'application · non posé sur le site</p>

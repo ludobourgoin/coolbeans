@@ -1,0 +1,70 @@
+---
+// Board « boîte mail » de la messagerie (spec 2026-08-15-messagerie-portail-design.md §6).
+// Un ticket par ligne : objet, auteur, date du dernier message, statut. Le
+// statut vient de statutFromStateType (Task 3), calculé côté page à partir du
+// statusType Linear — jamais du nom d'état, propre à chaque team.
+//
+// Pas la classe `card` : `.doc-root .card` (doc.css) la bat en spécificité —
+// même piège que documenté dans EmptyState.astro. Composé en utilitaires, sur
+// les mêmes tokens que feu SupportForm.
+import { portalHref } from "../../lib/portail/nav";
+import { STATUT_LABEL, type StatutTicket } from "../../lib/portail/messagerie/regles";
+import type { TicketRow } from "../../lib/portail/messagerie/store";
+
+interface Props {
+  tickets: Array<TicketRow & { statut: StatutTicket }>;
+}
+const { tickets } = Astro.props;
+
+// Couleur de badge par statut : seuls « En cours » et « Traité » portent un
+// ton (spec §6) — « En attente » et « — » restent en encre par défaut.
+const STATUT_TONE: Record<StatutTicket, string> = {
+  en_attente: "",
+  en_cours: "text-success",
+  traite: "text-mute",
+  inconnu: "text-mute",
+};
+---
+
+{
+  tickets.length === 0 ? (
+    <p class="rounded-card border border-line bg-surface p-6x text-sm text-mute">
+      Aucune demande pour l'instant.
+    </p>
+  ) : (
+    <div class="overflow-hidden rounded-card border border-line bg-surface">
+      <table class="w-full border-collapse text-[13px]">
+        <thead>
+          <tr class="border-b border-line">
+            {["Objet", "Auteur", "Dernier message", "Statut"].map((h) => (
+              <th class="label px-4 py-3 text-left">{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {tickets.map((t) => (
+            <tr class="border-b border-line last:border-b-0">
+              <td class="px-4 py-3">
+                <a class="link" href={portalHref(`/messagerie/${t.id}`, Astro.url.hostname)}>
+                  {t.objet}
+                </a>
+              </td>
+              <td class="px-4 py-3">
+                {t.author_prenom}
+                {t.created_via === "admin" && (
+                  <span class="ml-2 text-[11px] text-mute">Ouvert par Ludo</span>
+                )}
+              </td>
+              <td class="px-4 py-3 font-mono text-mute">{t.last_message_at.slice(0, 10)}</td>
+              <td class="px-4 py-3">
+                <span class={`text-[12px] font-semibold ${STATUT_TONE[t.statut]}`}>
+                  {STATUT_LABEL[t.statut]}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
