@@ -4,10 +4,12 @@
 // phrase pédagogique est le seul texte au-dessus du board.
 export const prerender = false;
 
+import { clerkClient } from "@clerk/astro/server";
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import EmptyState from "../../components/portail/EmptyState.astro";
 import MessagerieBoard from "../../components/portail/MessagerieBoard.astro";
 import NouvelleDemande from "../../components/portail/NouvelleDemande.astro";
+import NouvelleDemandeAdmin from "../../components/portail/NouvelleDemandeAdmin.astro";
 import Collapse from "../../components/ui/Collapse.astro";
 import { env } from "cloudflare:workers";
 import { missingKeysFor } from "../../lib/portail/clients";
@@ -18,8 +20,20 @@ import { statutFromStateType } from "../../lib/portail/messagerie/regles";
 import { ticketsDuClient } from "../../lib/portail/messagerie/store";
 
 const { meta, client } = await getPortalContext(Astro);
+const admin = isAdmin(meta);
 const missingKeys = missingKeysFor("support", client);
 Astro.response.headers.set("Cache-Control", "no-store");
+
+// Utilisateurs du client courant, pour le <select> du formulaire admin
+// (Task 12, spec §8) — un aller-retour Backend API réservé à l'admin.
+const users = admin
+  ? (await clerkClient(Astro).users.getUserList({ limit: 100 })).data
+      .filter((u) => (u.publicMetadata as { client?: string }).client === client?.slug)
+      .map((u) => ({
+        id: u.id,
+        label: `${u.firstName ?? "?"} — ${u.emailAddresses[0]?.emailAddress ?? ""}`,
+      }))
+  : [];
 
 let tickets: Awaited<ReturnType<typeof ticketsDuClient>> = [];
 let statuts = new Map<string, string>();
@@ -54,6 +68,7 @@ const lignes = tickets.map((t) => ({
     ) : (
       <div class="mt-6x grid gap-6x">
         <NouvelleDemande />
+        {admin && <NouvelleDemandeAdmin users={users} />}
         <MessagerieBoard tickets={lignes} />
       </div>
     )

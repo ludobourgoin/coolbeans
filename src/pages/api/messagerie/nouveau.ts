@@ -7,13 +7,15 @@
 //   4. issue Linear (projet Support, assignée à Ludo, priorité) → majIssue ;
 //   5. emails Resend (interne + accusé) — best-effort.
 
+import { clerkClient } from "@clerk/astro/server";
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 import { Resend } from "resend";
 import { renderConfirmationSupport } from "../../../emails/support-confirmation";
-import { citation, esc, kv, renderTransactionnel, titreSection } from "../../../emails/transactionnel";
+import { citation, esc, kv, p, renderTransactionnel, titreSection } from "../../../emails/transactionnel";
 import { getPortalContext } from "../../../lib/portail/context";
 import { LUDO_LINEAR_USER_ID, createSupportTicket } from "../../../lib/portail/linear";
+import { isAdmin } from "../../../lib/portail/metadata";
 import { cleR2, validerFichiers } from "../../../lib/portail/messagerie/fichiers";
 import { prioriteFromUrgence } from "../../../lib/portail/messagerie/regles";
 import {
@@ -35,7 +37,7 @@ const CONTACT_DIRECT = "écrivez-moi à ludo@coolbeans.cc";
 
 export const POST: APIRoute = async (context) => {
   const { request } = context;
-  const { user, client } = await getPortalContext(context);
+  const { user, meta, client } = await getPortalContext(context);
   if (!user) return json({ error: "Session expirée — reconnectez-vous puis réessayez." }, 401);
 
   const fd = await request.formData();
@@ -74,6 +76,23 @@ export const POST: APIRoute = async (context) => {
   const nomClient =
     [user.firstName, user.lastName].filter(Boolean).join(" ") || emailClient || user.id;
 
+  // Création au nom d'un client (spec §8) : réservée à l'admin. L'auteur
+  // reste l'utilisateur du client — c'est lui qui reçoit les notifications —
+  // created_via = 'admin' porte la provenance, affichée sans mimétisme.
+  const pourClerkId = String(fd.get("pourClerkId") ?? "");
+  let auteur = { id: user.id, prenom: user.firstName ?? "Client", email: emailClient ?? "" };
+  let createdVia: "portail" | "admin" = "portail";
+  if (pourClerkId && pourClerkId !== user.id) {
+    if (!isAdmin(meta)) return json({ error: "Réservé à l'administrateur." }, 403);
+    const cible = await clerkClient(context).users.getUser(pourClerkId);
+    auteur = {
+      id: cible.id,
+      prenom: cible.firstName ?? "Client",
+      email: cible.emailAddresses[0]?.emailAddress ?? "",
+    };
+    createdVia = "admin";
+  }
+
   const descriptionTicket = [
     description,
     "",
@@ -103,10 +122,10 @@ export const POST: APIRoute = async (context) => {
       client: client.slug,
       linear_issue_uuid: null,
       linear_issue_url: null,
-      author_clerk_id: user.id,
-      author_prenom: user.firstName ?? "Client",
-      author_email: emailClient ?? "",
-      created_via: "portail",
+      author_clerk_id: auteur.id,
+      author_prenom: auteur.prenom,
+      author_email: auteur.email,
+      created_via: createdVia,
       objet,
       created_at: maintenant,
       last_message_at: maintenant,
@@ -169,53 +188,78 @@ export const POST: APIRoute = async (context) => {
   try {
     const resend = new Resend(env.RESEND_API_KEY);
 
-    const htmlInterne = renderTransactionnel({
-      preheader: `${client.nom} — ${objet}`,
-      kicker: `Support · ${esc(client.nom)}`,
-      titre: "Nouvelle demande support",
-      contenu: [
-        kv([
-          ["Client", esc(client.nom)],
-          ["De", esc(nomClient) + (emailClient ? ` — ${esc(emailClient)}` : "")],
-          ["Ticket", ticket ? esc(ticket.identifier) : "— (Linear indisponible)"],
-          ["Date", jour],
-        ]),
-        titreSection(`Demande — ${esc(objet)}`),
-        citation(esc(description).replace(/\n/g, "<br>")),
-      ].join(""),
-      cta: ticket ? { label: "Ouvrir dans Linear", url: ticket.url } : undefined,
-      piedContexte: "Demande re&ccedil;ue via le portail my.coolbeans.cc.",
-    });
+    // Notification interne inutile côté admin : c'est Ludo lui-même qui saisit.
+    if (createdVia !== "admin") {
+      const htmlInterne = renderTransactionnel({
+        preheader: `${client.nom} — ${objet}`,
+        kicker: `Support · ${esc(client.nom)}`,
+        titre: "Nouvelle demande support",
+        contenu: [
+          kv([
+            ["Client", esc(client.nom)],
+            ["De", esc(nomClient) + (emailClient ? ` — ${esc(emailClient)}` : "")],
+            ["Ticket", ticket ? esc(ticket.identifier) : "— (Linear indisponible)"],
+            ["Date", jour],
+          ]),
+          titreSection(`Demande — ${esc(objet)}`),
+          citation(esc(description).replace(/\n/g, "<br>")),
+        ].join(""),
+        cta: ticket ? { label: "Ouvrir dans Linear", url: ticket.url } : undefined,
+        piedContexte: "Demande re&ccedil;ue via le portail my.coolbeans.cc.",
+      });
 
-    const { error: erreurInterne } = await resend.emails.send({
-      from: "Support Coolbeans <support@coolbeans.cc>",
-      to: "ludo@coolbeans.cc",
-      replyTo: emailClient ?? undefined,
-      subject: `Support ${client.nom} — ${objet}${ticket ? ` (${ticket.identifier})` : ""}`,
-      html: htmlInterne,
-      text: [
-        `Client : ${client.nom}`,
-        `De : ${nomClient}${emailClient ? ` — ${emailClient}` : ""}`,
-        ticket ? `Ticket : ${ticket.identifier} — ${ticket.url}` : "Ticket : Linear indisponible",
-        `Date : ${jour}`,
-        "",
-        `Demande — ${objet} :`,
-        description,
-      ].join("\n"),
-    });
-    if (erreurInterne) {
-      console.error("messagerie: notification interne non envoyée", erreurInterne);
+      const { error: erreurInterne } = await resend.emails.send({
+        from: "Support Coolbeans <support@coolbeans.cc>",
+        to: "ludo@coolbeans.cc",
+        replyTo: emailClient ?? undefined,
+        subject: `Support ${client.nom} — ${objet}${ticket ? ` (${ticket.identifier})` : ""}`,
+        html: htmlInterne,
+        text: [
+          `Client : ${client.nom}`,
+          `De : ${nomClient}${emailClient ? ` — ${emailClient}` : ""}`,
+          ticket ? `Ticket : ${ticket.identifier} — ${ticket.url}` : "Ticket : Linear indisponible",
+          `Date : ${jour}`,
+          "",
+          `Demande — ${objet} :`,
+          description,
+        ].join("\n"),
+      });
+      if (erreurInterne) {
+        console.error("messagerie: notification interne non envoyée", erreurInterne);
+      }
     }
 
-    if (emailClient) {
+    if (auteur.email && createdVia === "admin") {
+      // Boucle email → portail de la spec §8 : remplace l'accusé de réception
+      // standard quand c'est Ludo qui a ouvert le ticket pour le client.
+      const urlTicket = `https://my.coolbeans.cc/messagerie/${ticketId}`;
+      const html = renderTransactionnel({
+        preheader: "Suite à votre demande, votre ticket est ouvert et suivi.",
+        kicker: "Messagerie",
+        titre: "Ludo a ouvert un ticket pour vous",
+        contenu: p("Suite à votre demande, votre ticket est ouvert et suivi ici&nbsp;:"),
+        cta: { label: "Voir le ticket", url: urlTicket },
+      });
+      const { error: erreurAdmin } = await resend.emails.send({
+        from: "Ludo de Coolbeans <support@coolbeans.cc>",
+        to: auteur.email,
+        replyTo: "ludo@coolbeans.cc",
+        subject: `Ludo a ouvert un ticket pour vous — ${objet}`,
+        html,
+        text: `Ludo a ouvert un ticket pour vous.\n\nSuite à votre demande, votre ticket est ouvert et suivi ici : ${urlTicket}`,
+      });
+      if (erreurAdmin) {
+        console.error("messagerie: email « ticket ouvert pour vous » non envoyé", erreurAdmin);
+      }
+    } else if (auteur.email) {
       const confirmation = renderConfirmationSupport({
         objet,
         description,
-        prenom: user.firstName ?? undefined,
+        prenom: auteur.prenom,
       });
       const { error: erreurConfirmation } = await resend.emails.send({
         from: "Ludo de Coolbeans <support@coolbeans.cc>",
-        to: emailClient,
+        to: auteur.email,
         replyTo: "ludo@coolbeans.cc",
         subject: confirmation.subject,
         html: confirmation.html,
