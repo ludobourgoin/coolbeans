@@ -170,8 +170,10 @@ myCoolbeans). On ne recrée ni nom ni adresse.
    - si le commentaire contient une image Linear (`uploads.linear.app`,
      CDN privé), elle est retirée et Ludo est alerté — v1 texte seul dans ce
      sens.
-4. Écriture D1 **avant** envoi email (si l'email échoue, le portail fait foi
-   et on retente). Email via Resend à **l'auteur du ticket uniquement**
+4. Écriture D1 **avant** envoi email (si l'email échoue, le portail fait
+   foi ; l'échec est marqué `email_status = failed` — pas de relance
+   automatique en v1, follow-up avec le tracking des bounces, amendé le
+   2026-08-16 après revue finale). Email via Resend à **l'auteur du ticket uniquement**
    (email du compte Clerk), avec lien « Répondre sur le portail ».
    Pas de reply-to traité : le inbound email est explicitement hors scope.
 
@@ -214,7 +216,7 @@ OAuth (« Noémie via portail »).
 | Issue déplacée de team/projet | UUID stable → rien ne casse |
 | Webhook dupliqué | UNIQUE sur `linear_comment_id` → idempotent |
 | Webhook manqué (endpoint down) | Accepté en v1 (visible à l'œil nu au volume actuel) ; cron de réconciliation en v2 |
-| Bounce Resend | `email_status = bounced` + alerte Ludo ; le message reste visible sur le portail |
+| Bounce Resend | V1 : non détecté (exigerait le webhook Resend) — seul l'échec synchrone est marqué `failed`, visible en base et dans le dashboard Resend ; tracking des bounces + relance = follow-up (amendé 2026-08-16) |
 | Réponse client sur ticket traité | Autorisée (commentaire sur issue completed), notification à Ludo, réouverture ou recadrage manuels |
 | Issue auto-archivée | `includeArchived` au fetch → « Traité » |
 | Création Linear échouée à la soumission | Ticket D1 déjà créé, reprise recrée l'issue |
@@ -230,6 +232,8 @@ OAuth (« Noémie via portail »).
   lien portail dans le commentaire).
 - Outillage de ré-appairage des orphelins (SQL manuel).
 - Images Linear → client.
+- Tracking des bounces Resend et relance des emails en échec (amendé
+  2026-08-16 : `email_status = failed` couvre l'échec synchrone en v1).
 
 ## 11. Quotas (plans gratuits, pour mémoire)
 
