@@ -12,6 +12,8 @@ export interface PortalClient {
   /** Nom du fichier YAML, sans extension. */
   slug: string;
   nom: string;
+  /** Prénom du contact principal — salutation en vue admin-basculé. */
+  prenom?: string;
   /** Slug dans la collection `docs`. Absent = ce client n'a pas de doc. */
   doc?: string;
   /** UUID de la team Linear où le formulaire support crée ses tickets. */

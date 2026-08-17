@@ -1,4 +1,5 @@
 nom: Amusoire
+# prenom: <contact principal> — à poser ; sans lui la salutation dit « Bonjour Amusoire »
 doc: amusoire
 # Team « Amusoire » du workspace Linear coolbeans-hq.
 linearTeamId: 4a7e6081-5498-418a-a12c-b155ce10bc33

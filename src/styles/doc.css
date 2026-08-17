@@ -226,9 +226,10 @@
   height: calc(100vh - 56px);
   overflow: auto;
   padding: 36px 20px 60px;
-  /* Trait fin entre contenu et ancres (COO-80) — la colonne est TOUJOURS
-     rendue, même sans H2, pour que le contenu ne saute pas entre pages. */
-  border-left: 1px solid var(--line);
+  /* La colonne est TOUJOURS rendue, même sans H2, pour que le contenu ne
+     saute pas entre pages. Sans trait de séparation : essayé puis retiré le
+     2026-08-17, le filet vertical des ancres suffit à structurer (comme
+     vercel.com/geist). */
 }
 .doc-root .doc-right .h {
   font-family: var(--font-mono);
