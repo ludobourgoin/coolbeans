@@ -1,7 +1,6 @@
 import { env } from "cloudflare:workers";
-import type { Catalogue, Chiffrage } from "./types";
-import type { DevisSnapshotData } from "./toDevis";
-import { CATALOGUE_DEFAUT } from "./defaults";
+import type { Reglages, Segment } from "./types";
+import { REGLAGES_DEFAUT } from "./defaults";
 
 export interface KVLike {
   get(key: string): Promise<string | null>;
@@ -14,81 +13,66 @@ export interface KVLike {
    et permet le mock en mémoire dans les tests. */
 export const kv = (): KVLike => (env as unknown as { PORTAL_KV: KVLike }).PORTAL_KV;
 
-export interface DevisPublie {
-  clientSlug: string;
-  projetSlug: string;
-  id: string;
-  versions: { n: number; publishedAt: string; data: DevisSnapshotData }[];
-}
+const CLE_REGLAGES = "pilotage:reglages";
+const CLE_CATALOGUE_LEGACY = "pilotage:catalog";
 
-export const cleChiffrage = (id: string) => `chiffrage:${id}`;
-export const cleDevis = (clientSlug: string, projetSlug: string, id: string) =>
-  `devis:${clientSlug}:${projetSlug}-${id}`;
-
-export async function getCatalogue(ns: KVLike = kv()): Promise<Catalogue> {
-  const raw = await ns.get("pilotage:catalog");
-  return raw ? (JSON.parse(raw) as Catalogue) : structuredClone(CATALOGUE_DEFAUT);
-}
-
-export async function saveCatalogue(c: Catalogue, ns: KVLike = kv()): Promise<void> {
-  await ns.put("pilotage:catalog", JSON.stringify(c));
-}
-
-export async function getChiffrage(id: string, ns: KVLike = kv()): Promise<Chiffrage | null> {
-  const raw = await ns.get(cleChiffrage(id));
-  return raw ? (JSON.parse(raw) as Chiffrage) : null;
-}
-
-export async function saveChiffrage(c: Chiffrage & { id: string }, ns: KVLike = kv()): Promise<void> {
-  await ns.put(cleChiffrage(c.id), JSON.stringify(c));
-}
-
-export async function deleteChiffrage(id: string, ns: KVLike = kv()): Promise<void> {
-  await ns.delete(cleChiffrage(id));
-}
-
-export async function listChiffrages(ns: KVLike = kv()): Promise<Chiffrage[]> {
-  const noms: string[] = [];
-  let cursor: string | undefined;
-  do {
-    const page = await ns.list({ prefix: "chiffrage:", cursor });
-    noms.push(...page.keys.map((k) => k.name));
-    cursor = page.list_complete ? undefined : page.cursor;
-  } while (cursor);
-  const raws = await Promise.all(noms.map((k) => ns.get(k)));
-  return raws.filter((r): r is string => r !== null).map((r) => JSON.parse(r) as Chiffrage);
-}
-
-export async function genererId(
-  ns: KVLike = kv(),
-  tirage: () => number = () => Math.floor(1000 + Math.random() * 99000),
-): Promise<string> {
-  for (let i = 0; i < 10; i++) {
-    const id = String(tirage());
-    if (!(await ns.get(cleChiffrage(id)))) return id;
-  }
-  throw new Error("Impossible de générer un identifiant libre.");
-}
-
-export async function getDevisPublieParCle(key: string, ns: KVLike = kv()): Promise<DevisPublie | null> {
-  const raw = await ns.get(key);
-  return raw ? (JSON.parse(raw) as DevisPublie) : null;
-}
-
-export async function publierVersion(
-  c: Chiffrage & { id: string },
-  data: DevisSnapshotData,
-  ns: KVLike = kv(),
-): Promise<{ url: string; n: number }> {
-  const key = cleDevis(c.clientSlug, c.projetSlug, c.id);
-  const doc: DevisPublie = (await getDevisPublieParCle(key, ns)) ?? {
-    clientSlug: c.clientSlug,
-    projetSlug: c.projetSlug,
-    id: c.id,
-    versions: [],
+/* Ancien format `pilotage:catalog`, tel que stocké avant le chantier cockpit-devis.
+   Ne sert qu'à la migration douce de lecture ; jamais réécrit ni supprimé ici. */
+interface CatalogueLegacy {
+  settings: {
+    tjm: number;
+    marcheBas: number;
+    marcheHaut: number;
+    joursSemaine: number;
+    semainesMarge: number;
+    chargesPct: number;
   };
-  const n = doc.versions.length + 1;
-  doc.versions.push({ n, publishedAt: data.date, data });
-  await ns.put(key, JSON.stringify(doc));
-  return { url: `/devis/${c.clientSlug}/${c.projetSlug}-${c.id}`, n };
+  catalog: {
+    affinite: { baisse: number; hausse: number };
+    gestion: { urgencePct: number };
+    devisTexts: {
+      stackTechnique: string;
+      conditionsReglement: string;
+      ceQueCaComprend: string;
+      horsPerimetre: string;
+    };
+  };
+  segments: Record<string, Segment>;
+}
+
+function migrerDepuisCatalogueLegacy(legacy: CatalogueLegacy): Reglages {
+  return {
+    tjm: legacy.settings.tjm,
+    heuresJour: REGLAGES_DEFAUT.heuresJour,
+    marcheBas: legacy.settings.marcheBas,
+    marcheHaut: legacy.settings.marcheHaut,
+    joursSemaine: legacy.settings.joursSemaine,
+    semainesMarge: legacy.settings.semainesMarge,
+    chargesPct: legacy.settings.chargesPct,
+    gestionPct: REGLAGES_DEFAUT.gestionPct,
+    urgencePct: legacy.catalog.gestion.urgencePct,
+    affinite: legacy.catalog.affinite,
+    segments: legacy.segments,
+    devisTexts: {
+      stackTechnique: legacy.catalog.devisTexts.stackTechnique,
+      conditionsReglement: legacy.catalog.devisTexts.conditionsReglement,
+      ceQueCaComprend: legacy.catalog.devisTexts.ceQueCaComprend,
+      horsPerimetre: legacy.catalog.devisTexts.horsPerimetre,
+      urgenceTooltip: REGLAGES_DEFAUT.devisTexts.urgenceTooltip,
+    },
+  };
+}
+
+export async function getReglages(ns: KVLike = kv()): Promise<Reglages> {
+  const raw = await ns.get(CLE_REGLAGES);
+  if (raw) return JSON.parse(raw) as Reglages;
+
+  const legacyRaw = await ns.get(CLE_CATALOGUE_LEGACY);
+  if (legacyRaw) return migrerDepuisCatalogueLegacy(JSON.parse(legacyRaw) as CatalogueLegacy);
+
+  return structuredClone(REGLAGES_DEFAUT);
+}
+
+export async function saveReglages(r: Reglages, ns: KVLike = kv()): Promise<void> {
+  await ns.put(CLE_REGLAGES, JSON.stringify(r));
 }
