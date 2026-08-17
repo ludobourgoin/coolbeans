@@ -13,6 +13,7 @@ import {
   renderTransactionnel,
   titreSection,
 } from "../../emails/transactionnel";
+import { enregistrerReponse } from "../../lib/devis/reponses";
 
 export const prerender = false;
 
@@ -102,6 +103,21 @@ export const POST: APIRoute = async ({ request }) => {
     },
     piedContexte: "R&eacute;ponse re&ccedil;ue via la page publique du devis.",
   });
+
+  // D1 d'abord : le cockpit /espace/devis lit cette table. Un échec D1 ne
+  // bloque jamais la notification — le mail reste la garantie de délivrance.
+  try {
+    await enregistrerReponse({
+      slug,
+      decision: reponse === "validation" ? "validation" : "question",
+      message: champ(message) ?? null,
+      prenom: prenomClient,
+      nom: nomClient,
+      email: emailClient,
+    });
+  } catch (err) {
+    console.error("devis-reponse: écriture D1 échouée", err);
+  }
 
   try {
     const resend = new Resend(env.RESEND_API_KEY);
