@@ -63,12 +63,24 @@ function migrerDepuisCatalogueLegacy(legacy: CatalogueLegacy): Reglages {
   };
 }
 
+/* Parse défensif : une entrée KV corrompue ne doit jamais faire planter le
+   consommateur, seulement dégrader vers le prochain repli (legacy puis défauts). */
+function parseJson<T>(raw: string): T | null {
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+}
+
 export async function getReglages(ns: KVLike = kv()): Promise<Reglages> {
   const raw = await ns.get(CLE_REGLAGES);
-  if (raw) return JSON.parse(raw) as Reglages;
+  const reglages = raw ? parseJson<Reglages>(raw) : null;
+  if (reglages) return reglages;
 
   const legacyRaw = await ns.get(CLE_CATALOGUE_LEGACY);
-  if (legacyRaw) return migrerDepuisCatalogueLegacy(JSON.parse(legacyRaw) as CatalogueLegacy);
+  const legacy = legacyRaw ? parseJson<CatalogueLegacy>(legacyRaw) : null;
+  if (legacy) return migrerDepuisCatalogueLegacy(legacy);
 
   return structuredClone(REGLAGES_DEFAUT);
 }

@@ -94,4 +94,14 @@ describe("store — Réglages", () => {
     expect(await ns.get("pilotage:catalog")).toBe(JSON.stringify(catalogueLegacy));
     expect(await ns.get("pilotage:reglages")).toBeNull();
   });
+
+  it("pilotage:reglages corrompu retombe sur REGLAGES_DEFAUT sans rejeter (pas de pilotage:catalog)", async () => {
+    await ns.put("pilotage:reglages", "{pas du json");
+    await expect(getReglages(ns)).resolves.toEqual(REGLAGES_DEFAUT);
+  });
+
+  it("pilotage:catalog corrompu (pilotage:reglages vide) retombe sur REGLAGES_DEFAUT sans rejeter", async () => {
+    await ns.put("pilotage:catalog", "{pas du json non plus");
+    await expect(getReglages(ns)).resolves.toEqual(REGLAGES_DEFAUT);
+  });
 });
