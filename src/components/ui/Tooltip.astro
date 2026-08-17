@@ -1,0 +1,17 @@
+---
+/* Marqueur ⓘ + bulle au survol/focus. Sert à alléger le devis : l'explication
+   sort du fil principal sans disparaître. Texte brut uniquement. */
+interface Props { texte: string }
+const { texte } = Astro.props;
+---
+<span class="group relative inline-block align-baseline">
+  <button
+    type="button"
+    aria-label={`Détail : ${texte}`}
+    class="ml-1 inline-flex size-4 items-center justify-center rounded-full border border-line font-mono text-[10px] text-mute transition-colors duration-150 hover:border-ink hover:text-ink focus-visible:border-ink focus-visible:text-ink"
+  >i</button>
+  <span
+    role="tooltip"
+    class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[38ch] -translate-x-1/2 rounded-card border border-line bg-surface px-3 py-2 text-[13px] leading-snug text-ink opacity-0 shadow-sm transition-opacity duration-150 group-focus-within:opacity-100 group-hover:opacity-100"
+  >{texte}</span>
+</span>
