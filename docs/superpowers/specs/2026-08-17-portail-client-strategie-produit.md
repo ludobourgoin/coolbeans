@@ -352,6 +352,45 @@ Voir 3.4 pour le fonctionnel. Points techniques :
 
 ---
 
+### 4.5 Affichage des données Linear côté client : liste blanche, filtre client-safe, statut projet
+
+> Fusionné ici le 2026-08-17 depuis `corrections-spec-portail-client.md` (supprimé le même jour, historique dans git). Décisions d'origine : 2026-08-11 et 2026-08-14. Ces règles s'appliquent à tout ce que le portail lit dans Linear : board de production (3.8), messagerie (3.2), changelog (3.4).
+
+**Liste blanche de champs exposés.** Double garde-fou voulu : la skill `linear` (réécriture des issues à la création) est censée neutraliser tout contenu inapproprié en amont, mais le portail a sa **propre** défense, indépendante de cette skill.
+
+| Objet | Champs exposés | Jamais exposé |
+|---|---|---|
+| **Projet** | nom, statut, deadline, description (voir ci-dessous) | commentaires |
+| **Issue** | nom, statut | deadline, description, commentaires |
+
+- La description d'un projet s'affiche dans un **toggle fermé par défaut**, et seule la portion avant un séparateur `---` est lue ; sans séparateur, troncature à 300 caractères. Jamais d'injection HTML brute.
+- **Titre d'issue côté client** (réconciliation avec le « ne jamais exposer les noms d'issues techniques bruts » du 3.8) : le titre affiché vient de la section `## Client` de la description quand elle existe (convention 3.4) ; à défaut, repli sur le nom brut passé par le filtre de contenu ci-dessous.
+
+**Filtre de contenu, indépendant de la liste blanche.** Même dans un champ autorisé, bloquer et signaler à Ludo tout contenu vulgaire ou grossier, ou insultant/dénigrant envers le client, nommément ou par euphémisme reconnaissable. Implémentation : filtre de mots-clés/expressions sur le texte candidat (nom + description tronquée) avant écriture dans le snapshot. En cas de détection : **exclure l'item et notifier** (log Worker visible ou entrée admin), jamais d'échec silencieux, jamais de réécriture automatique du texte détecté.
+
+**Règle de statut projet.** La règle naïve (« si toutes les issues restantes sont en backlog/todo → Prêt à démarrer ») est vraie par vacuité quand il ne reste aucune issue. Ne jamais annoncer « Prêt à démarrer » sur un projet dont on ne peut rien déduire :
+
+```
+statutProjet(projet, issues):
+  si projet est marqué terminé côté Linear   → "done"
+  sinon:
+    restantes = issues où statut ≠ done
+    si restantes est vide                    → "in_progress"   // tout est fait mais projet non clôturé
+    si toutes restantes sont en todo/backlog → "ready"
+    sinon                                    → "in_progress"
+```
+
+Le cas « projet sans aucune issue » tombe dans `restantes` vide, donc `in_progress`.
+
+**Critères d'acceptation :**
+
+1. Un projet dont toutes les issues sont terminées, mais non clôturé côté Linear, s'affiche « En cours » et non « Prêt à démarrer » ; idem pour un projet sans aucune issue.
+2. Un projet ou une issue dont le nom ou la description contient un terme vulgaire ou insultant envers le client n'apparaît jamais sur le portail ; le cas est signalé plutôt que silencieusement ignoré.
+3. Les commentaires Linear ne sont jamais lus par le sync ni exposés par l'API du portail.
+4. La description d'un projet s'affiche repliée par défaut côté client.
+
+---
+
 ## 5. Règles transverses
 
 ### 5.1 Validation humaine
