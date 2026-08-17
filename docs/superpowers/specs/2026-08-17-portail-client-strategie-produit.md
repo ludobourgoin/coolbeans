@@ -409,6 +409,15 @@ Le module doit être conçu pour pouvoir **basculer en offre payante** plus tard
 ### 5.4 Fin de relation
 Prévoir et **annoncer** ce qui se passe si le client part : export de la doc, transfert des accès, restitution des documents. L'annoncer sur la page de vente réduit la peur de l'enfermement et renforce la confiance, à l'inverse du réflexe de rétention.
 
+### 5.5 Cycle de vie des specs et lien avec la documentation
+
+Convention actée le 2026-08-17 (détail dans `docs/superpowers/specs/README.md`) :
+
+- Ce document est le **seul document produit vivant** du portail. Toute décision produit future l'amende dans la même session, sinon il pourrit.
+- Chaque chantier reçoit une **spec de design datée** (brainstorming superpowers), liée à son milestone Linear, avec un en-tête `Statut :`. Elle décrit l'intention avant de construire et n'a pas vocation à rester vraie.
+- Chaque spec de design se termine par une section `## Documentation` listant les pages de doc à créer ou amender à la livraison. **Le chantier n'est pas done tant que cette section n'est pas exécutée** : c'est le pendant manuel de la boucle documentaire (section 2) et de l'automatisme « issue Done → tâche de doc » (4.3).
+- À la livraison : le durable migre vers la documentation, la spec et son plan partent dans `docs/superpowers/archive/`, l'index `specs/README.md` est mis à jour.
+
 ---
 
 ## 6. Page de vente dédiée

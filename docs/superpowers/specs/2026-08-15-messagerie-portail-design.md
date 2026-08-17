@@ -1,7 +1,7 @@
 # Messagerie du portail client — design
 
 Date : 2026-08-15
-Statut : validé en brainstorm, en attente de relecture avant plan d'implémentation
+Statut : actif — spec de design du milestone « P2 · Messagerie complète » (COO-96 à 99), plan d'implémentation : `../plans/2026-08-15-messagerie-portail.md`. Validé en brainstorm le 2026-08-15, aligné sur la spec produit le 2026-08-17 (voir §12 : quatre écarts, dont deux à trancher par Ludo).
 
 ## 1. Objectif
 
@@ -241,3 +241,43 @@ OAuth (« Noémie via portail »).
   aucune limite atteignable à l'échelle du studio.
 - R2 : 10 Go, egress gratuit — ≈ 2 000-3 000 pièces jointes de marge.
 - La contrainte réelle est R2, et elle est confortable.
+
+## 12. Alignement sur la spec produit (passe du 2026-08-17)
+
+Relecture contre `2026-08-17-portail-client-strategie-produit.md`. L'architecture D1
+(journal publié seul lu par le portail) est **plus forte** que le §4.5 client-safe : aucun
+écart de fond. Quatre écarts de détail :
+
+1. **Statuts client — à trancher par Ludo.** Spec produit §3.2 : quatre états (`Reçue` /
+   `En cours` / `En validation` / `Résolue`). Cette spec (§6, choix délibéré du brainstorm) :
+   trois états mappés par `statusType` (`En attente` / `En cours` / `Traité`), le « pour
+   validation » passant par un message `>>` plutôt qu'un badge. Les deux modèles sont
+   défendables ; celui qui perd doit être amendé dans l'autre document.
+2. **Notification de clôture — à trancher par Ludo.** Spec produit §3.2 (et COO-98) :
+   notification « résolu » avec récapitulatif et lien doc. Proposition de résolution : pas de
+   machinerie dédiée, une **convention de clôture** sur le flux `>>` existant (dernier message
+   `>>` = récapitulatif + lien doc, puis passage en Traité). COO-98 deviendrait une convention
+   d'usage plus un gabarit, pas du code.
+3. **Plafond de fréquence — tranché (bon sens).** Les emails du fil de conversation sont du
+   transactionnel conversationnel : le client les attend, ils sont **exemptés** du plafond
+   « deux emails par semaine » du §3.11. Le plafond s'applique aux canaux sortants à
+   l'initiative de Coolbeans (digest, observations, opportunités).
+4. **Nommage de l'entrée de nav.** Cette spec renomme « Support » en « Messagerie » (§2) ;
+   la sidebar (COO-80/81) et la FAQ actuelles disent « Support ». À la livraison de P2 :
+   renommage de l'entrée et de la page, la FAQ et le délai de réponse annoncé (COO-99)
+   restent sur cette page. D'ici là, « Support » reste le nom en prod.
+
+Note de transition : le module Support MVP (COO-30) crée les tickets directement dans la
+team du client via `linearTeamId`, sans projet Support ni D1. Cette spec le remplace à P2
+(projet Support evergreen + `linear_support_project_id` + registre D1). Les tickets créés
+entre-temps n'auront pas de page de fil : accepté, volume faible.
+
+## Documentation
+
+À la livraison de P2 :
+
+- Doc Coolbeans (client zéro) : page « Messagerie » — fonctionnement du fil, un message =
+  un sujet, délais, pièces jointes ; procédure admin « ouvrir un ticket au nom d'un client ».
+- Doc interne (repo) : convention `>>`, délai de grâce, mapping `statusType`, procédure de
+  ré-appairage d'une issue supprimée.
+- FAQ de la page Messagerie mise à jour (remplace la FAQ Support de COO-32).
