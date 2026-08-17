@@ -1,7 +1,7 @@
 # Messagerie du portail client — design
 
 Date : 2026-08-15
-Statut : actif — spec de design du milestone « P2 · Messagerie complète » (COO-96 à 99), plan d'implémentation : `../plans/2026-08-15-messagerie-portail.md`. Validé en brainstorm le 2026-08-15, aligné sur la spec produit le 2026-08-17 (voir §12 : quatre écarts, dont deux à trancher par Ludo).
+Statut : **implémentée sur staging le 2026-08-17** (13 tâches SDD + revue, session parallèle du matin ; plan : `../plans/2026-08-15-messagerie-portail.md`). Reste : recette navigateur de Ludo, gestes prod (migration D1, secrets, webhook Linear prod), doc, puis archivage. Alignée sur la spec produit le 2026-08-17 (voir §12) : l'implémentation a suivi ce design (trois états, pas de notification de clôture dédiée) — les écarts 1 et 2 du §12 restent à arbitrer, l'option par défaut étant désormais le comportement livré.
 
 ## 1. Objectif
 
