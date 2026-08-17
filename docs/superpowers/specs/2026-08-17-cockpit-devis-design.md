@@ -21,10 +21,19 @@ Deux passes, autour du rendez-vous de brief :
 
 1. **Passe 1 — avant le brief (optionnelle).** Ludo crée le projet Proposal
    et un premier jet d'issues estimées, parfois sans aucune info du lead. La
-   skill tourne en mode dégradé : peu de sources, peu de challenge. Livrable
-   attendu : une **fourchette de prix** à annoncer au brief. Le lead est
-   prévenu : si ce n'est pas dans son budget, Coolbeans n'est peut-être pas
-   la bonne personne — dit cordialement, dès le brief.
+   skill tourne en mode dégradé : peu de sources, peu de challenge. Deux
+   livrables : une **fourchette de prix** à annoncer au brief, et un
+   **guide de brief client-safe** — les questions à poser au lead pour
+   combler les trous de la checklist, filtrées : jamais d'affinité, de
+   marge, de coefficients ni de plancher interne. Ce guide peut rester
+   affiché en partage d'écran ou être imprimé sans risque. Le lead est
+   prévenu dès le brief : si ce n'est pas dans son budget, Coolbeans n'est
+   peut-être pas la bonne personne — dit cordialement.
+
+   **Pendant le brief, on ne complète rien dans Linear.** Le bloc Chiffrage
+   et les Réglages ne s'affichent jamais en présence du lead (écran partagé
+   compris) : Granola enregistre, le guide sert de fil, et le write-back du
+   bloc Chiffrage se fait après le rendez-vous, depuis le CR.
 2. **Passe 2 — après le brief.** Besoin, attentes et budget compris. La
    skill refait un passage complet : collecte (Linear, Gmail, Granola, web),
    challenge des estimates et des prix, arbitrage socle/options pour tenir
@@ -175,5 +184,18 @@ seule jusqu'à extinction. `calc.ts` est réécrit autour du nouveau modèle
 
 Chantier rattaché au projet **Portail myCoolbeans**, milestone
 **« P10 · Suivi commercial »**. Issues créées via la skill `linear` après
-validation de cette spec. La doc `05-chiffrages-et-devis.mdx` est réécrite à
-la livraison (convention spec→doc).
+validation de cette spec.
+
+## 11. Documentation portail (convention spec→doc)
+
+À la livraison, deux pages de la doc Coolbeans :
+
+- **`02-vente.mdx` (page Vente)** : la doc de référence du workflow Devis de
+  bout en bout — lead CRM → projet Proposal (template, bloc Chiffrage) →
+  passe 1 (fourchette + guide de brief) → brief (Granola, guide client-safe,
+  rien dans Linear devant le lead) → passe 2 (challenge, write-back) →
+  génération YAML → validation → envoi Resend → réponse et suivi cockpit.
+  Inclut la **trame générique de brief** (questions universelles : budget,
+  deadline, contenu, existant, décideurs), client-safe par construction.
+- **`05-chiffrages-et-devis.mdx`** : réécrite en référence technique de
+  l'outillage — cockpit, Réglages, D1, API réponse, schéma YAML.
