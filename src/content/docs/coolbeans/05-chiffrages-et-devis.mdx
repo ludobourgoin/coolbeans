@@ -1,66 +1,108 @@
 ---
 client: "coolbeans"
-title: "Chiffrages & devis"
+title: "Devis : outillage"
 order: 5
 status: "final"
-updated: 2026-08-14
-description: "La chaîne commerciale outillée : composer un chiffrage en admin, le publier en devis consultable par le client."
+updated: 2026-08-17
+description: "La référence technique de la chaîne devis : cockpit /espace/devis, Réglages, schéma YAML, réponses en D1, API. Le workflow lui-même est documenté sur la page Workflow CRM."
 ---
 
-La chaîne qui va d'une estimation interne à un devis présentable : composer
-un chiffrage dans le module admin, le convertir en devis, le faire lire au
-client. Pour qui prépare une proposition commerciale.
+La référence technique de la chaîne devis. Le **workflow** (brief, chiffrage,
+passes 1 et 2, envoi) est documenté sur la page Workflow CRM — ici, l'outillage qui
+le porte. L'ancien module de chiffrage manuel (configurateur, catalogue par
+niveaux, publication KV) a été supprimé le 2026-08-17 : le devis se dérive
+désormais d'un projet Linear via la skill `devis`.
 
 ## Ce que c'est
 
-Deux objets distincts. Le **chiffrage** est l'outil de travail interne :
-lignes tirées d'un catalogue de prestations, calcul des jours et des
-montants, réglages. Le **devis** est le document que lit le client : sections
-rédigées, budget, planning à jalons, notes. Un devis peut naître d'un
-chiffrage (conversion) ou s'écrire directement.
+Trois pièces :
 
-## Ce que vous pouvez modifier vous-même
+- **Le devis** : un fichier YAML dans `src/content/devis/`, écrit par la
+  skill ; le nom du fichier devient l'adresse `/devis/<slug>`.
+- **Le cockpit** `/espace/devis` : lecture seule, il liste les devis publiés
+  avec leur statut et la réponse du client. Aucune création ni édition ici.
+- **Les Réglages** `/espace/devis/reglages` : la source de vérité des prix,
+  lue par la skill au moment de composer.
 
-**Le catalogue et les réglages** du chiffrage s'éditent dans le module
-lui-même : `my.coolbeans.cc/chiffrages` → Réglages (taux journalier,
-catalogue de prestations).
+## Le cockpit
 
-**Un devis rédigé à la main** = un fichier YAML dans `src/content/devis/` ;
-le nom du fichier devient l'adresse `/devis/<nom>`. Le format est fait pour
-écrire vite :
+Le statut d'un devis est **dérivé, jamais stocké** :
 
-- des sections libres combinant texte, liste, budget et planning ;
-- dans un budget, une ligne sans prix s'affiche « Inclus » ;
-- un planning peut proposer plusieurs scénarios de calendrier (démarrage
-  immédiat ou différé), chaque jalon étant attribué à Coolbeans ou au client ;
-- le gras s'écrit comme en Markdown dans n'importe quelle chaîne.
+| Statut | Condition |
+| --- | --- |
+| Publié | YAML en prod, sans champ `envoi` |
+| Envoyé | `envoi.date` présent dans le YAML (écrit par la skill à l'envoi) |
+| Répondu | Une ligne existe en D1 pour ce slug — prioritaire, même sans `envoi` |
 
-## Comment ça marche
+Chaque ligne du cockpit relie la page publique, le projet Linear et
+l'affaire CRM (champs `linear.projet` / `linear.affaire` du YAML), et
+déplie la dernière réponse du client quand elle existe.
 
-Le module Chiffrages est réservé aux admins, et doublement : les pages
-vérifient le rôle, et chaque action serveur (créer, modifier, supprimer)
-refait la même vérification de son côté. Raison : une requête forgée qui
-contournerait la page est rejetée quand même — la sécurité ne repose jamais
-sur la seule interface.
+## Les Réglages
 
-La logique métier vit dans `src/lib/chiffrage/` : le calcul des montants
-(`calc.ts`), le stockage (`store.ts`), la validation des données
-(`schemas.ts`) et la conversion d'un chiffrage en devis (`toDevis.ts`). Le
-devis issu d'un chiffrage est servi sur `/devis/<client>/<projet>`, le devis
-rédigé à la main sur `/devis/<nom>`.
+Clé KV `pilotage:reglages` (binding `PORTAL_KV`), éditée par l'action
+`reglages.sauvegarder` — garde admin doublée : la page vérifie le rôle, et
+l'action serveur refait la même vérification de son côté.
 
-La réponse du client à un devis passe par un point d'entrée dédié
-(`src/pages/api/devis-reponse.ts`) qui déclenche une notification par mail
-via Resend. Toutes les pages devis sont exclues des moteurs de recherche et
-du sitemap : elles ne sont accessibles qu'à qui possède le lien.
+| Champ | Rôle |
+| --- | --- |
+| `tjm`, `heuresJour` | Base du calcul : estimates (1 pt = 1 h) ÷ heures/jour × TJM |
+| `marcheBas`, `marcheHaut` | Fourchette de marché, sert à la fourchette de la passe 1 |
+| `joursSemaine`, `semainesMarge` | Conversion charge → semaines de planning |
+| `chargesPct` | Net estimé après charges |
+| `gestionPct` | Gestion de projet : **+15 % sur la totalité du projet** |
+| `urgencePct` | Urgence : +20 %, **affichée au devis en valeur absolue (€)** avec son tooltip |
+| `affinite.baisse` / `.hausse` | Envie de travailler avec le client : −20 % / +20 % |
+| `segments` | Postures par type de client (agence, designer, PME, TPE, association) |
+| `devisTexts` | Textes de base : stack recommandée, règlement, ce que ça comprend, hors périmètre, tooltip d'urgence |
+
+À la première lecture, l'ancienne clé `pilotage:catalog` est migrée en
+douceur (jamais réécrite ni supprimée) ; une entrée corrompue retombe
+silencieusement sur les défauts. Le calcul lui-même vit dans
+`src/lib/chiffrage/calc.ts` (`calculerDevis`), pur et testé — la skill peut
+l'exécuter via `npx tsx` plutôt que de calculer de tête.
+
+## Le schéma YAML
+
+Format fait pour écrire vite : sections libres combinant texte, liste,
+budget et planning ; le gras s'écrit comme en Markdown ; une ligne de budget
+sans `prix` s'affiche « Inclus ».
+
+Ajouts du 2026-08-17 :
+
+- **`tooltip`** sur les items de liste (`{ texte, tooltip }`), les lignes de
+  budget et les notes : un marqueur ⓘ accessible (survol et focus) qui sort
+  l'explication du fil principal — la justification du +20 % d'urgence, le
+  contenu d'un poste.
+- **`envoi { date, destinataire }`** et **`linear { projet, affaire }`** :
+  champs internes lus par le cockpit, **jamais rendus** sur la page
+  publique.
+
+Présentation : un **montant total unique** — les lignes du périmètre sont
+sobres et sans prix, seules les options affichent le leur. On vend un
+projet, pas du temps.
+
+## Les réponses client
+
+La page publique d'un devis porte le formulaire de réponse
+(`src/pages/api/devis-reponse.ts`) : la réponse s'écrit d'abord dans la
+table D1 `devis_reponses` (base `PORTAL_DB`, migration `0002`), puis part en
+notification mail via Resend. Si l'écriture D1 échoue, le mail part quand
+même — la notification prime, l'erreur est loguée. La table est append-only.
+
+Toutes les pages devis sont exclues des moteurs de recherche et du sitemap :
+accessibles à qui possède le lien, rien de plus.
 
 ## Référence technique
 
 | Élément | Emplacement |
 | --- | --- |
-| Pages du module admin | `src/pages/espace/chiffrages/` (index, nouveau, `[id]`, reglages) |
-| Actions serveur (garde admin incluse) | `src/actions/index.ts` |
-| Logique chiffrage | `src/lib/chiffrage/` (calc, store, schemas, toDevis, format, types) |
+| Cockpit et Réglages | `src/pages/espace/devis/` (index, reglages) |
+| Éditeur de Réglages | `src/components/chiffrage/ReglagesEditor.tsx` |
+| Action serveur (garde admin) | `src/actions/index.ts` (`reglages.sauvegarder`) |
+| Calcul | `src/lib/chiffrage/` (calc, blocChiffrage, store, schemas, defaults, types) |
+| Statut et réponses | `src/lib/devis/` (statut, reponses) |
 | Devis YAML (contenu) | `src/content/devis/*.yaml`, schéma dans `src/content.config.ts` |
-| Rendu devis | `src/pages/devis/[slug].astro` et `src/pages/devis/[client]/[projetId].astro` |
-| Réponse au devis | `src/pages/api/devis-reponse.ts` |
+| Rendu devis | `src/pages/devis/[slug].astro`, tooltips via `src/components/ui/Tooltip.astro` |
+| Réponse au devis | `src/pages/api/devis-reponse.ts`, table `devis_reponses` (migration `0002`) |
+| Ancienne route supprimée | `/devis/[client]/[projetId]` — aucun devis KV n'était en circulation |
