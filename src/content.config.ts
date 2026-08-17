@@ -154,10 +154,17 @@ const clients = defineCollection({
   loader: glob({ pattern: "*.yaml", base: "./src/content/clients" }),
   schema: z.object({
     nom: z.string(),
+    // Prénom du contact principal : c'est lui que salue la topbar quand un
+    // admin est basculé sur ce client (« vue client », retour du 2026-08-17).
+    // Absent, la salutation retombe sur le nom du client.
+    prenom: z.string().optional(),
     doc: z.string().optional(),
     // UUID de la team Linear du client : le formulaire support y crée ses
     // tickets. Absent = module Support en empty state (COO-30).
     linearTeamId: z.string().optional(),
+    // UUID du projet « Support » (evergreen) de la team du client : la
+    // messagerie y crée ses tickets. Absent = module Messagerie en empty state.
+    linearSupportProjectId: z.string().optional(),
     uptimerobot_monitor_ids: z.array(z.string()).default([]),
     // Sort le client du sélecteur sans rien supprimer. Voir PortalClient.
     archive: z.boolean().default(false),

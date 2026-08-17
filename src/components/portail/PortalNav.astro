@@ -10,7 +10,7 @@
 // Hauteur figée à 56px (h-14) : doc.css cale dessus les colonnes collantes
 // (`top: 56px`, `calc(100vh - 56px)`). La changer ici désaligne tout.
 //
-// Le menu compte insère « Support » entre « Gérer mon compte » et
+// Le menu compte insère « Messagerie » (ex-Support) entre « Gérer mon compte » et
 // « Se déconnecter » (décision brainstorm 2026-08-14) via les custom menu
 // items de @clerk/astro (UserButton.Action réordonne les items natifs).
 import { UserButton } from "@clerk/astro/components";
@@ -37,7 +37,7 @@ interface Props {
 const { meta, client = null, clients = [], withAccount = true, prenom = "" } = Astro.props;
 const { hostname } = Astro.url;
 const home = portalHref("/", hostname);
-const support = portalHref("/support", hostname);
+const support = portalHref("/messagerie", hostname);
 const admin = isAdmin(meta);
 ---
 
@@ -86,12 +86,11 @@ const admin = isAdmin(meta);
       <Icon name="menu" size={16} />
     </button>
 
-    <div class="flex-1"></div>
-
     {/*
-      La recherche vit dans la topbar (maquette du 2026-08-12). Le champ est
-      rendu partout ; le layout l'active quand un index de doc est présent,
-      il reste inerte ailleurs.
+      La recherche ouvre la zone centrale, calée à gauche contre la bordure de
+      la zone logo (retour Ludo 2026-08-17). Le champ est rendu partout ; le
+      layout l'active quand un index de doc est présent, il reste inerte
+      ailleurs.
     */}
     <div class="relative hidden flex-none lg:block">
       <input
@@ -104,17 +103,44 @@ const admin = isAdmin(meta);
       <div id="doc-qres" hidden></div>
     </div>
 
-    {/* Switch de client, à droite de la recherche (décision 2026-08-14,
-        remplace la barre fixée en bas du viewport). */}
+    <div class="flex-1"></div>
+
+    {/* Switch de client (décision 2026-08-14, remplace la barre fixée en bas
+        du viewport). */}
     {admin && clients.length > 0 && <ClientSwitcher clients={clients} current={client} compact />}
 
+    {/* Même bouton clair/sombre que le site (Nav.astro) : lune en clair,
+        soleil en sombre. Seul le hook data-portal-theme diffère. */}
     <button
-      class="flex-none cursor-pointer rounded-control border border-line bg-surface px-2.5 py-1.5 text-sm text-ink"
+      class="btn btn-ghost btn-sm flex-none"
       data-portal-theme
       type="button"
-      aria-label="Basculer le thème"
+      aria-label="basculer clair / sombre"
+      title="basculer clair / sombre"
     >
-      ☀︎ / ☾
+      <svg
+        class="dm-moon block h-4.5 w-4.5 dark:hidden"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg
+      >
+      <svg
+        class="dm-sun hidden h-4.5 w-4.5 dark:block"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        ><circle cx="12" cy="12" r="4.2"></circle><path
+          d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"
+        ></path></svg
+      >
     </button>
 
     {
@@ -124,7 +150,7 @@ const admin = isAdmin(meta);
           <UserButton>
             <UserButton.MenuItems>
               <UserButton.Action label="manageAccount" />
-              <UserButton.Link label="Support" href={support}>
+              <UserButton.Link label="Messagerie" href={support}>
                 <Icon slot="label-icon" name="help" size={14} />
               </UserButton.Link>
               <UserButton.Action label="signOut" />

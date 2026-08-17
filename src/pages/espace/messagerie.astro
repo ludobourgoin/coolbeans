@@ -1,0 +1,98 @@
+---
+// Messagerie (spec 2026-08-15-messagerie-portail-design.md §6) : board des
+// tickets du client + popup Nouvelle demande. Un message = un sujet — la
+// phrase pédagogique est le seul texte au-dessus du board.
+export const prerender = false;
+
+import { clerkClient } from "@clerk/astro/server";
+import EspaceLayout from "../../layouts/EspaceLayout.astro";
+import EmptyState from "../../components/portail/EmptyState.astro";
+import MessagerieBoard from "../../components/portail/MessagerieBoard.astro";
+import NouvelleDemande from "../../components/portail/NouvelleDemande.astro";
+import NouvelleDemandeAdmin from "../../components/portail/NouvelleDemandeAdmin.astro";
+import Collapse from "../../components/ui/Collapse.astro";
+import { env } from "cloudflare:workers";
+import { missingKeysFor } from "../../lib/portail/clients";
+import { getPortalContext } from "../../lib/portail/context";
+import { fetchIssueStateTypes } from "../../lib/portail/linear";
+import { isAdmin } from "../../lib/portail/metadata";
+import { statutFromStateType } from "../../lib/portail/messagerie/regles";
+import { ticketsDuClient } from "../../lib/portail/messagerie/store";
+
+const { meta, client } = await getPortalContext(Astro);
+const admin = isAdmin(meta);
+const missingKeys = missingKeysFor("support", client);
+Astro.response.headers.set("Cache-Control", "no-store");
+
+// Utilisateurs du client courant, pour le <select> du formulaire admin
+// (Task 12, spec §8) — un aller-retour Backend API réservé à l'admin.
+const users = admin
+  ? (await clerkClient(Astro).users.getUserList({ limit: 100 })).data
+      .filter((u) => (u.publicMetadata as { client?: string }).client === client?.slug)
+      .map((u) => ({
+        id: u.id,
+        label: `${u.firstName ?? "?"} — ${u.emailAddresses[0]?.emailAddress ?? ""}`,
+      }))
+  : [];
+
+let tickets: Awaited<ReturnType<typeof ticketsDuClient>> = [];
+let statuts = new Map<string, string>();
+if (missingKeys.length === 0 && client) {
+  tickets = await ticketsDuClient(env.PORTAL_DB, client.slug);
+  const uuids = tickets.map((t) => t.linear_issue_uuid).filter((u): u is string => Boolean(u));
+  try {
+    if (env.LINEAR_API_KEY) statuts = await fetchIssueStateTypes(env.LINEAR_API_KEY, uuids);
+  } catch (err) {
+    console.error("messagerie: statuts Linear indisponibles, board sans statuts", err);
+  }
+}
+const lignes = tickets.map((t) => ({
+  ...t,
+  statut: statutFromStateType(t.linear_issue_uuid ? statuts.get(t.linear_issue_uuid) : undefined),
+}));
+---
+
+<EspaceLayout title="Messagerie">
+  <h1>Messagerie</h1>
+  <p class="sub">
+    Un message = un sujet. Trois sujets&nbsp;? Trois demandes séparées — on vous répondra plus
+    vite.
+  </p>
+
+  {
+    missingKeys.length > 0 ? (
+      <EmptyState title="Bientôt disponible" missingKeys={missingKeys} isAdmin={isAdmin(meta)}>
+        La messagerie arrive ici. En attendant, un email à ludo@coolbeans.cc fait tout aussi bien
+        l'affaire.
+      </EmptyState>
+    ) : (
+      <div class="mt-6x grid gap-6x">
+        <NouvelleDemande />
+        {admin && <NouvelleDemandeAdmin users={users} />}
+        <MessagerieBoard tickets={lignes} />
+      </div>
+    )
+  }
+
+  {/* FAQ reprise de feu /espace/support (COO-32) — contenu par défaut, à affiner au fil de l'eau. */}
+  <section class="mt-16x max-w-[640px]">
+    <h2 class="mb-6x text-lg font-semibold tracking-[-0.02em]">Questions fréquentes</h2>
+    <Collapse question="Comment bien formuler ma demande ?">
+      Un message = un sujet. Si vous avez deux choses à signaler, envoyez deux demandes
+      séparées : chacune suit son propre fil, rien ne se perd en route. Plus la description est
+      concrète — la page concernée, ce que vous attendiez, ce qui s'est passé — plus la réponse
+      est rapide.
+    </Collapse>
+    <Collapse question="Sous quel délai aurai-je une réponse ?">
+      En général sous un jour ouvré. Si votre site est hors ligne ou qu'un paiement est
+      bloqué, dites-le dans l'urgence de votre demande : ces urgences passent devant tout le
+      reste.
+    </Collapse>
+    <Collapse question="Puis-je toujours passer par email ?">
+      Bien sûr. Un message à
+      <a class="link" href="mailto:ludo@coolbeans.cc">ludo@coolbeans.cc</a> fonctionne
+      toujours — la messagerie a simplement l'avantage d'arriver directement dans mon outil de
+      suivi, avec un accusé de réception immédiat.
+    </Collapse>
+  </section>
+</EspaceLayout>

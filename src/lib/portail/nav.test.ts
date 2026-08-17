@@ -156,6 +156,21 @@ describe("buildSidebar · liens et préfixe d'hôte", () => {
   });
 });
 
+describe("buildSidebar · Messagerie remplace Support", () => {
+  // COO-XX (spec 2026-08-15-messagerie-portail-design.md §2) : l'entrée
+  // s'appelle « Messagerie », pas « Support », et remonte haut dans la nav —
+  // juste sous l'accueil, avant la section Projets.
+  it("la messagerie remplace le support et vit haut dans la nav", () => {
+    const sections = buildSidebar("my.coolbeans.cc", admin, avecDoc, docPages);
+    const labels = sections.flatMap((s) => s.pages.map((p) => p.label));
+    expect(labels).toContain("Messagerie");
+    expect(labels).not.toContain("Support");
+    // Position : Messagerie apparaît avant les pages de la section Projets
+    // (« Actifs » en est la première).
+    expect(labels.indexOf("Messagerie")).toBeLessThan(labels.indexOf("Actifs"));
+  });
+});
+
 describe("isActive", () => {
   const pages = flat(buildSidebar("my.coolbeans.cc", admin, avecDoc, docPages));
   const page = (label: string) => pages.find((p) => p.label === label)!;

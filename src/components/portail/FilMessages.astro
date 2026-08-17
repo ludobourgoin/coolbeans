@@ -1,0 +1,70 @@
+---
+// Fil de conversation d'un ticket (spec 2026-08-15-messagerie-portail-design.md
+// §6). Une bulle par message, alignée selon `direction` : `client` à droite
+// (fond `bg-surface`), `coolbeans` à gauche avec le libellé « Ludo — Coolbeans ».
+//
+// Un message peut avoir un corps vide accompagné de pièces jointes (fix T6,
+// spec §4) : pas de paragraphe vide dans ce cas, les pièces jointes portent
+// la bulle seules.
+//
+// Pas la classe `card` (piège de spécificité doc.css, cf. EmptyState.astro) —
+// mêmes tokens que MessagerieBoard/NouvelleDemande.
+import type { AttachmentRow, MessageRow } from "../../lib/portail/messagerie/store";
+
+interface Props {
+  messages: MessageRow[];
+  pieces: Map<string, AttachmentRow[]>;
+}
+const { messages, pieces } = Astro.props;
+
+/** Taille lisible façon « 1,2 Mo » (virgule française) ; sous 1 Mo, en Ko entiers. */
+function tailleLisible(octets: number): string {
+  const mo = octets / (1024 * 1024);
+  if (mo >= 1) return `${mo.toFixed(1).replace(".", ",")} Mo`;
+  const ko = Math.max(1, Math.round(octets / 1024));
+  return `${ko} Ko`;
+}
+---
+
+<ol class="grid gap-4">
+  {
+    messages.map((m) => {
+      const cote = m.direction === "client";
+      const fichiers = pieces.get(m.id) ?? [];
+      return (
+        <li class:list={["flex flex-col gap-1", cote ? "items-end" : "items-start"]}>
+          {m.direction === "coolbeans" && (
+            <span class="text-[12px] font-medium text-mute">Ludo — Coolbeans</span>
+          )}
+          {m.body && (
+            <div
+              class:list={[
+                "max-w-[80%] rounded-card border border-line px-4 py-3 text-sm whitespace-pre-wrap",
+                cote ? "bg-surface" : "bg-surface-subtle",
+              ]}
+            >
+              {m.body}
+            </div>
+          )}
+          {fichiers.length > 0 && (
+            <ul class:list={["grid gap-1", m.body ? "mt-1" : ""]}>
+              {fichiers.map((f) => (
+                <li>
+                  <a
+                    class="link inline-flex items-center gap-1.5 text-[13px]"
+                    href={`/api/messagerie/fichier/${f.id}`}
+                  >
+                    <span aria-hidden="true">📎</span>
+                    {f.filename}
+                    <span class="text-mute">({tailleLisible(f.size)})</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+          <span class="font-mono text-[11px] text-mute">{m.created_at.slice(0, 10)}</span>
+        </li>
+      );
+    })
+  }
+</ol>

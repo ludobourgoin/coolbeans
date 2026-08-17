@@ -55,6 +55,21 @@
   // (contrairement à `triggers`, `assets` et `routes`) : d'où la duplication.
   // PORTAL_KV sert aussi au module chiffrage/devis — ne pas retirer ce binding.
   "kv_namespaces": [{ "binding": "PORTAL_KV", "id": "f720076d62fc4fd28422209c16326776" }],
+  // Messagerie du portail : D1 (tickets + journal publié) et R2 (pièces
+  // jointes clients, bucket PRIVÉ — servi via /api/messagerie/fichier/[id]).
+  // Comme kv_namespaces, ces clés ne sont PAS héritées par les environnements
+  // nommés : duplication obligatoire dans env.staging.
+  "d1_databases": [
+    { "binding": "PORTAL_DB", "database_name": "coolbeans-portal", "database_id": "5c5a4d6a-2174-404f-a5e0-2137c40fa45b" }
+  ],
+  "r2_buckets": [
+    { "binding": "PORTAL_FILES", "bucket_name": "coolbeans-portal-fichiers" }
+  ],
+  // URL publique du portail, injectée dans les liens générés côté serveur
+  // (issues Linear, emails) plutôt que codée en dur. Comme kv_namespaces et
+  // les bindings D1/R2 ci-dessus, `vars` n'est PAS hérité par les
+  // environnements nommés : duplication obligatoire dans env.staging.
+  "vars": { "PORTAL_BASE_URL": "https://my.coolbeans.cc" },
   "env": {
     "staging": {
       "workers_dev": false,
@@ -62,7 +77,14 @@
         { "pattern": "staging.coolbeans.cc", "custom_domain": true },
         { "pattern": "my-staging.coolbeans.cc", "custom_domain": true }
       ],
-      "kv_namespaces": [{ "binding": "PORTAL_KV", "id": "684d2093bab2413bb840bdc6443f6f50" }]
+      "kv_namespaces": [{ "binding": "PORTAL_KV", "id": "684d2093bab2413bb840bdc6443f6f50" }],
+      "d1_databases": [
+        { "binding": "PORTAL_DB", "database_name": "coolbeans-portal-staging", "database_id": "4d66b69a-effd-46eb-ba10-c0416b065618" }
+      ],
+      "r2_buckets": [
+        { "binding": "PORTAL_FILES", "bucket_name": "coolbeans-portal-fichiers-staging" }
+      ],
+      "vars": { "PORTAL_BASE_URL": "https://my-staging.coolbeans.cc" }
     }
   }
 }

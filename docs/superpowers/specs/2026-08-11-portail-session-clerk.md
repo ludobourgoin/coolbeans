@@ -1,5 +1,8 @@
 # S0.9 · Allonger la durée de session Clerk
 
+Statut : actif tant que l'arbitrage COO-46 (session 30 jours = plan payant, vs repli) n'est
+pas tranché — il bloque la QA A2HS (COO-42). À archiver une fois l'arbitrage rendu et appliqué.
+
 Action de dashboard, à faire à la main. Ce document en fixe la procédure et signale une
 contrainte de plan que le doc master n'avait pas anticipée.
 

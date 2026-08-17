@@ -19,7 +19,7 @@
 //   · portalHref()  construit un lien   → dépend de l'HÔTE
 //   · isActive()    surligne l'entrée   → dépend du PATHNAME interne
 
-import type { PortalClient } from "./clients";
+import { missingKeysFor, type PortalClient } from "./clients";
 import { isAdmin, type PortalMetadata } from "./metadata";
 
 /** Hôtes sur lesquels le préfixe /espace est retiré de l'URL publique. */
@@ -114,6 +114,16 @@ const SECTIONS: SectionDef[] = [
     icon: "home",
     pages: [
       { label: "Introduction", path: "/", flag: "live" },
+      // Messagerie (spec 2026-08-15-messagerie-portail-design.md §2) :
+      // remplace l'ancien Support, remonte juste sous l'accueil. La clé de
+      // mapping client reste `support` (MODULE_REQUIREMENTS, EmptyState) —
+      // renommer la clé n'apporterait rien et toucherait Task 2.
+      {
+        label: "Messagerie",
+        path: "/messagerie",
+        flag: "live",
+        configured: (c) => missingKeysFor("support", c).length === 0,
+      },
       { label: "Liens utiles", path: "/liens", flag: "wip" }, // COO-81
     ],
   },
@@ -151,7 +161,6 @@ const SECTIONS: SectionDef[] = [
     icon: "help",
     pages: [
       { label: "Ressources", path: "/ressources", flag: "live" },
-      { label: "Support", path: "/support", flag: "wip" }, // COO-29/30 : formulaire → ticket Linear
       { label: "Disponibilités", path: "/disponibilites", flag: "wip" }, // COO-11
     ],
   },

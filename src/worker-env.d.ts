@@ -23,6 +23,21 @@ interface PortalSecrets {
    * LINEAR_API_KEY` sur chaque environnement, `.dev.vars` en local.
    */
   LINEAR_API_KEY?: string;
+
+  /**
+   * Secret de signature du webhook Linear (Settings → API → Webhooks) :
+   * vérification HMAC-SHA256 dans /api/linear-webhook. `wrangler secret put
+   * LINEAR_WEBHOOK_SECRET` sur chaque environnement, `.dev.vars` en local.
+   */
+  LINEAR_WEBHOOK_SECRET?: string;
+
+  /**
+   * Clé API Resend : envoi des emails transactionnels du portail (support,
+   * devis, messagerie — dont le cron de publication de
+   * lib/portail/messagerie/publier.ts). `wrangler secret put RESEND_API_KEY`
+   * sur chaque environnement, `.dev.vars` en local.
+   */
+  RESEND_API_KEY?: string;
 }
 
 interface Env extends PortalSecrets {}

@@ -177,6 +177,12 @@
      #ededed en sombre), ce qui rendrait bordure/texte illisibles sur le
      fond clair fixe de --color-tile. */
   --color-tile-ink: #171717;
+
+  /* scrim des <dialog> natifs (::backdrop) : toujours noir translucide, dans
+     les deux thèmes — un backdrop dont la couleur suivrait .dark (via --ink,
+     qui devient #ededed en sombre) éclaircirait la page au lieu de l'estomper.
+     Même logique de figeage que --color-tile ci-dessus. */
+  --color-overlay: rgb(0 0 0 / 40%);
 }
 
 /* ----------------------------------------------------------------------------

@@ -11,3 +11,12 @@
 # Clé API Linear personnelle (workspace coolbeans-hq, Settings > Security &
 # access > Personal API keys) : /api/support crée les tickets avec (COO-30).
 LINEAR_API_KEY=
+
+# Secret de signature du webhook Linear (Settings > API > Webhooks) :
+# vérification HMAC-SHA256 dans /api/linear-webhook.
+LINEAR_WEBHOOK_SECRET=
+
+# Clé API Resend (send.coolbeans.cc) : envoi des emails transactionnels de la
+# messagerie (accusés, notifications à Ludo, réponses publiées) via publier.ts,
+# nouveau.ts et reponse.ts.
+RESEND_API_KEY=

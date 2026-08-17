@@ -1,0 +1,142 @@
+---
+// Ouverture d'un ticket au nom d'un client, réservée à l'admin (spec
+// 2026-08-15-messagerie-portail-design.md §8). Sous le CTA standard : un
+// <details> discret plutôt qu'une popup, pour ne pas se confondre avec le
+// parcours client. Même formulaire que NouvelleDemande.astro, plus le
+// <select> de la cible ; IDs préfixés `nda-` pour ne pas collisionner avec
+// les IDs `nd-` de la popup standard sur la même page.
+//
+// Rendu conditionnel : appelant (messagerie.astro) ne monte ce composant
+// que si isAdmin(meta) — pas de garde interne, la page a déjà fait le tri
+// en construisant `users`.
+import { URGENCES } from "../../lib/portail/messagerie/regles";
+
+interface Props {
+  users: { id: string; label: string }[];
+}
+const { users } = Astro.props;
+---
+
+<details class="rounded-card border border-line bg-surface p-6x text-ink">
+  <summary class="cursor-pointer text-sm font-medium text-mute [&::-webkit-details-marker]:hidden">
+    Ouvrir un ticket au nom d'un utilisateur
+  </summary>
+
+  <form data-nda-form enctype="multipart/form-data" class="mt-6x grid gap-6 border-t border-line pt-6x">
+    <div class="grid gap-2">
+      <label class="label" for="nda-pour">
+        Au nom de <span aria-hidden="true">*</span>
+      </label>
+      <select class="field" id="nda-pour" name="pourClerkId" required>
+        <option value="">— Choisir un utilisateur —</option>
+        {users.map((u) => (
+          <option value={u.id}>{u.label}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="grid gap-2">
+      <label class="label" for="nda-objet">
+        Objet <span aria-hidden="true">*</span>
+      </label>
+      <input
+        class="field"
+        type="text"
+        id="nda-objet"
+        name="objet"
+        maxlength="200"
+        required
+        placeholder="Ex. : le formulaire de contact ne part plus"
+      />
+    </div>
+
+    <div class="grid gap-2">
+      <label class="label" for="nda-description">Description</label>
+      <textarea
+        class="field h-auto min-h-[140px] py-3"
+        id="nda-description"
+        name="description"
+        maxlength="5000"
+        placeholder="Ce qui se passe, sur quelle page, depuis quand… tout détail aide à répondre vite."
+      ></textarea>
+    </div>
+
+    <div class="grid gap-2">
+      <label class="label" for="nda-urgence">Urgence</label>
+      <select class="field" id="nda-urgence" name="urgence">
+        <option value="">—</option>
+        {URGENCES.map((u) => (
+          <option value={u.value}>{u.label}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="grid gap-2">
+      <label class="label" for="nda-fichiers">Pièces jointes</label>
+      <input
+        class="field h-auto py-2"
+        type="file"
+        id="nda-fichiers"
+        name="fichiers"
+        multiple
+        accept="image/*,.pdf,.zip"
+      />
+      <p class="text-[12px] text-mute">3 fichiers max, 10 Mo chacun.</p>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <button class="btn" type="submit">Ouvrir le ticket</button>
+    </div>
+
+    <p data-nda-status role="status" hidden class="text-[13px] font-medium"></p>
+  </form>
+</details>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("[data-nda-form]");
+
+  if (form) {
+    const status = form.querySelector<HTMLParagraphElement>("[data-nda-status]");
+    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const setStatus = (texte: string, tone: "text-mute" | "text-success" | "text-error") => {
+      if (!status) return;
+      status.hidden = false;
+      status.textContent = texte;
+      status.className = `text-[13px] font-medium ${tone}`;
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!submitBtn) return;
+
+      submitBtn.disabled = true;
+      setStatus("Envoi en cours…", "text-mute");
+
+      try {
+        // Pas de header content-type manuel : multipart a besoin de la
+        // boundary générée par le navigateur, qu'un header explicite écraserait.
+        const res = await fetch("/api/messagerie/nouveau", {
+          method: "POST",
+          body: new FormData(form),
+        });
+        const body = (await res.json().catch(() => null)) as {
+          ok?: boolean;
+          ticketId?: string;
+          error?: string;
+        } | null;
+        if (!res.ok || !body?.ok) throw new Error(body?.error ?? "");
+
+        setStatus("Ticket ouvert.", "text-success");
+        // Recharge la page : le ticket tout juste créé apparaît dans le board.
+        location.reload();
+      } catch (err) {
+        const message = err instanceof Error && err.message ? err.message : "";
+        setStatus(
+          message || "Envoi impossible, réessayez dans un instant ou écrivez-moi à ludo@coolbeans.cc.",
+          "text-error",
+        );
+        submitBtn.disabled = false;
+      }
+    });
+  }
+</script>

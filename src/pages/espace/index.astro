@@ -1,73 +1,75 @@
 ---
-// Accueil de l'espace client : une carte par module accessible.
-// La grille reprend les entrées de la nav — la home est la même carte que le
-// shell, en plus large. Le bloc A2HS dismissible s'y ajoutera en S3.5.
+// Introduction — home de /espace (section Bienvenue, retour Ludo 2026-08-17).
+//
+// La page reprend le registre de nav tel quel : une card par section (icône +
+// titre + pages), mêmes règles de visibilité que la sidebar — un client voit
+// ses pages lancées, un admin voit tout avec les badges wip. Zéro liste
+// dupliquée : tout vient de buildSidebar.
+//
+// Le bloc A2HS dismissible arrivera avec COO-81.
 export const prerender = false;
 
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
+import Icon from "../../components/portail/Icon.astro";
 import { getPortalContext } from "../../lib/portail/context";
+import { hrefOf, listDocEntries } from "../../lib/portail/doc";
 import { isAdmin } from "../../lib/portail/metadata";
-import { portalHref } from "../../lib/portail/nav";
+import { buildSidebar } from "../../lib/portail/nav";
 
 const { user, meta, client } = await getPortalContext(Astro);
 const admin = isAdmin(meta);
-const prenom = user?.firstName ?? "";
-const at = (path: string) => portalHref(path, Astro.url.hostname);
+
+// Même règle que la topbar (PortalLayout) : en vue admin-basculé, on salue le
+// contact du client courant, pas Ludo.
+const prenom = admin && client ? (client.prenom ?? client.nom) : (user?.firstName ?? "");
+
+const docEntries = await listDocEntries(client?.doc);
+const sections = buildSidebar(
+  Astro.url.hostname,
+  meta,
+  client,
+  docEntries.map((e) => ({ title: e.data.title, href: hrefOf(e) })),
+);
 
 Astro.response.headers.set("Cache-Control", "no-store");
 ---
 
-<EspaceLayout title="Espace client">
+<EspaceLayout title="Introduction">
   <h1>Bonjour{prenom ? ` ${prenom}` : ""}.</h1>
-  <p class="sub">Votre espace Coolbeans : documentation et services liés à votre projet.</p>
+  <p class="sub">
+    Votre espace Coolbeans : tout ce qui touche à votre projet, au même endroit — documentation,
+    avancement, messagerie et ressources.
+  </p>
 
-  <div class="cards">
-    <a class="card" href={at("/projets")}>
-      <div class="k">Projets</div>
-      <div class="t">Où en sont vos chantiers</div>
-      <div class="d">L'avancement colonne par colonne, et ce qui attend votre validation.</div>
-    </a>
-    <a class="card" href={at("/site")}>
-      <div class="k">Mon site</div>
-      <div class="t">La santé de votre site</div>
-      <div class="d">Disponibilité, dernière vérification, statistiques d'audience.</div>
-    </a>
+  {/* Pas la classe .card de doc.css (piège de spécificité, cf. EmptyState) :
+      on compose en utilitaires sur les mêmes tokens. */}
+  <div class="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4x">
     {
-      client?.doc && (
-        <a class="card" href={`/docs/${client.doc}`}>
-          <div class="k">Doc</div>
-          <div class="t">{client.nom} — passation & référence</div>
-          <div class="d">Le document de vérité du projet : édition, leads, features, support.</div>
-        </a>
-      )
-    }
-    <a class="card" href={at("/ressources")}>
-      <div class="k">Ressources</div>
-      <div class="t">Guides et outils</div>
-      <div class="d">Installer le portail sur votre téléphone, outils recommandés, FAQ.</div>
-    </a>
-    <a class="card" href={at("/support")}>
-      <div class="k">Support</div>
-      <div class="t">Demander quelque chose</div>
-      <div class="d">Une demande, un sujet. Elle rejoint vos projets après validation.</div>
-    </a>
-    {
-      admin && (
-        <a class="card" href={at("/chiffrages")}>
-          <div class="k">Interne</div>
-          <div class="t">Chiffrages</div>
-          <div class="d">Pilotage tarifaire : configurateur, devis publiés, historique.</div>
-        </a>
-      )
-    }
-    {
-      admin && (
-        <a class="card" href="/docs/_template">
-          <div class="k">Doc · interne</div>
-          <div class="t">Gabarit du standard</div>
-          <div class="d">Le squelette vierge « la doc », visible des admins seulement.</div>
-        </a>
-      )
+      sections.map((section) => (
+        <div class="rounded-card border border-line bg-surface p-6x">
+          <div class="flex items-center gap-2 text-base font-bold tracking-[-0.01em] text-ink">
+            <Icon name={section.icon} size={16} class="flex-none" />
+            {section.label}
+          </div>
+          <ul class="mt-3x flex list-none flex-col gap-1 p-0">
+            {section.pages.map((page) => (
+              <li>
+                <a
+                  href={page.href}
+                  class="inline-flex items-center gap-2 text-sm text-mute no-underline underline-offset-4 hover:text-ink hover:underline"
+                >
+                  {page.label}
+                  {page.wip && (
+                    <span class="rounded-full border border-line px-1.5 font-mono text-[9px] uppercase tracking-[0.06em] text-mute">
+                      wip
+                    </span>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
     }
   </div>
 </EspaceLayout>

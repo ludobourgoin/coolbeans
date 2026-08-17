@@ -1,0 +1,165 @@
+---
+// Page ticket (spec 2026-08-15-messagerie-portail-design.md §6) : fil de
+// conversation + formulaire de réponse. URL stable et partageable côté
+// public : my.coolbeans.cc/messagerie/<id> (portalHref retire /espace).
+//
+// Garde d'accès identique à /api/messagerie/reponse (Task 7) : le ticket doit
+// exister ET appartenir au client courant de la session — portée
+// organisation, pas par auteur. Ni introuvable, ni « pas à vous » ne sont des
+// URLs déplacées : redirect 302 (défaut), pas 301.
+export const prerender = false;
+
+import EspaceLayout from "../../../layouts/EspaceLayout.astro";
+import FilMessages from "../../../components/portail/FilMessages.astro";
+import { env } from "cloudflare:workers";
+import { getPortalContext } from "../../../lib/portail/context";
+import { portalHref } from "../../../lib/portail/nav";
+import { fetchIssueStateTypes } from "../../../lib/portail/linear";
+import { STATUT_LABEL, statutFromStateType, type StatutTicket } from "../../../lib/portail/messagerie/regles";
+import {
+  messagesDuTicket,
+  piecesJointesDuTicket,
+  ticketParId,
+  type AttachmentRow,
+} from "../../../lib/portail/messagerie/store";
+
+const { client } = await getPortalContext(Astro);
+const ticket = await ticketParId(env.PORTAL_DB, Astro.params.id ?? "");
+if (!ticket || !client || ticket.client !== client.slug) {
+  return Astro.redirect(portalHref("/messagerie", Astro.url.hostname));
+}
+
+const [messages, piecesListe] = await Promise.all([
+  messagesDuTicket(env.PORTAL_DB, ticket.id),
+  piecesJointesDuTicket(env.PORTAL_DB, ticket.id),
+]);
+const pieces = new Map<string, AttachmentRow[]>();
+for (const p of piecesListe) {
+  const groupe = pieces.get(p.message_id) ?? [];
+  groupe.push(p);
+  pieces.set(p.message_id, groupe);
+}
+
+let statut: StatutTicket = "inconnu";
+if (ticket.linear_issue_uuid && env.LINEAR_API_KEY) {
+  try {
+    const statuts = await fetchIssueStateTypes(env.LINEAR_API_KEY, [ticket.linear_issue_uuid]);
+    statut = statutFromStateType(statuts.get(ticket.linear_issue_uuid));
+  } catch (err) {
+    console.error("messagerie/[id]: statut Linear indisponible, badge par défaut", err);
+  }
+}
+
+// Mêmes tons que MessagerieBoard (spec §6) — dupliqué plutôt qu'exporté : le
+// board reste hors périmètre de cette tâche.
+const STATUT_TONE: Record<StatutTicket, string> = {
+  en_attente: "",
+  en_cours: "text-success",
+  traite: "text-mute",
+  inconnu: "text-mute",
+};
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<EspaceLayout title={ticket.objet}>
+  <a class="link text-[13px]" href={portalHref("/messagerie", Astro.url.hostname)}>← Messagerie</a>
+
+  <div class="mt-4x flex flex-wrap items-center gap-3">
+    <h1>{ticket.objet}</h1>
+    <span class={`text-[12px] font-semibold ${STATUT_TONE[statut]}`}>{STATUT_LABEL[statut]}</span>
+  </div>
+  <p class="mt-1 font-mono text-[12px] text-mute">{ticket.created_at.slice(0, 10)}</p>
+  {
+    ticket.created_via === "admin" && (
+      <p class="text-[12px] text-mute">Ouvert par Ludo pour {ticket.author_prenom}</p>
+    )
+  }
+
+  <div class="mt-8x">
+    <FilMessages messages={messages} pieces={pieces} />
+  </div>
+
+  <form
+    data-reponse-form
+    enctype="multipart/form-data"
+    class="mt-8x grid max-w-[640px] gap-4 rounded-card border border-line bg-surface p-6x"
+  >
+    <input type="hidden" name="ticketId" value={ticket.id} />
+
+    <div class="grid gap-2">
+      <label class="label" for="rep-message">Répondre</label>
+      <textarea
+        class="field h-auto min-h-[120px] py-3"
+        id="rep-message"
+        name="message"
+        maxlength="5000"
+        placeholder="Votre réponse…"
+      ></textarea>
+    </div>
+
+    <div class="grid gap-2">
+      <label class="label" for="rep-fichiers">Pièces jointes</label>
+      <input
+        class="field h-auto py-2"
+        type="file"
+        id="rep-fichiers"
+        name="fichiers"
+        multiple
+        accept="image/*,.pdf,.zip"
+      />
+      <p class="text-[12px] text-mute">3 fichiers max, 10 Mo chacun.</p>
+    </div>
+
+    <div>
+      <button class="btn" type="submit">Envoyer</button>
+    </div>
+
+    <p data-reponse-status role="status" hidden class="text-[13px] font-medium"></p>
+  </form>
+</EspaceLayout>
+
+<script>
+  // Même mécanique que NouvelleDemande.astro (états envoi/succès/erreur,
+  // multipart sans header content-type manuel, succès → reload pour faire
+  // apparaître la réponse dans le fil).
+  const form = document.querySelector<HTMLFormElement>("[data-reponse-form]");
+
+  if (form) {
+    const status = form.querySelector<HTMLParagraphElement>("[data-reponse-status]");
+    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const setStatus = (texte: string, tone: "text-mute" | "text-success" | "text-error") => {
+      if (!status) return;
+      status.hidden = false;
+      status.textContent = texte;
+      status.className = `text-[13px] font-medium ${tone}`;
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!submitBtn) return;
+
+      submitBtn.disabled = true;
+      setStatus("Envoi en cours…", "text-mute");
+
+      try {
+        const res = await fetch("/api/messagerie/reponse", {
+          method: "POST",
+          body: new FormData(form),
+        });
+        const body = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+        if (!res.ok || !body?.ok) throw new Error(body?.error ?? "");
+
+        setStatus("Réponse envoyée.", "text-success");
+        location.reload();
+      } catch (err) {
+        const message = err instanceof Error && err.message ? err.message : "";
+        setStatus(
+          message || "Envoi impossible, réessayez dans un instant ou écrivez-moi à ludo@coolbeans.cc.",
+          "text-error",
+        );
+        submitBtn.disabled = false;
+      }
+    });
+  }
+</script>

@@ -1,6 +1,6 @@
 # Portail myCoolbeans — Refonte navigation : sidebar unique, structure Geist
 
-Date : 2026-08-14 · Statut : validé en brainstorm avec Ludo (session du 2026-08-14)
+Date : 2026-08-14 · Statut : actif — chantier COO-80 (In Review) / COO-81 en cours ; à archiver à la livraison (validé en brainstorm le 2026-08-14)
 Révoque la décision « Navigation : nav haute » du doc master (`ee024e91`, §01/§03, 2026-08-06).
 
 ## 1. Objectif

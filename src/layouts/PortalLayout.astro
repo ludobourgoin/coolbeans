@@ -57,11 +57,17 @@ const sections = buildSidebar(
 // `</script>` peut apparaître dans le texte indexé (extraits de code) : on
 // neutralise tous les `<` pour que le JSON inline ne casse pas la balise.
 const indexJson = searchIndex ? JSON.stringify(searchIndex).replaceAll("<", "\\u003c") : null;
+
+// Vue client intégrale (retour Ludo 2026-08-17) : un admin basculé sur un
+// client voit ce que voit le client, salutation comprise — le prénom du
+// contact du client courant, jamais le sien. Repli sur le nom du client tant
+// que `prenom` n'est pas posé dans son YAML.
+const prenomVue = admin && client ? (client.prenom ?? client.nom) : (user?.firstName ?? "");
 ---
 
 <BaseLayout title={title} description={description} noindex>
   <div class="doc-root portal-frame">
-    <PortalNav meta={meta} client={client} clients={clients} prenom={user?.firstName ?? ""} />
+    <PortalNav meta={meta} client={client} clients={clients} prenom={prenomVue} />
 
     <div class="doc-shell">
       <PortalSidebar sections={sections} />
