@@ -1,0 +1,24 @@
+---
+export const prerender = false;
+
+import EspaceLayout from "../../../layouts/EspaceLayout.astro";
+import ReglagesEditor from "../../../components/chiffrage/ReglagesEditor";
+import { getReglages } from "../../../lib/chiffrage/store";
+
+const user = await Astro.locals.currentUser();
+const isAdmin = ((user?.publicMetadata ?? {}) as { role?: string }).role === "admin";
+if (!isAdmin) return Astro.redirect("/espace");
+
+const reglages = await getReglages();
+---
+
+<EspaceLayout title="Réglages des devis">
+  <p class="label">Pipeline commercial</p>
+  <h1>Réglages</h1>
+  <p class="sub">
+    Source de vérité des prix, lue par la skill devis : TJM, coefficients, segments et textes de
+    base. Modifier un réglage ne change pas les devis déjà écrits.
+    <a class="link" href="/espace/devis">← Tous les devis</a>
+  </p>
+  <ReglagesEditor client:load initial={reglages} />
+</EspaceLayout>

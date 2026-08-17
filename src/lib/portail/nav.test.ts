@@ -118,7 +118,7 @@ describe("buildSidebar · côté admin", () => {
     expect(wip).toContain("Liens utiles");
     expect(wip).not.toContain("Introduction");
     expect(wip).not.toContain("Ressources");
-    expect(wip).not.toContain("Chiffrages");
+    expect(wip).not.toContain("Devis");
   });
 
   it("badge wip une page dont le mapping client manque", () => {

@@ -1,0 +1,105 @@
+---
+export const prerender = false;
+
+import EspaceLayout from "../../../layouts/EspaceLayout.astro";
+import { getCollection } from "astro:content";
+import { listerReponses, type ReponseDevis } from "../../../lib/devis/reponses";
+import { STATUT_LABEL, statutDevis, type StatutDevis } from "../../../lib/devis/statut";
+import { dateLongue, eur, totaux } from "../../../lib/devis";
+
+const user = await Astro.locals.currentUser();
+const isAdmin = ((user?.publicMetadata ?? {}) as { role?: string }).role === "admin";
+if (!isAdmin) return Astro.redirect("/espace");
+
+const devis = (await getCollection("devis")).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+/* listerReponses rend les réponses de la plus récente à la plus ancienne :
+   find() donne donc la dernière réponse de chaque devis. */
+const reponses = await listerReponses();
+const derniereReponse = (slug: string): ReponseDevis | undefined =>
+  reponses.find((r) => r.slug === slug);
+
+const lignes = devis.map((d) => {
+  const budget = d.data.sections.find((s) => s.budget)?.budget;
+  const reponse = derniereReponse(d.id);
+  return {
+    slug: d.id,
+    titre: d.data.titre,
+    objet: d.data.objet,
+    date: dateLongue(d.data.date),
+    total: budget ? eur.format(totaux(budget).totalFinal) : "—",
+    statut: statutDevis(d.data.envoi, reponse),
+    envoi: d.data.envoi,
+    reponse,
+    urlPublique: `/devis/${d.id}`,
+    linear: d.data.linear,
+  };
+});
+
+const BADGE: Record<StatutDevis, string> = {
+  publie: "text-mute",
+  envoye: "text-warning",
+  repondu: "text-success",
+};
+---
+
+<EspaceLayout title="Devis">
+  <p class="label">Pipeline commercial</p>
+  <h1>Devis</h1>
+  <p class="sub">
+    Le devis naît dans Linear (projet Proposal) et s'écrit via la skill devis — cette page ne fait
+    que suivre. <a class="link" href="/espace/devis/reglages">Réglages</a>
+  </p>
+
+  {lignes.length === 0 ? (
+    <p class="sub mt-8">Aucun devis publié pour l'instant.</p>
+  ) : (
+    <div class="mt-6 grid gap-4">
+      {lignes.map((l) => (
+        <div class="card grid gap-3">
+          <div class="flex flex-wrap items-baseline justify-between gap-3">
+            <div>
+              <p class="font-bold">{l.titre}</p>
+              <p class="text-[13px] text-mute">{l.objet}</p>
+            </div>
+            <div class="flex items-baseline gap-4">
+              <span class="font-mono text-[15px] font-bold tabular-nums">{l.total}</span>
+              <span class={`text-[11px] font-bold uppercase ${BADGE[l.statut]}`}>
+                {STATUT_LABEL[l.statut]}
+              </span>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-4 text-[13px]">
+            <span class="font-mono text-mute">{l.date}</span>
+            {l.envoi && (
+              <span class="text-mute">
+                Envoyé le {dateLongue(l.envoi.date)} à {l.envoi.destinataire}
+              </span>
+            )}
+            <a class="link" href={l.urlPublique} target="_blank" rel="noopener">Devis ↗</a>
+            {l.linear?.projet && (
+              <a class="link" href={l.linear.projet} target="_blank" rel="noopener">Projet Linear ↗</a>
+            )}
+            {l.linear?.affaire && (
+              <a class="link" href={l.linear.affaire} target="_blank" rel="noopener">Affaire CRM ↗</a>
+            )}
+          </div>
+          {l.reponse && (
+            <div class="grid gap-2 border-t border-line pt-3 text-[13px]">
+              <p>
+                <span class={`font-bold ${l.reponse.decision === "validation" ? "text-success" : "text-warning"}`}>
+                  {l.reponse.decision === "validation" ? "Proposition validée" : "Question / remarque"}
+                </span>
+                <span class="text-mute">
+                  {" "}— {l.reponse.prenom} {l.reponse.nom} ({l.reponse.email}), le {l.reponse.createdAt}
+                </span>
+              </p>
+              {l.reponse.message && <p class="max-w-[70ch]">{l.reponse.message}</p>}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  )}
+</EspaceLayout>
