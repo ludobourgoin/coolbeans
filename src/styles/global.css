@@ -451,7 +451,13 @@
       box-shadow 150ms ease-in-out;
   }
   .field::placeholder {
-    color: var(--mute);
+    /* Pas --mute : à 8,45:1 sur blanc, c'est un contraste de texte principal,
+       et le placeholder se lit alors comme une valeur déjà saisie. --ds-gray-800
+       tombe à 4,12:1, assez clair pour se distinguer d'une saisie, assez lisible
+       pour rester utile. Le champ porte de toute façon un libellé visible
+       au-dessus (.field-label) : le placeholder n'est jamais le seul porteur
+       de l'information. */
+    color: var(--ds-gray-800);
   }
   .field:focus {
     outline: none;
