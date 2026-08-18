@@ -17,6 +17,7 @@
 // items de @clerk/astro (UserButton.Action réordonne les items natifs).
 import { UserButton } from "@clerk/astro/components";
 import { portalHref } from "../../lib/portail/nav";
+import SearchInput from "../ui/SearchInput.astro";
 import Icon from "./Icon.astro";
 
 interface Props {
@@ -83,14 +84,8 @@ const support = portalHref("/messagerie", hostname);
       layout l'active quand un index de doc est présent, il reste inerte
       ailleurs.
     */}
-    <div class="relative hidden flex-none lg:block">
-      <input
-        id="doc-q"
-        type="search"
-        autocomplete="off"
-        placeholder="Rechercher dans la doc ⌘K"
-        class="h-9 w-64 rounded-control border border-line bg-surface px-3 text-sm text-ink outline-none placeholder:text-mute"
-      />
+    <div class="relative hidden w-80 flex-none lg:block">
+      <SearchInput id="doc-q" placeholder="Rechercher dans la doc…" />
       <div id="doc-qres" hidden></div>
     </div>
 
