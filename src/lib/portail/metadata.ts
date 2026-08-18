@@ -2,7 +2,7 @@
 //
 // Depuis la spec 2026-08-12, il ne porte plus que deux clés : le rôle et un
 // pointeur vers le registre des clients. Les mappings (doc, team Asana,
-// monitors) ont migré sur le client — voir src/lib/portail/clients.ts. Un
+// monitors) ont migré sur le client — voir src/lib/portail/workspaces.ts. Un
 // mapping vit donc une fois par client, plus une fois par contact, ce qui
 // règle le garde-fou 03 au lieu de l'aggraver.
 //

@@ -11,13 +11,13 @@
 
 import type { User } from "@clerk/backend";
 import type { APIContext } from "astro";
-import { listClients, type PortalClient } from "./clients";
+import { listWorkspaces, type PortalWorkspace } from "./workspaces";
 
 /* On ne demande que ce dont la résolution a besoin. `Astro` dans une page est
    un AstroGlobal, pas un APIContext : exiger le type complet ne compilerait
    pas. Ce Pick accepte les deux, ainsi que le contexte d'une Action. */
 export type PortalRequestContext = Pick<APIContext, "locals" | "cookies">;
-import { CLIENT_COOKIE, resolveCurrentClient } from "./current-client";
+import { WORKSPACE_COOKIE, resolveCurrentWorkspace } from "./current-workspace";
 import { readPortalMetadata, type PortalMetadata } from "./metadata";
 
 const USER_CACHE_KEY = "__portalUser";
@@ -28,7 +28,7 @@ export interface PortalContext {
   user: User | null;
   meta: PortalMetadata;
   /** Client dont les données doivent s'afficher. `null` si aucun n'est résolu. */
-  client: PortalClient | null;
+  client: PortalWorkspace | null;
 }
 
 type WithCache = APIContext["locals"] & {
@@ -55,9 +55,9 @@ export function getPortalContext(context: PortalRequestContext): Promise<PortalC
   cache[CACHE_KEY] ??= (async () => {
     const user = await getUser(context.locals);
     const meta = readPortalMetadata(user?.publicMetadata);
-    const clients = await listClients();
-    const cookie = context.cookies.get(CLIENT_COOKIE)?.value ?? null;
-    return { user, meta, client: resolveCurrentClient(clients, meta, cookie) };
+    const clients = await listWorkspaces();
+    const cookie = context.cookies.get(WORKSPACE_COOKIE)?.value ?? null;
+    return { user, meta, client: resolveCurrentWorkspace(clients, meta, cookie) };
   })();
   return cache[CACHE_KEY];
 }
@@ -74,12 +74,12 @@ export function getPortalContext(context: PortalRequestContext): Promise<PortalC
  * dériver un contexte, et les fabriquer à vide produirait un contexte faux
  * plutôt qu'une erreur visible.
  */
-export function overrideCurrentClient(context: PortalRequestContext, client: PortalClient): void {
+export function overrideCurrentWorkspace(context: PortalRequestContext, client: PortalWorkspace): void {
   const cache = context.locals as WithCache;
   const previous = cache[CACHE_KEY];
   if (!previous) {
     throw new Error(
-      "overrideCurrentClient : appeler getPortalContext avant, pour amorcer le contexte de la requête.",
+      "overrideCurrentWorkspace : appeler getPortalContext avant, pour amorcer le contexte de la requête.",
     );
   }
   cache[CACHE_KEY] = previous.then((ctx) => ({ ...ctx, client }));

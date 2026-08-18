@@ -1,0 +1,37 @@
+---
+client: "spinoza"
+title: "Vue d'ensemble"
+order: 1
+status: "final"
+updated: 2026-08-18
+description: "Ce qu'est le projet Spinoza, où il en est, et où tout se trouve."
+---
+
+Cette page s'adresse à quiconque ouvre ce workspace pour la première fois : elle dit ce qu'est le projet, où il en est, et où chercher le reste.
+
+<div class="liens">
+  <a href="https://github.com/ludobourgoin/spinoza" target="_blank" rel="noopener">Repo GitHub (privé) <span class="ext">↗</span></a>
+  <a href="https://linear.app/coolbeans-hq/team/SPI" target="_blank" rel="noopener">Team Linear Spinoza <span class="ext">↗</span></a>
+</div>
+
+## En bref
+
+Spinoza est un **environnement de lecture et d'étude** de l'Éthique de Spinoza — pas un wiki générique ni une édition numérique de plus. Trois piliers :
+
+- **Le texte intégral** — l'Éthique d'abord (traduction Appuhn, 1929), puis les autres œuvres et la Correspondance, en blocs typés visuellement distincts (proposition, démonstration, scolie…).
+- **Le réseau** — chaque démonstration cite définitions, axiomes et propositions antérieures ; le site rend ce réseau navigable : renvois cliquables, graphe de dépendances, dictionnaire des concepts.
+- **L'appropriation active** — un statut de compréhension à trois états (Résiste, En cours, Acquis) et des notes personnelles structurées, synchronisés par compte. La valeur du projet est dans cette couche : le corpus existe ailleurs, l'appropriation nulle part.
+
+C'est un projet personnel de Ludo, pas un projet client : app gratuite à vie, code source fermé (repo privé), dons sans contrepartie via Stripe pour couvrir les frais.
+
+## État du projet
+
+Le projet est en phase de conception : les spécifications sont consolidées et le plan d'implémentation du premier jalon est rédigé, mais le code n'est pas commencé. Le repo contient la documentation de conception et le corpus source (PDF). L'infrastructure de déploiement (Cloudflare) est en place — voir la page Déploiement.
+
+## Pourquoi ce projet
+
+Le cahier des charges vient de l'échec d'un prototype Notion : sur 283 entrées créées pour l'Éthique, 276 sont restées vides. Quatre frictions à corriger, qui justifient chaque fonctionnalité : réduire le coût de saisie, imposer une structure, séparer le texte canonique des notes personnelles, naviguer dans le réseau de renvois.
+
+## Stack cible
+
+Astro 6 custom (sans thème), Tailwind 4, MDX généré par pipeline depuis les PDF sources, Cloudflare Workers (adapter `@astrojs/cloudflare`), Clerk pour l'authentification, D1 pour les notes personnelles, Pagefind pour la recherche plein texte. Pas d'analytics tiers ni de cookies hors authentification : la sobriété est un choix de produit.

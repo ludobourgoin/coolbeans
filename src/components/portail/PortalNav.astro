@@ -1,11 +1,13 @@
 ---
 // Topbar du portail — refonte COO-80 (spec 2026-08-14-portail-sidebar-design.md).
 //
-// La navigation entre modules a quitté la topbar pour la sidebar : ici ne
-// restent que la marque, la recherche ⌘K, le switch de client (admin), le
-// thème et le compte. Structure Geist stricte : la zone logo fait EXACTEMENT
-// la largeur de la colonne sidebar (264px, --portal-col) avec une border-right
-// continue — c'est ce qui aligne la topbar sur la grille en dessous.
+// La navigation entre modules a quitté la topbar pour la sidebar, et le
+// sélecteur de workspace l'y a suivie : il coiffe désormais la sidebar, au-
+// dessus de la première section (retour Ludo 2026-08-18). Ici ne restent que
+// la marque, la recherche ⌘K, le thème et le compte. Structure Geist stricte :
+// la zone logo fait EXACTEMENT la largeur de la colonne sidebar (264px,
+// --portal-col) avec une border-right continue — c'est ce qui aligne la topbar
+// sur la grille en dessous.
 //
 // Hauteur figée à 56px (h-14) : doc.css cale dessus les colonnes collantes
 // (`top: 56px`, `calc(100vh - 56px)`). La changer ici désaligne tout.
@@ -15,30 +17,19 @@
 // items de @clerk/astro (UserButton.Action réordonne les items natifs).
 import { UserButton } from "@clerk/astro/components";
 import { portalHref } from "../../lib/portail/nav";
-import ClientSwitcher from "./ClientSwitcher.astro";
 import Icon from "./Icon.astro";
-import type { PortalClient } from "../../lib/portail/clients";
-import { isAdmin, type PortalMetadata } from "../../lib/portail/metadata";
 
 interface Props {
-  meta: PortalMetadata;
-  /**
-   * Optionnelles avec repli : design-system.astro (prérendue) appelle encore
-   * PortalNav sans client ni clients.
-   */
-  client?: PortalClient | null;
-  clients?: PortalClient[];
   /** Le menu compte exige une session Clerk : la Bibliothèque passe false. */
   withAccount?: boolean;
   /** Prénom affiché dans la salutation. */
   prenom?: string;
 }
 
-const { meta, client = null, clients = [], withAccount = true, prenom = "" } = Astro.props;
+const { withAccount = true, prenom = "" } = Astro.props;
 const { hostname } = Astro.url;
 const home = portalHref("/", hostname);
 const support = portalHref("/messagerie", hostname);
-const admin = isAdmin(meta);
 ---
 
 <header class="sticky top-0 z-20 flex h-14 items-stretch border-b border-line bg-surface">
@@ -104,10 +95,6 @@ const admin = isAdmin(meta);
     </div>
 
     <div class="flex-1"></div>
-
-    {/* Switch de client (décision 2026-08-14, remplace la barre fixée en bas
-        du viewport). */}
-    {admin && clients.length > 0 && <ClientSwitcher clients={clients} current={client} compact />}
 
     {/* Même bouton clair/sombre que le site (Nav.astro) : lune en clair,
         soleil en sombre. Seul le hook data-portal-theme diffère. */}

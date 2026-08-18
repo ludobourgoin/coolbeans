@@ -12,7 +12,7 @@ import NouvelleDemande from "../../components/portail/NouvelleDemande.astro";
 import NouvelleDemandeAdmin from "../../components/portail/NouvelleDemandeAdmin.astro";
 import Collapse from "../../components/ui/Collapse.astro";
 import { env } from "cloudflare:workers";
-import { missingKeysFor } from "../../lib/portail/clients";
+import { missingKeysFor } from "../../lib/portail/workspaces";
 import { getPortalContext } from "../../lib/portail/context";
 import { fetchIssueStateTypes } from "../../lib/portail/linear";
 import { isAdmin } from "../../lib/portail/metadata";

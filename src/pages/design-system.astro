@@ -17,14 +17,25 @@ import EmptyState from "../components/portail/EmptyState.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
 import PortalSidebar from "../components/portail/PortalSidebar.astro";
 import { buildSidebar } from "../lib/portail/nav";
-import ClientSwitcher from "../components/portail/ClientSwitcher.astro";
 import { readPortalMetadata } from "../lib/portail/metadata";
+import type { PortalWorkspace } from "../lib/portail/workspaces";
 
-// Un client onboardé : les cinq entrées, sans les entrées admin.
-const NAV_DEMO_META = readPortalMetadata({ role: "client", client: "amusoire" });
 // La démo sidebar se montre côté admin : c'est la seule vue où tout apparaît
-// (badges wip compris) — la vue client filtre presque tout aujourd'hui.
+// (badges wip compris, sélecteur de workspace en tête) — la vue client filtre
+// presque tout aujourd'hui.
 const ADMIN_DEMO_META = readPortalMetadata({ role: "admin", client: "coolbeans" });
+// Deux workspaces de démo, un perso et un client : c'est ce qui fait
+// apparaître le liseret du sélecteur.
+const DEMO_WORKSPACES: PortalWorkspace[] = [
+  { slug: "coolbeans", nom: "Coolbeans", perso: true, uptimerobot_monitor_ids: [], archive: false },
+  {
+    slug: "amusoire",
+    nom: "Amusoire",
+    doc: "amusoire",
+    uptimerobot_monitor_ids: [],
+    archive: false,
+  },
+];
 
 const SCALES = [
   { key: "background", label: "Backgrounds", steps: [100, 200] },
@@ -490,14 +501,15 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
 
       <p class="label mb-3x">Topbar · structure Geist</p>
       <div class="doc-root overflow-hidden rounded-card border border-line">
-        <PortalNav meta={NAV_DEMO_META} client={null} clients={[]} withAccount={false} />
+        <PortalNav withAccount={false} />
       </div>
       <p class="mb-10x mt-3x max-w-[62ch] text-sm text-mute">
-        La nav a déménagé dans la sidebar (COO-80) : ne restent que la marque — dans une zone
-        de la largeur exacte de la colonne sidebar (<code class="font-mono">--portal-col</code>)
-        — la recherche ⌘K, le switch client (admin), le thème et le compte. Hauteur figée à
-        56px : <code class="font-mono">doc.css</code> cale dessus les colonnes collantes.
-        Le menu compte Clerk est masqué ici, cette page étant prérendue et sans session.
+        La nav a déménagé dans la sidebar (COO-80), le sélecteur de workspace aussi
+        (2026-08-18) : ne restent que la marque — dans une zone de la largeur exacte de la
+        colonne sidebar (<code class="font-mono">--portal-col</code>) — la recherche ⌘K, le
+        thème et le compte. Hauteur figée à 56px : <code class="font-mono">doc.css</code> cale
+        dessus les colonnes collantes. Le menu compte Clerk est masqué ici, cette page étant
+        prérendue et sans session.
       </p>
 
       <p class="label mb-3x mt-10x">Sidebar · l'unique nav du portail</p>
@@ -507,6 +519,8 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
             { title: "Vue d'ensemble", href: "/docs/demo/vue-densemble" },
             { title: "Édition", href: "/docs/demo/edition" },
           ])}
+          workspaces={DEMO_WORKSPACES}
+          current={DEMO_WORKSPACES[0]}
         />
       </div>
       <p class="mb-10x mt-3x max-w-[62ch] text-sm text-mute">
@@ -515,22 +529,12 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
         <code class="font-mono">wip</code> sur les entrées non lancées, pastille de statut sur
         Monitoring (grise tant qu'UptimeRobot n'est pas branché). Côté client, le registre
         (<code class="font-mono">src/lib/portail/nav.ts</code>) ne laisse passer que les pages
-        live et configurées pour lui.
-      </p>
-
-      <p class="label mb-3x mt-10x">Sélecteur de client · admin uniquement</p>
-      <div class="card max-w-80">
-        <ClientSwitcher
-          clients={[
-            { slug: "coolbeans", nom: "Coolbeans", uptimerobot_monitor_ids: [], archive: false },
-            { slug: "amusoire", nom: "Amusoire", doc: "amusoire", uptimerobot_monitor_ids: [], archive: false },
-          ]}
-          current={{ slug: "coolbeans", nom: "Coolbeans", uptimerobot_monitor_ids: [], archive: false }}
-        />
-      </div>
-      <p class="mt-3x max-w-[62ch] text-sm text-mute">
-        Rendu pour les seuls admins. Le bouton « Afficher » disparaît quand le script prend la
-        main ; sans JavaScript il reste et le formulaire fonctionne quand même.
+        live et configurées pour lui.<br />
+        En tête de colonne, le sélecteur de workspace : rendu pour les seuls admins, pleine
+        largeur utile, à 24px de la première section (le même écart qu'entre deux sections).
+        Mes workspaces d'abord, un liseret, puis ceux des clients. Le bouton « Afficher »
+        disparaît quand le script prend la main ; sans JavaScript il reste et le formulaire
+        fonctionne quand même.
       </p>
 
       <div class="grid gap-6x md:grid-cols-2">

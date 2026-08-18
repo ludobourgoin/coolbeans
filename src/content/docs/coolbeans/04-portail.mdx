@@ -73,9 +73,10 @@ chantier à part entière (voir la spec de migration dans
 | --- | --- |
 | Réécriture d'hôte et redirections | `src/worker.ts`, règles `run_worker_first` dans `wrangler.jsonc` |
 | Protection Clerk | `src/middleware.ts` |
-| Registre clients | `src/content/clients/*.yaml`, schéma dans `src/content.config.ts` |
-| Lecture métadonnées / client courant | `src/lib/portail/metadata.ts`, `current-client.ts`, `context.ts` |
+| Registre des workspaces | `src/content/clients/*.yaml`, schéma dans `src/content.config.ts`, lecture dans `src/lib/portail/workspaces.ts` |
+| Lecture métadonnées / workspace courant | `src/lib/portail/metadata.ts`, `current-workspace.ts`, `context.ts` |
+| Sélecteur de workspace (admin) | `src/components/portail/WorkspaceSwitcher.astro`, en tête de `PortalSidebar.astro` |
 | Navigation et retours | `src/lib/portail/nav.ts`, `retour.ts` |
 | Garde admin (pages et actions) | `src/lib/portail/require-admin.ts` |
 | Pages des modules | `src/pages/espace/*.astro` |
-| États vides et diagnostic | `src/components/portail/EmptyState.astro`, `missingKeysFor` dans `src/lib/portail/clients.ts` |
+| États vides et diagnostic | `src/components/portail/EmptyState.astro`, `missingKeysFor` dans `src/lib/portail/workspaces.ts` |

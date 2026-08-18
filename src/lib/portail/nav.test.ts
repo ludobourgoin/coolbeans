@@ -1,16 +1,16 @@
 import { describe, expect, it } from "vitest";
-import type { PortalClient } from "./clients";
+import type { PortalWorkspace } from "./workspaces";
 import { readPortalMetadata } from "./metadata";
 import { buildSidebar, isActive, isPortalHost, portalHref, type DocPageLink } from "./nav";
 
-const avecDoc: PortalClient = {
+const avecDoc: PortalWorkspace = {
   slug: "amusoire",
   nom: "Amusoire",
   doc: "amusoire",
   uptimerobot_monitor_ids: [],
   archive: false,
 };
-const sansDoc: PortalClient = {
+const sansDoc: PortalWorkspace = {
   slug: "coolbeans",
   nom: "Coolbeans",
   uptimerobot_monitor_ids: [],

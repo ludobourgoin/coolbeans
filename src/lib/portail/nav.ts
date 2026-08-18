@@ -19,7 +19,7 @@
 //   · portalHref()  construit un lien   → dépend de l'HÔTE
 //   · isActive()    surligne l'entrée   → dépend du PATHNAME interne
 
-import { missingKeysFor, type PortalClient } from "./clients";
+import { missingKeysFor, type PortalWorkspace } from "./workspaces";
 import { isAdmin, type PortalMetadata } from "./metadata";
 
 /** Hôtes sur lesquels le préfixe /espace est retiré de l'URL publique. */
@@ -95,7 +95,7 @@ interface PageDef {
    */
   flag: PageFlag;
   /** Mapping client requis. Absent = la page ne dépend d'aucun mapping. */
-  configured?: (client: PortalClient | null) => boolean;
+  configured?: (client: PortalWorkspace | null) => boolean;
   dot?: boolean;
 }
 
@@ -188,7 +188,7 @@ const SECTIONS: SectionDef[] = [
 export function buildSidebar(
   hostname: string,
   meta: PortalMetadata,
-  client: PortalClient | null,
+  client: PortalWorkspace | null,
   docPages: DocPageLink[],
 ): SidebarSection[] {
   const admin = isAdmin(meta);

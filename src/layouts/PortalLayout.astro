@@ -12,7 +12,7 @@
 import BaseLayout from "./BaseLayout.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
 import PortalSidebar from "../components/portail/PortalSidebar.astro";
-import { listClients, selectableClients } from "../lib/portail/clients";
+import { listWorkspaces, selectableWorkspaces } from "../lib/portail/workspaces";
 import { getPortalContext } from "../lib/portail/context";
 import { hrefOf, listDocEntries } from "../lib/portail/doc";
 import { isAdmin } from "../lib/portail/metadata";
@@ -40,9 +40,10 @@ const { title, description, mainClass, searchIndex } = Astro.props;
 
 const { user, meta, client } = await getPortalContext(Astro);
 const admin = isAdmin(meta);
-// Le registre n'est lu que pour l'admin : lui seul voit le sélecteur.
+// Le registre n'est lu que pour l'admin : lui seul voit le sélecteur (en tête
+// de la sidebar depuis le 2026-08-18).
 // Les archivés sortent du sélecteur, sauf s'ils sont le client courant.
-const clients = admin ? selectableClients(await listClients(), client) : [];
+const clients = admin ? selectableWorkspaces(await listWorkspaces(), client) : [];
 
 // La sidebar liste les pages de doc du CLIENT COURANT, à plat (jamais
 // repliées) : même source et même ordre que la route /docs.
@@ -67,10 +68,12 @@ const prenomVue = admin && client ? (client.prenom ?? client.nom) : (user?.first
 
 <BaseLayout title={title} description={description} noindex>
   <div class="doc-root portal-frame">
-    <PortalNav meta={meta} client={client} clients={clients} prenom={prenomVue} />
+    <PortalNav prenom={prenomVue} />
 
     <div class="doc-shell">
-      <PortalSidebar sections={sections} />
+      {/* `clients` est vide pour un non-admin : la sidebar n'affiche alors
+          aucun sélecteur. */}
+      <PortalSidebar sections={sections} workspaces={clients} current={client} />
 
       <main class={mainClass}>
         <slot />

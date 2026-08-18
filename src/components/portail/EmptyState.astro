@@ -10,13 +10,13 @@
 // garde-fou 03 : les trois mappings sont posés à la main dans le dashboard
 // Clerk, donc l'oubli est structurel et doit se diagnostiquer sur place, sans
 // ouvrir les logs.
-import type { ClientMappingKey } from "../../lib/portail/clients";
+import type { WorkspaceMappingKey } from "../../lib/portail/workspaces";
 
 interface Props {
   /** Titre lu par le client. */
   title: string;
   /** Clés absentes du registre client, via missingKeysFor(). */
-  missingKeys?: ClientMappingKey[];
+  missingKeys?: WorkspaceMappingKey[];
   /** N'afficher le diagnostic qu'aux admins. */
   isAdmin?: boolean;
 }
