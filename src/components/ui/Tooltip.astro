@@ -28,8 +28,17 @@
       reste `BODY` après le tap. D'où le basculement explicite au clic
       ci-dessous, seul mécanisme fiable sur tactile.
    2. La bulle est centrée sur le marqueur, donc elle sort de l'écran dès que
-      le marqueur approche d'un bord — et `overflow-x: clip` du body la tronque
-      au lieu de la laisser déborder. Le script la recale dans le viewport.
+      le marqueur approche d'un bord, d'où le recalage à l'ouverture.
+
+      Surtout, la bulle est en `display: none` quand elle est fermée, et non à
+      opacité nulle : une bulle transparente reste dans la zone de défilement
+      du document et provoque un **défilement horizontal de toute la page** sur
+      téléphone. Le recalage ne suffit pas à le corriger, WebKit ne recalculant
+      pas cette zone après un `transform` (bulles ramenées à 370 px sur un
+      écran de 390, et la page défilait encore de 80 px). Et `overflow-x` sur
+      le body ne rattrape rien : WebKit ignore `clip`, tandis que `hidden`
+      casse le `position: sticky` de la barre de sections. La contrepartie
+      assumée est la perte du fondu à l'ouverture.
 
    Attention en modifiant ce composant : Chromium en émulation tactile donne
    le focus au bouton et masque donc le premier piège. Toute vérification
@@ -48,7 +57,7 @@ const { texte } = Astro.props;
   >i</button>
   <span
     role="tooltip"
-    class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[min(38ch,calc(100vw-2rem))] -translate-x-1/2 rounded-card bg-ink px-3 py-2 text-[13px] leading-snug text-surface opacity-0 max-[700px]:text-[15px] shadow-md transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 group-data-[ouvert]:opacity-100"
+    class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 hidden w-max max-w-[min(38ch,calc(100vw-2rem))] -translate-x-1/2 rounded-card bg-ink px-3 py-2 text-[13px] leading-snug text-surface shadow-md max-[700px]:text-[15px] group-hover:block group-focus-within:block group-data-[ouvert]:block"
     data-bulle
   >
     {texte}
