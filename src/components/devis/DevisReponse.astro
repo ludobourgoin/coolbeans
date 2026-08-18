@@ -37,7 +37,7 @@ const { slug } = Astro.props;
         <p class="text-[13px] text-mute">Les champs marqués d'une étoile sont obligatoires.</p>
         <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
           <div class="grid gap-2">
-            <label class="label" for="devis-prenom">
+            <label class="label field-label" for="devis-prenom">
               Prénom <span class="text-ink" aria-hidden="true">*</span>
             </label>
             <input
@@ -51,7 +51,7 @@ const { slug } = Astro.props;
             />
           </div>
           <div class="grid gap-2">
-            <label class="label" for="devis-nom">
+            <label class="label field-label" for="devis-nom">
               Nom <span class="text-ink" aria-hidden="true">*</span>
             </label>
             <input
@@ -66,7 +66,7 @@ const { slug } = Astro.props;
           </div>
         </div>
         <div class="grid gap-2">
-          <label class="label" for="devis-email">
+          <label class="label field-label" for="devis-email">
             Email <span class="text-ink" aria-hidden="true">*</span>
           </label>
           <input
@@ -86,7 +86,7 @@ const { slug } = Astro.props;
           </p>
           <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
             <div class="grid gap-2">
-              <label class="label" for="devis-raison-sociale">Raison sociale</label>
+              <label class="label field-label" for="devis-raison-sociale">Raison sociale</label>
               <input
                 class="field"
                 type="text"
@@ -97,7 +97,7 @@ const { slug } = Astro.props;
               />
             </div>
             <div class="grid gap-2">
-              <label class="label" for="devis-siren">Numéro SIREN</label>
+              <label class="label field-label" for="devis-siren">Numéro SIREN</label>
               <input
                 class="field"
                 type="text"
@@ -109,7 +109,7 @@ const { slug } = Astro.props;
             </div>
           </div>
           <div class="grid gap-2">
-            <label class="label" for="devis-adresse">
+            <label class="label field-label" for="devis-adresse">
               Adresse de facturation <span class="text-ink" aria-hidden="true">*</span>
             </label>
             <input
@@ -122,7 +122,7 @@ const { slug } = Astro.props;
             />
           </div>
           <div class="grid gap-2">
-            <label class="label" for="devis-tva">Numéro de TVA intracommunautaire</label>
+            <label class="label field-label" for="devis-tva">Numéro de TVA intracommunautaire</label>
             <input
               class="field"
               type="text"
@@ -133,7 +133,7 @@ const { slug } = Astro.props;
           </div>
         </div>
         <div class="grid gap-2">
-          <label class="label" for="devis-message">Message</label>
+          <label class="label field-label" for="devis-message">Message</label>
           <textarea
             class="field h-auto min-h-[120px] py-3"
             id="devis-message"

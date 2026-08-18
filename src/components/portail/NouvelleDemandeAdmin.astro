@@ -24,7 +24,7 @@ const { users } = Astro.props;
 
   <form data-nda-form enctype="multipart/form-data" class="mt-6x grid gap-6 border-t border-line pt-6x">
     <div class="grid gap-2">
-      <label class="label" for="nda-pour">
+      <label class="label field-label" for="nda-pour">
         Au nom de <span aria-hidden="true">*</span>
       </label>
       <select class="field" id="nda-pour" name="pourClerkId" required>
@@ -36,7 +36,7 @@ const { users } = Astro.props;
     </div>
 
     <div class="grid gap-2">
-      <label class="label" for="nda-objet">
+      <label class="label field-label" for="nda-objet">
         Objet <span aria-hidden="true">*</span>
       </label>
       <input
@@ -51,7 +51,7 @@ const { users } = Astro.props;
     </div>
 
     <div class="grid gap-2">
-      <label class="label" for="nda-description">Description</label>
+      <label class="label field-label" for="nda-description">Description</label>
       <textarea
         class="field h-auto min-h-[140px] py-3"
         id="nda-description"
@@ -62,7 +62,7 @@ const { users } = Astro.props;
     </div>
 
     <div class="grid gap-2">
-      <label class="label" for="nda-urgence">Urgence</label>
+      <label class="label field-label" for="nda-urgence">Urgence</label>
       <select class="field" id="nda-urgence" name="urgence">
         <option value="">—</option>
         {URGENCES.map((u) => (
@@ -72,7 +72,7 @@ const { users } = Astro.props;
     </div>
 
     <div class="grid gap-2">
-      <label class="label" for="nda-fichiers">Pièces jointes</label>
+      <label class="label field-label" for="nda-fichiers">Pièces jointes</label>
       <input
         class="field h-auto py-2"
         type="file"

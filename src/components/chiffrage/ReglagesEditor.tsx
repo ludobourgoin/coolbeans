@@ -13,7 +13,7 @@ const Num = ({ chemin, label, valeur, step = 0.5, maj }: {
   maj: (chemin: string, valeur: unknown) => void;
 }) => (
   <div class="grid gap-2">
-    <label class="label">{label}</label>
+    <label class="label field-label">{label}</label>
     <input class="field w-[110px]" type="number" step={step} value={valeur}
       onInput={(e) => maj(chemin, Number(e.currentTarget.value) || 0)} />
   </div>
@@ -88,7 +88,7 @@ export default function ReglagesEditor({ initial }: { initial: Reglages }) {
           ["urgenceTooltip", "Tooltip de la majoration d'urgence"],
         ] as const).map(([key, label]) => (
           <div class="grid gap-2">
-            <label class="label">{label}</label>
+            <label class="label field-label">{label}</label>
             <textarea class="field h-auto min-h-[90px] py-3" value={r.devisTexts[key]}
               onInput={(e) => maj(`devisTexts.${key}`, e.currentTarget.value)} />
           </div>
