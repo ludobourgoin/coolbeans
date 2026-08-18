@@ -42,7 +42,8 @@ export const POST: APIRoute = async ({ request }) => {
   // quoi ni des valeurs sans limite de taille.
   if (
     typeof slug !== "string" ||
-    !/^[a-z0-9-]{1,64}$/.test(slug) ||
+    !/^[a-z0-9-]+(?:\/[a-z0-9-]+)*$/.test(slug) ||
+    slug.length > 96 ||
     (reponse !== "validation" && reponse !== "question")
   ) {
     return json({ error: "Requête invalide." }, 400);
@@ -116,7 +117,11 @@ export const POST: APIRoute = async ({ request }) => {
     ].join(""),
     cta: {
       label: "Voir le devis",
-      url: `https://coolbeans.cc/devis/${encodeURIComponent(slug)}`,
+      /* Pas d'encodeURIComponent : le slug peut porter un slash de
+         séparation client/projet, que l'encodage transformerait en %2F et
+         casserait la route. La regex de validation ci-dessus garantit déjà
+         qu'il ne contient que [a-z0-9-] et des slashs. */
+      url: `https://coolbeans.cc/devis/${slug}`,
     },
     piedContexte: "R&eacute;ponse re&ccedil;ue via la page publique du devis.",
   });
