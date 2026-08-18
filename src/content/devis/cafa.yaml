@@ -1,0 +1,170 @@
+titre: CAFA x Coolbeans
+objet: Site Internet du Club d'Affaires Franco-Allemand
+date: 2026-08-18
+contact: Susanne
+linear:
+  projet: Site web CAFA
+  affaire: CRM-9
+
+sections:
+  - titre: Objectif
+    texte: >-
+      Doter le Club d'un **site Internet à son image**, qui donne à voir ses
+      événements et la vie de l'association, facilite l'adhésion de nouveaux
+      membres et valorise ses partenaires institutionnels. Le site remplace
+      l'ancien blog et devient l'adresse de référence du Club, **que vous
+      mettez à jour vous-même**, sans intervention technique.
+
+  - titre: Pages du site
+    texte: "**Sept pages**, construites à partir des sections définies ensemble lors de notre échange du 31 juillet :"
+    liste:
+      - texte: Accueil
+        tooltip: >-
+          Porte d'entrée du site : les prochains événements, les dernières
+          actualités et l'accès à toutes les sections.
+      - texte: "Qui sommes-nous : l'histoire du Club et les membres du bureau"
+        tooltip: >-
+          Construite à partir du bulletin d'adhésion actualisé que vous
+          m'avez transmis. Les montants de cotisation n'y figurent pas.
+      - texte: Événements à venir
+      - texte: "Actualités : retours sur les événements passés"
+      - texte: "Devenir membre : pourquoi rejoindre le Club, et bulletin d'adhésion à télécharger"
+      - texte: Partenaires et soutiens institutionnels
+      - texte: Contact
+
+  - titre: Fonctionnalités
+    liste:
+      - texte: >-
+          **Les événements passés disparaissent tout seuls** de la liste, sans
+          aucune action de votre part
+        tooltip: >-
+          Vous saisissez la date de l'événement une fois ; le site le retire
+          automatiquement de la page dès qu'elle est dépassée.
+      - texte: >-
+          **Publication en autonomie** : vous créez et modifiez événements,
+          actualités et partenaires vous-même, comme vous le faisiez sur
+          l'ancien blog
+      - texte: "**Formulaire de contact** : les messages arrivent directement dans la boîte mail du Club"
+      - texte: "**Bulletin d'adhésion en PDF**, téléchargeable depuis la page Devenir membre"
+
+  - titre: Stack technique recommandée
+    texte: >-
+      On part sur **Astro** (développement) + **Sanity** (gestion de contenu) +
+      **Cloudflare** (hébergement).
+    liste:
+      - Pages très légères, site rapide à l'affichage
+      - "Coût d'usage nul : hébergement gratuit, aucun abonnement mensuel à prévoir"
+      - "Autonomie : vous gérez textes, images et contenus sans toucher au code"
+      - >-
+        Vous restez libre : le code est dans un dépôt qui appartient au Club, le
+        contenu est exportable, n'importe quel développeur peut reprendre le site
+
+  - titre: Budget
+    budget:
+      lignes:
+        - label: >-
+            Conception et développement du site complet : direction visuelle,
+            maquettes, intégration des sept pages, mise en place du CMS,
+            référencement de base et mise en ligne
+          prix: 2800
+          tooltip: >-
+            Comprend le moodboard, les maquettes, l'intégration, la
+            configuration du CMS, la formation à la mise à jour et la mise en
+            ligne sur votre nom de domaine.
+      remisePct: 20
+      remiseLabel: Tarif association
+      mention: HT
+      reglement: >-
+        **30 %** à la validation du devis, qui lance la prestation. **Solde**
+        à la livraison du site fonctionnel.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Responsive (ordinateur, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation de la vitesse d'affichage
+      - Tests sur les trois principaux navigateurs
+      - Certificat SSL, hébergement et raccordement du nom de domaine
+      - Mise en place du suivi de fréquentation, sans cookies
+      - Favicon et aperçus de partage sur les réseaux sociaux
+      - Pages légales et page de contact
+      - Formation à la mise à jour du site, et guide écrit remis à l'issue
+      - Support 30 jours après la mise en ligne
+
+  - titre: En option
+    texte: "À cocher ou non, selon vos besoins :"
+    liste:
+      - texte: >-
+          **Version bilingue français / allemand — 150 €.** Mise en place
+          technique des deux langues et sélecteur avec vos deux logos.
+        tooltip: >-
+          La traduction elle-même reste assurée en interne par vos soins,
+          comme convenu lors de notre échange.
+      - texte: >-
+          **Reprise des articles de l'ancien blog — 250 €.** Les contenus de
+          cafatmp.org sont rapatriés dans la nouvelle section Actualités.
+        tooltip: >-
+          Vous m'avez confirmé le 4 août vouloir capitaliser sur ce contenu :
+          je vous conseille de retenir cette option.
+      - texte: >-
+          **Rédaction des contenus — 480 €.** Entretien de cadrage, rédaction
+          de l'ensemble des pages, ton ajusté à l'identité du Club, deux
+          allers-retours sur les textes, titres et descriptions travaillés
+          pour le référencement.
+        tooltip: >-
+          Sans cette option, je mets en forme les textes que vous fournissez et
+          comble les manques par des textes fonctionnels, sans aller-retour
+          rédactionnel.
+
+  - titre: Planning
+    planning:
+      options:
+        - label: Démarrage le 1er septembre
+          texte: >-
+            Livraison visée **fin septembre**, bien avant le congrès de début
+            novembre. Ces dates supposent que les contenus et les logos me
+            parviennent au démarrage.
+          jalons:
+            - { date: Mar 01/09, label: "Démarrage : cadrage, accès, point contenu", owner: coolbeans }
+            - { date: Ven 04/09, label: Présentation du moodboard (direction visuelle), owner: coolbeans }
+            - { date: Mar 08/09, label: Choix de la direction visuelle par le Club, owner: client }
+            - { date: Ven 11/09, label: Structure des pages et maquette de la page d'accueil, owner: coolbeans }
+            - { date: Mer 16/09, label: Retour du Club sur la maquette, owner: client }
+            - { date: 17/09 → 24/09, label: Intégration, développement et mise en place du CMS, owner: coolbeans }
+            - { date: Ven 25/09, label: "Mise en ligne, référencement, formation à la mise à jour", owner: coolbeans }
+            - { date: Lun 28/09, label: Relecture finale du Club, owner: client }
+            - { date: Mar 29/09, label: Corrections, owner: coolbeans }
+            - { date: Mer 30/09, label: Livraison et démarrage du support 30 jours, owner: coolbeans }
+          note: >-
+            Ces dates tiennent si les retours arrivent dans les délais indiqués.
+            Un retard de validation peut décaler la livraison de plus que le
+            retard lui-même, le temps de recaler le projet entre mes autres
+            clients.
+
+notes:
+  - tone: success
+    texte: >-
+      **Tarif association appliqué sur l'ensemble de la prestation**, soit
+      560 € de remise sur le montant total.
+  - tone: warning
+    texte: >-
+      Le devis suppose que les contenus (textes et photographies) me sont
+      fournis au démarrage. Sans contenus à cette date, l'option Rédaction
+      s'applique et le devis fait l'objet d'un avenant.
+    tooltip: >-
+      Cette clause protège le planning : sans texte ni image, l'intégration
+      s'arrête, et la livraison de fin septembre ne peut plus être tenue.
+  - texte: >-
+      Chaque livraison de mise en page inclut une vérification sur ordinateur,
+      tablette et mobile.
+  - texte: >-
+      Deux allers-retours sont prévus par livrable. Au-delà, les itérations
+      supplémentaires restent possibles et sont budgétées au temps passé.
+  - texte: >-
+      Ne sont pas inclus : la traduction en allemand, assurée en interne, et la
+      création du logo, fournie par Boox Design.
+  - tone: info
+    texte: >-
+      Deux points restent à trancher ensemble au démarrage : le nom de domaine
+      définitif, et la question de réunir ou non Événements et Actualités en
+      une seule section.

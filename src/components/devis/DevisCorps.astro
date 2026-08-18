@@ -145,7 +145,7 @@ const ancre = (titre: string) => slugify(titre);
                         </span>
                       </div>
                       <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute">
-                        <span>Remise exceptionnelle (−{b.remisePct}&nbsp;%)</span>
+                        <span>{b.remiseLabel ?? "Remise exceptionnelle"} (−{b.remisePct}&nbsp;%)</span>
                         <span class="font-mono whitespace-nowrap tabular-nums">
                           −{eur.format(remise)}
                         </span>

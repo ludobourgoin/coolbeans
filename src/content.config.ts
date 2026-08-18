@@ -34,6 +34,9 @@ const devis = defineCollection({
               z.object({ label: z.string(), prix: z.number().optional(), tooltip: z.string().optional() }),
             ),
             remisePct: z.number().optional(),
+            // Libellé de la ligne de remise. « Tarif association », « Geste
+            // commercial »… Une remise nommée se valorise ; défaut neutre.
+            remiseLabel: z.string().optional(),
             mention: z.string().optional(), // suffixe des totaux, ex. « HT »
             reglement: z.string().optional(),
           })
@@ -173,7 +176,17 @@ const clients = defineCollection({
     // messagerie y crée ses tickets. Absent = module Messagerie en empty state.
     linearSupportProjectId: z.string().optional(),
     uptimerobot_monitor_ids: z.array(z.string()).default([]),
-    // Sort le client du sélecteur sans rien supprimer. Voir PortalClient.
+    // Workspace « à moi » (Coolbeans, Spinoza…) : en tête du sélecteur,
+    // avant le liseret qui le sépare des workspaces clients.
+    perso: z.boolean().default(false),
+    // Emoji affiché devant le nom dans le sélecteur (workspaces clients).
+    emoji: z.string().optional(),
+    // Début de la relation client : fonde le tri chronologique du sélecteur.
+    depuis: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional(),
+    // Sort le client du sélecteur sans rien supprimer. Voir PortalWorkspace.
     archive: z.boolean().default(false),
   }),
 });
