@@ -1,6 +1,5 @@
 ---
-/* Marqueur ⓘ + bulle au survol/focus. Sert à alléger le devis : l'explication
-   sort du fil principal sans disparaître. Texte brut uniquement.
+/* Marqueur ⓘ + bulle au survol, au focus et au toucher.
 
    Parti pris repris de Geist (vercel.com/geist/tooltip) : la bulle est un
    aplat d'encre sur page claire, et s'inverse en sombre. `bg-ink` +
@@ -13,22 +12,32 @@
    bordure --line disparaît sur blanc), et 13 px : sous la hauteur de capitale
    du texte, il se pose dans la ligne au lieu de la dominer.
 
-   Alignement, et c'est plus subtil qu'il n'y paraît : un inline-block
-   transmet la baseline de son dernier contenu en flux, ici le « i » centré
-   dans le disque, qui se trouve déjà ~4,5 px sous le bord bas du cercle. Tout
-   réglage exprimé depuis cette baseline (`baseline`, ou un retrait en em)
-   part donc d'un point faux et laisse le disque tomber sous le texte.
-   `middle` est le seul mot-clé qui ignore la baseline interne et se cale sur
-   le centre de la boîte : prévisible. Il vise ensuite le milieu de la hauteur
-   d'x, plus bas que le centre optique des capitales, d'où la remontée. Sa
-   valeur (0,21em) est mesurée sur le rendu réel et non déduite : le centre du
-   disque et celui des capitales ont été comparés au pixel sur capture. Toute
-   modification de la taille du disque ou de la police du devis la fausse et
-   demande une nouvelle mesure. */
+   Alignement : un inline-block transmet la baseline de son dernier contenu en
+   flux, ici le glyphe centré dans le disque, déjà ~4,5 px sous le bord bas du
+   cercle. Tout réglage exprimé depuis cette baseline part d'un point faux.
+   `middle` est le seul mot-clé qui l'ignore et se cale sur le centre de la
+   boîte. Il vise ensuite le milieu de la hauteur d'x, plus bas que le centre
+   optique des capitales, d'où la remontée. Sa valeur (0,21em) est mesurée sur
+   le rendu réel et non déduite.
+
+   Mobile, deux pièges distincts et cumulés :
+
+   1. **Safari iOS ne donne pas le focus à un `<button>` au toucher.** Un
+      affichage reposant sur `:focus-within` ne se déclenche donc jamais sur
+      iPhone : rien ne se passe au tap. Vérifié sous WebKit, où l'élément actif
+      reste `BODY` après le tap. D'où le basculement explicite au clic
+      ci-dessous, seul mécanisme fiable sur tactile.
+   2. La bulle est centrée sur le marqueur, donc elle sort de l'écran dès que
+      le marqueur approche d'un bord — et `overflow-x: clip` du body la tronque
+      au lieu de la laisser déborder. Le script la recale dans le viewport.
+
+   Attention en modifiant ce composant : Chromium en émulation tactile donne
+   le focus au bouton et masque donc le premier piège. Toute vérification
+   mobile se fait sous WebKit. */
 interface Props { texte: string }
 const { texte } = Astro.props;
 ---
-<span class="group relative -top-[0.21em] inline-block align-middle">
+<span class="group relative -top-[0.21em] inline-block align-middle" data-tooltip>
   <button
     type="button"
     aria-label={`Détail : ${texte}`}
@@ -36,7 +45,8 @@ const { texte } = Astro.props;
   >i</button>
   <span
     role="tooltip"
-    class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[38ch] -translate-x-1/2 rounded-card bg-ink px-3 py-2 text-[13px] leading-snug text-surface opacity-0 shadow-md transition-opacity duration-150 group-focus-within:opacity-100 group-hover:opacity-100"
+    class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[min(38ch,calc(100vw-2rem))] -translate-x-1/2 rounded-card bg-ink px-3 py-2 text-[13px] leading-snug text-surface opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 group-data-[ouvert]:opacity-100"
+    data-bulle
   >
     {texte}
     <span
@@ -45,3 +55,58 @@ const { texte } = Astro.props;
     />
   </span>
 </span>
+
+<script>
+  /* Délégation globale : un seul jeu d'écouteurs pour toutes les infobulles
+     de la page, quel que soit leur nombre. */
+  const MARGE = 12;
+
+  function recaler(marqueur: Element) {
+    const bulle = marqueur.querySelector<HTMLElement>("[data-bulle]");
+    if (!bulle) return;
+    bulle.style.transform = "translateX(-50%)";
+    const r = bulle.getBoundingClientRect();
+    let dx = 0;
+    if (r.left < MARGE) dx = MARGE - r.left;
+    else if (r.right > window.innerWidth - MARGE) dx = window.innerWidth - MARGE - r.right;
+    if (dx !== 0) bulle.style.transform = `translateX(calc(-50% + ${Math.round(dx)}px))`;
+  }
+
+  for (const evenement of ["pointerenter", "focusin"] as const) {
+    document.addEventListener(
+      evenement,
+      (e) => {
+        const marqueur = (e.target as Element | null)?.closest?.("[data-tooltip]");
+        if (marqueur) recaler(marqueur);
+      },
+      true,
+    );
+  }
+
+  function toutFermer(sauf?: Element) {
+    for (const m of document.querySelectorAll("[data-tooltip][data-ouvert]")) {
+      if (m !== sauf) m.removeAttribute("data-ouvert");
+    }
+  }
+
+  /* `pointerdown` et non `click` : sur iOS, un `click` ne remonte pas depuis
+     un élément non interactif, donc taper à côté ne refermait rien. Un appui
+     sur le marqueur bascule l'infobulle, un appui ailleurs les ferme toutes.
+     C'est ce qui fait fonctionner le tactile, où il n'y a ni survol ni focus. */
+  document.addEventListener("pointerdown", (e) => {
+    const cible = e.target as Element | null;
+    const marqueur = cible?.closest?.("[data-tooltip]");
+    toutFermer(marqueur ?? undefined);
+    if (!marqueur) return;
+    if (marqueur.hasAttribute("data-ouvert")) {
+      marqueur.removeAttribute("data-ouvert");
+    } else {
+      marqueur.setAttribute("data-ouvert", "");
+      recaler(marqueur);
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") toutFermer();
+  });
+</script>
