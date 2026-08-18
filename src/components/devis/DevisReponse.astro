@@ -248,8 +248,37 @@ const { slug } = Astro.props;
       form.reset();
       syncFacturationFields(); // reset() remet la case "validation" : réaffiche la facturation
     } catch {
-      status.textContent =
-        "Envoi impossible, réessayez dans un instant ou écrivez-moi directement.";
+      /* Filet de sécurité : un envoi qui échoue ne doit jamais laisser le
+         client sans issue, sinon la réponse est perdue et personne ne le sait
+         — ni lui, ni moi. On lui rend sa saisie sous forme de courriel
+         pré-rempli, qui ne dépend d'aucun de nos services. */
+      const corps = [
+        `Réponse au devis : ${payload.slug ?? ""}`,
+        payload.reponse === "validation"
+          ? "Je valide cette proposition."
+          : "J'ai une question ou une remarque.",
+        "",
+        `Prénom : ${payload.prenom ?? ""}`,
+        `Nom : ${payload.nom ?? ""}`,
+        `Email : ${payload.email ?? ""}`,
+        payload.raisonSociale ? `Raison sociale : ${payload.raisonSociale}` : "",
+        payload.siren ? `SIREN : ${payload.siren}` : "",
+        payload.adresse ? `Adresse de facturation : ${payload.adresse}` : "",
+        payload.tva ? `TVA intracommunautaire : ${payload.tva}` : "",
+        "",
+        String(payload.message ?? "").trim() || "(pas de message)",
+      ]
+        .filter((ligne) => ligne !== "")
+        .join("\n");
+      const lien =
+        "mailto:ludo@coolbeans.cc" +
+        `?subject=${encodeURIComponent(`Réponse au devis ${payload.slug ?? ""}`)}` +
+        `&body=${encodeURIComponent(corps)}`;
+
+      status.innerHTML =
+        "L'envoi automatique n'a pas abouti. Vos réponses ne sont pas perdues : " +
+        `<a class="link" href="${lien}">envoyez-les-moi par e-mail</a>, ` +
+        "le message est déjà prêt.";
       status.className = "text-center text-[13px] font-medium text-error";
     } finally {
       submitBtn.disabled = false;
