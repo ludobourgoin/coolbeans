@@ -1,37 +1,46 @@
 ---
-/* Pied de page sobre des pages devis. La page n'a ni Nav ni Footer du site
-   (elle est hors parcours, noindex) : ce bloc rend la signature Coolbeans et
-   l'accès aux mentions légales sans réintroduire toute la navigation.
-   Le logo ouvre le site dans un nouvel onglet pour ne pas faire sortir le
-   client de sa proposition. */
+/* Pied de page des pages devis. La page n'a ni Nav ni Footer du site (elle
+   est hors parcours, noindex) : ce bloc pose la signature Coolbeans et
+   l'accès aux mentions légales sans réintroduire la navigation.
+
+   Fond blanc et non surface-subtle : la page devis alterne déjà les fonds
+   (en-tête et formulaire en gris), un troisième aplat gris en pied
+   empilerait les zones. Le blanc laisse la page se terminer, et un simple
+   filet suffit à marquer la fin.
+
+   Respiration volontairement large (128 px) : c'est la marge qui donne
+   l'impression d'espace, pas les éléments. */
 const year = new Date().getFullYear();
 ---
 
-<footer class="border-t border-line bg-surface-subtle">
-  <div class="container-site flex flex-col items-center gap-4 py-12 text-center">
+<footer class="border-t border-line bg-surface">
+  <div class="container-site flex flex-col items-center py-32x text-center">
     <a
       href="https://coolbeans.cc"
       target="_blank"
       rel="noopener"
       aria-label="coolbeans — ouvrir le site dans un nouvel onglet"
-      class="inline-flex items-center leading-0 opacity-80 transition-opacity duration-150 hover:opacity-100"
+      class="inline-flex items-center leading-0 transition-opacity duration-150 hover:opacity-60"
     >
       <img
-        class="block h-5 w-auto dark:hidden"
+        class="block h-6 w-auto dark:hidden"
         src="/img/coolbeans-wordmark.svg"
         alt="coolbeans"
-        height="20"
+        height="24"
       />
       <img
-        class="hidden h-5 w-auto dark:block"
+        class="hidden h-6 w-auto dark:block"
         src="/img/coolbeans-wordmark-white.svg"
         alt="coolbeans"
-        height="20"
+        height="24"
       />
     </a>
-    <p class="text-[13px] text-mute">
-      © {year} Coolbeans, Ludovic Bourgoin ·{" "}
-      <a class="link" href="/mentions-legales" target="_blank" rel="noopener">Mentions légales</a>
+    <p class="mt-10x font-mono text-[11px] tracking-wide text-mute uppercase">
+      <a class="transition-colors duration-150 hover:text-ink" href="/mentions-legales" target="_blank" rel="noopener">
+        Mentions légales
+      </a>
+      <span class="mx-3 opacity-40" aria-hidden="true">·</span>
+      © {year} Coolbeans
     </p>
   </div>
 </footer>

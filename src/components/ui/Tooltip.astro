@@ -7,8 +7,11 @@
    `text-surface` obtiennent les deux d'un coup, puisque les deux tokens
    basculent avec .dark — aucune règle dark: à maintenir.
 
-   Le marqueur suit la même logique : disque plein d'encre, jamais un cercle
-   filaire (à 16 px, une bordure --line disparaît sur blanc).
+   Le marqueur suit la même logique en un cran plus doux : `bg-mute` plutôt
+   que `bg-ink`, pour qu'il se voie sans peser autant qu'un mot en gras. Un
+   disque plein, jamais un cercle filaire (à cette taille, une bordure --line
+   disparaît sur blanc), et 14 px plutôt que 16 : plus proche de la hauteur de
+   capitale du texte, donc plus facile à centrer et moins lourd dans la ligne.
 
    Alignement, et c'est plus subtil qu'il n'y paraît : un inline-block
    transmet la baseline de son dernier contenu en flux, ici le « i » centré
@@ -16,16 +19,20 @@
    réglage exprimé depuis cette baseline (`baseline`, ou un retrait en em)
    part donc d'un point faux et laisse le disque tomber sous le texte.
    `middle` est le seul mot-clé qui ignore la baseline interne et se cale sur
-   le centre de la boîte : prévisible. Il vise le milieu de la hauteur d'x,
-   1,5 px sous le centre optique des capitales, d'où la remontée. */
+   le centre de la boîte : prévisible. Il vise ensuite le milieu de la hauteur
+   d'x, plus bas que le centre optique des capitales, d'où la remontée. Sa
+   valeur (0,21em) est mesurée sur le rendu réel et non déduite : le centre du
+   disque et celui des capitales ont été comparés au pixel sur capture. Toute
+   modification de la taille du disque ou de la police du devis la fausse et
+   demande une nouvelle mesure. */
 interface Props { texte: string }
 const { texte } = Astro.props;
 ---
-<span class="group relative -top-[1.5px] inline-block align-middle">
+<span class="group relative -top-[0.21em] inline-block align-middle">
   <button
     type="button"
     aria-label={`Détail : ${texte}`}
-    class="ml-1 inline-flex size-4 items-center justify-center rounded-full bg-ink font-mono text-[10px] leading-none font-bold text-surface opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
+    class="ml-1 inline-flex size-[14px] items-center justify-center rounded-full bg-mute font-mono text-[9px] leading-none font-bold text-surface opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
   >i</button>
   <span
     role="tooltip"
