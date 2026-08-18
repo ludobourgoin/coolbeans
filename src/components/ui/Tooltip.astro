@@ -10,15 +10,18 @@
    Le marqueur suit la même logique : disque plein d'encre, jamais un cercle
    filaire (à 16 px, une bordure --line disparaît sur blanc).
 
-   Alignement : `vertical-align: -0.15em` plutôt que middle ou baseline. En
-   baseline le disque tombe sous le texte ; en middle il se cale sur la
-   demi-hauteur d'x et reste un cheveu bas. Un retrait exprimé en em centre le
-   disque sur la hauteur de capitale et suit la taille de police du contexte,
-   qui varie d'une section du devis à l'autre. */
+   Alignement, et c'est plus subtil qu'il n'y paraît : un inline-block
+   transmet la baseline de son dernier contenu en flux, ici le « i » centré
+   dans le disque, qui se trouve déjà ~4,5 px sous le bord bas du cercle. Tout
+   réglage exprimé depuis cette baseline (`baseline`, ou un retrait en em)
+   part donc d'un point faux et laisse le disque tomber sous le texte.
+   `middle` est le seul mot-clé qui ignore la baseline interne et se cale sur
+   le centre de la boîte : prévisible. Il vise le milieu de la hauteur d'x,
+   1,5 px sous le centre optique des capitales, d'où la remontée. */
 interface Props { texte: string }
 const { texte } = Astro.props;
 ---
-<span class="group relative inline-block [vertical-align:-0.15em]">
+<span class="group relative -top-[1.5px] inline-block align-middle">
   <button
     type="button"
     aria-label={`Détail : ${texte}`}
