@@ -34,3 +34,8 @@ pnpm-debug.log*
 
 # git worktrees (scratch)
 .worktrees/
+
+# superpowers : répertoire de travail du plugin (briefs, rapports, diffs de
+# revue, runtime brainstorm). Les specs et plans durables vivent dans
+# docs/superpowers/, lui est versionné.
+.superpowers/
