@@ -1,6 +1,6 @@
 titre: CAFA x Coolbeans
 objet: Site Internet du Club d'Affaires Franco-Allemand
-date: 2026-08-18
+date: 2026-08-06
 contact: Susanne
 linear:
   projet: Site web CAFA
@@ -11,9 +11,9 @@ sections:
     texte: >-
       Doter le Club d'un **site Internet à son image**, qui donne à voir ses
       événements et la vie de l'association, facilite l'adhésion de nouveaux
-      membres et valorise ses partenaires institutionnels. Le site remplace
-      l'ancien blog et devient l'adresse de référence du Club, **que vous
-      mettez à jour vous-même**, sans intervention technique.
+      membres et valorise ses partenaires institutionnels. Le site devient
+      l'adresse de référence du Club, **que vous mettez à jour vous-même**,
+      sans intervention technique.
 
   - titre: Pages du site
     texte: "**Sept pages**, construites à partir des sections définies ensemble lors de notre échange du 31 juillet :"
@@ -23,9 +23,6 @@ sections:
           Porte d'entrée du site : les prochains événements, les dernières
           actualités et l'accès à toutes les sections.
       - texte: "Qui sommes-nous : l'histoire du Club et les membres du bureau"
-        tooltip: >-
-          Construite à partir du bulletin d'adhésion actualisé que vous
-          m'avez transmis. Les montants de cotisation n'y figurent pas.
       - texte: Événements à venir
       - texte: "Actualités : retours sur les événements passés"
       - texte: "Devenir membre : pourquoi rejoindre le Club, et bulletin d'adhésion à télécharger"
@@ -42,8 +39,7 @@ sections:
           automatiquement de la page dès qu'elle est dépassée.
       - texte: >-
           **Publication en autonomie** : vous créez et modifiez événements,
-          actualités et partenaires vous-même, comme vous le faisiez sur
-          l'ancien blog
+          actualités et partenaires vous-même, sans intervention technique
       - texte: "**Formulaire de contact** : les messages arrivent directement dans la boîte mail du Club"
       - texte: "**Bulletin d'adhésion en PDF**, téléchargeable depuis la page Devenir membre"
 
@@ -101,8 +97,8 @@ sections:
           La traduction elle-même reste assurée en interne par vos soins,
           comme convenu lors de notre échange.
       - texte: >-
-          **Reprise des articles de l'ancien blog — 250 €.** Les contenus de
-          cafatmp.org sont rapatriés dans la nouvelle section Actualités.
+          **Reprise de vos articles existants — 250 €.** Les publications de
+          cafatmp.org sont rapatriées dans la nouvelle section Actualités.
         tooltip: >-
           Vous m'avez confirmé le 4 août vouloir capitaliser sur ce contenu :
           je vous conseille de retenir cette option.
@@ -122,8 +118,7 @@ sections:
         - label: Démarrage le 1er septembre
           texte: >-
             Livraison visée **fin septembre**, bien avant le congrès de début
-            novembre. Ces dates supposent que les contenus et les logos me
-            parviennent au démarrage.
+            novembre.
           jalons:
             - { date: Mar 01/09, label: "Démarrage : cadrage, accès, point contenu", owner: coolbeans }
             - { date: Ven 04/09, label: Présentation du moodboard (direction visuelle), owner: coolbeans }
@@ -146,23 +141,12 @@ notes:
     texte: >-
       **Tarif association appliqué sur l'ensemble de la prestation**, soit
       560 € de remise sur le montant total.
-  - tone: warning
-    texte: >-
-      Le devis suppose que les contenus (textes et photographies) me sont
-      fournis au démarrage. Sans contenus à cette date, l'option Rédaction
-      s'applique et le devis fait l'objet d'un avenant.
-    tooltip: >-
-      Cette clause protège le planning : sans texte ni image, l'intégration
-      s'arrête, et la livraison de fin septembre ne peut plus être tenue.
   - texte: >-
       Chaque livraison de mise en page inclut une vérification sur ordinateur,
       tablette et mobile.
   - texte: >-
       Deux allers-retours sont prévus par livrable. Au-delà, les itérations
       supplémentaires restent possibles et sont budgétées au temps passé.
-  - texte: >-
-      Ne sont pas inclus : la traduction en allemand, assurée en interne, et la
-      création du logo, fournie par Boox Design.
   - tone: info
     texte: >-
       Deux points restent à trancher ensemble au démarrage : le nom de domaine

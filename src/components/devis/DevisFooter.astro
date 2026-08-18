@@ -1,0 +1,37 @@
+---
+/* Pied de page sobre des pages devis. La page n'a ni Nav ni Footer du site
+   (elle est hors parcours, noindex) : ce bloc rend la signature Coolbeans et
+   l'accès aux mentions légales sans réintroduire toute la navigation.
+   Le logo ouvre le site dans un nouvel onglet pour ne pas faire sortir le
+   client de sa proposition. */
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line bg-surface-subtle">
+  <div class="container-site flex flex-col items-center gap-4 py-12 text-center">
+    <a
+      href="https://coolbeans.cc"
+      target="_blank"
+      rel="noopener"
+      aria-label="coolbeans — ouvrir le site dans un nouvel onglet"
+      class="inline-flex items-center leading-0 opacity-80 transition-opacity duration-150 hover:opacity-100"
+    >
+      <img
+        class="block h-5 w-auto dark:hidden"
+        src="/img/coolbeans-wordmark.svg"
+        alt="coolbeans"
+        height="20"
+      />
+      <img
+        class="hidden h-5 w-auto dark:block"
+        src="/img/coolbeans-wordmark-white.svg"
+        alt="coolbeans"
+        height="20"
+      />
+    </a>
+    <p class="text-[13px] text-mute">
+      © {year} Coolbeans, Ludovic Bourgoin ·{" "}
+      <a class="link" href="/mentions-legales" target="_blank" rel="noopener">Mentions légales</a>
+    </p>
+  </div>
+</footer>
