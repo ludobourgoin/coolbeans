@@ -1,5 +1,5 @@
 import { env } from "cloudflare:workers";
-import type { Reglages, Segment } from "./types";
+import type { Reglages } from "./types";
 import { REGLAGES_DEFAUT } from "./defaults";
 
 export interface KVLike {
@@ -37,7 +37,6 @@ interface CatalogueLegacy {
       horsPerimetre: string;
     };
   };
-  segments: Record<string, Segment>;
 }
 
 function migrerDepuisCatalogueLegacy(legacy: CatalogueLegacy): Reglages {
@@ -52,7 +51,6 @@ function migrerDepuisCatalogueLegacy(legacy: CatalogueLegacy): Reglages {
     gestionPct: REGLAGES_DEFAUT.gestionPct,
     urgencePct: legacy.catalog.gestion.urgencePct,
     affinite: legacy.catalog.affinite,
-    segments: legacy.segments,
     devisTexts: {
       stackTechnique: legacy.catalog.devisTexts.stackTechnique,
       conditionsReglement: legacy.catalog.devisTexts.conditionsReglement,
@@ -78,15 +76,14 @@ function parseJson<T>(raw: string): T | null {
    dans les calculs — c'est la garde de forme qui manquait au parse. */
 function completer(partiel: Partial<Reglages>): Reglages {
   const d = structuredClone(REGLAGES_DEFAUT);
-  const segments = partiel.segments && Object.keys(partiel.segments).length > 0
-    ? partiel.segments
-    : d.segments;
+  /* `segments` a existé jusqu'au 2026-08-18 : on l'écarte d'un blob ancien
+     pour ne pas le réintroduire dans les Réglages via le spread. */
+  const { segments: _ignore, ...restant } = partiel as Partial<Reglages> & { segments?: unknown };
   return {
     ...d,
-    ...partiel,
+    ...restant,
     affinite: { ...d.affinite, ...(typeof partiel.affinite === "object" ? partiel.affinite : {}) },
     devisTexts: { ...d.devisTexts, ...(typeof partiel.devisTexts === "object" ? partiel.devisTexts : {}) },
-    segments,
   };
 }
 

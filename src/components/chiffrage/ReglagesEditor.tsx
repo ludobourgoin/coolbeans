@@ -44,45 +44,38 @@ export default function ReglagesEditor({ initial }: { initial: Reglages }) {
   }
 
   const r = reglages;
+  /* Le vrai argent en poche : le taux « charges + impôt » couvre cotisations
+     sociales, CFP et versement libératoire (micro BNC). */
+  const netJour = Math.round(r.tjm * (1 - r.chargesPct / 100));
+  const netMois = Math.round(r.tjm * r.joursSemaine * 4.33 * (1 - r.chargesPct / 100));
 
   return (
     <div class="grid gap-6">
       <section class="card grid gap-4 bg-surface-subtle">
         <h2>Repères généraux</h2>
-        <div class="flex flex-wrap gap-4">
+        <div class="grid gap-4">
           <Num chemin="tjm" label="TJM cible (€)" valeur={r.tjm} step={10} maj={maj} />
           <Num chemin="heuresJour" label="Heures / jour facturé" valeur={r.heuresJour} step={1} maj={maj} />
           <Num chemin="marcheBas" label="Marché bas (€/j)" valeur={r.marcheBas} step={10} maj={maj} />
           <Num chemin="marcheHaut" label="Marché haut (€/j)" valeur={r.marcheHaut} step={10} maj={maj} />
           <Num chemin="joursSemaine" label="Jours dispo / semaine" valeur={r.joursSemaine} maj={maj} />
           <Num chemin="semainesMarge" label="Semaines de marge" valeur={r.semainesMarge} maj={maj} />
-          <Num chemin="chargesPct" label="Charges + IR (%)" valeur={r.chargesPct} step={1} maj={maj} />
+          <Num chemin="chargesPct" label="Charges sociales + impôt (% du CA encaissé)" valeur={r.chargesPct} step={0.5} maj={maj} />
         </div>
+        <p class="text-[13px] text-mute border-t border-line pt-3" role="status">
+          Dans ta poche, après charges et impôt : <strong class="text-ink">{netJour} € / jour facturé</strong>
+          {" "}· ~{netMois} € / mois type ({r.joursSemaine} j facturés par semaine).
+        </p>
       </section>
 
       <section class="card grid gap-4">
         <h2>Coefficients</h2>
-        <div class="flex flex-wrap gap-4">
+        <div class="grid gap-4">
           <Num chemin="gestionPct" label="Gestion de projet (% du total)" valeur={r.gestionPct} step={1} maj={maj} />
           <Num chemin="urgencePct" label="Urgence (%)" valeur={r.urgencePct} step={1} maj={maj} />
           <Num chemin="affinite.baisse" label="Affinité : remise (%)" valeur={r.affinite.baisse} step={5} maj={maj} />
           <Num chemin="affinite.hausse" label="Affinité : majoration (%)" valeur={r.affinite.hausse} step={5} maj={maj} />
         </div>
-      </section>
-
-      <section class="card grid gap-4">
-        <h2>Cibles</h2>
-        {Object.entries(r.segments).map(([key, seg]) => (
-          <div class="grid gap-2 border-t border-line pt-3">
-            <p class="text-[13px] font-bold">{seg.label}</p>
-            <label class="flex items-center gap-2 text-[13px]">
-              <input type="checkbox" checked={seg.gestionProjet}
-                onChange={(e) => maj(`segments.${key}.gestionProjet`, e.currentTarget.checked)} />
-              Gestion de projet cochée par défaut
-            </label>
-            <input class="field" value={seg.note} onInput={(e) => maj(`segments.${key}.note`, e.currentTarget.value)} />
-          </div>
-        ))}
       </section>
 
       <section class="card grid gap-4">

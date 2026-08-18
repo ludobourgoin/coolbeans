@@ -3,13 +3,6 @@
 
 export type Affinite = "neutre" | "envie" | "pasenvie";
 
-export interface Segment {
-  label: string;
-  desc: string;
-  gestionProjet: boolean;
-  note: string;
-}
-
 export interface Reglages {
   tjm: number;
   heuresJour: number; // 7 : heures effectives d'un jour facturé
@@ -21,7 +14,6 @@ export interface Reglages {
   gestionPct: number; // +15 % sur la totalité du projet (jamais hebdo)
   urgencePct: number; // +20 %, affiché au devis en valeur absolue
   affinite: { baisse: number; hausse: number };
-  segments: Record<string, Segment>;
   devisTexts: {
     stackTechnique: string;
     conditionsReglement: string;
@@ -38,7 +30,7 @@ export interface Reduction {
 }
 
 export interface ModificateursProjet {
-  segment: string; // clé dans reglages.segments
+  segment: string; // informatif (tpe, pme, association…) — plus de registre de segments depuis 2026-08-18
   affinite: Affinite;
   gestionProjet: boolean;
   urgence: boolean;

@@ -76,7 +76,8 @@ describe("store — Réglages", () => {
     expect(reglages.chargesPct).toBe(28);
     expect(reglages.affinite).toEqual({ baisse: 15, hausse: 25 });
     expect(reglages.urgencePct).toBe(22);
-    expect(reglages.segments).toEqual(catalogueLegacy.segments);
+    // Les segments du legacy ne sont plus repris : notion retirée le 2026-08-18.
+    expect("segments" in reglages).toBe(false);
     expect(reglages.devisTexts.stackTechnique).toBe("Stack legacy");
     expect(reglages.devisTexts.conditionsReglement).toBe("Conditions legacy");
     expect(reglages.devisTexts.ceQueCaComprend).toBe("Item legacy");
@@ -103,6 +104,12 @@ describe("store — Réglages", () => {
     expect(reglages.tjm).toBe(800);
     expect(reglages.heuresJour).toBe(REGLAGES_DEFAUT.heuresJour);
     expect(reglages.gestionPct).toBe(REGLAGES_DEFAUT.gestionPct);
+  });
+
+  it("un blob pilotage:reglages qui porte encore des segments les voit écartés", async () => {
+    await ns.put("pilotage:reglages", JSON.stringify({ ...REGLAGES_DEFAUT, segments: { tpe: {} } }));
+    const reglages = await getReglages(ns);
+    expect("segments" in reglages).toBe(false);
   });
 
   it("un pilotage:catalog en JSON valide mais de forme inattendue retombe sur les défauts sans rejeter", async () => {
