@@ -17,7 +17,7 @@ import EmptyState from "../components/portail/EmptyState.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
 import PortalSidebar from "../components/portail/PortalSidebar.astro";
 import { buildSidebar } from "../lib/portail/nav";
-import WorkspaceSwitcher from "../components/portail/WorkspaceSwitcher.astro";
+import ClientSwitcher from "../components/portail/ClientSwitcher.astro";
 import { readPortalMetadata } from "../lib/portail/metadata";
 
 // Un client onboardé : les cinq entrées, sans les entrées admin.
@@ -520,7 +520,7 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
 
       <p class="label mb-3x mt-10x">Sélecteur de client · admin uniquement</p>
       <div class="card max-w-80">
-        <WorkspaceSwitcher
+        <ClientSwitcher
           clients={[
             { slug: "coolbeans", nom: "Coolbeans", uptimerobot_monitor_ids: [], archive: false },
             { slug: "amusoire", nom: "Amusoire", doc: "amusoire", uptimerobot_monitor_ids: [], archive: false },
