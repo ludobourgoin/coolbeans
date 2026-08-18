@@ -13,6 +13,7 @@ import Choicebox from "../components/ui/Choicebox.astro";
 import ClearableInput from "../components/ui/ClearableInput.astro";
 import ContextCard from "../components/ui/ContextCard.astro";
 import CommandMenu from "../components/ui/CommandMenu.astro";
+import SearchInput from "../components/ui/SearchInput.astro";
 import EmptyState from "../components/portail/EmptyState.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
 import PortalSidebar from "../components/portail/PortalSidebar.astro";
@@ -589,6 +590,18 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
             ]}
           />
         </div>
+      </div>
+
+      <div class="mt-6x">
+        <p class="label mb-4x">Search input · with cmdk</p>
+        <SearchInput placeholder="Rechercher…" class="max-w-110" />
+        <p class="mt-3x max-w-[62ch] text-sm text-mute">
+          Portage du <code class="font-mono">SearchInput</code> de Geist (variante
+          <code class="font-mono">with-cmdk</code>) : loupe à gauche, deux capsules de touche
+          à droite, remplacées par <code class="font-mono">Esc</code> au focus. Le raccourci
+          ⌘K (Ctrl+K hors macOS) est armé par le composant lui-même. C'est ce champ que porte
+          la topbar du portail.
+        </p>
       </div>
 
       <div class="mt-6x">

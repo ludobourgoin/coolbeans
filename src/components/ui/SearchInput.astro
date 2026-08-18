@@ -1,0 +1,137 @@
+---
+// Search Input — portage du composant Geist « Search Input », variante
+// with-cmdk : https://vercel.com/geist/search-input#with-cmdk
+//
+// Anatomie Geist, respectée à la lettre :
+//   [ loupe 16 ]  [ champ transparent ]  [ ⌘ ][ K ]
+// La bordure et le fond vivent sur le CONTENEUR, pas sur l'input : c'est ce
+// qui permet à la loupe et aux touches d'être à l'intérieur du cadre et au
+// focus ring de cerner l'ensemble (focus-within). L'input lui-même est nu.
+//
+// Les touches sont deux capsules SÉPARÉES (⌘ puis K), pas un « ⌘K » collé —
+// c'est la signature du composant Geist. Au focus elles cèdent la place à
+// « Esc », comme dans l'exemple with-cmdk.
+//
+// Icône : la loupe pleine de Geist (viewBox 16, fill currentColor), pas
+// l'Iconoir du portail — c'est elle qui donne le grain exact du champ.
+interface Props {
+  id?: string;
+  name?: string;
+  placeholder?: string;
+  /** Affiche les touches ⌘/K et arme le raccourci clavier. */
+  shortcut?: boolean;
+  /** Classes du conteneur (largeur, marges). */
+  class?: string;
+}
+
+const {
+  id,
+  name,
+  placeholder = "Rechercher…",
+  shortcut = true,
+  class: className,
+} = Astro.props;
+
+// Capsule de touche Geist : 20px de haut, radius small (5px), bordure --line.
+const KBD =
+  "inline-flex h-5 min-w-5 items-center justify-center rounded-[5px] border border-line px-1 font-sans text-xs leading-none text-mute";
+---
+
+<div
+  class:list={[
+    "relative flex h-9 items-center gap-2.5 rounded-control border border-line bg-surface px-3",
+    "transition-[border-color,box-shadow] duration-150 ease-in-out",
+    "focus-within:border-[var(--accent)] focus-within:shadow-[0_0_0_2px_var(--surface),0_0_0_4px_var(--focus)]",
+    className,
+  ]}
+  data-search-input={shortcut ? "shortcut" : ""}
+>
+  <svg
+    class="pointer-events-none size-4 flex-none text-[var(--ds-gray-700)]"
+    viewBox="0 0 16 16"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M1.5 6.5C1.5 3.73858 3.73858 1.5 6.5 1.5C9.26142 1.5 11.5 3.73858 11.5 6.5C11.5 9.26142 9.26142 11.5 6.5 11.5C3.73858 11.5 1.5 9.26142 1.5 6.5ZM6.5 0C2.91015 0 0 2.91015 0 6.5C0 10.0899 2.91015 13 6.5 13C8.02469 13 9.42677 12.4748 10.5353 11.596L14.4697 15.5303L15 16.0607L16.0607 15L15.5303 14.4697L11.596 10.5353C12.4748 9.42677 13 8.02469 13 6.5C13 2.91015 10.0899 0 6.5 0Z"
+      fill="currentColor"></path>
+  </svg>
+
+  {/* type="text" et non "search" : Safari/Chrome greffent sur `search` une
+      croix native qui doublonnerait avec les touches. */}
+  <input
+    id={id}
+    name={name}
+    type="text"
+    autocomplete="off"
+    spellcheck="false"
+    placeholder={placeholder}
+    class="peer h-full min-w-0 flex-1 border-0 bg-transparent p-0 text-sm text-ink outline-none placeholder:text-[var(--ds-gray-700)]"
+  />
+
+  {/* Deux groupes FRÈRES de l'input : les variantes peer-* de Tailwind
+      s'appuient sur `~`, elles ne traverseraient pas un span intermédiaire. */}
+  {
+    shortcut && (
+      <>
+        <span
+          class="pointer-events-none flex flex-none items-center gap-1 peer-focus:hidden"
+          aria-hidden="true"
+        >
+          <kbd class={KBD} data-kbd-mod>
+            ⌘
+          </kbd>
+          <kbd class={KBD}>K</kbd>
+        </span>
+        <span class="pointer-events-none hidden flex-none peer-focus:flex" aria-hidden="true">
+          <kbd class={KBD}>Esc</kbd>
+        </span>
+      </>
+    )
+  }
+</div>
+
+<script>
+  // Raccourci ⌘K / Ctrl+K : porté par le composant (et non par la page) pour
+  // qu'un champ posé n'importe où soit armé sans code d'appel.
+  const isMac = /Mac|iP(hone|ad|od)/.test(navigator.platform || navigator.userAgent);
+  if (!isMac) {
+    document.querySelectorAll<HTMLElement>("[data-kbd-mod]").forEach((k) => {
+      k.textContent = "Ctrl";
+      k.classList.add("px-1.5");
+    });
+  }
+
+  const fields = () =>
+    [...document.querySelectorAll<HTMLElement>('[data-search-input="shortcut"]')].filter(
+      // Le champ de la topbar est masqué sous 1024px : on ne le focus pas.
+      (el) => el.offsetParent !== null,
+    );
+
+  document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      const input = fields()[0]?.querySelector("input");
+      if (!input) return;
+      e.preventDefault();
+      input.focus();
+      input.select();
+    }
+  });
+
+  // Esc : vide d'abord (en notifiant les écouteurs `input`), rend la main
+  // ensuite — comportement de l'exemple with-cmdk.
+  document.querySelectorAll<HTMLElement>("[data-search-input]").forEach((wrap) => {
+    const input = wrap.querySelector("input");
+    input?.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      if (input.value) {
+        input.value = "";
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      } else {
+        input.blur();
+      }
+    });
+  });
+</script>

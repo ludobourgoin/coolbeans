@@ -228,12 +228,9 @@ const prenomVue = admin && client ? (client.prenom ?? client.nom) : (user?.first
         qRes.hidden = false;
       };
       qIn.addEventListener("input", search);
+      // Le raccourci ⌘K et le vidage sur Esc appartiennent au composant
+      // SearchInput ; il ne reste ici que la fermeture du panneau.
       document.addEventListener("keydown", (e) => {
-        if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-          e.preventDefault();
-          qIn.focus();
-          qIn.select();
-        }
         if (e.key === "Escape") qRes.hidden = true;
       });
       document.addEventListener("click", (e) => {
