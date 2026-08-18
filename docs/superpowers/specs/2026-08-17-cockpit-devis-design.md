@@ -168,6 +168,14 @@ seule jusqu'à extinction. `calc.ts` est réécrit autour du nouveau modèle
 - `references/composition.md` est corrigée selon §5 : montant total unique,
   lignes de périmètre sans prix, prix affiché sur les seules options (et
   l'urgence en valeur absolue), tooltips, « Stack technique recommandée ».
+- **Couture CRM ↔ Proposal, doctrine deux portes (2026-08-18)** : la carte
+  CRM = l'affaire, le projet Proposal = son périmètre chiffré ; l'autre
+  moitié naît automatiquement quelle que soit la porte. Porte CRM : si
+  l'affaire n'a pas de projet Proposal au moment du devis, la skill le
+  scaffolde depuis le template (bloc Chiffrage pré-rempli du contexte de la
+  carte) et pose les liens croisés. Porte Proposal : la carte est créée par
+  le webhook Linear → Worker (COO-124, milestone P10) ; la skill vérifie le
+  lien et ne crée jamais de doublon.
 - Ces modifications de skill se font dans `coolbeans-claude-skills`
   (symlinks), avec resynchronisation dotfiles.
 
