@@ -3,12 +3,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 // Stub du module runtime Workers : jamais utilisé quand on passe `ns` explicitement.
 vi.mock("cloudflare:workers", () => ({ env: {} }));
 
-import { CATALOGUE_DEFAUT, nouveauChiffrage } from "./defaults";
-import type { Chiffrage } from "./types";
-import {
-  cleChiffrage, cleDevis, genererId, getCatalogue, getChiffrage,
-  listChiffrages, publierVersion, saveChiffrage, type KVLike,
-} from "./store";
+import { REGLAGES_DEFAUT } from "./defaults";
+import { getReglages, saveReglages, type KVLike } from "./store";
 
 const memoire = (): KVLike & { data: Map<string, string> } => {
   const data = new Map<string, string>();
@@ -24,53 +20,103 @@ const memoire = (): KVLike & { data: Map<string, string> } => {
   };
 };
 
-let ns: ReturnType<typeof memoire>;
-beforeEach(() => { ns = memoire(); });
+// Ancien format `pilotage:catalog`, tel que stocké avant le chantier cockpit-devis.
+const catalogueLegacy = {
+  settings: {
+    tjm: 555,
+    demi: false,
+    marcheBas: 400,
+    marcheHaut: 700,
+    joursSemaine: 4,
+    semainesMarge: 2,
+    chargesPct: 28,
+  },
+  catalog: {
+    affinite: { baisse: 15, hausse: 25 },
+    gestion: { urgencePct: 22 },
+    devisTexts: {
+      stackTechnique: "Stack legacy",
+      conditionsReglement: "Conditions legacy",
+      ceQueCaComprend: "Item legacy",
+      horsPerimetre: "Hors legacy",
+    },
+  },
+  segments: {
+    pme: { label: "PME legacy", desc: "desc legacy", gestionProjet: true, note: "note legacy" },
+  },
+};
 
-const chiffrage = (id: string): Chiffrage & { id: string } => ({
-  ...nouveauChiffrage(CATALOGUE_DEFAUT), id, nom: `C${id}`, clientSlug: "acme", projetSlug: "site",
+let ns: ReturnType<typeof memoire>;
+beforeEach(() => {
+  ns = memoire();
 });
 
-describe("store", () => {
-  it("les clés suivent le schéma de la spec", () => {
-    expect(cleChiffrage("8432")).toBe("chiffrage:8432");
-    expect(cleDevis("acme", "site", "8432")).toBe("devis:acme:site-8432");
+describe("store — Réglages", () => {
+  it("rend REGLAGES_DEFAUT si la clé pilotage:reglages est vide et qu'il n'y a pas d'ancien catalogue", async () => {
+    expect(await getReglages(ns)).toEqual(REGLAGES_DEFAUT);
   });
 
-  it("le catalogue absent retombe sur les valeurs par défaut", async () => {
-    expect(await getCatalogue(ns)).toEqual(CATALOGUE_DEFAUT);
+  it("sauvegarde puis relit les réglages (roundtrip)", async () => {
+    const r = { ...REGLAGES_DEFAUT, tjm: 700 };
+    await saveReglages(r, ns);
+    expect(await getReglages(ns)).toEqual(r);
   });
 
-  it("sauvegarde puis relit un chiffrage", async () => {
-    await saveChiffrage(chiffrage("8432"), ns);
-    expect((await getChiffrage("8432", ns))?.nom).toBe("C8432");
+  it("migre depuis l'ancien pilotage:catalog quand pilotage:reglages est vide", async () => {
+    await ns.put("pilotage:catalog", JSON.stringify(catalogueLegacy));
+
+    const reglages = await getReglages(ns);
+
+    // Champs repris tels quels depuis l'ancien format.
+    expect(reglages.tjm).toBe(555);
+    expect(reglages.marcheBas).toBe(400);
+    expect(reglages.marcheHaut).toBe(700);
+    expect(reglages.joursSemaine).toBe(4);
+    expect(reglages.semainesMarge).toBe(2);
+    expect(reglages.chargesPct).toBe(28);
+    expect(reglages.affinite).toEqual({ baisse: 15, hausse: 25 });
+    expect(reglages.urgencePct).toBe(22);
+    expect(reglages.segments).toEqual(catalogueLegacy.segments);
+    expect(reglages.devisTexts.stackTechnique).toBe("Stack legacy");
+    expect(reglages.devisTexts.conditionsReglement).toBe("Conditions legacy");
+    expect(reglages.devisTexts.ceQueCaComprend).toBe("Item legacy");
+    expect(reglages.devisTexts.horsPerimetre).toBe("Hors legacy");
+
+    // Champs absents de l'ancien format : complétés depuis REGLAGES_DEFAUT.
+    expect(reglages.gestionPct).toBe(15);
+    expect(reglages.heuresJour).toBe(7);
+    expect(reglages.devisTexts.urgenceTooltip).toBe(REGLAGES_DEFAUT.devisTexts.urgenceTooltip);
   });
 
-  it("liste par préfixe", async () => {
-    await saveChiffrage(chiffrage("1111"), ns);
-    await saveChiffrage(chiffrage("2222"), ns);
-    await ns.put("devis:acme:site-1111", "{}"); // ne doit pas remonter
-    const tous = await listChiffrages(ns);
-    expect(tous.map((c) => c.id).sort()).toEqual(["1111", "2222"]);
+  it("la migration ne touche jamais pilotage:catalog, et fige le résultat sur pilotage:reglages", async () => {
+    await ns.put("pilotage:catalog", JSON.stringify(catalogueLegacy));
+    const migre = await getReglages(ns);
+    expect(await ns.get("pilotage:catalog")).toBe(JSON.stringify(catalogueLegacy));
+    // Write-back sur la clé neuve : la lecture suivante ne repasse plus par le legacy.
+    expect(JSON.parse((await ns.get("pilotage:reglages"))!)).toEqual(migre);
   });
 
-  it("genererId produit 4-5 chiffres et évite les collisions", async () => {
-    await saveChiffrage(chiffrage("1000"), ns);
-    const tirages = [1000, 1000, 4242]; // deux collisions puis un id libre
-    const id = await genererId(ns, () => tirages.shift()!);
-    expect(id).toBe("4242");
-    expect(id).toMatch(/^\d{4,5}$/);
+  it("un blob pilotage:reglages d'une version antérieure (champs manquants) est complété par les défauts", async () => {
+    const { heuresJour: _h, gestionPct: _g, ...ancien } = { ...REGLAGES_DEFAUT, tjm: 800 };
+    await ns.put("pilotage:reglages", JSON.stringify(ancien));
+    const reglages = await getReglages(ns);
+    expect(reglages.tjm).toBe(800);
+    expect(reglages.heuresJour).toBe(REGLAGES_DEFAUT.heuresJour);
+    expect(reglages.gestionPct).toBe(REGLAGES_DEFAUT.gestionPct);
   });
 
-  it("publierVersion crée puis empile des versions immuables", async () => {
-    const c = chiffrage("8432");
-    const data = { titre: "T", objet: "O", date: "2026-08-11T00:00:00.000Z", sections: [], notes: [] as never[] };
-    const v1 = await publierVersion(c, data, ns);
-    expect(v1).toEqual({ url: "/devis/acme/site-8432", n: 1 });
-    const v2 = await publierVersion(c, { ...data, titre: "T2" }, ns);
-    expect(v2.n).toBe(2);
-    const doc = JSON.parse(ns.data.get("devis:acme:site-8432")!);
-    expect(doc.versions).toHaveLength(2);
-    expect(doc.versions[0].data.titre).toBe("T"); // la V1 n'a pas bougé
+  it("un pilotage:catalog en JSON valide mais de forme inattendue retombe sur les défauts sans rejeter", async () => {
+    await ns.put("pilotage:catalog", JSON.stringify({ foo: 1 }));
+    await expect(getReglages(ns)).resolves.toEqual(REGLAGES_DEFAUT);
+  });
+
+  it("pilotage:reglages corrompu retombe sur REGLAGES_DEFAUT sans rejeter (pas de pilotage:catalog)", async () => {
+    await ns.put("pilotage:reglages", "{pas du json");
+    await expect(getReglages(ns)).resolves.toEqual(REGLAGES_DEFAUT);
+  });
+
+  it("pilotage:catalog corrompu (pilotage:reglages vide) retombe sur REGLAGES_DEFAUT sans rejeter", async () => {
+    await ns.put("pilotage:catalog", "{pas du json non plus");
+    await expect(getReglages(ns)).resolves.toEqual(REGLAGES_DEFAUT);
   });
 });

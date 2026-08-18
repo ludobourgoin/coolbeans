@@ -19,14 +19,20 @@ const devis = defineCollection({
     // Prénom du contact côté client, affiché sur les jalons de planning
     // attribués à "client" (owner: client). Chaque devis a son propre client.
     contact: z.string().optional(),
+    envoi: z.object({ date: z.coerce.date(), destinataire: z.string() }).optional(),
+    linear: z.object({ projet: z.string().optional(), affaire: z.string().optional() }).optional(),
     sections: z.array(
       z.object({
         titre: z.string(),
         texte: z.string().optional(),
-        liste: z.array(z.string()).optional(),
+        liste: z
+          .array(z.union([z.string(), z.object({ texte: z.string(), tooltip: z.string().optional() })]))
+          .optional(),
         budget: z
           .object({
-            lignes: z.array(z.object({ label: z.string(), prix: z.number().optional() })),
+            lignes: z.array(
+              z.object({ label: z.string(), prix: z.number().optional(), tooltip: z.string().optional() }),
+            ),
             remisePct: z.number().optional(),
             mention: z.string().optional(), // suffixe des totaux, ex. « HT »
             reglement: z.string().optional(),
@@ -66,6 +72,7 @@ const devis = defineCollection({
       .array(
         z.object({
           texte: z.string(),
+          tooltip: z.string().optional(),
           tone: z.enum(["neutral", "info", "success", "warning", "error"]).default("info"),
         }),
       )

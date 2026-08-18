@@ -1,0 +1,120 @@
+---
+export const prerender = false;
+
+import EspaceLayout from "../../../layouts/EspaceLayout.astro";
+import { getCollection } from "astro:content";
+import { listerReponses, type ReponseDevis } from "../../../lib/devis/reponses";
+import { STATUT_LABEL, statutDevis, type StatutDevis } from "../../../lib/devis/statut";
+import { dateLongue, eur, totaux } from "../../../lib/devis";
+
+const user = await Astro.locals.currentUser();
+const isAdmin = ((user?.publicMetadata ?? {}) as { role?: string }).role === "admin";
+if (!isAdmin) return Astro.redirect("/espace");
+
+const devis = (await getCollection("devis")).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+/* Gardé : si la migration devis_reponses n'est pas encore appliquée sur cet
+   environnement, le cockpit s'affiche sans statuts « Répondu » plutôt que de
+   tomber en 500. */
+let reponses: ReponseDevis[] = [];
+try {
+  reponses = await listerReponses();
+} catch (err) {
+  console.error("espace/devis: lecture des réponses D1 impossible", err);
+}
+/* listerReponses rend la dernière réponse de chaque slug. */
+const parSlug = new Map(reponses.map((r) => [r.slug, r]));
+const derniereReponse = (slug: string): ReponseDevis | undefined => parSlug.get(slug);
+
+/* D1 stocke datetime('now') en UTC « YYYY-MM-DD HH:MM:SS » : reconstituer une
+   Date correcte avant de formater comme le reste de la page. */
+const dateReponse = (createdAt: string) =>
+  dateLongue(new Date(createdAt.replace(" ", "T") + "Z"));
+
+const lignes = devis.map((d) => {
+  const budget = d.data.sections.find((s) => s.budget)?.budget;
+  const reponse = derniereReponse(d.id);
+  return {
+    slug: d.id,
+    titre: d.data.titre,
+    objet: d.data.objet,
+    date: dateLongue(d.data.date),
+    total: budget ? eur.format(totaux(budget).totalFinal) : "—",
+    statut: statutDevis(d.data.envoi, reponse),
+    envoi: d.data.envoi,
+    reponse,
+    /* Absolue : sur my.coolbeans.cc le worker réécrit tout chemin relatif en
+       /espace/<chemin>, et /espace/devis/<slug> n'existe pas. La page
+       publique vit sur coolbeans.cc. */
+    urlPublique: `https://coolbeans.cc/devis/${d.id}`,
+    linear: d.data.linear,
+  };
+});
+
+const BADGE: Record<StatutDevis, string> = {
+  publie: "text-mute",
+  envoye: "text-warning",
+  repondu: "text-success",
+};
+---
+
+<EspaceLayout title="Devis">
+  <p class="label">Pipeline commercial</p>
+  <h1>Devis</h1>
+  <p class="sub">
+    Le devis naît dans Linear (projet Proposal) et s'écrit via la skill devis — cette page ne fait
+    que suivre. <a class="link" href="/espace/devis/reglages">Réglages</a>
+  </p>
+
+  {lignes.length === 0 ? (
+    <p class="sub mt-8">Aucun devis publié pour l'instant.</p>
+  ) : (
+    <div class="mt-6 grid gap-4">
+      {lignes.map((l) => (
+        <div class="card grid gap-3">
+          <div class="flex flex-wrap items-baseline justify-between gap-3">
+            <div>
+              <p class="font-bold">{l.titre}</p>
+              <p class="text-[13px] text-mute">{l.objet}</p>
+            </div>
+            <div class="flex items-baseline gap-4">
+              <span class="font-mono text-[15px] font-bold tabular-nums">{l.total}</span>
+              <span class={`text-[11px] font-bold uppercase ${BADGE[l.statut]}`}>
+                {STATUT_LABEL[l.statut]}
+              </span>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-4 text-[13px]">
+            <span class="font-mono text-mute">{l.date}</span>
+            {l.envoi && (
+              <span class="text-mute">
+                Envoyé le {dateLongue(l.envoi.date)} à {l.envoi.destinataire}
+              </span>
+            )}
+            <a class="link" href={l.urlPublique} target="_blank" rel="noopener">Devis ↗</a>
+            {l.linear?.projet && (
+              <a class="link" href={l.linear.projet} target="_blank" rel="noopener">Projet Linear ↗</a>
+            )}
+            {l.linear?.affaire && (
+              <a class="link" href={l.linear.affaire} target="_blank" rel="noopener">Affaire CRM ↗</a>
+            )}
+          </div>
+          {l.reponse && (
+            <div class="grid gap-2 border-t border-line pt-3 text-[13px]">
+              <p>
+                <span class={`font-bold ${l.reponse.decision === "validation" ? "text-success" : "text-warning"}`}>
+                  {l.reponse.decision === "validation" ? "Proposition validée" : "Question / remarque"}
+                </span>
+                <span class="text-mute">
+                  {" "}— {l.reponse.prenom} {l.reponse.nom} ({l.reponse.email}), le {dateReponse(l.reponse.createdAt)}
+                </span>
+              </p>
+              {l.reponse.message && <p class="max-w-[70ch]">{l.reponse.message}</p>}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  )}
+</EspaceLayout>

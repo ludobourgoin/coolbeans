@@ -1,11 +1,13 @@
 ---
 import Banner from "../ui/Banner.astro";
+import Tooltip from "../ui/Tooltip.astro";
 import {
   riche,
   eur,
   slugify,
   totaux,
   ownerLabel,
+  listeItem,
   OWNER_DOT,
   type DevisData,
 } from "../../lib/devis";
@@ -71,12 +73,21 @@ const ancre = (titre: string) => slugify(titre);
 
           {section.liste && (
             <ul class="flex list-none flex-col gap-3">
-              {section.liste.map((item) => (
-                <li class="flex items-start gap-3.5">
-                  <span class="mt-[0.55em] block size-1.5 flex-none bg-ink" aria-hidden="true" />
-                  <span class="max-w-[58ch]" set:html={riche(item)} />
-                </li>
-              ))}
+              {section.liste.map((brut) => {
+                const item = listeItem(brut);
+                return (
+                  <li class="flex items-start gap-3.5">
+                    <span
+                      class="mt-[0.55em] block size-1.5 flex-none bg-ink"
+                      aria-hidden="true"
+                    />
+                    <span class="max-w-[58ch]">
+                      <Fragment set:html={riche(item.texte)} />
+                      {item.tooltip && <Tooltip texte={item.tooltip} />}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           )}
 
@@ -110,7 +121,10 @@ const ancre = (titre: string) => slugify(titre);
                 <div>
                   {b.lignes.map((ligne) => (
                     <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px]">
-                      <span set:html={riche(ligne.label)} />
+                      <span>
+                        <Fragment set:html={riche(ligne.label)} />
+                        {ligne.tooltip && <Tooltip texte={ligne.tooltip} />}
+                      </span>
                       {ligne.prix !== undefined ? (
                         <span class="font-mono whitespace-nowrap tabular-nums">
                           {eur.format(ligne.prix)} {mention}
@@ -240,6 +254,7 @@ const ancre = (titre: string) => slugify(titre);
           {d.notes.map((note) => (
             <Banner tone={note.tone}>
               <Fragment set:html={riche(note.texte)} />
+              {note.tooltip && <Tooltip texte={note.tooltip} />}
             </Banner>
           ))}
         </div>

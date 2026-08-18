@@ -3,6 +3,11 @@ import type { CollectionEntry } from "astro:content";
 export type DevisData = CollectionEntry<"devis">["data"];
 export type DevisBudget = NonNullable<DevisData["sections"][number]["budget"]>;
 
+export type ListeItem = { texte: string; tooltip?: string };
+
+export const listeItem = (item: string | ListeItem): ListeItem =>
+  typeof item === "string" ? { texte: item } : item;
+
 /* seul enrichissement autorisé dans les chaînes du YAML : **gras** */
 const esc = (s: string) =>
   s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
