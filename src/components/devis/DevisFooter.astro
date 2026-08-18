@@ -1,0 +1,61 @@
+---
+/* Pied de page des pages devis. La page n'a ni Nav ni Footer du site (elle
+   est hors parcours, noindex) : ce bloc pose la signature Coolbeans et
+   l'accès aux mentions légales sans réintroduire la navigation.
+
+   Le logotype est traité en élément graphique, pas en vignette : à 24 px
+   dans 128 px de blanc, il flottait au milieu d'un vide. Agrandi et associé
+   à la baseline juste dessous, il forme un bloc dense qui occupe l'espace au
+   lieu de le subir — et la respiration peut alors se réduire.
+
+   Deux étages : la signature respire, la ligne légale est ancrée en bas,
+   séparée par un filet.
+
+   Fond blanc et non surface-subtle : la page alterne déjà les aplats
+   (en-tête et formulaire en gris), un troisième empilerait les zones. */
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line bg-surface">
+  <div class="container-site">
+    <div class="flex flex-col items-center py-24x">
+      <a
+        href="https://coolbeans.cc"
+        target="_blank"
+        rel="noopener"
+        aria-label="coolbeans — ouvrir le site dans un nouvel onglet"
+        class="inline-flex items-center leading-0 transition-opacity duration-150 hover:opacity-60"
+      >
+        <img
+          class="block h-14 w-auto max-[560px]:h-10 dark:hidden"
+          src="/img/coolbeans-wordmark.svg"
+          alt="coolbeans"
+          width="379"
+          height="63"
+        />
+        <img
+          class="hidden h-14 w-auto max-[560px]:h-10 dark:block"
+          src="/img/coolbeans-wordmark-white.svg"
+          alt="coolbeans"
+          width="379"
+          height="63"
+        />
+      </a>
+      <p class="mt-5 text-center text-[15px] leading-[1.5] text-mute">
+        Design et code,<br class="max-[420px]:hidden" /> pensés pour durer.
+      </p>
+    </div>
+
+    <div
+      class="flex items-center justify-between gap-4 border-t border-line py-5 font-mono text-[11px] tracking-wide text-mute uppercase max-[560px]:flex-col max-[560px]:gap-2"
+    >
+      <span>© {year} Coolbeans</span>
+      <a
+        class="transition-colors duration-150 hover:text-ink"
+        href="/mentions-legales"
+        target="_blank"
+        rel="noopener">Mentions légales</a
+      >
+    </div>
+  </div>
+</footer>

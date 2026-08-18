@@ -1,56 +1,102 @@
 import { describe, expect, it, test } from "vitest";
 import {
-  DEFAULT_CLIENT,
-  findClientByDocIn,
-  getClientIn,
+  DEFAULT_WORKSPACE,
+  findWorkspaceByDocIn,
+  getWorkspaceIn,
   MODULE_REQUIREMENTS,
   missingKeysFor,
-  selectableClients,
-  sortClients,
-  type PortalClient,
-} from "./clients";
+  selectableWorkspaces,
+  sortWorkspaces,
+  type PortalWorkspace,
+} from "./workspaces";
 
-const coolbeans: PortalClient = { slug: "coolbeans", nom: "Coolbeans", archive: false, uptimerobot_monitor_ids: [] };
-const amusoire: PortalClient = {
+const coolbeans: PortalWorkspace = {
+  slug: "coolbeans",
+  nom: "Coolbeans",
+  perso: true,
+  archive: false,
+  uptimerobot_monitor_ids: [],
+};
+const spinoza: PortalWorkspace = {
+  slug: "spinoza",
+  nom: "Spinoza",
+  perso: true,
+  archive: false,
+  uptimerobot_monitor_ids: [],
+};
+const amusoire: PortalWorkspace = {
   slug: "amusoire",
   nom: "Amusoire",
   doc: "amusoire",
+  emoji: "🎮",
+  depuis: "2026-08-12",
   uptimerobot_monitor_ids: [],
   archive: false,
 };
-const zebre: PortalClient = { slug: "zebre", nom: "Zèbre", archive: false, uptimerobot_monitor_ids: [] };
-const tous = [zebre, amusoire, coolbeans];
+const zebre: PortalWorkspace = {
+  slug: "zebre",
+  nom: "Zèbre",
+  depuis: "2026-05-01",
+  archive: false,
+  uptimerobot_monitor_ids: [],
+};
+const tous = [zebre, amusoire, spinoza, coolbeans];
 
-describe("sortClients", () => {
-  it("place Coolbeans en tête, puis trie par nom", () => {
-    expect(sortClients(tous).map((c) => c.slug)).toEqual(["coolbeans", "amusoire", "zebre"]);
+describe("sortWorkspaces", () => {
+  // Le sélecteur est un sélecteur de workspace : les miens d'abord
+  // (Coolbeans puis les autres persos), puis les clients par ancienneté.
+  it("place les workspaces perso en tête, Coolbeans premier", () => {
+    expect(sortWorkspaces(tous).map((c) => c.slug)).toEqual([
+      "coolbeans",
+      "spinoza",
+      "zebre",
+      "amusoire",
+    ]);
+  });
+
+  it("trie les clients par date `depuis` croissante", () => {
+    expect(sortWorkspaces([amusoire, zebre]).map((c) => c.slug)).toEqual(["zebre", "amusoire"]);
+  });
+
+  it("relègue un client sans `depuis` en fin de liste, trié par nom", () => {
+    const sansDate: PortalWorkspace = {
+      slug: "sans-date",
+      nom: "Sans Date",
+      archive: false,
+      uptimerobot_monitor_ids: [],
+    };
+    expect(sortWorkspaces([sansDate, amusoire, zebre]).map((c) => c.slug)).toEqual([
+      "zebre",
+      "amusoire",
+      "sans-date",
+    ]);
   });
 
   it("ne plante pas si Coolbeans est absent", () => {
-    expect(sortClients([zebre, amusoire]).map((c) => c.slug)).toEqual(["amusoire", "zebre"]);
+    expect(sortWorkspaces([zebre, amusoire]).map((c) => c.slug)).toEqual(["zebre", "amusoire"]);
   });
 });
 
-describe("getClientIn", () => {
+describe("getWorkspaceIn", () => {
   it("retrouve un client par son slug", () => {
-    expect(getClientIn(tous, "amusoire")).toEqual(amusoire);
+    expect(getWorkspaceIn(tous, "amusoire")).toEqual(amusoire);
   });
 
   it("renvoie null sur un slug inconnu, vide ou absent", () => {
     for (const s of ["inconnu", "", null, undefined]) {
-      expect(getClientIn(tous, s)).toBeNull();
+      expect(getWorkspaceIn(tous, s)).toBeNull();
     }
   });
 });
 
-describe("findClientByDocIn", () => {
+describe("findWorkspaceByDocIn", () => {
   it("retrouve le client propriétaire d'une doc", () => {
-    expect(findClientByDocIn(tous, "amusoire")).toEqual(amusoire);
+    expect(findWorkspaceByDocIn(tous, "amusoire")).toEqual(amusoire);
   });
 
   // _template n'appartient à aucun client : aucune bascule de contexte.
   it("renvoie null pour une doc que personne ne revendique", () => {
-    expect(findClientByDocIn(tous, "_template")).toBeNull();
+    expect(findWorkspaceByDocIn(tous, "_template")).toBeNull();
   });
 });
 
@@ -103,9 +149,9 @@ describe("missingKeysFor", () => {
   });
 });
 
-describe("DEFAULT_CLIENT", () => {
+describe("DEFAULT_WORKSPACE", () => {
   it("vaut coolbeans", () => {
-    expect(DEFAULT_CLIENT).toBe("coolbeans");
+    expect(DEFAULT_WORKSPACE).toBe("coolbeans");
   });
 });
 
@@ -113,7 +159,7 @@ describe("DEFAULT_CLIENT", () => {
 // instantanés KV restent, et il reste résoluble. Il sort seulement du
 // sélecteur, pour que la liste ne s'allonge pas indéfiniment.
 describe("clients archivés", () => {
-  const ancien: PortalClient = {
+  const ancien: PortalWorkspace = {
     slug: "ancien",
     nom: "Ancien Client",
     doc: "ancien",
@@ -123,15 +169,15 @@ describe("clients archivés", () => {
   const avecArchive = [coolbeans, amusoire, ancien];
 
   it("reste résoluble par son slug", () => {
-    expect(getClientIn(avecArchive, "ancien")).toEqual(ancien);
+    expect(getWorkspaceIn(avecArchive, "ancien")).toEqual(ancien);
   });
 
   it("garde l'accès à sa doc", () => {
-    expect(findClientByDocIn(avecArchive, "ancien")).toEqual(ancien);
+    expect(findWorkspaceByDocIn(avecArchive, "ancien")).toEqual(ancien);
   });
 
   it("sort du sélecteur", () => {
-    expect(selectableClients(avecArchive, null).map((c) => c.slug)).toEqual([
+    expect(selectableWorkspaces(avecArchive, null).map((c) => c.slug)).toEqual([
       "coolbeans",
       "amusoire",
     ]);
@@ -139,7 +185,7 @@ describe("clients archivés", () => {
 
   // Sinon le <select> afficherait la première option alors qu'on est ailleurs.
   it("reparaît dans le sélecteur quand c'est le client courant", () => {
-    expect(selectableClients(avecArchive, ancien).map((c) => c.slug)).toEqual([
+    expect(selectableWorkspaces(avecArchive, ancien).map((c) => c.slug)).toEqual([
       "coolbeans",
       "amusoire",
       "ancien",
@@ -147,13 +193,13 @@ describe("clients archivés", () => {
   });
 
   it("n'apparaît pas deux fois si le client courant n'est pas archivé", () => {
-    expect(selectableClients(avecArchive, amusoire).map((c) => c.slug)).toEqual([
+    expect(selectableWorkspaces(avecArchive, amusoire).map((c) => c.slug)).toEqual([
       "coolbeans",
       "amusoire",
     ]);
   });
 
   it("un client sans champ archive est actif", () => {
-    expect(selectableClients([amusoire], null).map((c) => c.slug)).toEqual(["amusoire"]);
+    expect(selectableWorkspaces([amusoire], null).map((c) => c.slug)).toEqual(["amusoire"]);
   });
 });

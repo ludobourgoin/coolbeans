@@ -20,7 +20,7 @@ export const REGLAGES_DEFAUT: Reglages = {
     conditionsReglement:
       "30 % à la validation du devis, qui lance la prestation. Solde à la livraison du site fonctionnel.",
     ceQueCaComprend:
-      "Responsive (desktop, tablette, mobile)\nConfiguration SEO et bonnes pratiques\nOptimisation de la vitesse\nTests QA sur les 3 navigateurs principaux\nCertificat SSL, hébergement et raccordement du nom de domaine (DNS)\nMise en place du suivi de fréquentation (analytics sans cookies)\nFavicon et aperçus de partage (réseaux sociaux, messageries)\nLe code livré dans un dépôt qui vous appartient\nPages légales et page de contact\nDoc de passation pour la prise en main du site\nSupport 30 jours après mise en ligne",
+      "Responsive (desktop, tablette, mobile)\nConfiguration SEO et bonnes pratiques\nOptimisation de la vitesse\nTests QA sur les 3 navigateurs principaux\nCertificat SSL, hébergement et raccordement du nom de domaine (DNS)\nMise en place du suivi de fréquentation (analytics sans cookies)\nLe code livré dans un dépôt qui vous appartient\nPages légales\nDoc de passation pour la prise en main du site\nSupport 30 jours après mise en ligne",
     horsPerimetre:
       "La rédaction des textes et la fourniture des visuels ne sont pas incluses.\nLa conception d'une charte graphique poussée n'est pas incluse (modernisation du design existant).",
     urgenceTooltip:

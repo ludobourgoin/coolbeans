@@ -9,6 +9,7 @@ import {
   ownerLabel,
   listeItem,
   OWNER_DOT,
+  OWNER_BADGE,
   type DevisData,
 } from "../../lib/devis";
 
@@ -145,7 +146,7 @@ const ancre = (titre: string) => slugify(titre);
                         </span>
                       </div>
                       <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute">
-                        <span>Remise exceptionnelle (−{b.remisePct}&nbsp;%)</span>
+                        <span>{b.remiseLabel ?? "Remise exceptionnelle"} (−{b.remisePct}&nbsp;%)</span>
                         <span class="font-mono whitespace-nowrap tabular-nums">
                           −{eur.format(remise)}
                         </span>
@@ -217,12 +218,14 @@ const ancre = (titre: string) => slugify(titre);
                             </span>
                             <span set:html={riche(jalon.label)} />
                             {jalon.owner && (
-                              <span class="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold tracking-wide whitespace-nowrap uppercase text-mute max-[700px]:col-span-2 max-[700px]:mt-1">
+                              <span
+                                class:list={[
+                                  "inline-flex items-center gap-1.5 rounded-control px-2 py-0.5 font-mono text-[11px] font-bold tracking-wide whitespace-nowrap uppercase max-[700px]:col-span-2 max-[700px]:mt-1",
+                                  OWNER_BADGE[jalon.owner],
+                                ]}
+                              >
                                 <span
-                                  class:list={[
-                                    "block size-1.5 rounded-full",
-                                    OWNER_DOT[jalon.owner],
-                                  ]}
+                                  class:list={["block size-1.5 rounded-full", OWNER_DOT[jalon.owner]]}
                                   aria-hidden="true"
                                 />
                                 {ownerLabel(d, jalon.owner)}

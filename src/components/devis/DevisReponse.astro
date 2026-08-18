@@ -12,11 +12,22 @@ const { slug } = Astro.props;
 <!-- RÉPONSE -->
 <section class="border-t border-line bg-surface-subtle">
   <div class="container-site py-24x">
-    <div class="mx-auto max-w-[640px]">
-      <h2 class="text-center">Répondre à cette proposition</h2>
-      <p class="mx-auto mt-4 max-w-[44ch] text-center leading-[1.6] text-mute">
-        Validez la proposition ou posez vos questions, je reviens vers vous rapidement.
-      </p>
+    <!-- Même grille que le corps du devis (DevisCorps : bloc 880, colonne de
+         libellés 180, gouttière 40) : sans elle, le formulaire se centrait sur
+         l'axe de la page quand le corps du devis, lui, est décalé de 110 px à
+         droite par sa colonne de libellés. L'œil lisait une rupture de 100 px
+         au passage d'un bloc à l'autre. -->
+    <div
+      class="mx-auto grid max-w-[880px] grid-cols-[180px_1fr] gap-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+    >
+      <!-- Colonne de libellés laissée vide : elle ne sert ici qu'à caler le
+           formulaire sur la grille du corps du devis. -->
+      <div aria-hidden="true"></div>
+      <div>
+        <h2>Répondre à cette proposition</h2>
+        <p class="mt-4 max-w-[44ch] leading-[1.6] text-mute">
+          Validez la proposition ou posez vos questions, je reviens vers vous rapidement.
+        </p>
       <form id="devis-form" class="card mt-10 grid gap-6" data-slug={slug}>
         <Choicebox
           name="reponse"
@@ -169,7 +180,8 @@ const { slug } = Astro.props;
           role="status"
           class="hidden text-center text-[13px] font-medium"
         />
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </section>

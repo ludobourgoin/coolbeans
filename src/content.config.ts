@@ -1,9 +1,14 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
-/* Un fichier YAML par devis dans src/content/devis/ ; le nom du fichier
-   devient le slug de l'URL (/devis/<fichier>). Rendu par
-   src/pages/devis/[slug].astro. Le gras s'écrit **comme en Markdown**
+/* Un fichier YAML par devis dans src/content/devis/<client>/<projet>-<4
+   chiffres>.yaml ; le chemin devient l'URL (/devis/<client>/<projet>-1234).
+   Un client peut porter plusieurs devis, et les anciens se conservent. Le
+   suffixe chiffré rend l'URL non devinable d'un projet à l'autre.
+   Les devis d'avant cette convention restent à la racine et gardent leur URL
+   à un segment : la route est un catch-all, les deux formes cohabitent, et
+   un lien déjà envoyé à un client ne casse jamais. Rendu par
+   src/pages/devis/[...slug].astro. Le gras s'écrit **comme en Markdown**
    dans n'importe quelle chaîne.
 
    Chaque section porte un titre (le libellé mono de la colonne de gauche)
@@ -11,7 +16,7 @@ import { glob } from "astro/loaders";
    totaux calculés ; une ligne sans `prix` s'affiche « Inclus »),
    `planning` (jalons datés). Les `notes` de fin s'affichent en bandeaux. */
 const devis = defineCollection({
-  loader: glob({ pattern: "*.yaml", base: "./src/content/devis" }),
+  loader: glob({ pattern: "**/*.yaml", base: "./src/content/devis" }),
   schema: z.object({
     titre: z.string(),
     objet: z.string(),
@@ -34,6 +39,9 @@ const devis = defineCollection({
               z.object({ label: z.string(), prix: z.number().optional(), tooltip: z.string().optional() }),
             ),
             remisePct: z.number().optional(),
+            // Libellé de la ligne de remise. « Tarif association », « Geste
+            // commercial »… Une remise nommée se valorise ; défaut neutre.
+            remiseLabel: z.string().optional(),
             mention: z.string().optional(), // suffixe des totaux, ex. « HT »
             reglement: z.string().optional(),
           })
@@ -173,7 +181,17 @@ const clients = defineCollection({
     // messagerie y crée ses tickets. Absent = module Messagerie en empty state.
     linearSupportProjectId: z.string().optional(),
     uptimerobot_monitor_ids: z.array(z.string()).default([]),
-    // Sort le client du sélecteur sans rien supprimer. Voir PortalClient.
+    // Workspace « à moi » (Coolbeans, Spinoza…) : en tête du sélecteur,
+    // avant le liseret qui le sépare des workspaces clients.
+    perso: z.boolean().default(false),
+    // Emoji affiché devant le nom dans le sélecteur (workspaces clients).
+    emoji: z.string().optional(),
+    // Début de la relation client : fonde le tri chronologique du sélecteur.
+    depuis: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional(),
+    // Sort le client du sélecteur sans rien supprimer. Voir PortalWorkspace.
     archive: z.boolean().default(false),
   }),
 });

@@ -3,8 +3,8 @@ import { z } from "astro:schema";
 import type { ActionAPIContext } from "astro:actions";
 import { saveReglages } from "../lib/chiffrage/store";
 import { reglagesSchema } from "../lib/chiffrage/schemas";
-import { getClient } from "../lib/portail/clients";
-import { CLIENT_COOKIE } from "../lib/portail/current-client";
+import { getWorkspace } from "../lib/portail/workspaces";
+import { WORKSPACE_COOKIE } from "../lib/portail/current-workspace";
 import { portalHref } from "../lib/portail/nav";
 import { retourSchema } from "../lib/portail/retour";
 import { requireAdmin as requireAdminGuard } from "../lib/portail/require-admin";
@@ -51,10 +51,10 @@ export const server = {
        une préférence d'affichage : la résolution côté serveur l'ignore pour
        un non-admin, et cette action refuse de le poser. Deux barrières
        indépendantes plutôt qu'une. */
-    choisirClient: defineAction({
+    choisirWorkspace: defineAction({
       accept: "form",
       input: z.object({
-        client: z.string().regex(SLUG_STRICT, "Slug invalide."),
+        workspace: z.string().regex(SLUG_STRICT, "Slug invalide."),
         // Chemin de retour, forcément interne, sur toute sa longueur. Deux
         // choses à empêcher :
         // - un hôte externe : "//evil.example/x" commence par une barre et
@@ -74,15 +74,15 @@ export const server = {
         // champ l'importe directement plutôt que de recopier la regex.
         retour: retourSchema,
       }),
-      handler: async ({ client, retour }, context) => {
+      handler: async ({ workspace, retour }, context) => {
         await requireAdmin(context);
 
-        const cible = await getClient(client);
+        const cible = await getWorkspace(workspace);
         if (!cible) {
-          throw new ActionError({ code: "NOT_FOUND", message: "Client inconnu." });
+          throw new ActionError({ code: "NOT_FOUND", message: "Workspace inconnu." });
         }
 
-        context.cookies.set(CLIENT_COOKIE, cible.slug, {
+        context.cookies.set(WORKSPACE_COOKIE, cible.slug, {
           path: "/",
           httpOnly: true,
           secure: true,

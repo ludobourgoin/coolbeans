@@ -1,0 +1,13 @@
+# Spinoza est un projet perso de Ludo (wiki d'étude de l'Éthique) : workspace
+# à lui, comme Coolbeans. Aucun utilisateur Clerk n'est mappé sur ce client,
+# donc seuls les admins voient sa doc (autorisation `doc === client`, voir
+# src/pages/docs/[client]/[...slug].astro).
+nom: Spinoza
+prenom: Ludo
+perso: true
+doc: spinoza
+# Team « Spinoza » 🌹 du workspace Linear coolbeans-hq.
+linearTeamId: eddfc58b-08e6-457b-9f55-17e0b630efac
+# Pas de linearSupportProjectId : pas de projet « Support » dans la team —
+# Ludo est seul sur le projet, les modules Support/Messagerie restent en
+# empty state.

@@ -14,7 +14,7 @@ Astro autonome — plus aucune dépendance réseau à l'exécution.
   visual-studio-code, brevo, resend, posthog, n8n, claude, hubspot…
 
 > [!important] Règle de la bande proof : **picto carré + nom de marque**
-> Le nom est rendu en Geomanist par `LogoMarquee`, à côté du picto. Donc on n'y met
+> Le nom est rendu en Geist (`--font-display`) par `LogoMarquee`, à côté du picto. Donc on n'y met
 > **jamais un lockup** (`astro.svg`, `zapier.svg`, `github.svg`, `gsap.svg` : le nom
 > serait affiché deux fois) et **jamais un picto muet**. Un logo à ajouter dans la
 > bande veut donc dire : la variante *glyphe seul* du logo, et son nom dans `name`.

@@ -1,0 +1,31 @@
+---
+client: "spinoza"
+title: "Déploiement"
+order: 3
+status: "final"
+updated: 2026-08-18
+description: "L'infrastructure Cloudflare : Workers Builds, previews de branche et base D1."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+Cette page s'adresse au développeur qui doit comprendre comment le site part en ligne et ce que déclenche un push.
+
+## Workers Builds
+
+Le site se déploie par **Cloudflare Workers Builds** : Cloudflare surveille le repo GitHub (privé) et construit à chaque push. Configuration posée dans le dashboard Cloudflare le 2026-08-18 (projet Worker `spinoza`) :
+
+- Commande de build : `npm run build`
+- Commande de déploiement : `npx wrangler deploy`
+- Branches hors production : builds activés, avec `npx wrangler versions upload` — chaque branche obtient une URL de preview sans toucher la production
+- Racine du projet : `/`
+
+<Callout type="warning">
+  **Un push sur `main` met en production.** Il n'y a pas d'environnement de staging séparé : le staging, ce sont les previews de branche. On ne pousse `main` que pour publier.
+</Callout>
+
+Le fichier `wrangler.jsonc` du repo est la source de vérité de la configuration du Worker (nom, point d'entrée, bindings) ; le dashboard ne porte que les commandes de build ci-dessus. Le jeton d'accès utilisé par Workers Builds est celui créé pour le projet papa-check-dashboard ; ses permissions n'incluent pas D1, ce qui est sans effet tant que le déploiement n'exécute aucune opération sur la base.
+
+## Base D1
+
+Le site n'a pas encore de base de données. Le jalon S1 introduira une base **D1** (le SQLite serverless de Cloudflare), à créer sous le nom `spinoza-db` en région Europe de l'Ouest. Elle recevra les notes personnelles et statuts de lecture des utilisateurs (table `study`) par une migration versionnée dans le repo et appliquée avec `npx wrangler d1 migrations apply` — jamais par la console. Le Worker y accédera par le binding `DB` déclaré dans `wrangler.jsonc`.

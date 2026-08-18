@@ -11,16 +11,28 @@
 // La géométrie (264px, collante sous la topbar de 56px, border-right) vient
 // de `.portal-left` dans doc.css — c'est elle qui aligne la colonne sur la
 // zone logo de la topbar.
+//
+// Le sélecteur de workspace coiffe la colonne (retour Ludo 2026-08-18, il
+// était en topbar) : il est au-dessus de la première section, pleine largeur
+// utile de la colonne, séparé d'elle par le même 24px que l'inter-sections.
+// Il n'est rendu que si on lui donne des workspaces — le layout ne les charge
+// que pour un admin, aucune décision de droits ici.
 import { isActive, type SidebarSection } from "../../lib/portail/nav";
+import WorkspaceSwitcher from "./WorkspaceSwitcher.astro";
 import Icon from "./Icon.astro";
+import type { PortalWorkspace } from "../../lib/portail/workspaces";
 
 interface Props {
   sections: SidebarSection[];
   /** Statut UptimeRobot du client courant — pas encore branché (COO-15). */
   uptimeStatus?: "up" | "degraded" | "down" | null;
+  /** Workspaces proposés au sélecteur. Vide (défaut) = pas de sélecteur. */
+  workspaces?: PortalWorkspace[];
+  /** Workspace affiché, présélectionné dans le sélecteur. */
+  current?: PortalWorkspace | null;
 }
 
-const { sections, uptimeStatus = null } = Astro.props;
+const { sections, uptimeStatus = null, workspaces = [], current = null } = Astro.props;
 const { pathname } = Astro.url;
 
 const DOT_CLASS: Record<string, string> = {
@@ -32,6 +44,14 @@ const dotClass = (uptimeStatus && DOT_CLASS[uptimeStatus]) || "bg-line-strong";
 ---
 
 <aside class="portal-left" aria-label="Navigation du portail">
+  {
+    workspaces.length > 0 && (
+      <div class="mb-6x">
+        <WorkspaceSwitcher clients={workspaces} current={current} />
+      </div>
+    )
+  }
+
   <nav class="flex flex-col gap-6x">
     {
       sections.map((section) => (

@@ -1,0 +1,79 @@
+---
+// Sélecteur de workspace, réservé aux admins (spec 2026-08-12, §7).
+// Rendu en tête de la sidebar, au-dessus de la première section
+// (retour Ludo 2026-08-18 ; il occupait avant le coin droit de la topbar).
+//
+// Formulaire natif vers l'Action : sans JavaScript, le bouton « Afficher »
+// prend le relais. Le script le masque et soumet au changement.
+//
+// Rien ici n'autorise quoi que ce soit : l'Action revérifie le rôle et le
+// slug côté serveur, et la résolution ignore le cookie pour un non-admin.
+import { actions } from "astro:actions";
+import type { PortalWorkspace } from "../../lib/portail/workspaces";
+
+interface Props {
+  clients: PortalWorkspace[];
+  current: PortalWorkspace | null;
+}
+
+const { clients, current } = Astro.props;
+const retour = Astro.url.pathname;
+// Deux sections : mes workspaces (Coolbeans, Spinoza…) puis les workspaces
+// clients, séparés par un liseret. `clients` arrive déjà trié (sortWorkspaces).
+const persos = clients.filter((c) => c.perso);
+const externes = clients.filter((c) => !c.perso);
+// Instance unique dans la page (en tête de la sidebar) : un id fixe suffit
+// pour que `label[for]` pointe sur le champ.
+const selectId = "portal-workspace";
+---
+
+<form
+  method="POST"
+  action={actions.portail.choisirWorkspace}
+  class="flex w-full items-center gap-2"
+  data-client-switcher
+>
+  <input type="hidden" name="retour" value={retour} />
+  <label class="sr-only" for={selectId}>Workspace affiché</label>
+  <select
+    id={selectId}
+    name="workspace"
+    class="h-9 w-full min-w-0 rounded-control border border-line bg-surface px-2 text-sm text-ink"
+  >
+    {
+      persos.map((c) => (
+        <option value={c.slug} selected={c.slug === current?.slug}>
+          {c.nom}
+        </option>
+      ))
+    }
+    {/* Liseret natif entre mes workspaces et ceux des clients : <hr> dans un
+        <select> est rendu comme séparateur par les navigateurs récents et
+        simplement ignoré ailleurs — aucun JavaScript nécessaire. */}
+    {persos.length > 0 && externes.length > 0 && <hr />}
+    {
+      externes.map((c) => (
+        <option value={c.slug} selected={c.slug === current?.slug}>
+          {c.emoji ? `${c.emoji} ${c.nom}` : c.nom}
+        </option>
+      ))
+    }
+  </select>
+  <button
+    type="submit"
+    class="h-9 flex-none cursor-pointer rounded-control border border-line bg-surface px-2.5 text-sm text-ink"
+    data-switcher-submit
+  >
+    Afficher
+  </button>
+</form>
+
+<script>
+  // Sans JS, le bouton reste : le formulaire fonctionne quand même.
+  document.querySelectorAll<HTMLFormElement>("[data-client-switcher]").forEach((form) => {
+    form.querySelector<HTMLButtonElement>("[data-switcher-submit]")?.remove();
+    form
+      .querySelector<HTMLSelectElement>("select")
+      ?.addEventListener("change", () => form.submit());
+  });
+</script>

@@ -8,26 +8,26 @@
 // ignoré. Un cookie forgé chez un client ne produit donc rien. L'Action qui le
 // pose revérifie le rôle de son côté : deux barrières indépendantes.
 
-import { DEFAULT_CLIENT, getClientIn, sortClients, type PortalClient } from "./clients";
+import { DEFAULT_WORKSPACE, getWorkspaceIn, sortWorkspaces, type PortalWorkspace } from "./workspaces";
 import { type PortalMetadata } from "./metadata";
 
 /** Cookie de préférence d'affichage. Jamais une autorisation. */
-export const CLIENT_COOKIE = "portal_client";
+export const WORKSPACE_COOKIE = "portal_workspace";
 
-export function resolveCurrentClient(
-  clients: PortalClient[],
+export function resolveCurrentWorkspace(
+  clients: PortalWorkspace[],
   meta: PortalMetadata,
   cookieValue: string | null,
-): PortalClient | null {
+): PortalWorkspace | null {
   // Un client ne voit que le sien, quoi qu'il envoie.
-  if (meta.role !== "admin") return getClientIn(clients, meta.client);
+  if (meta.role !== "admin") return getWorkspaceIn(clients, meta.client);
 
   // Admin : cookie → son propre client → défaut → premier du registre.
   return (
-    getClientIn(clients, cookieValue) ??
-    getClientIn(clients, meta.client) ??
-    getClientIn(clients, DEFAULT_CLIENT) ??
-    sortClients(clients)[0] ??
+    getWorkspaceIn(clients, cookieValue) ??
+    getWorkspaceIn(clients, meta.client) ??
+    getWorkspaceIn(clients, DEFAULT_WORKSPACE) ??
+    sortWorkspaces(clients)[0] ??
     null
   );
 }

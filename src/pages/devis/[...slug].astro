@@ -4,6 +4,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import GridBackdrop from "../../components/GridBackdrop.astro";
 import DevisCorps from "../../components/devis/DevisCorps.astro";
 import DevisReponse from "../../components/devis/DevisReponse.astro";
+import DevisFooter from "../../components/devis/DevisFooter.astro";
 
 export async function getStaticPaths() {
   const entries = await getCollection("devis");
@@ -15,6 +16,14 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const d = entry.data;
+
+/* La date du devis n'était portée que par le frontmatter : le client ne la
+   voyait nulle part, alors qu'elle date l'engagement commercial. */
+const dateDevis = d.date.toLocaleDateString("fr-FR", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
 ---
 
 <BaseLayout
@@ -29,6 +38,9 @@ const d = entry.data;
       <p class="label">Proposition commerciale</p>
       <h1 class="mx-auto mt-5 max-w-[18ch]">{d.titre}</h1>
       <p class="mx-auto mt-6 max-w-[46ch] text-xl leading-[1.45] font-medium">{d.objet}</p>
+      <p class="mt-5 font-mono text-[12px] tracking-wide text-mute uppercase">
+        Proposition du {dateDevis}
+      </p>
     </div>
   </header>
 
@@ -38,4 +50,6 @@ const d = entry.data;
   </div>
 
   <DevisReponse slug={entry.id} />
+
+  <DevisFooter />
 </BaseLayout>

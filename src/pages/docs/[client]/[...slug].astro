@@ -12,9 +12,9 @@ import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import DocLayout from "../../../layouts/DocLayout.astro";
 import Meta from "../../../components/doc/Meta.astro";
-import { findClientByDoc } from "../../../lib/portail/clients";
-import { CLIENT_COOKIE } from "../../../lib/portail/current-client";
-import { getPortalContext, overrideCurrentClient } from "../../../lib/portail/context";
+import { findWorkspaceByDoc } from "../../../lib/portail/workspaces";
+import { WORKSPACE_COOKIE } from "../../../lib/portail/current-workspace";
+import { getPortalContext, overrideCurrentWorkspace } from "../../../lib/portail/context";
 import { isAdmin } from "../../../lib/portail/metadata";
 
 type Doc = CollectionEntry<"docs">;
@@ -41,16 +41,16 @@ const isAdminUser = isAdmin(meta);
 // préférence d'affichage, sans effet sur les données.
 let effectif = client;
 if (isAdminUser && clientParam && client?.doc !== clientParam) {
-  const proprietaire = await findClientByDoc(clientParam);
+  const proprietaire = await findWorkspaceByDoc(clientParam);
   if (proprietaire) {
-    Astro.cookies.set(CLIENT_COOKIE, proprietaire.slug, {
+    Astro.cookies.set(WORKSPACE_COOKIE, proprietaire.slug, {
       path: "/",
       httpOnly: true,
       secure: true,
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 365,
     });
-    overrideCurrentClient(Astro, proprietaire);
+    overrideCurrentWorkspace(Astro, proprietaire);
     effectif = proprietaire;
   }
 }

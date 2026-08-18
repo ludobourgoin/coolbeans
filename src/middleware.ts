@@ -20,8 +20,8 @@ export const onRequest = clerkMiddleware(async (auth, context, next) => {
     }
   }
 
-  /* Post/Redirect/Get pour portail.choisirClient.
-     Le sélecteur (ClientSwitcher) vit dans la nav globale du portail et
+  /* Post/Redirect/Get pour portail.choisirWorkspace.
+     Le sélecteur (WorkspaceSwitcher) vit dans la nav globale du portail et
      poste en formulaire natif vers la page courante (`?_astroAction=…`).
      Sans interception ici, le comportement par défaut d'Astro réécrit le
      résultat de l'action puis RE-REND cette même page : sur /docs/<projet>,
@@ -33,7 +33,7 @@ export const onRequest = clerkMiddleware(async (auth, context, next) => {
      ActionAPIContext n'expose pas context.redirect(), d'où l'obligation de
      le faire ici plutôt que dans l'Action (voir src/actions/index.ts). */
   const { action, setActionResult, serializeActionResult } = getActionContext(context);
-  if (action?.calledFrom === "form" && action.name === "portail.choisirClient") {
+  if (action?.calledFrom === "form" && action.name === "portail.choisirWorkspace") {
     const result = await action.handler();
     if (!result.error) {
       return context.redirect(result.data.redirectTo, 303);

@@ -45,5 +45,12 @@ export const dateLongue = (date: Date) =>
    selon le devis, "Ludo" reste fixe côté Coolbeans. */
 export const OWNER_DOT = { coolbeans: "bg-ink", client: "bg-info" } as const;
 
+/* Le badge porte la couleur : sur un planning, « qui fait quoi » doit se lire
+   en diagonale, sans relire chaque ligne. Ludo en encre, le client en info. */
+export const OWNER_BADGE = {
+  coolbeans: "bg-surface-raise text-ink",
+  client: "bg-info/10 text-info",
+} as const;
+
 export const ownerLabel = (d: DevisData, owner: "coolbeans" | "client") =>
   owner === "coolbeans" ? "Ludo" : (d.contact ?? "Client");

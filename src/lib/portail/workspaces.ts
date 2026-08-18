@@ -8,7 +8,7 @@
 // Les fonctions `*In` prennent la liste en argument : c'est ce qui les rend
 // testables sans `astro:content`, indisponible sous Vitest.
 
-export interface PortalClient {
+export interface PortalWorkspace {
   /** Nom du fichier YAML, sans extension. */
   slug: string;
   nom: string;
@@ -22,6 +22,15 @@ export interface PortalClient {
   linearSupportProjectId?: string;
   uptimerobot_monitor_ids: string[];
   /**
+   * Workspace « à moi » (Coolbeans, Spinoza…) par opposition aux workspaces
+   * clients : le sélecteur les affiche en tête, avant le liseret.
+   */
+  perso?: boolean;
+  /** Emoji affiché devant le nom dans le sélecteur (workspaces clients). */
+  emoji?: string;
+  /** Début de la relation (YYYY-MM-DD) : fonde le tri chronologique des clients. */
+  depuis?: string;
+  /**
    * Sort le client du sélecteur sans rien supprimer : sa fiche, sa doc et ses
    * instantanés KV restent, et il reste résoluble par son slug. Archiver n'est
    * pas supprimer — c'est ce qui permet de garder un ancien client accessible
@@ -31,13 +40,13 @@ export interface PortalClient {
 }
 
 /** Client affiché par défaut à l'admin, et tête de liste du sélecteur. */
-export const DEFAULT_CLIENT = "coolbeans";
+export const DEFAULT_WORKSPACE = "coolbeans";
 
 /** Modules dont l'affichage dépend d'un mapping du client. */
 export type PortalModule = "projets" | "site" | "doc" | "support";
 
 /** Clés de mapping d'un client, telles que nommées dans le YAML. */
-export type ClientMappingKey =
+export type WorkspaceMappingKey =
   | "doc"
   | "linearTeamId"
   | "linearSupportProjectId"
@@ -54,18 +63,31 @@ export type ClientMappingKey =
  * projet « Support » evergreen : sans eux, ni le formulaire ni la messagerie
  * n'ont où créer leurs tickets (COO-30).
  */
-export const MODULE_REQUIREMENTS: Record<PortalModule, readonly ClientMappingKey[]> = {
+export const MODULE_REQUIREMENTS: Record<PortalModule, readonly WorkspaceMappingKey[]> = {
   projets: [],
   support: ["linearTeamId", "linearSupportProjectId"],
   site: ["uptimerobot_monitor_ids"],
   doc: ["doc"],
 };
 
-/** Coolbeans en tête — c'est le défaut — puis les autres par nom. */
-export function sortClients(clients: PortalClient[]): PortalClient[] {
+/**
+ * Ordre du sélecteur de workspace : les persos d'abord (Coolbeans en tête —
+ * c'est le défaut — puis les autres par nom), ensuite les clients par date
+ * `depuis` croissante ; un client sans date part en fin de liste, par nom.
+ */
+export function sortWorkspaces(clients: PortalWorkspace[]): PortalWorkspace[] {
   return [...clients].sort((a, b) => {
-    if (a.slug === DEFAULT_CLIENT) return -1;
-    if (b.slug === DEFAULT_CLIENT) return 1;
+    if (Boolean(a.perso) !== Boolean(b.perso)) return a.perso ? -1 : 1;
+    if (a.perso) {
+      if (a.slug === DEFAULT_WORKSPACE) return -1;
+      if (b.slug === DEFAULT_WORKSPACE) return 1;
+      return a.nom.localeCompare(b.nom, "fr");
+    }
+    if (a.depuis !== b.depuis) {
+      if (!a.depuis) return 1;
+      if (!b.depuis) return -1;
+      return a.depuis.localeCompare(b.depuis);
+    }
     return a.nom.localeCompare(b.nom, "fr");
   });
 }
@@ -75,26 +97,26 @@ export function sortClients(clients: PortalClient[]): PortalClient[] {
  * s'il est archivé. Sans cette exception, le `<select>` afficherait sa première
  * option alors qu'on se trouve ailleurs — l'écran mentirait sur son contexte.
  */
-export function selectableClients(
-  clients: PortalClient[],
-  current: PortalClient | null,
-): PortalClient[] {
-  return sortClients(clients.filter((c) => !c.archive || c.slug === current?.slug));
+export function selectableWorkspaces(
+  clients: PortalWorkspace[],
+  current: PortalWorkspace | null,
+): PortalWorkspace[] {
+  return sortWorkspaces(clients.filter((c) => !c.archive || c.slug === current?.slug));
 }
 
-export function getClientIn(
-  clients: PortalClient[],
+export function getWorkspaceIn(
+  clients: PortalWorkspace[],
   slug: string | null | undefined,
-): PortalClient | null {
+): PortalWorkspace | null {
   if (!slug) return null;
   return clients.find((c) => c.slug === slug) ?? null;
 }
 
-export function findClientByDocIn(clients: PortalClient[], docSlug: string): PortalClient | null {
+export function findWorkspaceByDocIn(clients: PortalWorkspace[], docSlug: string): PortalWorkspace | null {
   return clients.find((c) => c.doc === docSlug) ?? null;
 }
 
-function hasMapping(client: PortalClient, key: ClientMappingKey): boolean {
+function hasMapping(client: PortalWorkspace, key: WorkspaceMappingKey): boolean {
   switch (key) {
     case "doc":
       return Boolean(client.doc);
@@ -113,8 +135,8 @@ function hasMapping(client: PortalClient, key: ClientMappingKey): boolean {
  */
 export function missingKeysFor(
   module: PortalModule,
-  client: PortalClient | null,
-): ClientMappingKey[] {
+  client: PortalWorkspace | null,
+): WorkspaceMappingKey[] {
   const required = MODULE_REQUIREMENTS[module];
   if (!client) return [...required];
   return required.filter((key) => !hasMapping(client, key));
@@ -122,16 +144,16 @@ export function missingKeysFor(
 
 /* ---- Accès à la collection ------------------------------------------- */
 
-export async function listClients(): Promise<PortalClient[]> {
+export async function listWorkspaces(): Promise<PortalWorkspace[]> {
   const { getCollection } = await import("astro:content");
   const entries = await getCollection("clients");
-  return sortClients(entries.map((e) => ({ slug: e.id, ...e.data })));
+  return sortWorkspaces(entries.map((e) => ({ slug: e.id, ...e.data })));
 }
 
-export async function getClient(slug: string | null | undefined): Promise<PortalClient | null> {
-  return getClientIn(await listClients(), slug);
+export async function getWorkspace(slug: string | null | undefined): Promise<PortalWorkspace | null> {
+  return getWorkspaceIn(await listWorkspaces(), slug);
 }
 
-export async function findClientByDoc(docSlug: string): Promise<PortalClient | null> {
-  return findClientByDocIn(await listClients(), docSlug);
+export async function findWorkspaceByDoc(docSlug: string): Promise<PortalWorkspace | null> {
+  return findWorkspaceByDocIn(await listWorkspaces(), docSlug);
 }

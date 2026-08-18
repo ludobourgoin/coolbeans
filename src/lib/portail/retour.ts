@@ -1,4 +1,4 @@
-// Schéma du champ `retour` de l'Action portail.choisirClient
+// Schéma du champ `retour` de l'Action portail.choisirWorkspace
 // (src/actions/index.ts), extrait ici pour rester testable sous Vitest :
 // astro:actions est un module virtuel non résolvable hors du build Astro
 // (même contrainte que requireAdmin, voir require-admin.ts). Le paquet
