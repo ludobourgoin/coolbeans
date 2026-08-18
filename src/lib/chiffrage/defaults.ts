@@ -7,7 +7,7 @@ export const REGLAGES_DEFAUT: Reglages = {
   marcheHaut: 650,
   joursSemaine: 3,
   semainesMarge: 1,
-  /* 28,5 : micro-entreprise BNC 2026 — cotisations 26,1 % + CFP 0,2 %
+  /* 28,5 : micro-entreprise BNC 2026, soit cotisations 26,1 % + CFP 0,2 %
      + versement libératoire 2,2 %. Le « net » qui en découle est le vrai
      argent en poche, IR compris. */
   chargesPct: 28.5,

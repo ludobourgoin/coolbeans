@@ -12,8 +12,23 @@ export const listeItem = (item: string | ListeItem): ListeItem =>
 const esc = (s: string) =>
   s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 
+/* Colle les unités à leur nombre. Sans ça « 150 € » se coupe en fin de ligne
+   et laisse l'euro seul au début de la suivante, la faute typographique la
+   plus visible sur un document commercial. Traité ici plutôt que dans chaque
+   YAML : les devis sont écrits à la main, personne ne saisit d'insécable.
+   U+00A0 pour l'euro et le pourcentage, comme le fait Intl.NumberFormat. */
+const insecables = (s: string) =>
+  s
+    /* Deux passes : `\b` ne peut pas suivre « € » ni « % », qui ne sont pas des
+       caractères de mot. Les mêler aux unités écrites en toutes lettres faisait
+       échouer la règle sur « 150 €. » sans que rien ne le signale. */
+    .replace(/(\d)\s+([€%])/g, "$1\u00a0$2")
+    .replace(/(\d)\s+(jours?|semaines?|mois|pts?)\b/g, "$1\u00a0$2")
+    /* Ponctuation double française : espace fine insécable avant. */
+    .replace(/\s+([;:!?])/g, "\u202f$1");
+
 export const riche = (s: string) =>
-  esc(s).replace(/\*\*(.+?)\*\*/g, '<b class="font-bold">$1</b>');
+  insecables(esc(s)).replace(/\*\*(.+?)\*\*/g, '<b class="font-bold">$1</b>');
 
 export const eur = new Intl.NumberFormat("fr-FR", {
   style: "currency",
