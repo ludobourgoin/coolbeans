@@ -8,6 +8,8 @@ perso: true
 doc: spinoza
 # Team « Spinoza » 🌹 du workspace Linear coolbeans-hq.
 linearTeamId: eddfc58b-08e6-457b-9f55-17e0b630efac
-# Pas de linearSupportProjectId : pas de projet « Support » dans la team —
-# Ludo est seul sur le projet, les modules Support/Messagerie restent en
-# empty state.
+# Messagerie coupée : Ludo est seul sur ce projet, personne n'a de demande à
+# lui adresser depuis le portail. Ce « false » est volontaire, pas un oubli —
+# sans lui la messagerie s'allumerait, la team Linear suffisant à la raccorder
+# depuis la migration vers le label « Support » (2026-08-19).
+messagerie: false
