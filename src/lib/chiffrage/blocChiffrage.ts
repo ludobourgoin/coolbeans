@@ -34,7 +34,9 @@ export function parseBlocChiffrage(description: string): BlocChiffrage {
   if (!m) return vide;
 
   const b = { ...vide, present: true, mods: structuredClone(MODIFICATEURS_DEFAUT) };
-  for (const ligne of m[1].split("\n")) {
+  /* \r?\n : une description collée depuis Windows/Outlook arrive en CRLF, et
+     un \r résiduel ferait échouer silencieusement chaque ligne clé:valeur. */
+  for (const ligne of m[1].split(/\r?\n/)) {
     const kv = ligne.match(/^- ([^:]+):(.*)$/);
     if (!kv) continue;
     const cle = kv[1].trim().toLowerCase();

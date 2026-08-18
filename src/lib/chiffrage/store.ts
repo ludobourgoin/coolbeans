@@ -73,14 +73,46 @@ function parseJson<T>(raw: string): T | null {
   }
 }
 
+/* Complète un blob partiel ou d'une version antérieure avec les défauts :
+   un champ ajouté depuis (ex. heuresJour) ne doit jamais arriver undefined
+   dans les calculs — c'est la garde de forme qui manquait au parse. */
+function completer(partiel: Partial<Reglages>): Reglages {
+  const d = structuredClone(REGLAGES_DEFAUT);
+  const segments = partiel.segments && Object.keys(partiel.segments).length > 0
+    ? partiel.segments
+    : d.segments;
+  return {
+    ...d,
+    ...partiel,
+    affinite: { ...d.affinite, ...(typeof partiel.affinite === "object" ? partiel.affinite : {}) },
+    devisTexts: { ...d.devisTexts, ...(typeof partiel.devisTexts === "object" ? partiel.devisTexts : {}) },
+    segments,
+  };
+}
+
 export async function getReglages(ns: KVLike = kv()): Promise<Reglages> {
   const raw = await ns.get(CLE_REGLAGES);
-  const reglages = raw ? parseJson<Reglages>(raw) : null;
-  if (reglages) return reglages;
+  const stocke = raw ? parseJson<Partial<Reglages>>(raw) : null;
+  if (stocke && typeof stocke === "object") return completer(stocke);
 
   const legacyRaw = await ns.get(CLE_CATALOGUE_LEGACY);
   const legacy = legacyRaw ? parseJson<CatalogueLegacy>(legacyRaw) : null;
-  if (legacy) return migrerDepuisCatalogueLegacy(legacy);
+  if (legacy) {
+    try {
+      const migre = completer(migrerDepuisCatalogueLegacy(legacy));
+      /* Fige la migration sur la clé neuve : la prochaine lecture est un seul
+         get. La clé legacy, elle, n'est jamais réécrite ni supprimée, et un
+         échec d'écriture n'empêche pas de servir le résultat. */
+      try {
+        await ns.put(CLE_REGLAGES, JSON.stringify(migre));
+      } catch {
+        /* lecture seule possible (ex. preview) : tant pis pour le cache */
+      }
+      return migre;
+    } catch {
+      /* forme legacy inattendue : dégrader vers les défauts, sans planter */
+    }
+  }
 
   return structuredClone(REGLAGES_DEFAUT);
 }

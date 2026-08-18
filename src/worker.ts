@@ -1,7 +1,7 @@
 // Point d'entrée du Worker (déclaré via `main` dans wrangler.jsonc).
 //
 // Le portail client vit sur my.coolbeans.cc avec des URLs propres :
-// my.coolbeans.cc/chiffrages est servie en interne par /espace/chiffrages.
+// my.coolbeans.cc/devis est servie en interne par /espace/devis.
 // La réécriture se fait ici et non dans le middleware Astro, car les pages
 // prérendues (home, /projets/*…) sont servies par la couche assets sans
 // jamais passer par le middleware — seul le Worker voit tous les hostnames

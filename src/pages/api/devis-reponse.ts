@@ -37,7 +37,24 @@ export const POST: APIRoute = async ({ request }) => {
     adresse,
     tva,
   } = data as Record<string, unknown>;
-  if (typeof slug !== "string" || (reponse !== "validation" && reponse !== "question")) {
+  // Slug borné et validé : il est persisté en D1 et pilote le statut affiché
+  // dans le cockpit — un POST forgé ne doit pas pouvoir y injecter n'importe
+  // quoi ni des valeurs sans limite de taille.
+  if (
+    typeof slug !== "string" ||
+    !/^[a-z0-9-]{1,64}$/.test(slug) ||
+    (reponse !== "validation" && reponse !== "question")
+  ) {
+    return json({ error: "Requête invalide." }, 400);
+  }
+  if (typeof message === "string" && message.length > 5000) {
+    return json({ error: "Message trop long (5 000 caractères max)." }, 400);
+  }
+  if (
+    (typeof prenom === "string" && prenom.length > 100) ||
+    (typeof nom === "string" && nom.length > 100) ||
+    (typeof email === "string" && email.length > 200)
+  ) {
     return json({ error: "Requête invalide." }, 400);
   }
   // Prénom obligatoire : il ouvre les accusés de réception, qui n'ont pas de

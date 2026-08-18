@@ -88,11 +88,26 @@ describe("store — Réglages", () => {
     expect(reglages.devisTexts.urgenceTooltip).toBe(REGLAGES_DEFAUT.devisTexts.urgenceTooltip);
   });
 
-  it("la migration ne touche jamais pilotage:catalog (ni écriture, ni suppression)", async () => {
+  it("la migration ne touche jamais pilotage:catalog, et fige le résultat sur pilotage:reglages", async () => {
     await ns.put("pilotage:catalog", JSON.stringify(catalogueLegacy));
-    await getReglages(ns);
+    const migre = await getReglages(ns);
     expect(await ns.get("pilotage:catalog")).toBe(JSON.stringify(catalogueLegacy));
-    expect(await ns.get("pilotage:reglages")).toBeNull();
+    // Write-back sur la clé neuve : la lecture suivante ne repasse plus par le legacy.
+    expect(JSON.parse((await ns.get("pilotage:reglages"))!)).toEqual(migre);
+  });
+
+  it("un blob pilotage:reglages d'une version antérieure (champs manquants) est complété par les défauts", async () => {
+    const { heuresJour: _h, gestionPct: _g, ...ancien } = { ...REGLAGES_DEFAUT, tjm: 800 };
+    await ns.put("pilotage:reglages", JSON.stringify(ancien));
+    const reglages = await getReglages(ns);
+    expect(reglages.tjm).toBe(800);
+    expect(reglages.heuresJour).toBe(REGLAGES_DEFAUT.heuresJour);
+    expect(reglages.gestionPct).toBe(REGLAGES_DEFAUT.gestionPct);
+  });
+
+  it("un pilotage:catalog en JSON valide mais de forme inattendue retombe sur les défauts sans rejeter", async () => {
+    await ns.put("pilotage:catalog", JSON.stringify({ foo: 1 }));
+    await expect(getReglages(ns)).resolves.toEqual(REGLAGES_DEFAUT);
   });
 
   it("pilotage:reglages corrompu retombe sur REGLAGES_DEFAUT sans rejeter (pas de pilotage:catalog)", async () => {

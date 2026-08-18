@@ -26,7 +26,7 @@ const devis = defineCollection({
         titre: z.string(),
         texte: z.string().optional(),
         liste: z
-          .array(z.union([z.string(), z.object({ texte: z.string(), tooltip: z.string() })]))
+          .array(z.union([z.string(), z.object({ texte: z.string(), tooltip: z.string().optional() })]))
           .optional(),
         budget: z
           .object({

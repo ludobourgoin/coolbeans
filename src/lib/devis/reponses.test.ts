@@ -20,7 +20,14 @@ class D1Mock implements D1Like {
   prepare(sql: string) {
     const all = async <T>() => {
       if (!/^\s*SELECT/i.test(sql)) throw new Error(`SELECT attendu, reçu : ${sql}`);
-      const tri = [...this.rows].sort(
+      /* Mime le GROUP BY slug + MAX(id) du vrai SQL : une ligne par slug,
+         celle du plus grand id, triées par date décroissante. */
+      const parSlug = new Map<string, ReponseDevis>();
+      for (const r of this.rows) {
+        const actuel = parSlug.get(r.slug);
+        if (!actuel || r.id > actuel.id) parSlug.set(r.slug, r);
+      }
+      const tri = [...parSlug.values()].sort(
         (a, b) => b.createdAt.localeCompare(a.createdAt) || b.id - a.id,
       );
       return { results: tri as T[] };
@@ -100,6 +107,16 @@ describe("réponses devis (D1)", () => {
     await enregistrerReponse({ ...base, slug: "second" }, d1);
     const reponses = await listerReponses(d1);
     expect(reponses.map((r) => r.slug)).toEqual(["second", "premier"]);
+  });
+
+  it("deux réponses sur le même devis : seule la plus récente est rendue", async () => {
+    const base = { prenom: "S", nom: "S", email: "s@s.fr" };
+    await enregistrerReponse({ ...base, slug: "cafa", decision: "question", message: "1ère" }, d1);
+    await enregistrerReponse({ ...base, slug: "cafa", decision: "validation", message: "2ème" }, d1);
+    const reponses = await listerReponses(d1);
+    expect(reponses).toHaveLength(1);
+    expect(reponses[0].decision).toBe("validation");
+    expect(reponses[0].message).toBe("2ème");
   });
 
   it("message absent stocké et relu comme null", async () => {

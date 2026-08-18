@@ -2,6 +2,23 @@ import { useState } from "preact/hooks";
 import { actions } from "astro:actions";
 import type { Reglages } from "../../lib/chiffrage/types";
 
+/* Champ numérique, défini au niveau module : défini dans le corps du
+   composant parent, son identité changerait à chaque rendu et Preact
+   remonterait l'input à chaque frappe (perte de focus). */
+const Num = ({ chemin, label, valeur, step = 0.5, maj }: {
+  chemin: string;
+  label: string;
+  valeur: number;
+  step?: number;
+  maj: (chemin: string, valeur: unknown) => void;
+}) => (
+  <div class="grid gap-2">
+    <label class="label">{label}</label>
+    <input class="field w-[110px]" type="number" step={step} value={valeur}
+      onInput={(e) => maj(chemin, Number(e.currentTarget.value) || 0)} />
+  </div>
+);
+
 /* Formulaire contrôlé sur l'objet Reglages entier, sauvegardé d'un bloc
    (clé KV unique pilotage:reglages). Ces valeurs sont la source de vérité
    des prix lue par la skill devis. */
@@ -20,14 +37,6 @@ export default function ReglagesEditor({ initial }: { initial: Reglages }) {
       return copie as unknown as Reglages;
     });
 
-  const Num = ({ chemin, label, valeur, step = 0.5 }: { chemin: string; label: string; valeur: number; step?: number }) => (
-    <div class="grid gap-2">
-      <label class="label">{label}</label>
-      <input class="field w-[110px]" type="number" step={step} value={valeur}
-        onInput={(e) => maj(chemin, Number(e.currentTarget.value) || 0)} />
-    </div>
-  );
-
   async function sauvegarder() {
     setStatut({ texte: "Enregistrement…" });
     const { error } = await actions.reglages.sauvegarder(reglages);
@@ -41,23 +50,23 @@ export default function ReglagesEditor({ initial }: { initial: Reglages }) {
       <section class="card grid gap-4 bg-surface-subtle">
         <h2>Repères généraux</h2>
         <div class="flex flex-wrap gap-4">
-          <Num chemin="tjm" label="TJM cible (€)" valeur={r.tjm} step={10} />
-          <Num chemin="heuresJour" label="Heures / jour facturé" valeur={r.heuresJour} step={1} />
-          <Num chemin="marcheBas" label="Marché bas (€/j)" valeur={r.marcheBas} step={10} />
-          <Num chemin="marcheHaut" label="Marché haut (€/j)" valeur={r.marcheHaut} step={10} />
-          <Num chemin="joursSemaine" label="Jours dispo / semaine" valeur={r.joursSemaine} />
-          <Num chemin="semainesMarge" label="Semaines de marge" valeur={r.semainesMarge} />
-          <Num chemin="chargesPct" label="Charges + IR (%)" valeur={r.chargesPct} step={1} />
+          <Num chemin="tjm" label="TJM cible (€)" valeur={r.tjm} step={10} maj={maj} />
+          <Num chemin="heuresJour" label="Heures / jour facturé" valeur={r.heuresJour} step={1} maj={maj} />
+          <Num chemin="marcheBas" label="Marché bas (€/j)" valeur={r.marcheBas} step={10} maj={maj} />
+          <Num chemin="marcheHaut" label="Marché haut (€/j)" valeur={r.marcheHaut} step={10} maj={maj} />
+          <Num chemin="joursSemaine" label="Jours dispo / semaine" valeur={r.joursSemaine} maj={maj} />
+          <Num chemin="semainesMarge" label="Semaines de marge" valeur={r.semainesMarge} maj={maj} />
+          <Num chemin="chargesPct" label="Charges + IR (%)" valeur={r.chargesPct} step={1} maj={maj} />
         </div>
       </section>
 
       <section class="card grid gap-4">
         <h2>Coefficients</h2>
         <div class="flex flex-wrap gap-4">
-          <Num chemin="gestionPct" label="Gestion de projet (% du total)" valeur={r.gestionPct} step={1} />
-          <Num chemin="urgencePct" label="Urgence (%)" valeur={r.urgencePct} step={1} />
-          <Num chemin="affinite.baisse" label="Affinité : remise (%)" valeur={r.affinite.baisse} step={5} />
-          <Num chemin="affinite.hausse" label="Affinité : majoration (%)" valeur={r.affinite.hausse} step={5} />
+          <Num chemin="gestionPct" label="Gestion de projet (% du total)" valeur={r.gestionPct} step={1} maj={maj} />
+          <Num chemin="urgencePct" label="Urgence (%)" valeur={r.urgencePct} step={1} maj={maj} />
+          <Num chemin="affinite.baisse" label="Affinité : remise (%)" valeur={r.affinite.baisse} step={5} maj={maj} />
+          <Num chemin="affinite.hausse" label="Affinité : majoration (%)" valeur={r.affinite.hausse} step={5} maj={maj} />
         </div>
       </section>
 

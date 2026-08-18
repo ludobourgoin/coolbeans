@@ -44,6 +44,14 @@ describe("parseBlocChiffrage", () => {
     expect(b.mods.affinite).toBe("neutre");
     expect(b.contact.email).toBeNull();
   });
+  it("fins de ligne CRLF (Windows/Outlook) parsées comme LF", () => {
+    const b = parseBlocChiffrage(BLOC.replace(/\n/g, "\r\n"));
+    expect(b.present).toBe(true);
+    expect(b.mods.affinite).toBe("envie");
+    expect(b.mods.margePct).toBe(10);
+    expect(b.contact.email).toBe("salerno@ms-associes.com");
+  });
+
   it("champs vides tolérés", () => {
     const b = parseBlocChiffrage("## Chiffrage\n- Segment :\n- Marge : ");
     expect(b.present).toBe(true);
