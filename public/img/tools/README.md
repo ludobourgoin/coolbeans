@@ -45,6 +45,6 @@ Autres points à savoir :
 ## Ne pas confondre avec `../logos/`
 
 `../logos/` sert la **bande proof** (`/about`) et le **flux hero** (`/`), avec une autre
-règle : pictos Iconify + nom rendu en Geomanist à côté. Les deux jeux coexistent, un
+règle : pictos Iconify + nom rendu en Geist (`--font-display`) à côté. Les deux jeux coexistent, un
 même outil peut donc apparaître dans les deux avec des fichiers différents (ex. astro :
 `logos/astro-icon.svg` pour la bande, `tools/astro.svg` pour la vignette).

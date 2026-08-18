@@ -3,7 +3,7 @@
    Couche sémantique posée sur la fondation Geist. Astro + Tailwind v4.
    Importer une seule fois dans le layout racine :
        import "../styles/global.css";
-   Signature : Geomanist tient les h1/h2, Geist prend tout le reste.
+   Signature : Geist partout (site, portail, mails). Une seule famille.
    Dark mode : classe .dark sur <html>.
    ========================================================================== */
 
@@ -20,8 +20,9 @@
 /* ----------------------------------------------------------------------------
    POLICES
    Geist Sans/Mono : variables, extraites de geist@1.7.2, self-hébergées.
-   Geomanist : bold et black seulement — le corps et h3-h5 passent à Geist,
-   donc geomanist-book et geomanist-medium ne sont plus chargés.
+   Geomanist a été retirée le 2026-08-18 : une seule famille sur toute la
+   marque. Les .woff2 geomanist-* restent dans public/fonts mais ne sont plus
+   chargés — à supprimer quand plus rien n'y fait référence.
    -------------------------------------------------------------------------- */
 @font-face {
   font-family: "Geist Sans";
@@ -33,18 +34,6 @@
   font-family: "Geist Mono";
   src: url("/fonts/GeistMono-Variable.woff2") format("woff2");
   font-weight: 100 900;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Geomanist";
-  src: url("/fonts/geomanist-bold-webfont.woff2") format("woff2");
-  font-weight: 700;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Geomanist";
-  src: url("/fonts/geomanist-black-webfont.woff2") format("woff2");
-  font-weight: 800;
   font-display: swap;
 }
 /* Inter Tight regular : uniquement le « my » du logo myCoolbeans (COO-14). */
@@ -143,7 +132,10 @@
   --color-error: var(--error);
 
   --font-sans: "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-display: "Geomanist", "Helvetica Neue", Arial, sans-serif;
+  /* --font-display reste distinct de --font-sans par intention (les gros
+     titres peuvent diverger en graisse ou en tracking), mais sert la même
+     famille depuis le retrait de Geomanist. */
+  --font-display: "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-logo: "Inter Tight", "Geist Sans", sans-serif;
 
@@ -238,7 +230,8 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* la signature : Geomanist sur h1/h2, Geist sur le reste */
+  /* Geist partout ; les gros titres se distinguent par la graisse et le
+     tracking serré, plus par un changement de famille. */
   h1,
   h2 {
     font-family: var(--font-display);

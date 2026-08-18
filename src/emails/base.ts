@@ -7,8 +7,9 @@
      mute #4d4d4d · accent #171717 · radius card 8px · radius control 6px
    Mode clair forcé : les clients mail gèrent trop mal le dark pour un système
    monochrome — fonds et encres sont posés explicitement partout.
-   Geomanist/Geist sont tentées via @font-face (Apple Mail les honore),
-   fallbacks identiques à ceux de global.css pour les autres clients.
+   Geist est tentée via @font-face (Apple Mail l'honore), fallbacks
+   identiques à ceux de global.css pour les autres clients. Famille unique
+   depuis le retrait de Geomanist (2026-08-18).
    ========================================================================== */
 
 export const INK = "#171717";
@@ -19,7 +20,7 @@ export const SURFACE_SUBTLE = "#fafafa";
 
 export const FONT_SANS =
   "'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-export const FONT_DISPLAY = "'Geomanist', 'Helvetica Neue', Arial, sans-serif";
+export const FONT_DISPLAY = FONT_SANS;
 export const FONT_MONO =
   "'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace";
 
@@ -137,11 +138,6 @@ export function renderShell({ preheader, titre, corpsCarte, pied }: ShellProps):
     font-family: "Geist Sans";
     src: url("https://coolbeans.cc/fonts/Geist-Variable.woff2") format("woff2");
     font-weight: 100 900;
-  }
-  @font-face {
-    font-family: "Geomanist";
-    src: url("https://coolbeans.cc/fonts/geomanist-bold-webfont.woff2") format("woff2");
-    font-weight: 700;
   }
   @media only screen and (max-width: 640px) {
     .card-pad { padding: 24px !important; }

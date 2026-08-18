@@ -1,5 +1,5 @@
 export interface Logo {
-  /** pictogramme seul, jamais un lockup : le nom est rendu à côté, en Geomanist */
+  /** pictogramme seul, jamais un lockup : le nom est rendu à côté, en display */
   src: string;
   name: string;
   /** picto monochrome encre → inversé en dark mode */
