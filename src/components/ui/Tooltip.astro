@@ -33,7 +33,10 @@
 
    Attention en modifiant ce composant : Chromium en émulation tactile donne
    le focus au bouton et masque donc le premier piège. Toute vérification
-   mobile se fait sous WebKit. */
+   mobile se fait sous WebKit.
+
+   Le texte de la bulle passe à 15 px sous 700 px : 13 px se lisent mal sur
+   téléphone, alors que c'est là qu'on ouvre une infobulle au doigt. */
 interface Props { texte: string }
 const { texte } = Astro.props;
 ---
@@ -45,7 +48,7 @@ const { texte } = Astro.props;
   >i</button>
   <span
     role="tooltip"
-    class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[min(38ch,calc(100vw-2rem))] -translate-x-1/2 rounded-card bg-ink px-3 py-2 text-[13px] leading-snug text-surface opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 group-data-[ouvert]:opacity-100"
+    class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[min(38ch,calc(100vw-2rem))] -translate-x-1/2 rounded-card bg-ink px-3 py-2 text-[13px] leading-snug text-surface opacity-0 max-[700px]:text-[15px] shadow-md transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 group-data-[ouvert]:opacity-100"
     data-bulle
   >
     {texte}

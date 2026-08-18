@@ -121,7 +121,7 @@ const ancre = (titre: string) => slugify(titre);
               return (
                 <div>
                   {b.lignes.map((ligne) => (
-                    <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px]">
+                    <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] max-[700px]:text-[16px]">
                       <span>
                         <Fragment set:html={riche(ligne.label)} />
                         {ligne.tooltip && <Tooltip texte={ligne.tooltip} />}
@@ -139,13 +139,13 @@ const ancre = (titre: string) => slugify(titre);
                   ))}
                   {remise > 0 ? (
                     <>
-                      <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] font-medium">
+                      <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] font-medium max-[700px]:text-[16px]">
                         <span>Total</span>
                         <span class="font-mono whitespace-nowrap tabular-nums">
                           {eur.format(total)} {mention}
                         </span>
                       </div>
-                      <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute">
+                      <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute max-[700px]:text-[16px]">
                         <span>{b.remiseLabel ?? "Remise exceptionnelle"} (−{b.remisePct}&nbsp;%)</span>
                         <span class="font-mono whitespace-nowrap tabular-nums">
                           −{eur.format(remise)}
