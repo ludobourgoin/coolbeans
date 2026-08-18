@@ -2,21 +2,36 @@
 /* Marqueur ⓘ + bulle au survol/focus. Sert à alléger le devis : l'explication
    sort du fil principal sans disparaître. Texte brut uniquement.
 
-   Le marqueur est un pastillage plein (fond + bordure soutenue) et non un
-   cercle filaire : à 16 px, une bordure --line seule disparaît sur fond blanc.
-   Alignement `align-middle` et non `align-baseline` : un disque calé sur la
-   ligne de base déborde sous le texte et paraît tomber. */
+   Parti pris repris de Geist (vercel.com/geist/tooltip) : la bulle est un
+   aplat d'encre sur page claire, et s'inverse en sombre. `bg-ink` +
+   `text-surface` obtiennent les deux d'un coup, puisque les deux tokens
+   basculent avec .dark — aucune règle dark: à maintenir.
+
+   Le marqueur suit la même logique : disque plein d'encre, jamais un cercle
+   filaire (à 16 px, une bordure --line disparaît sur blanc).
+
+   Alignement : `vertical-align: -0.15em` plutôt que middle ou baseline. En
+   baseline le disque tombe sous le texte ; en middle il se cale sur la
+   demi-hauteur d'x et reste un cheveu bas. Un retrait exprimé en em centre le
+   disque sur la hauteur de capitale et suit la taille de police du contexte,
+   qui varie d'une section du devis à l'autre. */
 interface Props { texte: string }
 const { texte } = Astro.props;
 ---
-<span class="group relative inline-block align-middle">
+<span class="group relative inline-block [vertical-align:-0.15em]">
   <button
     type="button"
     aria-label={`Détail : ${texte}`}
-    class="ml-1 inline-flex size-4 items-center justify-center rounded-full border border-line-strong bg-surface-raise font-mono text-[10px] leading-none font-bold text-mute transition-colors duration-150 hover:border-ink hover:bg-ink hover:text-surface focus-visible:border-ink focus-visible:bg-ink focus-visible:text-surface"
+    class="ml-1 inline-flex size-4 items-center justify-center rounded-full bg-ink font-mono text-[10px] leading-none font-bold text-surface opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
   >i</button>
   <span
     role="tooltip"
-    class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[38ch] -translate-x-1/2 rounded-card border border-line-strong bg-surface px-3 py-2 text-[13px] leading-snug text-ink opacity-0 shadow-md transition-opacity duration-150 group-focus-within:opacity-100 group-hover:opacity-100"
-  >{texte}</span>
+    class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[38ch] -translate-x-1/2 rounded-card bg-ink px-3 py-2 text-[13px] leading-snug text-surface opacity-0 shadow-md transition-opacity duration-150 group-focus-within:opacity-100 group-hover:opacity-100"
+  >
+    {texte}
+    <span
+      class="absolute top-full left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-ink"
+      aria-hidden="true"
+    />
+  </span>
 </span>

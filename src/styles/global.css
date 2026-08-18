@@ -222,6 +222,13 @@
   body {
     background: var(--surface);
     color: var(--ink);
+    /* Aucun défilement horizontal, jamais. Les bandeaux pleine largeur posés
+       dans un conteneur centré s'échappent en marge négative calculée sur
+       100vw, qui inclut la barre de défilement : quelques pixels de trop
+       suffisent à faire glisser toute la page sur mobile. `clip` coupe sans
+       créer de conteneur de défilement, donc `position: sticky` continue de
+       se caler sur le viewport (ce que `hidden` casserait). */
+    overflow-x: clip;
     font-family: var(--font-sans);
     font-weight: 400;
     font-size: 16px;
