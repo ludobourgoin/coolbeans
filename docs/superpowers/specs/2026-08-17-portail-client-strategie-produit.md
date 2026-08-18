@@ -74,12 +74,12 @@ Toute information produite dans les deux boucles précédentes finit dans la doc
 **État :** existant (formulaire de support).
 
 - Source de vérité unique de l'entrant. Objet + description → **Linear Triage**, avec identification automatique du client et du projet.
-- Le client voit ses demandes : `Reçue` / `En cours` / `En validation` / `Résolue`. Pas les états internes Linear.
+- Le client voit ses demandes avec **trois états** : `En attente` / `En cours` / `Traité`, mappés sur le `statusType` Linear, jamais sur les états internes (décision 2026-08-18, entérine l'implémentation livrée ; remplace les quatre états de la v1 de cette spec). Le « pour validation » ne passe pas par un badge mais par un message publié (« c'est en ligne, dis-moi si ça te va »).
 - Fil de discussion par demande, pour éviter le retour vers l'email.
 - **Délai de réponse annoncé** visible sur la page (répond à la FAQ « sous quel délai aurai-je une réponse »). L'annoncer engage, donc le calibrer sur la réalité.
-- **À la clôture :** notification « résolu », avec ce qui s'est passé, ce qui a été changé, et le lien vers l'entrée de doc correspondante. Chaque incident devient une démonstration de valeur.
+- **À la clôture :** convention de clôture sur le flux `>>` (décision 2026-08-18, zéro machinerie) : le dernier message publié avant le passage en `Traité` contient le récapitulatif — ce qui s'est passé, ce qui a été changé, le lien vers l'entrée de doc. Chaque incident devient une démonstration de valeur. Gabarit de rédaction : COO-98.
 
-**Critères d'acceptation :** création d'un ticket Linear en < 5 s, mapping d'état correct, notification de clôture rédigée et validée avant envoi, fil consultable.
+**Critères d'acceptation :** création d'un ticket Linear en < 5 s, mapping d'état correct, message de clôture `>>` avec récapitulatif et lien doc, fil consultable.
 
 ---
 
@@ -246,7 +246,7 @@ Autant de checklists que le client a de procédures techniques récurrentes :
 | Type | Exemples | Fréquence | Désabonnable |
 |---|---|---|---|
 | Transactionnel | Ticket résolu, documents ajoutés, alerte d'échéance, incident | À l'événement | Non (opérationnel) |
-| Digest | Changelog hebdo, observations, leads non traités | Hebdo ou mensuel | Oui |
+| Digest | Changelog + leads : hebdo · observations de fond : mensuel (décision 2026-08-18) | Selon le type | Oui |
 | Opportunité | Nouvelle recommandation | À l'événement, plafonnée | Oui |
 
 **Règles :**
@@ -293,7 +293,7 @@ Sans elle, chaque site demande une analyse sur mesure et le coût par site reste
 
 **Point réglementaire à arbitrer par client.** En France, GA4 en configuration standard nécessite un bandeau de consentement, et le taux de refus fait perdre une part significative des données, souvent plusieurs dizaines de pour cent. Une solution d'audience cookieless correctement configurée peut relever de l'exemption de consentement CNIL, ce qui donne des données plus complètes et supprime le bandeau. À vérifier au cas par cas au regard des critères d'exemption en vigueur. Le choix dépend surtout de la dépendance du client à Google Ads : s'il fait de l'acquisition payante, GA4 reste nécessaire. Sinon, l'alternative cookieless est probablement supérieure sur tous les plans.
 
-**Recommandation par défaut :** événements en code via le package interne, envoyés vers une solution cookieless, plus GA4 en complément uniquement chez les clients qui font de l'acquisition payante.
+**Décision (2026-08-18, arbitrage 9.2) :** événements en code via le package interne, envoyés vers une solution cookieless, plus GA4 en complément uniquement chez les clients qui font de l'acquisition payante. Le choix de l'outil cookieless (Plausible vs Umami, COO-16) reste suspendu au volume du parc.
 
 **Critères d'acceptation :** taxonomie documentée et figée, package interne publié, déployé sur au moins deux sites pilotes, données interrogeables par API de façon identique sur les deux.
 
@@ -508,12 +508,12 @@ Le chemin critique est le **tracking standardisé** (P5) : il conditionne le mot
 
 ## 9. Questions ouvertes (décision de Ludo requise, ne pas trancher à sa place)
 
-1. **Réponses aux emails de notification.** Où arrive un email auquel un client répond directement ? Vérifier les capacités de réception entrante de Resend. À défaut : `reply-to` vers la boîte de Ludo, avec conversion manuelle en ticket pour préserver la règle du canal unique.
-2. **Analytics par client :** cookieless exemptable, GA4, ou les deux. Dépend de la dépendance de chaque client à Google Ads. Décider une règle par défaut plutôt qu'un arbitrage à chaque fois.
-3. **Source de vérité de la facturation.** Quel outil, et quelle API pour alimenter 3.7.
-4. **Périmètre exact du « gratuit à vie ».** Ce qui est inclus, ce qui ne l'est pas, et le délai de réponse annoncé sur la page Support. À figer avant de le vendre.
-5. **Hébergement et modèle de données du portail.** Isolation, sauvegardes, restauration.
-6. **Fréquence des digests :** hebdomadaire ou mensuelle. Le mensuel préserve mieux la rareté, l'hebdomadaire crée mieux l'habitude. Peut-être hebdo pour les leads et le changelog, mensuel pour les observations de fond.
+1. ~~**Réponses aux emails de notification.**~~ **Résolu de facto (2026-08-18)** : l'inbound email est explicitement hors scope durable (spec messagerie §10) ; `reply-to` vers la boîte de Ludo, conversion manuelle en ticket pour préserver la règle du canal unique.
+2. ~~**Analytics par client.**~~ **Décidé (2026-08-18)** : cookieless exemptable par défaut sur tout le parc, GA4 en complément uniquement chez les clients qui font de l'acquisition payante (voir 4.1). Outil cookieless (Plausible vs Umami) toujours suspendu au volume (COO-16).
+3. ~~**Source de vérité de la facturation.**~~ **Décidé (2026-08-18)** : **Tiime**. Son API est réservée aux éditeurs de logiciels (sur demande à support@tiime.fr) ; l'accès aux données passe par l'intégration officielle **Make.com**. Conséquence pour P10 : sync via un scénario Make (ou demande de partenariat API si le besoin le justifie) — exception assumée à la règle « pas de Make » du portail, qui visait les flux entrants du formulaire, pas un miroir batch.
+4. **Périmètre exact du « gratuit à vie »** + délai de réponse annoncé. **Reporté au bilan pilote J+14** (décision 2026-08-18) : à figer avant le premier client externe, pas avant le pilote interne.
+5. **Hébergement et modèle de données du portail.** Isolation, sauvegardes, restauration. Toujours ouvert : un audit exécutable par Claude peut préparer la décision.
+6. ~~**Fréquence des digests.**~~ **Décidé (2026-08-18)** : hebdomadaire pour le changelog et les leads (crée l'habitude), mensuel pour les observations de fond (préserve la rareté). Voir 3.11.
 
 ---
 
