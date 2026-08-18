@@ -7,11 +7,11 @@
    `text-surface` obtiennent les deux d'un coup, puisque les deux tokens
    basculent avec .dark — aucune règle dark: à maintenir.
 
-   Le marqueur suit la même logique en un cran plus doux : `bg-mute` plutôt
-   que `bg-ink`, pour qu'il se voie sans peser autant qu'un mot en gras. Un
-   disque plein, jamais un cercle filaire (à cette taille, une bordure --line
-   disparaît sur blanc), et 14 px plutôt que 16 : plus proche de la hauteur de
-   capitale du texte, donc plus facile à centrer et moins lourd dans la ligne.
+   Le marqueur suit la même logique, deux crans plus doux : --ds-gray-700
+   plutôt qu'une encre pleine, pour qu'il se voie sans peser autant qu'un mot
+   en gras. Un disque plein, jamais un cercle filaire (à cette taille, une
+   bordure --line disparaît sur blanc), et 13 px : sous la hauteur de capitale
+   du texte, il se pose dans la ligne au lieu de la dominer.
 
    Alignement, et c'est plus subtil qu'il n'y paraît : un inline-block
    transmet la baseline de son dernier contenu en flux, ici le « i » centré
@@ -32,7 +32,7 @@ const { texte } = Astro.props;
   <button
     type="button"
     aria-label={`Détail : ${texte}`}
-    class="ml-1 inline-flex size-[14px] items-center justify-center rounded-full bg-mute font-mono text-[9px] leading-none font-bold text-surface opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
+    class="ml-1 inline-flex size-[13px] items-center justify-center rounded-full bg-[var(--ds-gray-700)] font-mono text-[9px] leading-none font-bold text-surface opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
   >i</button>
   <span
     role="tooltip"

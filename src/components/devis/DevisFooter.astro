@@ -3,44 +3,51 @@
    est hors parcours, noindex) : ce bloc pose la signature Coolbeans et
    l'accès aux mentions légales sans réintroduire la navigation.
 
-   Fond blanc et non surface-subtle : la page devis alterne déjà les fonds
-   (en-tête et formulaire en gris), un troisième aplat gris en pied
-   empilerait les zones. Le blanc laisse la page se terminer, et un simple
-   filet suffit à marquer la fin.
+   Deux étages, et c'est le point : le logo respire au centre d'une zone
+   large, la ligne légale est ancrée tout en bas, séparée par un filet. Un
+   bloc unique empilant logo puis mentions collait les deux et donnait un
+   pavé centré au milieu de nulle part.
 
-   Respiration volontairement large (128 px) : c'est la marge qui donne
-   l'impression d'espace, pas les éléments. */
+   Fond blanc et non surface-subtle : la page alterne déjà les aplats (en-tête
+   et formulaire en gris), un troisième empilerait les zones. */
 const year = new Date().getFullYear();
 ---
 
 <footer class="border-t border-line bg-surface">
-  <div class="container-site flex flex-col items-center py-32x text-center">
-    <a
-      href="https://coolbeans.cc"
-      target="_blank"
-      rel="noopener"
-      aria-label="coolbeans — ouvrir le site dans un nouvel onglet"
-      class="inline-flex items-center leading-0 transition-opacity duration-150 hover:opacity-60"
-    >
-      <img
-        class="block h-6 w-auto dark:hidden"
-        src="/img/coolbeans-wordmark.svg"
-        alt="coolbeans"
-        height="24"
-      />
-      <img
-        class="hidden h-6 w-auto dark:block"
-        src="/img/coolbeans-wordmark-white.svg"
-        alt="coolbeans"
-        height="24"
-      />
-    </a>
-    <p class="mt-10x font-mono text-[11px] tracking-wide text-mute uppercase">
-      <a class="transition-colors duration-150 hover:text-ink" href="/mentions-legales" target="_blank" rel="noopener">
-        Mentions légales
+  <div class="container-site">
+    <div class="flex justify-center py-32x">
+      <a
+        href="https://coolbeans.cc"
+        target="_blank"
+        rel="noopener"
+        aria-label="coolbeans — ouvrir le site dans un nouvel onglet"
+        class="inline-flex items-center leading-0 transition-opacity duration-150 hover:opacity-60"
+      >
+        <img
+          class="block h-6 w-auto dark:hidden"
+          src="/img/coolbeans-wordmark.svg"
+          alt="coolbeans"
+          height="24"
+        />
+        <img
+          class="hidden h-6 w-auto dark:block"
+          src="/img/coolbeans-wordmark-white.svg"
+          alt="coolbeans"
+          height="24"
+        />
       </a>
-      <span class="mx-3 opacity-40" aria-hidden="true">·</span>
-      © {year} Coolbeans
-    </p>
+    </div>
+
+    <div
+      class="flex items-center justify-between gap-4 border-t border-line py-5 font-mono text-[11px] tracking-wide text-mute uppercase max-[560px]:flex-col max-[560px]:gap-2"
+    >
+      <span>© {year} Coolbeans</span>
+      <a
+        class="transition-colors duration-150 hover:text-ink"
+        href="/mentions-legales"
+        target="_blank"
+        rel="noopener">Mentions légales</a
+      >
+    </div>
   </div>
 </footer>

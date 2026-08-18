@@ -20,7 +20,9 @@ const { slug } = Astro.props;
     <div
       class="mx-auto grid max-w-[880px] grid-cols-[180px_1fr] gap-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
     >
-      <p class="label pt-2">Réponse</p>
+      <!-- Colonne de libellés laissée vide : elle ne sert ici qu'à caler le
+           formulaire sur la grille du corps du devis. -->
+      <div aria-hidden="true"></div>
       <div>
         <h2>Répondre à cette proposition</h2>
         <p class="mt-4 max-w-[44ch] leading-[1.6] text-mute">

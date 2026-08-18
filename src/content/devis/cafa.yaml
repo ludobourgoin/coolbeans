@@ -1,5 +1,5 @@
 titre: CAFA x Coolbeans
-objet: Site Internet du Club d'Affaires Franco-Allemand Toulouse Midi-Pyrénées
+objet: Site Internet du Club d'Affaires Franco-Allemand Occitanie
 date: 2026-08-06
 contact: Susanne
 linear:
@@ -43,10 +43,10 @@ sections:
       - texte: "**Formulaire de contact** : les messages arrivent directement dans la boîte mail du Club d'Affaires"
       - texte: "**Bulletin d'adhésion en PDF**, téléchargeable depuis la page Devenir membre"
 
-  - titre: Stack technique recommandée
+  - titre: Stack
     texte: >-
-      On part sur **Astro** (développement) + **Sanity** (gestion de contenu) +
-      **Cloudflare** (hébergement).
+      Ma recommandation : **Astro** (développement) + **Sanity** (gestion de
+      contenu) + **Cloudflare** (hébergement).
     liste:
       - Pages très légères, site rapide à l'affichage
       - "Coût d'usage nul : hébergement gratuit, aucun abonnement mensuel à prévoir"
@@ -82,8 +82,7 @@ sections:
       - Tests sur les trois principaux navigateurs
       - Certificat SSL, hébergement et raccordement du nom de domaine
       - Mise en place du suivi de fréquentation, sans cookies
-      - Favicon et aperçus de partage sur les réseaux sociaux
-      - Pages légales et page de contact
+      - Pages légales
       - Formation à la mise à jour du site, et guide écrit remis à l'issue
       - Support 30 jours après la mise en ligne
 
@@ -149,6 +148,5 @@ notes:
       supplémentaires restent possibles et sont budgétées au temps passé.
   - tone: info
     texte: >-
-      Deux points restent à trancher ensemble au démarrage : le nom de domaine
-      définitif, et la question de réunir ou non Événements et Actualités en
-      une seule section.
+      Un point reste à trancher ensemble au démarrage : le nom de domaine
+      définitif.
