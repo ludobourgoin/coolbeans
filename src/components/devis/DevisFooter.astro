@@ -3,19 +3,22 @@
    est hors parcours, noindex) : ce bloc pose la signature Coolbeans et
    l'accès aux mentions légales sans réintroduire la navigation.
 
-   Deux étages, et c'est le point : le logo respire au centre d'une zone
-   large, la ligne légale est ancrée tout en bas, séparée par un filet. Un
-   bloc unique empilant logo puis mentions collait les deux et donnait un
-   pavé centré au milieu de nulle part.
+   Le logotype est traité en élément graphique, pas en vignette : à 24 px
+   dans 128 px de blanc, il flottait au milieu d'un vide. Agrandi et associé
+   à la baseline juste dessous, il forme un bloc dense qui occupe l'espace au
+   lieu de le subir — et la respiration peut alors se réduire.
 
-   Fond blanc et non surface-subtle : la page alterne déjà les aplats (en-tête
-   et formulaire en gris), un troisième empilerait les zones. */
+   Deux étages : la signature respire, la ligne légale est ancrée en bas,
+   séparée par un filet.
+
+   Fond blanc et non surface-subtle : la page alterne déjà les aplats
+   (en-tête et formulaire en gris), un troisième empilerait les zones. */
 const year = new Date().getFullYear();
 ---
 
 <footer class="border-t border-line bg-surface">
   <div class="container-site">
-    <div class="flex justify-center py-32x">
+    <div class="flex flex-col items-center py-24x">
       <a
         href="https://coolbeans.cc"
         target="_blank"
@@ -24,18 +27,23 @@ const year = new Date().getFullYear();
         class="inline-flex items-center leading-0 transition-opacity duration-150 hover:opacity-60"
       >
         <img
-          class="block h-6 w-auto dark:hidden"
+          class="block h-14 w-auto max-[560px]:h-10 dark:hidden"
           src="/img/coolbeans-wordmark.svg"
           alt="coolbeans"
-          height="24"
+          width="379"
+          height="63"
         />
         <img
-          class="hidden h-6 w-auto dark:block"
+          class="hidden h-14 w-auto max-[560px]:h-10 dark:block"
           src="/img/coolbeans-wordmark-white.svg"
           alt="coolbeans"
-          height="24"
+          width="379"
+          height="63"
         />
       </a>
+      <p class="mt-5 text-center text-[15px] leading-[1.5] text-mute">
+        Design et code,<br class="max-[420px]:hidden" /> pensés pour durer.
+      </p>
     </div>
 
     <div
