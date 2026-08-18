@@ -250,7 +250,7 @@ const { slug } = Astro.props;
     } catch {
       /* Filet de sécurité : un envoi qui échoue ne doit jamais laisser le
          client sans issue, sinon la réponse est perdue et personne ne le sait
-         — ni lui, ni moi. On lui rend sa saisie sous forme de courriel
+         (ni lui, ni moi). On lui rend sa saisie sous forme de courriel
          pré-rempli, qui ne dépend d'aucun de nos services. */
       const corps = [
         `Réponse au devis : ${payload.slug ?? ""}`,
