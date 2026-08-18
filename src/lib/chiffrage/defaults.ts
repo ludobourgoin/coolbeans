@@ -7,24 +7,20 @@ export const REGLAGES_DEFAUT: Reglages = {
   marcheHaut: 650,
   joursSemaine: 3,
   semainesMarge: 1,
-  chargesPct: 26,
+  /* 28,5 : micro-entreprise BNC 2026 — cotisations 26,1 % + CFP 0,2 %
+     + versement libératoire 2,2 %. Le « net » qui en découle est le vrai
+     argent en poche, IR compris. */
+  chargesPct: 28.5,
   gestionPct: 15,
   urgencePct: 20,
-  affinite: { baisse: 20, hausse: 20 },
-  segments: {
-    agence: { label: "Agence de com digitale", desc: "Pour leurs clients", gestionProjet: false, note: "L'agence porte sa propre marge et sa gestion de projet." },
-    designer: { label: "Designer UX/UI, DA", desc: "Collab : ils designent, tu intègres", gestionProjet: false, note: "Le design n'est pas de ton ressort ici : ne coche que intégration et dev sur mesure. Le designer gère la relation client." },
-    pme: { label: "PME, scale-up", desc: "Budgets plus importants", gestionProjet: true, note: "Plus d'enjeux, plus d'allers-retours, plus de coordination : gestion de projet activée par défaut." },
-    tpe: { label: "TPE, solopreneur", desc: "Simple et rapide", gestionProjet: false, note: "Cycle court, décision rapide, pas de surcouche de gestion de projet par défaut." },
-    association: { label: "Association", desc: "Tarifs ESS", gestionProjet: false, note: "Vérifie le budget réel avant d'appliquer une réduction : utilise le champ « Réduction exceptionnelle » plutôt qu'un abattement automatique." },
-  },
+  affinite: { baisse: 10, hausse: 10 },
   devisTexts: {
     stackTechnique:
       "On part sur Astro (développement) + Sanity (CMS) + Cloudflare (hébergement). Pages ultra-légères, site rapide. Coût d'usage nul : hébergement Cloudflare gratuit, aucun abonnement mensuel. Autonomie : vous gérez textes, images et contenus vous-même via Sanity, sans toucher au code. Vous restez libre : le code est dans un dépôt qui vous appartient, le contenu Sanity est exportable, n'importe quel développeur peut reprendre le site.",
     conditionsReglement:
       "30 % à la validation du devis, qui lance la prestation. Solde à la livraison du site fonctionnel.",
     ceQueCaComprend:
-      "Responsive (desktop, tablette, mobile)\nConfiguration SEO et bonnes pratiques\nOptimisation de la vitesse\nTests QA sur les 3 navigateurs principaux\nCertificat SSL\nPages légales et page de contact\nDoc de passation pour la prise en main du site\nSupport 30 jours après mise en ligne",
+      "Responsive (desktop, tablette, mobile)\nConfiguration SEO et bonnes pratiques\nOptimisation de la vitesse\nTests QA sur les 3 navigateurs principaux\nCertificat SSL, hébergement et raccordement du nom de domaine (DNS)\nMise en place du suivi de fréquentation (analytics sans cookies)\nFavicon et aperçus de partage (réseaux sociaux, messageries)\nLe code livré dans un dépôt qui vous appartient\nPages légales et page de contact\nDoc de passation pour la prise en main du site\nSupport 30 jours après mise en ligne",
     horsPerimetre:
       "La rédaction des textes et la fourniture des visuels ne sont pas incluses.\nLa conception d'une charte graphique poussée n'est pas incluse (modernisation du design existant).",
     urgenceTooltip:

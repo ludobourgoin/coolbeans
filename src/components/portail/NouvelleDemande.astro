@@ -40,7 +40,7 @@ import { URGENCES } from "../../lib/portail/messagerie/regles";
     </p>
 
     <div class="grid gap-2">
-      <label class="label" for="nd-objet">
+      <label class="label field-label" for="nd-objet">
         Objet <span aria-hidden="true">*</span>
       </label>
       <input
@@ -55,7 +55,7 @@ import { URGENCES } from "../../lib/portail/messagerie/regles";
     </div>
 
     <div class="grid gap-2">
-      <label class="label" for="nd-description">Description</label>
+      <label class="label field-label" for="nd-description">Description</label>
       <textarea
         class="field h-auto min-h-[140px] py-3"
         id="nd-description"
@@ -66,7 +66,7 @@ import { URGENCES } from "../../lib/portail/messagerie/regles";
     </div>
 
     <div class="grid gap-2">
-      <label class="label" for="nd-urgence">Urgence</label>
+      <label class="label field-label" for="nd-urgence">Urgence</label>
       <select class="field" id="nd-urgence" name="urgence">
         <option value="">—</option>
         {URGENCES.map((u) => (
@@ -76,7 +76,7 @@ import { URGENCES } from "../../lib/portail/messagerie/regles";
     </div>
 
     <div class="grid gap-2">
-      <label class="label" for="nd-fichiers">Pièces jointes</label>
+      <label class="label field-label" for="nd-fichiers">Pièces jointes</label>
       <input
         class="field h-auto py-2"
         type="file"

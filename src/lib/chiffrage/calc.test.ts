@@ -12,9 +12,9 @@ describe("calculerDevis", () => {
     expect(c.plancher).toBe(3000);
     expect(c.totalSuggere).toBe(3000);
   });
-  it("affinité envie −20 %, pasenvie +20 %", () => {
-    expect(calculerDevis(35, base({ affinite: "envie" }), r).totalSuggere).toBe(2400);
-    expect(calculerDevis(35, base({ affinite: "pasenvie" }), r).totalSuggere).toBe(3600);
+  it("affinité envie −10 %, pasenvie +10 %", () => {
+    expect(calculerDevis(35, base({ affinite: "envie" }), r).totalSuggere).toBe(2700);
+    expect(calculerDevis(35, base({ affinite: "pasenvie" }), r).totalSuggere).toBeCloseTo(3300, 6);
   });
   it("gestion de projet : +15 % du total, pas hebdo", () => {
     const c = calculerDevis(35, base({ gestionProjet: true }), r);
@@ -33,9 +33,9 @@ describe("calculerDevis", () => {
         reduction: { nom: "Tarif association", pct: 20 } }),
       r,
     );
-    // 3000 → 2400 → +360 gestion → +552 urgence → 3312 → +331.2 marge
-    // → 3643.2 → −728.64 réduction → 2914.56
-    expect(c.totalSuggere).toBeCloseTo(2914.56, 2);
+    // 3000 → 2700 → +405 gestion → +621 urgence → 3726 → +372.6 marge
+    // → 4098.6 → −819.72 réduction → 3278.88
+    expect(c.totalSuggere).toBeCloseTo(3278.88, 2);
   });
   it("réduction en € prioritaire sur le %", () => {
     const c = calculerDevis(35, base({ reduction: { nom: "Geste", montant: 500, pct: 99 } }), r);

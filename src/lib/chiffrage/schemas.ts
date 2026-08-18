@@ -16,15 +16,6 @@ export const reglagesSchema = z.object({
     baisse: z.number().min(0).max(100),
     hausse: z.number().min(0).max(100),
   }),
-  segments: z.record(
-    z.string(),
-    z.object({
-      label: z.string(),
-      desc: z.string(),
-      gestionProjet: z.boolean(),
-      note: z.string(),
-    }),
-  ),
   devisTexts: z.object({
     stackTechnique: z.string(),
     conditionsReglement: z.string(),

@@ -248,16 +248,12 @@ Relecture contre `2026-08-17-portail-client-strategie-produit.md`. L'architectur
 (journal publié seul lu par le portail) est **plus forte** que le §4.5 client-safe : aucun
 écart de fond. Quatre écarts de détail :
 
-1. **Statuts client — à trancher par Ludo.** Spec produit §3.2 : quatre états (`Reçue` /
-   `En cours` / `En validation` / `Résolue`). Cette spec (§6, choix délibéré du brainstorm) :
-   trois états mappés par `statusType` (`En attente` / `En cours` / `Traité`), le « pour
-   validation » passant par un message `>>` plutôt qu'un badge. Les deux modèles sont
-   défendables ; celui qui perd doit être amendé dans l'autre document.
-2. **Notification de clôture — à trancher par Ludo.** Spec produit §3.2 (et COO-98) :
-   notification « résolu » avec récapitulatif et lien doc. Proposition de résolution : pas de
-   machinerie dédiée, une **convention de clôture** sur le flux `>>` existant (dernier message
-   `>>` = récapitulatif + lien doc, puis passage en Traité). COO-98 deviendrait une convention
-   d'usage plus un gabarit, pas du code.
+1. **Statuts client — tranché le 2026-08-18** : les trois états de cette spec sont
+   **entérinés** (mappés `statusType`, « pour validation » via message `>>`). La spec produit
+   §3.2 a été amendée en conséquence.
+2. **Notification de clôture — tranché le 2026-08-18** : **convention de clôture** sur le
+   flux `>>` existant (dernier message `>>` = récapitulatif + lien doc, puis passage en
+   Traité). Zéro machinerie ; COO-98 = gabarit de rédaction + ligne de doc interne.
 3. **Plafond de fréquence — tranché (bon sens).** Les emails du fil de conversation sont du
    transactionnel conversationnel : le client les attend, ils sont **exemptés** du plafond
    « deux emails par semaine » du §3.11. Le plafond s'applique aux canaux sortants à

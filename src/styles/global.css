@@ -478,4 +478,12 @@
     text-transform: uppercase;
     color: var(--mute);
   }
+
+  /* Libellé posé au-dessus d'un .field : partage le retrait du texte saisi
+     (14px de padding-inline + 1px de bordure), pour que libellé et valeur
+     tombent sur le même bord gauche. Un .label seul (eyebrow de section)
+     reste flush, lui. */
+  .field-label {
+    padding-inline: 15px;
+  }
 }

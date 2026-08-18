@@ -17,7 +17,7 @@ import EmptyState from "../components/portail/EmptyState.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
 import PortalSidebar from "../components/portail/PortalSidebar.astro";
 import { buildSidebar } from "../lib/portail/nav";
-import ClientSwitcher from "../components/portail/ClientSwitcher.astro";
+import WorkspaceSwitcher from "../components/portail/WorkspaceSwitcher.astro";
 import { readPortalMetadata } from "../lib/portail/metadata";
 
 // Un client onboardé : les cinq entrées, sans les entrées admin.
@@ -345,7 +345,15 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
       <div class="mt-6x grid gap-6x md:grid-cols-2">
         <div class="card">
           <p class="label mb-4x">Champ</p>
-          <input class="field" placeholder="vous@exemple.fr" />
+          <div class="grid gap-2">
+            <label class="label field-label" for="ds-champ-exemple">Adresse e-mail</label>
+            <input class="field" id="ds-champ-exemple" placeholder="vous@exemple.fr" />
+          </div>
+          <p class="mt-3x text-sm text-mute">
+            Le libellé d'un champ prend <code>.label field-label</code> : son texte s'aligne sur
+            le texte saisi (15px de retrait), jamais sur le bord de la boîte. Un
+            <code>.label</code> seul (eyebrow de section) reste flush.
+          </p>
           <p class="mt-4x text-sm text-mute">
             Même anneau de focus que les boutons : 2px de fond puis 2px de couleur.
           </p>
@@ -512,7 +520,7 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
 
       <p class="label mb-3x mt-10x">Sélecteur de client · admin uniquement</p>
       <div class="card max-w-80">
-        <ClientSwitcher
+        <WorkspaceSwitcher
           clients={[
             { slug: "coolbeans", nom: "Coolbeans", uptimerobot_monitor_ids: [], archive: false },
             { slug: "amusoire", nom: "Amusoire", doc: "amusoire", uptimerobot_monitor_ids: [], archive: false },

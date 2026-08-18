@@ -44,6 +44,14 @@ describe("parseBlocChiffrage", () => {
     expect(b.mods.affinite).toBe("neutre");
     expect(b.contact.email).toBeNull();
   });
+  it("puces `*` (resérialisation markdown de Linear) parsées comme les `-`", () => {
+    const b = parseBlocChiffrage(BLOC.replace(/^- /gm, "* "));
+    expect(b.present).toBe(true);
+    expect(b.mods.affinite).toBe("envie");
+    expect(b.mods.reduction).toEqual({ nom: "Tarif association", pct: 20 });
+    expect(b.contact.email).toBe("salerno@ms-associes.com");
+  });
+
   it("fins de ligne CRLF (Windows/Outlook) parsées comme LF", () => {
     const b = parseBlocChiffrage(BLOC.replace(/\n/g, "\r\n"));
     expect(b.present).toBe(true);

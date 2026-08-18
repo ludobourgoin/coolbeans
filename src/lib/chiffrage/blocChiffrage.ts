@@ -37,7 +37,9 @@ export function parseBlocChiffrage(description: string): BlocChiffrage {
   /* \r?\n : une description collée depuis Windows/Outlook arrive en CRLF, et
      un \r résiduel ferait échouer silencieusement chaque ligne clé:valeur. */
   for (const ligne of m[1].split(/\r?\n/)) {
-    const kv = ligne.match(/^- ([^:]+):(.*)$/);
+    /* [-*] : Linear resérialise les puces markdown en `*` — un bloc collé ou
+       réécrit par l'API arriverait en `* clé : valeur` et serait ignoré. */
+    const kv = ligne.match(/^\s*[-*] ([^:]+):(.*)$/);
     if (!kv) continue;
     const cle = kv[1].trim().toLowerCase();
     const v = kv[2].trim();
