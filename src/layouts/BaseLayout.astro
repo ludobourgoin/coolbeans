@@ -21,7 +21,7 @@ const ogImageURL = new URL(image, Astro.site);
 
 // Le manifest A2HS n'est annoncé que sur les hôtes du portail. Son `start_url`
 // vaut "/", ce qui n'est juste que là : sur coolbeans.cc, installer depuis
-// /docs/{slug} — seule page du portail servie par l'hôte principal —
+// /docs/{slug} : seule page du portail servie par l'hôte principal,
 // donnerait une app qui démarre sur la home marketing.
 const withManifest = isPortalHost(Astro.url.hostname);
 
