@@ -35,7 +35,9 @@ export const POST: APIRoute = async (context) => {
   const ticket = await ticketParId(env.PORTAL_DB, ticketId);
   // `!client` inclus explicitement pour que TS narrowe `client` en non-null
   // ensuite (client.slug, ci-dessous) — équivalent en pratique au `!==` seul.
-  if (!ticket || !client || ticket.client !== client.slug) {
+  // `masque` traité comme une absence : le fil n'existe plus pour le client,
+  // répondre dessus n'aurait nulle part où s'afficher.
+  if (!ticket || !client || ticket.client !== client.slug || ticket.masque === 1) {
     return json({ error: "Ticket introuvable." }, 404);
   }
 

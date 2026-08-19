@@ -56,6 +56,29 @@ export function corpsPublie(body: string): string | null {
 }
 
 /**
+ * Corps publiable d'une DESCRIPTION d'issue, ou null s'il n'y a rien à ouvrir.
+ *
+ * Un commentaire est publié en entier ou pas du tout : le « >> » doit être en
+ * tête. Une description ne peut pas suivre cette règle — elle porte d'abord le
+ * contexte interne (ce qu'on a constaté, où ça se passe, ce qu'on va faire),
+ * et le mot au client vient à la fin. Le premier « >> » en début de ligne
+ * ouvre donc le bloc publié, qui court jusqu'au bout de la description.
+ *
+ * Conséquence voulue : une issue sans « >> » n'ouvre aucun fil. Poser le label
+ * « Support » sur une issue de travail ordinaire ne fait donc rien partir, et
+ * c'est aussi ce qui distingue les issues créées par le formulaire du portail
+ * (elles n'ont pas de « >> ») de celles que Ludo tague à la main.
+ */
+export function corpsPublieDescription(description: string | null | undefined): string | null {
+  if (!description) return null;
+  const lignes = description.split("\n");
+  const debut = lignes.findIndex((l) => l.startsWith(MARQUEUR));
+  if (debut === -1) return null;
+  const bloc = [lignes[debut].slice(MARQUEUR.length), ...lignes.slice(debut + 1)].join("\n").trim();
+  return bloc || null;
+}
+
+/**
  * Retire les images du CDN privé Linear (uploads.linear.app, authentifié :
  * les URLs seraient mortes chez le client — spec §7). Retourne le compte pour
  * alerter Ludo à la publication.

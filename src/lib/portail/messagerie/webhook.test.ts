@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { analyserEvenement, signatureValide } from "./webhook";
+import { SUPPORT_LABEL_ID } from "../linear";
+import { analyserEvenement, analyserEvenementIssue, signatureValide } from "./webhook";
 
 describe("signatureValide", () => {
   test("accepte le HMAC-SHA256 hex du corps brut", async () => {
@@ -35,5 +36,40 @@ describe("analyserEvenement", () => {
     expect(analyserEvenement(commentaire("note interne"))).toBeNull();
     expect(analyserEvenement({ ...commentaire(">> x"), action: "update" })).toBeNull();
     expect(analyserEvenement({ action: "create", type: "Issue", data: {} })).toBeNull();
+  });
+});
+
+describe("analyserEvenementIssue", () => {
+  const issue = (over: Record<string, unknown> = {}) => ({
+    action: "update",
+    type: "Issue",
+    data: { id: "uuid-issue", teamId: "uuid-team", labelIds: [SUPPORT_LABEL_ID], ...over },
+  });
+
+  test("retient la pose du label Support", () => {
+    expect(analyserEvenementIssue(issue())).toEqual({
+      issueId: "uuid-issue",
+      teamId: "uuid-team",
+      support: true,
+    });
+  });
+
+  // Le geste courant est de créer l'issue PUIS de poser le label : sans les
+  // update, la porte d'entrée ne s'ouvrirait presque jamais.
+  test("retient aussi bien les create que les update", () => {
+    expect(analyserEvenementIssue({ ...issue(), action: "create" })?.support).toBe(true);
+  });
+
+  // Support absent = retrait du label. L'événement est retourné quand même :
+  // c'est l'appelant qui décide s'il y a un fil à masquer.
+  test("signale l'absence du label sans écarter l'événement", () => {
+    expect(analyserEvenementIssue(issue({ labelIds: [] }))?.support).toBe(false);
+    expect(analyserEvenementIssue(issue({ labelIds: undefined }))?.support).toBe(false);
+  });
+
+  test("ignore les événements qui ne sont pas des issues", () => {
+    expect(analyserEvenementIssue({ ...issue(), type: "Comment" })).toBeNull();
+    expect(analyserEvenementIssue({ ...issue(), action: "remove" })).toBeNull();
+    expect(analyserEvenementIssue(issue({ teamId: undefined }))).toBeNull();
   });
 });

@@ -15,6 +15,7 @@
 // - my.*/espace/<x>  → 301 vers my.*/<x> (URL canonique sans préfixe)
 // - coolbeans.cc/espace/<x> → 301 vers my.coolbeans.cc/<x>
 import { handle } from "@astrojs/cloudflare/handler";
+import { ouvrirLesDues } from "./lib/portail/messagerie/ouvrir";
 import { publierLesDues } from "./lib/portail/messagerie/publier";
 
 const PORTAL_OF: Record<string, string> = {
@@ -79,13 +80,14 @@ export default {
       console.log(JSON.stringify({ event: "messagerie_publication", status: "skipped_missing_bindings", scheduled_at: scheduledAt }));
       return;
     }
+    const options = {
+      apiKey: env.LINEAR_API_KEY,
+      resendKey: env.RESEND_API_KEY,
+      maintenant: new Date().toISOString(),
+      baseUrl: env.PORTAL_BASE_URL || "https://my.coolbeans.cc",
+    };
     ctx.waitUntil(
-      publierLesDues(env.PORTAL_DB, {
-        apiKey: env.LINEAR_API_KEY,
-        resendKey: env.RESEND_API_KEY,
-        maintenant: new Date().toISOString(),
-        baseUrl: env.PORTAL_BASE_URL || "https://my.coolbeans.cc",
-      })
+      publierLesDues(env.PORTAL_DB, options)
         .then((r) =>
           console.log(JSON.stringify({ event: "messagerie_publication", status: "ok", ...r, scheduled_at: scheduledAt })),
         )
@@ -94,6 +96,18 @@ export default {
         // perdre la visibilité sur un cron qui casse.
         .catch((err) =>
           console.log(JSON.stringify({ event: "messagerie_publication", status: "error", message: String(err), scheduled_at: scheduledAt })),
+        ),
+    );
+    // File jumelle : les fils ouverts depuis Linear (label « Support » posé à
+    // la main). Deux waitUntil séparés à dessein — une panne sur l'une des
+    // deux files ne doit pas empêcher l'autre de tourner.
+    ctx.waitUntil(
+      ouvrirLesDues(env.PORTAL_DB, options)
+        .then((r) =>
+          console.log(JSON.stringify({ event: "messagerie_ouverture", status: "ok", ...r, scheduled_at: scheduledAt })),
+        )
+        .catch((err) =>
+          console.log(JSON.stringify({ event: "messagerie_ouverture", status: "error", message: String(err), scheduled_at: scheduledAt })),
         ),
     );
   },

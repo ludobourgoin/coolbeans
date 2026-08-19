@@ -157,6 +157,8 @@ export const POST: APIRoute = async (context) => {
       objet,
       created_at: maintenant,
       last_message_at: maintenant,
+      masque: 0,
+      ouvert_depuis_linear: 0,
     });
     // Message porteur : posé dès qu'il y a une description OU des fichiers, sinon
     // les pièces jointes n'auraient aucune ligne `messages` à référencer (FK,
