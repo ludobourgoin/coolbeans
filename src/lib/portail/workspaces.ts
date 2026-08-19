@@ -18,8 +18,12 @@ export interface PortalWorkspace {
   doc?: string;
   /** UUID de la team Linear où le formulaire support crée ses tickets. */
   linearTeamId?: string;
-  /** UUID du projet « Support » (evergreen) de la team : la messagerie y crée ses tickets. */
-  linearSupportProjectId?: string;
+  /**
+   * `false` coupe la messagerie pour ce client. Optionnel comme `perso`, dont
+   * le YAML porte le même `.default()` : seul un « non » explicite compte, et
+   * l'absence vaut donc messagerie active dès qu'il y a une team Linear.
+   */
+  messagerie?: boolean;
   uptimerobot_monitor_ids: string[];
   /**
    * Workspace « à moi » (Coolbeans, Spinoza…) par opposition aux workspaces
@@ -49,7 +53,6 @@ export type PortalModule = "projets" | "site" | "doc" | "support";
 export type WorkspaceMappingKey =
   | "doc"
   | "linearTeamId"
-  | "linearSupportProjectId"
   | "uptimerobot_monitor_ids";
 
 /**
@@ -59,16 +62,26 @@ export type WorkspaceMappingKey =
  * Projets ne réclame plus rien depuis le retrait du sync Asana : il ne
  * dépendait que d'`asana_team_gid`, dont plus aucun code ne se sert. Son empty
  * state ne relève donc plus d'un mapping manquant mais d'un module à refaire —
- * c'est ce que dit sa page. Support exige la team Linear du client et son
- * projet « Support » evergreen : sans eux, ni le formulaire ni la messagerie
- * n'ont où créer leurs tickets (COO-30).
+ * c'est ce que dit sa page. Support n'exige plus que la team Linear du client :
+ * depuis que les tickets se marquent avec le label workspace « Support »
+ * (2026-08-19), il n'y a plus de projet par team à mapper.
  */
 export const MODULE_REQUIREMENTS: Record<PortalModule, readonly WorkspaceMappingKey[]> = {
   projets: [],
-  support: ["linearTeamId", "linearSupportProjectId"],
+  support: ["linearTeamId"],
   site: ["uptimerobot_monitor_ids"],
   doc: ["doc"],
 };
+
+/**
+ * Module volontairement coupé pour ce client, par opposition à un module mal
+ * configuré. La distinction compte pour l'empty state : « pas encore raccordé,
+ * voilà la clé à poser » est un diagnostic utile, « éteint exprès » n'appelle
+ * aucune correction et ne doit donc pas s'afficher comme un oubli.
+ */
+export function moduleCoupe(module: PortalModule, client: PortalWorkspace | null): boolean {
+  return module === "support" && client?.messagerie === false;
+}
 
 /**
  * Ordre du sélecteur de workspace : les persos d'abord (Coolbeans en tête —
@@ -122,8 +135,6 @@ function hasMapping(client: PortalWorkspace, key: WorkspaceMappingKey): boolean 
       return Boolean(client.doc);
     case "linearTeamId":
       return Boolean(client.linearTeamId);
-    case "linearSupportProjectId":
-      return Boolean(client.linearSupportProjectId);
     case "uptimerobot_monitor_ids":
       return client.uptimerobot_monitor_ids.length > 0;
   }

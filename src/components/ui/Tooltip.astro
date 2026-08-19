@@ -28,7 +28,11 @@
       reste `BODY` après le tap. D'où le basculement explicite au clic
       ci-dessous, seul mécanisme fiable sur tactile.
    2. La bulle est centrée sur le marqueur, donc elle sort de l'écran dès que
-      le marqueur approche d'un bord, d'où le recalage à l'ouverture.
+      le marqueur approche d'un bord, d'où le recalage à l'ouverture. Pas de
+      flèche : sur un écran étroit, une bulle ramenée dans le viewport se
+      décale de plus de cent pixels par rapport à son marqueur, et une flèche
+      soit pointe à côté, soit sort de la bulle. Sans elle, la proximité
+      verticale suffit à désigner le marqueur.
 
       Surtout, la bulle est en `display: none` quand elle est fermée, et non à
       opacité nulle : une bulle transparente reste dans la zone de défilement
@@ -61,10 +65,6 @@ const { texte } = Astro.props;
     data-bulle
   >
     {texte}
-    <span
-      class="absolute top-full left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-ink"
-      aria-hidden="true"
-    />
   </span>
 </span>
 
@@ -81,7 +81,9 @@ const { texte } = Astro.props;
     let dx = 0;
     if (r.left < MARGE) dx = MARGE - r.left;
     else if (r.right > window.innerWidth - MARGE) dx = window.innerWidth - MARGE - r.right;
-    if (dx !== 0) bulle.style.transform = `translateX(calc(-50% + ${Math.round(dx)}px))`;
+    dx = Math.round(dx);
+    bulle.style.transform = dx === 0 ? "translateX(-50%)" : `translateX(calc(-50% + ${dx}px))`;
+
   }
 
   for (const evenement of ["pointerenter", "focusin"] as const) {

@@ -62,8 +62,6 @@ export async function createSupportTicket(options: {
   title: string;
   /** Markdown : corps de la demande + email du client + date. */
   description: string;
-  /** Projet « Support » de la team (spec messagerie §5). */
-  projectId?: string;
   /** Auto-assignation (Ludo) — spec messagerie §5. */
   assigneeId?: string;
   /** Priorité Linear 1-4 issue du champ urgence. */
@@ -88,7 +86,7 @@ export async function createSupportTicket(options: {
         title,
         description,
         ...(stateId ? { stateId } : {}),
-        ...(options.projectId ? { projectId: options.projectId } : {}),
+        labelIds: [SUPPORT_LABEL_ID],
         ...(options.assigneeId ? { assigneeId: options.assigneeId } : {}),
         // priority=0 (« Aucune ») est intentionnellement omis ici : la spec
         // interdit cette valeur en entrée, ce n'est pas un oubli à corriger
@@ -106,6 +104,17 @@ export async function createSupportTicket(options: {
 
 /** UUID Linear de Ludo (workspace coolbeans-hq) — auto-assignation des tickets. */
 export const LUDO_LINEAR_USER_ID = "a0b540c7-877f-484b-84cf-b768b457ef36";
+
+/**
+ * Label workspace « Support » : c'est lui qui marque un ticket de messagerie,
+ * et non plus un projet « Support » par team (migration du 2026-08-19).
+ *
+ * Un label workspace vaut pour toutes les teams, donc plus rien à mapper par
+ * client : la team seule dit de quel client il s'agit. Les anciens projets
+ * imposaient un UUID par fiche client, oubliable à l'onboarding, et
+ * apparaissaient comme des projets sans fin dans toutes les vues.
+ */
+export const SUPPORT_LABEL_ID = "bceb2670-4be0-4a1c-94e9-fff822073dd3";
 
 /** Réponse d'un client depuis le portail → commentaire sur l'issue. */
 export async function createComment(options: {

@@ -48,7 +48,7 @@ export const POST: APIRoute = async (context) => {
   if (!objet) return json({ error: "L'objet est obligatoire." }, 400);
   const erreurFichiers = validerFichiers(fichiers);
   if (erreurFichiers) return json({ error: erreurFichiers }, 400);
-  if (!client?.linearTeamId || !client?.linearSupportProjectId) {
+  if (!client?.linearTeamId || client.messagerie === false) {
     return json({ error: `La messagerie n'est pas encore raccordée — ${CONTACT_DIRECT}.` }, 409);
   }
   const apiKey = env.LINEAR_API_KEY;
@@ -203,7 +203,6 @@ export const POST: APIRoute = async (context) => {
     ticket = await createSupportTicket({
       apiKey,
       teamId: client.linearTeamId,
-      projectId: client.linearSupportProjectId,
       assigneeId: LUDO_LINEAR_USER_ID,
       priority: prioriteFromUrgence(urgence),
       title: objet,

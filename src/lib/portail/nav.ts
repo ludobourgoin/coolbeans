@@ -19,7 +19,7 @@
 //   · portalHref()  construit un lien   → dépend de l'HÔTE
 //   · isActive()    surligne l'entrée   → dépend du PATHNAME interne
 
-import { missingKeysFor, type PortalWorkspace } from "./workspaces";
+import { missingKeysFor, moduleCoupe, type PortalWorkspace } from "./workspaces";
 import { isAdmin, type PortalMetadata } from "./metadata";
 
 /** Hôtes sur lesquels le préfixe /espace est retiré de l'URL publique. */
@@ -122,7 +122,7 @@ const SECTIONS: SectionDef[] = [
         label: "Messagerie",
         path: "/messagerie",
         flag: "live",
-        configured: (c) => missingKeysFor("support", c).length === 0,
+        configured: (c) => !moduleCoupe("support", c) && missingKeysFor("support", c).length === 0,
       },
       { label: "Liens utiles", path: "/liens", flag: "wip" }, // COO-81
     ],

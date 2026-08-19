@@ -5,6 +5,7 @@ import {
   getWorkspaceIn,
   MODULE_REQUIREMENTS,
   missingKeysFor,
+  moduleCoupe,
   selectableWorkspaces,
   sortWorkspaces,
   type PortalWorkspace,
@@ -116,32 +117,35 @@ describe("missingKeysFor", () => {
     expect(missingKeysFor("projets", coolbeans)).toEqual([]);
   });
 
-  // Support crée ses tickets dans la team Linear du client, et la messagerie
-  // dans son projet Support (COO-30).
+  // Support crée ses tickets dans la team Linear du client, marqués par le
+  // label workspace « Support » (COO-30, migration du 2026-08-19).
   it("réclame la team Linear pour le support", () => {
-    expect(missingKeysFor("support", coolbeans)).toEqual([
-      "linearTeamId",
-      "linearSupportProjectId",
-    ]);
-    expect(
-      missingKeysFor("support", {
-        ...coolbeans,
-        linearTeamId: "uuid",
-        linearSupportProjectId: "uuid-projet",
-      }),
-    ).toEqual([]);
+    expect(missingKeysFor("support", coolbeans)).toEqual(["linearTeamId"]);
+    expect(missingKeysFor("support", { ...coolbeans, linearTeamId: "uuid" })).toEqual([]);
   });
 
-  // La messagerie a aussi besoin du projet Support Linear où créer ses tickets.
-  test("le module support exige la team ET le projet Support Linear", () => {
-    expect(MODULE_REQUIREMENTS.support).toEqual(["linearTeamId", "linearSupportProjectId"]);
+  // Le projet « Support » par team a disparu : la team seule raccorde le
+  // module. Ce test garde la porte fermée sur un retour du mapping par client.
+  test("le module support n'exige plus que la team Linear", () => {
+    expect(MODULE_REQUIREMENTS.support).toEqual(["linearTeamId"]);
+  });
+
+  // Spinoza coupe sa messagerie à la main : sans ce « false », la team Linear
+  // suffirait à l'allumer. Un module coupé n'est pas un module mal configuré —
+  // il ne réclame aucune clé, il ne doit donc produire aucun diagnostic admin.
+  it("distingue un module coupé d'un module mal configuré", () => {
+    const spinozaCoupe = { ...spinoza, linearTeamId: "uuid", messagerie: false };
+    expect(moduleCoupe("support", spinozaCoupe)).toBe(true);
+    expect(missingKeysFor("support", spinozaCoupe)).toEqual([]);
+    expect(moduleCoupe("support", { ...spinoza, linearTeamId: "uuid" })).toBe(false);
+    expect(moduleCoupe("support", null)).toBe(false);
   });
 
   // Un utilisateur sans client du tout : tout manque, rien ne plante.
   it("réclame tout quand il n'y a pas de client", () => {
     expect(missingKeysFor("site", null)).toEqual(["uptimerobot_monitor_ids"]);
     expect(missingKeysFor("doc", null)).toEqual(["doc"]);
-    expect(missingKeysFor("support", null)).toEqual(["linearTeamId", "linearSupportProjectId"]);
+    expect(missingKeysFor("support", null)).toEqual(["linearTeamId"]);
   });
 
   it("traite un tableau de monitors vide comme une clé manquante", () => {

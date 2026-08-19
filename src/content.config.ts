@@ -177,9 +177,11 @@ const clients = defineCollection({
     // UUID de la team Linear du client : le formulaire support y crée ses
     // tickets. Absent = module Support en empty state (COO-30).
     linearTeamId: z.string().optional(),
-    // UUID du projet « Support » (evergreen) de la team du client : la
-    // messagerie y crée ses tickets. Absent = module Messagerie en empty state.
-    linearSupportProjectId: z.string().optional(),
+    // Coupe la messagerie pour ce client sans rien supprimer d'autre. Depuis
+    // que les tickets se marquent avec le label workspace « Support » au lieu
+    // d'un projet par team (2026-08-19), la team Linear suffit à raccorder le
+    // module : il faut donc un « non » explicite pour l'éteindre.
+    messagerie: z.boolean().default(true),
     uptimerobot_monitor_ids: z.array(z.string()).default([]),
     // Workspace « à moi » (Coolbeans, Spinoza…) : en tête du sélecteur,
     // avant le liseret qui le sépare des workspaces clients.

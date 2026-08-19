@@ -12,7 +12,7 @@ import NouvelleDemande from "../../components/portail/NouvelleDemande.astro";
 import NouvelleDemandeAdmin from "../../components/portail/NouvelleDemandeAdmin.astro";
 import Collapse from "../../components/ui/Collapse.astro";
 import { env } from "cloudflare:workers";
-import { missingKeysFor } from "../../lib/portail/workspaces";
+import { missingKeysFor, moduleCoupe } from "../../lib/portail/workspaces";
 import { getPortalContext } from "../../lib/portail/context";
 import { fetchIssueStateTypes } from "../../lib/portail/linear";
 import { isAdmin } from "../../lib/portail/metadata";
@@ -22,6 +22,11 @@ import { ticketsDuClient } from "../../lib/portail/messagerie/store";
 const { meta, client } = await getPortalContext(Astro);
 const admin = isAdmin(meta);
 const missingKeys = missingKeysFor("support", client);
+// La nav masque déjà l'entrée quand la messagerie est coupée, mais l'URL reste
+// atteignable à la main : la page doit donc tenir seule. Coupée, elle n'affiche
+// aucun diagnostic admin — il n'y a rien à corriger, c'est un choix.
+const coupe = moduleCoupe("support", client);
+const indisponible = coupe || missingKeys.length > 0;
 Astro.response.headers.set("Cache-Control", "no-store");
 
 // Utilisateurs du client courant, pour le <select> du formulaire admin
@@ -37,7 +42,7 @@ const users = admin
 
 let tickets: Awaited<ReturnType<typeof ticketsDuClient>> = [];
 let statuts = new Map<string, string>();
-if (missingKeys.length === 0 && client) {
+if (!indisponible && client) {
   tickets = await ticketsDuClient(env.PORTAL_DB, client.slug);
   const uuids = tickets.map((t) => t.linear_issue_uuid).filter((u): u is string => Boolean(u));
   try {
@@ -60,8 +65,12 @@ const lignes = tickets.map((t) => ({
   </p>
 
   {
-    missingKeys.length > 0 ? (
-      <EmptyState title="Bientôt disponible" missingKeys={missingKeys} isAdmin={isAdmin(meta)}>
+    indisponible ? (
+      <EmptyState
+        title="Bientôt disponible"
+        missingKeys={coupe ? [] : missingKeys}
+        isAdmin={isAdmin(meta)}
+      >
         La messagerie arrive ici. En attendant, un email à ludo@coolbeans.cc fait tout aussi bien
         l'affaire.
       </EmptyState>

@@ -7,5 +7,3 @@ depuis: "2026-08-12"
 doc: amusoire
 # Team « Amusoire » du workspace Linear coolbeans-hq.
 linearTeamId: 4a7e6081-5498-418a-a12c-b155ce10bc33
-# Projet « Support » evergreen de cette team : la messagerie y crée ses tickets.
-linearSupportProjectId: 8b94cc67-ba06-4e3c-b0c7-2355c41285f4
