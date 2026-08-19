@@ -74,6 +74,10 @@ const devis = defineCollection({
         // la version plein format (nouvel onglet). Générique : tous les devis
         // ne sont pas des refontes web (ex. automatisation Make × HubSpot).
         diagram: z.object({ image: z.string(), alt: z.string() }).optional(),
+        // Remarque de fin de section, rendue après la liste ou le budget :
+        // sert aux nuances qui n'ont de sens qu'une fois le contenu lu
+        // (arbitrage possible, réserve, recommandation).
+        note: z.string().optional(),
       }),
     ),
     notes: z
