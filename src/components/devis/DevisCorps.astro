@@ -131,13 +131,26 @@ const ancre = (titre: string) => slugify(titre);
                           {eur.format(ligne.prix)} {mention}
                         </span>
                       ) : (
+                        /* Sur un devis en construction, une ligne sans prix
+                           reste à chiffrer ; ailleurs, c'est qu'elle est
+                           comprise dans le total. Le même vide ne veut pas
+                           dire la même chose dans les deux cas. */
                         <span class="font-mono text-[13px] whitespace-nowrap text-mute">
-                          Inclus
+                          {b.enAttente ? "À chiffrer" : "Inclus"}
                         </span>
                       )}
                     </div>
                   ))}
-                  {remise > 0 ? (
+                  {b.enAttente ? (
+                    <div class="pt-5">
+                      <Banner tone="info">
+                        Montant <b class="font-bold">en attente de validation du périmètre</b>.
+                        Cette proposition est un premier jet : elle fixe la structure, pas
+                        encore le prix. Le chiffrage arrive une fois le périmètre arrêté
+                        ensemble.
+                      </Banner>
+                    </div>
+                  ) : remise > 0 ? (
                     <>
                       <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] font-medium max-[700px]:text-[16px]">
                         <span>Total</span>
@@ -204,6 +217,15 @@ const ancre = (titre: string) => slugify(titre);
                   )}
                   {options.map((option, i) => (
                     <div data-planning-pane={`${groupe}-${i}`} hidden={i !== 0}>
+                      {option.indicatif && (
+                        <div class="mb-5">
+                          <Banner tone="info">
+                            Calendrier donné <b class="font-bold">à titre indicatif</b>, pour se
+                            projeter. Les dates se fixent une fois le périmètre arrêté et la date
+                            de démarrage choisie.
+                          </Banner>
+                        </div>
+                      )}
                       {option.texte && (
                         <p
                           class="mb-5 max-w-[58ch] leading-[1.6]"

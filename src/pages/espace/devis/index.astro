@@ -40,7 +40,9 @@ const lignes = devis.map((d) => {
     titre: d.data.titre,
     objet: d.data.objet,
     date: dateLongue(d.data.date),
-    total: budget ? eur.format(totaux(budget).totalFinal) : "—",
+    /* Un devis en construction n'a pas de total : afficher 0 € le ferait
+       passer pour un devis gratuit dans la colonne des montants. */
+    total: !budget ? "—" : budget.enAttente ? "En construction" : eur.format(totaux(budget).totalFinal),
     statut: statutDevis(d.data.envoi, reponse),
     envoi: d.data.envoi,
     reponse,

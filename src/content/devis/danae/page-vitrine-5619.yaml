@@ -1,0 +1,247 @@
+titre: Danaë x Coolbeans
+objet: Page vitrine de la marque de bijoux
+date: 2026-08-19
+contact: Danaë
+linear:
+  affaire: https://linear.app/coolbeans-hq/issue/CRM-42
+
+sections:
+  - titre: Objectif
+    texte: >-
+      Donner à ta marque **une adresse à elle sur Internet** : une page unique,
+      sobre et soignée, qui montre tes créations, dit qui tu es, annonce où te
+      trouver et permet de commander. Une page **que tu fais vivre toi-même**,
+      sans avoir à me redemander quoi que ce soit.
+
+  - titre: La page
+    texte: "Une seule page, qu'on parcourt de haut en bas. Chaque bloc ci-dessous en est une section :"
+    liste:
+      - texte: "**En-tête** : ton logo, le nom de la marque, une phrase qui dit ce que tu fais"
+      - texte: "**Tes créations** : la galerie de photos"
+        tooltip: >-
+          C'est ce que les visiteurs regardent en premier et le plus longtemps.
+          Cette section mérite de la place et des photos qui respirent.
+      - texte: "**Le concept** : ton texte de présentation"
+      - texte: "**Prochains marchés** : où et quand te trouver"
+        tooltip: >-
+          Chaque date disparaît d'elle-même une fois passée. Tu n'as jamais à
+          nettoyer la liste.
+      - texte: "**Commander** : le bouton qui mène à ton formulaire"
+        tooltip: >-
+          L'adresse du formulaire est un champ que tu modifies toi-même, en dix
+          secondes, à chaque renouvellement.
+      - texte: "**Ce qu'on en dit** : quelques témoignages"
+      - texte: "**Qui je suis** : ta présentation, en quelques lignes"
+      - texte: "**Reste au courant** : l'inscription à ta liste de diffusion"
+      - texte: "**Me contacter** : un autre moyen de te joindre que le formulaire de commande"
+      - texte: Mentions légales et confidentialité
+
+  - titre: Fonctionnalités
+    liste:
+      - texte: >-
+          **Tu modifies ta page toi-même** : photos, textes, dates de marchés,
+          adresse du formulaire. Depuis ton téléphone si besoin.
+      - texte: "**Les marchés passés disparaissent tout seuls** de la liste"
+        tooltip: >-
+          Tu saisis la date une fois, le lendemain l'entrée s'efface. Une page
+          qui annonce encore un marché de l'an dernier fait plus de mal que pas
+          de page du tout.
+      - texte: >-
+          **L'adresse du formulaire est un champ**, pas une ligne de code. Tous
+          les six mois, tu la remplaces sans m'appeler.
+      - texte: >-
+          **Inscription à ta liste de diffusion** : le visiteur laisse son
+          adresse, elle arrive directement dans l'outil d'emailing que tu auras
+          choisi
+      - texte: "**Aperçu soigné quand tu partages le lien** par message"
+        tooltip: >-
+          Sans réglage, un lien partagé apparaît comme un rectangle blanc. C'est
+          cinq minutes de travail et ça change la façon dont on clique.
+
+  - titre: Recommandations
+    texte: >-
+      Tu me demandes si je vois d'autres éléments importants. En voici, classés
+      par ce qu'ils te rapportent. Aucun n'est obligatoire, tous se discutent.
+    liste:
+      - texte: >-
+          **Des photos portées, pas seulement posées.** C'est le premier levier
+          de vente en bijou, loin devant tout le reste. Une paire sur fond blanc
+          ne dit ni la taille, ni le tombé, ni l'effet. Une photo à l'oreille, si.
+      - texte: "**Un ordre de prix, même approximatif.**"
+        tooltip: >-
+          Une page sans prix fait fuir : le visiteur suppose que c'est cher, ou
+          n'ose pas demander. « À partir de 25 € » lève le frein d'un coup.
+      - texte: >-
+          **De quoi c'est fait.** Les matériaux sont une objection d'achat très
+          concrète sur des boucles d'oreilles : beaucoup de gens ne peuvent pas
+          porter n'importe quoi. Deux lignes suffisent à lever le doute.
+      - texte: >-
+          **Le délai et la remise.** Fait main veut dire attente. Annoncer
+          « compte deux semaines » et « envoi postal ou remise en main propre sur
+          le marché » évite les commandes qui ne partent jamais.
+      - texte: >-
+          **Les témoignages, avec un prénom et un visage.** Trois suffisent. Un
+          avis anonyme ne convainc personne ; un avis signé d'une photo portée
+          fait double emploi, preuve et photo produit à la fois.
+      - texte: >-
+          **Deux phrases sur ta fabrication.** Où, comment, combien de temps pour
+          une pièce. C'est ce qui justifie le prix d'un bijou artisanal, et
+          personne ne le devine tout seul.
+      - texte: "**Le bouton de commande, répété.**"
+        tooltip: >-
+          Un seul bouton en bas de page se rate. Le même bouton après la galerie
+          et après les témoignages, aux deux moments où l'envie monte.
+      - texte: "**La liste de diffusion présentée comme un service.**"
+        tooltip: >-
+          « Je te préviens de mes prochains marchés » fonctionne. « Inscrivez-vous
+          à la newsletter » ne fonctionne pas. Même mécanique, pas la même phrase.
+    note: >-
+      Ta page n'a aucun réseau social derrière elle, et c'est un choix que je
+      trouve sain. Il a une conséquence dont il faut tenir compte : la page
+      **est** ta présence en ligne, elle porte seule tout le travail de
+      conviction. C'est ce qui rend la liste de diffusion importante ici. Sans
+      elle, un visiteur intéressé qui repart n'a plus aucun moyen d'entendre
+      parler de toi.
+
+  - titre: À trancher
+    texte: >-
+      Rien d'urgent, mais ce sont ces réponses qui me manquent pour chiffrer.
+      Réponds-moi par mail, ou on s'appelle une demi-heure, comme tu préfères.
+    liste:
+      - texte: "**Le nom de la marque**, et le nom de domaine qui va avec, à valider et à réserver"
+        tooltip: >-
+          Autour de 15 € par an, c'est le seul frais récurrent du projet. Je peux
+          m'en occuper, ou te laisser la main.
+      - texte: "**L'outil d'emailing** pour ta liste de diffusion. Tu choisis, je branche."
+        tooltip: >-
+          Il en existe des gratuits jusqu'à quelques centaines d'abonnés,
+          largement de quoi démarrer.
+      - texte: "**Combien de photos** au lancement, et qui les prend"
+      - texte: "**Tes textes** : déjà écrits, ou à écrire ?"
+      - texte: "**Le formulaire de commande** : on part bien sur Framaforms ?"
+        tooltip: >-
+          Ça tient très bien pour démarrer. Si tu vends plus que prévu, on
+          regardera autre chose, mais ce n'est pas le sujet du jour.
+      - texte: "**Une date, même approximative.** Un premier marché à viser ?"
+        tooltip: >-
+          Un projet sans échéance ne se termine pas. Même une date arbitraire
+          vaut mieux que pas de date du tout.
+
+  - titre: Technique
+    texte: "Je ne vais pas t'assommer de noms d'outils. Ce qui compte, c'est ce que ça te donne :"
+    liste:
+      - texte: >-
+          **Une page qui s'affiche instantanément**, y compris depuis un
+          téléphone au milieu d'un marché
+      - texte: "**Aucun abonnement mensuel.** L'hébergement est gratuit, et le restera."
+        tooltip: >-
+          Pas de formule à renouveler, pas d'augmentation l'année suivante, pas
+          de licence. Le seul frais récurrent du projet est le nom de domaine.
+      - texte: >-
+          **Rien à entretenir de ton côté** : pas de mise à jour à faire, pas
+          d'extension à surveiller, pas de faille à corriger dans l'urgence.
+          Contrairement à un site WordPress.
+      - texte: >-
+          **Tu modifies le contenu depuis une interface simple**, sans jamais
+          toucher au code
+      - texte: >-
+          **Tu restes libre** : le code t'appartient, ton contenu est
+          exportable, n'importe quel développeur peut reprendre la page après moi
+
+  - titre: Budget
+    budget:
+      enAttente: true
+      lignes:
+        - label: >-
+            **Direction visuelle** : structure de la page et maquette, à partir
+            de ton logo, de tes couleurs et de tes typographies
+        - label: >-
+            **Intégration et mise en ligne** : développement de la page, mise en
+            place de l'outil de mise à jour, référencement de base, déploiement
+            sur ton nom de domaine
+        - label: >-
+            **Agenda des marchés** : la liste que tu remplis, et l'effacement
+            automatique des dates passées
+        - label: >-
+            **Inscription à ta liste de diffusion** : formulaire sur la page,
+            raccordé à l'outil d'emailing que tu auras choisi
+        - label: "**Prise en main** : une demi-heure ensemble, et un guide écrit"
+      mention: HT
+      reglement: >-
+        **30 %** à la validation du devis, qui lance la prestation. **Solde** à
+        la livraison de la page en ligne.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Affichage vérifié sur ordinateur, tablette et téléphone
+      - Configuration du référencement et bonnes pratiques
+      - Optimisation de la vitesse d'affichage
+      - Tests sur les trois principaux navigateurs
+      - Certificat de sécurité, hébergement et raccordement du nom de domaine
+      - Mise en place du suivi de fréquentation, sans cookies
+      - Mentions légales et informations de confidentialité
+      - Prise en main de l'outil de mise à jour, et guide écrit remis à l'issue
+      - Support 30 jours après la mise en ligne
+
+  - titre: Planning
+    planning:
+      options:
+        - label: À partir du démarrage
+          indicatif: true
+          texte: >-
+            Compte environ **trois semaines** entre le feu vert et la mise en
+            ligne, tes allers-retours compris. Les semaines ci-dessous partent
+            du jour où on démarre, quel qu'il soit.
+          jalons:
+            - {
+                date: Semaine 1,
+                label: "Tu m'envoies tes photos, tes textes et ta charte graphique",
+                owner: client,
+              }
+            - { date: Semaine 1, label: Structure de la page et maquette, owner: coolbeans }
+            - { date: Semaine 2, label: Ton retour sur la maquette, owner: client }
+            - {
+                date: Semaine 2,
+                label: Développement de la page et de l'outil de mise à jour,
+                owner: coolbeans,
+              }
+            - {
+                date: Semaine 3,
+                label: "Mise en ligne sur ton nom de domaine, référencement",
+                owner: coolbeans,
+              }
+            - {
+                date: Semaine 3,
+                label: "Prise en main ensemble, puis ta relecture finale",
+                owner: client,
+              }
+            - {
+                date: Semaine 3,
+                label: "Corrections, livraison et démarrage du support 30 jours",
+                owner: coolbeans,
+              }
+          note: >-
+            Ces durées supposent que tes photos et tes textes sont prêts au
+            démarrage. C'est presque toujours ce qui décale un projet, jamais le
+            développement.
+
+notes:
+  - tone: success
+    texte: >-
+      **Tarif d'ami sur l'ensemble de cette proposition.** Le montant sera
+      précisé une fois le périmètre arrêté. Il n'aura rien à voir avec un tarif
+      d'agence, et c'est tout à fait volontaire.
+  - tone: info
+    texte: >-
+      Cette proposition est un **premier jet**. J'attends normalement d'avoir
+      toutes les réponses avant d'envoyer un devis. Là, tu as de quoi te
+      projeter tout de suite, et on l'affine ensemble.
+  - texte: >-
+      La rédaction des textes, la retouche des photos et la création d'un logo
+      ne sont pas comprises dans cette proposition.
+  - texte: >-
+      Chaque livraison de mise en page inclut une vérification sur ordinateur,
+      tablette et téléphone.
+  - texte: >-
+      Deux allers-retours sont prévus par livrable. Au-delà, les itérations
+      supplémentaires restent possibles et sont budgétées au temps passé.

@@ -38,6 +38,13 @@ const devis = defineCollection({
             lignes: z.array(
               z.object({ label: z.string(), prix: z.number().optional(), tooltip: z.string().optional() }),
             ),
+            /* Devis « en construction » : le périmètre n'est pas encore
+               arrêté, donc aucun montant n'est annoncé. Les lignes restent
+               visibles — elles disent ce qui sera chiffré — mais les totaux
+               cèdent la place à un bandeau d'attente. Permet d'envoyer un
+               premier jet au prospect, qui voit la structure de la proposition
+               sans qu'on s'engage sur un prix. Le chiffrage vient après. */
+            enAttente: z.boolean().default(false),
             remisePct: z.number().optional(),
             // Libellé de la ligne de remise. « Tarif association », « Geste
             // commercial »… Une remise nommée se valorise ; défaut neutre.
@@ -57,6 +64,11 @@ const devis = defineCollection({
                 z.object({
                   label: z.string(),
                   texte: z.string().optional(),
+                  /* Pendant de `budget.enAttente` côté calendrier : les dates
+                     sont là pour que le prospect se projette, pas pour
+                     l'engager. Affiche un bandeau qui le dit, plutôt que de
+                     laisser croire à un planning ferme. */
+                  indicatif: z.boolean().default(false),
                   jalons: z.array(
                     z.object({
                       date: z.string(),
