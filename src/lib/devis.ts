@@ -27,8 +27,18 @@ const insecables = (s: string) =>
     /* Ponctuation double française : espace fine insécable avant. */
     .replace(/\s+([;:!?])/g, "\u202f$1");
 
+/* Second enrichissement : [texte](url), pour les listes de références. Sans
+   lui, une URL écrite dans un YAML s'affiche en texte mort et le client doit
+   la recopier à la main. Restreint à http(s) — le YAML est écrit à la main,
+   mais un devis est une page publique et `javascript:` n'a rien à y faire. */
+const liens = (s: string) =>
+  s.replace(
+    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+    '<a class="link" href="$2" target="_blank" rel="noopener">$1</a>',
+  );
+
 export const riche = (s: string) =>
-  insecables(esc(s)).replace(/\*\*(.+?)\*\*/g, '<b class="font-bold">$1</b>');
+  liens(insecables(esc(s)).replace(/\*\*(.+?)\*\*/g, '<b class="font-bold">$1</b>'));
 
 export const eur = new Intl.NumberFormat("fr-FR", {
   style: "currency",
