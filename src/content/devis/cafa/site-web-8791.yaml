@@ -64,9 +64,9 @@ sections:
             référencement de base et mise en ligne
           prix: 2800
           tooltip: >-
-            Comprend le moodboard, les maquettes, l'intégration, la
-            configuration du CMS, la formation à la mise à jour et la mise en
-            ligne sur votre nom de domaine.
+            Comprend les maquettes, l'intégration, la configuration du CMS,
+            la formation à la mise à jour et la mise en ligne sur votre nom de
+            domaine.
       remisePct: 20
       remiseLabel: Tarif association
       mention: HT
@@ -121,11 +121,9 @@ sections:
             novembre.
           jalons:
             - { date: Mar 01/09, label: "Démarrage : cadrage, accès, point contenu", owner: coolbeans }
-            - { date: Ven 04/09, label: Présentation du moodboard (direction visuelle), owner: coolbeans }
-            - { date: Mar 08/09, label: Choix de la direction visuelle par le Club d'Affaires, owner: client }
-            - { date: Ven 11/09, label: Structure des pages et maquette de la page d'accueil, owner: coolbeans }
-            - { date: Mer 16/09, label: Retour du Club d'Affaires sur la maquette, owner: client }
-            - { date: 17/09 → 24/09, label: Intégration, développement et mise en place du CMS, owner: coolbeans }
+            - { date: Mar 08/09, label: "Structure des pages et maquette de la page d'accueil, à partir des références que vous m'avez transmises", owner: coolbeans }
+            - { date: Ven 11/09, label: "Retour du Club d'Affaires et validation de la direction visuelle", owner: client }
+            - { date: 15/09 → 24/09, label: Intégration, développement et mise en place du CMS, owner: coolbeans }
             - { date: Ven 25/09, label: "Mise en ligne, référencement, formation à la mise à jour", owner: coolbeans }
             - { date: Lun 28/09, label: Relecture finale du Club d'Affaires, owner: client }
             - { date: Mar 29/09, label: Corrections, owner: coolbeans }
