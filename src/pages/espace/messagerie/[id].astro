@@ -25,7 +25,10 @@ import {
 
 const { client } = await getPortalContext(Astro);
 const ticket = await ticketParId(env.PORTAL_DB, Astro.params.id ?? "");
-if (!ticket || !client || ticket.client !== client.slug) {
+// Un fil masqué (label « Support » retiré côté Linear) disparaît du board, donc
+// aussi de son URL directe : sans ce test il resterait atteignable par un lien
+// déjà envoyé, alors qu'il n'apparaît plus nulle part.
+if (!ticket || !client || ticket.client !== client.slug || ticket.masque === 1) {
   return Astro.redirect(portalHref("/messagerie", Astro.url.hostname));
 }
 

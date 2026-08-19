@@ -173,6 +173,48 @@ export async function fetchComment(
 }
 
 /**
+ * Issue relue au moment d'ouvrir un fil : c'est le re-fetch qui décide, jamais
+ * le payload du webhook. Entre la pose du label et la fin du délai de grâce,
+ * Ludo peut avoir retiré le « >> », retiré le label, ou supprimé l'issue —
+ * chacun de ces gestes doit annuler l'ouverture, et seule la version courante
+ * les rend visibles.
+ *
+ * Retourne null si l'issue n'existe plus, comme fetchComment (même traitement
+ * du « not found » de l'API Linear, cf. le commentaire ci-dessus).
+ */
+export async function fetchIssue(
+  apiKey: string,
+  issueId: string,
+): Promise<{ title: string; description: string | null; url: string; labelIds: string[] } | null> {
+  try {
+    const data = await graphql<{
+      issue: {
+        title: string;
+        description: string | null;
+        url: string;
+        labels: { nodes: Array<{ id: string }> };
+      } | null;
+    }>(
+      apiKey,
+      `query Issue($id: String!) {
+        issue(id: $id) { title description url labels { nodes { id } } }
+      }`,
+      { id: issueId },
+    );
+    if (!data.issue) return null;
+    return {
+      title: data.issue.title,
+      description: data.issue.description,
+      url: data.issue.url,
+      labelIds: data.issue.labels.nodes.map((l) => l.id),
+    };
+  } catch (err) {
+    if (err instanceof Error && /not found/i.test(err.message)) return null;
+    throw err;
+  }
+}
+
+/**
  * statusType des issues du board, archivées comprises (une issue auto-archivée
  * reste « Traité », spec §9). Un UUID absent de la Map = issue introuvable
  * (supprimée) → statut « — » côté client.

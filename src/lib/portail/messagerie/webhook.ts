@@ -2,6 +2,7 @@
 // La signature est un HMAC-SHA256 hex du CORPS BRUT, header `linear-signature`.
 // Sans vérification, n'importe qui pourrait faire publier de faux messages
 // aux clients — c'est la garde non négociable de la spec.
+import { SUPPORT_LABEL_ID } from "../linear";
 import { corpsPublie } from "./regles";
 
 /** Décode un hex en bytes, ou null si la chaîne n'est pas un hex bien formé. */
@@ -55,4 +56,33 @@ export function analyserEvenement(payload: unknown): EvenementCommentaire | null
   if (!id || !body || !issueId) return null;
   if (corpsPublie(body) === null) return null;
   return { commentId: id, issueId, body };
+}
+
+export interface EvenementIssue {
+  issueId: string;
+  teamId: string;
+  /** Le label « Support » est-il posé sur l'issue après cet événement ? */
+  support: boolean;
+}
+
+/**
+ * Événement d'issue portant (ou ayant porté) le label « Support ».
+ *
+ * Les `update` comptent autant que les `create` : le geste courant est de
+ * créer l'issue puis de poser le label, et c'est aussi comme ça qu'on le
+ * retire. On retourne donc l'état du label après l'événement, et l'appelant
+ * décide — ouvrir un fil, ou masquer celui qui existe.
+ */
+export function analyserEvenementIssue(payload: unknown): EvenementIssue | null {
+  const p = payload as {
+    action?: string;
+    type?: string;
+    data?: { id?: string; teamId?: string; labelIds?: unknown };
+  };
+  if (p.type !== "Issue") return null;
+  if (p.action !== "create" && p.action !== "update") return null;
+  const { id, teamId, labelIds } = p.data ?? {};
+  if (!id || !teamId) return null;
+  const labels = Array.isArray(labelIds) ? labelIds : [];
+  return { issueId: id, teamId, support: labels.includes(SUPPORT_LABEL_ID) };
 }
