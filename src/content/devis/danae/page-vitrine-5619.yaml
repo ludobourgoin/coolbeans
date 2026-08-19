@@ -38,6 +38,8 @@ sections:
       - "Inscription à ta liste de diffusion, raccordée à ton outil d'emailing"
 
   - titre: Quelques recos
+    texte: >-
+      Pour chacune, dis-moi : on la met, on la garde pour la V2, ou on oublie.
     liste:
       - "Des photos portées. Premier levier de vente en bijou, loin devant le reste."
       - "Un ordre de prix, même approximatif. Sans, on suppose que c'est cher."
