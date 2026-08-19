@@ -61,14 +61,15 @@ sections:
         - label: >-
             **Direction visuelle** : structure des pages et maquette de la page
             d'accueil, à partir de vos références et de votre identité
-          prix: 400
+          prix: 600
           tooltip: >-
             Les pages intérieures reprennent les composants validés sur la page
-            d'accueil : une seule maquette suffit à fixer la direction.
+            d'accueil : une seule maquette suffit à fixer la direction, qui
+            sert ensuite de référence à tout le site.
         - label: >-
             **Intégration et mise en ligne** : développement des sept pages,
             mise en place du CMS, référencement de base et déploiement
-          prix: 2400
+          prix: 2200
           tooltip: >-
             Comprend le développement, la configuration du CMS, la formation à
             la mise à jour et la mise en ligne sur votre nom de domaine.
@@ -144,6 +145,10 @@ notes:
     texte: >-
       **Tarif association appliqué sur l'ensemble de la prestation**, soit
       560 € de remise sur le montant total.
+  - texte: >-
+      La direction visuelle et l'intégration forment un ensemble : la première
+      fixe la référence que suit toute la construction du site. Les deux postes
+      sont détaillés pour la lisibilité, ils ne se commandent pas séparément.
   - texte: >-
       Chaque livraison de mise en page inclut une vérification sur ordinateur,
       tablette et mobile.
