@@ -122,8 +122,8 @@ sections:
           jalons:
             - { date: Mar 01/09, label: "Démarrage : cadrage, accès, point contenu", owner: coolbeans }
             - { date: Mar 08/09, label: "Structure des pages et maquette de la page d'accueil, à partir des références que vous m'avez transmises", owner: coolbeans }
-            - { date: Ven 11/09, label: "Retour du Club d'Affaires et validation de la direction visuelle", owner: client }
-            - { date: 15/09 → 24/09, label: Intégration, développement et mise en place du CMS, owner: coolbeans }
+            - { date: Mar 15/09, label: "Retour du Club d'Affaires et validation de la direction visuelle", owner: client }
+            - { date: 16/09 → 24/09, label: Intégration, développement et mise en place du CMS, owner: coolbeans }
             - { date: Ven 25/09, label: "Mise en ligne, référencement, formation à la mise à jour", owner: coolbeans }
             - { date: Lun 28/09, label: Relecture finale du Club d'Affaires, owner: client }
             - { date: Mar 29/09, label: Corrections, owner: coolbeans }
