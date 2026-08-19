@@ -180,7 +180,9 @@ const ancre = (titre: string) => slugify(titre);
                     </div>
                   )}
                   {b.reglement && (
-                    <p class="text-[13px] text-mute">
+                    /* mt-6 : sans marge, les conditions se collaient au total
+                       (ou au bandeau d'attente) et se lisaient comme sa suite. */
+                    <p class="mt-6 text-[13px] text-mute">
                       Conditions de règlement : <Fragment set:html={riche(b.reglement)} />
                     </p>
                   )}

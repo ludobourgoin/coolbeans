@@ -9,17 +9,17 @@ sections:
   - titre: Objectif
     texte: >-
       Une page unique pour Vice Versa : tes créations, ton concept, tes
-      prochains marchés, un bouton pour commander. **Que tu mets à jour
-      toi-même.**
+      prochains marchés, un bouton pour commander. **Tu la mets à jour
+      toi-même**, quand tu veux, depuis ton ordinateur ou ton téléphone.
 
   - titre: La page
     texte: "Une seule page, de haut en bas :"
     liste:
-      - "**En-tête** : logo, nom, une phrase"
-      - "**Tes créations** : la galerie"
+      - "En-tête : logo, nom, une phrase"
+      - "Tes créations : la galerie"
       - Le concept
       - Prochains marchés
-      - "**Commander** : bouton vers ton formulaire"
+      - "Commander : bouton vers ton formulaire"
       - Témoignages
       - Qui tu es
       - Inscription à ta liste de diffusion
@@ -28,55 +28,43 @@ sections:
 
   - titre: Fonctionnalités
     liste:
-      - "**Tu modifies tout toi-même** : photos, textes, dates, adresse du formulaire"
-      - "**Les marchés passés disparaissent de la liste**, sans action de ta part"
       - >-
-        **L'adresse du formulaire est un champ** : tu la remplaces à chaque
+        Un CMS pour tout modifier toi-même : photos, textes, dates de
+        marchés, adresse du formulaire
+      - "Les marchés passés disparaissent de la liste, sans action de ta part"
+      - >-
+        L'adresse du formulaire est un champ : tu la remplaces à chaque
         renouvellement, sans passer par moi
-      - "**Inscription à ta liste de diffusion**, raccordée à ton outil d'emailing"
+      - "Inscription à ta liste de diffusion, raccordée à ton outil d'emailing"
 
   - titre: Quelques recos
     liste:
-      - "**Des photos portées.** Premier levier de vente en bijou, loin devant le reste."
-      - "**Un ordre de prix**, même approximatif. Sans, on suppose que c'est cher."
-      - "**Les matériaux.** Objection d'achat réelle sur des boucles d'oreilles."
-      - "**Le délai et le mode de remise** : envoi postal ou en main propre sur le marché."
-      - "**Trois témoignages**, avec prénom et photo portée."
-      - "**Deux phrases sur ta fabrication.** Ce qui justifie le prix d'un bijou artisanal."
-      - "**Le bouton de commande répété** après la galerie et après les témoignages."
+      - "Des photos portées. Premier levier de vente en bijou, loin devant le reste."
+      - "Un ordre de prix, même approximatif. Sans, on suppose que c'est cher."
+      - "Les matériaux. Objection d'achat réelle sur des boucles d'oreilles."
+      - "Le délai et le mode de remise : envoi postal ou en main propre sur le marché."
+      - "Trois témoignages, avec prénom et photo portée."
+      - "Deux phrases sur ta fabrication. Ce qui justifie le prix d'un bijou artisanal."
+      - "Le bouton de commande répété après la galerie et après les témoignages."
       - >-
-        **La liste de diffusion présentée comme un service** : « je te préviens
+        La liste de diffusion présentée comme un service : « je te préviens
         de mes prochains marchés ».
 
   - titre: De ton côté
-    texte: "Ce qu'il me manque pour chiffrer. Par mail ou de vive voix, comme tu veux."
+    texte: "Ce qu'il me manque pour chiffrer :"
     liste:
-      - "**Le nom de domaine**, à valider et réserver"
-      - "**Ton outil d'emailing.**"
+      - "Le nom de domaine, à valider et réserver"
+      - "Ton outil d'emailing."
       - >-
-        **Tes photos** : combien, prises par qui ? Leur qualité décidera du
+        Tes photos : combien, prises par qui ? Leur qualité décidera du
         rendu final, plus que tout le reste.
-      - "**Un portrait de toi**, grand sourire. Pas difficile."
-      - "**Tes textes** : écrits ou à écrire ?"
+      - "Un portrait de toi, grand sourire. Pas difficile."
+      - "Tes textes : concept, bio, présentation"
       - >-
-        **Ta maquette**, même griffonnée, avec tes typos et ta palette : de quoi
+        Ta maquette, même griffonnée, avec tes typos et ta palette : de quoi
         lancer le moodboard.
-      - "**Framaforms confirmé ?**"
-      - "**Une date**, même approximative. Un premier marché à viser ?"
-
-  - titre: Références
-    texte: "Tu m'as demandé des exemples. Aucun n'est dans ton univers, je m'adapte à chaque marque :"
-    liste:
-      - "Bijoux : [dupontdupontstore.fr](https://dupontdupontstore.fr/)"
-      - "Bien-être : [letapisdelaine.fr](https://letapisdelaine.fr/)"
-      - "Événementiel : [grande-soiree-industrie](https://grande-soiree-industrie.webflow.io/toulouse-2025)"
-      - "Immobilier : [offres.zelidom.fr](https://offres.zelidom.fr/nobelia)"
-      - "Entertainment : [amusoire.com](https://www.amusoire.com/)"
-      - "Automobile : [ev.encheres-vo.com](https://ev.encheres-vo.com/)"
-      - "Ressources humaines : [mathildechevalier.com](https://mathildechevalier.com/)"
-      - "Hôtellerie : [lp.miharu.fr](https://lp.miharu.fr/seminaires)"
-      - "Agence de publicité : [trigger.fr](https://www.trigger.fr/)"
-      - "Agence vidéo : [ngupmedias.com](https://www.ngupmedias.com/)"
+      - "Framaforms confirmé ?"
+      - "Une date, même approximative. Un premier marché à viser ?"
 
   - titre: Tonalité
     texte: "Pour cadrer le moodboard, choisis dans chaque paire. Pas de bonne réponse, juste une direction."
@@ -94,15 +82,17 @@ sections:
   - titre: Technique
     texte: "Ce que ça te donne :"
     liste:
-      - "**Une page qui s'affiche instantanément**, même en 4G sur un marché"
       - >-
-        **Aucun abonnement.** Hébergement gratuit. Seul frais récurrent : le nom
+        Un CMS éprouvé, celui que j'utilise sur tous mes projets clients.
+        Tes modifications sont en ligne en quelques secondes.
+      - >-
+        Aucun abonnement. Hébergement gratuit. Seul frais récurrent : le nom
         de domaine, autour de 15 € par an
       - >-
-        **Rien à entretenir** : pas de mise à jour, pas d'extension, pas de
+        Rien à entretenir : pas de mise à jour, pas d'extension, pas de
         faille à corriger dans l'urgence. Contrairement à WordPress.
       - >-
-        **Tu restes libre** : le code t'appartient, ton contenu est exportable,
+        Tu restes libre : le code t'appartient, ton contenu est exportable,
         n'importe quel développeur peut reprendre la page
 
   - titre: Budget
@@ -110,30 +100,30 @@ sections:
       enAttente: true
       lignes:
         - label: >-
-            **Direction visuelle** : moodboard et maquette, à partir de ta
+            Direction visuelle : moodboard et maquette, à partir de ta
             charte et de tes références
         - label: >-
-            **Intégration et mise en ligne** : développement, outil de mise à
+            Intégration et mise en ligne : développement, outil de mise à
             jour, référencement de base, déploiement
-        - label: "**Agenda des marchés**, avec effacement automatique des dates passées"
-        - label: "**Inscription à ta liste de diffusion**, raccordée à ton outil d'emailing"
-        - label: "**Prise en main** : une demi-heure ensemble, plus un guide écrit"
+        - label: "Agenda des marchés, avec effacement automatique des dates passées"
+        - label: "Inscription à ta liste de diffusion, raccordée à ton outil d'emailing"
+        - label: "Prise en main : une demi-heure ensemble, plus un guide écrit"
       mention: HT
       reglement: >-
-        **30 %** à la validation du devis, qui lance la prestation. **Solde** à
+        30 % à la validation du devis, qui lance la prestation. Solde à
         la livraison.
 
   - titre: Ce que ça comprend
     liste:
-      - Affichage vérifié sur ordinateur, tablette et téléphone
-      - Configuration du référencement
-      - Optimisation de la vitesse d'affichage
-      - Tests sur les trois principaux navigateurs
-      - Certificat de sécurité, hébergement et raccordement du nom de domaine
-      - Suivi de fréquentation, sans cookies
-      - Mentions légales
-      - Prise en main de l'outil de mise à jour, et guide écrit remis à la livraison du site
-      - Support 30 jours après la mise en ligne
+      - Responsive (desktop, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation de la vitesse
+      - Tests QA sur les 3 navigateurs principaux
+      - Setup tracking (analytics sans cookies)
+      - Certificat SSL, hébergement et DNS
+      - Pages légales et section de contact
+      - Doc de passation pour la prise en main du CMS
+      - Support 30 jours après mise en ligne
 
   - titre: Planning
     planning:
@@ -141,8 +131,8 @@ sections:
         - label: À partir du démarrage
           indicatif: true
           texte: >-
-            Compte environ **quatre semaines** entre le feu vert et la mise en
-            ligne, tes allers-retours compris.
+            Une seule page : compte deux semaines entre le feu vert et la
+            mise en ligne, tes allers-retours compris.
           jalons:
             - {
                 date: Semaine 1,
@@ -155,20 +145,20 @@ sections:
                 label: "Ton retour et validation de la direction visuelle",
                 owner: client,
               }
-            - { date: Semaine 2, label: Maquette de la page, owner: coolbeans }
-            - { date: Semaine 3, label: Ton retour sur la maquette, owner: client }
+            - { date: Semaine 1, label: Maquette de la page, owner: coolbeans }
+            - { date: Semaine 2, label: Ton retour sur la maquette, owner: client }
             - {
-                date: Semaine 3,
-                label: "Développement et mise en place de l'outil de mise à jour",
+                date: Semaine 2,
+                label: "Développement et mise en place du CMS",
                 owner: coolbeans,
               }
             - {
-                date: Semaine 4,
+                date: Semaine 2,
                 label: "Mise en ligne, référencement, prise en main",
                 owner: coolbeans,
               }
             - {
-                date: Semaine 4,
+                date: Semaine 2,
                 label: "Ta relecture, corrections, livraison",
                 owner: coolbeans,
               }
