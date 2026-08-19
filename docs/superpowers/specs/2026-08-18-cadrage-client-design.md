@@ -55,12 +55,12 @@ qui fait comprendre au client la valeur de l'option Rédaction.
 
 | Moment | Acteur | Action |
 |---|---|---|
-| J+0 | Ludo | Call de brief, enregistré par Granola |
-| J+0 | Claude | Génère le questionnaire depuis le CR et les issues Linear |
+| J+0 | Claude | Génère le questionnaire depuis la demande entrante et la bibliothèque de questions du type de projet (amendé le 2026-08-19 : le questionnaire part **avant** le rendez-vous, plus après) |
 | J+0 | Ludo | Relit, corrige, invite le prospect depuis l'admin |
 | J+0 | Prospect | Reçoit un lien magique, ouvre son espace |
 | J+1 à J+2 | Prospect | Remplit le bloc devis |
-| J+2 | Ludo | Notifié, chiffre sur du réel, envoie le devis |
+| J+2 | Ludo | Call de brief, enregistré par Granola — conversation sur des réponses déjà écrites, et l'ordre de grandeur du prix s'annonce dans les cinq premières minutes |
+| J+2 | Ludo | Chiffre sur du réel, envoie le devis |
 | J+2 → ∞ | Prospect | Remplit le bloc projet à son rythme |
 | à complétion | Ludo | Notifié, produit avec la matière en main |
 

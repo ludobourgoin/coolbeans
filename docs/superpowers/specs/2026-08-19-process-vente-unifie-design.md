@@ -1,7 +1,10 @@
 # Process de vente unifié — une page, trois états
 
 **Date :** 2026-08-19
-**Statut :** design validé, implémentation partielle (état 1 livré)
+**Statut :** ⚠️ partiellement caduc — voir l'amendement du 2026-08-19 (soir)
+en section 7. La fusion questionnaire + devis en un seul objet est abandonnée ;
+ce qui reste valable : le questionnaire part avant le rendez-vous, la table
+« quand utiliser le premier jet », et les décisions sur le rendez-vous de brief.
 **Origine :** session devis Danaë / Vice Versa, 2026-08-19.
 
 ---
@@ -156,3 +159,43 @@ fonctionne plus.
 | 2026-08-19 | Le mode « premier jet » est réservé aux leads entrants chauds, jamais en compétition ni en prospection sortante |
 | 2026-08-19 | Le niveau de DA est une question systématique ; au-delà du sobre et minimaliste, orientation vers un partenaire |
 | 2026-08-19 | L'argent s'annonce dans les cinq premières minutes du rendez-vous de brief |
+
+---
+
+## 7. Amendement du 2026-08-19 (soir)
+
+**Décision annulée : « une page, trois états ».** Le questionnaire et le devis
+redeviennent deux objets distincts, conformément à
+`2026-08-18-cadrage-client-design.md` qui reste la spec de référence du
+questionnaire :
+
+| | Où | Accès |
+|---|---|---|
+| **Questionnaire** | Portail my.coolbeans.cc, mise en page retenue le 2026-08-18 (zones empilées, sommaire à badges épinglé) | Lien magique |
+| **Devis** | `coolbeans.cc/devis/…`, une fois toutes les réponses reçues | Public, transférable |
+
+Raison : la mise en page du questionnaire (progression par section, sauvegarde
+automatique, deux zones d'urgence distinctes) est un vrai produit, que la page
+devis ne sait pas porter. La fusion faisait perdre cette qualité pour gagner
+une URL unique — mauvais échange.
+
+**Ce qui survit de la fusion** : rien n'empêche le devis de porter des
+questions résiduelles (`budget.enAttente` reste utile pour un premier jet sur
+un lead entrant chaud). Mais ce n'est plus le chemin principal.
+
+**Conséquence à assumer : dépendance dure à Better Auth.** Le lien magique
+s'appuie sur le plugin magic-link (COO-132, non migré). Ce chemin ne livre donc
+rien tant que la migration n'est pas faite. C'était l'option A déjà identifiée
+au 2026-08-18 ; elle est maintenant retenue par défaut.
+
+**Changement au parcours du 2026-08-18** : le questionnaire part **avant** le
+rendez-vous de brief, plus après. Le CR Granola ne peut donc plus servir à le
+générer : il se compose à partir de la demande entrante et d'une bibliothèque
+de questions par type de projet. Le rendez-vous devient une conversation sur
+des réponses déjà écrites.
+
+| Date | Décision |
+|---|---|
+| 2026-08-19 (soir) | Questionnaire et devis redeviennent deux objets ; le questionnaire vit dans le portail derrière un lien magique |
+| 2026-08-19 (soir) | Le questionnaire part avant le rendez-vous de brief, et non après comme prévu au 2026-08-18 |
+| 2026-08-19 (soir) | Le module Cadrage attend la migration Better Auth (option A) |
