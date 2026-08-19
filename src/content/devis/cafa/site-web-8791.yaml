@@ -59,14 +59,19 @@ sections:
     budget:
       lignes:
         - label: >-
-            Conception et développement du site complet : direction visuelle,
-            maquettes, intégration des sept pages, mise en place du CMS,
-            référencement de base et mise en ligne
-          prix: 2800
+            **Direction visuelle** : structure des pages et maquette de la page
+            d'accueil, à partir de vos références et de votre identité
+          prix: 400
           tooltip: >-
-            Comprend les maquettes, l'intégration, la configuration du CMS,
-            la formation à la mise à jour et la mise en ligne sur votre nom de
-            domaine.
+            Les pages intérieures reprennent les composants validés sur la page
+            d'accueil : une seule maquette suffit à fixer la direction.
+        - label: >-
+            **Intégration et mise en ligne** : développement des sept pages,
+            mise en place du CMS, référencement de base et déploiement
+          prix: 2400
+          tooltip: >-
+            Comprend le développement, la configuration du CMS, la formation à
+            la mise à jour et la mise en ligne sur votre nom de domaine.
       remisePct: 20
       remiseLabel: Tarif association
       mention: HT
