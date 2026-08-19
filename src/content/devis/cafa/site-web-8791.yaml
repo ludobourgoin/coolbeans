@@ -2,6 +2,9 @@ titre: CAFA-TO x Coolbeans
 objet: Site Internet du Club d'Affaires Franco-Allemand T-O
 date: 2026-08-06
 contact: Susanne
+envoi:
+  date: 2026-08-19
+  destinataire: salerno@ms-associes.com
 linear:
   projet: Site web CAFA
   affaire: CRM-9
@@ -118,7 +121,7 @@ sections:
       - Certificat SSL, hébergement et raccordement du nom de domaine
       - Mise en place du suivi de fréquentation, sans cookies
       - Pages légales
-      - Formation à la mise à jour du site, et guide écrit remis à l'issue
+      - Formation à la mise à jour du site, et guide écrit remis à la livraison du site
       - Support 30 jours après la mise en ligne
 
   - titre: En option
@@ -171,9 +174,6 @@ notes:
       La direction visuelle et l'intégration forment un ensemble : la première
       fixe la référence que suit toute la construction du site. Les deux postes
       sont détaillés pour la lisibilité, ils ne se commandent pas séparément.
-  - texte: >-
-      Chaque livraison de mise en page inclut une vérification sur ordinateur,
-      tablette et mobile.
   - texte: >-
       Deux allers-retours sont prévus par livrable. Au-delà, les itérations
       supplémentaires restent possibles et sont budgétées au temps passé.
