@@ -23,8 +23,22 @@ sections:
           Porte d'entrée du site : les prochains événements, les dernières
           actualités et l'accès à toutes les sections.
       - texte: "Qui sommes-nous : l'histoire du Club d'Affaires et les membres du bureau"
-      - texte: Événements à venir
-      - texte: "Actualités : retours sur les événements passés"
+      - texte: >-
+          **Événements à venir** : l'agenda du Club d'Affaires, la page que l'on
+          consulte pour savoir quand a lieu la prochaine rencontre
+        tooltip: >-
+          Chaque événement porte une date et disparaît de lui-même une fois
+          passé. La page reste donc toujours juste, sans que vous ayez à la
+          nettoyer.
+      - texte: >-
+          **Actualités** : la vie du Club d'Affaires au fil de l'année, ses
+          partenariats, ses prises de parole et ses comptes rendus de rencontres
+        tooltip: >-
+          Deux sections distinctes et non un blog unique : l'agenda sert à
+          venir, les actualités à montrer ce que le Club fait. Les premières
+          s'effacent une fois la date passée, les secondes s'accumulent et
+          construisent votre visibilité, y compris auprès des moteurs de
+          recherche.
       - texte: "Devenir membre : pourquoi rejoindre le Club d'Affaires, et bulletin d'adhésion à télécharger"
       - texte: Partenaires et soutiens institutionnels
       - texte: Contact
