@@ -55,8 +55,9 @@ sections:
           Vous saisissez la date de l'événement une fois ; le site le retire
           automatiquement de la page dès qu'elle est dépassée.
       - texte: >-
-          **Publication en autonomie** : vous créez et modifiez événements,
-          actualités et partenaires vous-même, sans intervention technique
+          **Tout le contenu du site est modifiable par vos soins** : les textes
+          de chaque page comme les événements, les actualités et les
+          partenaires, sans intervention technique
       - texte: "**Formulaire de contact** : les messages arrivent directement dans la boîte mail du Club d'Affaires"
       - texte: "**Bulletin d'adhésion en PDF**, téléchargeable depuis la page Devenir membre"
 
@@ -67,7 +68,7 @@ sections:
     liste:
       - Pages très légères, site rapide à l'affichage
       - "Coût d'usage nul : hébergement gratuit, aucun abonnement mensuel à prévoir"
-      - "Autonomie : vous gérez textes, images et contenus sans toucher au code"
+      - "Autonomie : vous gérez l'intégralité des textes, images et contenus du site sans toucher au code"
       - >-
         Vous restez libre : le code est dans un dépôt qui appartient au Club d'Affaires, le
         contenu est exportable, n'importe quel développeur peut reprendre le site
@@ -95,8 +96,11 @@ sections:
             des deux langues et sélecteur avec vos deux logos
           prix: 150
           tooltip: >-
-            La traduction elle-même reste assurée en interne par vos soins,
-            comme convenu lors de notre échange.
+            Couvre la mise en place technique : deux adresses distinctes,
+            sélecteur de langue, et un champ français plus un champ allemand
+            sur chaque contenu modifiable. La rédaction des textes allemands
+            reste assurée en interne par vos soins, comme convenu lors de
+            notre échange.
       remisePct: 20
       remiseLabel: Tarif association
       mention: HT
