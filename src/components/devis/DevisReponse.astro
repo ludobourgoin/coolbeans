@@ -5,8 +5,13 @@ import Choicebox from "../ui/Choicebox.astro";
 
 interface Props {
   slug: string; // identifiant envoyé dans l'email via /api/devis-reponse
+  /* Devis en construction (budget.enAttente) : il n'y a pas de montant, donc
+     rien à valider. Proposer « je valide cette proposition » sur un document
+     sans prix ferait signer un engagement vide — le formulaire se replie sur
+     la seule réponse qui ait du sens, et les champs de facturation avec. */
+  enAttente?: boolean;
 }
-const { slug } = Astro.props;
+const { slug, enAttente = false } = Astro.props;
 ---
 
 <!-- RÉPONSE -->
@@ -26,25 +31,35 @@ const { slug } = Astro.props;
       <div>
         <h2>Répondre à cette proposition</h2>
         <p class="mt-4 max-w-[44ch] leading-[1.6] text-mute">
-          Validez la proposition ou posez vos questions, je reviens vers vous rapidement.
+          {
+            enAttente
+              ? "Réponses, remarques, questions : tout arrive directement dans ma boîte mail."
+              : "Validez la proposition ou posez vos questions, je reviens vers vous rapidement."
+          }
         </p>
       <form id="devis-form" class="card mt-10 grid gap-6" data-slug={slug}>
-        <Choicebox
-          name="reponse"
-          options={[
-            {
-              value: "validation",
-              title: "Je valide cette proposition",
-              hint: "Le projet démarre à réception de l'acompte.",
-              checked: true,
-            },
-            {
-              value: "question",
-              title: "J'ai une question ou une remarque",
-              hint: "Précisez-la dans le message ci-dessous.",
-            },
-          ]}
-        />
+        {
+          enAttente ? (
+            <input type="hidden" name="reponse" value="question" />
+          ) : (
+            <Choicebox
+              name="reponse"
+              options={[
+                {
+                  value: "validation",
+                  title: "Je valide cette proposition",
+                  hint: "Le projet démarre à réception de l'acompte.",
+                  checked: true,
+                },
+                {
+                  value: "question",
+                  title: "J'ai une question ou une remarque",
+                  hint: "Précisez-la dans le message ci-dessous.",
+                },
+              ]}
+            />
+          )
+        }
         <p class="text-[13px] text-mute">Les champs marqués d'une étoile sont obligatoires.</p>
         <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
           <div class="grid gap-2">

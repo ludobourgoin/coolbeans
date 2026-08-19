@@ -53,7 +53,7 @@ const dateDevis = d.date.toLocaleDateString("fr-FR", {
     <DevisCorps d={d} />
   </div>
 
-  <DevisReponse slug={entry.id} />
+  <DevisReponse slug={entry.id} enAttente={d.sections.some((s) => s.budget?.enAttente)} />
 
   <DevisFooter />
 </BaseLayout>
