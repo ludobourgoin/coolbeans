@@ -34,14 +34,17 @@ sections:
           **Actualités** : la vie du Club d'Affaires au fil de l'année, ses
           partenariats, ses prises de parole et ses comptes rendus de rencontres
         tooltip: >-
-          Deux sections distinctes et non un blog unique : l'agenda sert à
-          venir, les actualités à montrer ce que le Club fait. Les premières
-          s'effacent une fois la date passée, les secondes s'accumulent et
-          construisent votre visibilité, y compris auprès des moteurs de
-          recherche.
+          Une actualité reste en ligne et s'archive, là où un événement
+          disparaît une fois sa date passée.
       - texte: "Devenir membre : pourquoi rejoindre le Club d'Affaires, et bulletin d'adhésion à télécharger"
       - texte: Partenaires et soutiens institutionnels
       - texte: Contact
+    note: >-
+      Événements et Actualités peuvent être réunis en une seule section, ce qui
+      allégerait le devis. Je vous recommande cependant de les garder distincts :
+      on ne consulte pas un agenda comme on parcourt les nouvelles du Club, et
+      les mélanger oblige à choisir entre laisser en ligne des événements
+      passés ou effacer l'histoire de l'association.
 
   - titre: Fonctionnalités
     liste:
@@ -87,6 +90,13 @@ sections:
           tooltip: >-
             Comprend le développement, la configuration du CMS, la formation à
             la mise à jour et la mise en ligne sur votre nom de domaine.
+        - label: >-
+            **Version bilingue français / allemand** : mise en place technique
+            des deux langues et sélecteur avec vos deux logos
+          prix: 150
+          tooltip: >-
+            La traduction elle-même reste assurée en interne par vos soins,
+            comme convenu lors de notre échange.
       remisePct: 20
       remiseLabel: Tarif association
       mention: HT
@@ -110,12 +120,6 @@ sections:
   - titre: En option
     texte: "À cocher ou non, selon vos besoins :"
     liste:
-      - texte: >-
-          **Version bilingue français / allemand : 150 €.** Mise en place
-          technique des deux langues et sélecteur avec vos deux logos.
-        tooltip: >-
-          La traduction elle-même reste assurée en interne par vos soins,
-          comme convenu lors de notre échange.
       - texte: >-
           **Reprise de vos articles existants : 250 €.** Les publications de
           cafatmp.org sont rapatriées dans la nouvelle section Actualités.

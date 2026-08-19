@@ -242,6 +242,10 @@ const ancre = (titre: string) => slugify(titre);
                 </div>
               );
             })()}
+
+          {section.note && (
+            <p class="mt-6 max-w-[58ch] text-[14px] leading-[1.6] text-mute" set:html={riche(section.note)} />
+          )}
         </div>
       </section>
     ))
