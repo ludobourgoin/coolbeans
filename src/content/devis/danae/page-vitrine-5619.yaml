@@ -51,7 +51,7 @@ sections:
   - titre: De ton côté
     texte: "Ce qu'il me manque pour chiffrer. Par mail ou de vive voix, comme tu veux."
     liste:
-      - "**Le nom de domaine**, à valider et réserver. Autour de 15 € par an, seul frais récurrent."
+      - "**Le nom de domaine**, à valider et réserver"
       - "**Ton outil d'emailing.**"
       - >-
         **Tes photos** : combien, prises par qui ? Leur qualité décidera du
@@ -77,6 +77,19 @@ sections:
       - "Hôtellerie : [lp.miharu.fr](https://lp.miharu.fr/seminaires)"
       - "Agence de publicité : [trigger.fr](https://www.trigger.fr/)"
       - "Agence vidéo : [ngupmedias.com](https://www.ngupmedias.com/)"
+
+  - titre: Tonalité
+    texte: "Pour cadrer le moodboard, choisis dans chaque paire. Pas de bonne réponse, juste une direction."
+    liste:
+      - Chaleureux ou froid
+      - Épuré ou foisonnant
+      - Classique ou audacieux
+      - Discret ou affirmé
+      - Brut ou raffiné
+      - Ludique ou sérieux
+    note: >-
+      Et si une marque, un objet ou un lieu résume l'esprit de Vice Versa,
+      dis-le moi. Ça vaut dix adjectifs.
 
   - titre: Technique
     texte: "Ce que ça te donne :"
