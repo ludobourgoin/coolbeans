@@ -4,6 +4,7 @@ date: 2026-08-19
 contact: Danaë
 linear:
   affaire: https://linear.app/coolbeans-hq/issue/CRM-42
+  projet: https://linear.app/coolbeans-hq/project/page-vitrine-vice-versa-52f28a6e9424
 
 sections:
   - titre: Objectif
@@ -143,7 +144,7 @@ sections:
               }
             - { date: Semaine 1, label: Moodboard et direction visuelle, owner: coolbeans }
             - {
-                date: Semaine 2,
+                date: Semaine 1,
                 label: "Ton retour et validation de la direction visuelle",
                 owner: client,
               }
