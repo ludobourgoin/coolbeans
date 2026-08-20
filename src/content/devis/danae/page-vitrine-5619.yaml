@@ -4,6 +4,7 @@ date: 2026-08-19
 contact: Danaë
 linear:
   affaire: https://linear.app/coolbeans-hq/issue/CRM-42
+  projet: https://linear.app/coolbeans-hq/project/page-vitrine-vice-versa-52f28a6e9424
 
 sections:
   - titre: Objectif
@@ -38,6 +39,8 @@ sections:
       - "Inscription à ta liste de diffusion, raccordée à ton outil d'emailing"
 
   - titre: Quelques recos
+    texte: >-
+      Pour chacune, dis-moi : on la met, on la garde pour la V2, ou on oublie.
     liste:
       - "Des photos portées. Premier levier de vente en bijou, loin devant le reste."
       - "Un ordre de prix, même approximatif. Sans, on suppose que c'est cher."
@@ -141,7 +144,7 @@ sections:
               }
             - { date: Semaine 1, label: Moodboard et direction visuelle, owner: coolbeans }
             - {
-                date: Semaine 2,
+                date: Semaine 1,
                 label: "Ton retour et validation de la direction visuelle",
                 owner: client,
               }
@@ -157,9 +160,10 @@ sections:
                 label: "Mise en ligne, référencement, prise en main",
                 owner: coolbeans,
               }
+            - { date: Semaine 2, label: Ta relecture finale, owner: client }
             - {
                 date: Semaine 2,
-                label: "Ta relecture, corrections, livraison",
+                label: "Corrections, livraison et démarrage du support 30 jours",
                 owner: coolbeans,
               }
           note: >-

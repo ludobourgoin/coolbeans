@@ -179,7 +179,9 @@ export const etapes: Etape[] = [
     qui: "les-deux",
     outils: ["Notion Calendar", "Asana — 🎯 crm"],
     faire: [
-      "Cadrer le besoin, le budget, l'échéance, et vérifier qu'on parle au décideur.",
+      "Annoncer une fourchette de prix dans les cinq premières minutes, avant le tour de périmètre.",
+      "Cadrer le besoin, l'échéance et sa raison, et vérifier qu'on parle au décideur.",
+      "Faire choisir le niveau de direction artistique — au-delà du sobre et minimaliste, orienter vers un directeur ou une directrice artistique partenaire.",
       "Annoncer la suite et le délai d'envoi du devis.",
       "Demander l'accord de principe pour présenter le projet en étude de cas.",
       "Cocher « Qualifier » et « Faire le rendez-vous de découverte ».",
@@ -191,7 +193,7 @@ export const etapes: Etape[] = [
       { vers: "S20", si: "l'affaire est reportée, avec une date de rappel" },
       { vers: "S21", si: "l'affaire est hors cible" },
     ],
-    note: "C'est le premier vrai filtre. Une affaire non qualifiée ne reste pas dans le pipeline.",
+    note: "C'est le premier vrai filtre. Une affaire non qualifiée ne reste pas dans le pipeline. L'argent s'annonce en ouverture, jamais à la fin : un lead qui découvre le montant en recevant le devis a eu le temps de se construire une objection seul. Recommandations complètes dans la doc de vente, section « Le rendez-vous de brief ».",
   },
   {
     id: "S4",
