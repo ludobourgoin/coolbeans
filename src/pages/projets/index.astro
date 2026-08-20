@@ -1,0 +1,59 @@
+---
+// Index du portfolio : la liste des projets livrés, chacun pointant vers le
+// site en ligne. Les études de cas détaillées vivent à /projets/<slug> (voir
+// [slug].astro et la collection `projets`) ; cette page reste volontairement
+// une liste, elle n'attend ni capture ni témoignage pour être publiable.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+import { portfolio } from "../../data/portfolio";
+---
+
+<BaseLayout
+  title="Projets — Coolbeans"
+  description="Les sites livrés par Coolbeans, de l'entertainment à l'immobilier : vitrines, boutiques et landing pages en production."
+>
+  <Nav />
+
+  <section class="border-b border-line">
+    <div class="container-site pt-20 pb-12 text-center">
+      <h1>Projets.</h1>
+      <p class="mx-auto mt-5 max-w-prose text-xl font-medium">
+        Les sites livrés, secteur par secteur. Chaque lien ouvre le site en production.
+      </p>
+    </div>
+  </section>
+
+  <div class="container-site pt-14 pb-28">
+    <ul
+      class="grid list-none grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5 p-0"
+    >
+      {
+        portfolio.map((projet) => (
+          <li>
+            <a
+              class="card flex h-full flex-col gap-6 transition-colors duration-200 ease-brand hover:bg-surface-raise"
+              href={`https://${projet.domaine}`}
+              target="_blank"
+              rel="noopener"
+              aria-label={`${projet.domaine} — ouvrir le site (nouvel onglet)`}
+            >
+              <div class="label">{projet.secteur}</div>
+              <div class="font-display text-lg font-semibold break-all">{projet.domaine}</div>
+              <div class="mt-auto flex items-center gap-1.5 font-mono text-xs font-semibold tracking-wide text-mute">
+                Voir le site
+                <span aria-hidden="true">↗</span>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="mt-14 text-center text-mute">
+      Un projet du même ordre en tête ? <a class="underline" href="/contact">Parlons-en</a>.
+    </p>
+  </div>
+
+  <Footer />
+</BaseLayout>
