@@ -11,12 +11,12 @@ sections:
     texte: >-
       Une page unique pour Vice Versa : tes créations, ton concept, tes
       prochains marchés, un bouton pour commander. **Tu la mets à jour
-      toi-même**, quand tu veux, depuis ton ordinateur ou ton téléphone.
+      toi-même**, quand tu veux, depuis ton ordi ou ton tel.
 
   - titre: La page
     texte: "Une seule page, de haut en bas :"
     liste:
-      - "En-tête : logo, nom, une phrase"
+      - "En-tête : logo, ancres vers les différentes sections, CTA"
       - "Tes créations : la galerie"
       - Le concept
       - Prochains marchés
@@ -59,28 +59,15 @@ sections:
       - "Le nom de domaine, à valider et réserver"
       - "Ton outil d'emailing."
       - >-
-        Tes photos : combien, prises par qui ? Leur qualité décidera du
-        rendu final, plus que tout le reste.
-      - "Un portrait de toi, grand sourire. Pas difficile."
+        Tes photos : combien ? Leur qualité décidera du rendu final, plus que
+        tout le reste.
+      - "Un portrait de toi, grand sourire. Pas difficile 😉"
       - "Tes textes : concept, bio, présentation"
       - >-
-        Ta maquette, même griffonnée, avec tes typos et ta palette : de quoi
+        Ta maquette, même grossière, avec tes typos et ta palette : de quoi
         lancer le moodboard.
       - "Framaforms confirmé ?"
       - "Une date, même approximative. Un premier marché à viser ?"
-
-  - titre: Tonalité
-    texte: "Pour cadrer le moodboard, choisis dans chaque paire. Pas de bonne réponse, juste une direction."
-    liste:
-      - Chaleureux ou froid
-      - Épuré ou foisonnant
-      - Classique ou audacieux
-      - Discret ou affirmé
-      - Brut ou raffiné
-      - Ludique ou sérieux
-    note: >-
-      Et si une marque, un objet ou un lieu résume l'esprit de Vice Versa,
-      dis-le moi. Ça vaut dix adjectifs.
 
   - titre: Technique
     texte: "Ce que ça te donne :"
@@ -93,24 +80,31 @@ sections:
         de domaine, autour de 15 € par an
       - >-
         Rien à entretenir : pas de mise à jour, pas d'extension, pas de
-        faille à corriger dans l'urgence. Contrairement à WordPress.
-      - >-
-        Tu restes libre : le code t'appartient, ton contenu est exportable,
-        n'importe quel développeur peut reprendre la page
+        faille à corriger dans l'urgence. Pas comme WordPress, Argh.
+      - "Tu restes libre : le code t'appartient, ton contenu est exportable"
 
   - titre: Budget
     budget:
       enAttente: true
       lignes:
-        - label: >-
-            Direction visuelle : moodboard et maquette, à partir de ta
-            charte et de tes références
-        - label: >-
-            Intégration et mise en ligne : développement, outil de mise à
-            jour, référencement de base, déploiement
-        - label: "Agenda des marchés, avec effacement automatique des dates passées"
-        - label: "Inscription à ta liste de diffusion, raccordée à ton outil d'emailing"
-        - label: "Prise en main : une demi-heure ensemble, plus un guide écrit"
+        - label: Direction visuelle
+          tooltip: >-
+            Moodboard et maquette de la page, à partir de ta charte et de tes
+            références.
+        - label: Intégration et mise en ligne
+          tooltip: >-
+            Développement de la page, mise en place du CMS, référencement de
+            base, déploiement sur ton nom de domaine.
+        - label: Agenda des marchés
+          tooltip: >-
+            La liste que tu remplis, et l'effacement automatique des dates
+            passées.
+        - label: Inscription à ta liste de diffusion
+          tooltip: >-
+            Formulaire sur la page, raccordé à l'outil d'emailing que tu auras
+            choisi.
+        - label: Prise en main
+          tooltip: Une demi-heure ensemble, plus un guide écrit.
       mention: HT
       reglement: >-
         30 % à la validation du devis, qui lance la prestation. Solde à
@@ -120,11 +114,11 @@ sections:
     liste:
       - Responsive (desktop, tablette, mobile)
       - Configuration SEO et bonnes pratiques
-      - Optimisation de la vitesse
+      - Optimisation des web perfs (vitesse, Core Web Vitals…)
       - Tests QA sur les 3 navigateurs principaux
       - Setup tracking (analytics sans cookies)
       - Certificat SSL, hébergement et DNS
-      - Pages légales et section de contact
+      - Pages légales
       - Doc de passation pour la prise en main du CMS
       - Support 30 jours après mise en ligne
 
