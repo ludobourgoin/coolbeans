@@ -160,9 +160,10 @@ sections:
                 label: "Mise en ligne, référencement, prise en main",
                 owner: coolbeans,
               }
+            - { date: Semaine 2, label: Ta relecture finale, owner: client }
             - {
                 date: Semaine 2,
-                label: "Ta relecture, corrections, livraison",
+                label: "Corrections, livraison et démarrage du support 30 jours",
                 owner: coolbeans,
               }
           note: >-
