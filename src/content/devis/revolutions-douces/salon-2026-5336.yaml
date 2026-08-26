@@ -56,7 +56,6 @@ sections:
         Programme et exposants se modifient depuis Sanity, sur ordinateur
         comme sur téléphone, sans toucher au code
       - Le code appartient à l'association, le contenu s'exporte, n'importe quel développeur peut reprendre
-      - Ni plugins ni mises à jour à surveiller, contrairement à WordPress
 
   - titre: Budget
     budget:
@@ -79,7 +78,7 @@ sections:
       - Responsive (desktop, tablette, mobile)
       - Configuration SEO et bonnes pratiques
       - Optimisation des web perfs (vitesse, Core Web Vitals…)
-      - Visuels de partage soignés pour Instagram, Facebook et WhatsApp
+      - Intégration de tes visuels pour l'aperçu des liens partagés
       - Tests QA sur les 3 navigateurs principaux
       - Certificat SSL, hébergement et DNS
       - Pages légales et page de contact
@@ -89,14 +88,14 @@ sections:
   - titre: De ton côté
     texte: "Ce qu'il me faut, et quand :"
     liste:
-      - texte: "Le 1er septembre : nom de domaine choisi, logo et affiche en fichier source"
+      - texte: "Le 28 août : nom de domaine choisi, logo et affiche en fichier source"
         tooltip: Le domaine est acheté par l'association, environ 15 € par an. Je m'occupe du reste.
-      - "Le 9 septembre : validation de la direction visuelle"
-      - "Le 15 septembre : textes, photos de l'édition 2025, liste des exposants et logos des partenaires"
-      - "Jusqu'à la veille du salon : compléments de programme, que tu saisis toi-même"
+      - "Le 2 septembre : validation de la direction visuelle"
+      - "Le 31 août : textes, photos de l'édition 2025, liste des exposants et logos des partenaires"
+      - "Jusqu'à la veille du salon : compléments de programme et d'exposants, que tu saisis toi-même"
     note: >-
-      Si un élément manque au 15 septembre, la page concernée part en ligne
-      sans lui et se complète ensuite. **La date de mise en ligne ne bouge
+      Si un élément manque au 31 août, la page part en ligne sans lui et tu
+      la complètes ensuite depuis Sanity. **La date de mise en ligne ne bouge
       pas.**
 
   - titre: En option
@@ -126,19 +125,21 @@ sections:
   - titre: Planning
     planning:
       options:
-        - label: Mise en ligne fin septembre
+        - label: En ligne le 10 septembre
           texte: >-
-            Calendrier calé sur le salon des 3 et 4 octobre. Il tient si les
-            validations arrivent aux dates prévues.
+            Le site doit servir la communication des trois semaines qui
+            précèdent le salon, pas arriver la veille. On vise donc le 10
+            septembre, avec un programme et une liste d'exposants que tu
+            complètes ensuite toi-même, au fil des confirmations.
           jalons:
-            - { date: Mar 01/09, label: "Cadrage, arborescence et direction visuelle, ensemble" }
-            - { date: Ven 04/09, label: "Maquettes de l'accueil et d'une page intérieure", owner: coolbeans }
-            - { date: Mer 09/09, label: Validation de la direction visuelle, owner: client }
-            - { date: 10/09 → 22/09, label: Intégration et développement, owner: coolbeans }
-            - { date: Mar 15/09, label: "Contenus, photos et liste des exposants", owner: client }
-            - { date: Jeu 24/09, label: Recette du site ensemble }
-            - { date: Lun 28/09, label: Mise en ligne, owner: coolbeans }
-            - { date: 29/09 → 02/10, label: Ajustements de dernière minute, owner: coolbeans }
+            - { date: Ven 28/08, label: "Cadrage, arborescence et direction visuelle, ensemble" }
+            - { date: Lun 31/08, label: "Textes, photos de 2025, exposants et logos partenaires", owner: client }
+            - { date: Mar 01/09, label: "Maquettes de l'accueil et d'une page intérieure", owner: coolbeans }
+            - { date: Mer 02/09, label: Validation de la direction visuelle, owner: client }
+            - { date: 03/09 → 08/09, label: Intégration et développement, owner: coolbeans }
+            - { date: Mar 08/09, label: Recette du site ensemble }
+            - { date: Jeu 10/09, label: Mise en ligne, owner: coolbeans }
+            - { date: 11/09 → 02/10, label: "Programme et exposants complétés par tes soins", owner: client }
             - { date: 03-04/10, label: Salon aux Arènes du Cap d'Agde }
 
 notes:
