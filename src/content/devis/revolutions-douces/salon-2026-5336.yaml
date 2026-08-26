@@ -105,25 +105,16 @@ sections:
     texte: >-
       Activables cette année si un financement le permet, sinon pour l'édition
       2027.
-    budget:
-      lignes:
-        - label: Espace exposant avec candidature en ligne et suivi des dossiers
-          prix: 700
-        - label: Programme personnalisable, chaque visiteur compose son agenda
-          prix: 500
-        - label: Plan interactif du salon
-          prix: 400
-        - label: Version anglaise du site
-          prix: 350
-        - label: Rubrique actualités
-          prix: 250
-        - label: Archives des éditions précédentes
-          prix: 200
-        - label: Mesure d'audience sans cookies ni bandeau de consentement
-          prix: 150
-        - label: Maintenance et évolutions, par an
-          prix: 300
-      mention: HT
+    liste:
+      - "Espace exposant avec candidature en ligne et suivi des dossiers · 700 €"
+      - "Programme personnalisable, chaque visiteur compose son agenda · 500 €"
+      - "Plan interactif du salon · 400 €"
+      - "Version anglaise du site · 350 €"
+      - "Rubrique actualités · 250 €"
+      - "Archives des éditions précédentes · 200 €"
+      - "Mesure d'audience sans cookies ni bandeau de consentement · 150 €"
+      - "Maintenance et évolutions, par an · 300 €"
+    note: Prix HT, à la carte. Rien n'est lié, chaque ligne se prend seule.
 
   - titre: Planning
     planning:
