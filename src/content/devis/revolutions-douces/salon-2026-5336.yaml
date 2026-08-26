@@ -20,7 +20,7 @@ sections:
       dates, le programme et les exposants, la structure reste.
 
   - titre: Pages
-    texte: "Onze pages, dont trois que tu alimentes au fil de l'eau (programme, ateliers et exposants) :"
+    texte: "Douze pages, dont trois que tu alimentes au fil de l'eau (programme, ateliers et exposants) :"
     liste:
       - Accueil
       - Programme, par jour et par créneau
@@ -68,7 +68,7 @@ sections:
       lignes:
         - label: >-
             Conception, développement, CMS et mise en ligne du site du salon,
-            onze pages
+            douze pages
           prix: 3490
       remisePct: 100
       remiseLabel: Mécénat de compétences Coolbeans
