@@ -20,12 +20,11 @@ sections:
       dates, le programme et les exposants, la structure reste.
 
   - titre: Pages
-    texte: "Douze pages, dont trois que tu alimentes au fil de l'eau (programme, ateliers et exposants) :"
+    texte: "Onze pages, dont trois que tu alimentes au fil de l'eau (programme, événements et exposants) :"
     liste:
       - Accueil
       - Programme, par jour et par créneau
-      - Ateliers et rencontres, présentés par thème
-      - Intervenants
+      - Tout le salon : conférences, ateliers, films et animations, filtrables
       - Exposants
       - Devenir exposant
       - Devenir partenaire, avec l'argumentaire de mécénat
@@ -41,10 +40,14 @@ sections:
         tooltip: >-
           Deux ateliers annoncés au même horaire deviennent visibles
           immédiatement, ce qu'une story ne permet pas.
-      - texte: Chaque atelier a sa fiche, avec l'intervenant, le sujet et le public visé
+      - texte: Chaque événement a sa carte, qui se déplie sur le détail et l'intervenant
         tooltip: >-
-          Les mêmes contenus alimentent la grille horaire et la présentation
-          par thème : tu ne saisis l'information qu'une fois.
+          Chaque événement porte son adresse : tu peux envoyer un lien qui
+          l'ouvre directement déplié, depuis une story ou un message.
+      - texte: Filtres par catégorie, et regroupement par jour
+        tooltip: >-
+          Les exposants, présents tout le week-end, forment leur propre bloc
+          plutôt que de se mélanger aux horaires.
       - Annuaire des exposants, modifiable jusqu'à la veille du salon
       - Formulaire de candidature exposant et espace partenaires
       - Inscription à la newsletter, reliée à l'outil d'emailing de ton choix
@@ -56,7 +59,7 @@ sections:
     liste:
       - Aucun abonnement mensuel, l'hébergement est gratuit à ce volume
       - >-
-        Programme, ateliers et exposants se modifient depuis Sanity, sur ordinateur
+        Programme, événements et exposants se modifient depuis Sanity, sur ordinateur
         comme sur téléphone, sans toucher au code
       - Le code appartient à l'association, le contenu s'exporte, n'importe quel développeur peut reprendre
 
@@ -65,7 +68,7 @@ sections:
       lignes:
         - label: >-
             Conception, développement, CMS et mise en ligne du site du salon,
-            douze pages
+            onze pages
           prix: 3490
       remisePct: 100
       remiseLabel: Mécénat de compétences Coolbeans
@@ -133,7 +136,7 @@ sections:
             - { date: 03/09 → 08/09, label: Intégration et développement, owner: coolbeans }
             - { date: Mar 08/09, label: Recette du site ensemble }
             - { date: Jeu 10/09, label: Mise en ligne, owner: coolbeans }
-            - { date: 11/09 → 02/10, label: "Programme, ateliers et exposants complétés par tes soins", owner: client }
+            - { date: 11/09 → 02/10, label: "Programme, événements et exposants complétés par tes soins", owner: client }
             - { date: 03-04/10, label: Salon aux Arènes du Cap d'Agde }
 
 notes:
