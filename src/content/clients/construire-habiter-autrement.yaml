@@ -1,4 +1,6 @@
 nom: Construire & Habiter Autrement
+# Revendeur auquel ce client se rattache (spec 2026-08-19 §3.1).
+organisation: coolbeans
 prenom: Samantha
 # Emoji du sélecteur (repris de l'icône de la team Linear) et début de la
 # relation : le salon est porté par l'association Rév'olutions Douces.

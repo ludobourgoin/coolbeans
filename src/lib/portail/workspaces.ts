@@ -12,6 +12,8 @@ export interface PortalWorkspace {
   /** Nom du fichier YAML, sans extension. */
   slug: string;
   nom: string;
+  /** Slug du revendeur. `coolbeans` pour un client direct. */
+  organisation: string;
   /** Prénom du contact principal — salutation en vue admin-basculé. */
   prenom?: string;
   /** Slug dans la collection `docs`. Absent = ce client n'a pas de doc. */
