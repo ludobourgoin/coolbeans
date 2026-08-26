@@ -108,13 +108,13 @@ change pas selon le workspace consulté.
 | Type | Qui | Portée |
 |---|---|---|
 | `admin` | Ludo, seul | Tout le registre, tous les workspaces, le cockpit Devis |
-| `agence` | Une agence ou un freelance qui revend du web à ses propres clients | Toutes les teams de son organisation |
+| `revendeur` | Une agence ou un freelance qui revend du web à ses propres clients | Toutes les teams de son organisation |
 | `client` | Le client final, qu'il vienne d'une agence ou directement de Coolbeans | Sa seule team |
 
 #### Deux niveaux d'appartenance
 
 **Organisation = le revendeur.** Trigger, un freelance, ou **Coolbeans** pour
-les clients directs. Coolbeans est une organisation comme les autres : c'est ce
+ses clients directs. Coolbeans est une organisation comme les autres : c'est ce
 qui fait cesser le codage en dur de sa propre marque dans le chrome du portail,
 au profit d'une donnée résolue (phase B).
 
@@ -130,10 +130,10 @@ l'origine — « Ludo est le client zéro », dit son commentaire.
 
 #### Ce que l'appartenance donne
 
-- Un compte `agence` voit **toute team de son organisation, y compris celles
+- Un compte `revendeur` voit **toute team de son organisation, y compris celles
   créées après son arrivée**. C'est la raison d'être des deux niveaux : sans
   eux, chaque nouveau client de Trigger obligerait à réinviter Baptiste.
-- Un compte `client` appartient à la même organisation que son agence, mais
+- Un compte `client` appartient à la même organisation que son revendeur, mais
   reste **restreint à une team**. Un seul modèle d'appartenance pour tout le
   monde, et il hérite de la marque de son organisation — ce qui est exactement
   l'effet de marque blanche recherché en phase B.
@@ -157,11 +157,11 @@ est un bug, pas un cas à gérer.**
 
 #### Le cockpit Devis reste strictement `adminOnly`
 
-Sans exception d'agence. C'est l'outil de chiffrage de Coolbeans : il porte les
+Sans exception de revendeur. C'est l'outil de chiffrage de Coolbeans : il porte les
 tarifs et la marge de gestion. Les devis partent par mail avec leur URL
 publique, c'est déjà le fonctionnement et il n'a pas à changer.
 
-Conséquence assumée : en phase A, `agence` n'ouvre aucun module de plus que
+Conséquence assumée : en phase A, `revendeur` n'ouvre aucun module de plus que
 `client`. Le type existe pour porter la multi-appartenance et le tableau de
 bord de la phase B, et pour que la garde soit en place le jour où un besoin de
 droits fins se présentera. Le distinguer maintenant coûte une valeur
@@ -269,9 +269,9 @@ temporaire depuis le 2026-08-12, disparaît : COO-47 est absorbée.
 **Piège introduit par le troisième type.** `PortalRole` passe de deux valeurs à
 trois. La règle actuelle de `src/lib/portail/metadata.ts` — « tout ce qui n'est
 pas exactement "admin" est un client » — cesse d'être vraie : elle continuerait
-de dégrader sans danger, mais elle ne reconnaîtrait jamais `agence`. Elle est
+de dégrader sans danger, mais elle ne reconnaîtrait jamais `revendeur`. Elle est
 réécrite en liste blanche explicite, où une valeur inconnue retombe sur
-`client`, jamais sur `agence` ni `admin`.
+`client`, jamais sur `revendeur` ni `admin`.
 
 La tolérance de lecture reste : une forme inattendue dégrade vers un empty
 state, jamais vers une 500.
@@ -319,14 +319,14 @@ Scénarios, par environnement :
 9. Accès à `/espace` sans session, redirection et retour sur la page demandée
 10. Garde admin sur une action réservée
 11. Ticket de messagerie dont l'auteur a été remappé, affichage correct
-12. Invitation émise sur une organisation avec le type `agence`, et non « au
+12. Invitation émise sur une organisation avec le type `revendeur`, et non « au
     portail »
 13. Invitation émise sur une team précise avec le type `client`
-14. Compte `agence` : une team ajoutée à son organisation après son invitation
+14. Compte `revendeur` : une team ajoutée à son organisation après son invitation
     apparaît sans nouvelle invitation
 15. Compte `client` : la team voisine de la même organisation reste inaccessible
 16. Compte membre d'un seul workspace : aucun sélecteur affiché
-17. Type `agence` sur le cockpit Devis : refusé exactement comme un `client`
+17. Type `revendeur` sur le cockpit Devis : refusé exactement comme un `client`
 
 ---
 
@@ -375,9 +375,9 @@ migration de code (le repo ne mentionne Clerk que dans ses specs).
 | 2026-08-19 | Colonnes `*_clerk_id` renommées en `*_user_id` et lignes remappées |
 | 2026-08-19 | Aucune stratégie de bascule : zéro utilisateur réel sur le portail |
 | 2026-08-19 | Procédure de secours par insertion D1 à la main, rien à coder |
-| 2026-08-26 | Trois types de compte portés par l'utilisateur : `admin`, `agence`, `client` |
+| 2026-08-26 | Trois types de compte portés par l'utilisateur : `admin`, `revendeur`, `client` |
 | 2026-08-26 | Deux niveaux d'appartenance : organisation = revendeur, team = workspace client |
-| 2026-08-26 | Un compte `agence` voit toute team de son organisation, y compris celles créées après son invitation |
+| 2026-08-26 | Un compte `revendeur` voit toute team de son organisation, y compris celles créées après son invitation |
 | 2026-08-26 | Un compte `client` appartient à l'organisation de son agence, restreint à une team |
 | 2026-08-26 | Une organisation peut être sa propre cliente (Coolbeans l'est déjà, Trigger le sera) |
 | 2026-08-26 | Le cockpit Devis reste strictement `adminOnly`, sans exception d'agence |

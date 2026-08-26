@@ -69,10 +69,10 @@ ambiguïté avec `/trigger` qui reste le tableau de bord de l'organisation.
 | URL | Qui la voit | Contenu |
 |---|---|---|
 | `/` | `admin` | Tableau de bord global, tous comptes confondus |
-| `/<organisation>` | `admin`, `agence` | Tableau de bord de l'organisation |
+| `/<organisation>` | `admin`, `revendeur` | Tableau de bord de l'organisation |
 | `/<organisation>/<team>` | tous, selon appartenance | Accueil du workspace |
 
-La racine **redirige vers la portée la plus large du compte** : un `agence`
+La racine **redirige vers la portée la plus large du compte** : un `revendeur`
 atterrit sur `/trigger`, un `client` sur `/trigger/amusoire`. Seul l'`admin`
 voit une page à `/`.
 
@@ -204,7 +204,7 @@ l'est pas.
 | Vue | URL | Colonnes |
 |---|---|---|
 | `admin` | `/` | Compte, Client, Projet, Statut projet, Dates, **Statut CRM** |
-| `agence` | `/<organisation>` | Client, Projet, Statut projet, Dates, **Statut CRM** |
+| `revendeur` | `/<organisation>` | Client, Projet, Statut projet, Dates, **Statut CRM** |
 | `client` | `/<organisation>/<team>` | Projet, Statut projet, Dates |
 
 `Compte` est l'organisation, `Client` la team, `Projet` un projet Linear.
@@ -266,10 +266,10 @@ responsabilité en propre.
 ## 10. Recette
 
 1. `admin` sur `/` : le tableau liste les projets de toutes les organisations
-2. `agence` sur `/` : redirigé vers `/trigger`
+2. `revendeur` sur `/` : redirigé vers `/trigger`
 3. `client` sur `/` : redirigé vers `/trigger/amusoire`
-4. `agence` sur `/trigger` : les teams de Trigger, et elles seules
-5. `agence` sur `/coolbeans` : refusé
+4. `revendeur` sur `/trigger` : les teams de Trigger, et elles seules
+5. `revendeur` sur `/coolbeans` : refusé
 6. `client` sur la team voisine de son organisation : refusé
 7. Ancienne URL `/projets` avec session : redirigée vers le bon workspace
 8. Ancienne URL sans session : `/connexion`, puis retour sur la page demandée
@@ -292,7 +292,7 @@ responsabilité en propre.
   page de réglages viendra ensuite
 - Domaine propre par agence (`my.trigger.fr`)
 - Facturation, marges et commissions dans le portail
-- Droits fins par module pour le type `agence` : il voit ce que voit un
+- Droits fins par module pour le type `revendeur` : il voit ce que voit un
   `client`, plus le tableau de bord et le Statut CRM
 - Création d'organisation ou de team depuis une interface
 
