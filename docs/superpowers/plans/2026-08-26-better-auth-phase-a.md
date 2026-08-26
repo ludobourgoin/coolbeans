@@ -60,13 +60,13 @@
 **Interfaces:**
 - Produces: `createAuth(env: Env, baseURL: string)` → instance Better Auth. Tout le reste du plan passe par elle et ne construit jamais `betterAuth()` en direct.
 
-- [ ] **Step 1 : Installer les dépendances**
+- [x] **Step 1 : Installer les dépendances**
 
 ```bash
 npm install better-auth better-auth-cloudflare
 ```
 
-- [ ] **Step 2 : Écrire la fabrique d'instance**
+- [x] **Step 2 : Écrire la fabrique d'instance**
 
 Créer `src/lib/auth/server.ts`. Le type `Env` est celui des bindings Cloudflare : le prendre là où le repo le prend déjà (`locals.runtime.env` est typé par `@astrojs/cloudflare`). Ne le redéclarer qu'une seule fois, jamais deux. Le point important : `createAuth` prend `env` en argument et n'est jamais appelée au niveau module. Sur Workers, les bindings n'existent qu'au moment de la requête ; une instance construite à l'import lèverait au premier appel.
 
@@ -152,7 +152,7 @@ Deux constats du schéma généré, qui valent pour toute la suite :
   qui est un libellé d'affichage, ferait dépendre l'appariement avec le
   registre d'un texte que quelqu'un renommera un jour.
 
-- [ ] **Step 4 : Appliquer la migration en local puis en staging**
+- [x] **Step 4 : Appliquer la migration en local puis en staging**
 
 ```bash
 npx wrangler d1 execute coolbeans-portal-staging --remote --file=migrations/0004_better_auth.sql
@@ -161,7 +161,7 @@ npx wrangler d1 execute coolbeans-portal-staging --remote --command="SELECT name
 
 Attendu : les tables `user`, `session`, `account`, `verification`, `organization`, `member`, `invitation`, `team` (noms exacts selon ce qu'a émis la CLI) s'ajoutent à `tickets` et `messages`.
 
-- [ ] **Step 5 : Monter le handler**
+- [x] **Step 5 : Monter le handler**
 
 Créer `src/pages/api/auth/[...all].ts` :
 
@@ -187,7 +187,7 @@ export const GET = handler;
 export const POST = handler;
 ```
 
-- [ ] **Step 6 : Vérifier que le handler répond**
+- [x] **Step 6 : Vérifier que le handler répond**
 
 ```bash
 npm run build
@@ -195,7 +195,7 @@ npm run build
 
 Attendu : build sans erreur. Puis, une fois déployé en staging (Task 11), `GET https://my-staging.coolbeans.cc/api/auth/ok` doit répondre autre chose qu'un 404.
 
-- [ ] **Step 7 : Commit**
+- [x] **Step 7 : Commit**
 
 ```bash
 git add package.json package-lock.json src/lib/auth/server.ts src/pages/api/auth/ migrations/0004_better_auth.sql
@@ -219,7 +219,7 @@ Réécrit `metadata.ts`, qui cesse de lire un `publicMetadata` Clerk pour décri
 **Interfaces:**
 - Produces: `type PortalRole = "admin" | "revendeur" | "client"`, `interface PortalMetadata { role: PortalRole; organisation: string | null; workspace: string | null }`, `readPortalMetadata(raw: unknown): PortalMetadata`, `isAdmin(meta)`, `isRevendeur(meta)`.
 
-- [ ] **Step 1 : Écrire les tests qui échouent**
+- [x] **Step 1 : Écrire les tests qui échouent**
 
 Remplacer intégralement `src/lib/portail/metadata.test.ts`. Les cas de la retombée `projects[0]` disparaissent avec `legacyClient`.
 
@@ -275,12 +275,12 @@ describe("isAdmin / isRevendeur", () => {
 });
 ```
 
-- [ ] **Step 2 : Lancer les tests pour les voir échouer**
+- [x] **Step 2 : Lancer les tests pour les voir échouer**
 
 Run: `npm test -- src/lib/portail/metadata.test.ts`
 Expected: FAIL — `isRevendeur` n'existe pas, la forme de `PortalMetadata` ne correspond pas.
 
-- [ ] **Step 3 : Réécrire `metadata.ts`**
+- [x] **Step 3 : Réécrire `metadata.ts`**
 
 ```ts
 // Schema applicatif d'un compte du portail (spec 2026-08-19 §3.1, §5.3).
@@ -339,12 +339,12 @@ export function isRevendeur(meta: PortalMetadata): boolean {
 }
 ```
 
-- [ ] **Step 4 : Lancer les tests**
+- [x] **Step 4 : Lancer les tests**
 
 Run: `npm test -- src/lib/portail/metadata.test.ts`
 Expected: PASS. `legacyClient` a disparu — COO-47 est absorbée.
 
-- [ ] **Step 5 : Commit**
+- [x] **Step 5 : Commit**
 
 ```bash
 git add src/lib/portail/metadata.ts src/lib/portail/metadata.test.ts
@@ -372,7 +372,7 @@ Quelles teams un compte peut voir. C'est la garde du multi-tenant, isolée dans 
 - Consumes: `PortalMetadata` (Task 2), `PortalWorkspace` (existant).
 - Produces: `workspacesVisibles(clients: PortalWorkspace[], meta: PortalMetadata): PortalWorkspace[]`.
 
-- [ ] **Step 1 : Ajouter `organisation` au registre des clients**
+- [x] **Step 1 : Ajouter `organisation` au registre des clients**
 
 Dans `src/content.config.ts`, collection `clients`, ajouter au schéma Zod :
 
@@ -400,7 +400,7 @@ Ajouter le champ à l'interface `PortalWorkspace` de `src/lib/portail/workspaces
   organisation: string;
 ```
 
-- [ ] **Step 2 : Écrire les tests qui échouent**
+- [x] **Step 2 : Écrire les tests qui échouent**
 
 Créer `src/lib/portail/appartenances.test.ts` :
 
@@ -461,12 +461,12 @@ describe("workspacesVisibles", () => {
 });
 ```
 
-- [ ] **Step 3 : Lancer les tests pour les voir échouer**
+- [x] **Step 3 : Lancer les tests pour les voir échouer**
 
 Run: `npm test -- src/lib/portail/appartenances.test.ts`
 Expected: FAIL — le module n'existe pas.
 
-- [ ] **Step 4 : Écrire `appartenances.ts`**
+- [x] **Step 4 : Écrire `appartenances.ts`**
 
 ```ts
 // Portee d'un compte : quelles teams il peut voir (spec 2026-08-19 §3.1).
@@ -496,12 +496,12 @@ export function workspacesVisibles(
 }
 ```
 
-- [ ] **Step 5 : Lancer les tests**
+- [x] **Step 5 : Lancer les tests**
 
 Run: `npm test -- src/lib/portail/appartenances.test.ts`
 Expected: PASS.
 
-- [ ] **Step 6 : Brancher `resolveCurrentWorkspace` sur la portée**
+- [x] **Step 6 : Brancher `resolveCurrentWorkspace` sur la portée**
 
 Dans `src/lib/portail/current-workspace.ts`, la règle actuelle est binaire (« un non-admin ne voit que le sien »). Elle devient : le cookie est une préférence, filtrée par la portée réelle.
 
@@ -526,12 +526,12 @@ export function resolveCurrentWorkspace(
 }
 ```
 
-- [ ] **Step 7 : Lancer toute la suite**
+- [x] **Step 7 : Lancer toute la suite**
 
 Run: `npm test`
 Expected: PASS. Si `current-workspace.test.ts` existe, ses cas « un client ne voit que le sien » doivent continuer de passer — ils décrivent toujours le bon comportement.
 
-- [ ] **Step 8 : Commit**
+- [x] **Step 8 : Commit**
 
 ```bash
 git add src/lib/portail/appartenances.ts src/lib/portail/appartenances.test.ts src/lib/portail/current-workspace.ts src/lib/portail/workspaces.ts src/content.config.ts src/content/clients/
@@ -557,7 +557,7 @@ Le point de bascule : Clerk sort du chemin de requête. À la fin de cette tâch
 - Consumes: `createAuth` (Task 1), `readPortalMetadata` (Task 2), `resolveCurrentWorkspace` (Task 3).
 - Produces: `lireSession(context)` → `{ user, meta }`. `PortalContext` garde sa forme (`user`, `meta`, `client`) pour que les 22 fichiers appelants ne bougent pas.
 
-- [ ] **Step 1 : Écrire la lecture de session**
+- [x] **Step 1 : Écrire la lecture de session**
 
 Créer `src/lib/auth/session.ts` :
 
@@ -604,7 +604,7 @@ export function lireSession(
 
 **Vigilance :** `activeOrganizationId` et `activeTeamId` sont des identifiants Better Auth, pas des slugs. Vérifier au premier essai en staging ce que la session porte réellement ; si ce sont des UUID, ajouter la résolution UUID → slug ici, dans cette fonction, et nulle part ailleurs.
 
-- [ ] **Step 2 : Réécrire le middleware**
+- [x] **Step 2 : Réécrire le middleware**
 
 `clerkMiddleware` disparaît. **L'interception de `portail.choisirWorkspace` ne bouge pas** : elle est indépendante de l'authentification, et le commentaire qui l'accompagne décrit un piège coûteux à redécouvrir. La copier telle quelle.
 
@@ -637,16 +637,16 @@ export const onRequest = defineMiddleware(async (context, next) => {
 });
 ```
 
-- [ ] **Step 3 : Brancher `context.ts` sur la session**
+- [x] **Step 3 : Brancher `context.ts` sur la session**
 
 Dans `src/lib/portail/context.ts`, remplacer `getUser` (qui appelle `locals.currentUser()`) par `lireSession`. La forme de `PortalContext` ne change pas — seul le type de `user` passe de `User` de `@clerk/backend` à celui de `SessionPortail`. Retirer l'import `import type { User } from "@clerk/backend"`.
 
-- [ ] **Step 4 : Vérifier la compilation**
+- [x] **Step 4 : Vérifier la compilation**
 
 Run: `npm run build`
 Expected: le build échoue sur les fichiers qui utilisent encore Clerk (`connexion.astro`, `PortalNav.astro`). C'est attendu : ils sont traités en Tasks 5 et 7. Vérifier qu'aucune erreur ne vient de `middleware.ts`, `context.ts` ni `session.ts`.
 
-- [ ] **Step 5 : Commit**
+- [x] **Step 5 : Commit**
 
 ```bash
 git add src/middleware.ts src/lib/portail/context.ts src/lib/auth/session.ts
@@ -656,6 +656,35 @@ clerkMiddleware sort du chemin de requete. L'interception de
 portail.choisirWorkspace est recopiee telle quelle : elle ne depend pas de
 l'authentification."
 ```
+
+---
+
+## État au 2026-08-27, tâches 1 à 4 livrées
+
+Ce qui marche : le middleware, la lecture de session, la portée des comptes,
+les tables en staging. `npm test` est vert (192 tests), `npm run build` aussi.
+
+**Ce qui est cassé à l'exécution, et c'est voulu** — le build ne le voit pas,
+parce que Clerk est encore installé et que ses composants s'importent toujours :
+
+| Fichier | Ce qui casse | Réparé par |
+|---|---|---|
+| `src/pages/connexion.astro` | `<SignIn />` sans `clerkMiddleware` | Task 5 |
+| `src/components/portail/PortalNav.astro` | `<UserButton />` sans `clerkMiddleware` | Task 7 |
+| `src/pages/api/messagerie/nouveau.ts` | `clerkClient(context).users.getUser(pourClerkId)` | Task 10 |
+| `src/pages/api/linear-webhook.ts` | `clerkClient` | Task 10 |
+
+Les deux derniers résolvaient un identifiant Clerk vers un utilisateur. Ils
+doivent lire la table `user` de Better Auth — c'est le même mouvement que le
+renommage des colonnes, d'où leur rattachement à la Task 10 plutôt qu'à une
+tâche à part.
+
+**Écart au plan, assumé :** `src/lib/portail/require-admin.ts` a été rendue
+pure (elle reçoit le compte au lieu de lire la session). La tâche 4 ne le
+prévoyait pas, mais la garde appelait `locals.currentUser()`, qui disparaît
+avec `clerkMiddleware` : la laisser en l'état aurait cassé toutes les Actions
+admin. Y injecter la lecture de session l'aurait rendue intestable sous
+Vitest, c'est-à-dire aurait annulé la raison de son extraction.
 
 ---
 
