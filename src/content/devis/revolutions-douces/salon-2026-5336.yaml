@@ -1,7 +1,7 @@
 titre: Rév'olutions Douces x Coolbeans
 objet: Site du Salon Construire & Habiter Autrement
 date: 2026-08-27
-contact: Samantha
+contact: Sam
 
 linear:
   projet: https://linear.app/coolbeans-hq/project/site-du-salon-edition-2026-e6c1e495a56f
@@ -20,10 +20,12 @@ sections:
       dates, le programme et les exposants, la structure reste.
 
   - titre: Pages
-    texte: "Dix pages, dont deux alimentées par toi au fil de l'eau (programme et exposants) :"
+    texte: "Onze pages, dont trois que tu alimentes au fil de l'eau (programme, ateliers et exposants) :"
     liste:
       - Accueil
       - Programme, par jour et par créneau
+      - Ateliers et rencontres, présentés par thème
+      - Intervenants
       - Exposants
       - Devenir exposant
       - Devenir partenaire, avec l'argumentaire de mécénat
@@ -42,6 +44,10 @@ sections:
         tooltip: >-
           Deux ateliers annoncés au même horaire deviennent visibles
           immédiatement, ce qu'une story ne permet pas.
+      - texte: Chaque atelier a sa fiche, avec l'intervenant, le sujet et le public visé
+        tooltip: >-
+          Les mêmes contenus alimentent la grille horaire et la présentation
+          par thème : tu ne saisis l'information qu'une fois.
       - Annuaire des exposants, modifiable jusqu'à la veille du salon
       - Formulaire de candidature exposant et espace partenaires
       - Inscription à la newsletter, reliée à l'outil d'emailing de ton choix
@@ -53,7 +59,7 @@ sections:
     liste:
       - Aucun abonnement mensuel, l'hébergement est gratuit à ce volume
       - >-
-        Programme et exposants se modifient depuis Sanity, sur ordinateur
+        Programme, ateliers et exposants se modifient depuis Sanity, sur ordinateur
         comme sur téléphone, sans toucher au code
       - Le code appartient à l'association, le contenu s'exporte, n'importe quel développeur peut reprendre
 
@@ -62,8 +68,8 @@ sections:
       lignes:
         - label: >-
             Conception, développement, CMS et mise en ligne du site du salon,
-            dix pages
-          prix: 3245
+            onze pages
+          prix: 3490
       remisePct: 100
       remiseLabel: Mécénat de compétences Coolbeans
       mention: HT
@@ -91,7 +97,7 @@ sections:
       - texte: "Le 28 août : nom de domaine choisi, logo et affiche en fichier source"
         tooltip: Le domaine est acheté par l'association, environ 15 € par an. Je m'occupe du reste.
       - "Le 2 septembre : validation de la direction visuelle"
-      - "Le 31 août : textes, photos de l'édition 2025, liste des exposants et logos des partenaires"
+      - "Le 31 août : textes, photos de l'édition 2025, ateliers et intervenants, liste des exposants et logos des partenaires"
       - "Jusqu'à la veille du salon : compléments de programme et d'exposants, que tu saisis toi-même"
     note: >-
       Si un élément manque au 31 août, la page part en ligne sans lui et tu
@@ -139,7 +145,7 @@ sections:
             - { date: 03/09 → 08/09, label: Intégration et développement, owner: coolbeans }
             - { date: Mar 08/09, label: Recette du site ensemble }
             - { date: Jeu 10/09, label: Mise en ligne, owner: coolbeans }
-            - { date: 11/09 → 02/10, label: "Programme et exposants complétés par tes soins", owner: client }
+            - { date: 11/09 → 02/10, label: "Programme, ateliers et exposants complétés par tes soins", owner: client }
             - { date: 03-04/10, label: Salon aux Arènes du Cap d'Agde }
 
 notes:
