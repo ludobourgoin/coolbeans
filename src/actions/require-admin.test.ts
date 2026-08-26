@@ -1,32 +1,35 @@
 // La garde vit dans lib/portail/require-admin.ts (pas de dépendance à
-// `astro:actions`, module virtuel non résolvable sous Vitest — écart
-// documenté dans task-5-report.md). On teste donc cette fonction directement,
-// avec un `locals` minimal plutôt qu'un `ActionAPIContext` complet : c'est
-// tout ce dont elle a besoin.
+// `astro:actions`, module virtuel non résolvable sous Vitest). Depuis la
+// bascule vers Better Auth elle est PURE : elle reçoit le compte résolu, la
+// lecture de session étant faite par l'Action. On la teste donc en lui
+// passant directement des metadata, ce que produit readPortalMetadata.
 import { describe, expect, it } from "vitest";
-import type { APIContext } from "astro";
 import { requireAdmin } from "../lib/portail/require-admin";
+import { readPortalMetadata } from "../lib/portail/metadata";
 
-const contexte = (publicMetadata: unknown, connecte = true) =>
-  ({
-    currentUser: async () => (connecte ? { publicMetadata } : null),
-  }) as unknown as APIContext["locals"];
+const compte = (raw: unknown) => readPortalMetadata(raw);
 
 describe("requireAdmin", () => {
-  it("laisse passer un admin", async () => {
-    await expect(requireAdmin(contexte({ role: "admin" }))).resolves.toBeUndefined();
+  it("laisse passer un admin", () => {
+    expect(() => requireAdmin(compte({ portalRole: "admin" }))).not.toThrow();
   });
 
-  it("refuse un client", async () => {
-    await expect(requireAdmin(contexte({ role: "client" }))).rejects.toThrow(/administrateur/i);
+  it("refuse un client", () => {
+    expect(() => requireAdmin(compte({ portalRole: "client" }))).toThrow(/administrateur/i);
   });
 
-  it("refuse un metadata vide ou un rôle mal casé", async () => {
-    await expect(requireAdmin(contexte({}))).rejects.toThrow();
-    await expect(requireAdmin(contexte({ role: "Admin" }))).rejects.toThrow();
+  // Le revendeur est le cas neuf : il a plus de portée qu'un client, et
+  // aucune sur les outils d'administration. Le cockpit Devis en dépend.
+  it("refuse un revendeur", () => {
+    expect(() => requireAdmin(compte({ portalRole: "revendeur" }))).toThrow(/administrateur/i);
   });
 
-  it("refuse une session absente", async () => {
-    await expect(requireAdmin(contexte({ role: "admin" }, false))).rejects.toThrow();
+  it("refuse un compte vide ou un rôle mal casé", () => {
+    expect(() => requireAdmin(compte({}))).toThrow();
+    expect(() => requireAdmin(compte({ portalRole: "Admin" }))).toThrow();
+  });
+
+  it("refuse une session absente", () => {
+    expect(() => requireAdmin(compte(null))).toThrow();
   });
 });

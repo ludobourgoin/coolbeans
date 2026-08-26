@@ -1,47 +1,41 @@
 // Contexte du portail, mémoïsé pour la durée d'une requête.
 //
-// `Astro.locals.currentUser()` de @clerk/astro n'est pas mémoïsé : chaque appel
-// refait un `users.getUser()` bloquant vers la Backend API Clerk. Le layout et
-// la page en ont tous deux besoin — sans mémoïsation, deux allers-retours
-// réseau par rendu. On y adjoint la résolution du client courant, qui lit la
-// collection et le cookie, pour n'avoir qu'un seul point d'entrée.
+// La mémoïsation vient de l'époque Clerk, où chaque `currentUser()` refaisait
+// un aller-retour bloquant vers sa Backend API. Elle reste utile avec Better
+// Auth : la session est en D1, et la résolution des slugs coûte une requête de
+// plus. Le layout et la page demandent tous deux ce contexte — sans
+// mémoïsation, ce serait deux fois le travail par rendu.
+//
+// On y adjoint la résolution du client courant, qui lit la collection et le
+// cookie, pour n'avoir qu'un seul point d'entrée.
 //
 // Prend l'APIContext complet et non `locals` seul : la résolution a besoin des
 // cookies.
 
-import type { User } from "@clerk/backend";
 import type { APIContext } from "astro";
 import { listWorkspaces, type PortalWorkspace } from "./workspaces";
 
 /* On ne demande que ce dont la résolution a besoin. `Astro` dans une page est
    un AstroGlobal, pas un APIContext : exiger le type complet ne compilerait
    pas. Ce Pick accepte les deux, ainsi que le contexte d'une Action. */
-export type PortalRequestContext = Pick<APIContext, "locals" | "cookies">;
+export type PortalRequestContext = Pick<APIContext, "locals" | "cookies" | "request">;
 import { WORKSPACE_COOKIE, resolveCurrentWorkspace } from "./current-workspace";
-import { readPortalMetadata, type PortalMetadata } from "./metadata";
+import { type PortalMetadata } from "./metadata";
+import { lireSession, type SessionPortail } from "../auth/session";
 
-const USER_CACHE_KEY = "__portalUser";
 const CACHE_KEY = "__portalContext";
 
 export interface PortalContext {
   /** `null` si personne n'est connecté. */
-  user: User | null;
+  user: SessionPortail["user"];
   meta: PortalMetadata;
   /** Client dont les données doivent s'afficher. `null` si aucun n'est résolu. */
   client: PortalWorkspace | null;
 }
 
 type WithCache = APIContext["locals"] & {
-  [USER_CACHE_KEY]?: Promise<User | null>;
   [CACHE_KEY]?: Promise<PortalContext>;
 };
-
-/** L'appel Clerk lui-même, mémoïsé — les deux entrées ci-dessous le partagent. */
-function getUser(locals: APIContext["locals"]): Promise<User | null> {
-  const cache = locals as WithCache;
-  cache[USER_CACHE_KEY] ??= locals.currentUser().then((u) => u ?? null);
-  return cache[USER_CACHE_KEY];
-}
 
 /**
  * L'utilisateur, son metadata et le client courant, résolus une seule fois par
@@ -53,8 +47,7 @@ export function getPortalContext(context: PortalRequestContext): Promise<PortalC
   // On mémoïse la promesse, pas sa valeur : deux appels concurrents dans le
   // même rendu partagent le même aller-retour réseau.
   cache[CACHE_KEY] ??= (async () => {
-    const user = await getUser(context.locals);
-    const meta = readPortalMetadata(user?.publicMetadata);
+    const { user, meta } = await lireSession(context);
     const clients = await listWorkspaces();
     const cookie = context.cookies.get(WORKSPACE_COOKIE)?.value ?? null;
     return { user, meta, client: resolveCurrentWorkspace(clients, meta, cookie) };
