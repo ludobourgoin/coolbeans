@@ -34,9 +34,6 @@ sections:
       - Retour sur l'édition 2025
       - Contact
       - Mentions légales et confidentialité
-    # diagram:
-    #   image: /devis/salon-sitemap.png
-    #   alt: Arborescence proposée pour le site du salon
 
   - titre: Fonctionnalités
     liste:
