@@ -93,13 +93,13 @@ export const toolCategories: ToolCategory[] = [
         "logo": "/img/tools/tailwind.png"
       },
       {
-        "name": "Clerk",
-        "desc": "Authentification clé-en-main : connexion, SSO, gestion des utilisateurs et sessions. Mon défaut pour les apps clientes.",
+        "name": "Better Auth",
+        "desc": "Authentification auto-hébergée : connexion, sessions, plugins 2FA et organisations. Mon défaut pour les apps clientes.",
         "chips": [
           "Auth"
         ],
-        "href": "https://clerk.com",
-        "logo": "/img/tools/clerk.svg"
+        "href": "https://www.better-auth.com",
+        "logo": "/img/tools/better-auth.png"
       }
     ]
   },
@@ -432,14 +432,14 @@ export const toolCategories: ToolCategory[] = [
     "title": "Productivité et communication",
     "cards": [
       {
-        "name": "Asana",
-        "desc": "Gestion de projet et suivi des tâches partagés avec les clients.",
+        "name": "Linear",
+        "desc": "Suivi des projets web : une équipe par client, du devis à la livraison. Alimente le portail client.",
         "chips": [
           "Gestion",
           "Projets"
         ],
-        "href": "https://asana.com",
-        "logo": "/img/tools/asana.png"
+        "href": "https://linear.app",
+        "logo": "/img/tools/linear.png"
       },
       {
         "name": "Google Workspace",
