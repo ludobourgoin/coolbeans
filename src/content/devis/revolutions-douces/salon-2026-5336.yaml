@@ -43,7 +43,7 @@ sections:
         tooltip: >-
           Chaque événement porte son adresse : tu peux envoyer un lien qui
           l'ouvre directement déplié, depuis une story ou un message.
-      - texte: Filtres par catégorie sur le programme : conférences, ateliers, films, animations
+      - texte: "Filtres par catégorie : conférences, ateliers, films, animations, concerts"
         tooltip: >-
           Les filtres se posent sur la vue chronologique sans la casser : on
           reste dans l'ordre du week-end.
