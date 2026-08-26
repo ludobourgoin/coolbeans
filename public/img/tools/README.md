@@ -38,6 +38,9 @@ Autres points à savoir :
   est derrière une protection anti-bot qui répond `429` à tout téléchargement direct.
 - **`clerk.svg`** vient de Simple Icons (teinté au violet de marque `#6C47FF`) : le
   favicon officiel plafonne à 32×32.
+- **Fichiers orphelins** (plus référencés par `tools.ts`, conservés au cas où l'outil
+  reviendrait dans la liste) : `clerk.svg` — carte remplacée par Better Auth — et
+  `asana.png` — carte retirée, Linear a pris la place.
 - **Une icône pour plusieurs cartes, c'est normal** : `cloudflare.png` sert aux trois
   produits Cloudflare, `apple.png` au macbook / iphone / airpods, `dell.png` aux trois
   écrans et à la webcam. Ce sont les mêmes marques.

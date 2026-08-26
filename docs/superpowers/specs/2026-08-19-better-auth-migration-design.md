@@ -1,7 +1,10 @@
 # Remplacement de Clerk par Better Auth sur le portail
 
 **Date :** 2026-08-19
-**Statut :** design validé, implémentation non commencée
+**Statut :** design validé, implémentation non commencée. Amendé le 2026-08-26 :
+organisations et teams, trois types de compte, scission en deux phases.
+**Suite :** `2026-08-26-portail-multi-tenant-agences-design.md` porte la phase B
+(URL, marque blanche, tableau de bord des projets).
 **Origine :** brainstorm du 2026-08-19, COO-132. Déclenché par la priorisation du
 module Cadrage, dont le lien magique dépend de cette migration.
 
@@ -53,7 +56,8 @@ Cadrage utilise pour les prospects.
 **Aucune inscription publique.** C'est la conséquence directe et non
 négociable de l'ajout du mot de passe : sans ce verrou, n'importe qui se crée
 un compte sur le portail. Les comptes naissent d'une **invitation** émise
-depuis la page admin (section 4.3). L'invité reçoit un lien qui lui permet de
+depuis la page admin (section 4.3), toujours portée par une organisation et,
+pour un client final, par une team précise (section 3.1). L'invité reçoit un lien qui lui permet de
 définir son mot de passe, ou d'entrer directement sans en définir.
 
 **Renoncement assumé :** la délivrabilité devient une responsabilité Coolbeans.
@@ -84,10 +88,85 @@ un service tiers, la même situation devient un ticket support.
 | Base | `d1Native` | Aucun ORM ailleurs dans le repo ; en ajouter un pour l'auth serait une dépendance de plus à maintenir |
 | Sessions | D1, pas de KV en secondary storage | Le TTL minimum de 60 s de KV est un piège documenté, pour un gain nul à cette échelle |
 | Environnements | Une instance par environnement, sur les D1 déjà séparés (`coolbeans-portal`, `coolbeans-portal-staging`) | Supprime la dualité des `publicMetadata` dev/live de Clerk |
-| Plugins | `emailAndPassword` natif + plugin `magicLink` | Cf. section 2 |
-| Inscription | Fermée. Comptes créés par invitation depuis la page admin | Sans ce verrou, le portail est ouvert à tous |
+| Plugins | `emailAndPassword` natif, plugins `magicLink` et `organization` avec `teams` | Cf. sections 2 et 3.1 |
+| Multi-tenant | Organisation = le revendeur, team = le workspace client | Cf. section 3.1 |
+| Inscription | Fermée. Comptes créés par invitation sur une organisation | Sans ce verrou, le portail est ouvert à tous |
 | Mails | Resend, expéditeur repris de `src/pages/api/devis-reponse.ts`, rendus par `renderTransactionnel` | Jamais d'expéditeur inventé ; cohérence visuelle avec les transactionnels existants |
-| Rôle et workspace | `additionalFields` sur la table user : `role`, `workspace` | Cf. section 4.3 |
+| Type de compte | `additionalFields` sur la table user | Le type ne varie pas d'un workspace à l'autre ; la portée, si. Cf. section 3.1 |
+
+### 3.1 Organisations, teams et types de compte
+
+Décision du 2026-08-26, déclenchée par un besoin réel : Baptiste, de l'agence
+Trigger, doit accéder à l'ensemble des chantiers que Trigger confie à
+Coolbeans. Amusoire en est un.
+
+#### Trois types de compte
+
+Portés par l'utilisateur, dans `additionalFields`. Le type d'un compte ne
+change pas selon le workspace consulté.
+
+| Type | Qui | Portée |
+|---|---|---|
+| `admin` | Ludo, seul | Tout le registre, tous les workspaces, le cockpit Devis |
+| `revendeur` | Une agence ou un freelance qui revend du web à ses propres clients | Toutes les teams de son organisation |
+| `client` | Le client final, qu'il vienne d'une agence ou directement de Coolbeans | Sa seule team |
+
+#### Deux niveaux d'appartenance
+
+**Organisation = le revendeur.** Trigger, un freelance, ou **Coolbeans** pour
+ses clients directs. Coolbeans est une organisation comme les autres : c'est ce
+qui fait cesser le codage en dur de sa propre marque dans le chrome du portail,
+au profit d'une donnée résolue (phase B).
+
+**Team = le workspace client.** Amusoire est une team de Trigger. Son fichier
+`src/content/clients/<slug>.yaml` reste la source de vérité de ses mappings —
+doc, team Linear, monitors — et gagne un champ `organisation`.
+
+Une agence peut être sa propre cliente : le site de Trigger est un projet que
+Coolbeans lui livre en direct, donc une team `trigger` dans l'organisation
+`trigger`, à côté d'Amusoire. **Ce cas n'a rien d'exotique, il existe déjà :**
+`src/content/clients/coolbeans.yaml` fait de Coolbeans son propre client depuis
+l'origine — « Ludo est le client zéro », dit son commentaire.
+
+#### Ce que l'appartenance donne
+
+- Un compte `revendeur` voit **toute team de son organisation, y compris celles
+  créées après son arrivée**. C'est la raison d'être des deux niveaux : sans
+  eux, chaque nouveau client de Trigger obligerait à réinviter Baptiste.
+- Un compte `client` appartient à la même organisation que son revendeur, mais
+  reste **restreint à une team**. Un seul modèle d'appartenance pour tout le
+  monde, et il hérite de la marque de son organisation — ce qui est exactement
+  l'effet de marque blanche recherché en phase B.
+- Un compte `admin` ne passe par aucune appartenance : il lit le registre
+  entier, comme aujourd'hui.
+
+Alternative écartée le 2026-08-26 : organisation = workspace client, l'agence
+n'étant qu'un attribut du YAML. Elle contredisait l'URL retenue en phase B
+(`/trigger/amusoire/…` dit que Trigger contient Amusoire) et imposait une
+réinvitation par client.
+
+#### Registre et base
+
+| Objet | Source de vérité | Ce que D1 porte |
+|---|---|---|
+| Organisation | `src/content/organisations/<slug>.yaml` (créé en phase B) | Identité et appartenances |
+| Team | `src/content/clients/<slug>.yaml` | Identité et rattachement à l'organisation |
+
+Le slug est le même des deux côtés. **Une divergence entre le registre et D1
+est un bug, pas un cas à gérer.**
+
+#### Le cockpit Devis reste strictement `adminOnly`
+
+Sans exception de revendeur. C'est l'outil de chiffrage de Coolbeans : il porte les
+tarifs et la marge de gestion. Les devis partent par mail avec leur URL
+publique, c'est déjà le fonctionnement et il n'a pas à changer.
+
+Conséquence assumée : en phase A, `revendeur` n'ouvre aucun module de plus que
+`client`. Le type existe pour porter la multi-appartenance et le tableau de
+bord de la phase B, et pour que la garde soit en place le jour où un besoin de
+droits fins se présentera. Le distinguer maintenant coûte une valeur
+d'énumération ; le distinguer plus tard coûterait une remigration des
+appartenances.
 
 **Point de vigilance :** `baseURL` derrière la réécriture d'hôte
 `my.coolbeans.cc` de `src/worker.ts`. C'est là que les cookies se cassent, et
@@ -138,6 +217,13 @@ adresse, déconnexion. Le composant Clerk réordonnait ses items natifs
 Page admin, arbitrée le 2026-08-19 : liste des utilisateurs, **invitation par
 e-mail**, attribution du rôle et du workspace, révocation.
 
+Amendement du 2026-08-26 : ces quatre actions sont exactement celles du plugin
+`organization`. La page reste à construire — Better Auth ne fournit aucune
+interface — mais elle n'a plus de logique propre à écrire, seulement des appels
+et un écran. Une invitation est **toujours portée par une organisation** : on
+n'invite pas « au portail », on invite « chez Trigger, comme agence » ou « sur
+la team Amusoire, comme client ».
+
 L'invitation est le seul chemin de création de compte. Elle envoie un lien qui
 ouvre la définition du mot de passe, laquelle reste facultative : l'invité peut
 s'en tenir au lien magique.
@@ -175,8 +261,17 @@ renommage.
 ### 5.3 `metadata.ts`
 
 `readPortalMetadata` lit la session Better Auth au lieu du `publicMetadata`
-Clerk. La fonction `legacyClient`, marquée temporaire depuis le 2026-08-12,
-disparaît : COO-47 est absorbée.
+Clerk : le type de compte vient de l'utilisateur, la portée de ses
+appartenances. La forme passe de `{ role, client }` à
+`{ role, organisation, workspace }`. La fonction `legacyClient`, marquée
+temporaire depuis le 2026-08-12, disparaît : COO-47 est absorbée.
+
+**Piège introduit par le troisième type.** `PortalRole` passe de deux valeurs à
+trois. La règle actuelle de `src/lib/portail/metadata.ts` — « tout ce qui n'est
+pas exactement "admin" est un client » — cesse d'être vraie : elle continuerait
+de dégrader sans danger, mais elle ne reconnaîtrait jamais `revendeur`. Elle est
+réécrite en liste blanche explicite, où une valeur inconnue retombe sur
+`client`, jamais sur `revendeur` ni `admin`.
 
 La tolérance de lecture reste : une forme inattendue dégrade vers un empty
 state, jamais vers une 500.
@@ -224,6 +319,14 @@ Scénarios, par environnement :
 9. Accès à `/espace` sans session, redirection et retour sur la page demandée
 10. Garde admin sur une action réservée
 11. Ticket de messagerie dont l'auteur a été remappé, affichage correct
+12. Invitation émise sur une organisation avec le type `revendeur`, et non « au
+    portail »
+13. Invitation émise sur une team précise avec le type `client`
+14. Compte `revendeur` : une team ajoutée à son organisation après son invitation
+    apparaît sans nouvelle invitation
+15. Compte `client` : la team voisine de la même organisation reste inaccessible
+16. Compte membre d'un seul workspace : aucun sélecteur affiché
+17. Type `revendeur` sur le cockpit Devis : refusé exactement comme un `client`
 
 ---
 
@@ -250,8 +353,12 @@ migration de code (le repo ne mentionne Clerk que dans ses specs).
 
 - 2FA, passkeys, connexion par fournisseur tiers
 - Inscription publique, sous toutes ses formes
-- Organisations Better Auth
 - Toute migration de comptes : il n'y en a pas
+- Création d'organisation par un utilisateur : les organisations et les teams
+  naissent du registre, jamais d'un formulaire
+- Tout ce qui relève de la phase B — URL `/<organisation>/<team>/<module>`,
+  marque blanche, tableau de bord des projets. Voir
+  `2026-08-26-portail-multi-tenant-agences-design.md`
 
 ---
 
@@ -268,3 +375,11 @@ migration de code (le repo ne mentionne Clerk que dans ses specs).
 | 2026-08-19 | Colonnes `*_clerk_id` renommées en `*_user_id` et lignes remappées |
 | 2026-08-19 | Aucune stratégie de bascule : zéro utilisateur réel sur le portail |
 | 2026-08-19 | Procédure de secours par insertion D1 à la main, rien à coder |
+| 2026-08-26 | Trois types de compte portés par l'utilisateur : `admin`, `revendeur`, `client` |
+| 2026-08-26 | Deux niveaux d'appartenance : organisation = revendeur, team = workspace client |
+| 2026-08-26 | Un compte `revendeur` voit toute team de son organisation, y compris celles créées après son invitation |
+| 2026-08-26 | Un compte `client` appartient à l'organisation de son agence, restreint à une team |
+| 2026-08-26 | Une organisation peut être sa propre cliente (Coolbeans l'est déjà, Trigger le sera) |
+| 2026-08-26 | Le cockpit Devis reste strictement `adminOnly`, sans exception d'agence |
+| 2026-08-26 | Les invitations passent par le plugin `organization` |
+| 2026-08-26 | La migration est scindée en deux phases : cette spec porte la A, la B a la sienne |

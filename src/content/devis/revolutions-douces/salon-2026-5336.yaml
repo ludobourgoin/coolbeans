@@ -1,0 +1,164 @@
+titre: Rév'olutions Douces x Coolbeans
+objet: Site du Salon Construire & Habiter Autrement
+date: 2026-08-27
+contact: Samantha
+
+linear:
+  projet: https://linear.app/coolbeans-hq/project/site-du-salon-edition-2026-e6c1e495a56f
+  affaire: https://linear.app/coolbeans-hq/issue/CRM-46
+
+sections:
+  - titre: Objectif
+    texte: >-
+      Donner au salon une adresse à lui. Instagram et Facebook portent très
+      bien la communication auprès de ta communauté ; le site s'adresse à
+      ceux qui n'y sont pas : collectivités, presse, partenaires, exposants
+      qui découvrent le salon, et tous ceux qui cherchent un salon de
+      l'habitat depuis Agde, Béziers ou Montpellier.
+    note: >-
+      Le site est pensé pour resservir d'une édition à l'autre : on change les
+      dates, le programme et les exposants, la structure reste.
+
+  - titre: Pages
+    texte: "Dix pages, dont deux alimentées par toi au fil de l'eau (programme et exposants) :"
+    liste:
+      - Accueil
+      - Programme, par jour et par créneau
+      - Exposants
+      - Devenir exposant
+      - Devenir partenaire, avec l'argumentaire de mécénat
+      - Infos pratiques (accès, horaires, restauration, accessibilité)
+      - Le salon et l'association
+      - Retour sur l'édition 2025
+      - Contact
+      - Mentions légales et confidentialité
+    # diagram:
+    #   image: /devis/salon-sitemap.png
+    #   alt: Arborescence proposée pour le site du salon
+
+  - titre: Fonctionnalités
+    liste:
+      - texte: Programme structuré par jour et par créneau, avec les intervenants
+        tooltip: >-
+          Deux ateliers annoncés au même horaire deviennent visibles
+          immédiatement, ce qu'une story ne permet pas.
+      - Annuaire des exposants, modifiable jusqu'à la veille du salon
+      - Formulaire de candidature exposant et espace partenaires
+      - Inscription à la newsletter, reliée à l'outil d'emailing de ton choix
+
+  - titre: Stack technique recommandée
+    texte: >-
+      **Astro** pour le site, **Sanity** pour le contenu, **Cloudflare** pour
+      l'hébergement.
+    liste:
+      - Aucun abonnement mensuel, l'hébergement est gratuit à ce volume
+      - >-
+        Programme et exposants se modifient depuis Sanity, sur ordinateur
+        comme sur téléphone, sans toucher au code
+      - Le code appartient à l'association, le contenu s'exporte, n'importe quel développeur peut reprendre
+
+  - titre: Budget
+    budget:
+      lignes:
+        - label: >-
+            Conception, développement, CMS et mise en ligne du site du salon,
+            dix pages
+          prix: 3245
+      remisePct: 100
+      remiseLabel: Mécénat de compétences Coolbeans
+      mention: HT
+      reglement: >-
+        Rien à régler. Le montant ci-dessus est le prix réel de la
+        prestation : il figure pour que l'association sache ce qu'elle
+        reçoit, et puisse le valoriser auprès de ses partenaires et
+        financeurs.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Responsive (desktop, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation des web perfs (vitesse, Core Web Vitals…)
+      - Intégration de tes visuels pour l'aperçu des liens partagés
+      - Tests QA sur les 3 navigateurs principaux
+      - Certificat SSL, hébergement et DNS
+      - Pages légales et page de contact
+      - Doc de passation pour la prise en main du CMS
+      - Support 30 jours après le salon
+
+  - titre: De ton côté
+    texte: "Ce qu'il me faut, et quand :"
+    liste:
+      - texte: "Le 28 août : nom de domaine choisi, logo et affiche en fichier source"
+        tooltip: Le domaine est acheté par l'association, environ 15 € par an. Je m'occupe du reste.
+      - "Le 2 septembre : validation de la direction visuelle"
+      - "Le 31 août : textes, photos de l'édition 2025, liste des exposants et logos des partenaires"
+      - "Jusqu'à la veille du salon : compléments de programme et d'exposants, que tu saisis toi-même"
+    note: >-
+      Si un élément manque au 31 août, la page part en ligne sans lui et tu
+      la complètes ensuite depuis Sanity. **La date de mise en ligne ne bouge
+      pas.**
+
+  - titre: En option
+    texte: >-
+      Activables cette année si un financement le permet, sinon pour l'édition
+      2027.
+    budget:
+      lignes:
+        - label: Espace exposant avec candidature en ligne et suivi des dossiers
+          prix: 700
+        - label: Programme personnalisable, chaque visiteur compose son agenda
+          prix: 500
+        - label: Plan interactif du salon
+          prix: 400
+        - label: Version anglaise du site
+          prix: 350
+        - label: Rubrique actualités
+          prix: 250
+        - label: Archives des éditions précédentes
+          prix: 200
+        - label: Mesure d'audience sans cookies ni bandeau de consentement
+          prix: 150
+        - label: Maintenance et évolutions, par an
+          prix: 300
+      mention: HT
+
+  - titre: Planning
+    planning:
+      options:
+        - label: En ligne le 10 septembre
+          texte: >-
+            Le site doit servir la communication des trois semaines qui
+            précèdent le salon, pas arriver la veille. On vise donc le 10
+            septembre, avec un programme et une liste d'exposants que tu
+            complètes ensuite toi-même, au fil des confirmations.
+          jalons:
+            - { date: Ven 28/08, label: "Cadrage, arborescence et direction visuelle, ensemble" }
+            - { date: Lun 31/08, label: "Textes, photos de 2025, exposants et logos partenaires", owner: client }
+            - { date: Mar 01/09, label: "Maquettes de l'accueil et d'une page intérieure", owner: coolbeans }
+            - { date: Mer 02/09, label: Validation de la direction visuelle, owner: client }
+            - { date: 03/09 → 08/09, label: Intégration et développement, owner: coolbeans }
+            - { date: Mar 08/09, label: Recette du site ensemble }
+            - { date: Jeu 10/09, label: Mise en ligne, owner: coolbeans }
+            - { date: 11/09 → 02/10, label: "Programme et exposants complétés par tes soins", owner: client }
+            - { date: 03-04/10, label: Salon aux Arènes du Cap d'Agde }
+
+notes:
+  - tone: success
+    texte: >-
+      L'intégralité de la prestation est offerte au titre du mécénat de
+      compétences. En contrepartie, Coolbeans apparaît comme partenaire
+      technique du salon sur le site et les supports, et peut présenter le
+      projet en référence.
+  - tone: error
+    texte: >-
+      Le 3 octobre ne se décale pas. C'est la seule contrainte réelle du
+      projet, et elle commande tout le planning.
+  - texte: >-
+      La prestation ne comprend ni la rédaction des textes, ni la billetterie
+      ou les inscriptions, gérées de ton côté sur HelloAsso. J'intègre le
+      widget si tu ouvres une campagne.
+  - texte: >-
+      Jusqu'à 2 rounds d'itération par livrable. Au-delà, on en reparle.
+  - texte: >-
+      Un retard de validation peut décaler la livraison de plus que le retard
+      lui-même : les créneaux de développement sont réservés à l'avance.
