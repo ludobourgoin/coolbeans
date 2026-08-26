@@ -1,24 +1,24 @@
-// Schéma canonique du publicMetadata Clerk.
+// Schema applicatif d'un compte du portail (spec 2026-08-19 §3.1, §5.3).
 //
-// Depuis la spec 2026-08-12, il ne porte plus que deux clés : le rôle et un
-// pointeur vers le registre des clients. Les mappings (doc, team Asana,
-// monitors) ont migré sur le client — voir src/lib/portail/workspaces.ts. Un
-// mapping vit donc une fois par client, plus une fois par contact, ce qui
-// règle le garde-fou 03 au lieu de l'aggraver.
+// Le type de compte vit sur l'utilisateur Better Auth (`portalRole`), sa
+// portee sur ses appartenances organisation/team. Un meme compte peut donc
+// etre revendeur ici et n'avoir aucun acces la — ce qu'un publicMetadata plat
+// ne savait pas exprimer.
 //
-//   { "role": "client", "client": "amusoire" }
-//
-// La lecture reste tolérante : la saisie se fait à la main dans un éditeur
-// JSON sans validation, et une forme inattendue doit mener à un empty state,
-// jamais à une 500 (critère d'acceptation 7).
+// La lecture reste tolerante : une forme inattendue mene a un empty state,
+// jamais a une 500.
 
-/** Rôle applicatif. Tout ce qui n'est pas exactement "admin" est un client. */
-export type PortalRole = "client" | "admin";
+/** Type de compte. Liste blanche : l'inconnu retombe sur `client`. */
+export type PortalRole = "admin" | "revendeur" | "client";
+
+const ROLES: readonly string[] = ["admin", "revendeur", "client"];
 
 export interface PortalMetadata {
   role: PortalRole;
-  /** Slug dans le registre des clients. `null` si le mapping n'est pas posé. */
-  client: string | null;
+  /** Slug du revendeur (registre des organisations). */
+  organisation: string | null;
+  /** Slug du workspace client (registre des clients). */
+  workspace: string | null;
 }
 
 function asSlug(value: unknown): string | null {
@@ -28,31 +28,30 @@ function asSlug(value: unknown): string | null {
 }
 
 /**
- * TEMPORAIRE — à retirer une fois tous les comptes migrés.
+ * LA regle de securite de ce fichier : liste blanche.
  *
- * Entre le déploiement de cette spec et la mise à jour manuelle des comptes
- * dans le dashboard Clerk, un utilisateur n'a pas encore de clé `client`. On
- * lit alors l'ancien `projects[0]`, sans quoi son portail casse pendant la
- * fenêtre. Voir la section Migration de la spec.
+ * L'ancienne disait « tout ce qui n'est pas exactement admin est un client ».
+ * Avec un troisieme type elle ne casse rien, mais elle ne reconnait jamais
+ * `revendeur` — silencieusement. Une liste blanche echoue du bon cote : une
+ * valeur inconnue retombe sur le type le moins ouvert, jamais sur un autre.
  */
-function legacyClient(meta: Record<string, unknown>): string | null {
-  const raw = meta.projects;
-  const first = Array.isArray(raw) ? raw[0] : raw;
-  return asSlug(first);
+function asRole(value: unknown): PortalRole {
+  return typeof value === "string" && ROLES.includes(value) ? (value as PortalRole) : "client";
 }
 
-/**
- * Lit le publicMetadata d'un utilisateur Clerk. Ne lève jamais : toute forme
- * inattendue dégrade vers la valeur vide de la clé concernée.
- */
 export function readPortalMetadata(raw: unknown): PortalMetadata {
   const meta = (raw ?? {}) as Record<string, unknown>;
   return {
-    role: meta.role === "admin" ? "admin" : "client",
-    client: asSlug(meta.client) ?? legacyClient(meta),
+    role: asRole(meta.portalRole),
+    organisation: asSlug(meta.organisation),
+    workspace: asSlug(meta.workspace),
   };
 }
 
 export function isAdmin(meta: PortalMetadata): boolean {
   return meta.role === "admin";
+}
+
+export function isRevendeur(meta: PortalMetadata): boolean {
+  return meta.role === "revendeur";
 }

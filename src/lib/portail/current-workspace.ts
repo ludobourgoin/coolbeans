@@ -20,12 +20,12 @@ export function resolveCurrentWorkspace(
   cookieValue: string | null,
 ): PortalWorkspace | null {
   // Un client ne voit que le sien, quoi qu'il envoie.
-  if (meta.role !== "admin") return getWorkspaceIn(clients, meta.client);
+  if (meta.role !== "admin") return getWorkspaceIn(clients, meta.workspace);
 
   // Admin : cookie → son propre client → défaut → premier du registre.
   return (
     getWorkspaceIn(clients, cookieValue) ??
-    getWorkspaceIn(clients, meta.client) ??
+    getWorkspaceIn(clients, meta.workspace) ??
     getWorkspaceIn(clients, DEFAULT_WORKSPACE) ??
     sortWorkspaces(clients)[0] ??
     null

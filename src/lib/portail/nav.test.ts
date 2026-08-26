@@ -17,8 +17,8 @@ const sansDoc: PortalWorkspace = {
   archive: false,
 };
 
-const client = readPortalMetadata({ role: "client", client: "amusoire" });
-const admin = readPortalMetadata({ role: "admin", client: "coolbeans" });
+const client = readPortalMetadata({ portalRole: "client", workspace: "amusoire" });
+const admin = readPortalMetadata({ portalRole: "admin", workspace: "coolbeans" });
 
 const docPages: DocPageLink[] = [
   { title: "Vue d'ensemble", href: "/docs/amusoire/vue-densemble" },

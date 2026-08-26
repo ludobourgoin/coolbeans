@@ -13,8 +13,8 @@ const amusoire: PortalWorkspace = {
 };
 const tous = [coolbeans, amusoire];
 
-const admin = readPortalMetadata({ role: "admin", client: "coolbeans" });
-const client = readPortalMetadata({ role: "client", client: "amusoire" });
+const admin = readPortalMetadata({ portalRole: "admin", workspace: "coolbeans" });
+const client = readPortalMetadata({ portalRole: "client", workspace: "amusoire" });
 
 describe("resolveCurrentWorkspace · non-admin", () => {
   // LE test de sécurité : le cookie est une préférence, jamais une autorisation.
@@ -27,7 +27,7 @@ describe("resolveCurrentWorkspace · non-admin", () => {
   });
 
   it("renvoie null si son client n'existe pas au registre", () => {
-    const orphelin = readPortalMetadata({ role: "client", client: "disparu" });
+    const orphelin = readPortalMetadata({ portalRole: "client", workspace: "disparu" });
     expect(resolveCurrentWorkspace(tous, orphelin, null)).toBeNull();
   });
 
@@ -39,12 +39,12 @@ describe("resolveCurrentWorkspace · non-admin", () => {
   // cas, une régression du type `getWorkspaceIn(meta.client) ?? getWorkspaceIn(cookieValue)`
   // passerait les tests ci-dessus tout en violant la règle de sécurité.
   it("renvoie null, pas le cookie, quand il n'a aucun client et que le cookie est valide", () => {
-    const sansClient = readPortalMetadata({ role: "client" });
+    const sansClient = readPortalMetadata({ portalRole: "client" });
     expect(resolveCurrentWorkspace(tous, sansClient, "coolbeans")).toBeNull();
   });
 
   it("renvoie null, pas le cookie, quand son client est inconnu et que le cookie est valide", () => {
-    const orphelin = readPortalMetadata({ role: "client", client: "disparu" });
+    const orphelin = readPortalMetadata({ portalRole: "client", workspace: "disparu" });
     expect(resolveCurrentWorkspace(tous, orphelin, "amusoire")).toBeNull();
   });
 });
@@ -63,14 +63,14 @@ describe("resolveCurrentWorkspace · admin", () => {
   });
 
   it("retombe sur le défaut quand il n'a pas de client à lui", () => {
-    const sansClient = readPortalMetadata({ role: "admin" });
+    const sansClient = readPortalMetadata({ portalRole: "admin" });
     expect(resolveCurrentWorkspace(tous, sansClient, null)?.slug).toBe("coolbeans");
   });
 
   // Le portail reste debout si coolbeans.yaml est renommé ou supprimé.
   it("prend le premier client trié quand le défaut n'existe pas", () => {
     const sansDefaut = [amusoire];
-    const sansClient = readPortalMetadata({ role: "admin" });
+    const sansClient = readPortalMetadata({ portalRole: "admin" });
     expect(resolveCurrentWorkspace(sansDefaut, sansClient, null)?.slug).toBe("amusoire");
   });
 
