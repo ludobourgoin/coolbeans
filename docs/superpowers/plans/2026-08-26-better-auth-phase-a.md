@@ -110,23 +110,47 @@ export function createAuth(env: Env, baseURL: string) {
 }
 ```
 
-- [ ] **Step 3 : Générer le schéma SQL**
+- [x] **Step 3 : Générer le schéma SQL**
 
-Better Auth produit le SQL de ses tables. Lancer la commande et **lire ce qu'elle émet avant de le committer** — la forme exacte dépend de la version installée, ne pas la supposer.
+**Ne pas utiliser `@better-auth/cli`.** Sa dernière version publiée est 1.4.21,
+marquée « no longer supported », soit antérieure à la bibliothèque du repo
+(1.7.2) : un schéma généré par un CLI plus vieux que la lib qui le lit est un
+piège. `better-auth` 1.7.2 n'embarque aucun binaire.
+
+La génération passe par `getMigrations()`, qui vit **dans** better-auth et ne
+peut donc pas diverger d'elle. Le script `scripts/generer-schema-auth.mts`
+construit la config sur une SQLite temporaire vide — D1 est du SQLite, le
+dialecte est identique, et sur une base vide tout ressort en « à créer ».
 
 ```bash
-npx @better-auth/cli@latest generate --config src/lib/auth/server.ts
+node --experimental-strip-types scripts/generer-schema-auth.mts
 ```
 
-Si la commande refuse la fabrique (elle attend souvent un export `auth`), ajouter temporairement en fin de fichier un `export const auth = createAuth({} as Env, "https://my.coolbeans.cc")` le temps de la génération, puis le retirer. Ce contournement est documenté dans le README de `better-auth-cloudflare`.
+Trois pièges rencontrés, déjà réglés dans le script :
+- Extension `.mts` obligatoire : Node ne traite pas les `.ts` comme des modules
+  ES, même avec `"type": "module"` dans `package.json`.
+- `getMigrations` s'importe depuis `better-auth/db/migration`, pas
+  `better-auth/db`.
+- `withCloudflare` active géolocalisation et détection d'IP par défaut et exige
+  alors un contexte `cf`. Les deux sont coupées : un portail client privé n'a
+  aucun usage de ces données.
 
-Copier le SQL obtenu dans `migrations/0004_better_auth.sql`, en-tête compris :
+La configuration fonctionnelle vit dans `src/lib/auth/options.ts`, lue à la
+fois par `createAuth` et par le script. **C'est ce qui empêche la base et le
+code de diverger** : le SQL est dérivé de cette configuration, une copie
+divergerait dès la première modification.
 
-```sql
--- Tables Better Auth (spec 2026-08-19 §5.1). Genere par @better-auth/cli.
--- Plugins actifs : magicLink, organization avec teams.
--- Ne pas editer a la main : regenerer si la config d'auth change.
-```
+Résultat : 9 tables — `user`, `session`, `account`, `verification`,
+`organization`, `team`, `teamMember`, `member`, `invitation`.
+
+Deux constats du schéma généré, qui valent pour toute la suite :
+- `session` porte `activeOrganizationId` et `activeTeamId`. Ce sont des
+  **identifiants, pas des slugs** : la Task 4 doit les résoudre vers les slugs
+  du registre, et nulle part ailleurs.
+- `team` n'a pas de colonne `slug` en standard, seulement `name`. Un `slug`
+  unique lui a été ajouté via `schema.team.additionalFields` : détourner `name`,
+  qui est un libellé d'affichage, ferait dépendre l'appariement avec le
+  registre d'un texte que quelqu'un renommera un jour.
 
 - [ ] **Step 4 : Appliquer la migration en local puis en staging**
 
