@@ -20,3 +20,10 @@ LINEAR_WEBHOOK_SECRET=
 # messagerie (accusés, notifications à Ludo, réponses publiées) via publier.ts,
 # nouveau.ts et reponse.ts.
 RESEND_API_KEY=
+
+# Secret de signature de Better Auth : sessions et jetons (liens magiques,
+# invitations, réinitialisation). Générer une valeur AU HASARD, différente par
+# environnement — partager la même rendrait une session de staging valable en
+# production :
+#   openssl rand -base64 32
+BETTER_AUTH_SECRET=
