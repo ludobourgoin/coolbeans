@@ -679,6 +679,28 @@ doivent lire la table `user` de Better Auth — c'est le même mouvement que le
 renommage des colonnes, d'où leur rattachement à la Task 10 plutôt qu'à une
 tâche à part.
 
+### Vérifié en déployé le 2026-08-27
+
+Sur `my-staging.coolbeans.cc`, une session parallèle ayant poussé `staging` :
+
+| Sonde | Résultat |
+|---|---|
+| `GET /api/auth/ok` | `200 {"ok":true}` — handler et binding D1 vivants |
+| `GET /` | `302` vers `/connexion?redirect_url=…` — le nouveau middleware tranche |
+| `POST /api/auth/sign-up/email` | `400 EMAIL_PASSWORD_SIGN_UP_DISABLED` |
+| `POST /api/auth/sign-in/magic-link` | `500`, vide — c'est le `throw` de `sendMagicLink`, branché en Task 6 |
+| `SELECT COUNT(*) FROM user` | **0** — aucune sonde n'a créé de compte |
+
+Les deux verrous d'inscription tiennent donc en conditions réelles, pas
+seulement dans la configuration. Le `500` du lien magique doit disparaître à
+la Task 6 : si un `500` persiste après le branchement du gabarit, c'est un vrai
+défaut, pas ce reliquat.
+
+**Attention aux appels directs à l'API :** Better Auth refuse les requêtes sans
+en-tête `Origin` (`403 MISSING_OR_NULL_ORIGIN`). Toute sonde en ligne de
+commande doit le poser, sinon on croit tester une garde alors qu'on teste le
+contrôle d'origine.
+
 **Écart au plan, assumé :** `src/lib/portail/require-admin.ts` a été rendue
 pure (elle reçoit le compte au lieu de lire la session). La tâche 4 ne le
 prévoyait pas, mais la garde appelait `locals.currentUser()`, qui disparaît
