@@ -35,21 +35,19 @@ sections:
 
   - titre: Fonctionnalités
     liste:
-      - texte: Programme structuré par jour et par créneau, avec les intervenants
-        tooltip: >-
-          Deux ateliers annoncés au même horaire deviennent visibles
-          immédiatement, ce qu'une story ne permet pas.
+      - Programme structuré par jour et par créneau, avec les intervenants
       - texte: Chaque événement a sa carte, qui se déplie sur le détail et l'intervenant
         tooltip: >-
           Chaque événement porte son adresse : tu peux envoyer un lien qui
           l'ouvre directement déplié, depuis une story ou un message.
-      - texte: "Filtres par catégorie : conférences, ateliers, films, animations, concerts"
-        tooltip: >-
-          Les filtres se posent sur la vue chronologique sans la casser : on
-          reste dans l'ordre du week-end.
-      - Annuaire des exposants, modifiable jusqu'à la veille du salon
+      - "Filtres par catégorie : conférences, ateliers, films, animations, concerts"
+      - Annuaire des exposants
       - Formulaire de candidature exposant et espace partenaires
       - Inscription à la newsletter, reliée à l'outil d'emailing de ton choix
+      - texte: Mesure d'audience sans cookies ni bandeau de consentement
+        tooltip: >-
+          Tu vois d'où viennent les visiteurs et ce qu'ils consultent, sans
+          rien avoir à faire accepter à personne.
 
   - titre: Stack technique recommandée
     texte: >-
@@ -57,23 +55,41 @@ sections:
       l'hébergement.
     liste:
       - Aucun abonnement mensuel, l'hébergement est gratuit à ce volume
-      - >-
-        Programme et exposants se modifient depuis Sanity, sur ordinateur
-        comme sur téléphone, sans toucher au code
+      - Programme et exposants se modifient depuis l'ordi ou sur smartphone
       - Le code appartient à l'association, le contenu s'exporte, n'importe quel développeur peut reprendre
 
   - titre: Budget
     budget:
       lignes:
-        - label: >-
-            Conception, développement, CMS et mise en ligne du site du salon,
-            dix pages
-          prix: 3350
+        - label: Direction visuelle, à partir de l'affiche du salon
+          prix: 400
+        - label: Développement et intégration
+          prix: 850
+        - label: "Programme : cartes, filtres et détail dépliable"
+          prix: 350
+        - label: Exposants et leurs emplacements
+          prix: 250
+        - label: Mise en place du CMS et prise en main
+          prix: 450
+        - label: Pages et mise en contenu
+          prix: 300
+        - label: Retour sur l'édition 2025
+          prix: 150
+        - label: Inscription à la newsletter
+          prix: 100
+        - label: Mesure d'audience sans cookies
+          prix: 100
+        - label: Référencement local et aperçus de partage
+          prix: 150
+        - label: Hébergement, nom de domaine et mise en ligne
+          prix: 100
+        - label: Gestion de projet
+          prix: 320
       remisePct: 100
       remiseLabel: Mécénat de compétences Coolbeans
       mention: HT
       reglement: >-
-        Rien à régler. Le montant ci-dessus est le prix réel de la
+        Rien à régler. Le détail ci-dessus est le prix réel de la
         prestation : il figure pour que l'association sache ce qu'elle
         reçoit, et puisse le valoriser auprès de ses partenaires et
         financeurs.
@@ -86,37 +102,28 @@ sections:
       - Intégration de tes visuels pour l'aperçu des liens partagés
       - Tests QA sur les 3 navigateurs principaux
       - Certificat SSL, hébergement et DNS
-      - Pages légales et page de contact
+      - Pages légales
       - Doc de passation pour la prise en main du CMS
       - Support 30 jours après le salon
 
-  - titre: De ton côté
-    texte: "Ce qu'il me faut, et quand :"
+  - titre: Ce qu'il me faut
     liste:
-      - texte: "Le 28 août : nom de domaine choisi, logo et affiche en fichier source"
+      - texte: Nom de domaine choisi, logo et affiche en fichier source
         tooltip: Le domaine est acheté par l'association, environ 15 € par an. Je m'occupe du reste.
-      - "Le 31 août : textes, photos de l'édition 2025, ateliers et intervenants, liste des exposants et logos des partenaires"
-      - "Le 2 septembre : validation de la direction visuelle"
-      - "Jusqu'à la veille du salon : compléments de programme et d'exposants, que tu saisis toi-même"
-    note: >-
-      Si un élément manque au 31 août, la page part en ligne sans lui et tu
-      la complètes ensuite depuis Sanity. **La date de mise en ligne ne bouge
-      pas.**
+      - Textes, photos de l'édition 2025, logos des partenaires
+      - Ateliers, intervenants et liste des exposants
+      - Validation de la direction visuelle
+      - Compléments de programme et d'exposants, que tu saisis toi-même jusqu'à la veille du salon
 
   - titre: En option
-    texte: >-
-      Activables cette année si un financement le permet, sinon pour l'édition
-      2027.
+    texte: "Pour l'édition 2027 éventuellement :"
     liste:
-      - "Espace exposant avec candidature en ligne et suivi des dossiers · 700 €"
-      - "Programme personnalisable, chaque visiteur compose son agenda · 500 €"
-      - "Plan interactif du salon · 400 €"
-      - "Version anglaise du site · 350 €"
-      - "Rubrique actualités · 250 €"
-      - "Archives des éditions précédentes · 200 €"
-      - "Mesure d'audience sans cookies ni bandeau de consentement · 150 €"
-      - "Maintenance et évolutions, par an · 300 €"
-    note: Prix HT, à la carte. Rien n'est lié, chaque ligne se prend seule.
+      - Espace exposant avec candidature en ligne et suivi des dossiers
+      - Programme personnalisable, chaque visiteur compose son agenda
+      - Plan interactif du salon
+      - Version anglaise du site
+      - Rubrique actualités
+      - Archives des éditions précédentes
 
   - titre: Planning
     planning:
@@ -124,18 +131,19 @@ sections:
         - label: En ligne le 10 septembre
           texte: >-
             Le site doit servir la communication des trois semaines qui
-            précèdent le salon, pas arriver la veille. On vise donc le 10
-            septembre, avec un programme et une liste d'exposants que tu
-            complètes ensuite toi-même, au fil des confirmations.
+            précèdent le salon. On vise donc le 10 septembre, avec un
+            programme et une liste d'exposants que tu complètes ensuite
+            toi-même, au fil des confirmations.
           jalons:
-            - { date: Ven 28/08, label: "Cadrage, arborescence et direction visuelle, ensemble" }
+            - { date: Ven 28/08, label: "Cadrage sur la base de ce devis : arborescence et direction visuelle" }
             - { date: Lun 31/08, label: "Textes, photos de 2025, exposants et logos partenaires", owner: client }
             - { date: Mar 01/09, label: "Maquettes de l'accueil et d'une page intérieure", owner: coolbeans }
             - { date: Mer 02/09, label: Validation de la direction visuelle, owner: client }
             - { date: 03/09 → 08/09, label: Intégration et développement, owner: coolbeans }
             - { date: Mar 08/09, label: Recette du site ensemble }
             - { date: Jeu 10/09, label: Mise en ligne, owner: coolbeans }
-            - { date: 11/09 → 02/10, label: "Programme et exposants complétés par tes soins", owner: client }
+            - { date: Ven 11/09, label: "Campagne de lancement : stories, post Facebook, mail aux exposants pour relais", owner: client }
+            - { date: 12/09 → 02/10, label: "Programme et exposants complétés par tes soins", owner: client }
             - { date: 03-04/10, label: Salon aux Arènes du Cap d'Agde }
 
 notes:
@@ -151,8 +159,8 @@ notes:
       projet, et elle commande tout le planning.
   - texte: >-
       La prestation ne comprend ni la rédaction des textes, ni la billetterie
-      ou les inscriptions, gérées de ton côté sur HelloAsso. J'intègre le
-      widget si tu ouvres une campagne.
+      ou les inscriptions, gérées de ton côté sur la plateforme de ton choix,
+      HelloAsso ou autre. J'intègre le widget si tu ouvres une campagne.
   - texte: >-
       Jusqu'à 2 rounds d'itération par livrable. Au-delà, on en reparle.
   - texte: >-
