@@ -23,7 +23,7 @@ sections:
     texte: "Dix pages, dont deux que tu alimentes au fil de l'eau (le programme et les exposants) :"
     liste:
       - Accueil
-      - Programme : tous les événements, par jour et par catégorie
+      - "Programme : tous les événements, par jour et par catégorie"
       - Exposants et leur emplacement sur le site
       - Devenir exposant
       - Devenir partenaire, avec l'argumentaire de mécénat
