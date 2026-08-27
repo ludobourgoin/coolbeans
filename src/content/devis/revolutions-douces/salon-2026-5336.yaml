@@ -95,8 +95,8 @@ sections:
     liste:
       - texte: "Le 28 août : nom de domaine choisi, logo et affiche en fichier source"
         tooltip: Le domaine est acheté par l'association, environ 15 € par an. Je m'occupe du reste.
-      - "Le 2 septembre : validation de la direction visuelle"
       - "Le 31 août : textes, photos de l'édition 2025, ateliers et intervenants, liste des exposants et logos des partenaires"
+      - "Le 2 septembre : validation de la direction visuelle"
       - "Jusqu'à la veille du salon : compléments de programme et d'exposants, que tu saisis toi-même"
     note: >-
       Si un élément manque au 31 août, la page part en ligne sans lui et tu
