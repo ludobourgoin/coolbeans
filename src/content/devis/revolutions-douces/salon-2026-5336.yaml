@@ -3,6 +3,10 @@ objet: Site du Salon Construire & Habiter Autrement
 date: 2026-08-27
 contact: Sam
 
+envoi:
+  date: 2026-08-27
+  destinataire: klingelschmitt.samantha@gmail.com
+
 linear:
   projet: https://linear.app/coolbeans-hq/project/site-du-salon-edition-2026-e6c1e495a56f
   affaire: https://linear.app/coolbeans-hq/issue/CRM-46
