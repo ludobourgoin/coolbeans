@@ -4,16 +4,22 @@
  * Voir docs/superpowers/specs/2026-08-12-sop-commercial-design.md
  *
  * Deux étages cohabitent : le vivier (phase `amont`, une feuille Google tenue à
- * part) et le pipeline (le projet Asana `🎯 crm`). Une carte CRM ne naît que
+ * part) et le pipeline (la team Linear `🎯 CRM`). Une opportunité ne naît que
  * lorsqu'un projet réel est identifié.
  *
  * Le rendu est data-driven : ajouter une étape ici suffit à la faire apparaître
  * dans le schéma et dans les fiches, sans retoucher Sop.astro.
  *
- * Convention structurante : une carte du CRM représente une affaire. Elle n'a
+ * Convention structurante : une issue du CRM représente une affaire. Elle n'a
  * ni date d'échéance ni case à cocher — elle avance de colonne, puis se ferme.
- * Ce sont ses SOUS-TÂCHES qui portent la date et l'assignation, remontent dans
- * « Mes tâches » et se cochent. C'est ce que décrit le champ `echeance`.
+ * Ce sont ses SOUS-ISSUES qui portent la date et l'assignation, remontent dans
+ * « Mes issues » et se ferment. C'est ce que décrit le champ `echeance`.
+ *
+ * Les sous-issues n'utilisent QUE `Todo` et `Done` ; les colonnes à emoji sont
+ * réservées aux affaires. Linear n'ayant pas de statut par défaut propre aux
+ * sous-issues, ce garde-fou vit dans la skill `linear` et dans le gabarit, pas
+ * dans les réglages de la team.
+ * Voir docs/superpowers/specs/2026-08-29-crm-pipeline-refonte-design.md
  */
 
 export type Phase =
@@ -42,16 +48,19 @@ export interface Etape {
   outils: string[];
   faire: string[]; // actions concrètes, à l'impératif
   sortie: string; // ce qui prouve que l'étape est finie
-  echeance?: string; // la sous-tâche « prochaine action » à assigner et à dater
+  echeance?: string; // la sous-issue « prochaine action » à assigner et à dater
   suivants: { vers: string; si: string }[];
   note?: string;
 }
 
-/** Colonne du projet Asana `🎯 crm`, dans l'ordre du board. `changement`
- *  documente la restructuration en cours ; il disparaîtra une fois faite. */
+/** Colonne de la team Linear `🎯 CRM`, dans l'ordre du board. `type` est le
+ *  workflow state type de Linear : il est immuable une fois l'état créé, et
+ *  c'est lui qui décide de la place de la colonne, les positions ne jouant
+ *  qu'à l'intérieur d'une même catégorie. */
 export interface ColonneCrm {
   nom: string;
-  changement: "inchangée" | "ajoutée";
+  type: "backlog" | "unstarted" | "started" | "completed" | "canceled";
+  role: string;
 }
 
 /** L'ordre fait foi : `amont` d'abord, `sortie` en dernier. Les quatre phases
@@ -75,12 +84,12 @@ export const phases: PhaseDef[] = [
   {
     id: "production",
     nom: "Production",
-    resume: "Le travail, dans le projet Asana du client. La carte CRM attend.",
+    resume: "Le travail, dans la team Linear du client. L'affaire attend.",
   },
   {
     id: "apres-vente",
     nom: "Après-vente",
-    resume: "La carte CRM est close. Tout se passe dans le projet du client.",
+    resume: "L'affaire est close. Tout se passe dans le projet du client.",
   },
   {
     id: "sortie",
@@ -90,19 +99,32 @@ export const phases: PhaseDef[] = [
 ];
 
 export const colonnesCrm: ColonneCrm[] = [
-  { nom: "👋 Contacté", changement: "inchangée" },
-  { nom: "📆 Rdv pris", changement: "inchangée" },
-  { nom: "🎯 Besoins définis", changement: "inchangée" },
-  { nom: "📝 Devis envoyé", changement: "inchangée" },
-  { nom: "☄️ Lead relancé", changement: "inchangée" },
-  { nom: "💪 Négo entamée", changement: "inchangée" },
-  { nom: "🚀 Acompte réglé", changement: "inchangée" },
-  { nom: "🏗️ En production", changement: "ajoutée" },
-  { nom: "📝 Facture de solde envoyée", changement: "inchangée" },
-  { nom: "✅ Facture de solde réglée", changement: "inchangée" },
-  { nom: "🧊 En veille", changement: "ajoutée" },
-  { nom: "🪦 PERDU", changement: "inchangée" },
-  { nom: "🧰 Modèles", changement: "ajoutée" },
+  { nom: "📥 Triage lead", type: "backlog", role: "Mail entrant non qualifié. SLA de 4 h." },
+  { nom: "👋 Contacté", type: "unstarted", role: "Contact établi, rien de calé." },
+  { nom: "📆 Rdv pris", type: "started", role: "Découverte calée ou faite." },
+  { nom: "🎯 À chiffrer", type: "started", role: "Besoin cadré, devis à produire." },
+  {
+    nom: "📝 Devis envoyé",
+    type: "started",
+    role: "Devis parti. Couvre aussi les relances et la négociation.",
+  },
+  {
+    nom: "🏆 Signée",
+    type: "started",
+    role: "Acompte réglé. La production tourne dans la team du client, pas ici.",
+  },
+  {
+    nom: "🧾 Solde à encaisser",
+    type: "started",
+    role: "Livré. Facture de solde à émettre, ou émise et en attente de règlement.",
+  },
+  {
+    nom: "🧊 En veille",
+    type: "started",
+    role: "Gelée mais vivante : porte obligatoirement une relance datée à J+30 ou J+90.",
+  },
+  { nom: "✅ Soldée", type: "completed", role: "Encaissé. L'affaire est close." },
+  { nom: "🪦 Perdue", type: "canceled", role: "Perdue, avec un label Perte qui dit pourquoi." },
 ];
 
 export const etapes: Etape[] = [
@@ -114,7 +136,7 @@ export const etapes: Etape[] = [
     declencheur:
       "Une personne ou une structure vaut la peine d'être connue : entourage, agence repérée, directeur artistique visé pour une collaboration.",
     qui: "coolbeans",
-    outils: ["Feuille Google « vivier »", "Asana — Mes tâches"],
+    outils: ["Feuille Google « vivier »", "Linear — Mes issues"],
     faire: [
       "L'ajouter à la feuille avec sa date de dernier contact et sa prochaine action.",
       "La contacter pour faire savoir que Coolbeans existe.",
@@ -122,9 +144,9 @@ export const etapes: Etape[] = [
     ],
     sortie: "Rien tant qu'aucun projet n'est évoqué. Le vivier n'a pas vocation à se vider.",
     echeance:
-      "Tâche récurrente mensuelle dans « Mes tâches » d'Asana, hors de tout projet, pour relire la feuille.",
+      "Issue récurrente dans la team Coolbeans (COO-157 « 🔁 Revue vivier + hygiène pipeline »), hors du CRM, pour relire la feuille.",
     suivants: [{ vers: "S1", si: "un contact du vivier remonte un projet réel" }],
-    note: "Ces contacts n'entrent jamais dans le CRM tant qu'il n'y a pas de projet identifié. C'est la frontière entre les deux étages : verser le vivier dans le pipeline noierait la colonne 👋 Contacté sous des dizaines de cartes dormantes.",
+    note: "Ces contacts n'entrent jamais dans le CRM tant qu'il n'y a pas de projet identifié. C'est la frontière entre les deux étages : verser le vivier dans le pipeline noierait la colonne 👋 Contacté sous des dizaines d'affaires dormantes.",
   },
 
   // ---- Avant-vente ---------------------------------------------------------
@@ -136,11 +158,11 @@ export const etapes: Etape[] = [
     declencheur:
       "Un projet réel est évoqué. Deux sources : entrante (appel, mail, réservation d'un créneau depuis la page de contact) ou issue du vivier.",
     qui: "coolbeans",
-    outils: ["Asana — 🎯 crm", "Notion Calendar"],
+    outils: ["Linear — 🎯 CRM", "Notion Calendar"],
     faire: [
-      "Dupliquer 🧬 [MODÈLE] Lead depuis 🧰 Modèles, la renommer « [budget évoqué €] Client — Objet » et la déposer en 👋 Contacté.",
+      "Créer l'opportunité depuis le gabarit 🧬 Lead, la titrer « Client — Objet [budget évoqué €] » et la déposer en 👋 Contacté.",
       "Poser l'étiquette de source : source-inbound, source-recommandation ou source-prospection.",
-      "Coller le contexte de l'échange dans la description de la carte.",
+      "Coller le contexte de l'échange dans la description de l'opportunité.",
       "Envoyer le lien de réservation Notion Calendar.",
     ],
     sortie: "Lien de réservation envoyé.",
@@ -151,7 +173,7 @@ export const etapes: Etape[] = [
       { vers: "S20", si: "le client dit « plus tard »" },
       { vers: "S21", si: "hors cible, ou silence après deux relances" },
     ],
-    note: "La carte naît ici, avant le rendez-vous, et non après. Le coût est de vingt secondes ; le gain est de pouvoir relancer ceux qui disparaissent entre la prise de contact et le rendez-vous, et de connaître le taux de transformation en haut de tunnel.",
+    note: "L'affaire naît ici, avant le rendez-vous, et non après. Le coût est de vingt secondes ; le gain est de pouvoir relancer ceux qui disparaissent entre la prise de contact et le rendez-vous, et de connaître le taux de transformation en haut de tunnel.",
   },
   {
     id: "S2",
@@ -160,7 +182,7 @@ export const etapes: Etape[] = [
     colonneCrm: "📆 Rdv pris",
     declencheur: "Le client a réservé un créneau.",
     qui: "coolbeans",
-    outils: ["Asana — 🎯 crm", "Notion Calendar"],
+    outils: ["Linear — 🎯 CRM", "Notion Calendar"],
     faire: [
       "Cocher « Envoyer le lien de réservation ».",
       "Dater « Faire le rendez-vous de découverte » au jour du créneau réservé.",
@@ -177,7 +199,7 @@ export const etapes: Etape[] = [
     colonneCrm: "📆 Rdv pris",
     declencheur: "L'heure du rendez-vous.",
     qui: "les-deux",
-    outils: ["Notion Calendar", "Asana — 🎯 crm"],
+    outils: ["Notion Calendar", "Linear — 🎯 CRM"],
     faire: [
       "Annoncer une fourchette de prix dans les cinq premières minutes, avant le tour de périmètre.",
       "Faire dire au lead le budget dont il dispose. Annoncer le sien ne suffit pas : sans montant côté client, l'affaire n'est pas qualifiée.",
@@ -199,17 +221,17 @@ export const etapes: Etape[] = [
   {
     id: "S4",
     phase: "avant-vente",
-    titre: "Besoins définis",
-    colonneCrm: "🎯 Besoins définis",
+    titre: "Périmètre cadré et chiffré",
+    colonneCrm: "🎯 À chiffrer",
     declencheur: "L'affaire est qualifiée à l'issue du rendez-vous de découverte.",
     qui: "coolbeans",
-    outils: ["Asana — 🎯 crm"],
+    outils: ["Linear — 🎯 CRM"],
     faire: [
       "Arrêter le périmètre inclus et le périmètre exclu.",
       "Chiffrer.",
       "Construire l'échéancier — acompte de 30 %, éventuelles factures intermédiaires, solde — chaque ligne datée.",
       "Construire le planning de jalons.",
-      "Cocher « Cadrer le périmètre et chiffrer », reporter le montant obtenu dans le titre de la carte.",
+      "Cocher « Cadrer le périmètre et chiffrer », reporter le montant obtenu dans le titre de l'opportunité.",
     ],
     sortie: "Chiffrage et échéancier arrêtés.",
     echeance: "« Rédiger et publier le devis », datée au jour d'envoi promis.",
@@ -222,7 +244,7 @@ export const etapes: Etape[] = [
     colonneCrm: "📝 Devis envoyé",
     declencheur: "Le chiffrage et l'échéancier sont arrêtés.",
     qui: "coolbeans",
-    outils: ["src/content/devis/<slug>.yaml", "Page publique /devis/<slug>", "Asana — 🎯 crm"],
+    outils: ["src/content/devis/<slug>.yaml", "Page publique /devis/<slug>", "Linear — 🎯 CRM"],
     faire: [
       "Rédiger le YAML : sections, budget, planning, notes.",
       "Vérifier que l'échéancier figure ligne par ligne avec ses dates.",
@@ -231,19 +253,19 @@ export const etapes: Etape[] = [
     ],
     sortie: "Le client a reçu le lien du devis.",
     echeance:
-      "« Relancer à J+3, J+7, J+14 », redatée à chaque tour ; l'étiquette ☄️ relance-n se pose sur la carte.",
+      "« Relancer à J+3, J+7, J+14 », redatée à chaque tour ; le label relance-1, relance-2 puis relance-3 se pose sur l'affaire.",
     suivants: [
       { vers: "S6", si: "le client répond" },
       { vers: "S20", si: "le client annonce un report" },
       { vers: "S21", si: "silence total après la relance 3" },
     ],
-    note: "Une fois la première relance partie, la carte passe en ☄️ Lead relancé et y reste tant qu'aucune réponse n'arrive : la colonne dit « j'ai relancé, j'attends », l'étiquette ☄️ relance-n dit combien de fois, la sous-tâche datée dit quand est la suivante.",
+    note: "L'affaire ne change pas de colonne quand on relance : elle reste en 📝 Devis envoyé jusqu'à la réponse, au report ou à la perte. Une relance est un événement daté, pas un état — c'est pourquoi la colonne ☄️ Lead relancé a été supprimée le 2026-08-29. Le label relance-n dit combien de fois on a relancé, la sous-issue datée dit quand est la suivante.",
   },
   {
     id: "S6",
     phase: "avant-vente",
     titre: "Négociation",
-    colonneCrm: "💪 Négo entamée",
+    colonneCrm: "📝 Devis envoyé",
     declencheur:
       "Le client répond par une question ou une objection — réponse « question » sur la page de devis.",
     qui: "les-deux",
@@ -296,13 +318,13 @@ export const etapes: Etape[] = [
     id: "S9",
     phase: "signature",
     titre: "Acompte encaissé",
-    colonneCrm: "🚀 Acompte réglé",
+    colonneCrm: "🏆 Signée",
     declencheur: "L'acompte est crédité sur le compte.",
     qui: "client",
-    outils: ["Tiime", "Asana — 🎯 crm"],
+    outils: ["Tiime", "Linear — 🎯 CRM"],
     faire: [
       "Cocher « Vérifier l'encaissement de l'acompte ».",
-      "Déplacer la carte en 🚀 Acompte réglé.",
+      "Déplacer l'affaire en 🏆 Signée.",
     ],
     sortie: "Feu vert de production. C'est le seul déclencheur du démarrage.",
     suivants: [{ vers: "S10", si: "l'acompte est encaissé" }],
@@ -313,21 +335,38 @@ export const etapes: Etape[] = [
     id: "S10",
     phase: "production",
     titre: "Onboarding",
-    colonneCrm: "🏗️ En production",
+    colonneCrm: "🏆 Signée",
     declencheur: "L'acompte est encaissé.",
     qui: "coolbeans",
-    outils: ["Asana", "Google Drive", "Clerk", "src/content/clients/<slug>.yaml"],
-    faire: [
-      "Créer la team Asana du client.",
-      "Dupliquer .🧱 [MODÈLE] Projet client dans cette team, renommer la copie en retirant le point initial, dater les jalons et la tâche J+30.",
-      "Créer src/content/clients/<slug>.yaml avec nom, asana_team_gid et doc.",
-      "Créer l'utilisateur Clerk avec le mail du contact et son publicMetadata.",
-      "Créer le dossier Drive et le lier dans les notes du projet Asana.",
-      "Envoyer le mail de bienvenue : accès au portail, canal de communication, rythme des points, qui fait quoi, ce qui est attendu du client.",
+    outils: [
+      "Skill onboarding-client",
+      "Linear — team du client",
+      "GitHub",
+      "Cloudflare",
+      "Better Auth",
+      "Resend",
+      "Google Drive",
+      "src/content/clients/<slug>.yaml",
     ],
-    sortie: "Le client peut se connecter au portail, le projet Asana est prêt.",
+    faire: [
+      "Router avant d'exécuter : repo GitHub ? quelle stack ? workspace portail ? compte utilisateur ? monitoring ? Aucune de ces réponses n'est acquise d'avance.",
+      "Créer la team Linear du client, par copie des settings depuis la team « Modèle client ».",
+      "Créer le repo GitHub, scaffolder la stack écrite au devis, puis connecter le repo à l'intégration Git du workspace Linear.",
+      "Monter l'infrastructure selon la stack : Worker, base, stockage.",
+      "Créer src/content/clients/<slug>.yaml avec nom, linearTeamId et doc — sans ce champ, le module Support du portail reste en empty state.",
+      "Créer le compte utilisateur du client dans Better Auth.",
+      "Poser domaine et DNS, puis authentifier le domaine du client chez Resend si le site envoie du mail transactionnel.",
+      "Brancher le monitoring du domaine : superviser la résolution, pas seulement l'expiration.",
+      "Rédiger le mail d'onboarding et le soumettre à validation avant envoi : accès au portail, canal de communication, rythme des points, qui fait quoi.",
+      "Écrire les engagements du client : chaque élément à sa charge porte une date et une porte de sortie.",
+      "Reporter dans Linear ce qui a été créé, et ce qui a été volontairement écarté.",
+    ],
+    sortie:
+      "Le client peut se connecter au portail, sa team Linear est prête, et ce qui est à sa charge est daté par écrit.",
+    echeance:
+      "La première échéance d'un engagement client, datée et assignée — c'est elle qui rend le retard visible avant qu'il ne coûte.",
     suivants: [{ vers: "S11", si: "l'onboarding est terminé" }],
-    note: "Les six actions sont dans l'ordre : la team Asana conditionne la duplication du projet, dont le GID alimente la fiche client, qui conditionne le portail. Elles vivent en sous-tâches de la carte CRM, pas dans le projet du client — trois d'entre elles s'exécutent avant même que ce projet existe. Retirer le point initial du nom de la copie : il masque le projet du portail, le client verrait un espace vide.",
+    note: "Deux règles cardinales priment sur la checklist : rien n'est créé en production sans ordre explicite, et aucun mail ne part au client sans validation. L'ordre des actions compte — la team Linear conditionne le repo et la fiche client, qui conditionne le portail — mais le routage prime sur l'ordre : un site Webflow n'a pas de repo, une prestation ponctuelle n'a pas de workspace, et un compte créé puis jamais utilisé est une dette. Ne jamais inventer une donnée d'onboarding : un registrar inconnu se demande, il ne se devine pas. Ces actions vivent en sous-issues de l'affaire CRM, pas dans la team du client, puisque plusieurs s'exécutent avant qu'elle existe.",
   },
   {
     id: "S11",
@@ -335,19 +374,19 @@ export const etapes: Etape[] = [
     titre: "Exécution",
     declencheur: "L'onboarding est terminé.",
     qui: "les-deux",
-    outils: ["Asana — projet du client", "Portail client"],
+    outils: ["Linear — team du client", "Portail client"],
     faire: [
       "Travailler par sprints.",
-      "Faire traverser aux tâches : 🧱 Backlog, 🚀 Sprint, 🚧 En cours, ☝️ Pour validation, ✅ Terminé.",
+      "Faire traverser aux issues : Backlog, Todo, In Progress, In Review, Done.",
       "Tenir le point client au rythme convenu.",
-      "Envoyer toute demande hors périmètre en 📥 Inbox et la traiter par avenant.",
+      "Envoyer toute demande hors périmètre en Triage et la traiter par avenant.",
     ],
     sortie: "Le périmètre du devis est réalisé.",
     suivants: [
       { vers: "S12", si: "une échéance de facturation intermédiaire tombe" },
       { vers: "S13", si: "le périmètre du devis est réalisé" },
     ],
-    note: "La carte CRM ne bouge plus : elle attend en 🏗️ En production.",
+    note: "L'affaire ne bouge plus : elle attend en 🏆 Signée.",
   },
   {
     id: "S12",
@@ -370,7 +409,7 @@ export const etapes: Etape[] = [
     titre: "Recette et mise en ligne",
     declencheur: "Le périmètre du devis est réalisé.",
     qui: "les-deux",
-    outils: ["Asana — projet du client", "Plateforme d'hébergement du site"],
+    outils: ["Linear — team du client", "Plateforme d'hébergement du site"],
     faire: [
       "Faire la recette avec le client sur la base du périmètre du devis, uniquement.",
       "Corriger.",
@@ -417,16 +456,16 @@ export const etapes: Etape[] = [
     id: "S16",
     phase: "production",
     titre: "Facture de solde",
-    colonneCrm: "📝 Facture de solde envoyée, puis ✅ Facture de solde réglée",
+    colonneCrm: "🧾 Solde à encaisser, puis ✅ Soldée",
     declencheur: "Le projet est livré.",
     qui: "coolbeans",
-    outils: ["Tiime", "Asana — 🎯 crm"],
+    outils: ["Tiime", "Linear — 🎯 CRM"],
     faire: [
       "Émettre le solde dans Tiime.",
       "Relancer à J+8 et J+15.",
       "Passer en mise en demeure au-delà.",
     ],
-    sortie: "Solde réglé. La carte CRM se ferme ici.",
+    sortie: "Solde réglé. L'affaire se ferme ici.",
     echeance:
       "« Émettre la facture de solde » dans le projet client, puis une relance redatée à J+8 et J+15.",
     suivants: [{ vers: "S17", si: "le solde est réglé" }],
@@ -439,7 +478,7 @@ export const etapes: Etape[] = [
     titre: "Fin de garantie à J+30",
     declencheur: "Trente jours après la livraison.",
     qui: "les-deux",
-    outils: ["Asana — projet du client"],
+    outils: ["Linear — team du client"],
     faire: [
       "Faire le point de clôture.",
       "Lister les bugs traités pendant la garantie.",
@@ -475,14 +514,14 @@ export const etapes: Etape[] = [
     titre: "Suivi",
     declencheur: "L'étude de cas est publiée, le client entre en vie courante.",
     qui: "coolbeans",
-    outils: ["Asana — projet du client", "Notion Calendar"],
+    outils: ["Linear — team du client", "Notion Calendar"],
     faire: [
       "Tenir un point trimestriel.",
       "Faire la veille sur les opportunités : nouvelle page, refonte, automatisation, care plan.",
     ],
     sortie: "Relation entretenue, opportunités repérées.",
     suivants: [
-      { vers: "S1", si: "une nouvelle opportunité est identifiée : une nouvelle carte CRM naît" },
+      { vers: "S1", si: "une nouvelle opportunité est identifiée : une nouvelle affaire naît" },
     ],
   },
 
@@ -494,15 +533,15 @@ export const etapes: Etape[] = [
     colonneCrm: "🧊 En veille",
     declencheur: "Le client repousse : « pas maintenant, rappelle-moi en septembre ».",
     qui: "coolbeans",
-    outils: ["Asana — 🎯 crm"],
+    outils: ["Linear — 🎯 CRM"],
     faire: [
-      "Déplacer la carte en 🧊 En veille.",
-      "Créer la sous-tâche « Relancer », se l'assigner et la dater au jour du rappel convenu.",
+      "Déplacer l'affaire en 🧊 En veille.",
+      "Créer la sous-issue « Relancer », se l'assigner et la dater à J+30 ou J+90 selon le rappel convenu.",
       "Noter en commentaire ce qui bloque et ce qui débloquerait.",
     ],
-    sortie: "Carte dormante, mais tenue par une sous-tâche datée.",
+    sortie: "Affaire dormante, mais tenue par une sous-issue datée.",
     echeance:
-      "« Relancer », datée au jour convenu. Sans sous-tâche datée, la carte bascule en 🪦 PERDU.",
+      "« Relancer », datée au jour convenu. Sans sous-issue datée, l'affaire n'a rien à faire en veille : elle bascule en 🪦 Perdue.",
     suivants: [
       { vers: "S1", si: "la date de rappel arrive et le projet redémarre" },
       { vers: "S21", si: "la date passe sans nouvelle, ou aucune date n'a été posée" },
@@ -513,12 +552,12 @@ export const etapes: Etape[] = [
     id: "S21",
     phase: "sortie",
     titre: "Perdu",
-    colonneCrm: "🪦 PERDU",
+    colonneCrm: "🪦 Perdue",
     declencheur: "L'affaire ne se fera pas : hors cible, prix, timing, concurrent, silence.",
     qui: "coolbeans",
-    outils: ["Asana — 🎯 crm"],
+    outils: ["Linear — 🎯 CRM"],
     faire: [
-      "Déplacer la carte en 🪦 PERDU.",
+      "Déplacer l'affaire en 🪦 Perdue.",
       "Noter la raison en commentaire : prix, timing, concurrent, silence, hors cible.",
     ],
     sortie: "Affaire close, raison tracée.",

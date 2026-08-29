@@ -3,8 +3,8 @@ client: "coolbeans"
 title: "Workflow CRM"
 order: 2
 status: "final"
-updated: 2026-08-17
-description: "Le cycle de vie d'une affaire, du vivier de prospection au suivi d'après-vente : les conventions du CRM, le workflow Devis piloté par Linear (brief, chiffrage, envoi, suivi) et les modèles d'onboarding client."
+updated: 2026-08-29
+description: "Le cycle de vie d'une affaire, du vivier de prospection au suivi d'après-vente : les conventions du CRM, le pipeline Linear refondu le 2026-08-29, le workflow Devis piloté par Linear et le gabarit d'onboarding client."
 ---
 
 import Callout from "../../../components/doc/Callout.astro";
@@ -17,50 +17,54 @@ Elle est **interne**. La doc d'un client reste purement technique : aucun conten
 
 ## Les deux règles de lecture
 
-<Callout type="tip" title="La carte CRM suit l'argent, le projet Asana suit le travail">
-  Une carte du projet **🎯 crm** représente **une affaire** : elle naît au premier contact qualifiant et meurt au règlement de la facture de solde. Elle reste ouverte pendant toute la production.
+<Callout type="tip" title="L'affaire suit l'argent, la team du client suit le travail">
+  Une issue de la team **🎯 CRM** représente **une affaire** : elle naît au premier contact qualifiant et meurt au règlement de la facture de solde. Elle reste ouverte pendant toute la production.
 
-  Un projet dans la team du client représente **le travail** : il naît à l'encaissement de l'acompte et vit **au-delà** de la clôture de la carte CRM, puisque l'après-vente — garantie, étude de cas, suivi — s'y déroule.
+  La team Linear du client représente **le travail** : elle s'ouvre à l'encaissement de l'acompte et vit **au-delà** de la clôture de l'affaire, puisque l'après-vente — garantie, étude de cas, suivi — s'y déroule. La production ne se duplique jamais entre les deux.
 </Callout>
 
 La seconde règle sépare deux étages qu'on est constamment tenté de mélanger.
 
 Le **vivier** est une feuille Google tenue à part : entourage, agences repérées, directeurs artistiques visés pour des collaborations. Ce sont des relations à entretenir. Aucun de ces contacts n'a de projet identifié.
 
-Le **pipeline**, c'est le projet Asana **🎯 crm**. Une carte y naît **dès qu'un projet réel est identifié**, quelle que soit la source : quelqu'un qui appelle, écrit, réserve un créneau depuis la page de contact, ou un contact du vivier qui remonte un besoin.
+Le **pipeline**, c'est la team Linear **🎯 CRM**. Une affaire y naît **dès qu'un projet réel est identifié**, quelle que soit la source : quelqu'un qui appelle, écrit, réserve un créneau depuis la page de contact, ou un contact du vivier qui remonte un besoin.
 
 <Callout type="piege" title="Ne jamais verser le vivier dans le CRM">
-  La tentation est permanente, et c'est une erreur. Des dizaines de cartes dormantes rendraient la colonne **👋 Contacté** illisible et le pipeline impossible à lire d'un coup d'œil.
+  La tentation est permanente, et c'est une erreur. Des dizaines d'affaires dormantes rendraient la colonne **👋 Contacté** illisible et le pipeline impossible à lire d'un coup d'œil.
 
-  Le vivier a un mode d'échec connu : une feuille de calcul n'a ni échéance ni rappel, et une liste de réseau finit par ne plus jamais être relue. Le correctif retenu — le seul — est **une tâche récurrente mensuelle dans « Mes tâches » d'Asana**, hors de tout projet, qui déclenche la relecture de la feuille. Elle suppose que la feuille porte au minimum une date de dernier contact et une colonne « prochaine action ».
+  Le vivier a un mode d'échec connu : une feuille de calcul n'a ni échéance ni rappel, et une liste de réseau finit par ne plus jamais être relue. Le correctif retenu — le seul — est **l'issue récurrente `COO-157 · 🔁 Revue vivier + hygiène pipeline`**, dans la team Coolbeans et non dans le CRM, qui déclenche la relecture de la feuille. Elle suppose que la feuille porte au minimum une date de dernier contact et une colonne « prochaine action ».
 </Callout>
 
 ## Les conventions du CRM
 
-Asana est en plan gratuit et le restera : pas de champ personnalisé, pas de règle, pas d'automatisation, pas de modèle de projet, pas de dépendance ni de jalon. Trois conventions manuelles remplacent ce qui manque.
+Trois conventions tiennent le board. Elles ne compensent plus les limites d'un outil — Linear sait tout faire — mais elles disent ce qui, ici, se range où.
 
-**1 · La carte ne porte ni date ni case cochée. Ce sont ses sous-tâches qui travaillent.**
-Une carte du CRM représente **une affaire**, pas une action : elle n'a pas de deadline et ne se coche jamais. Elle avance de colonne, puis se ferme au règlement du solde. Lui coller une échéance la ferait apparaître en retard permanent dans « Mes tâches ».
+**1 · L'affaire ne porte ni date ni case cochée. Ce sont ses sous-issues qui travaillent.**
+Une issue du CRM représente **une affaire**, pas une action : elle n'a pas de deadline et ne se ferme pas à la main. Elle avance de colonne, puis se clôt au règlement du solde. Lui coller une échéance la ferait apparaître en retard permanent dans « Mes issues ».
 
-Ce qui porte une **date** et une **assignation**, c'est la sous-tâche qui matérialise la prochaine action. Elle remonte alors dans « Mes tâches », qui devient de fait la liste de travail du jour, et se coche une fois l'action faite. Les huit sous-tâches viennent du modèle de lead, dupliqué à la création de la carte.
+Ce qui porte une **date** et une **assignation**, c'est la sous-issue qui matérialise la prochaine action. Elle remonte alors dans « Mes issues », qui devient de fait la liste de travail du jour. Les étapes standard, elles, ne sont **pas** des sous-issues : elles vivent en check-list markdown dans la description de l'affaire, posée par le gabarit `🧬 Lead`, et se cochent au fil de l'eau.
 
-Le filet de relance n'est donc pas « une carte sans date est morte », mais : **une affaire vivante a toujours au moins une sous-tâche assignée et datée.** Aucune sous-tâche datée, quelle que soit la colonne, signifie affaire oubliée.
+Le filet de relance n'est donc pas « une affaire sans date est morte », mais : **une affaire vivante a toujours au moins une sous-issue assignée et datée.** Aucune sous-issue datée, quelle que soit la colonne, signifie affaire oubliée.
 
-**2 · Les étiquettes portent ce qui se cumule avec l'état.**
-Source : `source-inbound`, `source-recommandation`, `source-prospection`.
-Relances : `☄️ relance-1`, `☄️ relance-2`, `☄️ relance-3`.
+**2 · Les labels portent ce qui se cumule avec l'état.**
+Source : `inbound`, `recommandation`, `prospection`, `réseau`.
+Relances : `relance-1`, `relance-2`, `relance-3`.
+Perte : `prix`, `timing`, `silence`, `concurrent`, `hors-cible`.
 
-**3 · Le montant va dans le titre de la carte**, au format `[3 500 €] Amusoire — Refonte site`.
-Inélégant, mais c'est le seul moyen de lire le pipeline d'un coup d'œil et de le chercher sans champ dédié. **Un titre sans montant veut dire que l'affaire n'est pas encore estimée** — c'est une information, pas un oubli. Le montant s'écrit au titre en même temps que le chiffrage s'arrête, en S4.
+**3 · Le montant va dans le titre de l'affaire**, au format `Client — Objet [3 500 €]`.
+Inélégant, mais c'est le seul moyen de lire le pipeline d'un coup d'œil. **Un titre sans montant veut dire que l'affaire n'est pas encore estimée** — c'est une information, pas un oubli. Le montant s'écrit au titre en même temps que le chiffrage s'arrête, en S4.
 
-## Le pipeline cible
+## Le pipeline
+
+Refondu le 2026-08-29 : de 17 statuts à 13, dont 10 colonnes d'affaires. Spec `docs/superpowers/specs/2026-08-29-crm-pipeline-refonte-design.md`.
 
 <table>
   <thead>
     <tr>
       <th>#</th>
       <th>Colonne</th>
-      <th>Changement</th>
+      <th>Type</th>
+      <th>Ce qu'elle veut dire</th>
     </tr>
   </thead>
   <tbody>
@@ -68,26 +72,27 @@ Inélégant, mais c'est le seul moyen de lire le pipeline d'un coup d'œil et de
       <tr>
         <td>{i + 1}</td>
         <td>{c.nom}</td>
-        <td>{c.changement}</td>
+        <td><code>{c.type}</code></td>
+        <td>{c.role}</td>
       </tr>
     ))}
   </tbody>
 </table>
 
-**☄️ Lead relancé reste.** Elle dit une chose que rien d'autre ne dit d'un coup d'œil sur le board : « j'ai relancé, j'attends toujours une réponse ». Sa contrepartie assumée est qu'une carte qui y entre perd la trace de la colonne d'où elle venait — on ne peut donc pas répondre en un filtre à « quels devis dorment depuis quinze jours ? ». Ce que l'étiquette `☄️ relance-n` et la sous-tâche datée compensent en partie : combien de relances, et quand tombe la suivante.
+**Les sous-issues n'utilisent que `Todo` et `Done`.** Dans Linear, les statuts sont définis **par team, pas par type d'objet** : affaires et actions partagent forcément le même jeu de colonnes. Une convention seule ne tient pas — elle a dérivé jusqu'à ce que des sous-issues se retrouvent classées `🪦 Perdue`. Ce qui la remplace : le board **Affaires** se lit avec le filtre `Sub-issues: exclude`, et le gabarit pose `Todo` à la création. Linear n'expose aucun statut par défaut propre aux sous-issues, ce garde-fou ne peut donc pas vivre dans les réglages de la team.
 
-**🏗️ En production est ajoutée** pour éviter qu'une carte stagne plusieurs semaines dans **🚀 Acompte réglé** sans qu'on distingue ce qui tourne de ce qui attend.
+**Une relance ne change pas la colonne.** L'affaire reste en **📝 Devis envoyé** jusqu'à la réponse, au report ou à la perte : une relance est un événement daté, pas un état. Les labels `relance-n` disent combien de fois, la sous-issue datée dit quand tombe la suivante. C'est pourquoi la colonne `☄️ Lead relancé` a été supprimée, en même temps que `💪 Négo`, qui décrivait un moment du devis envoyé.
 
-**🧊 En veille est ajoutée** pour séparer « pas maintenant, rappelle-moi en septembre » de « perdu ». Mélangées, les affaires reportées ne sont jamais rouvertes. Une carte en veille porte obligatoirement une date de rappel ; sans date, elle bascule en **🪦 PERDU**.
+**Le post-signature tient en deux colonnes.** **🏆 Signée** dit que l'acompte est réglé et que la production tourne — ailleurs, dans la team du client. **🧾 Solde à encaisser** est un rappel d'argent : sans elle, deux factures de solde ont dormi plusieurs semaines pour 3 500 €. Détailler la production ici la dupliquerait.
 
-**🧰 Modèles est ajoutée en dernière position, hors pipeline** : elle héberge la tâche modèle décrite en fin de page.
+**🧊 En veille n'est pas un cimetière.** Elle sépare « pas maintenant, rappelle-moi en septembre » de « perdu ». Une affaire en veille porte **obligatoirement** une relance datée à J+30 ou J+90 ; si elle est jugée morte, elle ne va pas en veille mais en **🪦 Perdue**, avec son label de perte.
 
 <Callout type="piege" title="Ce que voit le client, et ce qu'il ne voit pas">
-  Le projet `🎯 crm` n'est jamais synchronisé vers le portail : c'est le board de Ludo, seul.
+  La team `🎯 CRM` n'est jamais synchronisée vers le portail : c'est le board de Ludo, seul.
 
-  Pour un client dont le travail vit encore sur Asana (onboardé avant la migration vers Linear, 2026-08-13), le projet Asana **de sa team**, lui, est synchronisé. Le sync ne masque que la section `📥 Inbox` et les tâches dont le nom commence par un point — tout le reste de `🧱 Backlog` s'affiche sur `/espace/projets`. Une tâche interne (créer un compte Clerk, émettre une facture, rédiger une étude de cas) posée dans ce projet est donc **publiée au client**. Ces tâches-là vivent en sous-tâches de la carte CRM, pas dans le projet du client.
+  Le travail d'un client vit dans sa team Linear, non synchronisée au portail pour l'instant (chantier engineering séparé, non commencé). En attendant, ne rien poser dans ses issues Linear qui ne devrait pas un jour être vu du client : mettre les remarques internes en commentaire, jamais en description.
 
-  Pour un client onboardé depuis la migration, le travail vit dans sa team Linear — non synchronisée au portail pour l'instant (chantier engineering séparé, non commencé). En attendant, ne rien poser dans ses issues Linear qui ne devrait pas un jour être vu du client : mettre les remarques internes en commentaire, jamais en description.
+  Les actions internes — émettre une facture, créer un compte, rédiger une étude de cas — vivent en sous-issues de l'affaire CRM, pas dans la team du client.
 </Callout>
 
 ## Le workflow Devis
@@ -188,17 +193,15 @@ Quatre phases, vingt-deux étapes. Chaque boîte du schéma renvoie à sa fiche 
 
 ## Les deux modèles
 
-Les modèles personnalisés sont payants. Les deux passent donc par la **duplication**, qui fonctionne sur le plan gratuit et conserve les sous-tâches.
+Le partage entre les deux suit une seule ligne : **ce qui est dans la team du client, le client le voit un jour.** Le travail interne descend donc dans les sous-issues de l'affaire CRM, que personne d'autre que Ludo ne consulte.
 
-Le partage entre les deux suit une seule ligne : **ce qui est dans le projet du client, le client le voit.** Le travail interne descend donc dans les sous-tâches de la carte CRM, que personne d'autre que Ludo ne consulte.
+### Modèle A · le gabarit 🧬 Lead
 
-### Modèle A · la tâche 🧬 [MODÈLE] Lead
+Template de la team **🎯 CRM**. Il crée l'affaire directement en **👋 Contacté**, titrée `Client — Objet [montant €]`, et pré-remplit sa description en deux blocs.
 
-Rangée dans la section **🧰 Modèles** du projet **🎯 crm**, hors pipeline. On la duplique, on la renomme au format `[montant €] Client — Objet`, on la place dans **👋 Contacté**.
+**La fiche** : source, contexte, besoin exprimé, budget évoqué, échéance souhaitée, décideur, lien du devis, projet Proposal, dossier Drive.
 
-Description pré-remplie : source, contexte, besoin exprimé, budget évoqué, échéance souhaitée, décideur, lien du devis, lien du dossier Drive.
-
-Quatorze sous-tâches, dans l'ordre. Les huit premières couvrent l'avant-vente et la signature ; les six dernières portent l'onboarding et la facture de solde, qui n'ont rien à faire chez le client.
+**La check-list des quatorze étapes**, en markdown. Ce ne sont **pas** des sous-issues : les créer d'avance produirait des centaines d'issues fantômes héritant d'un statut de pipeline qui ne veut rien dire pour elles. On coche au fil de l'eau ; seule l'étape qui mérite une échéance est promue en sous-issue datée.
 
 1. Qualifier : besoin, budget, échéance, décideur
 2. Envoyer le lien de réservation
@@ -208,17 +211,19 @@ Quatorze sous-tâches, dans l'ordre. Les huit premières couvrent l'avant-vente 
 6. Relancer à J+3, J+7, J+14
 7. Émettre la facture d'acompte dans Tiime
 8. Vérifier l'encaissement de l'acompte
-9. Créer la team Linear du client (« Copy team settings » depuis la team « Modèle client ») et y créer le premier projet
-10. Créer le dossier Drive et le lier dans les notes du projet
-11. Créer la fiche client `src/content/clients/<slug>.yaml`
-12. Créer l'utilisateur Clerk et le portail
-13. Envoyer le mail de bienvenue
+9. Créer la team Linear du client (« Copy team settings » depuis « Modèle client ») et y créer le premier projet
+10. Créer le repo GitHub, scaffolder la stack du devis, connecter le repo à l'intégration Git de Linear
+11. Créer la fiche client `src/content/clients/<slug>.yaml` avec son `linearTeamId`
+12. Créer le compte utilisateur dans Better Auth, le dossier Drive, le monitoring du domaine
+13. Envoyer le mail d'onboarding et acter par écrit les engagements du client
 14. Émettre la facture de solde dans Tiime
 
-Les sous-tâches 9 à 13 s'exécutent **avant** que le projet du client existe — la 9 le crée. Elles n'auraient donc pas pu y vivre de toute façon. La 14 suit la règle d'ouverture de cette page : la carte CRM suit l'argent.
+Les étapes 9 à 13 s'exécutent **avant** que la team du client soit peuplée — la 9 la crée. Elles n'auraient donc pas pu y vivre de toute façon. La 14 suit la règle d'ouverture de cette page : l'affaire suit l'argent. Le détail opérationnel de 9 à 13 est porté par la skill `onboarding-client`, et le SOP le reprend en **S10**.
 
-<Callout type="tip" title="Ce que couvre réellement la sous-tâche 9">
-  Créer la team et le premier projet ne suffit pas à finir l'onboarding technique : il faut aussi connecter le repo GitHub du client à l'intégration Git du workspace Linear (Settings > Integrations > GitHub), et ajouter son `linearTeamId` au registre `src/content/clients/<slug>.yaml`. Sans ce champ, le module Support du portail reste en empty state : c'est lui qui dit au formulaire support dans quelle team créer ses tickets (COO-30).
+<Callout type="tip" title="Le routage précède la check-list">
+  Les étapes 9 à 13 ne s'appliquent pas toutes à tout projet. Cinq questions se posent avant d'exécuter : repo GitHub ? quelle stack (celle écrite au devis, jamais celle qu'on préfère) ? workspace portail ? compte utilisateur ? monitoring ? Un site Webflow n'a pas de repo, une prestation ponctuelle n'a pas de workspace, et un compte créé puis jamais utilisé est une dette.
+
+  Sans le `linearTeamId` de l'étape 11, le module Support du portail reste en empty state : c'est lui qui dit au formulaire support dans quelle team créer ses tickets (COO-30).
 </Callout>
 
 ### Modèle B · la team Linear « Modèle client »
@@ -248,5 +253,5 @@ Les trois tâches de l'**étude de cas** — rédiger le brouillon, faire valide
 
 - **CGV et case d'acceptation sur la page de devis** : rédaction des CGV, page `/cgv`, case bloquante côté client et côté serveur, traçage de l'horodatage et de la version acceptée. L'échéancier ferme et l'autorisation d'étude de cas doivent y figurer. Suivi dans le projet « Site web Coolbeans » sur Linear (team Coolbeans, `COO-5`).
 - **Formules du care plan** : le SOP décrit le moment de la proposition (S17) et l'intention, pas le contenu de l'offre. Chantier séparé.
-- **Restructuration du projet 🎯 crm** : redispatch des cartes de **☄️ Lead relancé**, puis suppression de la colonne, création de **🏗️ En production**, **🧊 En veille** et **🧰 Modèles**.
+- **Vue « Affaires » du board CRM** : le filtre `Sub-issues: exclude` doit être posé à la main dans Linear puis sauvegardé en vue — l'API refuse ce filtre à la création, alors qu'elle accepte son inverse (la vue « Mes actions » existe déjà).
 - **Feuille de prospection** : elle doit porter une date de dernier contact et une colonne « prochaine action », sinon la revue mensuelle n'a rien sur quoi mordre.
