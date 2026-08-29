@@ -1,7 +1,8 @@
 # CRM — Opportunités et check-list d'étapes
 
-Date : 2026-08-19 · Statut : validé par Ludo (hybride + statuts d'action), en attente
-des trois gestes Linear (§6) puis de la migration des sous-issues (§7).
+Date : 2026-08-19, exécutée le 2026-08-29 · Statut : en vigueur. Modèle appliqué de
+bout en bout dans Linear (§9), spec confirmée par Ludo le 2026-08-29 après une seconde
+remontée du même symptôme.
 
 Amende `archive/2026-08-15-crm-linear-design.md` §4 (template `🧬 Lead` et ses 14
 sous-issues standard). Le reste de cette spec — statuts de pipeline, labels, entrées,
@@ -146,10 +147,13 @@ Un client peut porter plusieurs opportunités en parallèle — c'est déjà le 
 qui en a quatre. Le mot le dit mieux que « lead », qui laissait entendre une personne, et
 mieux qu'« affaire », qui laissait entendre une commande déjà tenue.
 
-## 6. Les trois gestes Linear (Ludo, dans l'UI)
+## 6. Les trois gestes Linear
 
-L'API Linear n'expose ni les templates ni les statuts de workflow : ces trois-là se font
-à la main, dans cet ordre.
+**Correction du 2026-08-29 : c'est faux.** L'API GraphQL expose `workflowStateCreate`
+et `templateUpdate`, le MCP Linear non. Les trois gestes ont donc été faits par API, et
+la version d'origine de ce paragraphe est ce qui les a laissés dormir dix jours. Règle
+à en tirer : avant de renvoyer un geste à l'UI, vérifier en GraphQL, pas dans les outils
+du MCP (voir la note du statut `Proposal`, créé de la même façon).
 
 1. **Créer les statuts.** Settings → Team `🎯 CRM` → Workflow → `Todo` (Unstarted),
    `Doing` (Started), `Done` (Completed), rangés en fin de catégorie (§4, règle 2).
@@ -196,3 +200,42 @@ n'apporterait rien.
 | `src/data/sop.ts` | `colonnesCrm` → statuts Linear, `outils: ["Asana — 🎯 crm"]` → `["Linear — team CRM"]` sur les 22 étapes, champ `echeance` reformulé (sous-issue au lieu de sous-tâche), S10 « team Asana » → « team Linear », en-tête du fichier |
 
 À tracker en COO.
+
+## 9. Exécution du 2026-08-29
+
+Le modèle n'avait jamais atteint Linear : la branche portant cette spec n'était pas
+mergée, les statuts d'action n'existaient pas, et le template continuait de créer les
+14 sous-issues. Le symptôme est revenu de lui-même le 2026-08-26 avec l'opportunité du
+salon (`CRM-46`), créée avec dix sous-issues numérotées. Tout a été fait dans la session
+du 2026-08-29, par API :
+
+- **Statuts d'action créés** dans la team CRM : `Todo` (unstarted, 2000), `Doing`
+  (started, 9500, après `🧊 En veille`), `Done` (completed, 2003, après `✅ Soldée`).
+  Sans emoji, conformément au §4.
+- **Template réécrit** : `🧬 Lead` devient `🧬 Opportunité`, ses 14 sous-issues sont
+  supprimées, sa description devient le gabarit du §3. Note technique : `templateData`
+  accepte `description` en markdown, converti côté serveur ; `descriptionData` n'est
+  plus lisible sur `Issue` par l'API. Note de comportement : la création d'issue par API
+  avec `templateId` n'appliquait déjà pas `subIssueData`, seule l'UI le faisait.
+- **32 sous-issues migrées** : 17 en `Todo`, 4 en `Done`, 6 archivées (étapes de process
+  du salon devenues des cases), 3 déplacées vers la team REV, 2 laissées en `🪦 Perdu`.
+  Le `📥 Triage lead` ne contient plus aucune sous-issue : l'audit SLA speed-to-lead
+  mesure enfin les vrais leads entrants.
+- **Description de la team corrigée** (§6.3), vocabulaire « opportunité » compris.
+- **Salon `CRM-46`** : check-list posée avec ses lignes « sans objet, pro bono », section
+  « Propre à cette affaire » pour les deux actions hors gabarit, et renvoi explicite vers
+  la team REV. `CRM-51/52/54` deviennent `REV-26/27/28` dans le projet Site du salon ;
+  `CRM-53` et `CRM-55` sont archivées au profit de `REV-11` et `REV-15`, qui existaient
+  déjà et ont reçu leurs dates. Principe : la production ne se duplique pas entre le CRM
+  et la team du client.
+
+**État après migration** : 25 opportunités, 23 sous-issues (contre 32), zéro sous-issue
+de process.
+
+**Dettes révélées par la règle d'or**, à traiter par Ludo, pas par la migration :
+neuf opportunités vivantes n'ont aucune action ouverte (`CRM-4`, `CRM-5`, `CRM-6`,
+`CRM-7`, `CRM-8`, `CRM-9`, `CRM-13`, `CRM-34`, `CRM-41`), deux en ont deux (`CRM-22`,
+`CRM-42`). `CRM-8` et `CRM-34` semblent être la même affaire en double. `CRM-22`
+(en_haut) est encore en `💪 Négo` alors que l'affaire est refusée depuis le 2026-08-24.
+
+Le §8 (réécriture Asana → Linear de `02-vente.mdx` et `sop.ts`) reste ouvert.
