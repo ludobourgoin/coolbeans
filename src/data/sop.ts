@@ -160,7 +160,7 @@ export const etapes: Etape[] = [
     qui: "coolbeans",
     outils: ["Linear — 🎯 CRM", "Notion Calendar"],
     faire: [
-      "Créer l'opportunité depuis le gabarit 🧬 Lead, la titrer « Client — Objet [budget évoqué €] » et la déposer en 👋 Contacté.",
+      "Créer l'opportunité depuis le gabarit 🧬 Opportunité, la titrer « Client — Objet [budget évoqué €] » et la déposer en 👋 Contacté.",
       "Poser l'étiquette de source : source-inbound, source-recommandation ou source-prospection.",
       "Coller le contexte de l'échange dans la description de l'opportunité.",
       "Envoyer le lien de réservation Notion Calendar.",

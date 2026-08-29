@@ -94,7 +94,7 @@ La convention emoji est remplacée par deux contraintes.
    l'inverse, groupée par échéance.
 2. **Le statut par défaut des sous-issues est forcé à `Todo`.** Via les réglages de
    team si Linear expose un défaut distinct pour les sous-issues ; sinon par le
-   gabarit `🧬 Lead` et par la skill `linear`, qui pose explicitement `Todo` à la
+   gabarit `🧬 Opportunité` et par la skill `linear`, qui pose explicitement `Todo` à la
    création. C'est ce qui règle le constat du 2026-08-29 (sous-issues API tombant en
    `📥 Triage lead`).
 
