@@ -1,0 +1,117 @@
+titre: LittleBox x Coolbeans
+objet: Création du site vitrine de LittleBox
+date: 2025-12-05
+contact: Philippe
+
+envoi:
+  date: 2025-12-05
+  destinataire: philippe.bartholi@gmail.com
+
+linear:
+  projet: https://linear.app/coolbeans-hq/project/site-vitrine-littlebox-e181c8e92c1f
+  affaire: https://linear.app/coolbeans-hq/issue/CRM-26
+
+sections:
+  - titre: Objectif
+    texte: >-
+      Une vitrine qui tient la comparaison avec les réalisations. Le site
+      structure les trois secteurs d'activité, met les projets en avant par
+      l'image, et donne à LittleBox une adresse qui parle d'elle-même aux
+      commanditaires qui la découvrent.
+    note: >-
+      La direction artistique et les maquettes sont assurées par Hugo Sanchez
+      (BYHUS), qui te les facture directement. Le présent devis couvre la
+      part Coolbeans.
+
+  - titre: Pages
+    liste:
+      - Accueil
+      - "Trois pages secteur, déclinées d'un même gabarit : Design d'espace, IDA, Scénographie événementielle"
+      - texte: "Page projet, gabarit reproductible"
+        tooltip: >-
+          C'est le gabarit que tu réutilises pour publier chaque nouvelle
+          réalisation, sans repasser par moi.
+      - À propos
+      - Mentions légales et RGPD
+
+  - titre: Fonctionnalités
+    liste:
+      - Galeries photo et vidéo sur les pages projet
+      - Projets rattachés à leur secteur, et remontés automatiquement sur la page correspondante
+      - Formulaire de contact relié à ta boîte mail
+      - texte: Contenu entièrement modifiable, textes et images
+        tooltip: >-
+          Depuis un ordinateur comme depuis un téléphone. Tu publies un
+          projet, le site se met à jour tout seul.
+
+  - titre: Stack technique recommandée
+    texte: >-
+      **Webflow** pour le site et son CMS, avec ton nom de domaine.
+    liste:
+      - Un seul abonnement, autour de 21 € par mois, à ton nom
+      - Mise à jour des projets sans intervention de ma part
+      - Pas de plugins ni de mises à jour de sécurité à gérer
+
+  - titre: Budget
+    budget:
+      lignes:
+        - label: "Intégration : gabarits, CMS, responsive, performances"
+          prix: 2500
+        - label: Nom de domaine, consentement et référencement
+          prix: 500
+      mention: HT
+      reglement: >-
+        **30 %** à la commande, **70 %** à la livraison et validation du site
+        fonctionnel.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Responsive (desktop, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation des web perfs (vitesse, Core Web Vitals…)
+      - Tests QA sur les 3 navigateurs principaux
+      - Setup tracking et bandeau de consentement
+      - Certificat SSL, hébergement et DNS
+      - Pages légales
+      - Formation à la prise en main du CMS
+
+  - titre: De ton côté
+    liste:
+      - Logos, photos HD et vidéos des réalisations, en fichiers sources
+      - Textes des pages et des projets
+      - Informations légales de la société
+      - Validation de la direction visuelle, puis des maquettes
+      - Un seul référent pour les retours
+
+  - titre: Planning
+    planning:
+      options:
+        - label: Mise en ligne mi-janvier 2026
+          texte: >-
+            Le calendrier tient si les retours arrivent dans la semaine qui
+            suit chaque livraison. On cale les dates fermes ensemble au
+            kick-off.
+          jalons:
+            - { date: Semaine 1, label: Kick-off tous les trois, une heure }
+            - { date: Semaine 1, label: "Transmission des assets : logos, photos HD, vidéos", owner: client }
+            - { date: Semaine 2, label: Moodboard et direction visuelle }
+            - { date: Semaine 2, label: Wireframes et contenu, owner: coolbeans }
+            - { date: Semaine 3, label: Retours sur les wireframes et les contenus, owner: client }
+            - { date: Semaine 4, label: Maquettes des pages principales }
+            - { date: Semaine 5, label: Validation des maquettes, owner: client }
+            - { date: Semaines 6 à 8, label: Intégration des pages, owner: coolbeans }
+            - { date: Semaine 8, label: Configuration SEO et optimisations, owner: coolbeans }
+            - { date: Mi-janvier 2026, label: Mise en ligne, owner: coolbeans }
+            - { date: Mi-janvier 2026, label: Formation à la prise en main du CMS }
+
+notes:
+  - tone: info
+    texte: >-
+      L'abonnement Webflow et le nom de domaine restent à ta charge et à ton
+      nom, environ 21 € par mois et 10 € par an.
+  - texte: >-
+      Jusqu'à 2 rounds d'itération par livrable. Au-delà, budgété au temps
+      passé.
+  - texte: >-
+      Un retard de validation peut décaler la livraison de plus que le retard
+      lui-même : les créneaux d'intégration sont réservés à l'avance.
