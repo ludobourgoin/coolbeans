@@ -2,7 +2,7 @@
 client: "coolbeans"
 title: "Catalogue des skills"
 order: 10
-status: "final"
+status: "review"
 updated: 2026-08-29
 description: "Tous les skills Claude Code disponibles : où ils vivent sur la machine, ce qu'ils font, et les mots qui les déclenchent."
 ---
@@ -47,7 +47,7 @@ indiqué autrement dans les tableaux vit dans `~/.claude/skills/`.
 
 | Emplacement                             | Contenu                                                                     | Portée                                | Sauvegarde                        |
 | --------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------- | --------------------------------- |
-| `~/.claude/skills/`                     | 142 skills, un dossier `<nom>/SKILL.md` par skill, avec ses `references/`   | Tous les projets, toutes les sessions | Repo `dotfiles` (`./backup.sh`)   |
+| `~/.claude/skills/`                     | 141 skills, un dossier `<nom>/SKILL.md` par skill, avec ses `references/`   | Tous les projets, toutes les sessions | Repo `dotfiles` (`./backup.sh`)   |
 | `~/dev/coolbeans-claude-skills/skills/` | Les skills publiés en open source : `linear`, `doc-client`                  | Source de vérité de ces deux skills   | Repo GitHub public                |
 | `~/.agents/skills/`                     | Skills partagés avec les autres agents de la machine : GSAP (8), Sanity (2) | Liés dans `~/.claude/skills/`         | Le lien seulement, pas le contenu |
 | `~/.claude/plugins/cache/`              | Les skills livrés par les plugins installés depuis leurs marketplaces       | Tous les projets                      | Liste des plugins dans `dotfiles` |
@@ -135,7 +135,6 @@ public du même coup, et c'est là qu'ils se commitent.
 | `public-relations`      | Obtient de la presse : pitchs journalistes, communiqués, newsjacking                  | "PR", "press release", "press coverage"                             |
 | `referrals`             | Monte un programme de parrainage ou d'affiliation                                     | "referral", "affiliate", "word of mouth"                            |
 | `schema`                | Ajoute ou corrige les données structurées (JSON-LD, rich snippets)                    | "schema markup", "structured data", "JSON-LD"                       |
-| `seo-audit`             | Diagnostique les problèmes SEO d'un site : technique, on-page, indexation             | "SEO audit", "technical SEO", "why am I not ranking"                |
 | `signup`                | Optimise le tunnel d'inscription et l'activation d'essai                              | "signup conversions", "registration friction"                       |
 | `site-architecture`     | Structure l'arborescence, la navigation et le maillage interne d'un site              | "sitemap", "site structure", "page hierarchy"                       |
 | `sms`                   | Marketing par SMS : flux de bienvenue, panier abandonné, promotions                   | "SMS marketing", "SMS sequence", "abandoned cart text"              |
@@ -279,7 +278,7 @@ s'appellent avec leur préfixe, par exemple `/superpowers:brainstorming`.
 | Plugin                    | Ce qu'il apporte                                                                                                                                                                          | Déclencheurs typiques                                       |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
 | `superpowers` (14)        | Les méthodes de travail : `brainstorming`, `writing-plans`, `executing-plans`, `systematic-debugging`, `test-driven-development`, `using-git-worktrees`, revue de code, agents parallèles | « on va construire X », « débogue ça », « écris le plan »   |
-| `claude-seo` (25)         | Audit SEO complet : technique, schéma, contenu, local, GEO, sitemap, backlinks, clusters de mots-clés                                                                                     | « audit SEO », « Core Web Vitals », « données structurées » |
+| `claude-seo` (25)         | Audit SEO complet : `/claude-seo:seo-audit` crawle jusqu'à 500 pages en déléguant à 15 sous-agents, plus les analyses ciblées (schéma, contenu, local, GEO, sitemap, backlinks, clusters) | « audit SEO », « Core Web Vitals », « données structurées » |
 | `context-mode` (8)        | Économie de contexte : exécution en bac à sable, indexation, recherche dans les sorties de commandes                                                                                      | `/ctx-stats`, `/ctx-search`, automatique en fond            |
 | `understand-anything` (9) | Cartographie d'un codebase en graphe de connaissances, visites guidées, tableau de bord                                                                                                   | « explique-moi ce projet », « onboarding codebase »         |
 | `code-review`             | Revue de la branche ou d'une PR, avec application des correctifs                                                                                                                          | `/code-review`, `/code-review ultra`                        |
