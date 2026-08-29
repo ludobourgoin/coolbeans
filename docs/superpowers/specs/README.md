@@ -10,6 +10,7 @@
 | --- | --- | --- | --- |
 | `2026-08-17-portail-client-strategie-produit.md` | **Source de vérité produit du portail** : positionnement, boucles, modules, règles transverses, §4.5 client-safe | Projet « Portail myCoolbeans » (milestones P1-P12), projet « Tracking standardisé Coolbeans » | Vivant, s'amende |
 | `2026-08-15-messagerie-portail-design.md` | Design de la messagerie bidirectionnelle (D1 + webhook Linear + `>>`) | Milestone « P2 · Messagerie complète » (COO-96 à 99) | **Implémentée sur staging le 2026-08-17** ; reste : recette navigateur de Ludo, gestes prod (migration D1, secrets, webhook), doc, puis archivage |
+| `2026-08-19-crm-opportunites-checklist-design.md` | Modèle hybride du CRM : check-list des 14 étapes en description, sous-issues réservées aux actions (statuts Todo/Doing/Done), vocabulaire « Opportunité » | Team `🎯 CRM` | Actif : trois gestes UI de Ludo en attente, puis migration des sous-issues |
 | `2026-08-14-portail-sidebar-design.md` | Refonte navigation : sidebar unique structure Geist | COO-80 (In Review), COO-81 | Actif, chantier en cours |
 | `2026-08-11-portail-session-clerk.md` | Procédure durée de session Clerk (A2HS) | COO-46 (arbitrage en attente), bloque COO-42 | Actif tant que COO-46 n'est pas tranché |
 
