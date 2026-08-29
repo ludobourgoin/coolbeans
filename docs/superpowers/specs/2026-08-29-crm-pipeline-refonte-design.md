@@ -1,6 +1,7 @@
 # CRM — Refonte du pipeline
 
-Date : 2026-08-29 · Statut : validé, en attente d'exécution.
+Date : 2026-08-29 · Statut : **exécutée le 2026-08-29**. Linear est refondu (§6, §7),
+le SOP est aligné (§8). Deux gestes UI restent, listés au §10.
 
 Amende `2026-08-19-crm-opportunites-checklist-design.md`, dont le modèle hybride
 (check-list en description, sous-issue = prochaine action) **reste en vigueur**.
@@ -137,9 +138,13 @@ Une affaire en veille sans action datée est un défaut de tenue, pas un état n
 **Corrections d'incohérence :**
 
 - `CRM-44` et `CRM-33`, sous-actions classées `🪦 Perdu` → `Done`, puis archivées.
-- `CRM-22` (En Haut) → `🪦 Perdue` + label `prix`. L'affaire est refusée depuis le
-  2026-08-24 sur le prix et sur le contenu. Ses 2 actions ouvertes (`CRM-45` due
-  2026-09-01, `CRM-23` due 2026-08-14) sont fermées en `Done` et archivées.
+- `CRM-22` (En Haut) : ses 2 actions périmées (`CRM-45` due 2026-09-01, `CRM-23`
+  due 2026-08-14) sont fermées et archivées. Passée en `🪦 Perdue` le 2026-08-29
+  sur la foi de la mémoire projet, puis **rectifiée le jour même par Ludo** :
+  Simon a écrit, une contre-proposition simplifiée est en préparation. Elle est
+  revenue en `📝 Devis envoyé`, sans label de perte, et porte `CRM-70` datée du
+  2026-08-31. Leçon : ne pas clore une affaire sur une mémoire sans vérifier
+  qu'aucun échange récent ne la contredit.
 - `CRM-8` « Dos et posture » est un doublon de `CRM-34` « 🧘 dos et posture ». On
   garde `CRM-34` (plus récente, emoji conforme, label `inbound`) ; `CRM-8` passe en
   `Duplicate` et s'archive.
@@ -219,3 +224,41 @@ Le travail reste sur `staging`. Aucune publication en production sans ordre expl
 - **Les stats d'activité restent fausses tant que `🧊 En veille` est `started`.**
   Choix conscient, hérité du 2026-08-26 : la place de la colonne prime sur la
   justesse d'un graphe qu'on ne regarde pas.
+
+## 10. Exécution — ce qui a été fait, ce qui reste
+
+Exécutée le 2026-08-29 par GraphQL direct : le MCP Linear n'expose pas les
+mutations de workflow states, mais **l'API, elle, les expose** — `workflowStateUpdate`,
+`workflowStateArchive` et `templateUpdate` fonctionnent. Ne pas répéter l'erreur de
+la spec du 19, qui attribuait à l'API une limite qui n'est que celle du MCP.
+
+**Fait :** les 4 renommages ; les 4 suppressions d'états (`🏗️ En production`,
+`💪 Négo`, `☄️ Relancé`, `Doing`) après migration de leurs issues ; `CRM-33`,
+`CRM-44`, `CRM-45`, `CRM-23` fermées puis archivées ; `CRM-8` liée en doublon de
+`CRM-34`, passée en `Duplicate` et archivée ; les 7 sous-actions datées créées
+(`CRM-63` à `CRM-69`) ; l'échéance périmée de `CRM-3` redatée ; `CRM-1` déplacée en
+`COO-157` ; la description de team réécrite ; la vue **« Mes actions » créée par
+API**.
+
+Les positions n'ont pas eu besoin d'être touchées : après suppression, l'ordre des
+états correspondait déjà à celui du §2.
+
+**Vérifié après coup :** 24 affaires réparties sur les colonnes du pipeline cible,
+27 actions n'utilisant que `Todo` et `Done`, et les 22 affaires vivantes portent
+chacune au moins une action datée — la règle d'or est tenue pour la première fois.
+
+**Un geste reste à la main :** la vue **« Affaires »**. `customViewCreate` rejette le
+filtre « sans parent » sous toutes les formes testées, alors qu'il accepte son
+inverse — d'où la vue « Mes actions » créée sans peine. À poser dans l'UI : board
+CRM → Filter → Sub-issues → Exclude → Save view, avec « Hide empty groups ». Second
+geste, mineur : rendre `COO-157` récurrente, ce qui est aussi un réglage d'UI.
+
+**Correction au §4 :** Linear n'expose **aucun** statut par défaut propre aux
+sous-issues — `TeamUpdateInput` ne porte que `defaultIssueStateId`, global à la team,
+et il vaudrait donc aussi pour les affaires. La branche conditionnelle du §4 est
+tranchée : le garde-fou vit dans la skill `linear` (commit `87c5319` du repo
+`coolbeans-claude-skills`) et dans le gabarit `🧬 Opportunité`, jamais dans les
+réglages de team.
+
+**Correction au §6.6 :** le passage de `CRM-22` en `🪦 Perdue` a été annulé le jour
+même. Voir §7.
