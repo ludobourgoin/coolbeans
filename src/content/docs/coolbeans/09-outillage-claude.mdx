@@ -3,13 +3,13 @@ client: "coolbeans"
 title: "Outillage Claude"
 order: 9
 status: "final"
-updated: 2026-08-15
-description: "L'environnement de travail Claude Code : sa sauvegarde dans le repo dotfiles et le catalogue complet des skills, par catégorie."
+updated: 2026-08-29
+description: "L'environnement de travail Claude Code : ce qu'il contient et comment il est sauvegardé dans le repo dotfiles."
 ---
 
-L'environnement de travail Claude Code de Ludo : comment il est sauvegardé
-pour survivre à la perte d'une machine, et ce qu'il contient comme skills.
-Pour retrouver rapidement le bon outil, ou tout réinstaller de zéro.
+L'environnement de travail Claude Code de Ludo : ce qu'il contient et
+comment il est sauvegardé pour survivre à la perte d'une machine. Pour tout
+réinstaller de zéro sans rien oublier.
 
 ## La sauvegarde : le repo dotfiles
 
@@ -20,14 +20,14 @@ en une trentaine de minutes, en suivant son guide `RESTORE.md`.
 
 Ce qu'il contient :
 
-| Dossier      | Contenu                                                                                                                                                                                                                                                                                                          |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `claude/`    | La configuration Claude Code : réglages (`settings.json`), hooks, commandes personnalisées, barre de statut, les **skills** (voir catalogue ci-dessous), les agents, les **mémoires par projet** (le contexte que Claude accumule), la liste des plugins et la configuration des serveurs MCP (sans les secrets) |
-| `dev/`       | Le `CLAUDE.md` global du dossier `/dev` (règles de travail, garde-fous)                                                                                                                                                                                                                                          |
-| `shell/`     | Les fichiers de configuration du terminal (`zshrc`, `gitconfig`, statusline)                                                                                                                                                                                                                                     |
-| `apps/`      | Les listes de réinstallation : `Brewfile` (Homebrew), applications installées, extensions Chrome et VS Code, packages npm globaux                                                                                                                                                                                |
-| `backup.sh`  | Le script qui régénère tout ce qui précède depuis la machine                                                                                                                                                                                                                                                     |
-| `RESTORE.md` | Le guide de restauration pas à pas sur une machine neuve                                                                                                                                                                                                                                                         |
+| Dossier      | Contenu                                                                                                                                                                                                                                                                                                           |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `claude/`    | La configuration Claude Code : réglages (`settings.json`), hooks, commandes personnalisées, barre de statut, les **skills** (catalogue en page suivante), les agents, les **mémoires par projet** (le contexte que Claude accumule), la liste des plugins et la configuration des serveurs MCP (sans les secrets) |
+| `dev/`       | Le `CLAUDE.md` global du dossier `/dev` (règles de travail, garde-fous)                                                                                                                                                                                                                                           |
+| `shell/`     | Les fichiers de configuration du terminal (`zshrc`, `gitconfig`, statusline)                                                                                                                                                                                                                                      |
+| `apps/`      | Les listes de réinstallation : `Brewfile` (Homebrew), applications installées, extensions Chrome et VS Code, packages npm globaux                                                                                                                                                                                 |
+| `backup.sh`  | Le script qui régénère tout ce qui précède depuis la machine                                                                                                                                                                                                                                                      |
+| `RESTORE.md` | Le guide de restauration pas à pas sur une machine neuve                                                                                                                                                                                                                                                          |
 
 La sauvegarde n'est pas automatique : après tout changement de skill ou de
 configuration, relancer `./backup.sh` à la racine du repo, puis commit et
@@ -35,189 +35,15 @@ push. Les secrets (tokens, clés SSH, fichiers `.env`) ne sont **jamais**
 dans ce repo : ils se récupèrent depuis les dashboards des services ou se
 régénèrent, comme détaillé dans `RESTORE.md`.
 
-## Le catalogue des skills
+## Les skills
 
 Un skill est un mode d'emploi que Claude charge à la demande pour une tâche
 précise : il se déclenche tout seul quand la demande correspond à sa
 description, ou à la main en tapant `/nom-du-skill`. Chaque skill est un
 dossier `~/.claude/skills/<nom>/SKILL.md`, sauvegardé dans le repo dotfiles.
 S'y ajoutent des plugins tiers installés depuis leurs marketplaces
-(superpowers, context-mode, claude-seo, code-review…) qui se réinstallent
-automatiquement depuis la liste conservée dans dotfiles — ils ne figurent
-pas dans les tableaux ci-dessous.
+(superpowers, context-mode, claude-seo, code-review), qui se réinstallent
+automatiquement depuis la liste conservée dans dotfiles.
 
-### Marketing
-
-| Skill                   | À quoi ça sert                                                                                |
-| ----------------------- | --------------------------------------------------------------------------------------------- |
-| `ab-testing`            | Concevoir des tests A/B et un programme d'expérimentation                                     |
-| `ad-creative`           | Générer et décliner des créas publicitaires (titres, textes) à grande échelle                 |
-| `ads`                   | Stratégie de campagnes payantes (Google, Meta, LinkedIn) : ciblage, budget, optimisation      |
-| `ai-seo`                | Être cité par les moteurs IA (ChatGPT, Perplexity, AI Overviews)                              |
-| `analytics`             | Mettre en place ou auditer le tracking : GA4, événements, conversions, UTM                    |
-| `article-seo`           | Rédiger un brief puis un article de blog optimisé SEO                                         |
-| `aso`                   | Auditer et optimiser une fiche App Store ou Google Play                                       |
-| `churn-prevention`      | Réduire le churn : parcours d'annulation, offres de rétention, relances de paiement           |
-| `co-marketing`          | Trouver des partenaires et monter des campagnes conjointes                                    |
-| `community-marketing`   | Construire et animer une communauté (Discord, Slack, forum)                                   |
-| `competitor-profiling`  | Dresser le profil détaillé de concurrents à partir de leurs URLs                              |
-| `competitors`           | Créer des pages comparatives « X vs Y » et « alternative à X »                                |
-| `content-strategy`      | Décider quoi publier : piliers, clusters de sujets, calendrier éditorial                      |
-| `copy-editing`          | Retravailler un texte marketing existant : resserrer, clarifier, rafraîchir                   |
-| `copywriting`           | Écrire le texte d'une page qui doit convaincre (home, landing, pricing)                       |
-| `cro`                   | Optimiser la conversion d'une page ou d'un formulaire                                         |
-| `customer-research`     | Mener et synthétiser la recherche client : interviews, avis, personas                         |
-| `directory-submissions` | Soumettre un produit aux annuaires (Product Hunt, G2…) pour backlinks et visibilité           |
-| `emails`                | Concevoir des séquences email automatisées : onboarding, nurture, réengagement                |
-| `free-tools`            | Concevoir un outil gratuit (calculateur, générateur) comme aimant à leads                     |
-| `image`                 | Créer ou optimiser des visuels marketing : héros de blog, réseaux sociaux, images OG          |
-| `launch`                | Planifier un lancement produit ou une annonce de fonctionnalité                               |
-| `lead-magnets`          | Créer des contenus à télécharger contre email : checklist, template, ebook                    |
-| `marketing-ideas`       | Brainstormer des idées et tactiques de croissance                                             |
-| `marketing-plan`        | Produire un plan marketing complet structuré AARRR                                            |
-| `marketing-psychology`  | Appliquer les biais cognitifs et la psychologie de la décision au marketing                   |
-| `newsletter`            | Rédiger une newsletter ou un email marketing                                                  |
-| `onboarding`            | Optimiser l'activation après inscription : première session, checklist, moment aha            |
-| `paywalls`              | Concevoir les écrans d'upgrade et les moments de passage au payant dans le produit            |
-| `popups`                | Créer ou optimiser popups, bandeaux et overlays de capture                                    |
-| `post-social`           | Rédiger un post LinkedIn, X ou Instagram                                                      |
-| `pre-mortem`            | Analyser les risques avant un lancement ou un gros engagement (méthode Gary Klein)            |
-| `pricing`               | Décider quoi facturer et comment structurer les offres                                        |
-| `product-marketing`     | Poser le document de contexte produit (positionnement, ICP) que les autres skills réutilisent |
-| `programmatic-seo`      | Générer des pages SEO à grande échelle à partir de gabarits et de données                     |
-| `public-relations`      | Obtenir de la presse : pitchs journalistes, communiqués, newsjacking                          |
-| `referrals`             | Monter un programme de parrainage ou d'affiliation                                            |
-| `schema`                | Ajouter ou corriger les données structurées (JSON-LD, rich snippets)                          |
-| `seo-audit`             | Diagnostiquer les problèmes SEO d'un site : technique, on-page, indexation                    |
-| `signup`                | Optimiser le tunnel d'inscription et l'activation d'essai                                     |
-| `site-architecture`     | Structurer l'arborescence, la navigation et le maillage interne d'un site                     |
-| `sms`                   | Marketing par SMS : flux de bienvenue, panier abandonné, promotions                           |
-| `social`                | Créer, planifier et optimiser le contenu réseaux sociaux, veille comprise                     |
-| `stop-slop`             | Chasser les tics d'écriture IA d'un texte                                                     |
-| `video`                 | Produire du contenu vidéo avec les outils IA (Remotion, HeyGen…)                              |
-
-### Sales
-
-| Skill                   | À quoi ça sert                                                              |
-| ----------------------- | --------------------------------------------------------------------------- |
-| `cold-email`            | Écrire des cold emails B2B et leurs séquences de relance                    |
-| `email-prospection`     | Rédiger un email de prospection à froid personnalisé pour un prospect donné |
-| `prep-appel-decouverte` | Préparer un rendez-vous commercial : recherche prospect, agenda, objections |
-| `prospecting`           | Construire et qualifier une liste de prospects                              |
-| `relance-prospect`      | Rédiger un email de relance après un silence ou un rendez-vous              |
-| `revops`                | Organiser le pipeline marketing→ventes : scoring, routage, étapes CRM       |
-| `sales-enablement`      | Produire les supports de vente : decks, one-pagers, scripts de démo         |
-
-### Ops Coolbeans
-
-| Skill        | À quoi ça sert                                                                               |
-| ------------ | -------------------------------------------------------------------------------------------- |
-| `doc-client` | Rédiger et mettre à jour la doc d'un client dans le portail (cette page comprise)            |
-| `linear`     | Créer des issues Linear bien rédigées et rangées : team, projet, priorité, doublons détectés |
-
-### Dev — Astro
-
-| Skill                | À quoi ça sert                                                          |
-| -------------------- | ----------------------------------------------------------------------- |
-| `astro-6`            | Le framework Astro 6 : routage, modes de rendu, middleware              |
-| `astro-actions`      | Les Server Actions : formulaires et mutations côté serveur typées       |
-| `astro-assets`       | Optimisation des images et assets : composant Image, polices, images OG |
-| `astro-content`      | La Content Layer : collections de contenu typées, loaders, MDX          |
-| `astro-db`           | Astro DB : définir des tables et manipuler les données                  |
-| `astro-deployment`   | Déployer Astro : Cloudflare, Vercel, Netlify, Node                      |
-| `astro-i18n`         | Internationalisation : routage par langue, hreflang                     |
-| `astro-integrations` | Brancher React, Vue, Svelte et autres frameworks UI                     |
-| `astro-islands`      | L'architecture îlots : directives client, Server Islands                |
-| `astro-security`     | Content Security Policy et en-têtes de sécurité                         |
-| `astro-seo`          | SEO d'un site Astro : métas, sitemap, données structurées               |
-| `astro-starlight`    | Le thème de documentation Starlight                                     |
-| `astro-styling`      | Styles : CSS scopé, Tailwind, préprocesseurs                            |
-| `solid-astro`        | Principes SOLID et architecture propre appliqués à un projet Astro      |
-
-### Dev — Cloudflare
-
-| Skill                       | À quoi ça sert                                                                    |
-| --------------------------- | --------------------------------------------------------------------------------- |
-| `agents-sdk`                | Construire des agents IA sur Workers : état durable, WebSocket, planification     |
-| `cloudflare`                | La plateforme Cloudflare au complet : Workers, KV, D1, R2, sécurité, IA           |
-| `cloudflare-email-service`  | Envoyer et recevoir des emails transactionnels via Cloudflare                     |
-| `cloudflare-one`            | Zero Trust / SASE : Access, Gateway, WARP, Tunnel                                 |
-| `cloudflare-one-migrations` | Planifier une migration depuis Zscaler, VPN ou SWG vers Cloudflare One            |
-| `cloudflare-pages-ops`      | Exploiter un site sur Pages/Workers : builds bloqués, deploy hooks CMS, alertes   |
-| `durable-objects`           | Les Durable Objects : coordination avec état (chat, réservation), stockage SQLite |
-| `sandbox-sdk`               | Exécuter du code non fiable dans des sandboxes isolées                            |
-| `turnstile-spin`            | Installer Turnstile (anti-bot) de bout en bout sur un formulaire                  |
-| `workers-best-practices`    | Les bonnes pratiques d'écriture d'un Worker                                       |
-| `wrangler`                  | Le CLI wrangler : déployer et gérer Workers, KV, R2, D1, secrets                  |
-
-### Dev — Clerk (authentification)
-
-| Skill                             | À quoi ça sert                                                                      |
-| --------------------------------- | ----------------------------------------------------------------------------------- |
-| `clerk`                           | Le routeur : oriente vers le bon skill Clerk selon la tâche                         |
-| `clerk-android`                   | Auth native Android (Kotlin, Jetpack Compose)                                       |
-| `clerk-astro-patterns`            | Patterns Astro : middleware, pages SSR, îlots                                       |
-| `clerk-backend-api`               | Explorer et appeler l'API backend Clerk                                             |
-| `clerk-billing`                   | Abonnements et facturation : plans, checkout, entitlements                          |
-| `clerk-chrome-extension-patterns` | Auth dans une extension Chrome                                                      |
-| `clerk-cli`                       | Le CLI clerk : utilisateurs, orgs, impersonation, webhooks locaux                   |
-| `clerk-custom-ui`                 | Flux d'auth sur mesure et personnalisation visuelle des composants                  |
-| `clerk-expo`                      | Auth dans une app Expo / React Native                                               |
-| `clerk-nextjs-patterns`           | Patterns avancés Next.js : middleware, Server Actions, cache                        |
-| `clerk-nuxt-patterns`             | Patterns Nuxt 3 : composables, routes API serveur                                   |
-| `clerk-orgs`                      | Organisations B2B : multi-tenant, rôles, SSO entreprise                             |
-| `clerk-react-patterns`            | SPA React (Vite) : hooks, routes protégées                                          |
-| `clerk-react-router-patterns`     | React Router v7/v8 : loaders, middleware                                            |
-| `clerk-setup`                     | Ajouter Clerk à un projet en suivant les quickstarts officiels                      |
-| `clerk-swift`                     | Auth native iOS (Swift)                                                             |
-| `clerk-tanstack-patterns`         | TanStack Start : fonctions serveur, guards                                          |
-| `clerk-testing`                   | Tests E2E des flux d'auth (Playwright, Cypress)                                     |
-| `clerk-vue-patterns`              | Vue 3 : composables, guards de routeur                                              |
-| `clerk-webhooks`                  | Webhooks Clerk : vérification et synchronisation des événements                     |
-| `audit-clerk-skill`               | Auditer le skill `clerk-cli` contre les sources du CLI et proposer les mises à jour |
-| `audit-expo-skill`                | Auditer le skill `clerk-expo` contre le SDK et proposer les mises à jour            |
-
-### Dev — Sanity (CMS)
-
-| Skill                   | À quoi ça sert                                                        |
-| ----------------------- | --------------------------------------------------------------------- |
-| `sanity-best-practices` | Bonnes pratiques Sanity : schémas, GROQ, Visual Editing, intégrations |
-| `sanity-migration`      | Migrer un CMS existant (WordPress, Contentful, Webflow…) vers Sanity  |
-
-### Dev — Généraux
-
-| Skill                      | À quoi ça sert                                                                  |
-| -------------------------- | ------------------------------------------------------------------------------- |
-| `accessibility-wcag`       | Accessibilité web WCAG 2.2 : ARIA, clavier, lecteurs d'écran                    |
-| `api-design-patterns`      | Concevoir une API REST : nommage, pagination, versioning, OpenAPI               |
-| `benchmark`                | Mesurer des performances de référence et détecter les régressions               |
-| `browser-qa`               | Tests visuels et d'interaction automatisés dans le navigateur après déploiement |
-| `codebase-onboarding`      | Analyser un codebase inconnu et produire un guide d'embarquement                |
-| `data-scraper-agent`       | Construire un agent de collecte de données automatisé sur des sources publiques |
-| `database-optimization`    | Optimiser les requêtes et les index PostgreSQL / MySQL                          |
-| `design-system`            | Construire un design system : tokens, composants, thèmes, Storybook             |
-| `frontend-design`          | Direction visuelle d'une interface : typo, esthétique, choix non génériques     |
-| `git-advanced`             | Git avancé : worktrees, bisect, rebase interactif, récupération                 |
-| `performance-optimization` | Performance web : bundles, lazy loading, cache, Core Web Vitals                 |
-| `safety-guard`             | Garde-fou contre les opérations destructives en production                      |
-| `search-first`             | Chercher les solutions existantes avant d'écrire du code sur mesure             |
-| `security-review`          | Checklist sécurité : auth, entrées utilisateur, secrets, endpoints              |
-| `tdd-mastery`              | Développement piloté par les tests (cycle Red-Green-Refactor)                   |
-| `testing-strategies`       | Stratégies de test : contrats, snapshots, mutation, property-based              |
-| `typescript-advanced`      | TypeScript avancé : generics, types conditionnels, mapped types                 |
-| `unlighthouse`             | Scanner un site entier avec Google Lighthouse : perfs, accessibilité, SEO       |
-| `verification-loop`        | Boucle de vérification systématique d'un travail terminé                        |
-| `web-perf`                 | Mesurer les Core Web Vitals dans Chrome et identifier ce qui bloque le rendu    |
-
-### Gabarits
-
-Modèles à copier pour créer un nouveau skill dans une sphère : la
-description du frontmatter y est expliquée (c'est elle qui décide quand le
-skill se déclenche).
-
-| Skill           | Sphère         |
-| --------------- | -------------- |
-| `exemple-body`  | Corps / sport  |
-| `exemple-mind`  | Esprit / notes |
-| `exemple-mkg`   | Marketing      |
-| `exemple-sales` | Sales          |
+La liste complète, par catégorie, avec l'emplacement de chacun et les mots
+qui le déclenchent : [Catalogue des skills](/docs/coolbeans/catalogue-skills).

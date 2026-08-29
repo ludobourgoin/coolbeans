@@ -8,8 +8,9 @@ import { WORKSPACE_COOKIE } from "../lib/portail/current-workspace";
 import { portalHref } from "../lib/portail/nav";
 import { retourSchema } from "../lib/portail/retour";
 import { requireAdmin as requireAdminGuard } from "../lib/portail/require-admin";
+import { lireSession } from "../lib/auth/session";
 
-/* Garde systématique : session Clerk + rôle admin (publicMetadata), même
+/* Garde systématique : session Better Auth + type de compte admin, même
    contrôle que les pages /espace/chiffrages. Une requête forgée sans le rôle
    est rejetée ici, indépendamment du middleware.
 
@@ -20,7 +21,8 @@ import { requireAdmin as requireAdminGuard } from "../lib/portail/require-admin"
    qu'elle lève en ActionError. */
 export async function requireAdmin(context: ActionAPIContext): Promise<void> {
   try {
-    await requireAdminGuard(context.locals);
+    const { meta } = await lireSession(context);
+    requireAdminGuard(meta);
   } catch (err) {
     throw new ActionError({
       code: "FORBIDDEN",

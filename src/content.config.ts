@@ -185,6 +185,12 @@ const clients = defineCollection({
   loader: glob({ pattern: "*.yaml", base: "./src/content/clients" }),
   schema: z.object({
     nom: z.string(),
+    /* Slug du revendeur auquel ce client se rattache (spec 2026-08-19 §3.1) :
+       une agence, un freelance, ou `coolbeans` pour un client direct.
+       Obligatoire : sans lui un workspace n'appartient a personne, donc plus
+       personne ne le voit — pas meme un admin, dont la portee est le registre
+       entier mais dont le selecteur passe par l'organisation. */
+    organisation: z.string(),
     // Prénom du contact principal : c'est lui que salue la topbar quand un
     // admin est basculé sur ce client (« vue client », retour du 2026-08-17).
     // Absent, la salutation retombe sur le nom du client.

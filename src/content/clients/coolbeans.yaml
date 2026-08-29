@@ -1,6 +1,8 @@
 # Coolbeans est un client comme les autres : Ludo est le client zéro.
 # Les mappings sont optionnels ; absents, les modules affichent un empty state.
 nom: Coolbeans
+# Revendeur auquel ce client se rattache (spec 2026-08-19 §3.1).
+organisation: coolbeans
 prenom: Ludo
 # Workspace perso : en tête du sélecteur, avant le liseret des clients.
 perso: true

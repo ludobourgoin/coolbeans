@@ -180,6 +180,7 @@ export const etapes: Etape[] = [
     outils: ["Notion Calendar", "Asana — 🎯 crm"],
     faire: [
       "Annoncer une fourchette de prix dans les cinq premières minutes, avant le tour de périmètre.",
+      "Faire dire au lead le budget dont il dispose. Annoncer le sien ne suffit pas : sans montant côté client, l'affaire n'est pas qualifiée.",
       "Cadrer le besoin, l'échéance et sa raison, et vérifier qu'on parle au décideur.",
       "Faire choisir le niveau de direction artistique — au-delà du sobre et minimaliste, orienter vers un directeur ou une directrice artistique partenaire.",
       "Annoncer la suite et le délai d'envoi du devis.",

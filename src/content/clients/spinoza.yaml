@@ -3,6 +3,8 @@
 # donc seuls les admins voient sa doc (autorisation `doc === client`, voir
 # src/pages/docs/[client]/[...slug].astro).
 nom: Spinoza
+# Revendeur auquel ce client se rattache (spec 2026-08-19 §3.1).
+organisation: coolbeans
 prenom: Ludo
 perso: true
 doc: spinoza

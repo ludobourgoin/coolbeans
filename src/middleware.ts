@@ -1,19 +1,18 @@
-import { clerkMiddleware } from "@clerk/astro/server";
+import { defineMiddleware } from "astro:middleware";
 import { getActionContext } from "astro:actions";
+import { lireSession } from "./lib/auth/session";
 
-// L'espace client et toute la doc exigent une session Clerk.
-// Le contrôle par client (qui voit quelle doc) se fait dans la route doc,
-// via publicMetadata — voir src/pages/docs/[client]/[...slug].astro.
-// NB : @clerk/astro v4 n'exporte plus createRouteMatcher, d'où le matcher maison.
+// L'espace client et toute la doc exigent une session.
+// Le middleware ne tranche QUE la question « connecté ou non ». Le contrôle
+// par workspace (qui voit quoi) se fait dans les routes, via la portée du
+// compte — voir src/lib/portail/appartenances.ts.
 const PROTECTED = [/^\/espace(\/|$)/, /^\/docs(\/|$)/];
 
-export const onRequest = clerkMiddleware(async (auth, context, next) => {
+export const onRequest = defineMiddleware(async (context, next) => {
   const { pathname } = new URL(context.request.url);
   if (PROTECTED.some((re) => re.test(pathname))) {
-    const authObject = auth();
-    if (!authObject.userId) {
-      // Page de connexion maison (/connexion, en français) plutôt que la
-      // page hébergée Clerk (accounts.*, anglais uniquement).
+    const { user } = await lireSession(context);
+    if (!user) {
       const signIn = new URL("/connexion", context.request.url);
       signIn.searchParams.set("redirect_url", context.request.url);
       return context.redirect(signIn.href);

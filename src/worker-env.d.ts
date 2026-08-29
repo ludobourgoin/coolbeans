@@ -38,6 +38,14 @@ interface PortalSecrets {
    * sur chaque environnement, `.dev.vars` en local.
    */
   RESEND_API_KEY?: string;
+
+  /**
+   * Secret de signature de Better Auth (sessions et jetons) : `wrangler
+   * secret put BETTER_AUTH_SECRET` sur chaque environnement, `.dev.vars` en
+   * local. Une valeur differente par environnement — la partager reviendrait
+   * a rendre une session de staging valable en production.
+   */
+  BETTER_AUTH_SECRET?: string;
 }
 
 interface Env extends PortalSecrets {}
