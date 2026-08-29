@@ -20,7 +20,7 @@ Le site se déploie par **Cloudflare Workers Builds** : Cloudflare surveille le 
 - Branches hors production : builds activés, avec `npx wrangler versions upload` — chaque branche obtient une URL de preview sans toucher la production
 - Racine du projet : `/`
 
-<Callout type="warning">
+<Callout type="warn">
   **Un push sur `main` met en production.** Il n'y a pas d'environnement de staging séparé : le staging, ce sont les previews de branche. On ne pousse `main` que pour publier.
 </Callout>
 

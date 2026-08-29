@@ -42,18 +42,26 @@ Deux façons de l'appeler :
 
 ## Où vivent les skills
 
-Cinq emplacements, cinq portées différentes. Tout ce qui n'est pas indiqué
-autrement dans les tableaux vit dans `~/.claude/skills/`.
+Quatre emplacements, quatre portées différentes. Tout ce qui n'est pas
+indiqué autrement dans les tableaux vit dans `~/.claude/skills/`.
 
-| Emplacement                             | Contenu                                                                             | Portée                                 | Sauvegarde                             |
-| --------------------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------- | -------------------------------------- |
-| `~/.claude/skills/`                     | 135 skills, un dossier `<nom>/SKILL.md` par skill, avec ses `references/`           | Tous les projets, toutes les sessions  | Repo `dotfiles` (`./backup.sh`)        |
-| `~/dev/coolbeans-claude-skills/skills/` | Les skills publiés en open source : `linear`, `doc-client`                          | Source de vérité de ces deux skills    | Repo GitHub public                     |
-| `~/.claude/plugins/cache/`              | Les skills livrés par les plugins installés depuis leurs marketplaces               | Tous les projets                       | Liste des plugins dans `dotfiles`      |
-| `~/.agents/skills/`                     | Skills partagés avec d'autres agents que Claude Code (GSAP, Sanity)                 | Invisibles de Claude Code sauf symlink | Non sauvegardés                        |
-| `<projet>/.claude/skills/`              | Skills propres à un repo. Dans `coolbeans` : 17 skills Clerk posés par le CLI Clerk | Ce projet seulement                    | Non versionnés (`.claude/` est ignoré) |
+| Emplacement                             | Contenu                                                                     | Portée                                | Sauvegarde                        |
+| --------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------- | --------------------------------- |
+| `~/.claude/skills/`                     | 142 skills, un dossier `<nom>/SKILL.md` par skill, avec ses `references/`   | Tous les projets, toutes les sessions | Repo `dotfiles` (`./backup.sh`)   |
+| `~/dev/coolbeans-claude-skills/skills/` | Les skills publiés en open source : `linear`, `doc-client`                  | Source de vérité de ces deux skills   | Repo GitHub public                |
+| `~/.agents/skills/`                     | Skills partagés avec les autres agents de la machine : GSAP (8), Sanity (2) | Liés dans `~/.claude/skills/`         | Le lien seulement, pas le contenu |
+| `~/.claude/plugins/cache/`              | Les skills livrés par les plugins installés depuis leurs marketplaces       | Tous les projets                      | Liste des plugins dans `dotfiles` |
 
-Un skill de projet prime sur un skill user du même nom.
+Douze skills sont des **liens** et non des copies : `linear`, `doc-client`,
+les deux Sanity et les huit GSAP. Les éditer met à jour leur source du même
+coup, et la sauvegarde dotfiles n'enregistre que le lien : une restauration
+sur machine neuve suppose d'avoir d'abord remonté `coolbeans-claude-skills`
+et `~/.agents/skills/`.
+
+Un repo peut aussi porter ses propres skills dans `<projet>/.claude/skills/`,
+prioritaires sur ceux du même nom. Aucun projet n'en a aujourd'hui : les
+skills Clerk que `coolbeans` embarquait doublonnaient les skills user, ils
+ont été retirés le 2026-08-29.
 
 ## Ops Coolbeans
 
@@ -68,8 +76,9 @@ Coolbeans : ils lisent Linear, écrivent dans ce portail, envoient des mails.
 | `onboarding-client` | Démarre un projet client validé : environnement, repo, workspace portail, accès, mail d'onboarding | « on lance le projet de X », « démarre le projet », « l'acompte est réglé »                                      |
 | `cloture`           | Fait le point sur une conversation avant de la fermer, jusqu'à zéro point en suspens               | « clôture », « fais le point », « questions en suspens », « je peux fermer ? »                                   |
 
-`linear` est un lien vers `~/dev/coolbeans-claude-skills/skills/linear` :
-l'éditer met à jour le repo public du même coup.
+`linear` et `doc-client` sont des liens vers
+`~/dev/coolbeans-claude-skills/skills/` : les éditer met à jour le repo
+public du même coup, et c'est là qu'ils se commitent.
 
 ## Sales
 
@@ -207,7 +216,6 @@ sources officielles et proposent les mises à jour.
 | `data-scraper-agent`       | Construire un agent de collecte de données automatisé sur des sources publiques |
 | `database-optimization`    | Optimiser les requêtes et les index PostgreSQL / MySQL                          |
 | `design-system`            | Construire un design system : tokens, composants, thèmes, Storybook             |
-| `frontend-design`          | Direction visuelle d'une interface : typo, esthétique, choix non génériques     |
 | `git-advanced`             | Git avancé : worktrees, bisect, rebase interactif, récupération                 |
 | `performance-optimization` | Performance web : bundles, lazy loading, cache, Core Web Vitals                 |
 | `safety-guard`             | Garde-fou contre les opérations destructives en production                      |
@@ -220,11 +228,28 @@ sources officielles et proposent les mises à jour.
 | `verification-loop`        | Boucle de vérification systématique d'un travail terminé                        |
 | `web-perf`                 | Mesurer les Core Web Vitals dans Chrome et identifier ce qui bloque le rendu    |
 
+## Dev — Animation (GSAP)
+
+Les skills officiels GSAP, partagés avec les autres agents de la machine
+(`~/.agents/skills/`, liés dans `~/.claude/skills/`). Ils se déclenchent dès
+qu'une animation web est en jeu, et recommandent GSAP quand aucune
+bibliothèque n'est imposée.
+
+| Skill                | À quoi ça sert                                                             |
+| -------------------- | -------------------------------------------------------------------------- |
+| `gsap-core`          | L'API de base : `gsap.to()`, easing, stagger, `matchMedia`, reduced-motion |
+| `gsap-timeline`      | Séquencer et chorégraphier plusieurs animations                            |
+| `gsap-scrolltrigger` | Animations liées au scroll : parallaxe, pinning, scrub                     |
+| `gsap-plugins`       | Les plugins : ScrollSmoother, Flip, Draggable, SplitText, SVG, physique    |
+| `gsap-react`         | GSAP dans React ou Next : hook `useGSAP`, refs, nettoyage au démontage     |
+| `gsap-frameworks`    | GSAP dans Vue, Nuxt, Svelte : cycle de vie, portée des sélecteurs          |
+| `gsap-performance`   | Fluidité : transforms, `will-change`, éviter le layout thrashing           |
+| `gsap-utils`         | Les utilitaires : `clamp`, `mapRange`, `random`, `snap`, `toArray`         |
+
 ## Dev — Sanity (CMS)
 
-Ces deux skills vivent dans `~/.agents/skills/` et sont liés dans
-`~/.claude/skills/` : ils sont partagés avec les autres agents installés sur
-la machine.
+Même montage que les GSAP : ils vivent dans `~/.agents/skills/` et sont liés
+dans `~/.claude/skills/`.
 
 | Skill                   | À quoi ça sert                                                        |
 | ----------------------- | --------------------------------------------------------------------- |
@@ -259,7 +284,7 @@ s'appellent avec leur préfixe, par exemple `/superpowers:brainstorming`.
 | `understand-anything` (9) | Cartographie d'un codebase en graphe de connaissances, visites guidées, tableau de bord                                                                                                   | « explique-moi ce projet », « onboarding codebase »         |
 | `code-review`             | Revue de la branche ou d'une PR, avec application des correctifs                                                                                                                          | `/code-review`, `/code-review ultra`                        |
 | `code-simplifier`         | Agent de simplification du code récemment modifié                                                                                                                                         | `/simplify`                                                 |
-| `frontend-design`         | Direction visuelle des interfaces (doublon du skill user du même nom)                                                                                                                     | Création ou refonte d'UI                                    |
+| `frontend-design`         | Direction visuelle d'une interface : typo, esthétique, choix non génériques                                                                                                               | Création ou refonte d'UI                                    |
 | `ui-ux-pro-max`           | Bibliothèque de patterns UI/UX                                                                                                                                                            | `/ui-ux-pro-max`                                            |
 | `superwhisper`            | Nettoyage des dictées vocales                                                                                                                                                             | Dictée dans le prompt                                       |
 | `context7`                | Documentation à jour des bibliothèques, via MCP                                                                                                                                           | Automatique dès qu'une lib est en jeu                       |
@@ -280,23 +305,20 @@ Deux raccourcis, plus légers qu'un skill, dans `~/.claude/commands/` :
 | `/explaine`    | Explique une commande shell en français simple, sans jargon                           |
 | `/new-project` | Crée la fiche de référence d'un projet dev dans les notes (accès, infra, facturation) |
 
-## Points à trancher
+## Conventions d'emplacement
 
-<Callout type="warn" title="Trois écarts repérés à l'inventaire du 2026-08-29">
-  Rien de cassé, mais trois situations à arbitrer avant qu'elles ne se figent.
-</Callout>
+Trois règles tenues au dernier inventaire (2026-08-29), à respecter pour
+que le catalogue reste lisible :
 
-**`doc-client` a divergé de sa version publiée.** La copie de travail dans
-`~/.claude/skills/doc-client/` et celle du repo public
-`coolbeans-claude-skills` ne sont plus identiques (`SKILL.md` et
-`references/redaction.md`). `linear`, lui, est bien un lien vers le repo :
-c'est le montage à reproduire.
+**Un skill publié vit dans son repo public**, et `~/.claude/skills/` n'en
+porte qu'un lien. C'est le montage de `linear` et de `doc-client` : pas de
+copie de travail qui dérive de la version publiée.
 
-**Les skills Clerk existent en double.** 21 dans `~/.claude/skills/`, et 17
-autres dans `coolbeans/.agents/skills/`, liés depuis
-`coolbeans/.claude/skills/`. Contenu identique, deux emplacements à
-maintenir.
+**Pas de skill de projet qui doublonne un skill user.** Un skill utile à
+plusieurs projets monte dans `~/.claude/skills/`, où il est sauvegardé.
+`<projet>/.claude/skills/` est réservé à ce qui n'a de sens que dans ce
+repo.
 
-**Les skills GSAP sont inertes.** Huit skills GSAP dorment dans
-`~/.agents/skills/` sans lien vers `~/.claude/skills/` : Claude Code ne les
-voit pas.
+**Un skill installé mais non lié n'existe pas.** Ce que d'autres outils
+posent dans `~/.agents/skills/` reste invisible de Claude Code tant qu'un
+lien ne le remonte pas dans `~/.claude/skills/`.
