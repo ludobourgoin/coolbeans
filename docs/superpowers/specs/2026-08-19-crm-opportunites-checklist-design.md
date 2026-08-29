@@ -232,10 +232,25 @@ du 2026-08-29, par API :
 **État après migration** : 25 opportunités, 23 sous-issues (contre 32), zéro sous-issue
 de process.
 
-**Dettes révélées par la règle d'or**, à traiter par Ludo, pas par la migration :
-neuf opportunités vivantes n'ont aucune action ouverte (`CRM-4`, `CRM-5`, `CRM-6`,
-`CRM-7`, `CRM-8`, `CRM-9`, `CRM-13`, `CRM-34`, `CRM-41`), deux en ont deux (`CRM-22`,
-`CRM-42`). `CRM-8` et `CRM-34` semblent être la même affaire en double. `CRM-22`
-(en_haut) est encore en `💪 Négo` alors que l'affaire est refusée depuis le 2026-08-24.
+**Dettes révélées par la règle d'or** : neuf opportunités vivantes sans action
+ouverte, deux avec deux actions, et un doublon `CRM-8` / `CRM-34`.
 
-Le §8 (réécriture Asana → Linear de `02-vente.mdx` et `sop.ts`) reste ouvert.
+## 10. Suite immédiate, le même jour
+
+Cette spec a été dépassée en quelques heures. L'après-midi du 2026-08-29, le board
+était de nouveau illisible : le modèle hybride sépare les *vocabulaires* (emoji =
+affaire, sans emoji = action) mais pas les *axes*, or dans Linear les workflow states
+sont par team, pas par type d'objet. Une convention humaine sans contrainte technique
+dérive.
+
+La suite est `2026-08-29-crm-pipeline-refonte-design.md`, qui **laisse le modèle
+hybride en vigueur** et refait l'axe des statuts : 10 colonnes d'affaires, actions
+réduites à `Todo` / `Done`, board filtré `Sub-issues: exclude`. Elle a été exécutée
+dans Linear le 2026-08-29 en fin d'après-midi, et elle a traité les dettes ci-dessus
+(§7 de cette spec-là). Les noms de statuts cités dans le présent document sont donc
+périmés : `🎯 Besoins définis` est devenu `🎯 À chiffrer`, `🚀 Acompte réglé` →
+`🏆 Signée`, `📝 Solde envoyé` → `🧾 Solde à encaisser`, et `☄️ Relancé`, `💪 Négo`,
+`🏗️ En production` et `Doing` n'existent plus.
+
+Le §8 (réécriture Asana → Linear de `02-vente.mdx` et `sop.ts`) reste ouvert, et il
+est repris avec deux dettes de plus par le §8 de la spec du 2026-08-29.
