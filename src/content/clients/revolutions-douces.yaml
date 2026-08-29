@@ -2,6 +2,8 @@ nom: Rév'olutions Douces
 # Revendeur auquel ce client se rattache (spec 2026-08-19 §3.1).
 organisation: coolbeans
 prenom: Sam
+# Doc client publiee sur my.coolbeans.cc/docs/revolutions-douces
+doc: revolutions-douces
 # Emoji du sélecteur (repris de l'icône de la team Linear) et début de la
 # relation. L'association porte le salon Construire & Habiter Autrement ;
 # le workspace est nommé d'après elle, comme la team Linear REV.
