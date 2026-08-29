@@ -1,0 +1,302 @@
+---
+client: "coolbeans"
+title: "Catalogue des skills"
+order: 10
+status: "final"
+updated: 2026-08-29
+description: "Tous les skills Claude Code disponibles : où ils vivent sur la machine, ce qu'ils font, et les mots qui les déclenchent."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+La liste complète des skills disponibles dans Claude Code, rangés par
+catégorie, avec pour chacun son emplacement et ce qui le déclenche. Pour
+retrouver le bon outil sans fouiller le disque, et pour savoir quoi écrire
+pour l'appeler.
+
+L'environnement qui héberge tout ça et sa sauvegarde sont décrits dans
+[Outillage Claude](/docs/coolbeans/outillage-claude).
+
+## Comment un skill se déclenche
+
+Un skill est un mode d'emploi que Claude charge à la demande. Il porte une
+`description` en en-tête, et c'est **elle seule** qui décide du
+déclenchement automatique : si la demande ressemble à cette description,
+Claude ouvre le skill sans qu'on ait rien à demander.
+
+Deux façons de l'appeler :
+
+1. **Automatique** : écrire une phrase qui correspond à la description. Les
+   colonnes « Se déclenche sur » ci-dessous donnent les formulations
+   réellement inscrites dans chaque skill.
+2. **À la main** : taper `/` dans le prompt puis le nom du skill. Utile
+   quand le déclenchement automatique ne part pas, ou pour forcer un skill
+   précis.
+
+<Callout type="tip">
+  Les skills de dev et d'infra (Astro, Cloudflare, auth) n'ont pas de mots-clés : ils se déclenchent
+  au contexte, dès qu'on touche au sujet dans un projet qui l'utilise. Les packs marketing et sales
+  achetés sont décrits en anglais : ils partent mieux sur le vocabulaire anglais, ou en
+  `/nom-du-skill`.
+</Callout>
+
+## Où vivent les skills
+
+Cinq emplacements, cinq portées différentes. Tout ce qui n'est pas indiqué
+autrement dans les tableaux vit dans `~/.claude/skills/`.
+
+| Emplacement                             | Contenu                                                                             | Portée                                 | Sauvegarde                             |
+| --------------------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------- | -------------------------------------- |
+| `~/.claude/skills/`                     | 135 skills, un dossier `<nom>/SKILL.md` par skill, avec ses `references/`           | Tous les projets, toutes les sessions  | Repo `dotfiles` (`./backup.sh`)        |
+| `~/dev/coolbeans-claude-skills/skills/` | Les skills publiés en open source : `linear`, `doc-client`                          | Source de vérité de ces deux skills    | Repo GitHub public                     |
+| `~/.claude/plugins/cache/`              | Les skills livrés par les plugins installés depuis leurs marketplaces               | Tous les projets                       | Liste des plugins dans `dotfiles`      |
+| `~/.agents/skills/`                     | Skills partagés avec d'autres agents que Claude Code (GSAP, Sanity)                 | Invisibles de Claude Code sauf symlink | Non sauvegardés                        |
+| `<projet>/.claude/skills/`              | Skills propres à un repo. Dans `coolbeans` : 17 skills Clerk posés par le CLI Clerk | Ce projet seulement                    | Non versionnés (`.claude/` est ignoré) |
+
+Un skill de projet prime sur un skill user du même nom.
+
+## Ops Coolbeans
+
+Les skills métier, écrits sur mesure. Ce sont ceux qui portent le process
+Coolbeans : ils lisent Linear, écrivent dans ce portail, envoient des mails.
+
+| Skill               | À quoi ça sert                                                                                     | Se déclenche sur                                                                                                 |
+| ------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `devis`             | Génère la page devis à partir d'un projet Linear en statut Proposal, puis l'envoie au lead         | « génère le devis », « prépare le devis de X », « devis pour X » ; et au retex : « il a signé », « devis perdu » |
+| `doc-client`        | Rédige et met à jour la doc d'un client dans ce portail, cette page comprise                       | « mets à jour la doc de X », « génère la doc de X », « doc de passation »                                        |
+| `linear`            | Crée des issues Linear rangées et qualifiées, et audite la structure du workspace                  | « linear », « crée une issue », « nouveau ticket », « audit linear »                                             |
+| `onboarding-client` | Démarre un projet client validé : environnement, repo, workspace portail, accès, mail d'onboarding | « on lance le projet de X », « démarre le projet », « l'acompte est réglé »                                      |
+| `cloture`           | Fait le point sur une conversation avant de la fermer, jusqu'à zéro point en suspens               | « clôture », « fais le point », « questions en suspens », « je peux fermer ? »                                   |
+
+`linear` est un lien vers `~/dev/coolbeans-claude-skills/skills/linear` :
+l'éditer met à jour le repo public du même coup.
+
+## Sales
+
+| Skill                   | À quoi ça sert                                                             | Se déclenche sur                                                        |
+| ----------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `email-prospection`     | Rédige un email de prospection à froid personnalisé pour un prospect donné | « écris à ce prospect », « mail de prospection », « cold email pour X » |
+| `prep-appel-decouverte` | Prépare un rendez-vous commercial : recherche prospect, agenda, objections | « prépare mon appel avec X », « RDV découverte », « j'ai un call »      |
+| `relance-prospect`      | Rédige un email de relance après un silence ou un rendez-vous              | « relance ce prospect », « follow-up », « il n'a pas répondu »          |
+| `cold-email`            | Écrit des cold emails B2B et leurs séquences de relance                    | "cold outreach", "outbound email", "reach out to prospects"             |
+| `prospecting`           | Construit et qualifie une liste de prospects                               | "find prospects", "build a prospect list", "lead gen list"              |
+| `revops`                | Organise le pipeline marketing vers ventes : scoring, routage, étapes CRM  | "RevOps", "lead scoring", "MQL", "pipeline stages"                      |
+| `sales-enablement`      | Produit les supports de vente : decks, one-pagers, scripts de démo         | "sales deck", "one-pager", "objection handling"                         |
+
+## Marketing
+
+| Skill                   | À quoi ça sert                                                                        | Se déclenche sur                                                    |
+| ----------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `article-seo`           | Rédige un brief puis un article de blog optimisé SEO                                  | « écris un article sur X », « contenu pour le blog »                |
+| `newsletter`            | Rédige une newsletter ou un email marketing                                           | « rédige la newsletter », « infolettre », « email pour annoncer X » |
+| `post-social`           | Rédige un post LinkedIn, X ou Instagram                                               | « fais-moi un post », « rédige une publication »                    |
+| `pre-mortem`            | Analyse les risques avant un lancement ou un gros engagement                          | « pré-mortem », « analyse de risques », « et si ça échoue »         |
+| `stop-slop`             | Chasse les tics d'écriture IA d'un texte                                              | Contextuel : à la rédaction ou à la relecture d'un texte            |
+| `ab-testing`            | Conçoit des tests A/B et un programme d'expérimentation                               | "A/B test", "split test", "experiment"                              |
+| `ad-creative`           | Génère et décline des créas publicitaires à grande échelle                            | "ad copy variations", "generate headlines", "ad creative"           |
+| `ads`                   | Stratégie de campagnes payantes (Google, Meta, LinkedIn)                              | "PPC", "ROAS", "ad campaign", "Google Ads"                          |
+| `ai-seo`                | Être cité par les moteurs IA (ChatGPT, Perplexity, AI Overviews)                      | "AI SEO", "AEO", "GEO", "AI Overviews"                              |
+| `analytics`             | Met en place ou audite le tracking : GA4, événements, conversions, UTM                | "GA4", "set up tracking", "conversion tracking"                     |
+| `aso`                   | Audite et optimise une fiche App Store ou Google Play                                 | "ASO audit", "app store optimization"                               |
+| `churn-prevention`      | Réduit le churn : parcours d'annulation, offres de rétention, relances de paiement    | "churn", "cancel flow", "dunning"                                   |
+| `co-marketing`          | Trouve des partenaires et monte des campagnes conjointes                              | "co-marketing", "joint campaign", "partner marketing"               |
+| `community-marketing`   | Construit et anime une communauté (Discord, Slack, forum)                             | "build a community", "Discord community"                            |
+| `competitor-profiling`  | Dresse le profil détaillé de concurrents à partir de leurs URLs                       | "competitor profile", "analyze competitor"                          |
+| `competitors`           | Crée des pages comparatives « X vs Y » et « alternative à X »                         | "vs page", "alternative page", "comparison page"                    |
+| `content-strategy`      | Décide quoi publier : piliers, clusters de sujets, calendrier éditorial               | "content strategy", "what should I write about"                     |
+| `copy-editing`          | Retravaille un texte marketing existant : resserre, clarifie, rafraîchit              | "edit this copy", "proofread", "polish this"                        |
+| `copywriting`           | Écrit le texte d'une page qui doit convaincre (home, landing, pricing)                | "write copy for", "rewrite this page", "headline help"              |
+| `cro`                   | Optimise la conversion d'une page ou d'un formulaire                                  | "CRO", "improve conversions", "conversion rate optimization"        |
+| `customer-research`     | Mène et synthétise la recherche client : interviews, avis, personas                   | "customer research", "ICP research", "customer interviews"          |
+| `directory-submissions` | Soumet un produit aux annuaires (Product Hunt, G2) pour backlinks et visibilité       | "submit to directories", "list my product"                          |
+| `emails`                | Conçoit des séquences email automatisées : onboarding, nurture, réengagement          | "email sequence", "drip campaign", "nurture sequence"               |
+| `free-tools`            | Conçoit un outil gratuit (calculateur, générateur) comme aimant à leads               | "free tool", "calculator", "generator"                              |
+| `image`                 | Crée ou optimise des visuels marketing : héros de blog, réseaux sociaux, images OG    | "generate an image", "hero image", "OG image"                       |
+| `launch`                | Planifie un lancement produit ou une annonce de fonctionnalité                        | "launch", "Product Hunt", "go-to-market"                            |
+| `lead-magnets`          | Crée des contenus à télécharger contre email : checklist, template, ebook             | "lead magnet", "gated content", "content upgrade"                   |
+| `marketing-ideas`       | Brainstorme des idées et tactiques de croissance                                      | "marketing ideas", "growth ideas", "marketing tactics"              |
+| `marketing-plan`        | Produit un plan marketing complet structuré AARRR                                     | "marketing plan", "GTM plan", "go-to-market plan"                   |
+| `marketing-psychology`  | Applique les biais cognitifs et la psychologie de la décision au marketing            | "cognitive bias", "persuasion", "behavioral science"                |
+| `onboarding`            | Optimise l'activation après inscription : première session, checklist, moment aha     | "onboarding flow", "activation rate", "first-run experience"        |
+| `paywalls`              | Conçoit les écrans d'upgrade et les moments de passage au payant                      | "paywall", "upgrade screen", "feature gate"                         |
+| `popups`                | Crée ou optimise popups, bandeaux et overlays de capture                              | "popup", "exit intent", "lead capture popup"                        |
+| `pricing`               | Décide quoi facturer et comment structurer les offres                                 | "pricing", "freemium", "packaging", "free trial"                    |
+| `product-marketing`     | Pose le document de contexte produit (positionnement, ICP) que les autres réutilisent | "positioning", "set up context", "target audience"                  |
+| `programmatic-seo`      | Génère des pages SEO à grande échelle à partir de gabarits et de données              | "programmatic SEO", "pages at scale", "location pages"              |
+| `public-relations`      | Obtient de la presse : pitchs journalistes, communiqués, newsjacking                  | "PR", "press release", "press coverage"                             |
+| `referrals`             | Monte un programme de parrainage ou d'affiliation                                     | "referral", "affiliate", "word of mouth"                            |
+| `schema`                | Ajoute ou corrige les données structurées (JSON-LD, rich snippets)                    | "schema markup", "structured data", "JSON-LD"                       |
+| `seo-audit`             | Diagnostique les problèmes SEO d'un site : technique, on-page, indexation             | "SEO audit", "technical SEO", "why am I not ranking"                |
+| `signup`                | Optimise le tunnel d'inscription et l'activation d'essai                              | "signup conversions", "registration friction"                       |
+| `site-architecture`     | Structure l'arborescence, la navigation et le maillage interne d'un site              | "sitemap", "site structure", "page hierarchy"                       |
+| `sms`                   | Marketing par SMS : flux de bienvenue, panier abandonné, promotions                   | "SMS marketing", "SMS sequence", "abandoned cart text"              |
+| `social`                | Crée, planifie et optimise le contenu réseaux sociaux, veille comprise                | "LinkedIn post", "content calendar", "social media"                 |
+| `video`                 | Produit du contenu vidéo avec les outils IA (Remotion, HeyGen)                        | "AI video", "Remotion", "make me a video"                           |
+
+## Dev — Astro
+
+Tous contextuels : ils partent dès qu'on travaille sur un projet Astro et
+qu'on touche à leur sujet. Ils s'appellent aussi en `/nom-du-skill`.
+
+| Skill                | À quoi ça sert                                                          |
+| -------------------- | ----------------------------------------------------------------------- |
+| `astro-6`            | Le framework Astro 6 : routage, modes de rendu, middleware              |
+| `astro-actions`      | Les Server Actions : formulaires et mutations côté serveur typées       |
+| `astro-assets`       | Optimisation des images et assets : composant Image, polices, images OG |
+| `astro-content`      | La Content Layer : collections de contenu typées, loaders, MDX          |
+| `astro-db`           | Astro DB : définir des tables et manipuler les données                  |
+| `astro-deployment`   | Déployer Astro : Cloudflare, Vercel, Netlify, Node                      |
+| `astro-i18n`         | Internationalisation : routage par langue, hreflang                     |
+| `astro-integrations` | Brancher React, Vue, Svelte et autres frameworks UI                     |
+| `astro-islands`      | L'architecture îlots : directives client, Server Islands                |
+| `astro-security`     | Content Security Policy et en-têtes de sécurité                         |
+| `astro-seo`          | SEO d'un site Astro : métas, sitemap, données structurées               |
+| `astro-starlight`    | Le thème de documentation Starlight                                     |
+| `astro-styling`      | Styles : CSS scopé, Tailwind, préprocesseurs                            |
+| `solid-astro`        | Principes SOLID et architecture propre appliqués à un projet Astro      |
+
+## Dev — Cloudflare
+
+| Skill                       | À quoi ça sert                                                                    |
+| --------------------------- | --------------------------------------------------------------------------------- |
+| `cloudflare`                | La plateforme Cloudflare au complet : Workers, KV, D1, R2, sécurité, IA           |
+| `wrangler`                  | Le CLI wrangler : déployer et gérer Workers, KV, R2, D1, secrets                  |
+| `workers-best-practices`    | Les bonnes pratiques d'écriture d'un Worker                                       |
+| `cloudflare-pages-ops`      | Exploiter un site sur Pages/Workers : builds bloqués, deploy hooks CMS, alertes   |
+| `cloudflare-email-service`  | Envoyer et recevoir des emails transactionnels via Cloudflare                     |
+| `durable-objects`           | Les Durable Objects : coordination avec état (chat, réservation), stockage SQLite |
+| `agents-sdk`                | Construire des agents IA sur Workers : état durable, WebSocket, planification     |
+| `sandbox-sdk`               | Exécuter du code non fiable dans des sandboxes isolées                            |
+| `turnstile-spin`            | Installer Turnstile (anti-bot) de bout en bout sur un formulaire                  |
+| `cloudflare-one`            | Zero Trust / SASE : Access, Gateway, WARP, Tunnel                                 |
+| `cloudflare-one-migrations` | Planifier une migration depuis Zscaler, VPN ou SWG vers Cloudflare One            |
+
+## Dev — Authentification
+
+Better Auth est la brique par défaut des nouveaux projets. Les skills Clerk
+restent en place tant que le portail n'a pas migré.
+
+| Skill                        | À quoi ça sert                                               | Se déclenche sur                                                       |
+| ---------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| `better-auth-core`           | Poser l'instance Better Auth : handlers, client, sessions    | « configure Better Auth », « gérer les sessions », « l'auth de l'app » |
+| `better-auth-authentication` | Les flux : email/mot de passe, réseaux sociaux, vérification | « ajoute la connexion », « page de login », « mot de passe oublié »    |
+| `better-auth-integrations`   | Monter le handler `/api/auth/*` dans Astro, Next, Hono…      | « la route d'auth », « le middleware d'auth »                          |
+| `better-auth-plugins`        | 2FA, lien magique, passkey, organisations, clés API          | « double authentification », « lien magique », « passkey »             |
+| `better-auth-cloudflare`     | Better Auth sur Workers : D1, KV, R2, migrations de schéma   | Contextuel : projet Workers avec Better Auth                           |
+
+Côté Clerk, 21 skills couvrent chaque terrain (`clerk` sert de routeur vers
+le bon) : `clerk-setup`, `clerk-cli`, `clerk-backend-api`, `clerk-billing`,
+`clerk-orgs`, `clerk-custom-ui`, `clerk-webhooks`, `clerk-testing`, les
+patterns par framework (`clerk-astro-patterns`, `clerk-nextjs-patterns`,
+`clerk-nuxt-patterns`, `clerk-react-patterns`,
+`clerk-react-router-patterns`, `clerk-tanstack-patterns`,
+`clerk-vue-patterns`, `clerk-chrome-extension-patterns`), et le mobile
+(`clerk-expo`, `clerk-swift`, `clerk-android`). Deux skills de maintenance,
+`audit-clerk-skill` et `audit-expo-skill`, comparent ces modes d'emploi aux
+sources officielles et proposent les mises à jour.
+
+## Dev — Généraux
+
+| Skill                      | À quoi ça sert                                                                  |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| `accessibility-wcag`       | Accessibilité web WCAG 2.2 : ARIA, clavier, lecteurs d'écran                    |
+| `api-design-patterns`      | Concevoir une API REST : nommage, pagination, versioning, OpenAPI               |
+| `benchmark`                | Mesurer des performances de référence et détecter les régressions               |
+| `browser-qa`               | Tests visuels et d'interaction automatisés dans le navigateur après déploiement |
+| `codebase-onboarding`      | Analyser un codebase inconnu et produire un guide d'embarquement                |
+| `data-scraper-agent`       | Construire un agent de collecte de données automatisé sur des sources publiques |
+| `database-optimization`    | Optimiser les requêtes et les index PostgreSQL / MySQL                          |
+| `design-system`            | Construire un design system : tokens, composants, thèmes, Storybook             |
+| `frontend-design`          | Direction visuelle d'une interface : typo, esthétique, choix non génériques     |
+| `git-advanced`             | Git avancé : worktrees, bisect, rebase interactif, récupération                 |
+| `performance-optimization` | Performance web : bundles, lazy loading, cache, Core Web Vitals                 |
+| `safety-guard`             | Garde-fou contre les opérations destructives en production                      |
+| `search-first`             | Chercher les solutions existantes avant d'écrire du code sur mesure             |
+| `security-review`          | Checklist sécurité : auth, entrées utilisateur, secrets, endpoints              |
+| `tdd-mastery`              | Développement piloté par les tests (cycle Red-Green-Refactor)                   |
+| `testing-strategies`       | Stratégies de test : contrats, snapshots, mutation, property-based              |
+| `typescript-advanced`      | TypeScript avancé : generics, types conditionnels, mapped types                 |
+| `unlighthouse`             | Scanner un site entier avec Lighthouse : perfs, accessibilité, SEO              |
+| `verification-loop`        | Boucle de vérification systématique d'un travail terminé                        |
+| `web-perf`                 | Mesurer les Core Web Vitals dans Chrome et identifier ce qui bloque le rendu    |
+
+## Dev — Sanity (CMS)
+
+Ces deux skills vivent dans `~/.agents/skills/` et sont liés dans
+`~/.claude/skills/` : ils sont partagés avec les autres agents installés sur
+la machine.
+
+| Skill                   | À quoi ça sert                                                        |
+| ----------------------- | --------------------------------------------------------------------- |
+| `sanity-best-practices` | Bonnes pratiques Sanity : schémas, GROQ, Visual Editing, intégrations |
+| `sanity-migration`      | Migrer un CMS existant (WordPress, Contentful, Webflow) vers Sanity   |
+
+## Gabarits
+
+Modèles à copier pour créer un nouveau skill dans une sphère. La description
+du frontmatter y est expliquée : c'est elle qui décide quand le skill se
+déclenche.
+
+| Skill           | Sphère         |
+| --------------- | -------------- |
+| `exemple-body`  | Corps / sport  |
+| `exemple-mind`  | Esprit / notes |
+| `exemple-mkg`   | Marketing      |
+| `exemple-sales` | Sales          |
+
+## Skills livrés par les plugins
+
+Installés depuis leurs marketplaces, ils vivent dans
+`~/.claude/plugins/cache/` et ne sont pas sauvegardés fichier par fichier :
+seule la liste des plugins l'est, et ils se réinstallent depuis elle. Ils
+s'appellent avec leur préfixe, par exemple `/superpowers:brainstorming`.
+
+| Plugin                    | Ce qu'il apporte                                                                                                                                                                          | Déclencheurs typiques                                       |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `superpowers` (14)        | Les méthodes de travail : `brainstorming`, `writing-plans`, `executing-plans`, `systematic-debugging`, `test-driven-development`, `using-git-worktrees`, revue de code, agents parallèles | « on va construire X », « débogue ça », « écris le plan »   |
+| `claude-seo` (25)         | Audit SEO complet : technique, schéma, contenu, local, GEO, sitemap, backlinks, clusters de mots-clés                                                                                     | « audit SEO », « Core Web Vitals », « données structurées » |
+| `context-mode` (8)        | Économie de contexte : exécution en bac à sable, indexation, recherche dans les sorties de commandes                                                                                      | `/ctx-stats`, `/ctx-search`, automatique en fond            |
+| `understand-anything` (9) | Cartographie d'un codebase en graphe de connaissances, visites guidées, tableau de bord                                                                                                   | « explique-moi ce projet », « onboarding codebase »         |
+| `code-review`             | Revue de la branche ou d'une PR, avec application des correctifs                                                                                                                          | `/code-review`, `/code-review ultra`                        |
+| `code-simplifier`         | Agent de simplification du code récemment modifié                                                                                                                                         | `/simplify`                                                 |
+| `frontend-design`         | Direction visuelle des interfaces (doublon du skill user du même nom)                                                                                                                     | Création ou refonte d'UI                                    |
+| `ui-ux-pro-max`           | Bibliothèque de patterns UI/UX                                                                                                                                                            | `/ui-ux-pro-max`                                            |
+| `superwhisper`            | Nettoyage des dictées vocales                                                                                                                                                             | Dictée dans le prompt                                       |
+| `context7`                | Documentation à jour des bibliothèques, via MCP                                                                                                                                           | Automatique dès qu'une lib est en jeu                       |
+| `gitkraken-hooks`         | Hooks Git                                                                                                                                                                                 | Automatique                                                 |
+
+S'y ajoutent les skills intégrés à Claude Code lui-même, qui n'ont aucun
+fichier sur la machine : `artifact-design` et `dataviz` (mise en forme des
+livrables visuels), `update-config` (réglages et hooks), `claude-api`,
+`workflow-authoring`, `run`, `init`, `loop`, `schedule`,
+`fewer-permission-prompts`, `keybindings-help`.
+
+## Les commandes personnalisées
+
+Deux raccourcis, plus légers qu'un skill, dans `~/.claude/commands/` :
+
+| Commande       | Ce qu'elle fait                                                                       |
+| -------------- | ------------------------------------------------------------------------------------- |
+| `/explaine`    | Explique une commande shell en français simple, sans jargon                           |
+| `/new-project` | Crée la fiche de référence d'un projet dev dans les notes (accès, infra, facturation) |
+
+## Points à trancher
+
+<Callout type="warn" title="Trois écarts repérés à l'inventaire du 2026-08-29">
+  Rien de cassé, mais trois situations à arbitrer avant qu'elles ne se figent.
+</Callout>
+
+**`doc-client` a divergé de sa version publiée.** La copie de travail dans
+`~/.claude/skills/doc-client/` et celle du repo public
+`coolbeans-claude-skills` ne sont plus identiques (`SKILL.md` et
+`references/redaction.md`). `linear`, lui, est bien un lien vers le repo :
+c'est le montage à reproduire.
+
+**Les skills Clerk existent en double.** 21 dans `~/.claude/skills/`, et 17
+autres dans `coolbeans/.agents/skills/`, liés depuis
+`coolbeans/.claude/skills/`. Contenu identique, deux emplacements à
+maintenir.
+
+**Les skills GSAP sont inertes.** Huit skills GSAP dorment dans
+`~/.agents/skills/` sans lien vers `~/.claude/skills/` : Claude Code ne les
+voit pas.
