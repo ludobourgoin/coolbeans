@@ -13,9 +13,10 @@ Cinq comptes à créer, **à ton nom et à celui de l'association**. Compte une
 heure en tout, et surtout ne fais pas tout d'un coup : ils sont rangés dans
 l'ordre où ils débloquent la suite.
 
-**Un seul est vraiment urgent** : les noms de domaine. Les quatre autres
-peuvent attendre la semaine prochaine sans que ça ralentisse quoi que ce
-soit.
+**Deux sont vraiment urgents** : les noms de domaine et Cloudflare. Ce sont
+les deux seuls où se tromper coûte cher, parce qu'ils ne se rattrapent pas
+après coup. Les trois autres peuvent attendre : je peux démarrer sans eux et
+te les transférer ensuite.
 
 <Callout type="tip" title="Pourquoi à ton nom et pas au mien">
   Tout ce qui porte l'identité du salon doit appartenir à Rév'olutions Douces :
@@ -23,6 +24,13 @@ soit.
   plus avec vous, ou si l'association change de prestataire, tout reste à vous
   sans que personne ait à me demander quoi que ce soit. Tu m'ajoutes en
   collaborateur sur chacun, je fais le travail, et tu gardes la main.
+</Callout>
+
+<Callout type="warn" title="Les deux premiers ne se rattrapent pas">
+  Un nom de domaine acheté sur le mauvais compte est bloqué 60 jours avant de
+  pouvoir être transféré — soit, ici, après le salon. Et un hébergement se
+  recrée au lieu de se déplacer, avec une coupure. Les trois autres comptes,
+  eux, se transfèrent tranquillement : c'est pour ça qu'ils peuvent attendre.
 </Callout>
 
 ## 1. Infomaniak — les deux noms de domaine
@@ -76,7 +84,7 @@ site sera prêt — il n'y a rien à apprendre avant.
 
 ## 3. Cloudflare — l'hébergement du site
 
-Gratuit, 5 minutes.
+**Urgent aussi, même si ça n'en a pas l'air.** Gratuit, 5 minutes.
 
 Compte sur [cloudflare.com](https://www.cloudflare.com), toujours avec la même
 adresse, puis invite-moi en **administrateur** depuis Manage Account →
@@ -84,6 +92,13 @@ Members.
 
 Tu n'auras jamais à y toucher. C'est là que le site vit, et c'est aussi ce qui
 le rend rapide et le protège des attaques.
+
+<Callout type="warn" title="Pourquoi celui-là ne peut pas attendre">
+  Contrairement aux autres outils, un hébergement Cloudflare ne se transfère
+  pas d'un compte à l'autre : il faudrait tout recréer et refaire pointer les
+  domaines, avec une coupure du site à la clé. Autant le faire au bon endroit
+  du premier coup.
+</Callout>
 
 ## 4. GitHub — le code du site
 
