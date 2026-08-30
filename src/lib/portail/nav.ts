@@ -171,6 +171,7 @@ const SECTIONS: SectionDef[] = [
     adminOnly: true,
     pages: [
       { label: "Mes clients", path: "/clients", flag: "wip" }, // COO-81
+      { label: "Utilisateurs", path: "/utilisateurs", flag: "live" },
       { label: "Devis", path: "/devis", flag: "live" },
     ],
   },

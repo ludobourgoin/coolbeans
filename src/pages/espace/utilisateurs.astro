@@ -1,0 +1,158 @@
+---
+// Gestion des comptes du portail (plan Task 9, spec 2026-08-19 §5.3).
+// Réservée aux admins : c'est ici qu'un accès s'ouvre, change de type ou se
+// révoque, depuis que le dashboard Clerk n'existe plus.
+//
+// L'ENVOI DU MAIL EST UN GESTE SÉPARÉ. Créer un compte ne prévient personne :
+// la case « envoyer le lien de connexion » est décochée par défaut, et tant
+// qu'elle l'est, la personne ignore que son espace existe. C'est ce qui rend
+// la phase de test tenable.
+export const prerender = false;
+
+import { actions } from "astro:actions";
+import { env } from "cloudflare:workers";
+import EspaceLayout from "../../layouts/EspaceLayout.astro";
+import { getPortalContext } from "../../lib/portail/context";
+import { isAdmin } from "../../lib/portail/metadata";
+import { listOrganisations } from "../../lib/portail/organisations";
+import { listWorkspaces } from "../../lib/portail/workspaces";
+import { listerUtilisateurs } from "../../lib/portail/utilisateurs";
+
+const { meta } = await getPortalContext(Astro);
+if (!isAdmin(meta)) return Astro.redirect("/espace");
+
+const resultatInvitation = Astro.getActionResult(actions.utilisateurs.inviter);
+const resultatRevocation = Astro.getActionResult(actions.utilisateurs.revoquer);
+
+const [comptes, organisations, workspaces] = await Promise.all([
+  listerUtilisateurs(env.PORTAL_DB),
+  listOrganisations(),
+  listWorkspaces(),
+]);
+
+const TYPE_LABEL: Record<string, string> = {
+  admin: "Admin",
+  revendeur: "Revendeur",
+  client: "Client",
+};
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<EspaceLayout title="Utilisateurs">
+  <p class="label">Accès au portail</p>
+  <h1>Utilisateurs</h1>
+  <p class="sub">
+    Un compte appartient toujours à une organisation, et un compte client à un workspace : il n'y a
+    pas d'accès « au portail » en général. L'inscription publique est fermée, ces comptes sont le
+    seul chemin d'entrée.
+  </p>
+
+  {resultatInvitation?.error && (
+    <p class="card mt-6 text-warning">{resultatInvitation.error.message}</p>
+  )}
+  {resultatInvitation?.data && (
+    <p class="card mt-6 text-success">
+      Compte créé.{" "}
+      {resultatInvitation.data.mailEnvoye
+        ? "Le lien de connexion vient de partir."
+        : "Aucun mail n'a été envoyé."}
+    </p>
+  )}
+  {resultatRevocation?.error && (
+    <p class="card mt-6 text-warning">{resultatRevocation.error.message}</p>
+  )}
+  {resultatRevocation?.data && <p class="card mt-6 text-success">Accès révoqué.</p>}
+
+  <h2 class="mt-10">Les comptes</h2>
+  {comptes.length === 0 ? (
+    <p class="sub mt-4">Aucun compte pour l'instant.</p>
+  ) : (
+    <div class="mt-4 grid gap-3">
+      {comptes.map((c) => (
+        <div class="card flex flex-wrap items-baseline justify-between gap-3">
+          <div>
+            <p class="font-bold">{c.nom}</p>
+            <p class="text-[13px] text-mute">{c.email}</p>
+          </div>
+          <div class="flex flex-wrap items-baseline gap-4 text-[13px]">
+            <span class="text-[11px] font-bold uppercase">{TYPE_LABEL[c.portalRole] ?? c.portalRole}</span>
+            <span class="font-mono text-mute">
+              {c.organisation ?? "—"}
+              {c.workspace ? ` · ${c.workspace}` : ""}
+            </span>
+            <form method="POST" action={actions.utilisateurs.revoquer}>
+              <input type="hidden" name="userId" value={c.id} />
+              <button
+                class="link"
+                type="submit"
+                data-confirmer={`Révoquer l'accès de ${c.email} ? Le compte et ses sessions sont supprimés.`}
+              >
+                Révoquer
+              </button>
+            </form>
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+
+  <h2 class="mt-10">Ouvrir un accès</h2>
+  <form class="card mt-4 grid gap-4" method="POST" action={actions.utilisateurs.inviter}>
+    <div class="grid gap-1">
+      <label class="label field-label" for="nom">Nom</label>
+      <input id="nom" name="nom" type="text" required autocomplete="off" />
+    </div>
+
+    <div class="grid gap-1">
+      <label class="label field-label" for="email">Adresse email</label>
+      <input id="email" name="email" type="email" required autocomplete="off" />
+    </div>
+
+    <div class="grid gap-1">
+      <label class="label field-label" for="portalRole">Type de compte</label>
+      <select id="portalRole" name="portalRole" required>
+        <option value="client">Client — un seul workspace</option>
+        <option value="revendeur">Revendeur — tous les workspaces de son organisation</option>
+        <option value="admin">Admin — tout le registre</option>
+      </select>
+    </div>
+
+    <div class="grid gap-1">
+      <label class="label field-label" for="organisation">Organisation</label>
+      <select id="organisation" name="organisation">
+        <option value="">— aucune (admin seulement)</option>
+        {organisations.map((o) => <option value={o.slug}>{o.nom}</option>)}
+      </select>
+    </div>
+
+    <div class="grid gap-1">
+      <label class="label field-label" for="workspace">Workspace (comptes clients)</label>
+      <select id="workspace" name="workspace">
+        <option value="">— aucun</option>
+        {workspaces.map((w) => (
+          <option value={w.slug}>{w.nom} ({w.organisation})</option>
+        ))}
+      </select>
+    </div>
+
+    <label class="flex items-center gap-2 text-[13px]">
+      <input type="checkbox" name="envoyerLeMail" value="true" />
+      Envoyer tout de suite le lien de connexion à cette adresse
+    </label>
+
+    <div>
+      <button class="btn" type="submit">Ouvrir l'accès</button>
+    </div>
+  </form>
+</EspaceLayout>
+
+<script>
+  // Confirmation avant une révocation : la suppression est définitive, et le
+  // bouton est à côté du reste de la liste.
+  document.querySelectorAll<HTMLButtonElement>("button[data-confirmer]").forEach((bouton) => {
+    bouton.addEventListener("click", (evenement) => {
+      if (!confirm(bouton.dataset.confirmer)) evenement.preventDefault();
+    });
+  });
+</script>
