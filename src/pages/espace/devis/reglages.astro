@@ -4,10 +4,11 @@ export const prerender = false;
 import EspaceLayout from "../../../layouts/EspaceLayout.astro";
 import ReglagesEditor from "../../../components/chiffrage/ReglagesEditor";
 import { getReglages } from "../../../lib/chiffrage/store";
+import { getPortalContext } from "../../../lib/portail/context";
+import { isAdmin } from "../../../lib/portail/metadata";
 
-const user = await Astro.locals.currentUser();
-const isAdmin = ((user?.publicMetadata ?? {}) as { role?: string }).role === "admin";
-if (!isAdmin) return Astro.redirect("/espace");
+const { meta } = await getPortalContext(Astro);
+if (!isAdmin(meta)) return Astro.redirect("/espace");
 
 const reglages = await getReglages();
 ---

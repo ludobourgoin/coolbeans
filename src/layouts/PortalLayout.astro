@@ -13,6 +13,7 @@ import BaseLayout from "./BaseLayout.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
 import PortalSidebar from "../components/portail/PortalSidebar.astro";
 import { listWorkspaces, selectableWorkspaces } from "../lib/portail/workspaces";
+import { prenomDe } from "../lib/portail/comptes";
 import { getPortalContext } from "../lib/portail/context";
 import { hrefOf, listDocEntries } from "../lib/portail/doc";
 import { isAdmin } from "../lib/portail/metadata";
@@ -63,7 +64,7 @@ const indexJson = searchIndex ? JSON.stringify(searchIndex).replaceAll("<", "\\u
 // client voit ce que voit le client, salutation comprise — le prénom du
 // contact du client courant, jamais le sien. Repli sur le nom du client tant
 // que `prenom` n'est pas posé dans son YAML.
-const prenomVue = admin && client ? (client.prenom ?? client.nom) : (user?.firstName ?? "");
+const prenomVue = admin && client ? (client.prenom ?? client.nom) : prenomDe(user?.name);
 ---
 
 <BaseLayout title={title} description={description} noindex>

@@ -11,6 +11,7 @@ export const prerender = false;
 
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import Icon from "../../components/portail/Icon.astro";
+import { prenomDe } from "../../lib/portail/comptes";
 import { getPortalContext } from "../../lib/portail/context";
 import { hrefOf, listDocEntries } from "../../lib/portail/doc";
 import { isAdmin } from "../../lib/portail/metadata";
@@ -21,7 +22,7 @@ const admin = isAdmin(meta);
 
 // Même règle que la topbar (PortalLayout) : en vue admin-basculé, on salue le
 // contact du client courant, pas Ludo.
-const prenom = admin && client ? (client.prenom ?? client.nom) : (user?.firstName ?? "");
+const prenom = admin && client ? (client.prenom ?? client.nom) : prenomDe(user?.name);
 
 const docEntries = await listDocEntries(client?.doc);
 const sections = buildSidebar(
