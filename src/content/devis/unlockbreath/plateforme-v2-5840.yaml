@@ -1,0 +1,229 @@
+titre: UnlockBreath x Coolbeans — V2
+objet: Avenant au devis de février 2026 — reprise de la plateforme sur une base sur-mesure
+date: 2026-08-30
+contact: Thierry
+
+sections:
+  - titre: Pourquoi cet avenant
+    texte: >-
+      Les maquettes de la plateforme ont changé de main et évoluent encore.
+      Comme **aucune page n'a été intégrée à ce jour**, le moment est le bon
+      pour réexaminer la base technique avant de construire : c'est la dernière
+      fenêtre où ce choix ne coûte rien.
+    liste:
+      - texte: >-
+          **Rien de ce que vous avez versé n'est perdu.** Le budget déjà réglé
+          s'impute intégralement sur cet avenant.
+      - texte: >-
+          Le périmètre fonctionnel ne bouge pas : mêmes onze pages, mêmes deux
+          offres, même programme en sept semaines, mêmes six langues.
+      - texte: >-
+          Ce qui change, c'est **la manière de le construire** — et ce que la
+          plateforme vous coûtera chaque mois une fois en ligne.
+    note: >-
+      Cet avenant remplace le volet développement du devis n° 004326 du
+      2 février 2026. La note de cadrage contractuelle du 7 février reste en
+      vigueur pour tout ce qui n'est pas modifié ici.
+
+  - titre: Ce que vous y gagnez
+    liste:
+      - texte: >-
+          **Vos abonnements mensuels tombent.** Webflow, Memberstack, Make et
+          Webflow Localize disparaissent : de l'ordre de **1 000 € par an**
+          que vous cessez de payer.
+        tooltip: >-
+          Aujourd'hui : Webflow 20 à 34 €, Memberstack 25 à 45 €, Make 15 €,
+          Localize 8 € par langue supplémentaire — soit 100 à 134 € par mois.
+          Demain : l'hébergement est gratuit jusqu'à un trafic que vous
+          n'atteindrez pas la première année. bunny.net reste inchangé dans
+          les deux cas.
+      - texte: >-
+          **The course et le Dashboard cessent d'être bridés.** Le déblocage
+          progressif des semaines, le suivi de progression, la reprise là où
+          l'utilisateur s'est arrêté : ce sont les écrans qui font votre
+          produit, et ce sont ceux que Webflow et Memberstack rendaient les
+          plus contraints.
+      - texte: >-
+          **La plateforme vous appartient entièrement.** Le code est dans un
+          dépôt à votre nom, les données sont dans votre base, aucun éditeur
+          ne peut modifier ses conditions ou ses tarifs sous vos pieds.
+      - texte: >-
+          **Elle est plus rapide.** Les pages sont servies pré-construites
+          depuis un réseau mondial, ce qui compte pour des utilisateurs répartis
+          sur six langues et plusieurs continents.
+
+  - titre: Vous restez autonome sur votre contenu
+    texte: >-
+      C'était un engagement du cadrage de février, il est tenu. Vous disposez
+      d'un **espace d'administration** dédié, séparé du site, dans lequel vous
+      modifiez vous-même :
+    liste:
+      - Les textes de toutes les pages, dans chacune des six langues
+      - Les articles de Science of Breathing, leurs images et leurs tags
+      - Les questions-réponses de la FAQ
+      - Le contenu des sept semaines du programme, et les liens vidéo associés
+      - Les libellés et destinations des boutons d'action
+    note: >-
+      Formation à l'outil et guide écrit remis à la livraison, comme prévu au
+      cadrage initial. Ce qui relève du code — une nouvelle page, une nouvelle
+      fonctionnalité — reste de mon ressort, exactement comme avec Webflow.
+
+  - titre: Socle technique
+    texte: >-
+      **Next.js** (développement) + **Sanity** (gestion de contenu) +
+      **Vercel** (hébergement). bunny.net et Stripe sont conservés à
+      l'identique.
+    liste:
+      - texte: >-
+          **Comptes et accès** : inscription, connexion, mot de passe oublié,
+          connexion Google et Facebook, et le verrouillage du programme payant
+        tooltip: >-
+          C'est ce que faisait Memberstack. Construit sur mesure, il n'y a plus
+          d'abonnement mensuel et plus de limite au nombre de membres.
+      - texte: >-
+          **Paiement Stripe** : les deux offres, le paiement comptant et le
+          paiement fractionné, l'ouverture automatique de l'accès après
+          règlement
+      - texte: >-
+          **Emails** : bienvenue, confirmation de paiement, anticipation de fin
+          d'accès à 6 et 18 mois, progression et fin de chapitre
+      - texte: >-
+          **Vidéo** : lecteur bunny.net, avec des liens qui ne fonctionnent que
+          pour un membre dont l'accès est actif
+      - texte: "**Multilingue** : une adresse par langue, contenus traduits gérés depuis l'administration"
+
+  - titre: Budget
+    texte: >-
+      Le découpage reprend celui de février, pour que les deux devis se
+      comparent ligne à ligne.
+    budget:
+      lignes:
+        - label: "**Mise en place du projet** : dépôt, environnements de test et de production, domaine, certificat SSL"
+          prix: 550
+        - label: "**Espace d'administration du contenu** : modélisation des contenus, interface d'édition, branchement au site"
+          prix: 1100
+          tooltip: "Ce poste n'existait pas en février : Webflow le fournissait, contre abonnement."
+        - label: "**Comptes et accès** : inscription, connexion, connexions sociales, verrouillage du programme payant"
+          prix: 1400
+          tooltip: Remplace l'intégration Memberstack, qui était chiffrée 1 300 € en février.
+        - label: "**Paiement Stripe** : offres Discovery et Serenity, paiement fractionné, ouverture automatique des accès"
+          prix: 850
+        - label: "**Emails** : bienvenue, confirmation, anticipation de fin d'accès, progression"
+          prix: 650
+        - label: "**Multilingue** : six langues, une adresse par langue, contenus traduits gérés depuis l'administration"
+          prix: 600
+        - label: "**Vidéo** : lecteur bunny.net et contrôle d'accès aux vidéos du programme"
+          prix: 500
+        - label: "**Analytics, consentement et SEO technique**"
+          prix: 350
+        - label: "**Accueil**"
+          prix: 800
+        - label: "**Science of Breathing** : grille d'articles, gabarit d'article, système de tags"
+          prix: 950
+        - label: Your Physiotherapist Guide
+          prix: 400
+        - label: "**Program** : menu latéral et sept semaines"
+          prix: 800
+        - label: FAQ
+          prix: 300
+        - label: Contact
+          prix: 300
+        - label: Pages légales (x3)
+          prix: 250
+        - label: Log in / Sign up
+          prix: 400
+        - label: "**Dashboard**"
+          prix: 550
+        - label: "**The course** : suivi de formation et déblocage progressif"
+          prix: 1000
+        - label: "**Settings** : mot de passe et moyen de paiement"
+          prix: 550
+      remisePct: 15
+      remiseLabel: "Volume : 11 pages"
+      mention: HT
+      reglement: >-
+        **L'intégralité des sommes déjà réglées au titre du devis de février
+        s'impute sur ce montant.** Aucune page n'ayant été produite, rien de ce
+        que vous avez versé n'est consommé. Seul le solde reste dû, selon le
+        même échéancier qu'en février : la moitié au démarrage, la moitié au
+        plus tard 30 jours après la livraison. TVA de 20 % en sus.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Responsive (ordinateur, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation de la vitesse d'affichage
+      - Tests sur les trois principaux navigateurs
+      - Certificat SSL, hébergement et raccordement du nom de domaine
+      - Formation à la mise à jour du contenu, et guide écrit remis à la livraison
+      - Document de passation technique
+      - Support 30 jours après la mise en ligne
+
+  - titre: Ce dont j'ai besoin de vous, et quand
+    liste:
+      - texte: >-
+          **Les maquettes complètes et validées, avant le démarrage.** Toutes
+          les pages, dans leurs trois tailles d'écran, avec les états
+          d'interface.
+        tooltip: >-
+          C'est la condition qui porte tout le planning. J'intègre à partir de
+          maquettes produites par votre équipe de design : tant qu'un écran
+          manque ou change, la page correspondante ne peut pas être construite,
+          et le calendrier se décale d'autant.
+      - texte: >-
+          **Les fichiers vidéo du programme en anglais**, leurs sous-titres et
+          leur organisation par chapitre
+      - texte: >-
+          **Les contenus éditoriaux** : page d'accueil validée, questions de la
+          FAQ, textes de Your Physiotherapist Guide
+      - texte: >-
+          **Les accès** : Stripe, bunny.net, YouTube, Google Analytics, et le
+          nom de domaine
+      - texte: >-
+          **Les textes juridiques revus par votre avocat**, avant la mise en
+          ligne
+    note: >-
+      Sans retour de votre part sous 5 jours ouvrés, un livrable est considéré
+      comme validé. La mise en production reste conditionnée à votre Go écrit
+      à l'issue de la recette.
+
+  - titre: Planning
+    planning:
+      options:
+        - label: À partir de la réception des maquettes
+          texte: >-
+            Le calendrier se déclenche à la **réception des maquettes
+            complètes**, pas à la signature de cet avenant.
+          indicatif: true
+          jalons:
+            - { date: Semaine 1, label: "Mise en place du projet, des environnements et de l'espace d'administration", owner: coolbeans }
+            - { date: Semaines 2-3, label: "Intégration des pages vitrines : Accueil, Science of Breathing, Your Physiotherapist Guide, FAQ, Contact, pages légales", owner: coolbeans }
+            - { date: Semaines 3-4, label: "Comptes, accès et paiement Stripe", owner: coolbeans }
+            - { date: Semaines 4-5, label: "Espace membre : Dashboard, The course, Settings, et le programme en sept semaines", owner: coolbeans }
+            - { date: Semaine 6, label: "Emails, multilingue, analytics et référencement", owner: coolbeans }
+            - { date: Semaine 7, label: Recette sur la pré-production, owner: client }
+            - { date: Semaine 8, label: "Corrections, mise en production sur votre Go écrit, formation", owner: coolbeans }
+          note: >-
+            Huit semaines de travail à compter de maquettes complètes. Les
+            semaines se chevauchent en partie : le total calendaire dépend du
+            rythme de vos retours.
+
+notes:
+  - tone: success
+    texte: >-
+      **Remise de volume maintenue à l'identique** : 15 % à partir de neuf
+      pages, comme en février.
+  - tone: info
+    texte: >-
+      **Le surcoût par rapport au devis de février est de 1 508,75 € HT.** Il
+      est couvert par les abonnements que vous cessez de payer en un peu plus
+      d'un an, et vous n'en payez plus jamais après.
+  - texte: >-
+      Le périmètre fonctionnel V01 est inchangé. Les éléments renvoyés à une
+      V02 en février — sous-catégories de Science of Breathing, langues
+      asiatiques — le restent.
+  - tone: warning
+    texte: >-
+      Ce devis chiffre l'intégration à partir de maquettes fournies par votre
+      équipe de design. La direction artistique, la production des écrans et
+      leurs corrections ne sont pas comprises.
