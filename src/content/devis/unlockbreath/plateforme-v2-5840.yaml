@@ -4,6 +4,8 @@ date: 2026-08-30
 contact: Thierry
 version: 2
 versionDe: unlockbreath/plateforme-3271
+linear:
+  projet: Plateforme UnlockBreath
 
 sections:
   - titre: Pourquoi cet avenant
@@ -36,9 +38,8 @@ sections:
         tooltip: >-
           Aujourd'hui : Webflow 20 à 34 €, Memberstack 25 à 45 €, Make 15 €,
           Localize 8 € par langue supplémentaire — soit 100 à 134 € par mois.
-          Demain : l'hébergement est gratuit jusqu'à un trafic que vous
-          n'atteindrez pas la première année. bunny.net reste inchangé dans
-          les deux cas.
+          Demain : 20 à 40 € par mois. Le détail est dans la section « Ce que
+          vous payez chaque mois ».
       - texte: >-
           **The course et le Dashboard cessent d'être bridés.** Le déblocage
           progressif des semaines, le suivi de progression, la reprise là où
