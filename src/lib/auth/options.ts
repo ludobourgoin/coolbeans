@@ -62,7 +62,16 @@ export function optionsAuth(env?: Env, baseURL = "https://my.coolbeans.cc") {
       }),
       // organisation = le revendeur, team = le workspace client (spec §3.1).
       organization({
-        teams: { enabled: true },
+        teams: {
+          enabled: true,
+          // Pas de team par defaut a la creation d'une organisation. Le plugin
+          // en cree une d'office, sans slug — et notre colonne `slug` est
+          // requise : la creation echouait en D1_ERROR NOT NULL sur team.slug,
+          // sans que le message dise que la team fautive etait implicite.
+          // Nos teams viennent toutes du registre YAML, jamais d'un effet de
+          // bord (scripts/amorcer-organisations.mjs).
+          defaultTeam: { enabled: false },
+        },
         // Le mail qui ouvre un acces. C'est le seul envoi declenche par un
         // geste d'admin et non par la personne elle-meme : il ne part donc
         // que sur une invitation explicitement creee depuis /espace/utilisateurs.

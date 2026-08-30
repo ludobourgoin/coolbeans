@@ -228,4 +228,18 @@ const clients = defineCollection({
   }),
 });
 
-export const collections = { devis, projets, docs, clients };
+/* Un fichier YAML par revendeur dans src/content/organisations/. Le nom du
+   fichier est le slug, et c'est le MÊME slug que l'organisation en D1 : le
+   registre est la source de vérité, la base porte la copie. Une divergence
+   entre les deux est un bug, pas un cas à gérer — scripts/amorcer-organisations.mjs
+   échoue dessus.
+   Coolbeans y figure comme les autres : c'est ce qui fera sortir sa marque du
+   code en phase B. */
+const organisations = defineCollection({
+  loader: glob({ pattern: "*.yaml", base: "./src/content/organisations" }),
+  schema: z.object({
+    nom: z.string(),
+  }),
+});
+
+export const collections = { devis, projets, docs, clients, organisations };
