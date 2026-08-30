@@ -4,7 +4,6 @@
 // phrase pédagogique est le seul texte au-dessus du board.
 export const prerender = false;
 
-import { clerkClient } from "@clerk/astro/server";
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import EmptyState from "../../components/portail/EmptyState.astro";
 import MessagerieBoard from "../../components/portail/MessagerieBoard.astro";
@@ -13,6 +12,7 @@ import NouvelleDemandeAdmin from "../../components/portail/NouvelleDemandeAdmin.
 import Collapse from "../../components/ui/Collapse.astro";
 import { env } from "cloudflare:workers";
 import { missingKeysFor, moduleCoupe } from "../../lib/portail/workspaces";
+import { comptesDuWorkspace } from "../../lib/portail/comptes";
 import { getPortalContext } from "../../lib/portail/context";
 import { fetchIssueStateTypes } from "../../lib/portail/linear";
 import { isAdmin } from "../../lib/portail/metadata";
@@ -29,16 +29,16 @@ const coupe = moduleCoupe("support", client);
 const indisponible = coupe || missingKeys.length > 0;
 Astro.response.headers.set("Cache-Control", "no-store");
 
-// Utilisateurs du client courant, pour le <select> du formulaire admin
-// (Task 12, spec §8) — un aller-retour Backend API réservé à l'admin.
-const users = admin
-  ? (await clerkClient(Astro).users.getUserList({ limit: 100 })).data
-      .filter((u) => (u.publicMetadata as { client?: string }).client === client?.slug)
-      .map((u) => ({
-        id: u.id,
-        label: `${u.firstName ?? "?"} — ${u.emailAddresses[0]?.emailAddress ?? ""}`,
+// Comptes du client courant, pour le <select> du formulaire admin (Task 12,
+// spec §8) — une requête D1 réservée à l'admin. L'appartenance vient de la
+// table `teamMember` depuis la bascule Better Auth, plus d'un publicMetadata.
+const users =
+  admin && client
+    ? (await comptesDuWorkspace(env.PORTAL_DB, client.slug)).map((c) => ({
+        id: c.id,
+        label: `${c.nom || "?"} — ${c.email}`,
       }))
-  : [];
+    : [];
 
 let tickets: Awaited<ReturnType<typeof ticketsDuClient>> = [];
 let statuts = new Map<string, string>();

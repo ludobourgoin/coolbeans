@@ -7,12 +7,12 @@
 //   4. issue Linear (projet Support, assignée à Ludo, priorité) → majIssue ;
 //   5. emails Resend (interne + accusé) — best-effort.
 
-import { clerkClient } from "@clerk/astro/server";
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 import { Resend } from "resend";
 import { renderConfirmationSupport } from "../../../emails/support-confirmation";
 import { citation, esc, kv, p, renderTransactionnel, titreSection } from "../../../emails/transactionnel";
+import { compteDuWorkspace, prenomDe } from "../../../lib/portail/comptes";
 import { getPortalContext } from "../../../lib/portail/context";
 import { LUDO_LINEAR_USER_ID, createSupportTicket } from "../../../lib/portail/linear";
 import { isAdmin } from "../../../lib/portail/metadata";
@@ -58,41 +58,38 @@ export const POST: APIRoute = async (context) => {
   }
 
   const jour = new Date().toISOString().slice(0, 10);
-  const emailClient = user.primaryEmailAddress?.emailAddress ?? null;
-  const nomClient =
-    [user.firstName, user.lastName].filter(Boolean).join(" ") || emailClient || user.id;
+  const emailClient = user.email || null;
+  const nomClient = (user.name ?? "").trim() || emailClient || user.id;
 
   // Création au nom d'un client (spec §8) : réservée à l'admin. L'auteur
   // reste l'utilisateur du client — c'est lui qui reçoit les notifications —
   // created_via = 'admin' porte la provenance, affichée sans mimétisme.
   // Résolu AVANT le quota : le garde-fou anti-abus vise les clients, pas
   // l'opérateur (voir plus bas, chemin admin exempté).
-  const pourClerkId = String(fd.get("pourClerkId") ?? "");
-  let auteur = { id: user.id, prenom: user.firstName ?? "Client", email: emailClient ?? "" };
+  const pourCompteId = String(fd.get("pourCompteId") ?? "");
+  const prenomConnecte = prenomDe(user.name);
+  let auteur = { id: user.id, prenom: prenomConnecte || "Client", email: emailClient ?? "" };
   // Prénom optionnel réservé aux emails — distinct d'auteur.prenom (non-null,
   // pour la ligne D1) : "Bonjour ," ne doit pas devenir "Bonjour Client,".
-  let prenomEmail: string | undefined = user.firstName ?? undefined;
+  let prenomEmail: string | undefined = prenomConnecte || undefined;
   let createdVia: "portail" | "admin" = "portail";
-  if (pourClerkId && pourClerkId !== user.id) {
+  if (pourCompteId && pourCompteId !== user.id) {
     if (!isAdmin(meta)) return json({ error: "Réservé à l'administrateur." }, 403);
+    // Le garde-fou est DANS la requête : un id forgé ou périmé pointant vers
+    // un compte d'un AUTRE client rend null. Plus de second contrôle à ne pas
+    // oublier ici.
     let cible;
     try {
-      cible = await clerkClient(context).users.getUser(pourClerkId);
+      cible = await compteDuWorkspace(env.PORTAL_DB, pourCompteId, client.slug);
     } catch (err) {
-      console.error("messagerie: utilisateur cible introuvable (pourClerkId périmé/forgé)", err);
-      return json({ error: "Utilisateur introuvable." }, 400);
+      console.error("messagerie: lecture du compte cible impossible", err);
+      return json({ error: `Envoi impossible pour le moment — ${CONTACT_DIRECT}.` }, 503);
     }
-    // Garde-fou : un pourClerkId forgé ou périmé pourrait pointer vers un
-    // utilisateur d'un AUTRE client que celui sélectionné dans l'admin.
-    if ((cible.publicMetadata as { client?: string }).client !== client.slug) {
+    if (!cible) {
       return json({ error: "Cet utilisateur n'appartient pas au client sélectionné." }, 400);
     }
-    auteur = {
-      id: cible.id,
-      prenom: cible.firstName ?? "Client",
-      email: cible.emailAddresses[0]?.emailAddress ?? "",
-    };
-    prenomEmail = cible.firstName ?? undefined;
+    auteur = { id: cible.id, prenom: cible.prenom || "Client", email: cible.email };
+    prenomEmail = cible.prenom || undefined;
     createdVia = "admin";
   }
 

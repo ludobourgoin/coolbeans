@@ -3,13 +3,14 @@ export const prerender = false;
 
 import EspaceLayout from "../../../layouts/EspaceLayout.astro";
 import { getCollection } from "astro:content";
+import { getPortalContext } from "../../../lib/portail/context";
+import { isAdmin } from "../../../lib/portail/metadata";
 import { listerReponses, type ReponseDevis } from "../../../lib/devis/reponses";
 import { STATUT_LABEL, statutDevis, type StatutDevis } from "../../../lib/devis/statut";
 import { dateLongue, eur, totaux } from "../../../lib/devis";
 
-const user = await Astro.locals.currentUser();
-const isAdmin = ((user?.publicMetadata ?? {}) as { role?: string }).role === "admin";
-if (!isAdmin) return Astro.redirect("/espace");
+const { meta } = await getPortalContext(Astro);
+if (!isAdmin(meta)) return Astro.redirect("/espace");
 
 const devis = (await getCollection("devis")).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),

@@ -27,7 +27,7 @@ const { users } = Astro.props;
       <label class="label field-label" for="nda-pour">
         Au nom de <span aria-hidden="true">*</span>
       </label>
-      <select class="field" id="nda-pour" name="pourClerkId" required>
+      <select class="field" id="nda-pour" name="pourCompteId" required>
         <option value="">— Choisir un utilisateur —</option>
         {users.map((u) => (
           <option value={u.id}>{u.label}</option>

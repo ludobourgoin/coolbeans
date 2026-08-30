@@ -7,6 +7,7 @@ import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 import { Resend } from "resend";
 import { citation, esc, renderTransactionnel } from "../../../emails/transactionnel";
+import { prenomDe } from "../../../lib/portail/comptes";
 import { getPortalContext } from "../../../lib/portail/context";
 import { createComment } from "../../../lib/portail/linear";
 import { cleR2, validerFichiers } from "../../../lib/portail/messagerie/fichiers";
@@ -82,7 +83,7 @@ export const POST: APIRoute = async (context) => {
   // n'importe quel membre du client peut répondre sur un ticket, pas
   // seulement son auteur) — distinct de ticket.author_prenom, qui reste le
   // créateur du ticket et n'a rien à voir avec qui répond ici.
-  const prenomRepondeur = user.firstName ?? "Client";
+  const prenomRepondeur = prenomDe(user.name) || "Client";
 
   // Commentaire Linear : posté via le token de Ludo, donc Linear ne le
   // notifiera pas — c'est l'email Resend ci-dessous qui prévient (spec §7).

@@ -7,8 +7,8 @@
 // (src/worker.ts) fait le re-fetch et l'envoi. Répondre 200 vite : Linear
 // retente sinon, et l'idempotence D1 absorbe de toute façon les doublons.
 import type { APIRoute } from "astro";
-import { clerkClient } from "@clerk/astro/server";
 import { env } from "cloudflare:workers";
+import { comptesDuWorkspace } from "../../lib/portail/comptes";
 import {
   enfilerOuverture,
   enfilerPublication,
@@ -26,8 +26,7 @@ export const prerender = false;
 
 const DELAI_DE_GRACE_MS = 3 * 60 * 1000;
 
-export const POST: APIRoute = async (context) => {
-  const { request } = context;
+export const POST: APIRoute = async ({ request }) => {
   const secret = env.LINEAR_WEBHOOK_SECRET;
   if (!secret) {
     console.error("linear-webhook: LINEAR_WEBHOOK_SECRET absent de cet environnement");
@@ -49,7 +48,7 @@ export const POST: APIRoute = async (context) => {
 
   const evenementIssue = analyserEvenementIssue(payload);
   if (evenementIssue) {
-    await traiterIssue(context, evenementIssue, maintenant);
+    await traiterIssue(evenementIssue, maintenant);
     return new Response(null, { status: 200 });
   }
 
@@ -71,7 +70,6 @@ export const POST: APIRoute = async (context) => {
 };
 
 async function traiterIssue(
-  context: Parameters<APIRoute>[0],
   evenement: { issueId: string; teamId: string; support: boolean },
   maintenant: number,
 ): Promise<void> {
@@ -95,32 +93,35 @@ async function traiterIssue(
   const client = (await listWorkspaces()).find((c) => c.linearTeamId === evenement.teamId);
   if (!client || moduleCoupe("support", client)) return;
 
-  // Destinataire résolu ici, où Clerk est joignable : le cron n'a pas de
-  // contexte Astro. Sans utilisateur rattaché au client, personne à notifier —
-  // on n'ouvre pas un fil que personne ne verra.
+  // Destinataire résolu ici plutôt que dans le cron, qui n'a pas de contexte
+  // de requête. Sans compte rattaché au client, personne à notifier — on
+  // n'ouvre pas un fil que personne ne verra.
+  //
+  // Le premier compte de la team fait office de destinataire, comme du temps
+  // de Clerk où l'on prenait le premier utilisateur portant le bon slug. Le
+  // jour où un client aura plusieurs comptes, ce choix devra devenir explicite
+  // (contact principal sur la fiche du registre) — pas silencieux.
   let destinataire;
   try {
-    const users = await clerkClient(context).users.getUserList({ limit: 100 });
-    destinataire = users.data.find(
-      (u) => (u.publicMetadata as { client?: string }).client === client.slug,
-    );
+    [destinataire] = await comptesDuWorkspace(env.PORTAL_DB, client.slug);
   } catch (err) {
-    // Clerk en panne : ne pas enfiler à l'aveugle, Linear rejouera le webhook.
-    console.error("linear-webhook: destinataire non résolu (Clerk)", err);
+    // D1 en panne : ne pas enfiler à l'aveugle, Linear rejouera le webhook.
+    console.error("linear-webhook: destinataire non résolu (D1)", err);
     return;
   }
-  const email = destinataire?.emailAddresses[0]?.emailAddress;
-  if (!destinataire || !email) {
-    console.error("linear-webhook: aucun utilisateur Clerk pour le client", client.slug);
+  if (!destinataire?.email) {
+    console.error("linear-webhook: aucun compte portail pour le client", client.slug);
     return;
   }
 
   await enfilerOuverture(env.PORTAL_DB, {
     linear_issue_uuid: evenement.issueId,
     client: client.slug,
+    // Colonne héritée de Clerk : elle porte désormais un id Better Auth.
+    // Renommer coûterait une migration D1 pour un gain cosmétique.
     destinataire_clerk_id: destinataire.id,
-    destinataire_prenom: destinataire.firstName ?? client.prenom ?? client.nom,
-    destinataire_email: email,
+    destinataire_prenom: destinataire.prenom || client.prenom || client.nom,
+    destinataire_email: destinataire.email,
     publish_after: new Date(maintenant + DELAI_DE_GRACE_MS).toISOString(),
     created_at: new Date(maintenant).toISOString(),
   });
