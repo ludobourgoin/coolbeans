@@ -1,0 +1,242 @@
+titre: UnlockBreath x Coolbeans
+objet: Développement de la plateforme UnlockBreath — V01
+date: 2026-02-02
+contact: Thierry
+envoi:
+  date: 2026-02-03
+  destinataire: lanneau.thierry@gmail.com
+
+sections:
+  - titre: Ce que j'ai compris
+    texte: >-
+      UnlockBreath est une **plateforme de coaching respiratoire en ligne**
+      destinée aux sportifs, aux professionnels de santé et aux patients en
+      reprise d'activité. Le cœur du produit est un **programme vidéo de sept
+      semaines** — la première gratuite, les six suivantes payantes — vendu sous
+      deux offres à durée d'accès, en dollars.
+    liste:
+      - texte: >-
+          **Offre Discovery** : accès 6 mois, 149 $, comptant ou en plusieurs fois
+        tooltip: >-
+          Paiement fractionné via PayPal 4x, Klarna ou trois mensualités Stripe.
+          Les frais de service de ces solutions restent à la charge de
+          l'utilisateur final.
+      - texte: >-
+          **Offre Serenity** : accès 18 mois, 249 $, comptant ou en plusieurs fois
+      - texte: >-
+          La plateforme est **en anglais à la mise en ligne**, avec cinq langues
+          déployées ensuite (français, allemand, italien, espagnol, portugais
+          brésilien)
+        tooltip: >-
+          Chaque langue suppose des textes traduits et des fichiers vidéo
+          distincts, fournis par vos soins. La mise en place technique du
+          multilingue est au devis ; la traduction elle-même n'y est pas.
+    note: >-
+      Ce devis ne couvre que le **développement et les intégrations
+      techniques**. La conception UX/UI, le pilotage projet et les
+      recommandations SEO font l'objet d'un devis distinct de SOVANB
+      (Sonia Van Bellegem), pour 3 843,75 € HT. Budget global du projet :
+      12 790 € HT.
+
+  - titre: Pages
+    texte: "**Onze pages**, telles qu'arrêtées dans l'arborescence validée le 2 février 2026 :"
+    liste:
+      - texte: >-
+          **Accueil** : teaser vidéo, présentation du praticien, bloc Science,
+          témoignages patients
+      - texte: "Science of Breathing : grille d'articles avec système de tags"
+        tooltip: >-
+          Livrée en V01 sous forme de prototype fonctionnel, avec des contenus
+          fictifs. Les articles réels viennent ensuite.
+      - texte: "Your Physiotherapist Guide : page de présentation statique"
+      - texte: >-
+          **Program** : le cœur du produit, menu latéral et programme vidéo
+          structuré en sept semaines
+      - texte: "FAQ : accordéon de questions-réponses organisé par thématiques"
+      - texte: "Contact : formulaire relayé vers l'adresse officielle UnlockBreath"
+      - texte: "Pages légales (x3) : Terms & Conditions, Privacy Policy, Legal Notice"
+      - texte: "**Log in / Sign up** : email et mot de passe, ou compte Google / Facebook"
+      - texte: "**Dashboard** : espace membre avec panneau latéral gauche"
+      - texte: >-
+          **The course** : interface de suivi de la formation, avec déblocage
+          progressif au fil de la complétion
+      - texte: "**Settings** : modification du mot de passe et du moyen de paiement"
+
+  - titre: Stack
+    texte: >-
+      **Webflow** (front) + **Memberstack** (comptes et accès) + **Stripe**
+      (paiement) + **Make** (automatisations) + **bunny.net** (hébergement et
+      lecteur vidéo).
+    liste:
+      - texte: >-
+          **Vous restez autonome sur le contenu** : les textes des pages se
+          modifient directement dans Webflow, sans intervention technique
+      - texte: >-
+          **Les vidéos du programme sont sur bunny.net**, pas sur YouTube :
+          l'accès reste contrôlé et le lecteur ne renvoie pas vers des vidéos
+          concurrentes
+        tooltip: >-
+          YouTube n'est utilisé que pour les deux vidéos publiques de la page
+          d'accueil.
+      - texte: >-
+          **Webflow Localize** pour le multilingue, avec une adresse distincte
+          par langue
+      - "Google Analytics 4, à partir du compte de suivi existant sur le domaine"
+
+  - titre: Budget
+    budget:
+      lignes:
+        - label: "**Accueil** — page avancée"
+          prix: 1100
+        - label: Science of Breathing — page standard
+          prix: 650
+        - label: Your Physiotherapist Guide — page standard
+          prix: 650
+        - label: Program — page standard
+          prix: 650
+        - label: FAQ — page basique
+          prix: 350
+        - label: Contact — page basique
+          prix: 350
+        - label: Pages légales (x3) — pages basiques
+          prix: 350
+        - label: Log in / Sign up — page standard
+          prix: 650
+          tooltip: Email et mot de passe, ou inscription via Google et Facebook.
+        - label: Dashboard — page standard
+          prix: 650
+        - label: "**The course** — page avancée"
+          prix: 1100
+          tooltip: Interface de suivi de la formation, la page la plus dense du produit.
+        - label: "**Settings** — page avancée"
+          prix: 1100
+          tooltip: Modification du mot de passe et du moyen de paiement.
+        - label: >-
+            **Intégration Memberstack** : gestion sécurisée des accès, structure
+            des plans membres, automatisation des tunnels d'inscription,
+            synchronisation des données utilisateurs et emails système
+          prix: 1300
+          tooltip: 20 heures. C'est le poste qui porte toute la logique de verrouillage du programme payant.
+        - label: >-
+            **Gestion des emails** : bienvenue, confirmation de paiement,
+            anticipation de fin d'accès (6 et 18 mois), progression et fin de
+            chapitre
+          prix: 650
+          tooltip: 10 heures. Répartis entre Memberstack (emails système), Stripe et Make.
+        - label: >-
+            **Intégration Stripe** : Stripe Checkout et Klarna
+          prix: 325
+          tooltip: 5 heures. Klarna sous réserve d'éligibilité de votre compte.
+        - label: >-
+            **Intégration multilingue** : mise en place de Webflow Localize et
+            du sélecteur de langue
+          prix: 325
+          tooltip: >-
+            5 heures. Couvre la mise en place technique. L'intégration manuelle
+            des textes traduits n'est pas comprise.
+        - label: "**Intégrations tierces** : Analytics / GTM et bandeau de consentement"
+          prix: 325
+          tooltip: 5 heures.
+      remisePct: 15
+      remiseLabel: "Volume : 11 pages"
+      mention: HT
+      reglement: >-
+        **30 %** à la validation du devis, qui bloque le démarrage.
+        **50 % du solde** 30 jours après le démarrage. **50 % du solde**
+        au plus tard 30 jours après la livraison. Montants exprimés hors
+        taxes, TVA de 20 % en sus, soit **10 735,20 € TTC**.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Responsive (ordinateur, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation de la vitesse d'affichage
+      - Tests sur les trois principaux navigateurs
+      - Certificat SSL, configuration de l'hébergement et raccordement du nom de domaine
+      - Formation Webflow pour la mise à jour du contenu
+      - texte: Document de passation technique
+        tooltip: >-
+          Comptes et services utilisés, structure des environnements
+          pré-production et production, accès administrateur, liens utiles,
+          clés API et paramètres techniques.
+
+  - titre: Ce dont j'ai besoin de vous, et quand
+    texte: >-
+      Le planning ci-dessous tient si ces éléments arrivent aux dates
+      indiquées. Un retard sur l'un d'eux décale la livraison d'autant.
+    liste:
+      - texte: >-
+          **Entre le 1er et le 15 mars** : les accès administrateur Webflow,
+          Memberstack, Stripe, bunny.net, YouTube, GA4 et GTM
+      - texte: >-
+          **Avant le 1er mars** : la souscription et le paiement des
+          abonnements aux outils
+        tooltip: >-
+          Webflow, Memberstack, Make, Webflow Localize, bunny.net et les
+          solutions de paiement sont souscrits et payés par vos soins. Ils ne
+          sont pas compris dans ce devis.
+      - texte: >-
+          **Avant l'intégration** : les fichiers vidéo du programme en anglais,
+          leurs sous-titres, et leur organisation par chapitre
+      - texte: >-
+          **Avant l'intégration** : le contenu validé de la page d'accueil,
+          les questions-réponses de la FAQ, et les libellés définitifs des
+          boutons d'action
+      - texte: >-
+          **Avant la mise en ligne** : les textes juridiques revus par votre
+          avocat
+        tooltip: >-
+          Le disclaimer V01 est intégré tel quel pour la pré-production. La
+          version définitive relève d'une mise à jour de contenu, hors
+          périmètre V01.
+    note: >-
+      Sans retour de votre part sous **5 jours ouvrés**, un livrable est
+      considéré comme validé. La mise en production est conditionnée à votre
+      **Go écrit** à l'issue de la recette.
+
+  - titre: Planning
+    planning:
+      options:
+        - label: Démarrage au 1er mars
+          texte: "Mise en ligne visée **fin mai - début juin 2026**."
+          jalons:
+            - { date: 01/03 → 15/03, label: "Souscription aux outils techniques et remise des accès", owner: client }
+            - { date: 15/03 → 30/03, label: "Paramétrage de l'environnement technique et ouverture de la pré-production", owner: coolbeans }
+            - { date: Avril, label: "Intégration Webflow des onze pages, par lots soumis à validation", owner: coolbeans }
+            - { date: Début mai, label: "Développement custom : Memberstack, Stripe, emails, multilingue", owner: coolbeans }
+            - { date: 19/05 → 22/05, label: Recette et validations finales, owner: client }
+            - { date: Fin mai, label: "Mise en production, sur votre Go écrit", owner: coolbeans }
+          note: >-
+            Les validations intermédiaires se font sur une pré-production en
+            ligne, page par page, avec SOVANB et vous.
+
+  - titre: En option
+    texte: "Non compris dans le montant ci-dessus, à activer si vous le souhaitez :"
+    liste:
+      - texte: >-
+          **Maintenance STARTER : 210 € HT / mois** pour 3 heures, soit 70 € de
+          l'heure. Évolutions techniques, ajustements fonctionnels,
+          optimisations.
+      - texte: >-
+          **Pack 5 heures : 450 € HT**, soit 90 € de l'heure, valable 3 mois.
+        tooltip: >-
+          À préférer si votre besoin est ponctuel plutôt que mensuel.
+    note: >-
+      Les mises à jour simples — textes, couleurs, vidéos, déplacement d'un
+      élément d'interface — relèvent de SOVANB, à 35 € HT de l'heure.
+
+notes:
+  - tone: success
+    texte: >-
+      **Remise de volume appliquée sur l'ensemble de la prestation** : 15 % à
+      partir de neuf pages, soit 1 578,75 € de remise.
+  - texte: >-
+      Les abonnements aux outils (Webflow, Memberstack, Make, Localize,
+      bunny.net) sont **à votre charge à compter du 1er mars 2026** et ne sont
+      pas compris dans ce devis. Comptez de 60 à 94 € par mois selon les plans
+      retenus, plus la consommation bunny.net, facturée à l'usage.
+  - tone: info
+    texte: >-
+      Ce devis couvre le **périmètre V01** décrit dans la note de cadrage
+      contractuelle. Toute demande qui en sort fait l'objet d'un avenant
+      chiffré et planifié.
