@@ -38,7 +38,7 @@ export function createAuth(env: Env, baseURL: string) {
         autoDetectIpAddress: false,
         geolocationTracking: false,
       },
-      optionsAuth(env),
+      optionsAuth(env, baseURL),
     ),
   });
 }
