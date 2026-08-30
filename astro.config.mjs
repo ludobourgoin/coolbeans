@@ -2,15 +2,14 @@
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
-import clerk from "@clerk/astro";
-import { frFR } from "@clerk/localizations";
 import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
 
 import preact from "@astrojs/preact";
 
 // Hébergement : Cloudflare WORKERS (décision 2026-07-31, pour l'espace client
-// Clerk qui exige du rendu serveur — cf. _doc-standard/SPEC.md).
+// qui exige du rendu serveur — cf. _doc-standard/SPEC.md). L'auth était alors
+// Clerk ; elle est passée à Better Auth le 2026-08-29, la contrainte reste.
 //
 // Historique utile : le site était 100 % prérendu sur Cloudflare PAGES, sans
 // adaptateur. Les essais précédents avaient échoué parce que la sortie de
@@ -22,20 +21,11 @@ import preact from "@astrojs/preact";
 //
 // Découpage du rendu : le site vitrine reste prérendu (défaut statique) ;
 // seuls /espace et /docs déclarent `prerender = false` (SSR, requis par le
-// middleware Clerk — une page prérendue le contournerait).
-// Secrets en prod : CLERK_SECRET_KEY = secret du Worker, jamais dans le repo.
-
-// En CI (Workers Builds), la publishable key Clerk est fixée ici par
-// environnement : instance production pour la prod, instance dev pour staging.
-// Ce n'est pas un secret (elle est embarquée dans chaque page envoyée au
-// navigateur). En local, .env fait foi. CLERK_SECRET_KEY reste un secret du
-// Worker, jamais dans le repo.
-if (process.env.WORKERS_CI || process.env.CI) {
-  process.env.PUBLIC_CLERK_PUBLISHABLE_KEY =
-    process.env.CLOUDFLARE_ENV === "staging"
-      ? "pk_test_cHJlY2lzZS1yYW0tNTIuY2xlcmsuYWNjb3VudHMuZGV2JA"
-      : "pk_live_Y2xlcmsuY29vbGJlYW5zLmNjJA";
-}
+// middleware d'authentification — une page prérendue le contournerait).
+//
+// Better Auth n'a aucune clé publique à injecter au build : tout se joue
+// côté Worker, avec BETTER_AUTH_SECRET en secret. Le bloc qui fixait ici la
+// publishable key Clerk par environnement est parti avec la dépendance.
 
 // https://astro.build/config
 export default defineConfig({
@@ -45,9 +35,6 @@ export default defineConfig({
   // replie la ligne — ce qui colle les mots au rendu (« etcommunication »).
   compressHTML: false,
   integrations: [
-    // Composants Clerk en français (la page hébergée accounts.* reste en
-    // anglais chez Clerk — d'où la page /connexion hébergée dans l'app).
-    clerk({ localization: frFR }),
     mdx(),
     sitemap({
       // Pages privées/utilitaires exclues du sitemap : espace client (SSR,

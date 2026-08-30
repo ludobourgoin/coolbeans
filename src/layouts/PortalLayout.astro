@@ -69,7 +69,7 @@ const prenomVue = admin && client ? (client.prenom ?? client.nom) : prenomDe(use
 
 <BaseLayout title={title} description={description} noindex>
   <div class="doc-root portal-frame">
-    <PortalNav prenom={prenomVue} />
+    <PortalNav prenom={prenomVue} email={user?.email ?? ""} />
 
     <div class="doc-shell">
       {/* `clients` est vide pour un non-admin : la sidebar n'affiche alors

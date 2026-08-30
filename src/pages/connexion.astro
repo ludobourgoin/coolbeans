@@ -1,12 +1,39 @@
 ---
-// Page de connexion du portail, hébergée dans l'app pour être en français —
-// la page hébergée Clerk (accounts.*) n'existe qu'en anglais (cf. doc Clerk,
-// localisation limitée aux composants embarqués). Le middleware redirige ici
-// les visiteurs non connectés ; <SignIn /> lit redirect_url tout seul.
+// Page de connexion du portail.
+//
+// Remplace le <SignIn /> de Clerk, dernière surface d'interface restée sur
+// l'ancien fournisseur après la bascule Better Auth. Le formulaire poste sur
+// /api/auth/sign-in/email, la route que sert déjà src/pages/api/auth/[...all].
+//
+// Email + mot de passe seulement : c'est la seule méthode réellement branchée.
+// Le plugin magicLink est déclaré dans lib/auth/options.ts mais son
+// `sendMagicLink` lève encore — proposer un lien magique ici afficherait un
+// bouton qui échoue. Rien n'est plus coûteux qu'une page de connexion qui
+// ment.
+//
+// Aucune inscription publique : `disableSignUp` verrouille la lib, et cette
+// page n'offre volontairement aucun chemin vers un formulaire de création.
 export const prerender = false;
 
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { SignIn } from "@clerk/astro/components";
+
+/* Le middleware pose `redirect_url` en URL absolue. On ne la rend au
+   navigateur qu'après avoir vérifié qu'elle pointe sur CETTE origine : sans ce
+   contrôle, /connexion?redirect_url=https://ailleurs.tld devient une
+   redirection ouverte, et une page de connexion est exactement l'endroit où
+   elle se monnaie. */
+const APRES_CONNEXION = "/espace";
+function destination(brut: string | null): string {
+  if (!brut) return APRES_CONNEXION;
+  try {
+    const cible = new URL(brut, Astro.url);
+    if (cible.origin !== Astro.url.origin) return APRES_CONNEXION;
+    return cible.pathname + cible.search;
+  } catch {
+    return APRES_CONNEXION;
+  }
+}
+const suite = destination(Astro.url.searchParams.get("redirect_url"));
 ---
 
 <BaseLayout
@@ -15,6 +42,109 @@ import { SignIn } from "@clerk/astro/components";
   noindex
 >
   <main class="grid min-h-[80vh] place-items-center px-4 py-10">
-    <SignIn routing="hash" fallbackRedirectUrl="/espace" />
+    <div class="card w-full max-w-[400px]">
+      <h1 class="text-[22px] leading-tight font-bold">Connexion</h1>
+      <p class="sub mt-2 text-[13px]">Votre espace Coolbeans.</p>
+
+      <form id="connexion-form" class="mt-6 grid gap-4" data-suite={suite} novalidate>
+        <div class="grid gap-1.5">
+          <label class="label field-label" for="connexion-email">Adresse e-mail</label>
+          <input
+            class="field"
+            id="connexion-email"
+            name="email"
+            type="email"
+            autocomplete="username"
+            required
+            placeholder="vous@exemple.fr"
+          />
+        </div>
+
+        <div class="grid gap-1.5">
+          <label class="label field-label" for="connexion-motdepasse">Mot de passe</label>
+          <input
+            class="field"
+            id="connexion-motdepasse"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <button class="btn btn-lg mt-1" type="submit">Se connecter</button>
+
+        <p data-connexion-status role="status" class="hidden text-[13px] font-medium"></p>
+
+        <p class="text-[13px] text-mute">
+          Mot de passe oublié ou premier accès ? Écrivez-moi à
+          <a class="link" href="mailto:ludo@coolbeans.cc">ludo@coolbeans.cc</a>.
+        </p>
+      </form>
+    </div>
   </main>
 </BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#connexion-form");
+  const status = document.querySelector<HTMLParagraphElement>("[data-connexion-status]");
+  const submitBtn = form?.querySelector<HTMLButtonElement>("button[type=submit]");
+  if (form && status && submitBtn) {
+    const suite = form.dataset.suite || "/espace";
+    /* Classes écrites en toutes lettres : Tailwind scanne les sources à la
+       recherche de littéraux, un `text-${ton}` interpolé ne générerait rien. */
+    const TON = {
+      mute: "text-[13px] font-medium text-mute",
+      error: "text-[13px] font-medium text-error",
+    } as const;
+    const dire = (texte: string, ton: keyof typeof TON) => {
+      status.hidden = false;
+      status.textContent = texte;
+      status.className = TON[ton];
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      const email = String(fd.get("email") ?? "").trim();
+      const password = String(fd.get("password") ?? "");
+      if (!email || !password) {
+        dire("Renseignez votre adresse e-mail et votre mot de passe.", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      dire("Connexion…", "mute");
+      try {
+        const res = await fetch("/api/auth/sign-in/email", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          // same-origin : le cookie de session posé par la réponse doit être
+          // conservé, c'est tout l'objet de l'appel.
+          credentials: "same-origin",
+          body: JSON.stringify({ email, password }),
+        });
+        if (res.ok) {
+          // Rechargement complet plutôt qu'une navigation douce : la session
+          // vient d'être posée en cookie, et toutes les pages du portail sont
+          // rendues côté serveur.
+          window.location.assign(suite);
+          return;
+        }
+        /* Message identique pour « adresse inconnue » et « mot de passe faux » :
+           les distinguer dirait à un inconnu quelles adresses ont un compte
+           dans le portail. */
+        dire(
+          res.status === 401 || res.status === 400
+            ? "Adresse e-mail ou mot de passe incorrect."
+            : "Connexion impossible pour le moment. Réessayez dans un instant.",
+          "error",
+        );
+      } catch {
+        dire("Connexion impossible — vérifiez votre réseau, puis réessayez.", "error");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  }
+</script>
