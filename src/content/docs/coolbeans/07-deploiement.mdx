@@ -39,25 +39,27 @@ pas une branche de feature : elle ne se supprime jamais.
   (`npx astro dev status`, `logs`, `stop`).
 - `npm test` : tests unitaires (vitest).
 - `npm run build` puis `npm run preview` : construction et prévisualisation.
-- Le fichier `.env` local porte les clés Clerk de développement ; il est
-  hors git et doit être recopié à la main dans tout espace de travail
-  parallèle (worktree), sinon l'authentification ne démarre pas.
+- Le fichier `.dev.vars` porte les variables locales du Worker, dont le
+  secret d'authentification ; il est hors git et doit être recopié à la main
+  dans tout espace de travail parallèle (worktree), sinon l'authentification
+  ne démarre pas.
 
 ## Comment ça marche
 
 **La configuration Worker** (`wrangler.jsonc`) : le point d'entrée est
 `src/worker.ts` (réécriture d'hôte du portail, voir la page Portail) ; le
-mode de compatibilité Node est activé parce que Clerk en a besoin ; la règle
+mode de compatibilité Node est activé parce que Better Auth en a besoin ; la règle
 `run_worker_first` force le passage par le Worker pour les pages tout en
 laissant les fichiers statiques (polices, images, bundles) servis
 directement.
 
-**Les clés Clerk** suivent une règle simple : la clé *publiable* n'est pas
-un secret (elle est embarquée dans chaque page envoyée au navigateur) et
-elle est fixée par environnement dans `astro.config.mjs` au moment de la
-construction — instance de production pour `main`, instance de développement
-pour `staging`. La clé *secrète* (`CLERK_SECRET_KEY`) est un secret du
-Worker, posé dans Cloudflare, jamais dans le repo.
+**Le secret d'authentification.** Better Auth étant auto-hébergé, il n'y a
+aucune clé publique à injecter au moment de la construction : tout se joue
+côté Worker. `BETTER_AUTH_SECRET` est un secret du Worker, posé dans
+Cloudflare, jamais dans le repo — un par environnement, et deux valeurs
+différentes entre production et staging, sinon un cookie de staging ouvrirait
+la production. Les comptes et les sessions vivent dans la base D1 du portail,
+qui est elle aussi distincte entre les deux environnements.
 
 ## Infra autour du repo
 

@@ -50,11 +50,14 @@ servies avant même qu'Astro ne s'exécute — seul le Worker voit tous les noms
 de domaine. Staging suit le même schéma avec `staging.coolbeans.cc` et
 `my-staging.coolbeans.cc`.
 
-**L'authentification.** Clerk protège tout `/espace` et tout `/docs`
-(`src/middleware.ts`). Chaque utilisateur porte deux informations : son rôle
-(`admin` ou non) et l'identifiant de son client — un simple pointeur vers le
-registre YAML ci-dessus, qui reste la source de vérité. La page de connexion
-est hébergée dans l'app (`/connexion`) pour rester en français.
+**L'authentification.** Better Auth protège tout `/espace` et tout `/docs`
+(`src/middleware.ts`). Il est auto-hébergé : pas de fournisseur tiers, les
+comptes et les sessions vivent dans la base D1 du portail. Chaque compte
+porte un type — `admin`, `revendeur` ou `client` — et sa portée vient de ses
+appartenances : une organisation (le revendeur) et une team (le workspace du
+client), dont le slug pointe vers le registre YAML ci-dessus, qui reste la
+source de vérité. Connexion par e-mail et mot de passe sur `/connexion` ;
+**aucune inscription publique** : les comptes sont créés à la main.
 
 **Le sélecteur admin.** Un admin choisit son « client courant » ; le choix
 est mémorisé dans un cookie. Règle d'arbitrage : **l'URL gagne** — un admin
@@ -72,7 +75,10 @@ chantier à part entière (voir la spec de migration dans
 | Élément | Emplacement |
 | --- | --- |
 | Réécriture d'hôte et redirections | `src/worker.ts`, règles `run_worker_first` dans `wrangler.jsonc` |
-| Protection Clerk | `src/middleware.ts` |
+| Protection des routes privées | `src/middleware.ts` |
+| Authentification (instance, options, session) | `src/lib/auth/server.ts`, `options.ts`, `session.ts` |
+| Page de connexion et menu compte | `src/pages/connexion.astro`, `src/components/portail/PortalNav.astro` |
+| Comptes rattachés à un workspace | `src/lib/portail/comptes.ts` |
 | Registre des workspaces | `src/content/clients/*.yaml`, schéma dans `src/content.config.ts`, lecture dans `src/lib/portail/workspaces.ts` |
 | Lecture métadonnées / workspace courant | `src/lib/portail/metadata.ts`, `current-workspace.ts`, `context.ts` |
 | Sélecteur de workspace (admin) | `src/components/portail/WorkspaceSwitcher.astro`, en tête de `PortalSidebar.astro` |

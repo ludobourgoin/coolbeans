@@ -25,12 +25,16 @@ services externes, et l'emplacement des décisions écrites.
 
 | Service | Usage | Accès |
 | --- | --- | --- |
-| Cloudflare | DNS, Workers (prod + staging), secrets de prod | dashboard Cloudflare |
-| Clerk | Authentification du portail (2 instances : production et développement) | dashboard Clerk |
+| Cloudflare | DNS, Workers (prod + staging), bases D1, secrets de prod | dashboard Cloudflare |
 | Linear | Gestion de projet — une team par client, Coolbeans est une team comme les autres | app Linear |
 | GitHub | Repo du site + repo des skills (`coolbeans-claude-skills`) | GitHub |
 | UptimeRobot | Surveillance de disponibilité des sites clients (module Site du portail) | dashboard UptimeRobot |
 | Resend, SendGrid, MailerLite, Google Workspace | Mail — voir la page Déploiement | dashboards respectifs |
+
+L'authentification du portail n'apparaît plus dans ce tableau : depuis la
+sortie de Clerk (2026-08-29), elle est auto-hébergée avec Better Auth, et ses
+comptes vivent dans la base D1 du portail. Il n'y a donc plus de fournisseur
+d'identité à administrer, ni de facture à ce titre.
 
 ## Où vivent les décisions
 
