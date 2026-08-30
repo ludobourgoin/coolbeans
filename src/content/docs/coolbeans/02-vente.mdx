@@ -79,7 +79,7 @@ Refondu le 2026-08-29 : de 17 statuts à 13, dont 10 colonnes d'affaires. Spec `
   </tbody>
 </table>
 
-**Les sous-issues n'utilisent que `Todo` et `Done`.** Dans Linear, les statuts sont définis **par team, pas par type d'objet** : affaires et actions partagent forcément le même jeu de colonnes. Une convention seule ne tient pas — elle a dérivé jusqu'à ce que des sous-issues se retrouvent classées `🪦 Perdue`. Ce qui la remplace : le board **Affaires** se lit avec le filtre `Sub-issues: exclude`, et le gabarit pose `Todo` à la création. Linear n'expose aucun statut par défaut propre aux sous-issues, ce garde-fou ne peut donc pas vivre dans les réglages de la team.
+**Les sous-issues n'utilisent que `Todo` et `Done`.** Dans Linear, les statuts sont définis **par team, pas par type d'objet** : affaires et actions partagent forcément le même jeu de colonnes. Une convention seule ne tient pas — elle a dérivé jusqu'à ce que des sous-issues se retrouvent classées `🪦 Perdue`. Ce qui la remplace : la vue **« Affaires »**, qui exclut les sous-issues, et le gabarit qui pose `Todo` à la création. Linear n'expose aucun statut par défaut propre aux sous-issues, ce garde-fou ne peut donc pas vivre dans les réglages de la team.
 
 **Une relance ne change pas la colonne.** L'affaire reste en **📝 Devis envoyé** jusqu'à la réponse, au report ou à la perte : une relance est un événement daté, pas un état. Les labels `relance-n` disent combien de fois, la sous-issue datée dit quand tombe la suivante. C'est pourquoi la colonne `☄️ Lead relancé` a été supprimée, en même temps que `💪 Négo`, qui décrivait un moment du devis envoyé.
 
@@ -253,5 +253,4 @@ Les trois tâches de l'**étude de cas** — rédiger le brouillon, faire valide
 
 - **CGV et case d'acceptation sur la page de devis** : rédaction des CGV, page `/cgv`, case bloquante côté client et côté serveur, traçage de l'horodatage et de la version acceptée. L'échéancier ferme et l'autorisation d'étude de cas doivent y figurer. Suivi dans le projet « Site web Coolbeans » sur Linear (team Coolbeans, `COO-5`).
 - **Formules du care plan** : le SOP décrit le moment de la proposition (S17) et l'intention, pas le contenu de l'offre. Chantier séparé.
-- **Vue « Affaires » du board CRM** : le filtre `Sub-issues: exclude` doit être posé à la main dans Linear puis sauvegardé en vue — l'API refuse ce filtre à la création, alors qu'elle accepte son inverse (la vue « Mes actions » existe déjà).
 - **Feuille de prospection** : elle doit porter une date de dernier contact et une colonne « prochaine action », sinon la revue mensuelle n'a rien sur quoi mordre.
