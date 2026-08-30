@@ -147,7 +147,7 @@ export const POST: APIRoute = async (context) => {
       client: client.slug,
       linear_issue_uuid: null,
       linear_issue_url: null,
-      author_clerk_id: auteur.id,
+      author_user_id: auteur.id,
       author_prenom: auteur.prenom,
       author_email: auteur.email,
       created_via: createdVia,

@@ -6,7 +6,7 @@ export interface TicketRow {
   client: string;
   linear_issue_uuid: string | null;
   linear_issue_url: string | null;
-  author_clerk_id: string;
+  author_user_id: string;
   author_prenom: string;
   author_email: string;
   created_via: "portail" | "admin";
@@ -23,7 +23,7 @@ export interface TicketRow {
 export interface OuvertureRow {
   linear_issue_uuid: string;
   client: string;
-  destinataire_clerk_id: string;
+  destinataire_user_id: string;
   destinataire_prenom: string;
   destinataire_email: string;
   publish_after: string;
@@ -52,13 +52,13 @@ export interface AttachmentRow {
 export async function creerTicket(db: D1Database, t: TicketRow): Promise<void> {
   await db
     .prepare(
-      `INSERT INTO tickets (id, client, linear_issue_uuid, linear_issue_url, author_clerk_id,
+      `INSERT INTO tickets (id, client, linear_issue_uuid, linear_issue_url, author_user_id,
          author_prenom, author_email, created_via, objet, created_at, last_message_at,
          masque, ouvert_depuis_linear)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .bind(
-      t.id, t.client, t.linear_issue_uuid, t.linear_issue_url, t.author_clerk_id,
+      t.id, t.client, t.linear_issue_uuid, t.linear_issue_url, t.author_user_id,
       t.author_prenom, t.author_email, t.created_via, t.objet, t.created_at, t.last_message_at,
       t.masque, t.ouvert_depuis_linear,
     )
@@ -156,12 +156,12 @@ export async function enfilerOuverture(db: D1Database, o: OuvertureRow): Promise
   await db
     .prepare(
       `INSERT OR IGNORE INTO pending_ouvertures (linear_issue_uuid, client,
-         destinataire_clerk_id, destinataire_prenom, destinataire_email,
+         destinataire_user_id, destinataire_prenom, destinataire_email,
          publish_after, created_at)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
     )
     .bind(
-      o.linear_issue_uuid, o.client, o.destinataire_clerk_id, o.destinataire_prenom,
+      o.linear_issue_uuid, o.client, o.destinataire_user_id, o.destinataire_prenom,
       o.destinataire_email, o.publish_after, o.created_at,
     )
     .run();
