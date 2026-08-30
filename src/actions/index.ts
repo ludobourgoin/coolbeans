@@ -113,4 +113,101 @@ export const server = {
       },
     }),
   },
+
+  /* Gestion des comptes du portail (plan Task 9). La surface que la
+     disparition du dashboard Clerk rend obligatoire : ouvrir un accès, en
+     changer le type, le révoquer.
+
+     UNE INVITATION EST TOUJOURS PORTÉE PAR UNE ORGANISATION, et pour un
+     `client` par une team : il n'existe aucun chemin qui invite « au
+     portail ». Le schéma le refuse plus bas, la page ne l'offre pas. */
+  utilisateurs: {
+    inviter: defineAction({
+      accept: "form",
+      input: z
+        .object({
+          email: z.string().email("Adresse invalide."),
+          nom: z.string().min(1, "Un nom est nécessaire."),
+          portalRole: z.enum(["admin", "revendeur", "client"]),
+          organisation: z.string().regex(SLUG_STRICT, "Slug invalide.").optional(),
+          workspace: z.string().regex(SLUG_STRICT, "Slug invalide.").optional(),
+          /* L'envoi du mail est un geste SÉPARÉ de la création, et il est
+             décoché par défaut : pendant la phase de test, personne ne doit
+             recevoir quoi que ce soit sans une décision explicite. */
+          envoyerLeMail: z.boolean().default(false),
+        })
+        .refine((v) => v.portalRole === "admin" || Boolean(v.organisation), {
+          message: "Un compte non-admin appartient forcément à une organisation.",
+          path: ["organisation"],
+        })
+        .refine((v) => v.portalRole !== "client" || Boolean(v.workspace), {
+          message: "Un compte client appartient forcément à un workspace.",
+          path: ["workspace"],
+        }),
+      handler: async (input, context) => {
+        await requireAdmin(context);
+        const { env } = await import("cloudflare:workers");
+        const { creerUtilisateur } = await import("../lib/portail/utilisateurs");
+
+        try {
+          await creerUtilisateur(env.PORTAL_DB, input);
+        } catch (err) {
+          throw new ActionError({
+            code: "BAD_REQUEST",
+            message: err instanceof Error ? err.message : "Création impossible.",
+          });
+        }
+
+        if (input.envoyerLeMail) {
+          const { createAuth } = await import("../lib/auth/server");
+          const origine = new URL(context.request.url).origin;
+          await createAuth(env, origine).api.signInMagicLink({
+            body: { email: input.email, callbackURL: "/" },
+            headers: context.request.headers,
+          });
+        }
+
+        return { ok: true as const, mailEnvoye: input.envoyerLeMail };
+      },
+    }),
+
+    changerType: defineAction({
+      accept: "form",
+      input: z.object({
+        userId: z.string().min(1),
+        portalRole: z.enum(["admin", "revendeur", "client"]),
+      }),
+      handler: async ({ userId, portalRole }, context) => {
+        await requireAdmin(context);
+        const { env } = await import("cloudflare:workers");
+        const { changerType } = await import("../lib/portail/utilisateurs");
+        await changerType(env.PORTAL_DB, userId, portalRole);
+        return { ok: true as const };
+      },
+    }),
+
+    revoquer: defineAction({
+      accept: "form",
+      input: z.object({ userId: z.string().min(1) }),
+      handler: async ({ userId }, context) => {
+        await requireAdmin(context);
+        const { env } = await import("cloudflare:workers");
+        const { lireSession } = await import("../lib/auth/session");
+        const { revoquer } = await import("../lib/portail/utilisateurs");
+
+        /* Se révoquer soi-même ferme la porte de l'intérieur : plus personne
+           ne peut ouvrir de compte, l'inscription publique étant verrouillée. */
+        const { user } = await lireSession(context);
+        if (user?.id === userId) {
+          throw new ActionError({
+            code: "BAD_REQUEST",
+            message: "On ne révoque pas son propre compte.",
+          });
+        }
+
+        await revoquer(env.PORTAL_DB, userId);
+        return { ok: true as const };
+      },
+    }),
+  },
 };

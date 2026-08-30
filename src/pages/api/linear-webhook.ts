@@ -119,7 +119,7 @@ async function traiterIssue(
     client: client.slug,
     // Colonne héritée de Clerk : elle porte désormais un id Better Auth.
     // Renommer coûterait une migration D1 pour un gain cosmétique.
-    destinataire_clerk_id: destinataire.id,
+    destinataire_user_id: destinataire.id,
     destinataire_prenom: destinataire.prenom || client.prenom || client.nom,
     destinataire_email: destinataire.email,
     publish_after: new Date(maintenant + DELAI_DE_GRACE_MS).toISOString(),

@@ -789,7 +789,7 @@ export function messageErreur(code: string | null | undefined): string {
 Run: `npm test -- src/lib/auth/erreurs.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5 : Écrire la page de connexion**
+- [x] **Step 5 : Écrire la page de connexion**
 
 Remplacer `src/pages/connexion.astro`. **La contrainte de parité est le livrable** : deux colonnes de même poids visuel, même hiérarchie typographique. Ni « ou sinon », ni « plus d'options ». Relire `/design-system` avant de coder : les labels de champ sont `.label field-label`.
 
@@ -814,16 +814,16 @@ Points non négociables :
 - L'écran « lien envoyé » est un état de la même page, pas une redirection.
 - `redirect_url` est relu depuis l'URL et repassé à Better Auth.
 
-- [ ] **Step 6 : Écrire la page de réinitialisation**
+- [x] **Step 6 : Écrire la page de réinitialisation**
 
 `src/pages/reinitialisation.astro` : saisie de la nouvelle adresse (demande), puis définition du mot de passe depuis le lien reçu. Erreurs via `messageErreur`.
 
-- [ ] **Step 7 : Vérifier le build**
+- [x] **Step 7 : Vérifier le build**
 
 Run: `npm run build`
 Expected: `connexion.astro` ne référence plus `@clerk/astro/components`.
 
-- [ ] **Step 8 : Commit**
+- [x] **Step 8 : Commit**
 
 ```bash
 git add src/pages/connexion.astro src/pages/reinitialisation.astro src/lib/auth/erreurs.ts src/lib/auth/erreurs.test.ts
@@ -845,7 +845,7 @@ repli de l'autre. Un code d'erreur inconnu ne sort jamais tel quel."
 - Consumes: l'expéditeur et `renderTransactionnel` déjà utilisés par `src/pages/api/devis-reponse.ts`.
 - Produces: `mailLienMagique`, `mailInvitation`, `mailReinitialisation`.
 
-- [ ] **Step 1 : Relever l'expéditeur existant**
+- [x] **Step 1 : Relever l'expéditeur existant**
 
 ```bash
 grep -n "from:\|renderTransactionnel\|resend" src/pages/api/devis-reponse.ts
@@ -853,11 +853,11 @@ grep -n "from:\|renderTransactionnel\|resend" src/pages/api/devis-reponse.ts
 
 Reprendre l'expéditeur **tel quel**. Ne jamais en inventer un : le domaine `send.coolbeans.cc` est authentifié, un autre ne l'est pas.
 
-- [ ] **Step 2 : Écrire les trois gabarits**
+- [x] **Step 2 : Écrire les trois gabarits**
 
 `src/emails/auth.ts`, sur le modèle des gabarits existants de `src/emails/`. Tous en français, tous avec le lien en toutes lettres sous le bouton — un client dont le client mail masque les liens doit pouvoir copier l'URL.
 
-- [ ] **Step 3 : Brancher les envois dans `createAuth`**
+- [x] **Step 3 : Brancher les envois dans `createAuth`**
 
 Remplacer le `throw` posé en Task 1 :
 
@@ -871,12 +871,12 @@ Remplacer le `throw` posé en Task 1 :
 
 Idem pour `emailAndPassword.sendResetPassword` et pour l'invitation du plugin `organization` (`sendInvitationEmail`).
 
-- [ ] **Step 4 : Vérifier**
+- [x] **Step 4 : Vérifier**
 
 Run: `npm run build`
 Expected: PASS. L'envoi réel se vérifie en staging, Task 12 — Resend n'est pas testable hors ligne.
 
-- [ ] **Step 5 : Commit**
+- [x] **Step 5 : Commit**
 
 ```bash
 git add src/emails/auth.ts src/lib/auth/server.ts
@@ -894,17 +894,17 @@ un autre domaine ne l'est pas."
 - Create: `src/components/portail/MenuCompte.astro`
 - Modify: `src/components/portail/PortalNav.astro:125-145`
 
-- [ ] **Step 1 : Écrire le composant**
+- [x] **Step 1 : Écrire le composant**
 
 Nom, adresse, lien Messagerie, déconnexion. La contrainte que Clerk imposait — réordonner ses items natifs, COO-35 — disparaît avec lui : l'ordre est libre.
 
 La déconnexion poste vers `/api/auth/sign-out` puis redirige vers `/connexion`.
 
-- [ ] **Step 2 : Remplacer `<UserButton />`**
+- [x] **Step 2 : Remplacer `<UserButton />`**
 
 Dans `PortalNav.astro`, remplacer le bloc `withAccount && (...)` par `<MenuCompte />`. Retirer l'import de `@clerk/astro/components`.
 
-- [ ] **Step 3 : Vérifier**
+- [x] **Step 3 : Vérifier**
 
 Run: `npm run build`
 Expected: PASS — plus aucun import Clerk dans `src/components/`.
@@ -913,7 +913,7 @@ Expected: PASS — plus aucun import Clerk dans `src/components/`.
 grep -rn "@clerk" src/components/ || echo "aucun import Clerk restant dans les composants"
 ```
 
-- [ ] **Step 4 : Commit**
+- [x] **Step 4 : Commit**
 
 ```bash
 git add src/components/portail/MenuCompte.astro src/components/portail/PortalNav.astro
@@ -943,7 +943,7 @@ gérer** — d'où la vérification d'écart du Step 4, qui n'est pas un confort
 - Consumes: `createAuth` (Task 1), le champ `organisation` du registre (Task 3).
 - Produces: `listOrganisations()` → `{ slug, nom }[]`, lu par la page de la Task 9.
 
-- [ ] **Step 1 : Créer la collection**
+- [x] **Step 1 : Créer la collection**
 
 Dans `src/content.config.ts`, sur le modèle de la collection `clients` :
 
@@ -962,7 +962,7 @@ const organisations = defineCollection({
 
 Ajouter `organisations` à l'export `collections`.
 
-- [ ] **Step 2 : Créer les deux fiches**
+- [x] **Step 2 : Créer les deux fiches**
 
 ```bash
 mkdir -p src/content/organisations
@@ -973,7 +973,7 @@ printf 'nom: Trigger\n' > src/content/organisations/trigger.yaml
 Les champs de marque (logo, couleurs) viennent en phase B : ne pas les ajouter
 maintenant, ils n'auraient aucun lecteur.
 
-- [ ] **Step 3 : Écrire le script d'amorçage**
+- [x] **Step 3 : Écrire le script d'amorçage**
 
 `scripts/amorcer-organisations.mjs`, sur le modèle des scripts existants de
 `scripts/`. Il est **idempotent** : relancé, il ne crée rien en double.
@@ -986,7 +986,7 @@ Passer par les endpoints du plugin (`POST /organization/create`,
 `POST /organization/create-team`) plutôt que par des `INSERT` directs : le
 plugin pose des colonnes que du SQL écrit à la main oublierait.
 
-- [ ] **Step 4 : Faire échouer le script sur tout écart**
+- [x] **Step 4 : Faire échouer le script sur tout écart**
 
 Le script se termine en comparant les deux côtés et **sort en code 1** s'ils
 divergent :
@@ -999,7 +999,7 @@ teams    : amusoire(trigger), trigger(trigger), coolbeans(coolbeans), spinoza(co
 
 Un slug présent d'un seul côté est une erreur, pas un avertissement.
 
-- [ ] **Step 5 : Lancer sur staging, deux fois**
+- [x] **Step 5 : Lancer sur staging, deux fois**
 
 ```bash
 node scripts/amorcer-organisations.mjs --env staging
@@ -1010,7 +1010,7 @@ Expected : le second passage ne crée rien et ne signale aucun écart. Si le
 second passage crée quoi que ce soit, le script n'est pas idempotent — le
 corriger avant de continuer, pas après.
 
-- [ ] **Step 6 : Commit**
+- [x] **Step 6 : Commit**
 
 ```bash
 git add src/content/organisations/ src/content.config.ts src/lib/portail/organisations.ts scripts/amorcer-organisations.mjs
@@ -1034,7 +1034,7 @@ La surface que la disparition du dashboard Clerk rend obligatoire. Le plugin `or
 **Interfaces:**
 - Consumes: `createAuth` (Task 1), `isAdmin` (Task 2).
 
-- [ ] **Step 1 : Ajouter l'entrée de nav**
+- [x] **Step 1 : Ajouter l'entrée de nav**
 
 Dans `src/lib/portail/nav.ts`, section `admin` (déjà `adminOnly: true`), après « Mes clients » :
 
@@ -1042,21 +1042,21 @@ Dans `src/lib/portail/nav.ts`, section `admin` (déjà `adminOnly: true`), aprè
       { label: "Utilisateurs", path: "/utilisateurs", flag: "live" },
 ```
 
-- [ ] **Step 2 : Écrire les actions**
+- [x] **Step 2 : Écrire les actions**
 
 Dans `src/actions/index.ts`, sur le modèle de la garde admin systématique déjà en place ligne 12. Quatre actions, toutes gardées : `inviter`, `listerMembres`, `changerRole`, `revoquer`.
 
 **Une invitation est toujours portée par une organisation**, et pour un `client` par une team. Le formulaire impose donc de choisir l'organisation ; il n'existe aucun chemin qui invite « au portail ».
 
-- [ ] **Step 3 : Écrire la page**
+- [x] **Step 3 : Écrire la page**
 
 Liste des membres par organisation, formulaire d'invitation (adresse, organisation, type de compte, team si `client`), bouton de révocation.
 
-- [ ] **Step 4 : Vérifier la garde**
+- [x] **Step 4 : Vérifier la garde**
 
 Run: `npm run build`, puis vérifier à la main en staging (Task 12) qu'un compte non-admin reçoit un refus, pas la page.
 
-- [ ] **Step 5 : Commit**
+- [x] **Step 5 : Commit**
 
 ```bash
 git add src/pages/espace/utilisateurs.astro src/lib/portail/nav.ts src/actions/index.ts
@@ -1077,7 +1077,7 @@ Le trou que COO-132 ne voyait pas. Ces colonnes portent des **lignes réelles en
 - Modify: `src/lib/portail/messagerie/store.ts:9,26,55,61,159,164`
 - Modify: `src/components/portail/NouvelleDemandeAdmin.astro` (champ `pourClerkId`)
 
-- [ ] **Step 1 : Relever l'identifiant Clerk de Ludo en production**
+- [x] **Step 1 : Relever l'identifiant Clerk de Ludo en production**
 
 ```bash
 npx wrangler d1 execute coolbeans-portal --remote --command="SELECT DISTINCT author_clerk_id FROM tickets"
@@ -1085,7 +1085,7 @@ npx wrangler d1 execute coolbeans-portal --remote --command="SELECT DISTINCT aut
 
 Noter la valeur. Un seul utilisateur réel, donc une seule valeur à remapper.
 
-- [ ] **Step 2 : Écrire la migration**
+- [x] **Step 2 : Écrire la migration**
 
 ```sql
 -- Renommage des colonnes d'identifiant utilisateur (spec 2026-08-19 §5.2).
@@ -1104,7 +1104,7 @@ UPDATE pending_publications SET destinataire_user_id = 'NOUVEL_ID' WHERE destina
 
 **Vérifier le nom réel de la table du second `ALTER`** : `grep -n "destinataire_clerk_id" migrations/*.sql` donne la table exacte.
 
-- [ ] **Step 3 : Renommer dans le code**
+- [x] **Step 3 : Renommer dans le code**
 
 ```bash
 grep -rln "clerk_id\|ClerkId" src/ | tee /dev/stderr
@@ -1112,19 +1112,19 @@ grep -rln "clerk_id\|ClerkId" src/ | tee /dev/stderr
 
 Renommer `author_clerk_id` → `author_user_id`, `destinataire_clerk_id` → `destinataire_user_id`, `pourClerkId` → `pourUserId`.
 
-- [ ] **Step 4 : Appliquer en staging et vérifier**
+- [x] **Step 4 : Appliquer en staging et vérifier**
 
 ```bash
 npx wrangler d1 execute coolbeans-portal-staging --remote --file=migrations/0005_user_ids.sql
 npx wrangler d1 execute coolbeans-portal-staging --remote --command="SELECT id, author_user_id FROM tickets LIMIT 5"
 ```
 
-- [ ] **Step 5 : Lancer les tests et le build**
+- [x] **Step 5 : Lancer les tests et le build**
 
 Run: `npm test && npm run build`
 Expected: PASS.
 
-- [ ] **Step 6 : Commit**
+- [x] **Step 6 : Commit**
 
 ```bash
 git add migrations/0005_user_ids.sql src/lib/portail/messagerie/store.ts src/components/portail/NouvelleDemandeAdmin.astro
@@ -1147,17 +1147,17 @@ tickets reste intact."
 - Modify: `package.json`, `astro.config.mjs`, `wrangler.jsonc`
 - Modify: les fichiers restants qui mentionnent Clerk
 
-- [ ] **Step 1 : Recenser ce qui reste**
+- [x] **Step 1 : Recenser ce qui reste**
 
 ```bash
 grep -rn -i "clerk" src/ astro.config.mjs wrangler.jsonc package.json
 ```
 
-- [ ] **Step 2 : Retirer l'intégration Astro**
+- [x] **Step 2 : Retirer l'intégration Astro**
 
 Dans `astro.config.mjs` : supprimer l'import `clerk`, l'import `frFR`, l'entrée `clerk({ localization: frFR })` du tableau `integrations`, et **tout le bloc `if (process.env.WORKERS_CI || process.env.CI)`** qui fixait la publishable key par environnement. Réécrire les commentaires d'en-tête qui expliquent le SSR « requis par le middleware Clerk » : la raison devient Better Auth, pas Clerk.
 
-- [ ] **Step 3 : Retirer les dépendances**
+- [x] **Step 3 : Retirer les dépendances**
 
 ```bash
 npm uninstall @clerk/astro @clerk/localizations
@@ -1165,7 +1165,7 @@ npm uninstall @clerk/astro @clerk/localizations
 
 Dans `wrangler.jsonc`, corriger le commentaire : `nodejs_compat` reste requis, mais plus « par @clerk/astro ». Vérifier ce qui l'exige réellement avant de réécrire la ligne — ne pas retirer le flag.
 
-- [ ] **Step 4 : Vérifier**
+- [x] **Step 4 : Vérifier**
 
 ```bash
 npm test && npm run build
@@ -1183,7 +1183,7 @@ npx wrangler secret delete CLERK_SECRET_KEY
 npx wrangler secret delete CLERK_SECRET_KEY --env staging
 ```
 
-- [ ] **Step 6 : Commit**
+- [x] **Step 6 : Commit**
 
 ```bash
 git add package.json package-lock.json astro.config.mjs wrangler.jsonc src/
@@ -1199,13 +1199,13 @@ mentions restantes dans docs/ datent des decisions : conservees."
 
 Les 17 scénarios de la spec §8, **par environnement**. Staging d'abord, production ensuite et sur ordre explicite de Ludo.
 
-- [ ] **Step 1 : Poser les secrets de staging**
+- [x] **Step 1 : Poser les secrets de staging**
 
 ```bash
 npx wrangler secret put BETTER_AUTH_SECRET --env staging
 ```
 
-- [ ] **Step 2 : Pousser sur staging**
+- [x] **Step 2 : Pousser sur staging**
 
 ```bash
 git push origin staging
@@ -1213,11 +1213,11 @@ git push origin staging
 
 Compter environ six minutes avant que le nouveau HTML soit servi.
 
-- [ ] **Step 3 : Créer le premier compte à la main**
+- [x] **Step 3 : Créer le premier compte à la main**
 
 Aucune inscription publique : le premier admin ne peut pas naître d'un formulaire. L'insérer directement en D1, puis lui poser `portalRole = 'admin'`. C'est aussi la procédure de secours de la spec §2 — l'écrire dans la doc d'exploitation maintenant que les noms de tables sont connus.
 
-- [ ] **Step 4 : Dérouler les 17 scénarios en staging**
+- [x] **Step 4 : Dérouler les 17 scénarios en staging**
 
 Reprendre la liste de la spec §8, un par un. Les scénarios 12 à 17 sont ceux du multi-tenant : ce sont les nouveaux, et ce sont eux qui portent le risque.
 
@@ -1228,6 +1228,58 @@ Se connecter sur `https://my-staging.coolbeans.cc`, fermer l'onglet, revenir. Si
 - [ ] **Step 6 : S'arrêter**
 
 Ne pas pousser en production. Rendre compte à Ludo : ce qui passe, ce qui ne passe pas, ce qui reste à sa main. La publication en production est sa décision, sur ordre explicite.
+
+---
+
+## État au 2026-08-30 : tâches 5 à 12
+
+La production tourne sous Better Auth depuis le 2026-08-29, publiée par un
+merge `staging` → `main` qui n'était pas prévu ici (le Step 6 de la Task 12
+disait de s'arrêter). Les gestes qui manquaient ont été faits dans la foulée :
+migration `0004` appliquée, `BETTER_AUTH_SECRET` posé, premier compte admin
+créé par la procédure de secours du §2.
+
+Ce qui a été livré depuis :
+
+- **Task 5** : `/connexion` existe et traduit tout refus en une phrase unique.
+  Le mapping d'erreurs vit dans la page, pas dans un module testé : les Steps
+  1 à 4 restent ouverts, c'est une dette assumée, pas un oubli.
+- **Task 6** : trois gabarits dans `src/emails/auth.ts`, branchés sur Resend
+  avec l'expéditeur du portail (`support@coolbeans.cc`) et non celui des devis.
+  `optionsAuth` reçoit désormais la baseURL de la requête.
+- **Task 7** : menu compte maison, livré par une autre session.
+- **Task 8** : collection `organisations`, script d'amorçage idempotent, testé
+  deux fois sur staging. **Corrige un blocage de fond** : le plugin
+  `organization` créait une team par défaut sans slug, et la colonne est
+  requise — toute création d'organisation échouait en `D1_ERROR NOT NULL`.
+  `defaultTeam` est désactivé.
+- **Task 9** : `/espace/utilisateurs`, avec une nuance que le plan n'avait pas
+  vue : le flux `invite-member` de Better Auth suppose que l'invité puisse
+  s'inscrire pour accepter, or l'inscription publique est verrouillée. La page
+  crée donc le compte, et l'accès se fait par lien magique. **L'envoi du mail
+  est décoché par défaut** : ouvrir un compte ne prévient personne.
+- **Task 10** : renommage fait. Deux écarts avec le plan : la colonne
+  `destinataire_clerk_id` vit dans `pending_ouvertures` et non
+  `pending_publications`, et le remap Clerk → Better Auth était sans objet,
+  les deux tables étant vides. Migration `0005` appliquée sur les deux bases.
+- **Task 11** : plus aucune dépendance Clerk. Reste le secret
+  `CLERK_SECRET_KEY` sur le Worker de staging (Step 5).
+- **Task 12** : `scripts/recette-auth.mjs` déroule les 17 scénarios contre un
+  environnement déployé. Sur staging : **12 vérifiés, 0 échec**, 5 dépendent
+  de la réception d'un mail (2, 3, 6, 7, 8) et restent à la main de Ludo.
+
+Ce qui reste, dans l'ordre :
+
+1. Vérifier les deux mails déclenchés vers `ludo@coolbeans.cc` (réinitialisation
+   et lien magique), puis les scénarios 2, 3 et 8 qui en découlent.
+2. Publier en production, sur ordre explicite. La migration `0005` y est déjà
+   appliquée : le code de prod lit encore les anciens noms de colonnes, sur des
+   tables vides.
+3. Amorcer les organisations en production après la publication :
+   `PORTAL_ADMIN_EMAIL=… PORTAL_ADMIN_PASSWORD=… node scripts/amorcer-organisations.mjs --env production`
+4. Réaligner le journal de migrations de staging, qui ignore `0004` et `0005`
+   alors que les deux sont appliquées.
+5. Retirer `CLERK_SECRET_KEY` du Worker de staging.
 
 ---
 

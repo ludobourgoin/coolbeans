@@ -83,7 +83,7 @@ export async function ouvrirLesDues(
         // Le destinataire tient lieu d'auteur : c'est lui que le board salue
         // et que les réponses suivantes notifient. Résolu par le webhook, qui
         // seul a un contexte Clerk.
-        author_clerk_id: due.destinataire_clerk_id,
+        author_user_id: due.destinataire_user_id,
         author_prenom: due.destinataire_prenom,
         author_email: due.destinataire_email,
         created_via: "admin",

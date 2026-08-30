@@ -6,29 +6,43 @@ import DevisCorps from "../../components/devis/DevisCorps.astro";
 import DevisReponse from "../../components/devis/DevisReponse.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
 
+/* Un devis peut avoir plusieurs versions (révision de périmètre). Elles
+   partagent l'URL de la V1 — le lien déjà envoyé au client ne bouge jamais —
+   et se choisissent par des onglets. Seule la V1 génère une route ; les
+   versions suivantes se déclarent par `versionDe` et n'ont pas d'URL propre,
+   sans quoi le client pourrait tomber sur une révision hors de son contexte. */
 export async function getStaticPaths() {
   const entries = await getCollection("devis");
-  return entries.map((entry) => ({
-    params: { slug: entry.id },
-    props: { entry },
-  }));
+  const racines = entries.filter((e) => !e.data.versionDe);
+
+  return racines.map((racine) => {
+    const versions = [racine, ...entries.filter((e) => e.data.versionDe === racine.id)].sort(
+      (a, b) => a.data.version - b.data.version,
+    );
+    return { params: { slug: racine.id }, props: { versions } };
+  });
 }
 
-const { entry } = Astro.props;
-const d = entry.data;
+const { versions } = Astro.props;
+
+/* La dernière version est celle qui engage : c'est elle qu'on ouvre. Les
+   précédentes restent consultables, jamais réécrites. */
+const actif = versions.length - 1;
+
+const dateCourte = (d: Date) =>
+  d.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
 
 /* La date du devis n'était portée que par le frontmatter : le client ne la
    voyait nulle part, alors qu'elle date l'engagement commercial. */
-const dateDevis = d.date.toLocaleDateString("fr-FR", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
+const dateLongue = (d: Date) =>
+  d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+
+const courante = versions[actif].data;
 ---
 
 <BaseLayout
-  title={`Devis ${d.titre} · Coolbeans`}
-  description={`Proposition commerciale : ${d.objet}`}
+  title={`Devis ${courante.titre} · Coolbeans`}
+  description={`Proposition commerciale : ${courante.objet}`}
   noindex
 >
   <!-- EN-TÊTE -->
@@ -36,24 +50,95 @@ const dateDevis = d.date.toLocaleDateString("fr-FR", {
     <GridBackdrop />
     <div class="container-site relative pt-24x pb-16x text-center">
       <p class="label">Proposition commerciale</p>
-      <h1 class="mx-auto mt-5 max-w-[18ch]">{d.titre}</h1>
-      <p
-        class="mx-auto mt-6 max-w-[62ch] text-xl leading-[1.45] font-medium text-balance"
-      >
-        {d.objet}
-      </p>
-      <p class="mt-5 font-mono text-[12px] tracking-wide text-mute uppercase">
-        Proposition du {dateDevis}
-      </p>
+      {
+        versions.map((v, i) => (
+          <div data-devis-entete={i} hidden={i !== actif}>
+            <h1 class="mx-auto mt-5 max-w-[18ch]">{v.data.titre}</h1>
+            <p class="mx-auto mt-6 max-w-[62ch] text-xl leading-[1.45] font-medium text-balance">
+              {v.data.objet}
+            </p>
+            <p class="mt-5 font-mono text-[12px] tracking-wide text-mute uppercase">
+              Proposition du {dateLongue(v.data.date)}
+            </p>
+          </div>
+        ))
+      }
+
+      {
+        versions.length > 1 && (
+          <div class="mt-8 flex flex-wrap justify-center gap-2" role="tablist">
+            {versions.map((v, i) => (
+              <button
+                type="button"
+                role="tab"
+                aria-pressed={i === actif}
+                data-devis-onglet={i}
+                data-devis-slug={v.id}
+                class:list={[
+                  "rounded-full px-3 py-1 text-[13px] font-semibold transition-colors duration-150 ease-in-out",
+                  i === actif
+                    ? "bg-ink text-surface"
+                    : "text-mute hover:bg-surface-raise hover:text-ink",
+                ]}
+              >
+                V{v.data.version} · {dateCourte(v.data.date)}
+              </button>
+            ))}
+          </div>
+        )
+      }
     </div>
   </header>
 
   <!-- CORPS DU DEVIS -->
   <div class="container-site">
-    <DevisCorps d={d} />
+    {
+      versions.map((v, i) => (
+        <div data-devis-pane={i} hidden={i !== actif}>
+          <DevisCorps d={v.data} />
+        </div>
+      ))
+    }
   </div>
 
-  <DevisReponse slug={entry.id} enAttente={d.sections.some((s) => s.budget?.enAttente)} />
+  <DevisReponse
+    slug={versions[actif].id}
+    enAttente={courante.sections.some((s) => s.budget?.enAttente)}
+  />
 
   <DevisFooter />
 </BaseLayout>
+
+<script>
+  /* Onglets de versions. Même mécanique que le sélecteur d'options de planning
+     de DevisCorps : on bascule la visibilité, on ne recharge pas. Le slug du
+     formulaire de réponse suit la version affichée, sans quoi une réponse à la
+     V1 arriverait étiquetée V2. */
+  const onglets = document.querySelectorAll<HTMLButtonElement>("[data-devis-onglet]");
+  const form = document.querySelector<HTMLFormElement>("#devis-form");
+
+  onglets.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const cible = btn.dataset.devisOnglet;
+
+      onglets.forEach((b) => {
+        const actif = b.dataset.devisOnglet === cible;
+        b.setAttribute("aria-pressed", String(actif));
+        b.classList.toggle("bg-ink", actif);
+        b.classList.toggle("text-surface", actif);
+        b.classList.toggle("text-mute", !actif);
+        b.classList.toggle("hover:bg-surface-raise", !actif);
+        b.classList.toggle("hover:text-ink", !actif);
+      });
+
+      document
+        .querySelectorAll<HTMLElement>("[data-devis-pane], [data-devis-entete]")
+        .forEach((el) => {
+          el.hidden = (el.dataset.devisPane ?? el.dataset.devisEntete) !== cible;
+        });
+
+      if (form && btn.dataset.devisSlug) form.dataset.slug = btn.dataset.devisSlug;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+</script>

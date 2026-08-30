@@ -1,0 +1,14 @@
+nom: Setencorpsmieux
+# Cliente directe : pas de revendeur entre elle et Coolbeans (spec 2026-08-19 §3.1).
+organisation: coolbeans
+prenom: Nathalie
+# Emoji du sélecteur, repris de l'icône de la team Linear (lotus).
+emoji: 🧘
+# Création de la team Linear, qui fait foi tant qu'aucune date de début de
+# relation plus précise n'est établie.
+depuis: "2026-08-13"
+# Team « Setencorpsmieux » du workspace Linear coolbeans-hq.
+linearTeamId: cbaac50e-c2d2-4275-b16e-faa941fb18ef
+# Pas de clé `doc` : aucune page n'existe encore sous src/content/docs/. Le
+# module Documentation restera en empty state jusqu'à ce que la skill
+# doc-client la produise.

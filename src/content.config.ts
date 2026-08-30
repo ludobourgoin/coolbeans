@@ -24,6 +24,14 @@ const devis = defineCollection({
     // Prénom du contact côté client, affiché sur les jalons de planning
     // attribués à "client" (owner: client). Chaque devis a son propre client.
     contact: z.string().optional(),
+    /* Versions successives d'un même devis. Une révision de périmètre n'est
+       pas un devis neuf : le client garde son lien, et retrouve sous des
+       onglets ce qu'on lui avait proposé avant. `versionDe` porte l'id de la
+       V1 (ex. "unlockbreath/plateforme-3271"), qui reste l'URL publique du
+       groupe ; les versions suivantes n'ont pas d'URL propre. La plus haute
+       s'affiche par défaut, les précédentes restent lisibles à l'identique. */
+    version: z.number().int().min(1).default(1),
+    versionDe: z.string().optional(),
     envoi: z.object({ date: z.coerce.date(), destinataire: z.string() }).optional(),
     linear: z.object({ projet: z.string().optional(), affaire: z.string().optional() }).optional(),
     sections: z.array(
@@ -220,4 +228,18 @@ const clients = defineCollection({
   }),
 });
 
-export const collections = { devis, projets, docs, clients };
+/* Un fichier YAML par revendeur dans src/content/organisations/. Le nom du
+   fichier est le slug, et c'est le MÊME slug que l'organisation en D1 : le
+   registre est la source de vérité, la base porte la copie. Une divergence
+   entre les deux est un bug, pas un cas à gérer — scripts/amorcer-organisations.mjs
+   échoue dessus.
+   Coolbeans y figure comme les autres : c'est ce qui fera sortir sa marque du
+   code en phase B. */
+const organisations = defineCollection({
+  loader: glob({ pattern: "*.yaml", base: "./src/content/organisations" }),
+  schema: z.object({
+    nom: z.string(),
+  }),
+});
+
+export const collections = { devis, projets, docs, clients, organisations };
