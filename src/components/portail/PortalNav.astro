@@ -12,22 +12,29 @@
 // Hauteur figée à 56px (h-14) : doc.css cale dessus les colonnes collantes
 // (`top: 56px`, `calc(100vh - 56px)`). La changer ici désaligne tout.
 //
-// Le menu compte insère « Messagerie » (ex-Support) entre « Gérer mon compte » et
-// « Se déconnecter » (décision brainstorm 2026-08-14) via les custom menu
-// items de @clerk/astro (UserButton.Action réordonne les items natifs).
-import { UserButton } from "@clerk/astro/components";
+// Le menu compte garde l'ordre décidé au brainstorm 2026-08-14 — Messagerie
+// puis Se déconnecter — mais il est désormais écrit à la main : le <UserButton />
+// de Clerk est parti avec la bascule Better Auth. « Gérer mon compte », qui
+// ouvrait une modale hébergée par Clerk, n'a pas d'équivalent et disparaît :
+// mieux vaut pas d'entrée qu'une entrée morte.
 import { portalHref } from "../../lib/portail/nav";
 import SearchInput from "../ui/SearchInput.astro";
 import Icon from "./Icon.astro";
 
 interface Props {
-  /** Le menu compte exige une session Clerk : la Bibliothèque passe false. */
+  /** Le menu compte exige une session : la Bibliothèque passe false. */
   withAccount?: boolean;
   /** Prénom affiché dans la salutation. */
   prenom?: string;
+  /** Adresse du compte connecté, rappelée en tête du menu. */
+  email?: string;
 }
 
-const { withAccount = true, prenom = "" } = Astro.props;
+const { withAccount = true, prenom = "", email = "" } = Astro.props;
+/* Initiale de la pastille. Repli sur l'adresse quand le compte n'a pas de nom,
+   puis sur « ? » : la pastille ne doit jamais se rendre vide, elle est la
+   seule cible cliquable du menu. */
+const initiale = (prenom || email || "?").trim().charAt(0).toUpperCase();
 const { hostname } = Astro.url;
 const home = portalHref("/", hostname);
 const support = portalHref("/messagerie", hostname);
@@ -129,15 +136,47 @@ const support = portalHref("/messagerie", hostname);
       withAccount && (
         <span class="flex flex-none items-center gap-2">
           {prenom && <span class="hidden text-sm text-mute md:inline">Hello, {prenom}</span>}
-          <UserButton>
-            <UserButton.MenuItems>
-              <UserButton.Action label="manageAccount" />
-              <UserButton.Link label="Messagerie" href={support}>
-                <Icon slot="label-icon" name="help" size={14} />
-              </UserButton.Link>
-              <UserButton.Action label="signOut" />
-            </UserButton.MenuItems>
-          </UserButton>
+          {/* <details> plutôt qu'un bouton + état JS : l'ouverture/fermeture
+              est native, donc le menu marche même si le script ci-dessous ne
+              s'exécute pas — il n'ajoute que la fermeture au clic extérieur. */}
+          <details class="relative" data-portal-compte>
+            <summary
+              class="flex size-8 cursor-pointer list-none items-center justify-center rounded-full border border-line bg-surface text-[13px] font-bold text-ink select-none"
+              aria-label="Menu du compte"
+            >
+              {initiale}
+            </summary>
+            <div
+              class="absolute right-0 z-30 mt-2 w-60 rounded-control border border-line bg-surface p-1 shadow-lg"
+              role="menu"
+            >
+              <p class="truncate px-3 py-2 text-[13px] text-mute" title={email}>
+                {email || "Compte connecté"}
+              </p>
+              <div class="my-1 border-t border-line" />
+              <a
+                class="flex items-center gap-2 rounded-control px-3 py-2 text-[13px] text-mute no-underline hover:text-ink hover:underline"
+                href={support}
+                role="menuitem"
+              >
+                <Icon name="help" size={14} />
+                Messagerie
+              </a>
+              {/* Un POST de formulaire natif serait plus robuste, mais
+                  /api/auth/sign-out refuse le form-urlencoded (415, il n'accepte
+                  que du JSON) : la déconnexion passe donc par fetch. Vérifié
+                  contre le serveur, pas supposé. */}
+              <button
+                type="button"
+                data-portal-deconnexion
+                class="flex w-full cursor-pointer items-center gap-2 rounded-control px-3 py-2 text-left text-[13px] text-mute hover:text-ink hover:underline"
+                role="menuitem"
+              >
+                <Icon name="lock" size={14} />
+                Se déconnecter
+              </button>
+            </div>
+          </details>
         </span>
       )
     }
@@ -145,6 +184,41 @@ const support = portalHref("/messagerie", hostname);
 </header>
 
 <script>
+  // Déconnexion. Rechargement complet ensuite : toutes les pages du portail
+  // sont rendues côté serveur, et le middleware doit revoir l'absence de
+  // cookie. En cas d'échec réseau, on envoie quand même sur /connexion — la
+  // session peut être morte côté serveur, laisser l'utilisateur sur une page
+  // qu'il croit connectée serait pire.
+  document
+    .querySelector<HTMLButtonElement>("[data-portal-deconnexion]")
+    ?.addEventListener("click", async (e) => {
+      const bouton = e.currentTarget as HTMLButtonElement;
+      bouton.disabled = true;
+      try {
+        await fetch("/api/auth/sign-out", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          credentials: "same-origin",
+          body: "{}",
+        });
+      } finally {
+        window.location.assign("/connexion");
+      }
+    });
+
+  // Fermeture du menu compte au clic extérieur et à Échap : <details> ne le
+  // fait pas tout seul, et un menu qui reste ouvert derrière la page suivante
+  // donne l'impression que le clic n'a pas pris.
+  const compte = document.querySelector<HTMLDetailsElement>("[data-portal-compte]");
+  if (compte) {
+    document.addEventListener("click", (e) => {
+      if (compte.open && !compte.contains(e.target as Node)) compte.open = false;
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && compte.open) compte.open = false;
+    });
+  }
+
   // Même clé localStorage que l'anti-flash de BaseLayout.
   document.querySelector("[data-portal-theme]")?.addEventListener("click", () => {
     const dark = document.documentElement.classList.toggle("dark");

@@ -136,7 +136,7 @@ export const etapes: Etape[] = [
     declencheur:
       "Une personne ou une structure vaut la peine d'être connue : entourage, agence repérée, directeur artistique visé pour une collaboration.",
     qui: "coolbeans",
-    outils: ["Feuille Google « vivier »", "Linear — Mes issues"],
+    outils: ["Feuille Google « vivier »", "Notion Calendar", "Linear — Mes issues"],
     faire: [
       "L'ajouter à la feuille avec sa date de dernier contact et sa prochaine action.",
       "La contacter pour faire savoir que Coolbeans existe.",
@@ -144,7 +144,7 @@ export const etapes: Etape[] = [
     ],
     sortie: "Rien tant qu'aucun projet n'est évoqué. Le vivier n'a pas vocation à se vider.",
     echeance:
-      "Issue récurrente dans la team Coolbeans (COO-157 « 🔁 Revue vivier + hygiène pipeline »), hors du CRM, pour relire la feuille.",
+      "Évènement mensuel récurrent dans Notion Calendar : Linear ne sait pas rendre une issue récurrente. Il déclenche la recréation de COO-157 « 🔁 Revue vivier + hygiène pipeline » dans la team Coolbeans, hors du CRM.",
     suivants: [{ vers: "S1", si: "un contact du vivier remonte un projet réel" }],
     note: "Ces contacts n'entrent jamais dans le CRM tant qu'il n'y a pas de projet identifié. C'est la frontière entre les deux étages : verser le vivier dans le pipeline noierait la colonne 👋 Contacté sous des dizaines d'affaires dormantes.",
   },

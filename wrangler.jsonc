@@ -1,7 +1,7 @@
 // Config Worker du site Coolbeans (adapter @astrojs/cloudflare, cible WORKERS).
 // Déploiement : Cloudflare Workers Builds (Git) — main -> production,
 // staging -> environnement `staging`. Voir docs/superpowers/specs/2026-08-04-deploy-workers-migration-design.md
-// `nodejs_compat` est requis par @clerk/astro (node:async_hooks, node:fs).
+// `nodejs_compat` est requis par better-auth (node:crypto, node:async_hooks).
 {
   "name": "coolbeans",
   "compatibility_date": "2026-07-01",

@@ -1,7 +1,7 @@
 # CRM — Refonte du pipeline
 
 Date : 2026-08-29 · Statut : **exécutée le 2026-08-29**. Linear est refondu (§6, §7),
-le SOP est aligné (§8). Deux gestes UI restent, listés au §10.
+le SOP est aligné (§8), les deux vues de board existent. Un seul geste UI reste, au §10.
 
 Amende `2026-08-19-crm-opportunites-checklist-design.md`, dont le modèle hybride
 (check-list en description, sous-issue = prochaine action) **reste en vigueur**.
@@ -89,7 +89,8 @@ distorsion des stats reste assumée.
 
 La convention emoji est remplacée par deux contraintes.
 
-1. **Le board affaires est filtré `Sub-issues: exclude` + `Hide empty groups`.** Une
+1. **La vue « Affaires » filtre les sous-issues** (`filterData` = `{"parent":{"null":true}}` ;
+   « Sub-issues: exclude » dans l'UI). Une
    action n'apparaît plus jamais dans une colonne de pipeline, et `Todo` / `Done` /
    `Duplicate` disparaissent de la vue. Une seconde vue **« Mes actions »** filtre
    l'inverse, groupée par échéance.
@@ -170,7 +171,7 @@ board vers le Sheet vivier plutôt que de stagner en `👋 Contacté`.
 
 **Décidé le 2026-08-29 :** `CRM-1` « 🔁 Revue vivier + hygiène pipeline » (label `ops`)
 n'est pas une affaire mais une tâche récurrente d'exploitation. Elle **sort vers la
-team Coolbeans** en issue récurrente, sinon elle squatte le board affaires même après
+team Coolbeans**, sinon elle squatte le board affaires même après
 le filtre du §4. Son identifiant change au déplacement : mettre à jour les renvois qui
 la citent, dont cette spec.
 
@@ -247,11 +248,18 @@ Les positions n'ont pas eu besoin d'être touchées : après suppression, l'ordr
 27 actions n'utilisant que `Todo` et `Done`, et les 22 affaires vivantes portent
 chacune au moins une action datée — la règle d'or est tenue pour la première fois.
 
-**Un geste reste à la main :** la vue **« Affaires »**. `customViewCreate` rejette le
-filtre « sans parent » sous toutes les formes testées, alors qu'il accepte son
-inverse — d'où la vue « Mes actions » créée sans peine. À poser dans l'UI : board
-CRM → Filter → Sub-issues → Exclude → Save view, avec « Hide empty groups ». Second
-geste, mineur : rendre `COO-157` récurrente, ce qui est aussi un réglage d'UI.
+**Les deux vues sont créées par API.** « Mes actions » (`{"parent":{"null":false}}`)
+et « Affaires » (`{"parent":{"null":true}}`). Le premier échec de « Affaires » avait
+été imputé au filtre : c'était faux, il venait de `icon: "Target"`, qui n'est pas une
+icône valide et que les trois tentatives de diagnostic avaient toutes conservée.
+Leçon : quand une mutation échoue sur « Argument Validation Error », faire varier un
+seul champ à la fois — ici le champ suspecté était innocent.
+
+**Aucun geste ne reste dans Linear.** « Rendre `COO-157` récurrente » avait été listé
+comme un réglage d'UI : c'est impossible, Linear n'a aucune notion de récurrence —
+ni `IssueCreateInput`, ni `TemplateUpdateInput`, ni aucun type du schéma. La revue
+mensuelle du vivier passe donc par un évènement récurrent **Notion Calendar** qui
+déclenche la recréation de l'issue (décidé le 2026-08-30).
 
 **Correction au §4 :** Linear n'expose **aucun** statut par défaut propre aux
 sous-issues — `TeamUpdateInput` ne porte que `defaultIssueStateId`, global à la team,
