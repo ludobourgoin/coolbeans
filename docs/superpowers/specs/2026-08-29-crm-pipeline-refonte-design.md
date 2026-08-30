@@ -171,7 +171,7 @@ board vers le Sheet vivier plutôt que de stagner en `👋 Contacté`.
 
 **Décidé le 2026-08-29 :** `CRM-1` « 🔁 Revue vivier + hygiène pipeline » (label `ops`)
 n'est pas une affaire mais une tâche récurrente d'exploitation. Elle **sort vers la
-team Coolbeans** en issue récurrente, sinon elle squatte le board affaires même après
+team Coolbeans**, sinon elle squatte le board affaires même après
 le filtre du §4. Son identifiant change au déplacement : mettre à jour les renvois qui
 la citent, dont cette spec.
 
@@ -255,7 +255,11 @@ icône valide et que les trois tentatives de diagnostic avaient toutes conservé
 Leçon : quand une mutation échoue sur « Argument Validation Error », faire varier un
 seul champ à la fois — ici le champ suspecté était innocent.
 
-**Un geste reste à la main :** rendre `COO-157` récurrente, réglage d'UI.
+**Aucun geste ne reste dans Linear.** « Rendre `COO-157` récurrente » avait été listé
+comme un réglage d'UI : c'est impossible, Linear n'a aucune notion de récurrence —
+ni `IssueCreateInput`, ni `TemplateUpdateInput`, ni aucun type du schéma. La revue
+mensuelle du vivier passe donc par un évènement récurrent **Notion Calendar** qui
+déclenche la recréation de l'issue (décidé le 2026-08-30).
 
 **Correction au §4 :** Linear n'expose **aucun** statut par défaut propre aux
 sous-issues — `TeamUpdateInput` ne porte que `defaultIssueStateId`, global à la team,
