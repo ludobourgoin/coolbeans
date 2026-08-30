@@ -1,5 +1,5 @@
 # Spinoza est un projet perso de Ludo (wiki d'étude de l'Éthique) : workspace
-# à lui, comme Coolbeans. Aucun utilisateur Clerk n'est mappé sur ce client,
+# à lui, comme Coolbeans. Aucun compte du portail n'est rattaché à ce client,
 # donc seuls les admins voient sa doc (autorisation `doc === client`, voir
 # src/pages/docs/[client]/[...slug].astro).
 nom: Spinoza
