@@ -2,6 +2,8 @@ titre: UnlockBreath x Coolbeans — V2
 objet: Avenant au devis de février 2026 — reprise de la plateforme sur une base sur-mesure
 date: 2026-08-30
 contact: Thierry
+version: 2
+versionDe: unlockbreath/plateforme-3271
 
 sections:
   - titre: Pourquoi cet avenant
@@ -142,11 +144,11 @@ sections:
       remiseLabel: "Volume : 11 pages"
       mention: HT
       reglement: >-
-        **L'intégralité des sommes déjà réglées au titre du devis de février
-        s'impute sur ce montant.** Aucune page n'ayant été produite, rien de ce
-        que vous avez versé n'est consommé. Seul le solde reste dû, selon le
-        même échéancier qu'en février : la moitié au démarrage, la moitié au
-        plus tard 30 jours après la livraison. TVA de 20 % en sus.
+        **L'acompte de 2 683,88 € HT déjà versé s'impute intégralement sur ce
+        montant.** Aucune page n'ayant été produite, rien de ce que vous avez
+        versé n'est consommé. **Reste dû : 7 771,12 € HT**, selon le même
+        échéancier qu'en février — la moitié au démarrage, la moitié au plus
+        tard 30 jours après la livraison. TVA de 20 % en sus.
 
   - titre: Ce que ça comprend
     liste:
@@ -158,6 +160,34 @@ sections:
       - Formation à la mise à jour du contenu, et guide écrit remis à la livraison
       - Document de passation technique
       - Support 30 jours après la mise en ligne
+
+  - titre: Ce que vous payez chaque mois
+    texte: >-
+      Ces coûts sont facturés directement par les éditeurs, ils ne transitent
+      pas par moi. C'est là que se joue l'économie de l'opération.
+    liste:
+      - texte: >-
+          **Aujourd'hui, avec Webflow : 100 à 134 € par mois.** Webflow 20 à
+          34 €, Memberstack 25 à 45 €, Make 15 €, Webflow Localize 40 € pour
+          les cinq langues supplémentaires.
+        tooltip: >-
+          La fourchette haute correspond aux plans nécessaires pour votre
+          volume de membres et vos six langues.
+      - texte: >-
+          **Demain, avec Next.js : 20 à 40 € par mois.** Hébergement Vercel
+          20 €, base de données 0 à 20 €, gestion de contenu Sanity 0 €.
+        tooltip: >-
+          Vercel en offre Pro, requise dès lors que le site vend quelque chose.
+          Sanity est gratuit jusqu'à un volume de contenu et un nombre
+          d'éditeurs que vous n'atteindrez pas. Le logiciel de gestion des
+          comptes est libre et sans abonnement, contrairement à Memberstack.
+      - texte: >-
+          **Inchangés dans les deux cas** : bunny.net, facturé à l'usage, les
+          commissions Stripe et votre nom de domaine.
+    note: >-
+      **Économie : de 80 à 94 € par mois, soit de 960 à 1 130 € par an.** Le
+      surcoût de développement de cet avenant est remboursé en dix-neuf mois
+      au plus, et vous continuez d'économiser ensuite.
 
   - titre: Ce dont j'ai besoin de vous, et quand
     liste:
@@ -216,8 +246,8 @@ notes:
   - tone: info
     texte: >-
       **Le surcoût par rapport au devis de février est de 1 508,75 € HT.** Il
-      est couvert par les abonnements que vous cessez de payer en un peu plus
-      d'un an, et vous n'en payez plus jamais après.
+      est remboursé en seize à dix-neuf mois par les abonnements que vous
+      cessez de payer, et vous continuez d'économiser ensuite, chaque année.
   - texte: >-
       Le périmètre fonctionnel V01 est inchangé. Les éléments renvoyés à une
       V02 en février — sous-catégories de Science of Breathing, langues
