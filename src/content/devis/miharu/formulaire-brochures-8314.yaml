@@ -1,0 +1,105 @@
+titre: Miharu x Coolbeans
+objet: Formulaire avant le téléchargement des brochures
+date: 2026-08-31
+contact: Jérémy
+
+envoi:
+  date: 2026-08-31
+  destinataire: jeremy@trigger.fr
+
+linear:
+  projet: https://linear.app/coolbeans-hq/project/formulaire-avant-telechargement-des-brochures-603b24fea5d1
+  affaire: https://linear.app/coolbeans-hq/issue/CRM-74
+
+sections:
+  - titre: Objectif
+    texte: >-
+      Les landing pages Séminaires et Soirées proposent aujourd'hui sept
+      brochures en téléchargement libre. Personne ne sait qui les consulte, ni
+      quel lieu intéresse le visiteur.
+    note: >-
+      Dispositif prévu pour un mois de test. Son retrait fait partie de la
+      prestation, il n'y a rien à redemander à la fin.
+
+  - titre: Ce qui est mis en place
+    liste:
+      - Un formulaire court avant l'ouverture de la brochure, email obligatoire, téléphone facultatif, avec la case de consentement déjà en place sur le site
+      - texte: Le nom du lieu récupéré automatiquement, sans liste à maintenir de votre côté
+        tooltip: >-
+          Le nom est lu directement sur la carte du lieu. Si un lieu change de
+          nom ou si un nouveau s'ajoute, le formulaire suit sans intervention.
+      - Un mail à chaque demande, avec les coordonnées saisies et le lieu concerné
+      - Le dispositif sur les deux pages, Séminaires et Soirées, soit quatorze boutons
+      - Vérification sur ordinateur, tablette et téléphone
+      - Le retrait du dispositif à la fin du mois de test
+
+  - titre: Budget
+    budget:
+      lignes:
+        - label: Formulaire de collecte avant l'ouverture de la brochure
+          prix: 160
+        - label: Ouverture de la brochure et remontée du lieu concerné
+          prix: 160
+        - label: Mise en place sur les deux pages et vérification multi-écrans
+          prix: 90
+        - label: Retrait du dispositif à la fin du mois de test
+          prix: 70
+      mention: HT
+      reglement: 100 % à la livraison.
+    note: >-
+      Délai : 5 jours ouvrés après le feu vert.
+
+  - titre: En option
+    texte: >-
+      Si vous préférez suivre les demandes dans un tableau plutôt que dans une
+      boîte mail :
+    budget:
+      lignes:
+        - label: "Remontée automatique des demandes dans un Google Sheet : date, email, téléphone, lieu, page"
+          prix: 100
+      mention: HT
+    note: >-
+      À savoir avant de la prendre : les demandes sont déjà consultables et
+      exportables depuis l'administration du site. L'option vous fait gagner
+      le temps réel et l'export manuel, pas la donnée elle-même. Le chiffrage
+      suppose un accès direct au compte d'automatisation existant.
+
+  - titre: Ce qu'il me faut
+    liste:
+      - L'adresse à laquelle les demandes doivent arriver
+      - La confirmation que les deux pages concernées sont bien Séminaires et Soirées
+      - Un accès au compte d'automatisation, uniquement si l'option Google Sheet est retenue
+
+  - titre: Planning
+    planning:
+      options:
+        - label: 5 jours ouvrés après le feu vert
+          indicatif: true
+          jalons:
+            - { date: "Jour 1", label: "Formulaire et récupération du lieu", owner: coolbeans }
+            - { date: "Jour 2-3", label: "Ouverture de la brochure, notification par mail", owner: coolbeans }
+            - { date: "Jour 4", label: "Mise en place sur les deux pages, vérification multi-écrans", owner: coolbeans }
+            - { date: "Jour 5", label: "Mise en ligne, début du mois de test" }
+            - { date: "1 mois plus tard", label: "Retrait du dispositif, sauf reconduction", owner: coolbeans }
+          note: >-
+            Aucune date de démarrage n'est convenue à ce jour : le calendrier
+            se cale sur votre feu vert.
+
+notes:
+  - tone: warning
+    texte: >-
+      **Le parcours ne sera pas strictement identique à aujourd'hui.** Les
+      navigateurs bloquent l'ouverture automatique d'un onglet juste après
+      l'envoi d'un formulaire. La brochure s'ouvrira donc via un bouton
+      « Ouvrir la brochure » dans le message de confirmation : un clic de
+      plus, mais un comportement fiable partout, iPhone compris. La version
+      automatique existe, elle casse en silence sur Safari, je ne la
+      recommande pas.
+  - texte: >-
+      Le chiffrage porte sur les pages Séminaires et Soirées, les deux qui
+      proposent des brochures aujourd'hui. Les pages Agen n'en portent aucune
+      et ne sont pas dans ce périmètre.
+  - texte: >-
+      La prestation ne comprend ni l'analyse des leads collectés à l'issue du
+      test, ni la modification des brochures elles-mêmes, ni le suivi de
+      l'événement dans Google Tag Manager.
