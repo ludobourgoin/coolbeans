@@ -1,21 +1,37 @@
 import { defineMiddleware } from "astro:middleware";
 import { getActionContext } from "astro:actions";
 import { lireSession } from "./lib/auth/session";
+import { decisionAcces, estRouteProtegee } from "./lib/portail/garde-admin";
 
-// L'espace client et toute la doc exigent une session.
-// Le middleware ne tranche QUE la question « connecté ou non ». Le contrôle
-// par workspace (qui voit quoi) se fait dans les routes, via la portée du
-// compte — voir src/lib/portail/appartenances.ts.
-const PROTECTED = [/^\/espace(\/|$)/, /^\/docs(\/|$)/];
-
+// Le middleware ne décide plus : il obéit. Les règles vivent dans
+// src/lib/portail/garde-admin.ts, où elles sont testables sans build Astro.
+//
+// Le contrôle par workspace (quel CLIENT voit quoi) reste dans les routes, via
+// src/lib/portail/appartenances.ts — c'est une question de portée, pas de
+// droit d'entrée.
 export const onRequest = defineMiddleware(async (context, next) => {
   const { pathname } = new URL(context.request.url);
-  if (PROTECTED.some((re) => re.test(pathname))) {
-    const { user } = await lireSession(context);
-    if (!user) {
+
+  if (estRouteProtegee(pathname)) {
+    const { user, meta } = await lireSession(context);
+    const decision = decisionAcces(pathname, Boolean(user), meta);
+
+    if (decision === "connexion") {
       const signIn = new URL("/connexion", context.request.url);
       signIn.searchParams.set("redirect_url", context.request.url);
       return context.redirect(signIn.href);
+    }
+
+    // 404 plutôt qu'une redirection : une redirection avouerait que la page
+    // existe. Sur /espace/admin/finances, l'aveu apprend à un client que Ludo
+    // tient un suivi de trésorerie et à quelle adresse.
+    //
+    // On réécrit vers la vraie page 404 pour que la réponse soit indiscernable
+    // d'une URL morte. Pas de boucle possible : /404 n'est pas une route
+    // protégée, elle ressort en « passe » au tour suivant.
+    if (decision === "introuvable") {
+      const rendu = await context.rewrite("/404");
+      return new Response(rendu.body, { status: 404, headers: rendu.headers });
     }
   }
 
