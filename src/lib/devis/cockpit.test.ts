@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { comparerTri, nomClient } from "./cockpit";
+import { comparerTri, grouperVersions, nomClient } from "./cockpit";
 
 describe("comparerTri", () => {
   it("compare les nombres en nombres, pas en chaînes", () => {
@@ -67,5 +67,45 @@ describe("nomClient", () => {
 
   it("gère les devis d'avant la convention client/projet, restés à la racine", () => {
     expect(nomClient("en-haut", registre)).toBe("En Haut");
+  });
+});
+
+describe("grouperVersions", () => {
+  const e = (id: string, version = 1, versionDe?: string) => ({ id, data: { version, versionDe } });
+
+  it("une seule ligne pour un devis à plusieurs versions", () => {
+    const groupes = grouperVersions([
+      e("unlockbreath/plateforme-3271"),
+      e("unlockbreath/plateforme-v2-5840", 2, "unlockbreath/plateforme-3271"),
+    ]);
+    expect(groupes).toHaveLength(1);
+    /* L'URL et les réponses D1 restent accrochées à la V1 : c'est elle que le
+       formulaire public renvoie, et la seule qui ait une page. */
+    expect(groupes[0].baseId).toBe("unlockbreath/plateforme-3271");
+    /* Le représentant est la version la plus haute — celle que le client voit
+       par défaut en ouvrant le lien. */
+    expect(groupes[0].representant.id).toBe("unlockbreath/plateforme-v2-5840");
+  });
+
+  it("les devis sans version restent chacun leur propre groupe", () => {
+    const groupes = grouperVersions([e("cafa/site-web-8791"), e("en-haut")]);
+    expect(groupes.map((g) => g.baseId).sort()).toEqual(["cafa/site-web-8791", "en-haut"]);
+  });
+
+  it("ordre des entrées indifférent : la V2 peut arriver avant la V1", () => {
+    const groupes = grouperVersions([
+      e("x/v2", 2, "x/v1"),
+      e("x/v1"),
+      e("x/v3", 3, "x/v1"),
+    ]);
+    expect(groupes).toHaveLength(1);
+    expect(groupes[0].representant.id).toBe("x/v3");
+  });
+
+  it("versionDe qui ne pointe sur rien : l'entrée fait groupe seule", () => {
+    /* V1 supprimée ou coquille de saisie : le devis doit rester visible dans
+       le cockpit plutôt que de disparaître dans un groupe fantôme. */
+    const groupes = grouperVersions([e("orphelin", 2, "disparu")]);
+    expect(groupes).toEqual([{ baseId: "orphelin", representant: e("orphelin", 2, "disparu") }]);
   });
 });

@@ -1,0 +1,13 @@
+nom: Oïde
+# Client direct : Margaux Billet (Studio Caperky) est la designer du projet,
+# pas un revendeur — la facturation va à Oïde (3BNBW - OÏDE).
+organisation: coolbeans
+prenom: Clément
+# Emoji du sélecteur, repris de l'icône de la team Linear Oïde (:shorts:).
+emoji: 🩳
+# Début réel de la relation (première visio le 2026-02-17, NDA signé le
+# 2026-02-25), et non la date de création de cette fiche : c'est ce champ qui
+# ordonne le sélecteur, une date de fiche fausserait la chronologie.
+depuis: "2026-02-25"
+# Team « Oïde » (OID) du workspace Linear coolbeans-hq.
+linearTeamId: e3842677-3176-4212-a0aa-0acf43285389

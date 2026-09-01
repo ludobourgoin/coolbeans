@@ -202,8 +202,27 @@ if (glob && geist) {
    lisibles). Pas de timeline GSAP ici — GSAP anime le sélecteur de mots du
    hero, dans src/pages/index.astro (script inline, pas de <style>).
    LogoMarquee n'a plus de <style> : son animation vit dans global.css
-   (--animate-marquee-scroll), comme --animate-proof-marquee. */
-const ALLOWED = ['src/components/Flow.astro'];
+   (--animate-marquee-scroll), comme --animate-proof-marquee.
+
+   doc/Sop — la geometrie du schema de SOP : grille en @container queries et
+   connecteurs traces en pseudo-elements positionnes, deux choses qu'aucun
+   utilitaire n'exprime. S'y ajoutent les surcharges rendues necessaires par
+   les selecteurs d'element de doc.css, qui pesent (0,1,1) et battent donc un
+   utilitaire seul.
+
+   projets/[slug] — la typo du corps Markdown. Le HTML sort de <Content />,
+   donc aucune classe ne peut lui etre posee : il faut des selecteurs
+   :global() scopes. Tous branches sur les tokens, aucune couleur en dur.
+
+   Ces deux-la etaient hors liste et faisaient echouer cette assertion en
+   permanence (constat 2026-09-01) : un garde-fou rouge en continu ne garde
+   plus rien. Ils relevent de l'irreductible que la convention CSS prevoit,
+   pas d'un ecart a corriger. */
+const ALLOWED = [
+  'src/components/Flow.astro',
+  'src/components/doc/Sop.astro',
+  'src/pages/projets/[slug].astro',
+];
 const styled = files.filter(f => f.endsWith('.astro') && (read(f) || '').includes('<style'));
 const illegal = styled.filter(f => !ALLOWED.includes(f.split(path.sep).join('/')));
 check('blocs <style> limités aux exceptions', illegal.length === 0, illegal.join(', '));
