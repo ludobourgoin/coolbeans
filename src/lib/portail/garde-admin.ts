@@ -8,6 +8,8 @@
 //
 // Spec : docs/superpowers/specs/2026-09-01-portail-garde-admin-design.md
 
+import { isAdmin, type PortalMetadata } from "./metadata";
+
 const ROUTES_AUTHENTIFIEES = [/^\/espace(\/|$)/, /^\/docs(\/|$)/];
 const ROUTES_ADMIN = [/^\/espace\/admin(\/|$)/, /^\/api\/admin(\/|$)/];
 
@@ -28,4 +30,23 @@ export function estRouteAdmin(pathname: string): boolean {
 export function estRouteProtegee(pathname: string): boolean {
   const chemin = pathname.toLowerCase();
   return ROUTES_AUTHENTIFIEES.some((re) => re.test(chemin)) || estRouteAdmin(chemin);
+}
+
+export type Decision = "passe" | "connexion" | "introuvable";
+
+/**
+ * L'ordre des trois questions est la conception, pas un detail :
+ * hors perimetre → pas connecte → pas admin. Inverser les deux dernieres
+ * renverrait un 404 a un admin dont la session vient d'expirer, qui croirait
+ * la page supprimee.
+ */
+export function decisionAcces(
+  pathname: string,
+  connecte: boolean,
+  meta: PortalMetadata,
+): Decision {
+  if (!estRouteProtegee(pathname)) return "passe";
+  if (!connecte) return "connexion";
+  if (estRouteAdmin(pathname) && !isAdmin(meta)) return "introuvable";
+  return "passe";
 }

@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { estRouteAdmin, estRouteProtegee } from "./garde-admin";
+import { decisionAcces, estRouteAdmin, estRouteProtegee } from "./garde-admin";
+import type { PortalMetadata } from "./metadata";
+
+const compte = (role: PortalMetadata["role"]): PortalMetadata => ({
+  role,
+  organisation: "coolbeans",
+  workspace: "coolbeans",
+});
 
 describe("estRouteAdmin", () => {
   it("reconnait le prefixe nu et sa forme avec slash", () => {
@@ -50,5 +57,41 @@ describe("estRouteProtegee", () => {
     expect(estRouteProtegee("/devis/amusoire/site")).toBe(false);
     expect(estRouteProtegee("/api/linear-webhook")).toBe(false);
     expect(estRouteProtegee("/404")).toBe(false);
+  });
+});
+
+describe("decisionAcces", () => {
+  it("laisse passer le site public, connecte ou non", () => {
+    expect(decisionAcces("/", false, compte("client"))).toBe("passe");
+    expect(decisionAcces("/devis/amusoire/site", false, compte("client"))).toBe("passe");
+  });
+
+  it("envoie a la connexion tout visiteur non connecte sur une route protegee", () => {
+    expect(decisionAcces("/espace", false, compte("client"))).toBe("connexion");
+    expect(decisionAcces("/docs/amusoire", false, compte("client"))).toBe("connexion");
+  });
+
+  // Le cas qui compte : un non-connecte sur une route admin part sur la
+  // connexion, pas sur un 404. Traiter l'authentification avant l'autorisation
+  // evite qu'un admin dont la session a expire se croie face a une page morte.
+  it("envoie a la connexion, pas au 404, un non-connecte sur une route admin", () => {
+    expect(decisionAcces("/espace/admin/finances", false, compte("admin"))).toBe("connexion");
+  });
+
+  it("laisse passer l'admin sur une route admin", () => {
+    expect(decisionAcces("/espace/admin/finances", true, compte("admin"))).toBe("passe");
+    expect(decisionAcces("/api/admin/export", true, compte("admin"))).toBe("passe");
+  });
+
+  it("repond introuvable a un client et a un revendeur sur une route admin", () => {
+    expect(decisionAcces("/espace/admin/finances", true, compte("client"))).toBe("introuvable");
+    expect(decisionAcces("/espace/admin/finances", true, compte("revendeur"))).toBe("introuvable");
+    expect(decisionAcces("/api/admin/export", true, compte("client"))).toBe("introuvable");
+  });
+
+  it("laisse passer les trois roles sur une route protegee non admin", () => {
+    for (const role of ["admin", "revendeur", "client"] as const) {
+      expect(decisionAcces("/espace/projets", true, compte(role))).toBe("passe");
+    }
   });
 });
