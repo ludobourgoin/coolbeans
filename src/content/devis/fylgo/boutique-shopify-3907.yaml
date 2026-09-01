@@ -1,0 +1,141 @@
+# Reconstitution rétroactive du devis Tiime n° 004330 du 24/03/2026, écrite le
+# 2026-09-01. Les quatre lignes et leurs montants sont ceux du PDF émis ; le
+# détail poste par poste vient du mail de chiffrage du 18/03/2026, auquel le
+# devis renvoie explicitement (« Devis selon mail du 18 mars 2026 »).
+# Le client est facturé sous sa raison sociale ABEAM DRINKS ; la marque, la
+# boutique et la team Linear s'appellent Fylgo.
+titre: Fylgo x Coolbeans
+objet: Boutique Shopify Fylgo
+date: 2026-03-24
+contact: Paul
+linear:
+  projet: Boutique Shopify
+  affaire: https://linear.app/coolbeans-hq/issue/CRM-28
+envoi:
+  date: 2026-03-24
+  destinataire: paul.levy@talenvia.com
+
+sections:
+  - titre: Ce que j'ai compris
+    texte: >-
+      Fylgo lance sa boutique en ligne. **La direction artistique existe déjà et
+      elle est solide** : l'enjeu n'est pas de la réinventer, c'est de la porter
+      sur un thème Shopify premium sans y engloutir le budget de départ.
+    liste:
+      - texte: >-
+          On part des maquettes du thème retenu et on ajuste à partir de cette
+          base, plutôt que de repartir d'une page blanche
+        tooltip: >-
+          C'est ce qui permet de tenir le budget : la structure du thème est
+          déjà éprouvée, on la met aux couleurs de Fylgo.
+      - texte: >-
+          **Le contenu reste de votre côté.** Vous fournissez les assets visuels
+          finaux, je me charge de leur traitement technique.
+      - texte: >-
+          La vente ne se limite pas à la boutique : les stocks et le catalogue
+          doivent remonter vers **Amazon, Ankorstore et Faire**.
+
+  - titre: Périmètre
+    liste:
+      - texte: >-
+          **Cadrage et base technique** : choix du thème, faisabilité, et la
+          configuration Shopify de fond — domaine, DNS, paiements, taxes,
+          livraisons, paiement express
+      - texte: >-
+          **Intégration de la direction artistique** : couleurs, typographies,
+          styles de boutons et ajustements CSS
+      - texte: >-
+          **Page d'accueil** : assemblage des sections du thème et hiérarchie
+          visuelle, pour valoriser la gamme et servir la conversion
+      - texte: >-
+          **Page À propos** : mise en forme du storytelling, assets visuels et
+          certifications
+      - texte: >-
+          **Template produit** : sections du thème et metafields, pour afficher
+          les caractéristiques propres à la gamme — bio, ingrédients…
+      - texte: >-
+          **Pages légales, bandeau cookies et page contact** — compris dans
+          l'intégration
+      - texte: >-
+          **Connectivité marketplaces** : synchronisation des stocks et des
+          produits vers Amazon, Ankorstore et Faire
+
+  - titre: Budget
+    texte: "Hors achat du thème premium."
+    budget:
+      lignes:
+        - label: "**Cadrage et setup technique**"
+          prix: 750
+          tooltip: >-
+            Conseil sur le choix du thème, faisabilité et configuration de fond
+            Shopify (500 €) ; installation, paramétrage du thème, référencement
+            et tracking analytics (250 €).
+        - label: "**Intégration design**"
+          prix: 1750
+          tooltip: >-
+            Direction artistique globale (350 €), configuration avancée de la
+            page d'accueil (650 €), montage de la page À propos (250 €),
+            paramétrage du template produit et des metafields (500 €). Pages
+            légales, bandeau RGPD et page contact inclus.
+        - label: "**Connectivité marketplaces**"
+          prix: 800
+          tooltip: >-
+            Amazon, Ankorstore et Faire. Chiffrage volontairement prudent : le
+            paramétrage d'Amazon Seller Central réserve des surprises, et la
+            ligne peut coûter moins cher que prévu.
+        - label: "**Gestion de projet et support**"
+          prix: 900
+          tooltip: >-
+            Animation des points hebdomadaires et suivi de l'avancement
+            (450 €) ; session de formation en visio d'une heure et pack de
+            support technique de 5 h après le lancement (450 €).
+      mention: HT
+      reglement: >-
+        Facture d'acompte émise à la commande. TVA de 20 % en sus, soit
+        **5 040,00 € TTC**.
+
+  - titre: Ce dont j'ai besoin de vous, et quand
+    liste:
+      - texte: >-
+          **Les assets visuels finaux, prêts à l'emploi.** C'est la condition
+          qui tient le budget : je m'occupe du traitement technique — recadrage,
+          compression — pas de la production.
+      - texte: "**Les contenus éditoriaux** : storytelling de la page À propos, fiches produits, certifications"
+      - texte: "**Les accès** : Shopify, le nom de domaine, et les comptes marketplaces"
+      - texte: "**Les textes juridiques** des pages légales"
+    note: >-
+      La checklist détaillée des éléments à transmettre vous a été envoyée
+      séparément.
+
+  - titre: Coûts à anticiper, hors prestation
+    texte: >-
+      Facturés directement par les éditeurs, ils ne transitent pas par moi.
+    liste:
+      - "**Abonnement Shopify**"
+      - texte: "**Abonnement Klaviyo**"
+        tooltip: Solution recommandée pour l'emailing sur une boutique Shopify premium.
+      - texte: >-
+          **Applications tierces éventuelles**, en particulier celles des
+          marketplaces — l'app Ankorstore est gratuite, Amazon et Faire ont
+          leurs propres grilles
+      - "**Achat du thème premium**"
+
+  - titre: Planning
+    planning:
+      options:
+        - label: Quatre semaines à compter du kick-off
+          indicatif: true
+          jalons:
+            - { date: Semaine 1, label: "Cadrage et base technique : kick-off, choix du thème, configuration Shopify", owner: coolbeans }
+            - { date: Semaine 2, label: "Personnalisation et intégration de la direction artistique et du contenu", owner: coolbeans }
+            - { date: Semaine 3, label: "Connectivité marketplaces et tests", owner: coolbeans }
+            - { date: Semaine 4, label: "Recette, tests responsive, corrections et lancement", owner: coolbeans }
+
+notes:
+  - texte: >-
+      Jusqu'à 2 rounds d'itération par livrable ; au-delà, budgété au temps
+      passé.
+  - tone: warning
+    texte: >-
+      Le budget tient à la fourniture des assets visuels finaux. La production
+      graphique et la rédaction des contenus ne sont pas comprises.

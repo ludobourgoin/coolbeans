@@ -1,0 +1,141 @@
+# Reconstitution rétroactive du devis Tiime n° 004329 du 19/03/2026, écrite le
+# 2026-09-01 pour que le cockpit /espace/devis porte toutes les affaires
+# signées. Les lignes et les montants sont ceux du PDF émis, à l'euro près ;
+# seules la mise en forme et les sections rédigées sont d'aujourd'hui.
+titre: Oïde x Coolbeans
+objet: Intégration Webflow x Shopify — boutique Oïde
+date: 2026-03-19
+contact: Clément
+linear:
+  projet: Intégration Shopify
+  affaire: https://linear.app/coolbeans-hq/issue/CRM-30
+envoi:
+  date: 2026-03-19
+  destinataire: clement.lhommet@oideparis.com
+
+sections:
+  - titre: Ce que j'ai compris
+    texte: >-
+      Oïde lance sa boutique en ligne à partir des **maquettes Figma du Studio
+      Caperky**. Le site vitrine est construit dans Webflow, le catalogue et le
+      paiement restent dans Shopify, et les deux sont raccordés — vous gardez la
+      main sur les produits d'un côté, sur le contenu éditorial de l'autre.
+    liste:
+      - texte: >-
+          **Neuf pages au total** : deux pages avancées, trois pages standard,
+          et un lot de pages de service
+      - texte: >-
+          J'intègre à partir de vos maquettes. La direction artistique et la
+          production des écrans restent chez Margaux.
+      - texte: >-
+          Les contenus — textes, visuels produits, fiches — sont fournis par vos
+          soins, prêts à l'emploi.
+
+  - titre: Pages
+    liste:
+      - texte: >-
+          **Accueil** et **template produit** — les deux pages avancées, celles
+          qui portent la conversion
+        tooltip: >-
+          Le template produit est construit une fois et sert toutes les
+          références du catalogue Shopify.
+      - texte: "**Liste des produits** et les deux pages **À propos** — pages standard"
+      - texte: "**Contact** et les **quatre pages légales** — pages de service"
+
+  - titre: Stack technique recommandée
+    texte: >-
+      **Webflow** (front et contenu éditorial) + **Shopify** (catalogue, stocks,
+      paiement) + **Smootify** (le pont entre les deux).
+    liste:
+      - texte: >-
+          **Vous restez autonome sur le contenu** : les textes et les visuels du
+          site se modifient dans Webflow, les produits et les prix dans Shopify.
+          Aucun des deux ne demande d'intervention technique.
+      - texte: >-
+          **Le paiement, les stocks et les commandes restent chez Shopify**, avec
+          ses outils de gestion et sa conformité — rien n'est réimplémenté.
+      - texte: >-
+          Configuration SEO, analytics et optimisation des performances
+          comprises dans le pack d'intégration custom.
+
+  - titre: Budget
+    budget:
+      lignes:
+        - label: "**Accueil** et **template produit** — intégration avancée"
+          prix: 2200
+          tooltip: 1 100 € par page.
+        - label: "**Liste produits** et **À propos** (x2) — intégration standard"
+          prix: 1950
+          tooltip: 650 € par page.
+        - label: "**Contact** et **pages légales** (x4) — intégration basique"
+          prix: 700
+        - label: >-
+            **Intégration custom — pack 10 h** : configuration Shopify, mise en
+            place de Smootify, référencement, analytics et web perfs
+          prix: 750
+        - label: >-
+            **Maintenance — plan Starter, 12 mois** : jusqu'à 3 h par mois
+            d'évolutions et d'ajustements
+          prix: 2520
+          tooltip: 210 € par mois, soit 70 € de l'heure.
+      mention: HT
+      reglement: >-
+        **30 %** à la signature, qui réserve les créneaux dans mon planning.
+        **70 %** dans les 30 jours suivant la livraison du site fonctionnel.
+        TVA de 20 % en sus, soit **9 744,00 € TTC**.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Responsive (ordinateur, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation des web perfs (vitesse, Core Web Vitals…)
+      - Tests QA sur les 3 navigateurs principaux
+      - Setup tracking
+      - Certificat SSL, hébergement et raccordement du nom de domaine
+      - Pages légales et page de contact
+      - Doc de passation pour la prise en main de Webflow et de Shopify
+
+  - titre: Ce dont j'ai besoin de vous, et quand
+    liste:
+      - texte: >-
+          **Les maquettes Figma complètes et validées**, dans leurs tailles
+          d'écran, avant le démarrage de l'intégration
+      - texte: >-
+          **Le catalogue produits renseigné dans Shopify** : références, prix,
+          visuels, descriptions
+      - texte: >-
+          **Les contenus éditoriaux** : textes des pages À propos, visuels de la
+          page d'accueil
+      - texte: >-
+          **Les accès** : Shopify, Webflow, le nom de domaine et le compte
+          analytics
+      - texte: "**Les textes juridiques** des quatre pages légales"
+    note: >-
+      Les visuels sont fournis prêts à l'emploi. Je me charge de leur traitement
+      technique — recadrage, compression — pour garantir les performances.
+
+  - titre: Planning
+    planning:
+      options:
+        - label: Intégration en mai
+          texte: "Mise en ligne visée **fin mai 2026**."
+          jalons:
+            - { date: 12/05, label: "Livraison des maquettes Figma validées", owner: client }
+            - { date: 15/05 → 30/05, label: "Intégration Webflow des neuf pages et raccordement Shopify", owner: coolbeans }
+            - { date: Fin mai, label: "Recette et mise en production", owner: coolbeans }
+          note: >-
+            Le calendrier tient à la date de livraison des maquettes. Un retard
+            sur celle-ci décale l'intégration d'autant.
+
+notes:
+  - texte: >-
+      Les abonnements aux outils — Webflow, Shopify, Smootify — sont souscrits
+      et réglés par vos soins. Ils ne sont pas compris dans ce devis.
+  - texte: >-
+      Jusqu'à 2 rounds d'itération par livrable ; au-delà, budgété au temps
+      passé.
+  - tone: warning
+    texte: >-
+      Ce devis chiffre l'intégration à partir de maquettes fournies par le
+      Studio Caperky. La direction artistique, la production des écrans et
+      leurs corrections ne sont pas comprises.

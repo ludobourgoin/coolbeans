@@ -1,0 +1,19 @@
+# Client direct : la boutique fylgodrinks.com. La facturation va à l'entité
+# juridique ABEAM DRINKS (SIRET 98980485100016) ; la marque, la boutique
+# Shopify et la team Linear s'appellent Fylgo, et c'est ce nom-là que le client
+# voit dans son portail.
+nom: Fylgo
+# Revendeur auquel ce client se rattache (spec 2026-08-19 §3.1).
+organisation: coolbeans
+# Paul Lévy (Talenvia) porte les échanges depuis le premier mail et c'est lui
+# qui a reçu le devis. Fabien est en copie de tout le fil.
+prenom: Paul
+# Emoji du sélecteur, repris de l'icône de la team Linear (:tropical_drink:).
+emoji: 🍹
+# Premier mail de chiffrage, le point de départ documenté de la relation.
+depuis: "2026-03-18"
+# Team « Fylgo » (FYL) du workspace Linear coolbeans-hq.
+linearTeamId: af975ced-7d31-4c67-abbe-8715e2071f7d
+# Pas de clé `doc` : aucune page n'existe sous src/content/docs/. La boutique
+# est en production et transférée au client, donc c'est la doc qui manque le
+# plus ici — à produire avec la skill doc-client.
