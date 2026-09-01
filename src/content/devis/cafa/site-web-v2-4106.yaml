@@ -1,5 +1,5 @@
-titre: CAFA-TO x Coolbeans — V2
-objet: Proposition confirmée — options retenues et planning recalé
+titre: CAFA-TO x Coolbeans
+objet: Site Internet du Club d'Affaires Franco-Allemand T-O
 date: 2026-09-01
 contact: Susanne
 version: 2
@@ -9,29 +9,6 @@ linear:
   affaire: CRM-9
 
 sections:
-  - titre: Ce qui change dans cette version
-    texte: >-
-      Vous avez validé la proposition le **28 août, les deux options
-      comprises**. Cette version acte ce choix : rien n'est retiré, rien n'est
-      renchéri.
-    liste:
-      - texte: >-
-          **Les deux options rejoignent la prestation.** La reprise de vos
-          articles existants et la rédaction des contenus ne sont plus des
-          suppléments à décider : elles font partie du projet et figurent au
-          budget.
-        tooltip: >-
-          Conséquence directe : le tarif association de 20 % s'applique
-          désormais aussi à ces deux lignes.
-      - texte: >-
-          **Le planning repart du 8 septembre.** La V1 partait du 1er ;
-          la livraison reste très en amont du congrès de début novembre.
-      - texte: >-
-          **Le montant de l'acompte est chiffré** en bas de la section Budget,
-          comme vous me l'avez demandé.
-    note: >-
-      La version du 6 août reste consultable sous l'onglet V1, à l'identique.
-
   - titre: Objectif
     texte: >-
       Doter le Club d'Affaires d'un **site Internet à son image**, qui donne à voir ses
@@ -65,10 +42,11 @@ sections:
       - texte: Partenaires et soutiens institutionnels
       - texte: Contact
     note: >-
-      Événements et Actualités restent deux sections distinctes, conformément à
-      ma recommandation : on ne consulte pas un agenda comme on parcourt les
-      nouvelles du Club, et les mélanger obligerait à choisir entre laisser en
-      ligne des événements passés ou effacer l'histoire de l'association.
+      Événements et Actualités peuvent être réunis en une seule section, ce qui
+      allégerait le devis. Je vous recommande cependant de les garder distincts :
+      on ne consulte pas un agenda comme on parcourt les nouvelles du Club, et
+      les mélanger oblige à choisir entre laisser en ligne des événements
+      passés ou effacer l'histoire de l'association.
 
   - titre: Fonctionnalités
     liste:
@@ -129,24 +107,19 @@ sections:
             **Reprise de vos articles existants** : les publications de
             cafatmp.org sont rapatriées dans la nouvelle section Actualités
           prix: 250
-          tooltip: >-
-            La reprise est scriptée : les articles sont transférés en lot, avec
-            leur date et leurs images, sans ressaisie.
         - label: >-
             **Rédaction des contenus** : entretien de cadrage, rédaction de
-            l'ensemble des pages, ton ajusté à l'identité du Club d'Affaires
+            l'ensemble des pages, ton ajusté à l'identité du Club d'Affaires,
+            deux allers-retours sur les textes, titres et descriptions
+            travaillés pour le référencement
           prix: 480
-          tooltip: >-
-            Deux allers-retours sur les textes, titres et descriptions
-            travaillés pour le référencement. Je pars des éléments que vous
-            m'avez transmis le 4 août et de l'entretien de cadrage.
       remisePct: 20
       remiseLabel: Tarif association
       mention: HT
       reglement: >-
-        **Acompte de 30 %, soit 883,20 € HT**, qui lance la prestation.
-        **Solde de 2 060,80 € HT** à la livraison du site fonctionnel.
-        Montants exprimés hors taxes, TVA de 20 % en sus.
+        **30 %** à la validation du devis, qui lance la prestation. **Solde**
+        à la livraison du site fonctionnel. Montants exprimés hors taxes, TVA
+        de 20 % en sus.
 
   - titre: Ce que ça comprend
     liste:
@@ -168,26 +141,25 @@ sections:
             Livraison visée **début octobre**, bien avant le congrès de début
             novembre.
           jalons:
-            - { date: Mar 08/09, label: "Démarrage : cadrage, accès, entretien de cadrage rédactionnel", owner: coolbeans }
-            - { date: Mar 08/09, label: "Transmission des éléments : logos, bulletin d'adhésion, accès au blog actuel", owner: client }
+            - { date: Mar 08/09, label: "Démarrage : cadrage, accès, point contenu", owner: coolbeans }
             - { date: Mar 15/09, label: "Structure des pages et maquette de la page d'accueil, à partir des références que vous m'avez transmises", owner: coolbeans }
-            - { date: Mar 22/09, label: "Retour du Club d'Affaires sur la direction visuelle et sur les premiers textes", owner: client }
-            - { date: 23/09 → 01/10, label: "Intégration, développement, mise en place du CMS, reprise des articles existants", owner: coolbeans }
+            - { date: Mar 22/09, label: "Retour du Club d'Affaires et validation de la direction visuelle", owner: client }
+            - { date: 23/09 → 01/10, label: Intégration, développement et mise en place du CMS, owner: coolbeans }
             - { date: Ven 02/10, label: "Mise en ligne, référencement, formation à la mise à jour", owner: coolbeans }
             - { date: Lun 05/10, label: Relecture finale du Club d'Affaires, owner: client }
             - { date: Mar 06/10, label: Corrections, owner: coolbeans }
             - { date: Mer 07/10, label: Livraison et démarrage du support 30 jours, owner: coolbeans }
           note: >-
-            Ces dates courent à compter de la réception de l'acompte et tiennent
-            si les retours arrivent dans les délais indiqués. Un retard de
-            validation peut décaler la livraison de plus que le retard
-            lui-même, le temps de recaler le projet entre mes autres clients.
+            Ces dates tiennent si les retours arrivent dans les délais indiqués.
+            Un retard de validation peut décaler la livraison de plus que le
+            retard lui-même, le temps de recaler le projet entre mes autres
+            clients.
 
 notes:
   - tone: success
     texte: >-
-      **Tarif association appliqué sur l'ensemble de la prestation, options
-      comprises**, soit 736 € de remise sur le montant total.
+      **Tarif association appliqué sur l'ensemble de la prestation**, soit
+      736 € de remise sur le montant total.
   - texte: >-
       La direction visuelle et l'intégration forment un ensemble : la première
       fixe la référence que suit toute la construction du site. Les deux postes
@@ -195,12 +167,6 @@ notes:
   - texte: >-
       Deux allers-retours sont prévus par livrable. Au-delà, les itérations
       supplémentaires restent possibles et sont budgétées au temps passé.
-  - tone: info
-    texte: >-
-      La rédaction étant désormais de mon côté, ce qui reste du vôtre est la
-      **matière** : les informations sur le Club, ses partenaires et ses
-      événements, puis la validation des textes. Sans elles à la date prévue,
-      c'est le planning qui glisse, pas le périmètre.
   - tone: info
     texte: >-
       Un point reste à trancher ensemble au démarrage : le nom de domaine
