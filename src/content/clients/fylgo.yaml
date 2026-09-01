@@ -5,9 +5,10 @@
 nom: Fylgo
 # Revendeur auquel ce client se rattache (spec 2026-08-19 §3.1).
 organisation: coolbeans
-# Paul Lévy (Talenvia) porte les échanges depuis le premier mail et c'est lui
-# qui a reçu le devis. Fabien est en copie de tout le fil.
-prenom: Paul
+# Fabien (fabien.vp@fylgodrinks.com) est le contact client. Paul Lévy portait
+# les échanges au démarrage depuis son adresse Talenvia — c'est lui qui a reçu
+# le devis en mars — mais il est passé lui aussi sous fylgodrinks.com fin avril.
+prenom: Fabien
 # Emoji du sélecteur, repris de l'icône de la team Linear (:tropical_drink:).
 emoji: 🍹
 # Premier mail de chiffrage, le point de départ documenté de la relation.
