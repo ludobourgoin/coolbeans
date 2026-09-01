@@ -32,8 +32,12 @@ export interface PortalWorkspace {
    * clients : le sélecteur les affiche en tête, avant le liseret.
    */
   perso?: boolean;
-  /** Emoji affiché devant le nom dans le sélecteur (workspaces clients). */
+  /** Emoji affiché devant le nom dans le sélecteur. */
   emoji?: string;
+  /** Image affichée devant le nom, à la place de l'emoji (« /img/… »). */
+  logo?: string;
+  /** Variante thème sombre de `logo`. Absente, `logo` sert dans les deux. */
+  logoSombre?: string;
   /** Début de la relation (YYYY-MM-DD) : fonde le tri chronologique des clients. */
   depuis?: string;
   /**
@@ -52,10 +56,7 @@ export const DEFAULT_WORKSPACE = "coolbeans";
 export type PortalModule = "projets" | "site" | "doc" | "support";
 
 /** Clés de mapping d'un client, telles que nommées dans le YAML. */
-export type WorkspaceMappingKey =
-  | "doc"
-  | "linearTeamId"
-  | "uptimerobot_monitor_ids";
+export type WorkspaceMappingKey = "doc" | "linearTeamId" | "uptimerobot_monitor_ids";
 
 /**
  * Mapping sans lequel un module ne peut rien afficher.
@@ -127,7 +128,10 @@ export function getWorkspaceIn(
   return clients.find((c) => c.slug === slug) ?? null;
 }
 
-export function findWorkspaceByDocIn(clients: PortalWorkspace[], docSlug: string): PortalWorkspace | null {
+export function findWorkspaceByDocIn(
+  clients: PortalWorkspace[],
+  docSlug: string,
+): PortalWorkspace | null {
   return clients.find((c) => c.doc === docSlug) ?? null;
 }
 
@@ -163,7 +167,9 @@ export async function listWorkspaces(): Promise<PortalWorkspace[]> {
   return sortWorkspaces(entries.map((e) => ({ slug: e.id, ...e.data })));
 }
 
-export async function getWorkspace(slug: string | null | undefined): Promise<PortalWorkspace | null> {
+export async function getWorkspace(
+  slug: string | null | undefined,
+): Promise<PortalWorkspace | null> {
   return getWorkspaceIn(await listWorkspaces(), slug);
 }
 

@@ -28,11 +28,20 @@ const ADMIN_DEMO_META = readPortalMetadata({ role: "admin", client: "coolbeans" 
 // Deux workspaces de démo, un perso et un client : c'est ce qui fait
 // apparaître le liseret du sélecteur.
 const DEMO_WORKSPACES: PortalWorkspace[] = [
-  { slug: "coolbeans", nom: "Coolbeans", perso: true, uptimerobot_monitor_ids: [], archive: false },
+  {
+    slug: "coolbeans",
+    nom: "Coolbeans",
+    perso: true,
+    logo: "/img/coolbeans-mark-black.svg",
+    logoSombre: "/img/coolbeans-mark-white.svg",
+    uptimerobot_monitor_ids: [],
+    archive: false,
+  },
   {
     slug: "amusoire",
     nom: "Amusoire",
     doc: "amusoire",
+    emoji: "\u{1F3AE}",
     uptimerobot_monitor_ids: [],
     archive: false,
   },
@@ -41,7 +50,11 @@ const DEMO_WORKSPACES: PortalWorkspace[] = [
 const SCALES = [
   { key: "background", label: "Backgrounds", steps: [100, 200] },
   { key: "gray", label: "Gray", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
-  { key: "gray-alpha", label: "Gray alpha", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
+  {
+    key: "gray-alpha",
+    label: "Gray alpha",
+    steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+  },
   { key: "blue", label: "Blue", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
   { key: "red", label: "Red", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
   { key: "amber", label: "Amber", steps: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] },
@@ -66,8 +79,15 @@ const SEMANTIC = [
 ];
 
 const SPACE = [
-  ["2x", 8], ["3x", 12], ["4x", 16], ["6x", 24], ["8x", 32],
-  ["10x", 40], ["16x", 64], ["24x", 96], ["32x", 128],
+  ["2x", 8],
+  ["3x", 12],
+  ["4x", 16],
+  ["6x", 24],
+  ["8x", 32],
+  ["10x", 40],
+  ["16x", 64],
+  ["24x", 96],
+  ["32x", 128],
 ];
 
 const MATERIALS = [
@@ -85,7 +105,11 @@ const BTN_TYPES = [
   ["btn-outline", "Secondaire"],
   ["btn-ghost", "Tertiaire"],
 ];
-const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "Large · 40"]];
+const BTN_SIZES = [
+  ["btn-sm", "Small · 32"],
+  ["", "Medium · 36"],
+  ["btn-lg", "Large · 40"],
+];
 ---
 
 <BaseLayout
@@ -128,8 +152,8 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
       <p class="label mb-6x">Référence interne · non indexée</p>
       <h1 class="max-w-[18ch]">Le système, pas la page.</h1>
       <p class="mt-6x max-w-[52ch] text-[19px] text-mute">
-        Cette page consomme les composants réels. Si un composant change, elle change
-        avec lui : elle ne peut pas mentir.
+        Cette page consomme les composants réels. Si un composant change, elle change avec lui :
+        elle ne peut pas mentir.
       </p>
     </div>
   </section>
@@ -138,12 +162,11 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
   <section id="couleurs" class="border-t border-line py-24x">
     <div class="container-site">
       <p class="label">01</p>
-      <h2 class="mb-3x mt-3x">Couleurs</h2>
+      <h2 class="mt-3x mb-3x">Couleurs</h2>
       <p class="mb-10x max-w-[62ch] text-mute">
-        Le système Geist complet : dix échelles, hex en base et <code class="font-mono"
-          >lab()</code
-        > derrière <code class="font-mono">@supports</code>. L'identité reste monochrome ;
-        les échelles colorées ne servent qu'aux états fonctionnels.
+        Le système Geist complet : dix échelles, hex en base et <code class="font-mono">lab()</code> derrière
+        <code class="font-mono">@supports</code>. L'identité reste monochrome ; les échelles
+        colorées ne servent qu'aux états fonctionnels.
       </p>
 
       {
@@ -168,7 +191,7 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
         ))
       }
 
-      <p class="label mb-3x mt-16x">Couche sémantique</p>
+      <p class="label mt-16x mb-3x">Couche sémantique</p>
       <div>
         {
           SEMANTIC.map(([tok, role, src]) => (
@@ -185,7 +208,7 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
         }
       </div>
 
-      <p class="label mb-3x mt-16x">États fonctionnels</p>
+      <p class="label mt-16x mb-3x">États fonctionnels</p>
       <div class="grid gap-6x sm:grid-cols-2 lg:grid-cols-4">
         {
           [
@@ -206,8 +229,8 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
         }
       </div>
       <p class="mt-8x max-w-[70ch] border-l-2 border-line-strong pl-4x text-[15px] text-mute">
-        Jamais en fond de section, jamais en CTA. Uniquement sur du signal : un message
-        d'erreur en gris n'est pas un message d'erreur.
+        Jamais en fond de section, jamais en CTA. Uniquement sur du signal : un message d'erreur en
+        gris n'est pas un message d'erreur.
       </p>
     </div>
   </section>
@@ -216,10 +239,10 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
   <section id="typo" class="border-t border-line py-24x">
     <div class="container-site">
       <p class="label">02</p>
-      <h2 class="mb-3x mt-3x">Typographie</h2>
+      <h2 class="mt-3x mb-3x">Typographie</h2>
       <p class="mb-10x max-w-[62ch] text-mute">
-        Geist partout : site, portail et mails. Les gros titres se distinguent par la
-        graisse et un tracking serré, pas par un changement de famille.
+        Geist partout : site, portail et mails. Les gros titres se distinguent par la graisse et un
+        tracking serré, pas par un changement de famille.
       </p>
 
       <div class="card mb-4x">
@@ -228,7 +251,7 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
           <span class="font-mono text-xs text-mute">h1 · h2 uniquement</span>
         </div>
         <div
-          class="font-display font-bold leading-[1.02] tracking-[-0.03em]"
+          class="font-display leading-[1.02] font-bold tracking-[-0.03em]"
           style="font-size:clamp(40px,6vw,76px)"
         >
           Un studio qui livre
@@ -242,9 +265,8 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
         </div>
         <h3 class="mb-3x">Titre de carte en Geist SemiBold</h3>
         <p class="max-w-[64ch] text-mute">
-          Le corps passe en Geist Sans 400 à 16px sur une interligne de 1,5. La police est
-          dessinée pour l'écran et disparaît derrière le texte, ce qui est exactement ce
-          qu'on lui demande.
+          Le corps passe en Geist Sans 400 à 16px sur une interligne de 1,5. La police est dessinée
+          pour l'écran et disparaît derrière le texte, ce qui est exactement ce qu'on lui demande.
         </p>
       </div>
 
@@ -263,7 +285,7 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
   <section id="rythme" class="border-t border-line py-24x">
     <div class="container-site">
       <p class="label">03</p>
-      <h2 class="mb-3x mt-3x">Rythme</h2>
+      <h2 class="mt-3x mb-3x">Rythme</h2>
       <p class="mb-10x max-w-[62ch] text-mute">
         Base 4px, gap par défaut à 24px, container 1280px.
       </p>
@@ -272,7 +294,9 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
           {
             SPACE.map(([n, v]) => (
               <div class="grid grid-cols-[110px_1fr] items-center gap-4x py-1.5">
-                <span class="font-mono text-xs text-mute">--space-{n} · {v}</span>
+                <span class="font-mono text-xs text-mute">
+                  --space-{n} · {v}
+                </span>
                 <span class="block h-3.5 rounded-sm bg-ink" style={`width:${v}px`} />
               </div>
             ))
@@ -292,11 +316,10 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
   <section id="materials" class="border-t border-line py-24x">
     <div class="container-site">
       <p class="label">04</p>
-      <h2 class="mb-3x mt-3x">Materials</h2>
+      <h2 class="mt-3x mb-3x">Materials</h2>
       <p class="mb-10x max-w-[62ch] text-mute">
-        Pas du verre dépoli : aucun <code class="font-mono">backdrop-filter</code> chez
-        Geist. Une échelle d'élévation en ombres empilées, dont un anneau de 1px qui
-        remplace la bordure.
+        Pas du verre dépoli : aucun <code class="font-mono">backdrop-filter</code> chez Geist. Une échelle
+        d'élévation en ombres empilées, dont un anneau de 1px qui remplace la bordure.
       </p>
       <div class="grid gap-6x sm:grid-cols-2 lg:grid-cols-3">
         {
@@ -316,17 +339,14 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
   <section id="boutons" class="border-t border-line py-24x">
     <div class="container-site">
       <p class="label">05</p>
-      <h2 class="mb-3x mt-3x">Boutons</h2>
+      <h2 class="mt-3x mb-3x">Boutons</h2>
       <p class="mb-10x max-w-[62ch] text-mute">
-        Le primaire n'inverse pas au survol : il s'éclaircit en clair, s'assombrit en
-        sombre. Bordure en <code class="font-mono">box-shadow</code>, transition 150ms,
-        coupée au focus. Survole-les, puis tabule.
+        Le primaire n'inverse pas au survol : il s'éclaircit en clair, s'assombrit en sombre.
+        Bordure en <code class="font-mono">box-shadow</code>, transition 150ms, coupée au focus.
+        Survole-les, puis tabule.
       </p>
       <div class="card">
-        <div
-          class="grid items-center gap-4x"
-          style="grid-template-columns:auto repeat(3,1fr)"
-        >
+        <div class="grid items-center gap-4x" style="grid-template-columns:auto repeat(3,1fr)">
           <div></div>
           {BTN_SIZES.map(([, label]) => <div class="label text-[10px]">{label}</div>)}
           {
@@ -362,8 +382,8 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
             <input class="field" id="ds-champ-exemple" placeholder="vous@exemple.fr" />
           </div>
           <p class="mt-3x text-sm text-mute">
-            Le libellé d'un champ prend <code>.label field-label</code> : son texte s'aligne sur
-            le texte saisi (15px de retrait), jamais sur le bord de la boîte. Un
+            Le libellé d'un champ prend <code>.label field-label</code> : son texte s'aligne sur le texte
+            saisi (15px de retrait), jamais sur le bord de la boîte. Un
             <code>.label</code> seul (eyebrow de section) reste flush.
           </p>
           <p class="mt-4x text-sm text-mute">
@@ -386,12 +406,11 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
   <section id="browser" class="border-t border-line py-24x">
     <div class="container-site">
       <p class="label">06</p>
-      <h2 class="mb-3x mt-3x">Browser</h2>
+      <h2 class="mt-3x mb-3x">Browser</h2>
       <p class="mb-10x max-w-[62ch] text-mute">
-        Le rayon du cadre suit la largeur du conteneur (<code class="font-mono"
-          >1.5cqw</code
-        >). Redimensionne la fenêtre, il s'ajuste. Sans <code class="font-mono">shot</code
-        >, l'état vide est explicite.
+        Le rayon du cadre suit la largeur du conteneur (<code class="font-mono">1.5cqw</code>).
+        Redimensionne la fenêtre, il s'ajuste. Sans <code class="font-mono">shot</code>, l'état vide
+        est explicite.
       </p>
       <div class="grid gap-6x md:grid-cols-2">
         <Browser url="trigger.fr" label="trigger" />
@@ -404,10 +423,10 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
   <section id="biblio" class="border-t border-line py-24x">
     <div class="container-site">
       <p class="label">07</p>
-      <h2 class="mb-3x mt-3x">Bibliothèque</h2>
+      <h2 class="mt-3x mb-3x">Bibliothèque</h2>
       <p class="mb-10x max-w-[62ch] text-mute">
-        Les composants réels, importés. Ceux du bas sont du mobilier d'application :
-        présents dans la bibliothèque, posés sur aucune page.
+        Les composants réels, importés. Ceux du bas sont du mobilier d'application : présents dans
+        la bibliothèque, posés sur aucune page.
       </p>
 
       <div class="grid gap-6x md:grid-cols-2">
@@ -439,8 +458,8 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
             <Avatar size={24} initials="AM" />
           </div>
           <p class="mt-6x text-sm text-mute">
-            L'anneau vaut <code class="font-mono">0 0 0 1px var(--surface)</code>, la
-            surface de page, pas un gris.
+            L'anneau vaut <code class="font-mono">0 0 0 1px var(--surface)</code>, la surface de
+            page, pas un gris.
           </p>
         </div>
 
@@ -498,22 +517,23 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
         </Collapse>
       </div>
 
-      <p class="label mb-4x mt-16x">Portail client · my.coolbeans.cc</p>
+      <p class="label mt-16x mb-4x">Portail client · my.coolbeans.cc</p>
 
       <p class="label mb-3x">Topbar · structure Geist</p>
       <div class="doc-root overflow-hidden rounded-card border border-line">
         <PortalNav withAccount={false} />
       </div>
-      <p class="mb-10x mt-3x max-w-[62ch] text-sm text-mute">
-        La nav a déménagé dans la sidebar (COO-80), le sélecteur de workspace aussi
-        (2026-08-18) : ne restent que la marque — dans une zone de la largeur exacte de la
-        colonne sidebar (<code class="font-mono">--portal-col</code>) — la recherche ⌘K, le
-        thème et le compte. Hauteur figée à 56px : <code class="font-mono">doc.css</code> cale
-        dessus les colonnes collantes. Le menu compte Clerk est masqué ici, cette page étant
-        prérendue et sans session.
+      <p class="mt-3x mb-10x max-w-[62ch] text-sm text-mute">
+        La nav a déménagé dans la sidebar (COO-80), le sélecteur de workspace aussi (2026-08-18) :
+        ne restent que la marque — dans une zone de la largeur exacte de la colonne sidebar (<code
+          class="font-mono">--portal-col</code
+        >) — la recherche ⌘K, le thème et le compte. Hauteur figée à 56px : <code class="font-mono"
+          >doc.css</code
+        > cale dessus les colonnes collantes. Le menu compte Clerk est masqué ici, cette page étant prérendue
+        et sans session.
       </p>
 
-      <p class="label mb-3x mt-10x">Sidebar · l'unique nav du portail</p>
+      <p class="label mt-10x mb-3x">Sidebar · l'unique nav du portail</p>
       <div class="doc-root grid max-w-80 overflow-hidden rounded-card border border-line">
         <PortalSidebar
           sections={buildSidebar("my.coolbeans.cc", ADMIN_DEMO_META, null, [
@@ -524,26 +544,28 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
           current={DEMO_WORKSPACES[0]}
         />
       </div>
-      <p class="mb-10x mt-3x max-w-[62ch] text-sm text-mute">
+      <p class="mt-3x mb-10x max-w-[62ch] text-sm text-mute">
         Titres de section bold avec icône Iconoir, liens à hover souligné, page active en
         <code class="font-mono">text-ink</code> medium. Vue admin : tout est visible, badge
-        <code class="font-mono">wip</code> sur les entrées non lancées, pastille de statut sur
-        Monitoring (grise tant qu'UptimeRobot n'est pas branché). Côté client, le registre
-        (<code class="font-mono">src/lib/portail/nav.ts</code>) ne laisse passer que les pages
-        live et configurées pour lui.<br />
-        En tête de colonne, le sélecteur de workspace : rendu pour les seuls admins, pleine
-        largeur utile, à 24px de la première section (le même écart qu'entre deux sections).
-        Mes workspaces d'abord, un liseret, puis ceux des clients. Le bouton « Afficher »
-        disparaît quand le script prend la main ; sans JavaScript il reste et le formulaire
-        fonctionne quand même.
+        <code class="font-mono">wip</code> sur les entrées non lancées, pastille de statut sur Monitoring
+        (grise tant qu'UptimeRobot n'est pas branché). Côté client, le registre (<code
+          class="font-mono">src/lib/portail/nav.ts</code
+        >) ne laisse passer que les pages live et configurées pour lui.<br />
+        En tête de colonne, le sélecteur de workspace : rendu pour les seuls admins, pleine largeur utile,
+        à 24px de la première section (le même écart qu'entre deux sections). Mes workspaces d'abord,
+        un liseret, puis ceux des clients. Chaque ligne porte son icône — un emoji, ou le picto de la
+        marque pour Coolbeans, ce qu'un
+        <code class="font-mono">&lt;option&gt;</code> natif ne sait pas faire : d'où le menu maison. Sans
+        JavaScript, c'est le <code class="font-mono">&lt;select&gt;</code> natif et son bouton « Afficher
+        » qui restent, et le formulaire fonctionne quand même.
       </p>
 
       <div class="grid gap-6x md:grid-cols-2">
         <div>
           <p class="label mb-3x">Empty state · vu par le client</p>
           <EmptyState title="Aucune mesure pour le moment">
-            L'état de votre site apparaîtra ici dès que la surveillance sera en place.
-            Rien à faire de votre côté.
+            L'état de votre site apparaîtra ici dès que la surveillance sera en place. Rien à faire
+            de votre côté.
           </EmptyState>
         </div>
         <div>
@@ -553,19 +575,19 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
             isAdmin
             missingKeys={["uptimerobot_monitor_ids"]}
           >
-            L'état de votre site apparaîtra ici dès que la surveillance sera en place.
-            Rien à faire de votre côté.
+            L'état de votre site apparaîtra ici dès que la surveillance sera en place. Rien à faire
+            de votre côté.
           </EmptyState>
         </div>
       </div>
       <p class="mt-3x max-w-[62ch] text-sm text-mute">
         Même écran, deux lectures. Le diagnostic nomme la clé de
         <code class="font-mono">publicMetadata</code> qui manque, et n'est rendu que pour
-        <code class="font-mono">role: "admin"</code> — les trois mappings Clerk étant
-        posés à la main, l'oubli est structurel et doit se voir sur place.
+        <code class="font-mono">role: "admin"</code> — les trois mappings Clerk étant posés à la main,
+        l'oubli est structurel et doit se voir sur place.
       </p>
 
-      <p class="label mb-4x mt-16x">Mobilier d'application · non posé sur le site</p>
+      <p class="label mt-16x mb-4x">Mobilier d'application · non posé sur le site</p>
       <div class="grid gap-6x lg:grid-cols-3">
         <div class="card">
           <p class="label mb-6x">Context card</p>
@@ -597,10 +619,9 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
         <SearchInput placeholder="Rechercher…" class="max-w-110" />
         <p class="mt-3x max-w-[62ch] text-sm text-mute">
           Portage du <code class="font-mono">SearchInput</code> de Geist (variante
-          <code class="font-mono">with-cmdk</code>) : loupe à gauche, deux capsules de touche
-          à droite, remplacées par <code class="font-mono">Esc</code> au focus. Le raccourci
-          ⌘K (Ctrl+K hors macOS) est armé par le composant lui-même. C'est ce champ que porte
-          la topbar du portail.
+          <code class="font-mono">with-cmdk</code>) : loupe à gauche, deux capsules de touche à
+          droite, remplacées par <code class="font-mono">Esc</code> au focus. Le raccourci ⌘K (Ctrl+K
+          hors macOS) est armé par le composant lui-même. C'est ce champ que porte la topbar du portail.
         </p>
       </div>
 
@@ -622,8 +643,8 @@ const BTN_SIZES = [["btn-sm", "Small · 32"], ["", "Medium · 36"], ["btn-lg", "
   <footer class="border-t border-line py-16x">
     <div class="container-site">
       <p class="label">
-        Page de référence interne · <code class="font-mono">noindex, nofollow</code> ·
-        non listée dans la navigation du site
+        Page de référence interne · <code class="font-mono">noindex, nofollow</code> · non listée dans
+        la navigation du site
       </p>
     </div>
   </footer>

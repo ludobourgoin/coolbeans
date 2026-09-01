@@ -39,12 +39,18 @@ const devis = defineCollection({
         titre: z.string(),
         texte: z.string().optional(),
         liste: z
-          .array(z.union([z.string(), z.object({ texte: z.string(), tooltip: z.string().optional() })]))
+          .array(
+            z.union([z.string(), z.object({ texte: z.string(), tooltip: z.string().optional() })]),
+          )
           .optional(),
         budget: z
           .object({
             lignes: z.array(
-              z.object({ label: z.string(), prix: z.number().optional(), tooltip: z.string().optional() }),
+              z.object({
+                label: z.string(),
+                prix: z.number().optional(),
+                tooltip: z.string().optional(),
+              }),
             ),
             /* Devis « en construction » : le périmètre n'est pas encore
                arrêté, donc aucun montant n'est annoncé. Les lignes restent
@@ -216,8 +222,14 @@ const clients = defineCollection({
     // Workspace « à moi » (Coolbeans, Spinoza…) : en tête du sélecteur,
     // avant le liseret qui le sépare des workspaces clients.
     perso: z.boolean().default(false),
-    // Emoji affiché devant le nom dans le sélecteur (workspaces clients).
+    // Emoji affiché devant le nom dans le sélecteur.
     emoji: z.string().optional(),
+    /* Image affichée devant le nom, à la place de l'emoji : chemin depuis la
+       racine publique (« /img/… »). Réservée aux marques dont le picto EST
+       l'identité — Coolbeans. `logoSombre` porte la variante thème sombre ;
+       absente, `logo` sert dans les deux thèmes. */
+    logo: z.string().optional(),
+    logoSombre: z.string().optional(),
     // Début de la relation client : fonde le tri chronologique du sélecteur.
     depuis: z
       .string()
