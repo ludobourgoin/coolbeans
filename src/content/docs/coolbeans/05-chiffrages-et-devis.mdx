@@ -62,6 +62,37 @@ silencieusement sur les défauts. Le calcul lui-même vit dans
 `src/lib/chiffrage/calc.ts` (`calculerDevis`), pur et testé — la skill peut
 l'exécuter via `npx tsx` plutôt que de calculer de tête.
 
+### Ces réglages sont globaux
+
+Le `tjm` est **une valeur unique lue par tous les devis**. Le modifier pour
+encoder le tarif d'un client précis reprice en silence tous les projets en
+statut Proposal. Un tarif qui ne vaut que pour un client se pose dans le bloc
+Chiffrage de son projet : `Réduction` nommée (visible sur la page) ou prix
+retenu posé à la main (muet). `Gestion de projet` est un booléen par projet,
+à `non` par défaut : sur un lot revendeur, où c'est l'agence qui porte la
+relation client, les +15 % n'ont pas lieu d'être.
+
+## Chiffrer un petit lot
+
+Deux biais se croisent sur les prestations de quelques heures, et ils vont en
+sens inverse — d'où l'illusion d'avoir chiffré juste.
+
+**Le TJM sous-facture.** Un lot de 3 heures porte le même coût de mise en
+route qu'un lot de 3 jours : comprendre la demande, ouvrir le projet,
+recetter, publier, facturer. Le taux réellement pratiqué et accepté sur les
+petits lots tourne autour de 106 €/h, là où un TJM de 500 € en donne 71.
+
+**Le Fibonacci sur-estime.** L'échelle de la skill `linear` a un plancher à
+1 point = 1 heure : un lot de 4 h 30 découpé en quatre lignes de 20 à 40
+minutes ressort à 6 points. Sur ces lots, c'est le prix retenu à la main qui
+fait foi, pas la somme des estimates.
+
+La méthode : chiffrer le temps tâche par tâche en minutes, convertir, puis
+**vérifier le €/h obtenu** contre l'historique de facturation
+(`~/.claude/skills/devis/references/historique-facturation.md`). Sur un client
+déjà servi, un écart de plus de 30 % avec sa dernière prestation se justifie
+ou se corrige — il ne se découvre pas dans la conversation.
+
 ## Le schéma YAML
 
 Format fait pour écrire vite : sections libres combinant texte, liste,

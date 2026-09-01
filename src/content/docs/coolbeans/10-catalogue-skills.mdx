@@ -3,7 +3,7 @@ client: "coolbeans"
 title: "Catalogue des skills"
 order: 10
 status: "final"
-updated: 2026-08-29
+updated: 2026-09-01
 description: "Tous les skills Claude Code disponibles : où ils vivent sur la machine, ce qu'ils font, et les mots qui les déclenchent."
 ---
 
@@ -47,7 +47,7 @@ indiqué autrement dans les tableaux vit dans `~/.claude/skills/`.
 
 | Emplacement                             | Contenu                                                                     | Portée                                | Sauvegarde                        |
 | --------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------- | --------------------------------- |
-| `~/.claude/skills/`                     | 141 skills, un dossier `<nom>/SKILL.md` par skill, avec ses `references/`   | Tous les projets, toutes les sessions | Repo `dotfiles` (`./backup.sh`)   |
+| `~/.claude/skills/`                     | 142 skills, un dossier `<nom>/SKILL.md` par skill, avec ses `references/`   | Tous les projets, toutes les sessions | Repo `dotfiles` (`./backup.sh`)   |
 | `~/dev/coolbeans-claude-skills/skills/` | Les skills publiés en open source : `linear`, `doc-client`                  | Source de vérité de ces deux skills   | Repo GitHub public                |
 | `~/.agents/skills/`                     | Skills partagés avec les autres agents de la machine : GSAP (8), Sanity (2) | Liés dans `~/.claude/skills/`         | Le lien seulement, pas le contenu |
 | `~/.claude/plugins/cache/`              | Les skills livrés par les plugins installés depuis leurs marketplaces       | Tous les projets                      | Liste des plugins dans `dotfiles` |
@@ -74,7 +74,17 @@ Coolbeans : ils lisent Linear, écrivent dans ce portail, envoient des mails.
 | `doc-client`        | Rédige et met à jour la doc d'un client dans ce portail, cette page comprise                       | « mets à jour la doc de X », « génère la doc de X », « doc de passation »                                        |
 | `linear`            | Crée des issues Linear rangées et qualifiées, et audite la structure du workspace                  | « linear », « crée une issue », « nouveau ticket », « audit linear »                                             |
 | `onboarding-client` | Démarre un projet client validé : environnement, repo, workspace portail, accès, mail d'onboarding | « on lance le projet de X », « démarre le projet », « l'acompte est réglé »                                      |
+| `shutdown`          | Rituel de fin de journée : point sur les retards, triage du mail, plan du lendemain daté dans Linear et posé au calendrier. Le vendredi, revue et planning de la semaine | « shutdown », « je ferme la journée », « planifie demain », « revue hebdo », « planifie la semaine »              |
 | `cloture`           | Fait le point sur une conversation avant de la fermer, jusqu'à zéro point en suspens               | « clôture », « fais le point », « questions en suspens », « je peux fermer ? »                                   |
+
+`shutdown` et `cloture` se ressemblent mais ne traitent pas le même objet :
+`shutdown` ferme une **journée**, `cloture` ferme une **conversation**. Leurs
+mots-clés sont disjoints exprès, et chacune nomme l'autre dans son en-tête pour
+lever l'ambiguïté quand la formulation est douteuse.
+
+`shutdown` ne crée jamais d'issue elle-même : elle passe la main à `linear`,
+dont elle lit aussi les barèmes de priorité et d'estimation plutôt que de les
+recopier. Elle n'envoie jamais de mail, seulement des brouillons.
 
 `linear` et `doc-client` sont des liens vers
 `~/dev/coolbeans-claude-skills/skills/` : les éditer met à jour le repo

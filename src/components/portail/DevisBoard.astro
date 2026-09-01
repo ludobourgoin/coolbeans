@@ -1,0 +1,233 @@
+---
+// Tableau du cockpit devis (spec 2026-09-01-cockpit-devis-tableau-crm-design.md).
+//
+// Un devis par <tbody> : la ligne du devis, et — quand le client a répondu —
+// une ligne de détail dépliable juste dessous. Grouper par <tbody> plutôt que
+// par paires de <tr> rend le tri trivial : on réordonne des blocs, et la
+// réponse ne se retrouve jamais orpheline sous un autre devis.
+//
+// Pas la classe `card` : `.doc-root .card` (doc.css) la bat en spécificité,
+// même piège que dans MessagerieBoard.astro et EmptyState.astro.
+import type { LigneDevis } from "../../lib/devis/cockpit";
+
+interface Props {
+  lignes: LigneDevis[];
+  /* Vrai quand Linear n'a pas pu être interrogé : la colonne Statut ne vaut
+     alors « — » pour personne en particulier, c'est la source qui manque. Le
+     dire évite de faire passer une panne pour dix rattachements oubliés. */
+  crmIndisponible: boolean;
+}
+const { lignes, crmIndisponible } = Astro.props;
+
+/* Tons de la colonne Statut, par type d'état Linear plutôt que par nom : les
+   noms du pipeline portent des emoji et ont déjà été renommés une fois. */
+const TON_ETAT: Record<string, string> = {
+  completed: "text-success",
+  canceled: "text-mute",
+  backlog: "text-mute",
+  unstarted: "text-mute",
+  started: "text-warning",
+};
+
+const COLONNES = [
+  { cle: "client", label: "Client", classe: "text-left" },
+  { cle: "devis", label: "Devis", classe: "text-left" },
+  { cle: "montant", label: "Montant", classe: "text-right" },
+  { cle: "statut", label: "Statut", classe: "text-left" },
+  { cle: "envoi", label: "Envoyé le", classe: "text-left" },
+  { cle: "date", label: "Date", classe: "text-left" },
+] as const;
+---
+
+{
+  lignes.length === 0 ? (
+    <p class="rounded-card border border-line bg-surface p-6x text-sm text-mute">
+      Aucun devis publié pour l'instant.
+    </p>
+  ) : (
+    <div class="overflow-x-auto rounded-card border border-line bg-surface">
+      <table class="w-full border-collapse text-[13px]" data-devis-board>
+        <thead>
+          <tr class="border-b border-line">
+            {COLONNES.map((c) => (
+              <th scope="col" class={`px-4 py-3 ${c.classe}`} data-col={c.cle} aria-sort="none">
+                <button
+                  type="button"
+                  class="label inline-flex items-center gap-1 hover:text-ink"
+                  data-tri={c.cle}
+                >
+                  {c.label}
+                  <span class="text-mute" data-fleche aria-hidden="true" />
+                </button>
+              </th>
+            ))}
+            <th scope="col" class="label px-4 py-3 text-right">Liens</th>
+          </tr>
+        </thead>
+        {lignes.map((l) => (
+          <tbody data-devis={l.slug}>
+            <tr class="border-b border-line">
+              <td class="px-4 py-3" data-cle="client" data-sort={l.client.toLowerCase()}>
+                {l.client}
+              </td>
+              <td class="px-4 py-3" data-cle="devis" data-sort={l.titre.toLowerCase()}>
+                <span class="font-bold">{l.titre}</span>
+                <span class="block text-[12px] text-mute">{l.objet}</span>
+                {l.reponse && (
+                  <button
+                    type="button"
+                    class="link mt-1 text-[12px]"
+                    data-detail-toggle
+                    aria-expanded="false"
+                  >
+                    {l.reponse.decision === "validation"
+                      ? "Proposition validée"
+                      : "Question / remarque"}{" "}
+                    ▾
+                  </button>
+                )}
+              </td>
+              <td
+                class="px-4 py-3 text-right font-mono tabular-nums"
+                data-cle="montant"
+                data-sort={l.montantTri}
+              >
+                {l.montant}
+              </td>
+              <td class="px-4 py-3" data-cle="statut" data-sort={l.affaire?.position ?? ""}>
+                {l.affaire ? (
+                  <span class={`text-[12px] font-semibold ${TON_ETAT[l.affaire.type] ?? ""}`}>
+                    {l.affaire.etat}
+                  </span>
+                ) : (
+                  <span
+                    class="text-[12px] text-mute"
+                    title={
+                      crmIndisponible
+                        ? "Pipeline Linear injoignable"
+                        : "Aucune affaire CRM rattachée à ce devis"
+                    }
+                  >
+                    —
+                  </span>
+                )}
+              </td>
+              <td
+                class="px-4 py-3 text-mute"
+                data-cle="envoi"
+                data-sort={l.envoi ? l.envoi.date.getTime() : ""}
+              >
+                {l.envoiLisible ? (
+                  <span title={`À ${l.envoi!.destinataire}`}>{l.envoiLisible}</span>
+                ) : (
+                  "—"
+                )}
+              </td>
+              <td
+                class="px-4 py-3 font-mono text-mute"
+                data-cle="date"
+                data-sort={l.date.getTime()}
+              >
+                {l.dateLisible}
+              </td>
+              <td class="whitespace-nowrap px-4 py-3 text-right">
+                <a class="link" href={l.urlPublique} target="_blank" rel="noopener">Devis&nbsp;↗</a>
+                {l.urlProjet && (
+                  <a class="link ml-3" href={l.urlProjet} target="_blank" rel="noopener">
+                    Projet&nbsp;↗
+                  </a>
+                )}
+                {l.urlAffaire && (
+                  <a class="link ml-3" href={l.urlAffaire} target="_blank" rel="noopener">
+                    Affaire&nbsp;↗
+                  </a>
+                )}
+              </td>
+            </tr>
+            {l.reponse && (
+              <tr class="border-b border-line" data-detail hidden>
+                <td colspan="7" class="bg-surface-raise px-4 py-3">
+                  <p class="text-[12px] text-mute">
+                    {l.reponse.prenom} {l.reponse.nom} ({l.reponse.email}) — {l.reponseLisible}
+                  </p>
+                  {l.reponse.message && (
+                    <p class="mt-2 max-w-[70ch] whitespace-pre-line">{l.reponse.message}</p>
+                  )}
+                  {(l.reponse.raisonSociale || l.reponse.adresse) && (
+                    <p class="mt-2 text-[12px] text-mute">
+                      Facturation : {[
+                        l.reponse.raisonSociale,
+                        l.reponse.siren && `SIREN ${l.reponse.siren}`,
+                        l.reponse.adresse,
+                        l.reponse.tva && `TVA ${l.reponse.tva}`,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
+                  )}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        ))}
+      </table>
+    </div>
+  )
+}
+
+<script>
+  /* Tri au clic, en amélioration progressive : le serveur rend déjà le
+     tableau trié par date décroissante, ce script ne fait que le réordonner.
+     Sans JavaScript, la page reste lisible et ordonnée.
+
+     Chaque devis est un <tbody> : on réordonne des blocs, jamais des <tr>,
+     donc la ligne de détail suit toujours son devis. */
+  import { comparerTri, type Sens } from "../../lib/devis/cockpit";
+
+  const table = document.querySelector<HTMLTableElement>("[data-devis-board]");
+  if (table) {
+    const valeur = (bloc: HTMLElement, cle: string): string =>
+      bloc.querySelector<HTMLElement>(`[data-cle="${cle}"]`)?.dataset.sort ?? "";
+
+    let cleActive = "date";
+    let sens: Sens = "desc";
+
+    const appliquer = () => {
+      const blocs = [...table.querySelectorAll<HTMLElement>("tbody[data-devis]")];
+      blocs
+        .sort((a, b) => comparerTri(valeur(a, cleActive), valeur(b, cleActive), sens))
+        .forEach((bloc) => table.appendChild(bloc));
+
+      table.querySelectorAll<HTMLElement>("th[data-col]").forEach((th) => {
+        const actif = th.dataset.col === cleActive;
+        th.setAttribute("aria-sort", actif ? (sens === "asc" ? "ascending" : "descending") : "none");
+        const fleche = th.querySelector<HTMLElement>("[data-fleche]");
+        if (fleche) fleche.textContent = actif ? (sens === "asc" ? "▲" : "▼") : "";
+      });
+    };
+
+    table.querySelectorAll<HTMLButtonElement>("[data-tri]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const cle = btn.dataset.tri!;
+        /* Re-cliquer la colonne active inverse le sens ; changer de colonne
+           repart en ascendant, sauf sur les dates où le récent d'abord est
+           l'attente par défaut. */
+        if (cle === cleActive) sens = sens === "asc" ? "desc" : "asc";
+        else sens = cle === "date" || cle === "envoi" ? "desc" : "asc";
+        cleActive = cle;
+        appliquer();
+      });
+    });
+
+    table.querySelectorAll<HTMLButtonElement>("[data-detail-toggle]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const detail = btn.closest("tbody")?.querySelector<HTMLElement>("[data-detail]");
+        if (!detail) return;
+        detail.hidden = !detail.hidden;
+        btn.setAttribute("aria-expanded", String(!detail.hidden));
+      });
+    });
+
+    appliquer();
+  }
+</script>

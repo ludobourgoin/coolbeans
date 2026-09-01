@@ -1,0 +1,72 @@
+titre: Miharu x Coolbeans
+objet: Plaquette commerciale sur les landing pages Agen
+date: 2026-07-23
+contact: Adeline
+
+linear:
+  projet: https://linear.app/coolbeans-hq/project/plaquette-commerciale-sur-les-lp-agen-c8ce3f2521bd
+  affaire: https://linear.app/coolbeans-hq/issue/CRM-13
+
+sections:
+  - titre: Objectif
+    texte: >-
+      Rendre la plaquette commerciale 2026 téléchargeable depuis les deux
+      landing pages Agen, la classique et la Congrès, pour que les visiteurs
+      repartent avec le document plutôt qu'avec une intention.
+    note: >-
+      Le fichier fourni fait 44 Mo en qualité print : il ne peut pas être mis
+      en ligne tel quel, sa compression fait partie de la prestation.
+
+  - titre: Ce qui est fait
+    liste:
+      - Optimisation de la plaquette pour le web, sans perte de lisibilité à l'écran
+      - Création de la section d'appel au téléchargement, en composant réutilisable sur les styles existants du site
+      - Intégration sur les deux landing pages, classique et Congrès
+      - texte: Positionnement au choix, sous « votre terrain de jeu » ou sous les cartes
+        tooltip: >-
+          Jamais sur les cartes elles-mêmes, comme sur la LP générale :
+          Adeline a explicitement écarté cette option.
+      - Adaptation sur ordinateur, tablette et téléphone
+      - Attribut dédié sur le bouton, pour préparer le suivi Google Tag Manager
+      - Recette, mise en ligne et un aller-retour de validation
+
+  - titre: Budget
+    budget:
+      lignes:
+        - label: Optimisation de la plaquette pour le web
+          prix: 60
+        - label: Section de téléchargement, en composant réutilisable
+          prix: 140
+        - label: Intégration sur les deux landing pages et adaptation responsive
+          prix: 100
+      mention: HT
+      reglement: 100 % à la livraison.
+    note: >-
+      Délai annoncé : 3 jours ouvrés après le feu vert.
+
+  - titre: Ce qu'il me faut
+    liste:
+      - La plaquette commerciale 2026 en fichier source
+      - Le choix de l'emplacement du bouton sur les deux pages
+
+notes:
+  - tone: warning
+    texte: >-
+      **Reconstitution a posteriori, écrite le 2026-08-31.** Cette page n'a
+      jamais été envoyée. La proposition d'origine est partie le 2026-07-23
+      par mail, depuis l'adresse trigger.fr, et aucun devis Coolbeans n'a
+      existé pour ce lot. La page sert la traçabilité interne des
+      propositions faites au compte, pas la relation client.
+  - tone: error
+    texte: >-
+      **Perdue sur le prix, close le 2026-09-01.** Adeline répond le jour même : « les 300 € je ne suis
+      pas sûre qu'on les ait pour ça quand je vois ce qu'on produit comme
+      leads et ce qu'on transforme sur la LP Agen », et renvoie la validation
+      au retour de Natalie le 3 août. Aucune nouvelle depuis. Vérifié le
+      2026-08-31 : les deux pages Agen ne portent toujours aucun lien de
+      plaquette. Aucune relance n'a jamais été envoyée entre les deux dates.
+  - texte: >-
+      Le lot représente environ 2 h 50 de travail. À 300 € HT sans marge
+      revendeur, il se situe à ~106 €/h, soit l'équivalent de 740 € par jour.
+      C'est le taux de référence du compte, retrouvé à l'identique sur le
+      chiffrage du 2026-08-31.

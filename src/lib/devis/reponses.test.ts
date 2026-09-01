@@ -3,65 +3,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("cloudflare:workers", () => ({ env: {} }));
 
 import {
+  derniereReponse,
   enregistrerReponse,
   listerReponses,
-  type D1Like,
-  type ReponseDevis,
+  marquerTacheLinear,
+  tacheExistante,
 } from "./reponses";
-
-/* Mock D1 mémoire minimal : ne comprend que les deux requêtes du module
-   (INSERT paramétré, SELECT trié). Même esprit que le mock KV de
-   ../chiffrage/store.test.ts. */
-class D1Mock implements D1Like {
-  rows: ReponseDevis[] = [];
-  private prochainId = 1;
-  private horloge = 0;
-
-  prepare(sql: string) {
-    const all = async <T>() => {
-      if (!/^\s*SELECT/i.test(sql)) throw new Error(`SELECT attendu, reçu : ${sql}`);
-      /* Mime le GROUP BY slug + MAX(id) du vrai SQL : une ligne par slug,
-         celle du plus grand id, triées par date décroissante. */
-      const parSlug = new Map<string, ReponseDevis>();
-      for (const r of this.rows) {
-        const actuel = parSlug.get(r.slug);
-        if (!actuel || r.id > actuel.id) parSlug.set(r.slug, r);
-      }
-      const tri = [...parSlug.values()].sort(
-        (a, b) => b.createdAt.localeCompare(a.createdAt) || b.id - a.id,
-      );
-      return { results: tri as T[] };
-    };
-    return {
-      all,
-      bind: (...values: unknown[]) => ({
-        all,
-        run: async () => {
-          if (!/^\s*INSERT/i.test(sql)) throw new Error(`INSERT attendu, reçu : ${sql}`);
-          const [slug, decision, message, prenom, nom, email] = values as [
-            string,
-            "validation" | "question",
-            string | null,
-            string,
-            string,
-            string,
-          ];
-          this.rows.push({
-            id: this.prochainId++,
-            slug,
-            decision,
-            message,
-            prenom,
-            nom,
-            email,
-            createdAt: new Date(1_000_000 * this.horloge++).toISOString(),
-          });
-          return {};
-        },
-      }),
-    };
-  }
-}
+import { D1Mock } from "./reponses.mock";
 
 describe("réponses devis (D1)", () => {
   let d1: D1Mock;
@@ -95,6 +43,50 @@ describe("réponses devis (D1)", () => {
     expect(typeof reponses[0].createdAt).toBe("string");
   });
 
+  it("coordonnées de facturation persistées, et absentes quand non fournies", async () => {
+    await enregistrerReponse(
+      {
+        slug: "revolutions-douces/salon-2026-5336",
+        decision: "validation",
+        message: null,
+        prenom: "Sam",
+        nom: "Klingelschmitt",
+        email: "sam@example.org",
+        raisonSociale: "Rév'olutions Douces",
+        siren: "123456789",
+        adresse: "1 rue du Salon, 34300 Agde",
+        tva: "FR00123456789",
+      },
+      d1,
+    );
+    await enregistrerReponse(
+      {
+        slug: "particulier",
+        decision: "question",
+        message: null,
+        prenom: "A",
+        nom: "B",
+        email: "a@b.c",
+      },
+      d1,
+    );
+    const parSlug = new Map((await listerReponses(d1)).map((r) => [r.slug, r]));
+    expect(parSlug.get("revolutions-douces/salon-2026-5336")).toMatchObject({
+      raisonSociale: "Rév'olutions Douces",
+      siren: "123456789",
+      adresse: "1 rue du Salon, 34300 Agde",
+      tva: "FR00123456789",
+    });
+    /* Un particulier n'a ni raison sociale ni SIREN : les colonnes doivent
+       valoir null, pas une chaîne vide qui s'afficherait comme une donnée. */
+    expect(parSlug.get("particulier")).toMatchObject({
+      raisonSociale: null,
+      siren: null,
+      adresse: null,
+      tva: null,
+    });
+  });
+
   it("liste triée de la plus récente à la plus ancienne", async () => {
     const base = {
       decision: "question" as const,
@@ -125,5 +117,27 @@ describe("réponses devis (D1)", () => {
       d1,
     );
     expect((await listerReponses(d1))[0].message).toBeNull();
+  });
+
+  it("derniereReponse rend la ligne qu'on vient d'écrire, undefined sinon", async () => {
+    expect(await derniereReponse("cafa", d1)).toBeUndefined();
+    const base = { prenom: "S", nom: "S", email: "s@s.fr", decision: "question" as const };
+    await enregistrerReponse({ ...base, slug: "cafa", message: "1ère" }, d1);
+    await enregistrerReponse({ ...base, slug: "cafa", message: "2ème" }, d1);
+    expect((await derniereReponse("cafa", d1))?.message).toBe("2ème");
+  });
+
+  it("tacheExistante : null tant qu'aucune tâche n'est accrochée", async () => {
+    await enregistrerReponse(
+      { slug: "cafa", decision: "validation", message: null, prenom: "S", nom: "S", email: "s@s.fr" },
+      d1,
+    );
+    expect(await tacheExistante("cafa", d1)).toBeNull();
+    const id = (await derniereReponse("cafa", d1))!.id;
+    await marquerTacheLinear(id, "issue-uuid", d1);
+    expect(await tacheExistante("cafa", d1)).toBe("issue-uuid");
+    /* La tâche est portée par le devis, pas par la réponse : une seconde
+       soumission ne doit pas repartir de zéro. */
+    expect(await tacheExistante("autre-devis", d1)).toBeNull();
   });
 });

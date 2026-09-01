@@ -13,7 +13,10 @@ import {
   renderTransactionnel,
   titreSection,
 } from "../../emails/transactionnel";
-import { enregistrerReponse } from "../../lib/devis/reponses";
+import { getEntry } from "astro:content";
+import { montantAffiche, budgetDevis } from "../../lib/devis";
+import { derniereReponse, enregistrerReponse } from "../../lib/devis/reponses";
+import { declencherSignature, type ResultatSignature } from "../../lib/devis/signature";
 
 export const prerender = false;
 
@@ -95,6 +98,88 @@ export const POST: APIRoute = async ({ request }) => {
   // seul endroit où il en reste une preuve horodatée.
   const traceConsentement = "Accord&eacute; via le formulaire du devis";
 
+  // D1 d'abord : le cockpit /espace/devis lit cette table, et la tâche de
+  // facturation a besoin de l'id de la ligne écrite. Un échec D1 ne bloque
+  // jamais la notification — le mail reste la garantie de délivrance.
+  let reponseId: number | undefined;
+  try {
+    await enregistrerReponse({
+      slug,
+      decision: reponse === "validation" ? "validation" : "question",
+      message: champ(message) ?? null,
+      prenom: prenomClient,
+      nom: nomClient,
+      email: emailClient,
+      raisonSociale: champ(raisonSociale) ?? null,
+      siren: champ(siren) ?? null,
+      adresse: champ(adresse) ?? null,
+      tva: champ(tva) ?? null,
+    });
+    reponseId = (await derniereReponse(slug))?.id;
+  } catch (err) {
+    console.error("devis-reponse: écriture D1 échouée", err);
+  }
+
+  /* Validation : l'affaire CRM passe en « Signée » et reçoit sa sous-tâche de
+     facturation. Rien ne part vers le client ici — la facture d'acompte
+     s'émet dans Tiime, à la main. Toute panne de ce bloc est journalisée et
+     ignorée : elle ne doit pas priver Ludo de la notification. */
+  let tache: ResultatSignature | undefined;
+  if (reponse === "validation" && reponseId !== undefined) {
+    try {
+      const apiKey = env.LINEAR_API_KEY;
+      if (!apiKey) {
+        console.error("devis-reponse: LINEAR_API_KEY absent de cet environnement");
+      } else {
+        const entry = await getEntry("devis", slug);
+        if (!entry) {
+          console.error(`devis-reponse: devis ${slug} introuvable dans la collection`);
+        } else {
+          tache = await declencherSignature(
+            apiKey,
+            {
+              slug,
+              titre: entry.data.titre,
+              objet: entry.data.objet,
+              affaire: entry.data.linear?.affaire,
+              total: montantAffiche(entry.data),
+              reglement: budgetDevis(entry.data)?.reglement,
+              client: {
+                prenom: prenomClient,
+                nom: nomClient,
+                email: emailClient,
+                raisonSociale: champ(raisonSociale) ?? null,
+                siren: champ(siren) ?? null,
+                adresse: champ(adresse) ?? null,
+                tva: champ(tva) ?? null,
+              },
+            },
+            reponseId,
+          );
+          console.log(
+            JSON.stringify({ event: "devis_signature", slug, statut: tache.statut }),
+          );
+        }
+      }
+    } catch (err) {
+      console.error("devis-reponse: déclenchement de la signature échoué", err);
+    }
+  }
+
+  /* Ligne « tâche » du mail : elle dit à Ludo si la suite est prise en charge
+     ou s'il doit ouvrir Linear à la main. Un devis sans affaire rattachée est
+     le cas qu'on veut voir passer — c'est un oubli de rattachement. */
+  const lignesTache: Array<[string, string | undefined]> =
+    tache?.statut === "cree"
+      ? [["Facturation", `<a href="${tache.tache.url}">${esc(tache.tache.identifier)}</a> créée dans Linear`]]
+      : tache?.statut === "deja_traite"
+        ? [["Facturation", "Tâche déjà créée pour ce devis (soumission répétée)"]]
+        : tache?.statut === "sans_affaire"
+          ? [["Facturation", "Aucune affaire CRM rattachée au devis — tâche à créer à la main"]]
+          : tache?.statut === "affaire_introuvable"
+            ? [["Facturation", `Affaire CRM-${tache.numero} introuvable dans Linear`]]
+            : [];
+
   const html = renderTransactionnel({
     preheader: `${objetReponse} — devis ${esc(slug)}`,
     kicker: `Devis · ${esc(slug)}`,
@@ -109,6 +194,7 @@ export const POST: APIRoute = async ({ request }) => {
         ["Adresse", champ(adresse) && esc(champ(adresse)!)],
         ["TVA intracom.", champ(tva) && esc(champ(tva)!)],
         ["Consentement", traceConsentement],
+        ...lignesTache,
       ]),
       champ(message)
         ? titreSection("Message du client") +
@@ -125,21 +211,6 @@ export const POST: APIRoute = async ({ request }) => {
     },
     piedContexte: "R&eacute;ponse re&ccedil;ue via la page publique du devis.",
   });
-
-  // D1 d'abord : le cockpit /espace/devis lit cette table. Un échec D1 ne
-  // bloque jamais la notification — le mail reste la garantie de délivrance.
-  try {
-    await enregistrerReponse({
-      slug,
-      decision: reponse === "validation" ? "validation" : "question",
-      message: champ(message) ?? null,
-      prenom: prenomClient,
-      nom: nomClient,
-      email: emailClient,
-    });
-  } catch (err) {
-    console.error("devis-reponse: écriture D1 échouée", err);
-  }
 
   try {
     const resend = new Resend(env.RESEND_API_KEY);
@@ -160,6 +231,9 @@ export const POST: APIRoute = async ({ request }) => {
         champ(adresse) && `Adresse : ${champ(adresse)}`,
         champ(tva) && `TVA intracommunautaire : ${champ(tva)}`,
         "Consentement : accordé via le formulaire du devis",
+        tache?.statut === "cree" && `Facturation : ${tache.tache.identifier} — ${tache.tache.url}`,
+        tache?.statut === "sans_affaire" &&
+          "Facturation : aucune affaire CRM rattachée au devis, tâche à créer à la main",
         "",
         champ(message) ?? "(pas de message)",
       ]
