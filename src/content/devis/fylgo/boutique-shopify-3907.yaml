@@ -7,7 +7,9 @@
 titre: Fylgo x Coolbeans
 objet: Boutique Shopify Fylgo
 date: 2026-03-24
-contact: Paul
+# Le contact client est Fabien ; le devis lui-même est parti chez Paul Lévy,
+# qui portait les échanges au démarrage depuis son adresse Talenvia.
+contact: Fabien
 linear:
   projet: Boutique Shopify
   affaire: https://linear.app/coolbeans-hq/issue/CRM-28
