@@ -50,7 +50,8 @@ vide l'échelle de son sens. Le workspace est à 97 sur 335, soit 29 %.
 | Actions CRM | Un bloc unique de 1 h par jour, jamais d'estimate en points |
 | Estimates manquants | Posés d'office, sauf sur les projets en statut Proposal |
 | Écriture Linear | Aucune écriture sans validation en lot du récapitulatif |
-| Écriture calendrier | Un créneau par issue, sur un agenda Google dédié que la skill possède seule |
+| Écriture calendrier | Un créneau par issue, sur un agenda Google dédié `Linear` que la skill possède seule |
+| Créneaux de rituel | `Shutdown` 18h-18h30 tous les jours et `Weekly` vendredi 18h30-19h30, sur l'agenda Coolbeans, créés une fois par la skill après validation |
 | Weekly planning | Répartition jour par jour sur lundi à vendredi |
 | Weekly review | Bilan de la semaine, projets et jalons en danger, lot d'hygiène, updates de projet |
 | Mail | Lecture et brouillon seulement. Aucun envoi, jamais |
@@ -146,11 +147,13 @@ capacité d'un jour
   - 1 h de bloc CRM (si au moins une action CRM est due ce jour-là)
 ```
 
-Une journée sans rendez-vous se planifie donc à 6 h de travail estimé.
+Le créneau de rituel de la section 7.1 étant un rendez-vous comme un autre, une
+journée sans aucun autre rendez-vous se planifie à **5,5 h** de travail estimé,
+et un vendredi à **4,5 h**.
 
-Ce chiffre est cohérent avec `estimation.md`, qui pose qu'une journée facturée
+Ce chiffre reste cohérent avec `estimation.md`, qui pose qu'une journée facturée
 vaut environ 7 h effectives : la base est à 8 h, la marge d'imprévu ramène à 7 h,
-et le bloc CRM prélève la dernière heure sur du travail non facturable.
+puis le bloc CRM et le rituel prélèvent 1,5 h sur du travail non facturable.
 
 **Sources calendrier.** Notion Calendar est un client sans API : il affiche des
 agendas Google. La skill lit donc Google Calendar, ce qui revient au même. Les
@@ -158,15 +161,15 @@ agendas retenus pour le calcul :
 
 | Agenda | Rôle dans le calcul |
 |---|---|
-| `ludo@coolbeans.cc` (Coolbeans) | Rendez-vous réels, déduits de la capacité |
+| `ludo@coolbeans.cc` (Coolbeans) | Rendez-vous réels **et créneaux de rituel**, déduits de la capacité |
 | `Body` | Indisponibilité, déduite de la capacité si le créneau est daté |
 | Import Garmin | Ignoré |
-| Agenda dédié « Plan » (section 7) | **Toujours exclu**, sous peine de circularité |
+| Agenda dédié « Linear » (section 7) | **Toujours exclu**, sous peine de circularité |
 
 **Garde-fou de confiance.** Si l'agenda du jour visé est vide, la skill le dit
-au lieu de conclure à 6 h disponibles. L'agenda contenait 2 événements sur les
+au lieu de conclure à 5,5 h disponibles. L'agenda contenait 2 événements sur les
 7 jours suivant le 2026-09-01, ce qui ne reflète pas une semaine de travail
-réelle. Formulation attendue : « aucun rendez-vous trouvé demain, je planifie 6 h ;
+réelle. Formulation attendue : « aucun rendez-vous trouvé demain, je planifie 5,5 h ;
 corrige si ton agenda n'est pas à jour ».
 
 **Événements qui sont des tâches.** Un événement journée entière sans invité
@@ -189,19 +192,59 @@ commercial.
 
 ## 7. Écriture dans le calendrier
 
+Deux natures d'objets, deux agendas, et la distinction est structurante.
+
+| | Créneaux de rituel | Créneaux d'issues |
+|---|---|---|
+| Quoi | Le shutdown quotidien et le weekly | Le travail planifié, une issue par créneau |
+| Agenda | `ludo@coolbeans.cc` (Coolbeans) | Agenda dédié `Linear` |
+| Nature | De vrais rendez-vous avec soi-même | Des blocs jetables |
+| Cycle de vie | Créés une fois, jamais régénérés | Supprimés et recréés à chaque passage |
+| Effet sur la capacité | Déduits, comme tout rendez-vous | Aucun, l'agenda est exclu du calcul |
+
+### 7.1 Les deux créneaux de rituel
+
+Deux événements récurrents sur l'agenda `ludo@coolbeans.cc` :
+
+| Événement | Récurrence | Créneau |
+|---|---|---|
+| `Shutdown` | Tous les jours | 18 h 00 à 18 h 30 |
+| `Weekly` | Tous les vendredis | 18 h 30 à 19 h 30 |
+
+Le weekly s'enchaîne immédiatement après le shutdown du vendredi, dans l'ordre
+prévu par le spec : le flux quotidien tourne d'abord, puis la revue et le
+planning de la semaine.
+
+**Création.** Au premier lancement, la skill détecte l'absence de ces
+récurrences, montre exactement ce qu'elle va créer, et écrit après accord
+explicite de Ludo. C'est la **seule écriture jamais autorisée** sur l'agenda
+Coolbeans. Elle n'a lieu qu'une fois : les récurrences ne sont ensuite ni
+régénérées, ni déplacées, ni supprimées par la skill. Si Ludo les déplace à la
+main, la skill respecte la nouvelle heure sans commentaire.
+
+**Effet sur la capacité.** Ces créneaux vivant sur l'agenda de référence, ils
+sont déduits par le calcul de la section 6 sans traitement particulier :
+
+| Jour | Calcul | Capacité |
+|---|---|---|
+| Jour normal | 8 − 1 marge − 1 CRM − 0,5 shutdown | 5,5 h |
+| Vendredi | 8 − 1 marge − 1 CRM − 0,5 shutdown − 1 weekly | 4,5 h |
+
+### 7.2 L'agenda dédié aux créneaux d'issues
+
 Le plan validé est matérialisé en créneaux Google Calendar, pour être visible
 sur tous les appareils via Notion Calendar.
 
 **Un agenda dédié, possédé par la skill.** Un agenda Google séparé, créé une
-fois, nommé `Plan`. La skill y a tous les droits et n'écrit nulle part ailleurs.
+fois, nommé `Linear`. La skill y a tous les droits et n'écrit nulle part ailleurs.
 Trois raisons, dont une est une contrainte de correction et pas de confort :
 
 1. **Circularité.** La capacité se calcule comme 8 h moins les rendez-vous. Si
    les blocs de travail étaient écrits sur `ludo@coolbeans.cc`, le passage
    suivant les relirait comme des rendez-vous et conclurait à 0 h disponible.
-   L'agenda `Plan` est exclu du calcul (section 6).
+   L'agenda `Linear` est exclu du calcul (section 6).
 2. **Régénération sans risque.** À chaque passage, la skill supprime ses
-   créneaux futurs sur `Plan` et les recrée depuis le plan validé. Aucun vrai
+   créneaux futurs sur `Linear` et les recrée depuis le plan validé. Aucun vrai
    rendez-vous ne peut être touché par cette opération.
 3. **Réversibilité.** Décocher l'agenda dans Notion Calendar suffit à faire
    disparaître tout le dispositif, sans rien nettoyer.
@@ -222,7 +265,7 @@ dans les trous laissés par les vrais rendez-vous, à partir de 9 h.
 supprimés et recréés. Le passé n'est jamais touché : c'est lui qui sert de
 journal du plan pour le bilan hebdomadaire (section 9).
 
-**Garde-fou.** Si l'agenda `Plan` est introuvable, la skill s'arrête sur ce
+**Garde-fou.** Si l'agenda `Linear` est introuvable, la skill s'arrête sur ce
 point et demande sa création. Elle ne se rabat jamais sur l'agenda principal.
 
 ## 8. Flux quotidien, le soir
@@ -286,7 +329,7 @@ Cas à traiter explicitement :
 - **Les P1 saturent déjà la capacité** : le dire, proposer lesquelles décaler,
   ne pas trancher seul.
 - **La capacité n'est pas remplie** : proposer des candidats du rang 5, sans
-  forcer. Une journée à 4 h planifiées vaut mieux qu'une journée à 6 h de
+  forcer. Une journée à 4 h planifiées vaut mieux qu'une journée à 5,5 h de
   remplissage arbitraire.
 - **Une issue du plan n'a pas d'estimate** : la poser d'office selon la règle
   de la section 6, ou la signaler si le projet est en Proposal.
@@ -307,7 +350,8 @@ validations successives.
 
 ### 8.6 Écriture puis clôture
 
-Écriture dans Linear, puis régénération des créneaux sur l'agenda `Plan`.
+Écriture des champs dans Linear, puis régénération des créneaux sur l'agenda
+`Linear`.
 
 La skill affiche ensuite trois lignes fixes, que Ludo coche lui-même :
 
@@ -327,7 +371,7 @@ Il se déroule en deux temps : on regarde en arrière, puis on pose la semaine.
 
 **Bilan.** Trois chiffres et leur écart :
 
-- Heures planifiées : somme des durées des créneaux passés de l'agenda `Plan`
+- Heures planifiées : somme des durées des créneaux passés de l'agenda `Linear`
   sur les 7 derniers jours. L'agenda dédié sert de journal du plan, aucun
   fichier d'état supplémentaire n'est nécessaire. Lors de la première semaine,
   l'agenda est vide : la skill annonce le bilan comme non calculable plutôt que
@@ -382,7 +426,7 @@ semaine, et les issues retenues sont réparties dans les cinq journées :
   affiché en fin de tableau, avec son volume en heures.
 
 Le résultat est écrit en `dueDate` sur chaque issue, et matérialisé en créneaux
-sur l'agenda `Plan` pour les cinq jours (section 7). C'est ce qui permet de
+sur l'agenda `Linear` pour les cinq jours (section 7). C'est ce qui permet de
 prendre de l'avance le week-end : le lundi et le mardi sont déjà lisibles le
 vendredi soir.
 
@@ -453,7 +497,8 @@ tête de fichier de la lancer sous `sonnet` plutôt que sous un modèle premium.
   lignes de clôture non vérifiées.
 - L'envoi de tout mail.
 - La création ou la modification de projets Linear.
-- L'écriture sur un autre agenda que `Plan`.
+- L'écriture sur un autre agenda que `Linear`, à la seule exception de la
+  création initiale des deux récurrences de rituel (section 7.1).
 - La désactivation des cycles sur les 16 teams : geste de configuration à la
   main de Ludo.
 - Toute publication ou déploiement.
@@ -475,7 +520,10 @@ tête de fichier de la lancer sous `sonnet` plutôt que sous un modèle premium.
 
 Ces trois gestes conditionnent le premier passage de la skill :
 
-1. Créer l'agenda Google `Plan` (Google Calendar, « Créer un agenda »), puis
-   l'afficher dans Notion Calendar.
-2. Décider du sort des cycles sur les 16 teams concernées.
-3. Valider la création de la vue Linear « Aujourd'hui ».
+1. Créer l'agenda Google `Linear` (Google Calendar, « Créer un agenda »), puis
+   l'afficher dans Notion Calendar. La skill ne peut pas créer un agenda, elle
+   ne peut qu'y écrire.
+2. Valider, au premier lancement, la création des deux récurrences de rituel sur
+   l'agenda Coolbeans (section 7.1).
+3. Décider du sort des cycles sur les 16 teams concernées.
+4. Valider la création de la vue Linear « Aujourd'hui ».
