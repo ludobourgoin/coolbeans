@@ -6,6 +6,7 @@ version: 2
 versionDe: unlockbreath/plateforme-3271
 linear:
   projet: Plateforme UnlockBreath
+  affaire: https://linear.app/coolbeans-hq/issue/CRM-24
 
 sections:
   - titre: Pourquoi cet avenant

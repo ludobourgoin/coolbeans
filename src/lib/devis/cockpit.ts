@@ -70,3 +70,39 @@ export function nomClient(slug: string, registre: Map<string, string>): string {
     segment.replace(/-/g, " ").replace(/\b\p{Letter}/gu, (c) => c.toUpperCase())
   );
 }
+
+export interface EntreeVersionnee {
+  id: string;
+  data: { version: number; versionDe?: string };
+}
+
+/**
+ * Une ligne par devis, pas une par version.
+ *
+ * Une révision de périmètre n'est pas un devis neuf : les versions vivent sous
+ * l'URL de la V1, en onglets, et les suivantes n'ont pas de page à elles. Les
+ * lister séparément dans le cockpit affichait donc un lien « Devis ↗ » qui
+ * tombait en 404, et comptait deux affaires là où il n'y en a qu'une.
+ *
+ * Le représentant du groupe est la version la plus haute — celle que le client
+ * voit par défaut en ouvrant le lien. L'URL et les réponses D1, elles, restent
+ * accrochées à l'id de la V1 : c'est lui que le formulaire public renvoie.
+ */
+export function grouperVersions<T extends EntreeVersionnee>(
+  entrees: T[],
+): Array<{ baseId: string; representant: T }> {
+  const groupes = new Map<string, T[]>();
+  const ids = new Set(entrees.map((e) => e.id));
+  for (const e of entrees) {
+    /* `versionDe` qui ne pointe sur rien (V1 supprimée, coquille de saisie) :
+       l'entrée fait groupe à elle seule plutôt que de disparaître du cockpit. */
+    const base = e.data.versionDe && ids.has(e.data.versionDe) ? e.data.versionDe : e.id;
+    const groupe = groupes.get(base);
+    if (groupe) groupe.push(e);
+    else groupes.set(base, [e]);
+  }
+  return [...groupes].map(([baseId, membres]) => ({
+    baseId,
+    representant: membres.reduce((haut, e) => (e.data.version > haut.data.version ? e : haut)),
+  }));
+}

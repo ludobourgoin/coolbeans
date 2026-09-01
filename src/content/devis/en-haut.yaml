@@ -2,6 +2,8 @@ titre: En Haut x Coolbeans
 objet: Refonte du site Internet d'En Haut
 date: 2026-08-05
 contact: Simon
+linear:
+  affaire: https://linear.app/coolbeans-hq/issue/CRM-22
 
 sections:
   - titre: Objectif

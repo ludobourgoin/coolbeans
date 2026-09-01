@@ -5,7 +5,7 @@ import EspaceLayout from "../../../layouts/EspaceLayout.astro";
 import { getCollection } from "astro:content";
 import { env } from "cloudflare:workers";
 import DevisBoard from "../../../components/portail/DevisBoard.astro";
-import { nomClient, type LigneDevis } from "../../../lib/devis/cockpit";
+import { grouperVersions, nomClient, type LigneDevis } from "../../../lib/devis/cockpit";
 import { getPortalContext } from "../../../lib/portail/context";
 import { isAdmin } from "../../../lib/portail/metadata";
 import { listerReponses, type ReponseDevis } from "../../../lib/devis/reponses";
@@ -19,9 +19,11 @@ import { dateLongue, montantAffiche, montantTri } from "../../../lib/devis";
 const { meta } = await getPortalContext(Astro);
 if (!isAdmin(meta)) return Astro.redirect("/espace");
 
-const devis = (await getCollection("devis")).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-);
+/* Une ligne par devis, pas par version : les versions successives d'un même
+   devis partagent l'URL de la V1 et n'ont pas de page à elles. */
+const devis = grouperVersions(await getCollection("devis"))
+  .map(({ baseId, representant }) => ({ baseId, entree: representant }))
+  .sort((a, b) => b.entree.data.date.getTime() - a.entree.data.date.getTime());
 
 /* Gardé : si la migration devis_reponses n'est pas encore appliquée sur cet
    environnement, le cockpit s'affiche sans les réponses plutôt que de tomber
@@ -41,7 +43,9 @@ const parSlug = new Map(reponses.map((r) => [r.slug, r]));
    même posture que la lecture D1 ci-dessus. */
 const numeros = [
   ...new Set(
-    devis.map((d) => numeroAffaire(d.data.linear?.affaire)).filter((n): n is number => n !== null),
+    devis
+      .map(({ entree }) => numeroAffaire(entree.data.linear?.affaire))
+      .filter((n): n is number => n !== null),
   ),
 ];
 let affaires = new Map<number, EtatAffaire>();
@@ -66,12 +70,14 @@ const nomsClients = new Map(clients.map((c) => [c.id, c.data.nom]));
 const dateReponse = (createdAt: string) =>
   dateLongue(new Date(createdAt.replace(" ", "T") + "Z"));
 
-const lignes: LigneDevis[] = devis.map((d) => {
-  const reponse = parSlug.get(d.id);
+const lignes: LigneDevis[] = devis.map(({ baseId, entree: d }) => {
+  /* Les réponses sont indexées par le slug que renvoie le formulaire public,
+     donc celui de la V1 — jamais celui d'une version. */
+  const reponse = parSlug.get(baseId);
   const affaire = affaires.get(numeroAffaire(d.data.linear?.affaire) ?? -1);
   return {
-    slug: d.id,
-    client: nomClient(d.id, nomsClients),
+    slug: baseId,
+    client: nomClient(baseId, nomsClients),
     titre: d.data.titre,
     objet: d.data.objet,
     montant: montantAffiche(d.data),
@@ -86,7 +92,7 @@ const lignes: LigneDevis[] = devis.map((d) => {
     /* Absolue : sur my.coolbeans.cc le worker réécrit tout chemin relatif en
        /espace/<chemin>, et /espace/devis/<slug> n'existe pas. La page
        publique vit sur coolbeans.cc. */
-    urlPublique: `https://coolbeans.cc/devis/${d.id}`,
+    urlPublique: `https://coolbeans.cc/devis/${baseId}`,
     urlProjet: d.data.linear?.projet?.startsWith("http") ? d.data.linear.projet : undefined,
     /* L'URL de l'affaire vient de Linear quand on a pu la joindre : le YAML
        porte parfois l'identifiant court (« CRM-9 »), qui n'est pas un lien. */
