@@ -7,7 +7,7 @@
 // Triage, on laisse Linear choisir son état par défaut : le ticket existe,
 // c'est l'essentiel.
 
-const LINEAR_GRAPHQL = "https://api.linear.app/graphql";
+import { graphql } from "./linear-graphql";
 
 export interface SupportTicket {
   /** UUID interne de l'issue — sert de clé pour les commentaires/statuts. */
@@ -16,29 +16,6 @@ export interface SupportTicket {
   identifier: string;
   /** URL du ticket dans Linear, pour l'email de notification. */
   url: string;
-}
-
-interface GraphQLResponse<T> {
-  data?: T;
-  errors?: Array<{ message: string }>;
-}
-
-async function graphql<T>(
-  apiKey: string,
-  query: string,
-  variables: Record<string, unknown>,
-): Promise<T> {
-  const res = await fetch(LINEAR_GRAPHQL, {
-    method: "POST",
-    headers: { "content-type": "application/json", authorization: apiKey },
-    body: JSON.stringify({ query, variables }),
-  });
-  if (!res.ok) throw new Error(`Linear ${res.status}`);
-  const payload = (await res.json()) as GraphQLResponse<T>;
-  if (payload.errors?.length || !payload.data) {
-    throw new Error(`Linear : ${payload.errors?.[0]?.message ?? "réponse sans data"}`);
-  }
-  return payload.data;
 }
 
 /** L'état Triage de la team, ou null si elle ne l'a pas activée. */

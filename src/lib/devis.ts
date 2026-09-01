@@ -79,3 +79,25 @@ export const OWNER_BADGE = {
 
 export const ownerLabel = (d: DevisData, owner: "coolbeans" | "client") =>
   owner === "coolbeans" ? "Ludo" : (d.contact ?? "Client");
+
+/* Le budget d'un devis vit dans la première section qui en porte un. */
+export const budgetDevis = (d: DevisData) => d.sections.find((s) => s.budget)?.budget;
+
+/* Montant à afficher hors de la page de devis (cockpit, tâche de facturation).
+   Un devis en construction n'a pas de total : afficher 0 € le ferait passer
+   pour un devis gratuit. Un devis sans budget du tout non plus. */
+export const montantAffiche = (d: DevisData): string => {
+  const budget = budgetDevis(d);
+  if (!budget) return "—";
+  if (budget.enAttente) return "En construction";
+  return eur.format(totaux(budget).totalFinal);
+};
+
+/* Valeur numérique du même montant, pour trier la colonne du cockpit. Les
+   devis sans total chiffré valent -1 : ils se regroupent en bas du tri
+   croissant plutôt que de se mêler aux devis à 0 €. */
+export const montantTri = (d: DevisData): number => {
+  const budget = budgetDevis(d);
+  if (!budget || budget.enAttente) return -1;
+  return totaux(budget).totalFinal;
+};
