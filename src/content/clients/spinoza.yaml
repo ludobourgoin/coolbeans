@@ -15,3 +15,5 @@ linearTeamId: eddfc58b-08e6-457b-9f55-17e0b630efac
 # sans lui la messagerie s'allumerait, la team Linear suffisant à la raccorder
 # depuis la migration vers le label « Support » (2026-08-19).
 messagerie: false
+# Emoji du sélecteur : la rose, comme la team Spinoza dans Linear.
+emoji: 🌹

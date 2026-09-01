@@ -3,13 +3,27 @@
 // Rendu en tête de la sidebar, au-dessus de la première section
 // (retour Ludo 2026-08-18 ; il occupait avant le coin droit de la topbar).
 //
-// Formulaire natif vers l'Action : sans JavaScript, le bouton « Afficher »
-// prend le relais. Le script le masque et soumet au changement.
+// Deux rendus dans le même formulaire :
+//
+//  1. Un <select> natif + un bouton « Afficher ». C'est le rendu par défaut,
+//     donc le rendu SANS JavaScript : le formulaire part vers l'Action tout
+//     seul.
+//  2. Un menu maison (bouton + liste), révélé par le script, qui prend la
+//     place du natif. Il existe pour une seule raison : un <option> ne peut
+//     pas porter d'image, et le picto Coolbeans en est une (retour Ludo
+//     2026-09-01). Le <select> reste dans le DOM, masqué : c'est lui qui
+//     porte la valeur soumise, on se contente de la lui poser avant submit.
+//
+// Le menu suit le motif ARIA « menu » plutôt que « listbox » : choisir un
+// workspace navigue, ça n'édite pas un champ. Chaque ligne est un vrai
+// <button>, donc focusable et cliquable sans code — le script ne gère que les
+// flèches, Échap et le clic extérieur.
 //
 // Rien ici n'autorise quoi que ce soit : l'Action revérifie le rôle et le
 // slug côté serveur, et la résolution ignore le cookie pour un non-admin.
 import { actions } from "astro:actions";
 import type { PortalWorkspace } from "../../lib/portail/workspaces";
+import WorkspaceIcon from "./WorkspaceIcon.astro";
 
 interface Props {
   clients: PortalWorkspace[];
@@ -22,58 +36,230 @@ const retour = Astro.url.pathname;
 // clients, séparés par un liseret. `clients` arrive déjà trié (sortWorkspaces).
 const persos = clients.filter((c) => c.perso);
 const externes = clients.filter((c) => !c.perso);
-// Instance unique dans la page (en tête de la sidebar) : un id fixe suffit
-// pour que `label[for]` pointe sur le champ.
+// Ce que le bouton affiche. Sans `current`, c'est la première option du
+// <select> qui serait soumise : on montre donc la même, pas un état vide.
+const affiche = current ?? persos[0] ?? externes[0] ?? null;
+// Instance unique dans la page (en tête de la sidebar) : des id fixes
+// suffisent pour `label[for]` et pour le lien bouton ↔ menu.
 const selectId = "portal-workspace";
+const btnId = "portal-workspace-btn";
+const menuId = "portal-workspace-menu";
 ---
 
-<form
-  method="POST"
-  action={actions.portail.choisirWorkspace}
-  class="flex w-full items-center gap-2"
-  data-client-switcher
->
+<form method="POST" action={actions.portail.choisirWorkspace} class="w-full" data-client-switcher>
   <input type="hidden" name="retour" value={retour} />
-  <label class="sr-only" for={selectId}>Workspace affiché</label>
-  <select
-    id={selectId}
-    name="workspace"
-    class="h-9 w-full min-w-0 rounded-control border border-line bg-surface px-2 text-sm text-ink"
-  >
-    {
-      persos.map((c) => (
-        <option value={c.slug} selected={c.slug === current?.slug}>
-          {c.nom}
-        </option>
-      ))
-    }
-    {/* Liseret natif entre mes workspaces et ceux des clients : <hr> dans un
-        <select> est rendu comme séparateur par les navigateurs récents et
-        simplement ignoré ailleurs — aucun JavaScript nécessaire. */}
-    {persos.length > 0 && externes.length > 0 && <hr />}
-    {
-      externes.map((c) => (
-        <option value={c.slug} selected={c.slug === current?.slug}>
-          {c.emoji ? `${c.emoji} ${c.nom}` : c.nom}
-        </option>
-      ))
-    }
-  </select>
-  <button
-    type="submit"
-    class="h-9 flex-none cursor-pointer rounded-control border border-line bg-surface px-2.5 text-sm text-ink"
-    data-switcher-submit
-  >
-    Afficher
-  </button>
+
+  {/* ── Rendu natif : le seul qui existe sans JavaScript ─────────────── */}
+  <div class="flex w-full items-center gap-2" data-switcher-natif>
+    <label class="sr-only" for={selectId}>Workspace affiché</label>
+    <select
+      id={selectId}
+      name="workspace"
+      class="h-9 w-full min-w-0 rounded-control border border-line bg-surface px-2.5 text-sm text-ink"
+    >
+      {
+        persos.map((c) => (
+          <option value={c.slug} selected={c.slug === affiche?.slug}>
+            {c.nom}
+          </option>
+        ))
+      }
+      {
+        /* Liseret natif entre mes workspaces et ceux des clients : <hr> dans un
+          <select> est rendu comme séparateur par les navigateurs récents et
+          simplement ignoré ailleurs — aucun JavaScript nécessaire. */
+      }
+      {persos.length > 0 && externes.length > 0 && <hr />}
+      {
+        externes.map((c) => (
+          <option value={c.slug} selected={c.slug === affiche?.slug}>
+            {c.emoji ? `${c.emoji} ${c.nom}` : c.nom}
+          </option>
+        ))
+      }
+    </select>
+    <button
+      type="submit"
+      class="h-9 flex-none cursor-pointer rounded-control border border-line bg-surface px-2.5 text-sm text-ink"
+    >
+      Afficher
+    </button>
+  </div>
+
+  {/* ── Menu maison : porte les icônes, y compris le picto Coolbeans ─── */}
+  <div class="relative" data-switcher-custom hidden>
+    <button
+      type="button"
+      id={btnId}
+      class="flex h-9 w-full cursor-pointer items-center gap-2 rounded-control border border-line bg-surface pr-2.5 pl-2.5 text-left text-sm text-ink"
+      aria-haspopup="true"
+      aria-expanded="false"
+      aria-controls={menuId}
+      data-switcher-bouton
+    >
+      {affiche && <WorkspaceIcon workspace={affiche} />}
+      <span class="sr-only">Workspace affiché :</span>
+      <span class="min-w-0 flex-1 truncate">{affiche?.nom ?? "Choisir un workspace"}</span>
+      {
+        /* Iconoir nav-arrow-down. La chevron n'est plus la flèche native :
+          son écart au bord droit est celui du padding (10px), pas celui que
+          le navigateur décide. */
+      }
+      <svg
+        class="flex-none text-mute"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M6 9L12 15L18 9"></path>
+      </svg>
+    </button>
+
+    <ul
+      id={menuId}
+      role="menu"
+      aria-labelledby={btnId}
+      class="material-menu absolute top-[calc(100%+4px)] right-0 left-0 z-30 m-0 max-h-[60vh] list-none overflow-auto rounded-card bg-surface p-1.5"
+      hidden
+      data-switcher-menu
+    >
+      {
+        [persos, externes].map((groupe, i) => (
+          <>
+            {i === 1 && persos.length > 0 && externes.length > 0 && (
+              <li role="separator" class="mx-1 my-1.5 border-t border-line" />
+            )}
+            {groupe.map((c) => (
+              <li role="none">
+                <button
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={c.slug === affiche?.slug ? "true" : "false"}
+                  value={c.slug}
+                  class="flex h-9 w-full cursor-pointer items-center gap-2 rounded-control px-2.5 text-left text-sm text-ink transition-colors duration-150 ease-in-out hover:bg-surface-raise focus-visible:bg-surface-raise"
+                  data-switcher-option
+                >
+                  <WorkspaceIcon workspace={c} />
+                  <span class="min-w-0 flex-1 truncate">{c.nom}</span>
+                  {c.slug === affiche?.slug && (
+                    <svg
+                      class="flex-none text-ink"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 13L9 17L19 7" />
+                    </svg>
+                  )}
+                </button>
+              </li>
+            ))}
+          </>
+        ))
+      }
+    </ul>
+  </div>
 </form>
 
 <script>
-  // Sans JS, le bouton reste : le formulaire fonctionne quand même.
+  // Le menu maison ne remplace le <select> que si le script tourne : sans lui,
+  // c'est le rendu natif qui reste, et le formulaire marche quand même.
   document.querySelectorAll<HTMLFormElement>("[data-client-switcher]").forEach((form) => {
-    form.querySelector<HTMLButtonElement>("[data-switcher-submit]")?.remove();
-    form
-      .querySelector<HTMLSelectElement>("select")
-      ?.addEventListener("change", () => form.submit());
+    const natif = form.querySelector<HTMLElement>("[data-switcher-natif]");
+    const custom = form.querySelector<HTMLElement>("[data-switcher-custom]");
+    const bouton = form.querySelector<HTMLButtonElement>("[data-switcher-bouton]");
+    const menu = form.querySelector<HTMLElement>("[data-switcher-menu]");
+    const select = form.querySelector<HTMLSelectElement>("select");
+    if (!natif || !custom || !bouton || !menu || !select) return;
+
+    const options = Array.from(menu.querySelectorAll<HTMLButtonElement>("[data-switcher-option]"));
+
+    // Le <select> reste dans le DOM : masqué, il continue de porter la valeur
+    // soumise. `hidden` le retire aussi de la tabulation, donc pas de double
+    // arrêt au clavier sur la même commande.
+    natif.hidden = true;
+    custom.hidden = false;
+
+    const ouvert = () => bouton.getAttribute("aria-expanded") === "true";
+
+    const ouvrir = (indexFocus: number) => {
+      menu.hidden = false;
+      bouton.setAttribute("aria-expanded", "true");
+      options[indexFocus]?.focus();
+    };
+
+    const fermer = (rendreLeFocus = true) => {
+      menu.hidden = true;
+      bouton.setAttribute("aria-expanded", "false");
+      if (rendreLeFocus) bouton.focus();
+    };
+
+    // Index de la ligne cochée : c'est d'elle qu'on part à l'ouverture.
+    const indexCoche = () => {
+      const i = options.findIndex((o) => o.getAttribute("aria-checked") === "true");
+      return i === -1 ? 0 : i;
+    };
+
+    const choisir = (slug: string) => {
+      select.value = slug;
+      form.submit();
+    };
+
+    bouton.addEventListener("click", () => {
+      if (ouvert()) fermer();
+      else ouvrir(indexCoche());
+    });
+
+    bouton.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        ouvrir(e.key === "ArrowDown" ? indexCoche() : options.length - 1);
+      }
+    });
+
+    options.forEach((option, i) => {
+      option.addEventListener("click", () => choisir(option.value));
+      option.addEventListener("keydown", (e) => {
+        // Flèches, Home et End déplacent le focus dans le menu ; Entrée et
+        // Espace sont laissés au comportement natif du <button>.
+        const cible =
+          e.key === "ArrowDown"
+            ? (i + 1) % options.length
+            : e.key === "ArrowUp"
+              ? (i - 1 + options.length) % options.length
+              : e.key === "Home"
+                ? 0
+                : e.key === "End"
+                  ? options.length - 1
+                  : null;
+        if (cible !== null) {
+          e.preventDefault();
+          options[cible].focus();
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          fermer();
+        } else if (e.key === "Tab") {
+          fermer(false);
+        }
+      });
+    });
+
+    // Clic hors du menu : on referme sans voler le focus à ce qui vient
+    // d'être cliqué.
+    document.addEventListener("click", (e) => {
+      if (ouvert() && !custom.contains(e.target as Node)) fermer(false);
+    });
   });
 </script>

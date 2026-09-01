@@ -1,0 +1,47 @@
+---
+// Icône d'un workspace, dans le sélecteur : à gauche du nom, sur le bouton
+// comme sur chaque ligne du menu.
+//
+// Deux formes, jamais les deux à la fois : une image (`logo`, réservée à
+// Coolbeans dont le picto EST la marque) ou un emoji (tous les autres). La
+// boîte fait la même taille dans les deux cas — c'est ce qui aligne les noms
+// entre eux, quelle que soit la forme retenue. Sans icône, la boîte reste :
+// le nom ne se décale pas d'un workspace à l'autre.
+import type { PortalWorkspace } from "../../lib/portail/workspaces";
+
+interface Props {
+  workspace: PortalWorkspace;
+  /** Taille de la boîte en px. */
+  size?: number;
+}
+
+const { workspace, size = 18 } = Astro.props;
+const style = `width:${size}px;height:${size}px`;
+---
+
+<span class="flex flex-none items-center justify-center" style={style} aria-hidden="true">
+  {
+    workspace.logo ? (
+      <>
+        <img
+          class:list={["block h-full w-full object-contain", workspace.logoSombre && "dark:hidden"]}
+          src={workspace.logo}
+          alt=""
+          width={size}
+          height={size}
+        />
+        {workspace.logoSombre && (
+          <img
+            class="hidden h-full w-full object-contain dark:block"
+            src={workspace.logoSombre}
+            alt=""
+            width={size}
+            height={size}
+          />
+        )}
+      </>
+    ) : (
+      workspace.emoji && <span class="text-[15px] leading-none">{workspace.emoji}</span>
+    )
+  }
+</span>
