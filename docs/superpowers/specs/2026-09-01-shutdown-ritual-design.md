@@ -46,7 +46,7 @@ vide l'échelle de son sens. Le workspace est à 97 sur 335, soit 29 %.
 | Source de vérité du plan | `dueDate`. Les cycles Linear sont abandonnés |
 | Rituels | Un quotidien le soir, un hebdomadaire le vendredi soir en extension du quotidien |
 | Périmètre | Linear, plus le mail entrant, plus le calendrier. Pas le nettoyage physique |
-| Capacité | 8 h moins les rendez-vous du jour, moins 1 h de marge, moins 1 h de bloc CRM |
+| Capacité | Temps de travail = 8 h moins les rendez-vous du jour moins 1 h de marge. Capacité en issues = temps de travail moins 1 h de bloc CRM |
 | Actions CRM | Un bloc unique de 1 h par jour, jamais d'estimate en points |
 | Estimates manquants | Posés d'office, sauf sur les projets en statut Proposal |
 | Écriture Linear | Aucune écriture sans validation en lot du récapitulatif |
@@ -139,21 +139,36 @@ comptée dans les signaux d'hygiène, pas dans le plan.
 
 ## 6. Calcul de capacité
 
+Deux grandeurs distinctes, à ne jamais confondre dans la sortie de la skill.
+
 ```
-capacité d'un jour
+temps de travail d'un jour
   = 8 h
   - somme des rendez-vous du calendrier pour ce jour
+    (les créneaux de rituel de la section 7.1 en font partie)
   - 1 h de marge d'imprévu
+
+capacité planifiable en issues
+  = temps de travail
   - 1 h de bloc CRM (si au moins une action CRM est due ce jour-là)
 ```
 
-Le créneau de rituel de la section 7.1 étant un rendez-vous comme un autre, une
-journée sans aucun autre rendez-vous se planifie à **5,5 h** de travail estimé,
-et un vendredi à **4,5 h**.
+Le bloc CRM est du travail réel : il compte dans le temps de travail. Il est
+retiré de la capacité planifiable parce qu'il n'est pas rempli par des issues
+estimées, mais par des actions courtes sans points (voir plus bas).
 
-Ce chiffre reste cohérent avec `estimation.md`, qui pose qu'une journée facturée
-vaut environ 7 h effectives : la base est à 8 h, la marge d'imprévu ramène à 7 h,
-puis le bloc CRM et le rituel prélèvent 1,5 h sur du travail non facturable.
+| Jour sans autre rendez-vous | Temps de travail | dont CRM | Capacité en issues |
+|---|---|---|---|
+| Jour normal | 6,5 h | 1 h | **5,5 h** |
+| Vendredi | 5,5 h | 1 h | **4,5 h** |
+
+Ces chiffres restent cohérents avec `estimation.md`, qui pose qu'une journée
+facturée vaut environ 7 h effectives : la base est à 8 h, la marge d'imprévu
+ramène à 7 h, et le rituel prélève la demi-heure restante.
+
+**Vocabulaire imposé à la skill.** Elle dit « X h de travail demain, dont 1 h de
+CRM, donc Y h d'issues planifiables ». Elle n'annonce jamais un chiffre unique
+appelé « capacité » sans dire laquelle des deux grandeurs il désigne.
 
 **Sources calendrier.** Notion Calendar est un client sans API : il affiche des
 agendas Google. La skill lit donc Google Calendar, ce qui revient au même. Les
@@ -225,18 +240,25 @@ main, la skill respecte la nouvelle heure sans commentaire.
 **Effet sur la capacité.** Ces créneaux vivant sur l'agenda de référence, ils
 sont déduits par le calcul de la section 6 sans traitement particulier :
 
-| Jour | Calcul | Capacité |
+| Jour | Temps de travail | Capacité en issues |
 |---|---|---|
-| Jour normal | 8 − 1 marge − 1 CRM − 0,5 shutdown | 5,5 h |
-| Vendredi | 8 − 1 marge − 1 CRM − 0,5 shutdown − 1 weekly | 4,5 h |
+| Jour normal | 8 − 1 marge − 0,5 shutdown = 6,5 h | 5,5 h |
+| Vendredi | 8 − 1 marge − 0,5 shutdown − 1 weekly = 5,5 h | 4,5 h |
 
 ### 7.2 L'agenda dédié aux créneaux d'issues
 
 Le plan validé est matérialisé en créneaux Google Calendar, pour être visible
 sur tous les appareils via Notion Calendar.
 
-**Un agenda dédié, possédé par la skill.** Un agenda Google séparé, créé une
-fois, nommé `Linear`. La skill y a tous les droits et n'écrit nulle part ailleurs.
+**Un agenda dédié, possédé par la skill.** Un agenda Google séparé, nommé
+`Linear`, créé le 2026-09-01. Son identifiant, à utiliser directement sans
+résolution par nom :
+
+```
+c_87c3c54a53a1a48ca56f5ee207f1c08d42945ac80ca356c881e822cf112ce48e@group.calendar.google.com
+```
+
+La skill y a tous les droits et n'écrit nulle part ailleurs.
 Trois raisons, dont une est une contrainte de correction et pas de confort :
 
 1. **Circularité.** La capacité se calcule comme 8 h moins les rendez-vous. Si
@@ -520,9 +542,8 @@ tête de fichier de la lancer sous `sonnet` plutôt que sous un modèle premium.
 
 Ces trois gestes conditionnent le premier passage de la skill :
 
-1. Créer l'agenda Google `Linear` (Google Calendar, « Créer un agenda »), puis
-   l'afficher dans Notion Calendar. La skill ne peut pas créer un agenda, elle
-   ne peut qu'y écrire.
+1. ~~Créer l'agenda Google `Linear`~~ **fait le 2026-09-01.** Reste à l'afficher
+   dans Notion Calendar.
 2. Valider, au premier lancement, la création des deux récurrences de rituel sur
    l'agenda Coolbeans (section 7.1).
 3. Décider du sort des cycles sur les 16 teams concernées.
