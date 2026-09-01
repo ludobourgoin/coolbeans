@@ -3,9 +3,11 @@ client: "coolbeans"
 title: "Devis : outillage"
 order: 5
 status: "final"
-updated: 2026-08-17
+updated: 2026-09-01
 description: "La référence technique de la chaîne devis : cockpit /espace/devis, Réglages, schéma YAML, réponses en D1, API. Le workflow lui-même est documenté sur la page Workflow CRM."
 ---
+
+import Callout from "../../../components/doc/Callout.astro";
 
 La référence technique de la chaîne devis. Le **workflow** (brief, chiffrage,
 passes 1 et 2, envoi) est documenté sur la page Workflow CRM — ici, l'outillage qui
@@ -79,8 +81,18 @@ sens inverse — d'où l'illusion d'avoir chiffré juste.
 
 **Le TJM sous-facture.** Un lot de 3 heures porte le même coût de mise en
 route qu'un lot de 3 jours : comprendre la demande, ouvrir le projet,
-recetter, publier, facturer. Le taux réellement pratiqué et accepté sur les
-petits lots tourne autour de 106 €/h, là où un TJM de 500 € en donne 71.
+recetter, publier, facturer. Le taux visé sur les petits lots tourne autour de
+106 €/h, là où un TJM de 500 € en donne 71.
+
+<Callout type="piege" title="C'est un taux proposé, pas un taux encaissé">
+  Les 106 €/h viennent de deux lots Miharu chiffrés, dont **aucun n'a été
+  accepté ni facturé** : sur le premier, la cliente répond « les 300 € je ne
+  suis pas sûre qu'on les ait pour ça » (2026-07-23) et l'affaire est perdue
+  sur le prix. Le raisonnement du coût fixe tient — il décrit ce que coûte
+  une intervention courte — mais personne ne l'a validé en payant. Ne jamais
+  l'employer devant un client comme s'il s'agissait d'un tarif de marché
+  observé.
+</Callout>
 
 **Le Fibonacci sur-estime.** L'échelle de la skill `linear` a un plancher à
 1 point = 1 heure : un lot de 4 h 30 découpé en quatre lignes de 20 à 40
@@ -91,7 +103,9 @@ La méthode : chiffrer le temps tâche par tâche en minutes, convertir, puis
 **vérifier le €/h obtenu** contre l'historique de facturation
 (`~/.claude/skills/devis/references/historique-facturation.md`). Sur un client
 déjà servi, un écart de plus de 30 % avec sa dernière prestation se justifie
-ou se corrige — il ne se découvre pas dans la conversation.
+ou se corrige — il ne se découvre pas dans la conversation. Et regarder la
+colonne « Issue » avant de s'appuyer sur une ligne : une proposition refusée
+calibre mal.
 
 ## Le schéma YAML
 
