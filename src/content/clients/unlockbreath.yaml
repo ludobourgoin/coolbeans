@@ -1,0 +1,19 @@
+# Client direct : Thierry Lanneau, kinésithérapeute à Paris. La facturation va
+# à son entité juridique DOS ET POSTURE (SIRET 82471321800033) ; la marque, le
+# produit et la team Linear s'appellent UnlockBreath, et c'est ce nom-là que le
+# client voit dans son portail.
+nom: UnlockBreath
+# Revendeur auquel ce client se rattache (spec 2026-08-19 §3.1).
+organisation: coolbeans
+prenom: Thierry
+# Emoji du sélecteur : le souffle, comme sur la carte CRM-24. La team Linear
+# n'en porte pas.
+emoji: 💨
+# Date du devis n° 004326 et de l'arborescence validée, le premier acte
+# documenté de la relation. La signature suit le 2026-02-08.
+depuis: "2026-02-02"
+# Team « UnlockBreath » du workspace Linear coolbeans-hq.
+linearTeamId: 31a4f6a4-2a12-4e37-ba4c-ddc84bc7006b
+# Pas de clé `doc` : aucune page n'existe sous src/content/docs/. Le module
+# Documentation reste en empty state jusqu'à ce que la skill doc-client la
+# produise — le projet n'a de toute façon aucune page intégrée à ce jour.

@@ -53,9 +53,9 @@ notes:
   - tone: warning
     texte: >-
       **Reconstitution a posteriori, écrite le 2026-08-31.** Cette page n'a
-      jamais été envoyée. La proposition d'origine est partie le 2026-07-23
-      par mail, depuis l'adresse trigger.fr, et aucun devis Coolbeans n'a
-      existé pour ce lot. La page sert la traçabilité interne des
+      jamais été envoyée. La proposition d'origine est partie le 2026-07-23 à
+      08:56, par mail de Baptiste Garnot à Adeline Berger, Ludo en copie, et
+      aucun devis Coolbeans n'a existé pour ce lot. La page sert la traçabilité interne des
       propositions faites au compte, pas la relation client.
   - tone: error
     texte: >-
@@ -66,7 +66,8 @@ notes:
       2026-08-31 : les deux pages Agen ne portent toujours aucun lien de
       plaquette. Aucune relance n'a jamais été envoyée entre les deux dates.
   - texte: >-
-      Le lot représente environ 2 h 50 de travail. À 300 € HT sans marge
-      revendeur, il se situe à ~106 €/h, soit l'équivalent de 740 € par jour.
-      C'est le taux de référence du compte, retrouvé à l'identique sur le
-      chiffrage du 2026-08-31.
+      Le lot représente environ 2 h 50 de travail. À 300 € HT revenant
+      intégralement à Coolbeans — Baptiste n'a pas margé sur ce lot — il se
+      situe à ~106 €/h, soit l'équivalent de 740 € par jour. Le chiffrage du
+      2026-08-31 retombe au même taux. C'est le taux que Coolbeans demande sur
+      les petits lots de ce compte, pas un taux validé : celui-ci a été refusé.
