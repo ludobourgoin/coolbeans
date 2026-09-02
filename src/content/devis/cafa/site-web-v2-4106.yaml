@@ -1,0 +1,173 @@
+titre: CAFA-TO x Coolbeans
+objet: Site Internet du Club d'Affaires Franco-Allemand T-O
+date: 2026-09-01
+contact: Susanne
+version: 2
+versionDe: cafa/site-web-8791
+linear:
+  projet: Site web CAFA
+  affaire: CRM-9
+
+sections:
+  - titre: Objectif
+    texte: >-
+      Doter le Club d'Affaires d'un **site Internet à son image**, qui donne à voir ses
+      événements et la vie de l'association, facilite l'adhésion de nouveaux
+      membres et valorise ses partenaires institutionnels. Le site devient
+      l'adresse de référence du Club d'Affaires, **que vous mettez à jour vous-même**,
+      sans intervention technique.
+
+  - titre: Pages du site
+    texte: "**Sept pages**, construites à partir des sections définies ensemble lors de notre échange du 31 juillet :"
+    liste:
+      - texte: Accueil
+        tooltip: >-
+          Porte d'entrée du site : les prochains événements, les dernières
+          actualités et l'accès à toutes les sections.
+      - texte: "Qui sommes-nous : l'histoire du Club d'Affaires et les membres du bureau"
+      - texte: >-
+          **Événements à venir** : l'agenda du Club d'Affaires, la page que l'on
+          consulte pour savoir quand a lieu la prochaine rencontre
+        tooltip: >-
+          Chaque événement porte une date et disparaît de lui-même une fois
+          passé. La page reste donc toujours juste, sans que vous ayez à la
+          nettoyer.
+      - texte: >-
+          **Actualités** : la vie du Club d'Affaires au fil de l'année, ses
+          partenariats, ses prises de parole et ses comptes rendus de rencontres
+        tooltip: >-
+          Une actualité reste en ligne et s'archive, là où un événement
+          disparaît une fois sa date passée.
+      - texte: "Devenir membre : pourquoi rejoindre le Club d'Affaires, et bulletin d'adhésion à télécharger"
+      - texte: Partenaires et soutiens institutionnels
+      - texte: Contact
+    note: >-
+      Événements et Actualités peuvent être réunis en une seule section, ce qui
+      allégerait le devis. Je vous recommande cependant de les garder distincts :
+      on ne consulte pas un agenda comme on parcourt les nouvelles du Club, et
+      les mélanger oblige à choisir entre laisser en ligne des événements
+      passés ou effacer l'histoire de l'association.
+
+  - titre: Fonctionnalités
+    liste:
+      - texte: >-
+          **Les événements passés disparaissent tout seuls** de la liste, sans
+          aucune action de votre part
+        tooltip: >-
+          Vous saisissez la date de l'événement une fois ; le site le retire
+          automatiquement de la page dès qu'elle est dépassée.
+      - texte: >-
+          **Tout le contenu du site est modifiable par vos soins** : les textes
+          de chaque page comme les événements, les actualités et les
+          partenaires, sans intervention technique
+      - texte: "**Formulaire de contact** : les messages arrivent directement dans la boîte mail du Club d'Affaires"
+      - texte: "**Bulletin d'adhésion en PDF**, téléchargeable depuis la page Devenir membre"
+
+  - titre: Stack
+    texte: >-
+      Ma recommandation : **Astro** (développement) + **Sanity** (gestion de
+      contenu) + **Cloudflare** (hébergement).
+    liste:
+      - Pages très légères, site rapide à l'affichage
+      - "Coût d'usage nul : hébergement gratuit, aucun abonnement mensuel à prévoir"
+      - "Autonomie : vous gérez l'intégralité des textes, images et contenus du site sans toucher au code"
+      - >-
+        Vous restez libre : le code est dans un dépôt qui appartient au Club d'Affaires, le
+        contenu est exportable, n'importe quel développeur peut reprendre le site
+
+  - titre: Budget
+    budget:
+      lignes:
+        - label: >-
+            **Direction visuelle** : structure des pages et maquette de la page
+            d'accueil, à partir de vos références et de votre identité
+          prix: 600
+          tooltip: >-
+            Les pages intérieures reprennent les composants validés sur la page
+            d'accueil : une seule maquette suffit à fixer la direction, qui
+            sert ensuite de référence à tout le site.
+        - label: >-
+            **Intégration et mise en ligne** : développement des sept pages,
+            mise en place du CMS, référencement de base et déploiement
+          prix: 2200
+          tooltip: >-
+            Comprend le développement, la configuration du CMS, la formation à
+            la mise à jour et la mise en ligne sur votre nom de domaine.
+        - label: >-
+            **Version bilingue français / allemand** : mise en place technique
+            des deux langues et sélecteur avec vos deux logos
+          prix: 150
+          tooltip: >-
+            Couvre la mise en place technique : deux adresses distinctes,
+            sélecteur de langue, et un champ français plus un champ allemand
+            sur chaque contenu modifiable. La rédaction des textes allemands
+            reste assurée en interne par vos soins, comme convenu lors de
+            notre échange.
+        - label: >-
+            **Reprise de vos articles existants** : les publications de
+            cafatmp.org sont rapatriées dans la nouvelle section Actualités
+          prix: 250
+        - label: >-
+            **Rédaction des contenus** : entretien de cadrage, rédaction de
+            l'ensemble des pages, ton ajusté à l'identité du Club d'Affaires,
+            deux allers-retours sur les textes, titres et descriptions
+            travaillés pour le référencement
+          prix: 480
+      remisePct: 20
+      remiseLabel: Tarif association
+      mention: HT
+      reglement: >-
+        **30 %** à la validation du devis, qui lance la prestation. **Solde**
+        à la livraison du site fonctionnel. Montants exprimés hors taxes, TVA
+        de 20 % en sus.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Responsive (ordinateur, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation de la vitesse d'affichage
+      - Tests sur les trois principaux navigateurs
+      - Certificat SSL, hébergement et raccordement du nom de domaine
+      - Mise en place du suivi de fréquentation, sans cookies
+      - Pages légales
+      - Formation à la mise à jour du site, et guide écrit remis à la livraison du site
+      - Support 30 jours après la mise en ligne
+
+  - titre: Planning
+    planning:
+      options:
+        - label: Démarrage le 8 septembre
+          texte: >-
+            Livraison visée **début octobre**, bien avant le congrès de début
+            novembre.
+          jalons:
+            - { date: Mar 08/09, label: "Démarrage : cadrage, accès, point contenu", owner: coolbeans }
+            - { date: Mar 15/09, label: "Structure des pages et maquette de la page d'accueil, à partir des références que vous m'avez transmises", owner: coolbeans }
+            - { date: Mar 22/09, label: "Retour du Club d'Affaires et validation de la direction visuelle", owner: client }
+            - { date: 23/09 → 01/10, label: Intégration, développement et mise en place du CMS, owner: coolbeans }
+            - { date: Ven 02/10, label: "Mise en ligne, référencement, formation à la mise à jour", owner: coolbeans }
+            - { date: Lun 05/10, label: Relecture finale du Club d'Affaires, owner: client }
+            - { date: Mar 06/10, label: Corrections, owner: coolbeans }
+            - { date: Mer 07/10, label: Livraison et démarrage du support 30 jours, owner: coolbeans }
+          note: >-
+            Ces dates tiennent si les retours arrivent dans les délais indiqués.
+            Un retard de validation peut décaler la livraison de plus que le
+            retard lui-même, le temps de recaler le projet entre mes autres
+            clients.
+
+notes:
+  - tone: success
+    texte: >-
+      **Tarif association appliqué sur l'ensemble de la prestation**, soit
+      736 € de remise sur le montant total.
+  - texte: >-
+      La direction visuelle et l'intégration forment un ensemble : la première
+      fixe la référence que suit toute la construction du site. Les deux postes
+      sont détaillés pour la lisibilité, ils ne se commandent pas séparément.
+  - texte: >-
+      Deux allers-retours sont prévus par livrable. Au-delà, les itérations
+      supplémentaires restent possibles et sont budgétées au temps passé.
+  - tone: info
+    texte: >-
+      Un point reste à trancher ensemble au démarrage : le nom de domaine
+      définitif.
