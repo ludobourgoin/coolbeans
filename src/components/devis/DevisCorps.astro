@@ -4,7 +4,7 @@ import Tooltip from "../ui/Tooltip.astro";
 import {
   riche,
   eur,
-  slugify,
+  ancreSection,
   totaux,
   ownerLabel,
   listeItem,
@@ -15,10 +15,13 @@ import {
 
 interface Props {
   d: DevisData;
+  /* Renseigné uniquement quand le devis a plusieurs versions : elles
+     coexistent dans le DOM et leurs ancres doivent rester distinctes. */
+  version?: number;
 }
-const { d } = Astro.props;
+const { d, version } = Astro.props;
 
-const ancre = (titre: string) => slugify(titre);
+const ancre = (titre: string) => ancreSection(titre, version);
 ---
 
 <!-- BLOC STICKY : nav de sections. Colle au sommet du viewport, la page
