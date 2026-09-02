@@ -56,6 +56,14 @@ export const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
+/* Ancre d'une section du devis. Toutes les versions d'un devis sont rendues
+   dans le même document, une seule visible : sans préfixe, `id="budget"`
+   existerait autant de fois qu'il y a de versions et un clic dans le
+   sommaire sauterait vers la section homonyme de la V1, masquée. Un devis à
+   version unique garde l'ancre nue, pour ne pas casser les liens partagés. */
+export const ancreSection = (titre: string, version?: number) =>
+  version === undefined ? slugify(titre) : `v${version}-${slugify(titre)}`;
+
 /* totaux dérivés des lignes chiffrées ; les lignes sans prix sont « Inclus » */
 export const totaux = (budget: DevisBudget) => {
   const total = budget.lignes.reduce((somme, ligne) => somme + (ligne.prix ?? 0), 0);

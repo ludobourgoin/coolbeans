@@ -1,5 +1,22 @@
 import { describe, expect, it } from "vitest";
-import { listeItem, riche } from "./devis";
+import { ancreSection, listeItem, riche } from "./devis";
+
+describe("ancreSection", () => {
+  it("sans version, garde l'ancre nue", () => {
+    /* Devis à version unique : les liens déjà partagés restent valides. */
+    expect(ancreSection("Ce que ça comprend")).toBe("ce-que-ca-comprend");
+  });
+  it("préfixe par la version quand il y en a plusieurs", () => {
+    /* Toutes les versions d'un devis coexistent dans le même DOM, une seule
+       visible. Sans préfixe, `id="budget"` est présent en double et le
+       navigateur saute vers celui de la V1, masqué. */
+    expect(ancreSection("Budget", 1)).toBe("v1-budget");
+    expect(ancreSection("Budget", 2)).toBe("v2-budget");
+  });
+  it("rend des ancres distinctes d'une version à l'autre", () => {
+    expect(ancreSection("Planning", 1)).not.toBe(ancreSection("Planning", 2));
+  });
+});
 
 describe("listeItem", () => {
   it("normalise une chaîne", () => {

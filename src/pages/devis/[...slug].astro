@@ -95,7 +95,7 @@ const courante = versions[actif].data;
     {
       versions.map((v, i) => (
         <div data-devis-pane={i} hidden={i !== actif}>
-          <DevisCorps d={v.data} />
+          <DevisCorps d={v.data} version={versions.length > 1 ? v.data.version : undefined} />
         </div>
       ))
     }
