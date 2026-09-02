@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import GridBackdrop from "../../components/GridBackdrop.astro";
 import DevisCorps from "../../components/devis/DevisCorps.astro";
+import DevisEntetePrint from "../../components/devis/DevisEntetePrint.astro";
 import DevisReponse from "../../components/devis/DevisReponse.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
 
@@ -100,6 +101,7 @@ const reference = versions[0].id.split("-").pop();
     {
       versions.map((v, i) => (
         <div data-devis-pane={i} hidden={i !== actif}>
+          <DevisEntetePrint d={v.data} reference={reference} />
           <DevisCorps d={v.data} version={versions.length > 1 ? v.data.version : undefined} />
         </div>
       ))
@@ -110,10 +112,10 @@ const reference = versions[0].id.split("-").pop();
        dans la barre du navigateur ; indispensable sur un document qui
        circule détaché, en pièce jointe d'un mail. -->
   <div
-    class="container-site hidden pt-10x pb-4x text-center font-mono text-[11px] leading-[1.8] tracking-wide text-mute uppercase print:block"
+    data-devis-pied
+    class="container-site hidden text-center font-mono text-[9px] tracking-wide text-mute uppercase print:block"
   >
-    Proposition n° {reference} · Version {courante.version} du {dateLongue(courante.date)}<br />
-    coolbeans.cc/devis/{versions[0].id} · Coolbeans — Ludovic Bourgoin
+    Proposition nᵒ {reference} · Version {courante.version} · coolbeans.cc/devis/{versions[0].id}
   </div>
 
   <DevisReponse
@@ -167,7 +169,26 @@ const reference = versions[0].id.split("-").pop();
      réécritures d'état d'un composant enfant n'existent pas en classes. */
   @media print {
     @page {
-      margin: 14mm 12mm;
+      /* Marge basse creusée pour loger le pied répété, qui se place dans
+         cet espace et non dans la zone de texte. */
+      margin: 14mm 12mm 20mm;
+    }
+
+    /* Un document qui circule doit se nommer sur chacune de ses feuilles, et
+       pas seulement sur la dernière : une page détachée du reste ne dit plus
+       de quelle proposition elle vient. Chrome répète un élément `fixed` sur
+       toutes les pages imprimées, à `bottom: 0` de la zone de contenu — la
+       marge basse creusée ci-dessus le sépare du texte. Un décalage négatif
+       pour le pousser plus bas le fait au contraire remonter en haut de
+       page, par-dessus le titre (constaté le 2026-09-02). Pas de numéro de
+       page : Chrome n'implémente `counter(page)` que dans les marges @page,
+       qu'il ne gère pas. */
+    [data-devis-pied] {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      padding-top: 3mm;
     }
 
     /* Chrome n'imprime aucun aplat par défaut. Sans ça, les pastilles de
@@ -180,23 +201,48 @@ const reference = versions[0].id.split("-").pop();
 
     /* Ce qui ne veut rien dire sur papier : un sommaire dont les ancres ne
        mènent nulle part, un formulaire qu'on ne remplit pas, un pied de
-       site. */
+       site, et l'en-tête web — un hero centré sur fond quadrillé qui mange
+       un tiers de la première page pour redire un titre. DevisEntetePrint
+       le remplace par un bloc émetteur / destinataire / référence. */
     [data-sticky-devis-nav],
     [data-devis-reponse],
+    header,
     footer {
       display: none !important;
     }
 
-    /* Les onglets de version : on ne bascule pas d'onglet sur une feuille.
-       Reste la seule information qui compte, quelle version on tient entre
-       les mains, en texte discret. */
-    [role="tablist"] button:not([aria-pressed="true"]) {
-      display: none;
+    /* Le corps est dimensionné pour un écran : 15 à 17 px de texte courant,
+       des marges verticales en 4rem. Sur A4 ça donne six pages très aérées
+       pour ce qui en fait trois. `zoom` réduit l'ensemble d'un bloc, en
+       gardant les proportions et sans toucher à une seule taille : c'est
+       propriétaire, mais c'est Chrome qui produit le PDF. */
+    body {
+      zoom: 0.78;
     }
-    [role="tablist"] button[aria-pressed="true"] {
-      background: none;
-      color: inherit;
-      opacity: 0.55;
+
+    /* La grille écran pose le libellé de section dans une colonne de 180 px
+       à gauche du contenu. Sur A4 elle laisse une bande vide sur toute la
+       hauteur du document et tasse le texte sur une demi-largeur. Le libellé
+       repasse donc au-dessus, en titre courant, et le contenu prend toute la
+       justification. */
+    section,
+    [data-devis-notes] {
+      display: block !important;
+      padding: 1.1rem 0 !important;
+    }
+    /* Le libellé de section était dimensionné pour une colonne latérale, où
+       sa position suffisait à le désigner comme titre. Ramené dans le flux,
+       il doit dominer ce qu'il annonce : à 11 px il passait sous le corps de
+       texte, et une section se lisait comme la suite de la précédente. */
+    section > p:first-child,
+    [data-devis-notes] > p:first-child {
+      margin-bottom: 0.75rem;
+      font-size: 17px;
+    }
+    /* La colonne de contenu était bornée à 58ch pour la lecture à l'écran ;
+       en une colonne, cette laisse blanche à droite n'a plus d'objet. */
+    [data-devis-notes] > div:last-child {
+      max-width: none;
     }
 
     /* Les infobulles portent de l'argumentaire (périmètre du bilingue,
@@ -219,8 +265,11 @@ const reference = versions[0].id.split("-").pop();
       box-shadow: none;
       transform: none !important;
       color: inherit;
-      opacity: 0.6;
-      font-size: 0.92em;
+      /* 0,6 tirait vers le gris clair : lisible à l'écran rétroéclairé,
+         délavé une fois imprimé. L'incise doit rester une nuance, pas une
+         disparition. */
+      opacity: 0.78;
+      font-size: 0.88em;
     }
     [data-tooltip] [data-bulle]::before {
       content: " — ";

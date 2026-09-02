@@ -64,11 +64,54 @@ export const slugify = (s: string) =>
 export const ancreSection = (titre: string, version?: number) =>
   version === undefined ? slugify(titre) : `v${version}-${slugify(titre)}`;
 
-/* totaux dérivés des lignes chiffrées ; les lignes sans prix sont « Inclus » */
-export const totaux = (budget: DevisBudget) => {
-  const total = budget.lignes.reduce((somme, ligne) => somme + (ligne.prix ?? 0), 0);
-  const remise = budget.remisePct ? (total * budget.remisePct) / 100 : 0;
-  return { total, remise, totalFinal: total - remise, mention: budget.mention ?? "" };
+/* Sélection d'options : les index, dans `budget.lignes`, des lignes `optionnel`
+   que le client a cochées. `undefined` = personne n'a encore choisi, on retombe
+   sur les `defaut` du YAML. Un index de ligne non optionnelle est ignoré : le
+   socle ne se retire pas, même par une requête forgée. */
+export type SelectionOptions = readonly number[] | undefined;
+
+/** Index des options cochées à l'ouverture de la page. */
+export const selectionDefaut = (budget: DevisBudget): number[] =>
+  budget.lignes.flatMap((ligne, i) => (ligne.optionnel && ligne.defaut ? [i] : []));
+
+/** Lignes réellement facturées : tout le socle, plus les options retenues. */
+export const lignesRetenues = (budget: DevisBudget, selection?: SelectionOptions) =>
+  budget.lignes.filter(
+    (ligne, i) => !ligne.optionnel || (selection ? selection.includes(i) : ligne.defaut),
+  );
+
+/* Remises à appliquer, dans l'ordre. Normalise l'ancienne forme à remise
+   unique vers la nouvelle : un seul chemin de calcul en aval, et les douze
+   devis déjà publiés continuent de s'afficher à l'identique. */
+export const remisesDe = (budget: DevisBudget): Array<{ label: string; pct: number }> =>
+  budget.remises ??
+  (budget.remisePct
+    ? [{ label: budget.remiseLabel ?? "Remise exceptionnelle", pct: budget.remisePct }]
+    : []);
+
+/* Totaux dérivés des lignes retenues ; les lignes sans prix sont « Inclus ».
+   Les remises s'enchaînent : chacune mord sur ce que la précédente a laissé,
+   jamais sur le total brut. Deux remises de 25 % puis 10 % ne font donc pas
+   35 % — et c'est le comportement voulu, c'est ainsi qu'un geste commercial se
+   calcule après un barème. */
+export const totaux = (budget: DevisBudget, selection?: SelectionOptions) => {
+  const total = lignesRetenues(budget, selection).reduce(
+    (somme, ligne) => somme + (ligne.prix ?? 0),
+    0,
+  );
+  let restant = total;
+  const paliers = remisesDe(budget).map(({ label, pct }) => {
+    const montant = (restant * pct) / 100;
+    restant -= montant;
+    return { label, pct, montant };
+  });
+  return {
+    total,
+    paliers,
+    remise: total - restant,
+    totalFinal: restant,
+    mention: budget.mention ?? "",
+  };
 };
 
 export const dateLongue = (date: Date) =>

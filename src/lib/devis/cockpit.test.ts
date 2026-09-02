@@ -9,7 +9,7 @@ describe("comparerTri", () => {
   });
 
   it("ordonne la colonne Statut par position de pipeline, jamais par nom", () => {
-    /* Triage lead (0) précède Devis envoyé (1000), qui précède Signée (5500).
+    /* Triage lead (0) précède Proposition envoyée (1000), qui précède Signée (5500).
        Un tri alphabétique sur les noms mettrait « 🏆 Signée » avant
        « 📥 Triage lead » et ne dirait rien de l'avancement. */
     const positions = ["5500", "0", "1000"];

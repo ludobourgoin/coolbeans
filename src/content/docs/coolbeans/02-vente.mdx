@@ -3,8 +3,8 @@ client: "coolbeans"
 title: "Workflow CRM"
 order: 2
 status: "final"
-updated: 2026-08-29
-description: "Le cycle de vie d'une affaire, du vivier de prospection au suivi d'après-vente : les conventions du CRM, le pipeline Linear refondu le 2026-08-29, le workflow Devis piloté par Linear et le gabarit d'onboarding client."
+updated: 2026-09-02
+description: "Le cycle de vie d'une affaire, du vivier de prospection au suivi d'après-vente : les conventions du CRM, le pipeline Linear à onze colonnes, la séparation entre proposition commerciale et devis Tiime, et le gabarit d'onboarding client."
 ---
 
 import Callout from "../../../components/doc/Callout.astro";
@@ -56,7 +56,13 @@ Inélégant, mais c'est le seul moyen de lire le pipeline d'un coup d'œil. **Un
 
 ## Le pipeline
 
-Refondu le 2026-08-29 : de 17 statuts à 13, dont 10 colonnes d'affaires. Spec `docs/superpowers/specs/2026-08-29-crm-pipeline-refonte-design.md`.
+Refondu le 2026-08-29 : de 17 statuts à 13, dont 10 colonnes d'affaires. Spec `docs/superpowers/specs/2026-08-29-crm-pipeline-refonte-design.md`. Complété le 2026-09-02 par **✍️ Proposition validée**, onzième colonne d'affaires.
+
+<Callout type="tip" title="Une proposition commerciale n'est pas un devis">
+  Deux documents distincts, que le vocabulaire confondait jusqu'ici. La **proposition commerciale** est la page publiée par Coolbeans : elle vend le résultat, porte le périmètre et se valide par formulaire. Le **devis** est le document comptable émis dans Tiime, avec la facture d'acompte.
+
+  L'ordre ne s'inverse pas : la proposition d'abord, sa validation ensuite, les documents Tiime seulement après. Un devis Tiime émis sur une proposition non validée devra être annulé.
+</Callout>
 
 <table>
   <thead>
@@ -81,7 +87,11 @@ Refondu le 2026-08-29 : de 17 statuts à 13, dont 10 colonnes d'affaires. Spec `
 
 **Les sous-issues n'utilisent que `Todo` et `Done`.** Dans Linear, les statuts sont définis **par team, pas par type d'objet** : affaires et actions partagent forcément le même jeu de colonnes. Une convention seule ne tient pas — elle a dérivé jusqu'à ce que des sous-issues se retrouvent classées `🪦 Perdue`. Ce qui la remplace : la vue **« Affaires »**, qui exclut les sous-issues, et le gabarit qui pose `Todo` à la création. Linear n'expose aucun statut par défaut propre aux sous-issues, ce garde-fou ne peut donc pas vivre dans les réglages de la team.
 
-**Une relance ne change pas la colonne.** L'affaire reste en **📝 Devis envoyé** jusqu'à la réponse, au report ou à la perte : une relance est un événement daté, pas un état. Les labels `relance-n` disent combien de fois, la sous-issue datée dit quand tombe la suivante. C'est pourquoi la colonne `☄️ Lead relancé` a été supprimée, en même temps que `💪 Négo`, qui décrivait un moment du devis envoyé.
+**Une relance ne change pas la colonne.** L'affaire reste en **📝 Proposition envoyée** jusqu'à la réponse, au report ou à la perte : une relance est un événement daté, pas un état. Les labels `relance-n` disent combien de fois, la sous-issue datée dit quand tombe la suivante. C'est pourquoi la colonne `☄️ Lead relancé` a été supprimée, en même temps que `💪 Négo`, qui décrivait un moment de la proposition envoyée.
+
+**✍️ Proposition validée sépare le oui de l'argent.** Le lead a validé le formulaire, rien n'est encaissé. C'est la fenêtre où une affaire se perd le plus facilement, et elle n'avait aucune colonne : le pipeline sautait de la proposition envoyée à l'affaire signée, ce que la skill `devis` signalait déjà comme un trou. Trois gestes s'y logent, dans cet ordre : émettre le devis dans Tiime, émettre la facture d'acompte, puis envoyer **les trois documents dans un seul mail** — proposition validée, devis, facture d'acompte.
+
+Le passage dans cette colonne est **automatique** : la validation du formulaire y déplace l'affaire et crée la sous-tâche `Devis et acompte — …` avec les coordonnées de facturation transmises. Le passage en **🏆 Signée**, lui, reste à la main : sans API Tiime ni webhook bancaire, rien ne peut constater l'encaissement à la place de Ludo. La dernière case de la sous-tâche est là pour ça.
 
 **Le post-signature tient en deux colonnes.** **🏆 Signée** dit que l'acompte est réglé et que la production tourne — ailleurs, dans la team du client. **🧾 Solde à encaisser** est un rappel d'argent : sans elle, deux factures de solde ont dormi plusieurs semaines pour 3 500 €. Détailler la production ici la dupliquerait.
 
@@ -105,8 +115,10 @@ Depuis 2026-08-17, le devis ne se compose plus à la main dans l'admin : il se *
 4. **Le brief** : Granola enregistre, le guide sert de fil. **Rien ne se saisit dans Linear devant le lead** — le bloc Chiffrage et les Réglages ne s'affichent jamais en partage d'écran. Le write-back se fait après, depuis le CR.
 5. **Passe 2, après le brief** : la skill collecte tout (Linear, Gmail, Granola, web public du client), challenge les estimates **et les prix par la valeur** — le temps × TJM est un plancher, pas un prix : une ligne de 15 minutes peut valoir 3× plus, un total peut faire peur vs le budget annoncé — puis met à jour le bloc Chiffrage dans Linear. **Le budget du lead définit le projet** : ce qui déborde passe en option cochable ou en piste « V2 du site » sans prix ferme.
 6. **Génération** : la skill compose `src/content/devis/<slug>.yaml` (total unique, lignes sans prix, seules les options chiffrées, urgence en valeur absolue avec tooltip), preview en staging, prod sur ordre explicite.
-7. **Envoi** : un seul mail Resend (template transactionnel), objet « Proposition : *Nom du projet* », `to:` le lead, **`cc: ludo@coolbeans.cc` visible**, envoyé uniquement après validation explicite. La sous-issue CRM d'envoi passe en Done.
-8. **Suivi** : la réponse du client (page publique du devis) s'écrit en D1 puis notifie par mail ; le cockpit [/espace/devis](/espace/devis) affiche le pipeline — Publié → Envoyé → Répondu — avec liens vers la page publique, le projet Linear et l'affaire CRM.
+7. **Envoi** : **à la main, par Ludo**, jamais depuis Claude (règle du 2026-09-01). Objet « Proposition : *Nom du projet* », le lien de la page publique. La sous-issue CRM d'envoi passe en Done. L'affaire va en **📝 Proposition envoyée**.
+8. **Validation** : le lead valide depuis la page publique. L'affaire passe **automatiquement** en **✍️ Proposition validée** et reçoit sa sous-tâche `Devis et acompte — …`, avec raison sociale, SIREN, adresse, TVA et modalités de règlement. Rien ne part vers le lead à ce moment-là.
+9. **Documents comptables** : devis Tiime au périmètre validé, puis facture d'acompte, puis **un seul mail portant les trois documents** — proposition validée, devis, facture d'acompte. À l'encaissement seulement, l'affaire passe en **🏆 Signée**, à la main.
+10. **Suivi** : la réponse du client s'écrit en D1 puis notifie par mail ; le cockpit [/espace/devis](/espace/devis) affiche le pipeline — Publié → Envoyé → Répondu — avec liens vers la page publique, le projet Linear et l'affaire CRM.
 
 ### La trame de brief
 
@@ -201,29 +213,31 @@ Template de la team **🎯 CRM**. Il crée l'affaire directement en **👋 Conta
 
 **La fiche** : source, contexte, besoin exprimé, budget évoqué, échéance souhaitée, décideur, lien du devis, projet Proposal, dossier Drive.
 
-**La check-list des quatorze étapes**, en markdown. Ce ne sont **pas** des sous-issues : les créer d'avance produirait des centaines d'issues fantômes héritant d'un statut de pipeline qui ne veut rien dire pour elles. On coche au fil de l'eau ; seule l'étape qui mérite une échéance est promue en sous-issue datée.
+**La check-list des seize étapes**, en markdown. Ce ne sont **pas** des sous-issues : les créer d'avance produirait des centaines d'issues fantômes héritant d'un statut de pipeline qui ne veut rien dire pour elles. On coche au fil de l'eau ; seule l'étape qui mérite une échéance est promue en sous-issue datée.
 
 1. Qualifier : besoin, budget, échéance, décideur
 2. Envoyer le lien de réservation
 3. Faire le rendez-vous de découverte
 4. Cadrer le périmètre et chiffrer
-5. Rédiger et publier le devis
+5. Rédiger et publier la proposition commerciale
 6. Relancer à J+3, J+7, J+14
-7. Émettre la facture d'acompte dans Tiime
-8. Vérifier l'encaissement de l'acompte
-9. Créer la team Linear du client (« Copy team settings » depuis « Modèle client ») et y créer le premier projet
-10. Créer le repo GitHub, scaffolder la stack du devis, connecter le repo à l'intégration Git de Linear
-11. Créer la fiche client `src/content/clients/<slug>.yaml` avec son `linearTeamId`
-12. Créer le compte utilisateur dans Better Auth, le dossier Drive, le monitoring du domaine
-13. Envoyer le mail d'onboarding et acter par écrit les engagements du client
-14. Émettre la facture de solde dans Tiime
+7. Émettre le devis dans Tiime, au périmètre de la proposition validée
+8. Émettre la facture d'acompte dans Tiime
+9. Envoyer les trois documents en un seul mail : proposition validée, devis, facture d'acompte
+10. Vérifier l'encaissement de l'acompte
+11. Créer la team Linear du client (« Copy team settings » depuis « Modèle client ») et y créer le premier projet
+12. Créer le repo GitHub, scaffolder la stack de la proposition, connecter le repo à l'intégration Git de Linear
+13. Créer la fiche client `src/content/clients/<slug>.yaml` avec son `linearTeamId`
+14. Créer le compte utilisateur dans Better Auth, le dossier Drive, le monitoring du domaine
+15. Envoyer le mail d'onboarding et acter par écrit les engagements du client
+16. Émettre la facture de solde dans Tiime
 
-Les étapes 9 à 13 s'exécutent **avant** que la team du client soit peuplée — la 9 la crée. Elles n'auraient donc pas pu y vivre de toute façon. La 14 suit la règle d'ouverture de cette page : l'affaire suit l'argent. Le détail opérationnel de 9 à 13 est porté par la skill `onboarding-client`, et le SOP le reprend en **S10**.
+Les étapes 7 à 9 sont indissociables et n'existent qu'une fois la proposition validée : c'est le contenu de la colonne **✍️ Proposition validée**. Les étapes 11 à 15 s'exécutent **avant** que la team du client soit peuplée — la 11 la crée. Elles n'auraient donc pas pu y vivre de toute façon. La 16 suit la règle d'ouverture de cette page : l'affaire suit l'argent. Le détail opérationnel de 11 à 15 est porté par la skill `onboarding-client`, et le SOP le reprend en **S10**.
 
 <Callout type="tip" title="Le routage précède la check-list">
-  Les étapes 9 à 13 ne s'appliquent pas toutes à tout projet. Cinq questions se posent avant d'exécuter : repo GitHub ? quelle stack (celle écrite au devis, jamais celle qu'on préfère) ? workspace portail ? compte utilisateur ? monitoring ? Un site Webflow n'a pas de repo, une prestation ponctuelle n'a pas de workspace, et un compte créé puis jamais utilisé est une dette.
+  Les étapes 11 à 15 ne s'appliquent pas toutes à tout projet. Cinq questions se posent avant d'exécuter : repo GitHub ? quelle stack (celle écrite au devis, jamais celle qu'on préfère) ? workspace portail ? compte utilisateur ? monitoring ? Un site Webflow n'a pas de repo, une prestation ponctuelle n'a pas de workspace, et un compte créé puis jamais utilisé est une dette.
 
-  Sans le `linearTeamId` de l'étape 11, le module Support du portail reste en empty state : c'est lui qui dit au formulaire support dans quelle team créer ses tickets (COO-30).
+  Sans le `linearTeamId` de l'étape 13, le module Support du portail reste en empty state : c'est lui qui dit au formulaire support dans quelle team créer ses tickets (COO-30).
 </Callout>
 
 ### Modèle B · la team Linear « Modèle client »

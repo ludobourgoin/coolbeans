@@ -12,7 +12,9 @@ const { appels, creerSousTache, changerEtatAffaire, fetchEtatsAffaires } = vi.ho
       appels.push("creerSousTache");
       return { id: "uuid-tache", identifier: "CRM-99", url: "https://linear.app/x/issue/CRM-99" };
     }),
-    changerEtatAffaire: vi.fn(async () => {
+    /* Signature complète et non `async () => …` : un test lit le troisième
+       argument pour vérifier qu'on n'écrit jamais « Signée » ici. */
+    changerEtatAffaire: vi.fn(async (_apiKey: string, _issueId: string, _nomEtat: string) => {
       appels.push("changerEtatAffaire");
       return true;
     }),
@@ -25,7 +27,7 @@ const { appels, creerSousTache, changerEtatAffaire, fetchEtatsAffaires } = vi.ho
           identifier: `CRM-${n}`,
           numero: n,
           url: `https://linear.app/x/issue/CRM-${n}`,
-          etat: "📝 Devis envoyé",
+          etat: "📝 Proposition envoyée",
           type: "started",
           position: 1000,
         });
@@ -90,14 +92,26 @@ describe("corpsTacheFacturation", () => {
     expect(corps).toContain("Aucune modalité de règlement");
   });
 
-  it("porte la check-list de facturation et le lien vers le devis", () => {
+  it("porte la check-list de facturation et le lien vers la proposition", () => {
     const corps = corpsTacheFacturation(contexte());
+    expect(corps).toContain("- [ ] Créer ou vérifier le client dans Tiime");
     expect(corps).toContain("- [ ] Émettre le devis dans Tiime");
     expect(corps).toContain("- [ ] Émettre la facture d'acompte");
-    expect(corps).toContain("- [ ] Envoyer la facture d'acompte au client");
     expect(corps).toContain(
       "https://coolbeans.cc/devis/revolutions-douces/salon-2026-5336",
     );
+  });
+
+  it("demande les trois documents dans un seul envoi, puis le passage en Signée", () => {
+    /* Le geste que la colonne ✍️ Proposition validée existe pour porter : le
+       devis Tiime et la facture d'acompte ne partent pas seuls, ils partent
+       avec la proposition validée, dans un seul mail. Et l'affaire ne se
+       clôt en 🏆 Signée qu'à l'encaissement — dernière case de la liste,
+       sinon l'affaire reste en validée pour l'éternité. */
+    const corps = corpsTacheFacturation(contexte());
+    expect(corps).toContain("un seul mail");
+    expect(corps).toMatch(/proposition validée, devis, facture d'acompte/);
+    expect(corps).toContain("À l'encaissement : passer l'affaire en 🏆 Signée");
   });
 });
 
@@ -118,7 +132,7 @@ describe("declencherSignature", () => {
     vi.clearAllMocks();
   });
 
-  it("crée la sous-tâche, l'accroche en D1, puis passe l'affaire en Signée", async () => {
+  it("crée la sous-tâche, l'accroche en D1, puis passe l'affaire en Proposition validée", async () => {
     const ctx = contexte();
     const id = await enregistrer(ctx.slug);
     const res = await declencherSignature("clé", ctx, id, d1);
@@ -127,17 +141,33 @@ describe("declencherSignature", () => {
     expect(creerSousTache).toHaveBeenCalledWith(
       expect.objectContaining({
         parentId: "uuid-affaire-46",
-        title: "Facturation acompte — Site du salon Construire & Habiter Autrement",
+        title: "Devis et acompte — Site du salon Construire & Habiter Autrement",
       }),
     );
-    expect(changerEtatAffaire).toHaveBeenCalledWith("clé", "uuid-affaire-46", "Signée");
+    expect(changerEtatAffaire).toHaveBeenCalledWith(
+      "clé",
+      "uuid-affaire-46",
+      "Proposition validée",
+    );
     expect(await tacheExistante(ctx.slug, d1)).toBe("uuid-tache");
   });
 
-  it("crée la tâche AVANT de marquer l'affaire signée", async () => {
+  it("ne marque JAMAIS l'affaire signée sur la seule validation du formulaire", async () => {
+    /* Une affaire signée demande deux conditions, pas une : la validation ET
+       le règlement de l'acompte (règle du 2026-09-01). Le code passait
+       directement en « Signée », ce qui comptait comme acquis un encaissement
+       qui n'avait pas eu lieu. C'est exactement ce que la colonne
+       ✍️ Proposition validée corrige — ce test empêche la régression. */
+    const ctx = contexte();
+    await declencherSignature("clé", ctx, await enregistrer(ctx.slug), d1);
+    const etats = changerEtatAffaire.mock.calls.map((appel) => appel[2]);
+    expect(etats).not.toContain("Signée");
+  });
+
+  it("crée la tâche AVANT de faire avancer l'affaire", async () => {
     /* Si Linear tombe entre les deux, mieux vaut une affaire encore en
-       « Devis envoyé » avec sa tâche de facturation qu'une affaire signée
-       dont personne ne facturera jamais rien. */
+       « Proposition envoyée » avec sa tâche de facturation qu'une affaire
+       validée dont personne ne facturera jamais rien. */
     const ctx = contexte();
     await declencherSignature("clé", ctx, await enregistrer(ctx.slug), d1);
     expect(appels).toEqual(["creerSousTache", "changerEtatAffaire"]);
@@ -155,7 +185,7 @@ describe("declencherSignature", () => {
     expect(fetchEtatsAffaires).not.toHaveBeenCalled();
   });
 
-  it("devis sans affaire rattachée : rien dans Linear, et on le dit", async () => {
+  it("proposition sans affaire rattachée : rien dans Linear, et on le dit", async () => {
     const ctx = contexte({ affaire: undefined });
     const res = await declencherSignature("clé", ctx, await enregistrer(ctx.slug), d1);
     expect(res).toEqual({ statut: "sans_affaire" });

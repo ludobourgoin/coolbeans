@@ -29,7 +29,7 @@ describe("numeroAffaire", () => {
 describe("trouverEtat", () => {
   const etats: EtatCrm[] = [
     { id: "a", name: "📥 Triage lead", type: "backlog", position: 0 },
-    { id: "b", name: "📝 Devis envoyé", type: "started", position: 1000 },
+    { id: "b", name: "📝 Proposition envoyée", type: "started", position: 1000 },
     { id: "c", name: "Todo", type: "unstarted", position: 2000 },
     { id: "d", name: "🏆 Signée", type: "started", position: 5500 },
   ];
@@ -38,7 +38,7 @@ describe("trouverEtat", () => {
     expect(trouverEtat(etats, "Signée")?.id).toBe("d");
     expect(trouverEtat(etats, "signee")?.id).toBe("d");
     expect(trouverEtat(etats, "Todo")?.id).toBe("c");
-    expect(trouverEtat(etats, "Devis envoyé")?.id).toBe("b");
+    expect(trouverEtat(etats, "Proposition envoyée")?.id).toBe("b");
   });
 
   it("rend undefined si l'état n'existe plus dans le pipeline", () => {

@@ -1,0 +1,59 @@
+---
+/* En-tête du tirage papier. Invisible à l'écran, où l'en-tête web joue déjà
+   ce rôle et où la page est adressée par son lien privé. Le PDF, lui, circule
+   détaché en pièce jointe d'un mail, à côté d'un devis Tiime qui n'en porte
+   qu'une ligne de renvoi : sans émetteur ni destinataire nommés, il se lit
+   comme l'impression d'un site, pas comme une proposition commerciale.
+
+   Il remplace l'en-tête web à l'impression, plutôt que de s'y ajouter : le
+   hero centré sur fond quadrillé mange un tiers de la première page pour
+   redire un titre.
+
+   Émetteur repris des mentions légales (src/pages/mentions-legales.astro) :
+   une seule identité Coolbeans, deux endroits où elle s'affiche. */
+import type { DevisData } from "../../lib/devis";
+
+interface Props {
+  d: DevisData;
+  reference?: string;
+}
+const { d, reference } = Astro.props;
+
+const dateLongue = (date: Date) =>
+  date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+---
+
+<div class="mx-auto hidden max-w-[880px] print:block">
+  <div class="grid grid-cols-2 gap-10">
+    <div class="text-[9.5px] leading-[1.65]">
+      <img class="mb-2.5 h-3.75 w-auto" src="/img/coolbeans-wordmark.svg" alt="Coolbeans" />
+      <p class="font-bold">Coolbeans — Ludovic Bourgoin (EI)</p>
+      <p>2 rue Général de Gaulle, 34200 Sète</p>
+      <p>SIRET 828 274 928 00047</p>
+      <p>ludo@coolbeans.cc · coolbeans.cc</p>
+    </div>
+
+    {
+      d.destinataire && (
+        <div class="text-[9.5px] leading-[1.65]">
+          <p class="font-mono text-[8.5px] tracking-wide text-mute uppercase">Destinataire</p>
+          <p class="mt-0.5 font-bold">{d.destinataire.societe}</p>
+          {d.destinataire.contact && <p>À l'attention de {d.destinataire.contact}</p>}
+          {d.destinataire.adresse.map((ligne) => (
+            <p>{ligne}</p>
+          ))}
+        </div>
+      )
+    }
+  </div>
+
+  <h1 class="mt-9 text-[21px] leading-[1.25] font-extrabold">{d.titre}</h1>
+  <p class="mt-1.5 text-[12.5px] leading-[1.4] font-medium">{d.objet}</p>
+
+  <div
+    class="mt-4 flex items-baseline justify-between gap-6 border-t border-b border-line py-1.5 font-mono text-[9px] tracking-wide text-mute uppercase"
+  >
+    <span>Proposition commerciale{reference && ` nᵒ ${reference}`}</span>
+    <span>Version {d.version} · {dateLongue(d.date)}</span>
+  </div>
+</div>

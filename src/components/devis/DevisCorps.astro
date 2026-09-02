@@ -56,7 +56,7 @@ const ancre = (titre: string) => ancreSection(titre, version);
       <section
         id={ancre(section.titre)}
         class:list={[
-          "grid grid-cols-[180px_1fr] gap-10 py-10 scroll-mt-16.5 max-[700px]:grid-cols-1 max-[700px]:gap-4",
+          "grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4",
           index > 0 && "border-t border-line",
         ]}
       >
@@ -68,8 +68,7 @@ const ancre = (titre: string) => ancreSection(titre, version);
             <p
               class:list={[
                 "max-w-[58ch] leading-[1.6]",
-                (section.liste || section.budget || section.planning || section.diagram) &&
-                  "mb-5",
+                (section.liste || section.budget || section.planning || section.diagram) && "mb-5",
               ]}
               set:html={riche(section.texte)}
             />
@@ -81,10 +80,7 @@ const ancre = (titre: string) => ancreSection(titre, version);
                 const item = listeItem(brut);
                 return (
                   <li class="flex items-start gap-3.5">
-                    <span
-                      class="mt-[0.55em] block size-1.5 flex-none bg-ink"
-                      aria-hidden="true"
-                    />
+                    <span class="mt-[0.55em] block size-1.5 flex-none bg-ink" aria-hidden="true" />
                     <span class="max-w-[58ch]">
                       <Fragment set:html={riche(item.texte)} />
                       {item.tooltip && <Tooltip texte={item.tooltip} />}
@@ -120,59 +116,116 @@ const ancre = (titre: string) => ancreSection(titre, version);
           {section.budget &&
             (() => {
               const b = section.budget;
-              const { total, remise, totalFinal, mention } = totaux(b);
+              const { total, paliers, totalFinal, mention } = totaux(b);
+              /* Les options ne sont cochables que sur un devis chiffré : sous
+                 `enAttente` aucune ligne n'a de prix, une case ne ferait donc
+                 rien bouger et promettrait un arbitrage qui n'existe pas. */
+              const cochable = !b.enAttente;
+              const premiereOption = b.lignes.findIndex((l) => l.optionnel);
               return (
-                <div>
-                  {b.lignes.map((ligne) => (
-                    <div
-                      data-devis-ligne
-                      class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] max-[700px]:text-[16px]"
-                    >
-                      <span>
-                        <Fragment set:html={riche(ligne.label)} />
-                        {ligne.tooltip && <Tooltip texte={ligne.tooltip} />}
-                      </span>
-                      {ligne.prix !== undefined ? (
-                        <span class="font-mono whitespace-nowrap tabular-nums">
-                          {eur.format(ligne.prix)} {mention}
+                <div
+                  data-devis-budget
+                  data-remises={JSON.stringify(paliers.map((p) => p.pct))}
+                  data-mention={mention}
+                >
+                  {b.lignes.map((ligne, i) => {
+                    const aCase = cochable && ligne.optionnel;
+                    const classes =
+                      "flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] max-[700px]:text-[16px]";
+                    /* Libellé et prix sont identiques dans les deux branches ;
+                       seul l'emballage change — un <label> cliquable autour de
+                       la case, ou la ligne nue du socle. */
+                    const contenu = (
+                      <>
+                        <span class="flex items-baseline gap-3">
+                          {aCase && (
+                            <input
+                              type="checkbox"
+                              data-devis-option
+                              value={i}
+                              checked={ligne.defaut}
+                              class="mt-[0.2em] size-4 flex-none accent-ink"
+                            />
+                          )}
+                          <span>
+                            <Fragment set:html={riche(ligne.label)} />
+                            {ligne.tooltip && <Tooltip texte={ligne.tooltip} />}
+                          </span>
                         </span>
-                      ) : (
-                        /* Sur un devis en construction, une ligne sans prix
+                        {ligne.prix !== undefined ? (
+                          <span class="font-mono whitespace-nowrap tabular-nums">
+                            {aCase && "+ "}
+                            {eur.format(ligne.prix)} {mention}
+                          </span>
+                        ) : (
+                          /* Sur un devis en construction, une ligne sans prix
                            reste à chiffrer ; ailleurs, c'est qu'elle est
                            comprise dans le total. Le même vide ne veut pas
                            dire la même chose dans les deux cas. */
-                        <span class="font-mono text-[13px] whitespace-nowrap text-mute">
-                          {b.enAttente ? "À chiffrer" : "Inclus"}
-                        </span>
-                      )}
-                    </div>
-                  ))}
+                          <span class="font-mono text-[13px] whitespace-nowrap text-mute">
+                            {b.enAttente ? "À chiffrer" : "Inclus"}
+                          </span>
+                        )}
+                      </>
+                    );
+                    return (
+                      <>
+                        {aCase && premiereOption === i && (
+                          /* Frontière entre le socle et le reste : sans elle,
+                             une case au milieu d'une liste se lit comme un
+                             défaut d'affichage plutôt que comme un choix. */
+                          <p class="pt-7 pb-1 font-mono text-[12px] font-semibold tracking-wide text-mute uppercase">
+                            À composer selon votre budget
+                          </p>
+                        )}
+                        {aCase ? (
+                          <label
+                            data-devis-ligne
+                            data-prix={ligne.prix ?? 0}
+                            class={`${classes} cursor-pointer transition-colors duration-150 ease-in-out hover:bg-surface-subtle`}
+                          >
+                            {contenu}
+                          </label>
+                        ) : (
+                          <div data-devis-ligne data-prix={ligne.prix ?? 0} class={classes}>
+                            {contenu}
+                          </div>
+                        )}
+                      </>
+                    );
+                  })}
                   {b.enAttente ? (
                     <div class="pt-5">
                       <Banner tone="info">
                         Montant <b class="font-bold">en attente de validation du périmètre</b>.
-                        Cette proposition est un premier jet : elle fixe la structure, pas
-                        encore le prix. Le chiffrage arrive une fois le périmètre arrêté
-                        ensemble.
+                        Cette proposition est un premier jet : elle fixe la structure, pas encore le
+                        prix. Le chiffrage arrive une fois le périmètre arrêté ensemble.
                       </Banner>
                     </div>
-                  ) : remise > 0 ? (
+                  ) : paliers.length > 0 ? (
                     <>
                       <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] font-medium max-[700px]:text-[16px]">
                         <span>Total</span>
-                        <span class="font-mono whitespace-nowrap tabular-nums">
+                        <span data-devis-total class="font-mono whitespace-nowrap tabular-nums">
                           {eur.format(total)} {mention}
                         </span>
                       </div>
-                      <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute max-[700px]:text-[16px]">
-                        <span>{b.remiseLabel ?? "Remise exceptionnelle"} (−{b.remisePct}&nbsp;%)</span>
-                        <span class="font-mono whitespace-nowrap tabular-nums">
-                          −{eur.format(remise)}
-                        </span>
-                      </div>
+                      {paliers.map((palier) => (
+                        <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute max-[700px]:text-[16px]">
+                          <span>
+                            {palier.label} (−{palier.pct}&nbsp;%)
+                          </span>
+                          <span data-devis-remise class="font-mono whitespace-nowrap tabular-nums">
+                            −{eur.format(palier.montant)}
+                          </span>
+                        </div>
+                      ))}
                       <div class="flex items-baseline justify-between gap-4 py-4">
                         <span class="text-[17px] font-bold">Total après remise</span>
-                        <span class="font-mono text-[20px] font-bold whitespace-nowrap tabular-nums">
+                        <span
+                          data-devis-total-final
+                          class="font-mono text-[20px] font-bold whitespace-nowrap tabular-nums"
+                        >
                           {eur.format(totalFinal)} {mention}
                         </span>
                       </div>
@@ -180,7 +233,10 @@ const ancre = (titre: string) => ancreSection(titre, version);
                   ) : (
                     <div class="flex items-baseline justify-between gap-4 py-4">
                       <span class="text-[17px] font-bold">Total</span>
-                      <span class="font-mono text-[20px] font-bold whitespace-nowrap tabular-nums">
+                      <span
+                        data-devis-total-final
+                        class="font-mono text-[20px] font-bold whitespace-nowrap tabular-nums"
+                      >
                         {eur.format(total)} {mention}
                       </span>
                     </div>
@@ -229,16 +285,13 @@ const ancre = (titre: string) => ancreSection(titre, version);
                         <div class="mb-5">
                           <Banner tone="info">
                             Calendrier donné <b class="font-bold">à titre indicatif</b>, pour se
-                            projeter. Les dates se fixent une fois le périmètre arrêté et la date
-                            de démarrage choisie.
+                            projeter. Les dates se fixent une fois le périmètre arrêté et la date de
+                            démarrage choisie.
                           </Banner>
                         </div>
                       )}
                       {option.texte && (
-                        <p
-                          class="mb-5 max-w-[58ch] leading-[1.6]"
-                          set:html={riche(option.texte)}
-                        />
+                        <p class="mb-5 max-w-[58ch] leading-[1.6]" set:html={riche(option.texte)} />
                       )}
                       <div>
                         {option.jalons.map((jalon) => (
@@ -258,7 +311,10 @@ const ancre = (titre: string) => ancreSection(titre, version);
                                 ]}
                               >
                                 <span
-                                  class:list={["block size-1.5 rounded-full", OWNER_DOT[jalon.owner]]}
+                                  class:list={[
+                                    "block size-1.5 rounded-full",
+                                    OWNER_DOT[jalon.owner],
+                                  ]}
                                   aria-hidden="true"
                                 />
                                 {ownerLabel(d, jalon.owner)}
@@ -277,7 +333,10 @@ const ancre = (titre: string) => ancreSection(titre, version);
             })()}
 
           {section.note && (
-            <p class="mt-6 max-w-[58ch] text-[14px] leading-[1.6] text-mute" set:html={riche(section.note)} />
+            <p
+              class="mt-6 max-w-[58ch] text-[14px] leading-[1.6] text-mute"
+              set:html={riche(section.note)}
+            />
           )}
         </div>
       </section>
@@ -286,10 +345,11 @@ const ancre = (titre: string) => ancreSection(titre, version);
 
   {
     d.notes.length > 0 && (
-      <div class="grid grid-cols-[180px_1fr] gap-10 border-t border-line pt-10 max-[700px]:grid-cols-1 max-[700px]:gap-4">
-        <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">
-          NB
-        </p>
+      <div
+        data-devis-notes
+        class="grid grid-cols-[180px_1fr] gap-10 border-t border-line pt-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+      >
+        <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">NB</p>
         <div class="flex max-w-[58ch] flex-col gap-3">
           {d.notes.map((note) => (
             <Banner tone={note.tone}>
@@ -361,5 +421,57 @@ const ancre = (titre: string) => ancreSection(titre, version);
         }
       });
     });
+  });
+
+  /* Budget composable : le client coche ses options, les totaux suivent.
+     Le rendu Astro a déjà écrit les montants de la sélection par défaut, donc
+     une page sans JavaScript reste juste — elle n'est pas modifiable, c'est
+     tout. Ce qui compte : ce total est un confort de lecture, jamais une
+     source de vérité. Le montant qui engage est recalculé côté serveur à la
+     soumission, depuis le YAML, à partir des seuls index cochés. */
+  const eur = new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+
+  document.querySelectorAll<HTMLElement>("[data-devis-budget]").forEach((bloc) => {
+    const cases = bloc.querySelectorAll<HTMLInputElement>("[data-devis-option]");
+    if (!cases.length) return;
+
+    const mention = bloc.dataset.mention ?? "";
+    const pourcentages: number[] = JSON.parse(bloc.dataset.remises || "[]");
+    const suffixe = (montant: number) => `${eur.format(montant)}${mention ? ` ${mention}` : ""}`;
+
+    const recalculer = () => {
+      let total = 0;
+      bloc.querySelectorAll<HTMLElement>("[data-devis-ligne]").forEach((ligne) => {
+        const coche = ligne.querySelector<HTMLInputElement>("[data-devis-option]");
+        if (coche && !coche.checked) return;
+        total += Number(ligne.dataset.prix ?? 0);
+      });
+
+      /* Même cascade que `totaux()` côté serveur : chaque remise mord sur ce
+         que la précédente a laissé. Les deux calculs doivent rester d'accord,
+         sans quoi le client lit un montant et en valide un autre. */
+      let restant = total;
+      const montants = pourcentages.map((pct) => {
+        const montant = (restant * pct) / 100;
+        restant -= montant;
+        return montant;
+      });
+
+      const brut = bloc.querySelector<HTMLElement>("[data-devis-total]");
+      if (brut) brut.textContent = suffixe(total);
+      bloc.querySelectorAll<HTMLElement>("[data-devis-remise]").forEach((el, i) => {
+        el.textContent = `−${eur.format(montants[i] ?? 0)}`;
+      });
+      const final = bloc.querySelector<HTMLElement>("[data-devis-total-final]");
+      if (final) final.textContent = suffixe(restant);
+    };
+
+    cases.forEach((c) => c.addEventListener("change", recalculer));
+    recalculer();
   });
 </script>

@@ -14,7 +14,7 @@ import {
   titreSection,
 } from "../../emails/transactionnel";
 import { getEntry } from "astro:content";
-import { montantAffiche, budgetDevis } from "../../lib/devis";
+import { montantAffiche, budgetDevis, totaux, eur, lignesRetenues } from "../../lib/devis";
 import { derniereReponse, enregistrerReponse } from "../../lib/devis/reponses";
 import { declencherSignature, type ResultatSignature } from "../../lib/devis/signature";
 
@@ -39,7 +39,15 @@ export const POST: APIRoute = async ({ request }) => {
     siren,
     adresse,
     tva,
+    options,
   } = data as Record<string, unknown>;
+  /* Index des options cochées. Bornés et entiers : ils servent à filtrer les
+     lignes du YAML, et un tableau non contrôlé arrive ici depuis une page
+     publique. Une valeur hors périmètre est simplement ignorée au calcul —
+     `lignesRetenues` ne retient jamais qu'une ligne réellement `optionnel`. */
+  const optionsRecues: number[] | undefined = Array.isArray(options)
+    ? options.filter((v): v is number => Number.isInteger(v) && v >= 0 && v < 200).slice(0, 100)
+    : undefined;
   // Slug borné et validé : il est persisté en D1 et pilote le statut affiché
   // dans le cockpit — un POST forgé ne doit pas pouvoir y injecter n'importe
   // quoi ni des valeurs sans limite de taille.
@@ -79,10 +87,19 @@ export const POST: APIRoute = async ({ request }) => {
   if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
     return json({ error: "Merci de renseigner un email valide." }, 400);
   }
-  // Pour facturer, seule l'adresse est indispensable : raison sociale et SIREN
-  // n'existent pas quand le client répond en tant que particulier.
-  if (reponse === "validation" && (typeof adresse !== "string" || !adresse.trim())) {
-    return json({ error: "Merci de renseigner l'adresse de facturation." }, 400);
+  /* Facturation : les trois champs sont exigés à la validation. Le contrôle
+     est répété ici et pas seulement dans le formulaire, une requête pouvant
+     être forgée — et une validation qui arrive sans de quoi facturer coûte
+     un aller-retour de mails avant l'encaissement de l'acompte. */
+  if (reponse === "validation") {
+    const manquant = (
+      [
+        [raisonSociale, "la raison sociale"],
+        [siren, "le numéro SIREN"],
+        [adresse, "l'adresse de facturation"],
+      ] as const
+    ).find(([valeur]) => typeof valeur !== "string" || !valeur.trim());
+    if (manquant) return json({ error: `Merci de renseigner ${manquant[1]}.` }, 400);
   }
 
   const objetReponse =
@@ -97,6 +114,21 @@ export const POST: APIRoute = async ({ request }) => {
   // Trace du consentement : sans base de données, l'email de notification est le
   // seul endroit où il en reste une preuve horodatée.
   const traceConsentement = "Accord&eacute; via le formulaire du devis";
+
+  /* Le devis est relu ici, avant tout enregistrement : c'est lui qui fait foi
+     sur les prix. Le navigateur n'envoie que des index de cases, jamais un
+     montant — un total posté depuis la page publique serait modifiable par
+     quiconque sait ouvrir un inspecteur. */
+  const devis = await getEntry("devis", slug).catch(() => undefined);
+  const budget = devis && budgetDevis(devis.data);
+  /* Un devis sans ligne optionnelle n'a pas de périmètre composé : on écrit
+     null plutôt qu'un tableau vide, qui se lirait comme « tout décoché ». */
+  const aDesOptions = budget?.lignes.some((l) => l.optionnel) ?? false;
+  const montantCompose =
+    budget && !budget.enAttente && aDesOptions
+      ? totaux(budget, optionsRecues).totalFinal
+      : undefined;
+  const perimetreCompose = aDesOptions && optionsRecues ? JSON.stringify(optionsRecues) : undefined;
 
   // D1 d'abord : le cockpit /espace/devis lit cette table, et la tâche de
   // facturation a besoin de l'id de la ligne écrite. Un échec D1 ne bloque
@@ -114,15 +146,19 @@ export const POST: APIRoute = async ({ request }) => {
       siren: champ(siren) ?? null,
       adresse: champ(adresse) ?? null,
       tva: champ(tva) ?? null,
+      optionsRetenues: perimetreCompose ?? null,
+      montantRetenu: montantCompose ?? null,
     });
     reponseId = (await derniereReponse(slug))?.id;
   } catch (err) {
     console.error("devis-reponse: écriture D1 échouée", err);
   }
 
-  /* Validation : l'affaire CRM passe en « Signée » et reçoit sa sous-tâche de
-     facturation. Rien ne part vers le client ici — la facture d'acompte
-     s'émet dans Tiime, à la main. Toute panne de ce bloc est journalisée et
+  /* Validation : l'affaire CRM passe en « Proposition validée » — pas en
+     « Signée », qui demande en plus l'encaissement — et reçoit sa sous-tâche
+     de facturation. Rien ne part vers le client ici : le devis Tiime et la
+     facture d'acompte s'émettent à la main, puis partent avec la proposition
+     validée dans un seul mail. Toute panne de ce bloc est journalisée et
      ignorée : elle ne doit pas priver Ludo de la notification. */
   let tache: ResultatSignature | undefined;
   if (reponse === "validation" && reponseId !== undefined) {
@@ -131,7 +167,7 @@ export const POST: APIRoute = async ({ request }) => {
       if (!apiKey) {
         console.error("devis-reponse: LINEAR_API_KEY absent de cet environnement");
       } else {
-        const entry = await getEntry("devis", slug);
+        const entry = devis;
         if (!entry) {
           console.error(`devis-reponse: devis ${slug} introuvable dans la collection`);
         } else {
@@ -142,7 +178,13 @@ export const POST: APIRoute = async ({ request }) => {
               titre: entry.data.titre,
               objet: entry.data.objet,
               affaire: entry.data.linear?.affaire,
-              total: montantAffiche(entry.data),
+              /* Sur un devis composable, la tâche de facturation doit porter
+                 ce que le client a réellement pris, pas le total d'affichage
+                 par défaut : c'est ce montant qui part au devis Tiime. */
+              total:
+                montantCompose !== undefined
+                  ? eur.format(montantCompose)
+                  : montantAffiche(entry.data),
               reglement: budgetDevis(entry.data)?.reglement,
               client: {
                 prenom: prenomClient,
@@ -156,9 +198,7 @@ export const POST: APIRoute = async ({ request }) => {
             },
             reponseId,
           );
-          console.log(
-            JSON.stringify({ event: "devis_signature", slug, statut: tache.statut }),
-          );
+          console.log(JSON.stringify({ event: "devis_signature", slug, statut: tache.statut }));
         }
       }
     } catch (err) {
@@ -171,7 +211,12 @@ export const POST: APIRoute = async ({ request }) => {
      le cas qu'on veut voir passer — c'est un oubli de rattachement. */
   const lignesTache: Array<[string, string | undefined]> =
     tache?.statut === "cree"
-      ? [["Facturation", `<a href="${tache.tache.url}">${esc(tache.tache.identifier)}</a> créée dans Linear`]]
+      ? [
+          [
+            "Facturation",
+            `<a href="${tache.tache.url}">${esc(tache.tache.identifier)}</a> créée dans Linear`,
+          ],
+        ]
       : tache?.statut === "deja_traite"
         ? [["Facturation", "Tâche déjà créée pour ce devis (soumission répétée)"]]
         : tache?.statut === "sans_affaire"
@@ -179,6 +224,27 @@ export const POST: APIRoute = async ({ request }) => {
           : tache?.statut === "affaire_introuvable"
             ? [["Facturation", `Affaire CRM-${tache.numero} introuvable dans Linear`]]
             : [];
+
+  /* Périmètre composé, en clair dans la notification : c'est ce que Ludo lit
+     avant d'ouvrir Tiime. Les options sont listées telles qu'elles figurent au
+     devis, gras du markdown retiré. */
+  const optionsRetenuesLabels =
+    budget && aDesOptions
+      ? lignesRetenues(budget, optionsRecues)
+          .filter((l) => l.optionnel)
+          .map((l) => l.label.replaceAll("**", ""))
+      : [];
+  const lignesPerimetre: Array<[string, string | undefined]> = aDesOptions
+    ? [
+        [
+          "Options retenues",
+          optionsRetenuesLabels.length
+            ? optionsRetenuesLabels.map((l) => esc(l)).join("<br>")
+            : "aucune (socle seul)",
+        ],
+        ["Montant composé", montantCompose !== undefined ? eur.format(montantCompose) : undefined],
+      ]
+    : [];
 
   const html = renderTransactionnel({
     preheader: `${objetReponse} — devis ${esc(slug)}`,
@@ -194,11 +260,11 @@ export const POST: APIRoute = async ({ request }) => {
         ["Adresse", champ(adresse) && esc(champ(adresse)!)],
         ["TVA intracom.", champ(tva) && esc(champ(tva)!)],
         ["Consentement", traceConsentement],
+        ...lignesPerimetre,
         ...lignesTache,
       ]),
       champ(message)
-        ? titreSection("Message du client") +
-          citation(esc(champ(message)!).replace(/\n/g, "<br>"))
+        ? titreSection("Message du client") + citation(esc(champ(message)!).replace(/\n/g, "<br>"))
         : titreSection("Message du client") + p("(pas de message)"),
     ].join(""),
     cta: {
@@ -231,13 +297,21 @@ export const POST: APIRoute = async ({ request }) => {
         champ(adresse) && `Adresse : ${champ(adresse)}`,
         champ(tva) && `TVA intracommunautaire : ${champ(tva)}`,
         "Consentement : accordé via le formulaire du devis",
+        aDesOptions &&
+          `Options retenues : ${optionsRetenuesLabels.join(" | ") || "aucune (socle seul)"}`,
+        aDesOptions &&
+          montantCompose !== undefined &&
+          `Montant composé : ${eur.format(montantCompose)}`,
         tache?.statut === "cree" && `Facturation : ${tache.tache.identifier} — ${tache.tache.url}`,
         tache?.statut === "sans_affaire" &&
           "Facturation : aucune affaire CRM rattachée au devis, tâche à créer à la main",
         "",
         champ(message) ?? "(pas de message)",
       ]
-        .filter((ligne) => ligne !== undefined)
+        /* `cond && "texte"` rend `false`, pas `undefined`, quand la condition
+           tombe : filtrer sur le seul `undefined` laissait « false » s'écrire
+           en clair dans le corps du mail. On ne garde que des chaînes. */
+        .filter((ligne): ligne is string => typeof ligne === "string")
         .join("\n"),
     });
 

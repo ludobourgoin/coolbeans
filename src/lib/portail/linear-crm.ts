@@ -155,8 +155,8 @@ export function _resetCacheEtats(): void {
 /**
  * Retrouve un état par son nom, emoji et casse ignorés.
  *
- * Les états du pipeline sont préfixés d'un emoji (« 🏆 Signée », « 📝 Devis
- * envoyé »). Comparer les noms bruts casserait au premier changement d'emoji,
+ * Les états du pipeline sont préfixés d'un emoji (« 🏆 Signée », « 📝 Proposition
+ * envoyée »). Comparer les noms bruts casserait au premier changement d'emoji,
  * qui est le genre de retouche qu'on fait sans y penser.
  */
 export function trouverEtat(etats: EtatCrm[], nom: string): EtatCrm | undefined {

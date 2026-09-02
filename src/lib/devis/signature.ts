@@ -1,10 +1,17 @@
-// Ce qui se déclenche quand un client valide un devis
+// Ce qui se déclenche quand un client valide une proposition commerciale
 // (spec 2026-09-01-cockpit-devis-tableau-crm-design.md).
 //
 // Trois gestes dans Linear, aucun vers le client : l'affaire passe en
-// « 🏆 Signée », une sous-tâche de facturation naît sous elle avec tout ce
-// qu'il faut pour agir, et son identifiant est accroché à la réponse pour ne
-// jamais la créer deux fois.
+// « ✍️ Proposition validée », une sous-tâche de facturation naît sous elle avec
+// tout ce qu'il faut pour agir, et son identifiant est accroché à la réponse
+// pour ne jamais la créer deux fois.
+//
+// L'état d'arrivée n'est PAS « 🏆 Signée ». Une affaire signée demande deux
+// conditions, pas une : la validation du formulaire ET le règlement de
+// l'acompte (règle posée le 2026-09-01). Le client qui a dit oui sans virer
+// occupe la colonne intermédiaire, celle où une affaire se perd le plus
+// facilement. C'est Ludo qui passe l'affaire en « 🏆 Signée » à l'encaissement,
+// faute de webhook bancaire ou d'API Tiime pour le faire à sa place.
 //
 // Ce module ne génère aucun document et n'envoie aucun mail au client. Le
 // devis Tiime et la facture d'acompte se font à la main : l'API Tiime est
@@ -21,7 +28,7 @@ import {
 import { marquerTacheLinear, tacheExistante, type D1Like } from "./reponses";
 
 /** Nom de l'état d'arrivée dans le pipeline commercial. */
-const ETAT_SIGNEE = "Signée";
+const ETAT_PROPOSITION_VALIDEE = "Proposition validée";
 
 export interface ContexteSignature {
   slug: string;
@@ -71,10 +78,10 @@ export function corpsTacheFacturation(ctx: ContexteSignature): string {
   ].filter((l): l is string => l !== null);
 
   return [
-    `Le client a validé la proposition depuis la page publique du devis.`,
+    `Le client a validé la proposition commerciale depuis sa page publique.`,
     "",
     `**${ctx.titre}** — ${ctx.objet}`,
-    `Montant du devis : **${ctx.total}**`,
+    `Montant de la proposition : **${ctx.total}**`,
     "",
     "## Coordonnées de facturation",
     ...coordonnees,
@@ -85,11 +92,13 @@ export function corpsTacheFacturation(ctx: ContexteSignature): string {
       : "_Aucune modalité de règlement dans le devis — à trancher avant d'émettre la facture._",
     "",
     "## À faire",
-    "- [ ] Émettre le devis dans Tiime",
+    "- [ ] Créer ou vérifier le client dans Tiime",
+    "- [ ] Émettre le devis dans Tiime, au périmètre exact de la proposition validée",
     "- [ ] Émettre la facture d'acompte",
-    "- [ ] Envoyer la facture d'acompte au client",
+    "- [ ] Envoyer **un seul mail** au client avec les trois documents : proposition validée, devis, facture d'acompte",
+    "- [ ] À l'encaissement : passer l'affaire en 🏆 Signée",
     "",
-    `[Voir le devis](https://coolbeans.cc/devis/${ctx.slug})`,
+    `[Voir la proposition](https://coolbeans.cc/devis/${ctx.slug})`,
   ].join("\n");
 }
 
@@ -123,17 +132,17 @@ export async function declencherSignature(
   if (!affaire) return { statut: "affaire_introuvable", numero };
 
   // L'ordre compte : la sous-tâche d'abord, le changement d'état ensuite. Si
-  // Linear tombe entre les deux, mieux vaut une affaire encore en « Devis
-  // envoyé » avec sa tâche de facturation qu'une affaire marquée signée dont
+  // Linear tombe entre les deux, mieux vaut une affaire encore en « Proposition
+  // envoyée » avec sa tâche de facturation qu'une affaire marquée validée dont
   // personne ne facturera jamais rien.
   const tache = await creerSousTache({
     apiKey,
     parentId: affaire.issueId,
-    title: `Facturation acompte — ${ctx.titre}`,
+    title: `Devis et acompte — ${ctx.titre}`,
     description: corpsTacheFacturation(ctx),
   });
   await marquerTacheLinear(reponseId, tache.id, d1);
-  await changerEtatAffaire(apiKey, affaire.issueId, ETAT_SIGNEE);
+  await changerEtatAffaire(apiKey, affaire.issueId, ETAT_PROPOSITION_VALIDEE);
 
   return { statut: "cree", tache };
 }

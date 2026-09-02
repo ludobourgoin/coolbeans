@@ -33,6 +33,17 @@ const devis = defineCollection({
     version: z.number().int().min(1).default(1),
     versionDe: z.string().optional(),
     envoi: z.object({ date: z.coerce.date(), destinataire: z.string() }).optional(),
+    /* Identité de facturation du client, affichée dans le seul en-tête
+       d'impression : le PDF part en pièce jointe, détaché de son URL, et
+       un document commercial nomme celui à qui il s'adresse. Absent du
+       rendu écran, où la page est déjà adressée par son lien privé. */
+    destinataire: z
+      .object({
+        societe: z.string(),
+        contact: z.string().optional(),
+        adresse: z.array(z.string()),
+      })
+      .optional(),
     linear: z.object({ projet: z.string().optional(), affaire: z.string().optional() }).optional(),
     sections: z.array(
       z.object({
@@ -50,6 +61,25 @@ const devis = defineCollection({
                 label: z.string(),
                 prix: z.number().optional(),
                 tooltip: z.string().optional(),
+                /* Ligne à la carte : le client la coche ou la décoche et le
+                   total se recalcule sous ses yeux. Sans ce drapeau la ligne
+                   est au socle, et rien ne permet de la retirer.
+
+                   Il n'y a volontairement qu'un seul endroit où une option
+                   vit : la section « En option » séparée recréait le défaut
+                   d'origine — on coche ici, on lit le prix là-bas — et
+                   l'effet « je compose selon mon budget » ne tient que si le
+                   choix et le total sont dans le même champ de vision. */
+                optionnel: z.boolean().default(false),
+                /* État initial d'une option. Pré-cochée par défaut : décocher
+                   est un geste actif, plus rare que cocher, donc le total
+                   d'ouverture doit porter ce qu'on recommande.
+
+                   À passer à `false` quand le socle consomme déjà le budget
+                   annoncé par le client : un premier total au-dessus de son
+                   budget lui fait peur avant de lui faire choisir (retex Vice
+                   Versa du 2026-08-27). */
+                defaut: z.boolean().default(true),
               }),
             ),
             /* Devis « en construction » : le périmètre n'est pas encore
@@ -63,6 +93,13 @@ const devis = defineCollection({
             // Libellé de la ligne de remise. « Tarif association », « Geste
             // commercial »… Une remise nommée se valorise ; défaut neutre.
             remiseLabel: z.string().optional(),
+            /* Remises en cascade, chacune calculée sur le montant déjà remisé
+               par la précédente. Sert le cas d'un barème suivi d'un geste
+               personnel : le client doit voir les deux efforts séparément,
+               sinon le second se fond dans le premier et ne compte pour rien.
+               `remisePct` / `remiseLabel` restent lus quand ce champ est
+               absent — les devis déjà publiés n'ont pas à être réécrits. */
+            remises: z.array(z.object({ label: z.string(), pct: z.number() })).optional(),
             mention: z.string().optional(), // suffixe des totaux, ex. « HT »
             reglement: z.string().optional(),
           })

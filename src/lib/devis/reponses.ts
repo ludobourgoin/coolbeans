@@ -20,6 +20,12 @@ export interface NouvelleReponse {
   siren?: string | null;
   adresse?: string | null;
   tva?: string | null;
+  /* Périmètre composé par le client sur un devis à options (migration 0007).
+     `optionsRetenues` est le JSON des index cochés ; `montantRetenu` le total
+     recalculé côté serveur depuis le YAML — jamais celui qu'a envoyé le
+     navigateur. Nuls sur un devis sans ligne optionnelle. */
+  optionsRetenues?: string | null;
+  montantRetenu?: number | null;
 }
 
 export type ReponseDevis = NouvelleReponse & {
@@ -48,23 +54,31 @@ export const db = (): D1Like => (env as unknown as { PORTAL_DB: D1Like }).PORTAL
 
 const SQL_INSERT =
   "INSERT INTO devis_reponses " +
-  "(slug, decision, message, prenom, nom, email, raison_sociale, siren, adresse, tva) " +
-  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  "(slug, decision, message, prenom, nom, email, raison_sociale, siren, adresse, tva, " +
+  "options_retenues, montant_retenu) " +
+  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+/* Colonnes communes aux trois SELECT : elles doivent rester alignées, une
+   colonne ajoutée ici et oubliée là produit un champ silencieusement absent
+   du cockpit plutôt qu'une erreur. */
+const COLONNES =
+  "slug, decision, message, prenom, nom, email, raison_sociale AS raisonSociale, " +
+  "siren, adresse, tva, options_retenues AS optionsRetenues, " +
+  "montant_retenu AS montantRetenu, linear_task_id AS linearTaskId, created_at AS createdAt";
 
 /* L'INSERT ne rend pas l'id sous D1Like : on relit la dernière ligne du slug
    pour connaître la réponse qu'on vient d'écrire, et pouvoir y accrocher
    l'identifiant de la tâche Linear. */
 const SQL_DERNIERE =
-  "SELECT id, slug, decision, message, prenom, nom, email, raison_sociale AS raisonSociale, " +
-  "siren, adresse, tva, linear_task_id AS linearTaskId, created_at AS createdAt " +
-  "FROM devis_reponses WHERE slug = ? ORDER BY id DESC LIMIT 1";
+  `SELECT id, ${COLONNES} ` + "FROM devis_reponses WHERE slug = ? ORDER BY id DESC LIMIT 1";
 
 const SQL_MARQUER_TACHE = "UPDATE devis_reponses SET linear_task_id = ? WHERE id = ?";
 
 /* Idempotence : une tâche de facturation déjà accrochée à N'IMPORTE quelle
    réponse du devis interdit d'en créer une seconde. Un client qui soumet deux
    fois le formulaire — double-clic, retour arrière, relance — ne doit pas
-   produire deux tâches ni repasser l'affaire en « Signée » à chaque fois. */
+   produire deux tâches ni repasser l'affaire en « Proposition validée » à
+   chaque fois. */
 const SQL_TACHE_EXISTANTE =
   "SELECT linear_task_id AS linearTaskId FROM devis_reponses " +
   "WHERE slug = ? AND linear_task_id IS NOT NULL LIMIT 1";
@@ -74,15 +88,10 @@ const SQL_TACHE_EXISTANTE =
    grossit sans borne : le cockpit n'a besoin que du dernier état de chaque
    devis, jamais de l'historique complet. */
 const SQL_LISTE =
-  "SELECT MAX(id) AS id, slug, decision, message, prenom, nom, email, " +
-  "raison_sociale AS raisonSociale, siren, adresse, tva, linear_task_id AS linearTaskId, " +
-  "created_at AS createdAt " +
+  `SELECT MAX(id) AS id, ${COLONNES} ` +
   "FROM devis_reponses GROUP BY slug ORDER BY createdAt DESC";
 
-export async function enregistrerReponse(
-  r: NouvelleReponse,
-  d1: D1Like = db(),
-): Promise<void> {
+export async function enregistrerReponse(r: NouvelleReponse, d1: D1Like = db()): Promise<void> {
   await d1
     .prepare(SQL_INSERT)
     .bind(
@@ -96,6 +105,8 @@ export async function enregistrerReponse(
       r.siren ?? null,
       r.adresse ?? null,
       r.tva ?? null,
+      r.optionsRetenues ?? null,
+      r.montantRetenu ?? null,
     )
     .run();
 }

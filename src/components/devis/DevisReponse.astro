@@ -37,164 +37,168 @@ const { slug, enAttente = false } = Astro.props;
               : "Validez la proposition ou posez vos questions, je reviens vers vous rapidement."
           }
         </p>
-      <form id="devis-form" class="card mt-10 grid gap-6" data-slug={slug}>
-        {
-          enAttente ? (
-            <input type="hidden" name="reponse" value="question" />
-          ) : (
-            <Choicebox
-              name="reponse"
-              options={[
-                {
-                  value: "validation",
-                  title: "Je valide cette proposition",
-                  hint: "Le projet démarre à réception de l'acompte.",
-                  checked: true,
-                },
-                {
-                  value: "question",
-                  title: "J'ai une question ou une remarque",
-                  hint: "Précisez-la dans le message ci-dessous.",
-                },
-              ]}
-            />
-          )
-        }
-        <p class="text-[13px] text-mute">Les champs marqués d'une étoile sont obligatoires.</p>
-        <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
-          <div class="grid gap-2">
-            <label class="label field-label" for="devis-prenom">
-              Prénom <span class="text-ink" aria-hidden="true">*</span>
-            </label>
-            <input
-              class="field"
-              type="text"
-              id="devis-prenom"
-              name="prenom"
-              autocomplete="given-name"
-              placeholder="Votre prénom"
-              required
-            />
-          </div>
-          <div class="grid gap-2">
-            <label class="label field-label" for="devis-nom">
-              Nom <span class="text-ink" aria-hidden="true">*</span>
-            </label>
-            <input
-              class="field"
-              type="text"
-              id="devis-nom"
-              name="nom"
-              autocomplete="family-name"
-              placeholder="Votre nom"
-              required
-            />
-          </div>
-        </div>
-        <div class="grid gap-2">
-          <label class="label field-label" for="devis-email">
-            Email <span class="text-ink" aria-hidden="true">*</span>
-          </label>
-          <input
-            class="field"
-            type="email"
-            id="devis-email"
-            name="email"
-            autocomplete="email"
-            placeholder="vous@entreprise.com"
-            required
-          />
-        </div>
-        <div data-facturation-fields hidden class="grid gap-4 border-t border-line pt-6">
-          <p class="text-[13px] leading-[1.6] text-mute">
-            Informations nécessaires pour éditer la facture d'acompte. Raison sociale et
-            SIREN uniquement si vous répondez pour une société, laissez-les vides sinon.
-          </p>
+        <form id="devis-form" class="card mt-10 grid gap-6" data-slug={slug}>
+          {
+            enAttente ? (
+              <input type="hidden" name="reponse" value="question" />
+            ) : (
+              <Choicebox
+                name="reponse"
+                options={[
+                  {
+                    value: "validation",
+                    title: "Je valide cette proposition",
+                    hint: "Le projet démarre à réception de l'acompte.",
+                    checked: true,
+                  },
+                  {
+                    value: "question",
+                    title: "J'ai une question ou une remarque",
+                    hint: "Précisez-la dans le message ci-dessous.",
+                  },
+                ]}
+              />
+            )
+          }
+          <p class="text-[13px] text-mute">Les champs marqués d'une étoile sont obligatoires.</p>
           <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
             <div class="grid gap-2">
-              <label class="label field-label" for="devis-raison-sociale">Raison sociale</label>
+              <label class="label field-label" for="devis-prenom">
+                Prénom <span class="text-ink" aria-hidden="true">*</span>
+              </label>
               <input
                 class="field"
                 type="text"
-                id="devis-raison-sociale"
-                name="raisonSociale"
-                autocomplete="organization"
-                placeholder="Nom de la société"
+                id="devis-prenom"
+                name="prenom"
+                autocomplete="given-name"
+                placeholder="Votre prénom"
+                required
               />
             </div>
             <div class="grid gap-2">
-              <label class="label field-label" for="devis-siren">Numéro SIREN</label>
+              <label class="label field-label" for="devis-nom">
+                Nom <span class="text-ink" aria-hidden="true">*</span>
+              </label>
               <input
                 class="field"
                 type="text"
-                id="devis-siren"
-                name="siren"
-                inputmode="numeric"
-                placeholder="123456789"
+                id="devis-nom"
+                name="nom"
+                autocomplete="family-name"
+                placeholder="Votre nom"
+                required
               />
             </div>
           </div>
           <div class="grid gap-2">
-            <label class="label field-label" for="devis-adresse">
-              Adresse de facturation <span class="text-ink" aria-hidden="true">*</span>
+            <label class="label field-label" for="devis-email">
+              Email <span class="text-ink" aria-hidden="true">*</span>
             </label>
             <input
               class="field"
-              type="text"
-              id="devis-adresse"
-              name="adresse"
-              autocomplete="street-address"
-              placeholder="Numéro, rue, code postal, ville"
-            />
-          </div>
-          <div class="grid gap-2">
-            <label class="label field-label" for="devis-tva">Numéro de TVA intracommunautaire</label>
-            <input
-              class="field"
-              type="text"
-              id="devis-tva"
-              name="tva"
-              placeholder="FR12345678900 (si applicable, hors France)"
-            />
-          </div>
-        </div>
-        <div class="grid gap-2">
-          <label class="label field-label" for="devis-message">Message</label>
-          <textarea
-            class="field h-auto min-h-[120px] py-3"
-            id="devis-message"
-            name="message"
-            placeholder="Une question, une remarque, un ajustement souhaité…"></textarea>
-        </div>
-        <div class="grid gap-2 border-t border-line pt-6">
-          <label
-            class="flex cursor-pointer items-start gap-3 text-[13px] leading-[1.6] text-mute"
-            for="devis-consentement"
-          >
-            <input
-              class="mt-0.75 size-4 shrink-0 accent-ink"
-              type="checkbox"
-              id="devis-consentement"
-              name="consentement"
+              type="email"
+              id="devis-email"
+              name="email"
+              autocomplete="email"
+              placeholder="vous@entreprise.com"
               required
             />
-            <span>
-              J'accepte que Coolbeans conserve ces informations pour traiter ma demande et
-              assurer le suivi de notre collaboration.
-              <span class="text-ink" aria-hidden="true">*</span>
-            </span>
-          </label>
-          <p class="pl-7 text-[13px] leading-[1.6] text-mute">
-            Elles ne sont ni revendues ni transmises à des tiers, et peuvent être supprimées
-            sur simple demande à <a class="link" href="mailto:ludo@coolbeans.cc">ludo@coolbeans.cc</a>.
+          </div>
+          <div data-facturation-fields hidden class="grid gap-4 border-t border-line pt-6">
+            <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
+              <div class="grid gap-2">
+                <label class="label field-label" for="devis-raison-sociale">
+                  Raison sociale <span class="text-ink" aria-hidden="true">*</span>
+                </label>
+                <input
+                  class="field"
+                  type="text"
+                  id="devis-raison-sociale"
+                  name="raisonSociale"
+                  autocomplete="organization"
+                  placeholder="Nom de la société"
+                />
+              </div>
+              <div class="grid gap-2">
+                <label class="label field-label" for="devis-siren">
+                  Numéro SIREN <span class="text-ink" aria-hidden="true">*</span>
+                </label>
+                <input
+                  class="field"
+                  type="text"
+                  id="devis-siren"
+                  name="siren"
+                  inputmode="numeric"
+                  placeholder="123456789"
+                />
+              </div>
+            </div>
+            <div class="grid gap-2">
+              <label class="label field-label" for="devis-adresse">
+                Adresse de facturation <span class="text-ink" aria-hidden="true">*</span>
+              </label>
+              <input
+                class="field"
+                type="text"
+                id="devis-adresse"
+                name="adresse"
+                autocomplete="street-address"
+                placeholder="Numéro, rue, code postal, ville"
+              />
+            </div>
+            <div class="grid gap-2">
+              <label class="label field-label" for="devis-tva"
+                >Numéro de TVA intracommunautaire</label
+              >
+              <input
+                class="field"
+                type="text"
+                id="devis-tva"
+                name="tva"
+                placeholder="FR12345678900 (si applicable, hors France)"
+              />
+            </div>
+          </div>
+          <div class="grid gap-2">
+            <label class="label field-label" for="devis-message">Message</label>
+            <textarea
+              class="field h-auto min-h-[120px] py-3"
+              id="devis-message"
+              name="message"
+              placeholder="Une question, une remarque, un ajustement souhaité…"></textarea>
+          </div>
+          <div class="grid gap-2 border-t border-line pt-6">
+            <label
+              class="flex cursor-pointer items-start gap-3 text-[13px] leading-[1.6] text-mute"
+              for="devis-consentement"
+            >
+              <input
+                class="mt-0.75 size-4 shrink-0 accent-ink"
+                type="checkbox"
+                id="devis-consentement"
+                name="consentement"
+                required
+              />
+              <span>
+                J'accepte que Coolbeans conserve ces informations pour traiter ma demande et assurer
+                le suivi de notre collaboration.
+                <span class="text-ink" aria-hidden="true">*</span>
+              </span>
+            </label>
+            <p class="pl-7 text-[13px] leading-[1.6] text-mute">
+              Elles ne sont ni revendues ni transmises à des tiers, et peuvent être supprimées sur
+              simple demande à <a class="link" href="mailto:ludo@coolbeans.cc">ludo@coolbeans.cc</a
+              >.
+            </p>
+          </div>
+          <button class="btn btn-lg" type="submit">Envoyer ma réponse</button>
+          <p
+            data-devis-form-status
+            role="status"
+            class="hidden text-center text-[13px] font-medium"
+          >
           </p>
-        </div>
-        <button class="btn btn-lg" type="submit">Envoyer ma réponse</button>
-        <p
-          data-devis-form-status
-          role="status"
-          class="hidden text-center text-[13px] font-medium"
-        />
         </form>
       </div>
     </div>
@@ -222,9 +226,25 @@ const { slug, enAttente = false } = Astro.props;
     if (!status || !submitBtn) return;
 
     const fd = new FormData(form);
+    /* Options cochées de la version affichée. Les versions d'un devis
+       coexistent dans le DOM, une seule visible : ramasser les cases de tout
+       le document ferait remonter celles d'une V1 masquée avec une réponse
+       à la V2. On ne transmet que des index — le serveur retrouve les prix
+       dans le YAML, un montant venu du navigateur ne s'écrit jamais en base. */
+    const pane = document.querySelector<HTMLElement>("[data-devis-pane]:not([hidden])");
+    const options = [
+      ...(pane ?? document).querySelectorAll<HTMLInputElement>("[data-devis-option]:checked"),
+    ].map((c) => Number(c.value));
+    /* Libellés lisibles, pour le seul courriel de secours ci-dessous. Le
+       serveur, lui, n'a que faire de ces chaînes : il relit le YAML. */
+    const optionsLabels = [
+      ...(pane ?? document).querySelectorAll<HTMLInputElement>("[data-devis-option]:checked"),
+    ].map((c) => c.closest("[data-devis-ligne]")?.textContent?.trim().replace(/\s+/g, " ") ?? "");
+
     const payload = {
       slug: form.dataset.slug,
       reponse: fd.get("reponse"),
+      options,
       prenom: fd.get("prenom"),
       nom: fd.get("nom"),
       email: fd.get("email"),
@@ -236,14 +256,27 @@ const { slug, enAttente = false } = Astro.props;
       consentement: fd.get("consentement") === "on",
     };
 
-    // Raison sociale et SIREN restent facultatifs : un particulier n'en a pas.
-    // Seule l'adresse est indispensable pour éditer la facture d'acompte.
-    if (payload.reponse === "validation" && !String(payload.adresse ?? "").trim()) {
-      status.hidden = false;
-      status.textContent =
-        "Merci de renseigner l'adresse de facturation pour éditer la facture d'acompte.";
-      status.className = "text-center text-[13px] font-medium text-error";
-      return;
+    /* Les trois champs de facturation sont exigés à la validation : sans eux,
+       la facture d'acompte se relance par mail, et c'est autant de jours avant
+       l'encaissement. La validation vit ici et non en `required` HTML, parce
+       que le bloc est masqué tant que la réponse n'est pas « validation » :
+       un champ requis dans un conteneur caché bloque la soumission sur une
+       erreur que le client ne voit jamais. */
+    const FACTURATION = [
+      ["raisonSociale", "la raison sociale"],
+      ["siren", "le numéro SIREN"],
+      ["adresse", "l'adresse de facturation"],
+    ] as const;
+    if (payload.reponse === "validation") {
+      const manquants = FACTURATION.filter(([champ]) => !String(payload[champ] ?? "").trim()).map(
+        ([, libelle]) => libelle,
+      );
+      if (manquants.length) {
+        status.hidden = false;
+        status.textContent = `Merci de renseigner ${new Intl.ListFormat("fr", { type: "conjunction" }).format(manquants)} pour éditer la facture d'acompte.`;
+        status.className = "text-center text-[13px] font-medium text-error";
+        return;
+      }
     }
 
     submitBtn.disabled = true;
@@ -280,6 +313,10 @@ const { slug, enAttente = false } = Astro.props;
         payload.siren ? `SIREN : ${payload.siren}` : "",
         payload.adresse ? `Adresse de facturation : ${payload.adresse}` : "",
         payload.tva ? `TVA intracommunautaire : ${payload.tva}` : "",
+        /* Le périmètre composé voyage aussi par le courriel de secours : si
+           l'API est tombée, c'est la seule trace de ce que le client a coché,
+           et un devis validé sans son périmètre est un trou de facturation. */
+        optionsLabels.length ? `\nOptions retenues :\n- ${optionsLabels.join("\n- ")}` : "",
         "",
         String(payload.message ?? "").trim() || "(pas de message)",
       ]
