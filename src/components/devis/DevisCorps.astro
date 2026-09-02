@@ -124,7 +124,10 @@ const ancre = (titre: string) => ancreSection(titre, version);
               return (
                 <div>
                   {b.lignes.map((ligne) => (
-                    <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] max-[700px]:text-[16px]">
+                    <div
+                      data-devis-ligne
+                      class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] max-[700px]:text-[16px]"
+                    >
                       <span>
                         <Fragment set:html={riche(ligne.label)} />
                         {ligne.tooltip && <Tooltip texte={ligne.tooltip} />}
@@ -239,7 +242,10 @@ const ancre = (titre: string) => ancreSection(titre, version);
                       )}
                       <div>
                         {option.jalons.map((jalon) => (
-                          <div class="grid grid-cols-[150px_1fr_auto] items-baseline gap-x-4 border-b border-line py-2.5 text-[15px] max-[700px]:grid-cols-[90px_1fr]">
+                          <div
+                            data-devis-jalon
+                            class="grid grid-cols-[150px_1fr_auto] items-baseline gap-x-4 border-b border-line py-2.5 text-[15px] max-[700px]:grid-cols-[90px_1fr]"
+                          >
                             <span class="font-mono text-[13px] font-bold text-ink">
                               {jalon.date}
                             </span>
