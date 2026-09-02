@@ -1,8 +1,18 @@
 # Reconstitution rétroactive, écrite le 2026-09-01. Aucun devis n'a jamais été
-# émis pour ce projet : les postes et les montants sont reconstruits à partir du
-# dépôt Git (30 commits du 2026-06-10 au 2026-08-13), des échanges Gmail et des
-# issues Linear de la team SET. Base 600 €/j (TJM des Réglages), tarif ami de
-# -50 % appliqué sur le total.
+# émis pour ce projet : les postes viennent du dépôt Git (30 commits du
+# 2026-06-10 au 2026-08-13), des échanges Gmail et des issues Linear de la team
+# SET.
+#
+# Chiffrage : PAS de temps × TJM. Le site a été produit vite (brief vers Claude
+# Design pour la maquette, validation cliente, puis Claude Code pour
+# l'intégration, Ludo en chef d'orchestre) et le temps humain réel est faible.
+# Le prix est celui du marché pour un site comparable vendu à un commerce local
+# — repères internes : LittleBox 3 000 €, En Haut 3 250 €, CAFA 2 000 €. Base
+# retenue 3 500 € HT, répartie sur les postes par la valeur livrée et non par
+# les heures passées. Tarif ami de -50 % appliqué sur le total.
+#
+# Ce chiffre est l'ancrage de la proposition OSMOSE (même cliente) : les deux
+# documents doivent rester cohérents.
 titre: Sète En Corps Mieux x Coolbeans
 objet: Site setencorpsmieux.fr
 date: 2026-09-01
@@ -61,26 +71,26 @@ sections:
     budget:
       lignes:
         - label: "**Fondations techniques** : projet, espace d'administration, hébergement"
-          prix: 600
+          prix: 250
         - label: "**Modélisation du contenu** : dix types de contenu et structure du Studio"
-          prix: 900
+          prix: 400
           tooltip: >-
             C'est l'étape invisible qui décide de ton autonomie : chaque champ que
             tu vois dans le Studio a été pensé et nommé ici.
         - label: "**Direction artistique et maquettes** des huit pages"
-          prix: 1800
+          prix: 600
         - label: "**Intégration du site** : huit pages, vingt-et-un blocs, deux gabarits automatiques"
-          prix: 2400
+          prix: 900
         - label: "**Planning hebdomadaire** : grille de la semaine, filtres, navigation"
-          prix: 900
+          prix: 400
         - label: "**Mise en forme de tes contenus** et reprise dans le Studio"
-          prix: 900
+          prix: 300
         - label: "**Responsive et recette** : quatre largeurs d'écran vérifiées sur les huit pages"
-          prix: 900
+          prix: 300
         - label: "**Deux rondes de retours** intégrées (1er août et 13 août)"
-          prix: 600
+          prix: 200
         - label: "**Nom de domaine, DNS et mise en production**"
-          prix: 600
+          prix: 150
           tooltip: >-
             Sortie du domaine de chez Ionos, rapatriement, bascule de
             l'hébergement et publication automatique depuis le Studio.
