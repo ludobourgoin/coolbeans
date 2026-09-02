@@ -4,6 +4,12 @@ date: 2026-09-01
 contact: Susanne
 version: 2
 versionDe: cafa/site-web-8791
+destinataire:
+  societe: Club Affaires Franco-Allemand Toulouse Midi-Pyrénées
+  contact: Susanne Salerno
+  adresse:
+    - 18 rue Lafayette
+    - 31000 Toulouse
 linear:
   projet: Site web CAFA
   affaire: CRM-9
