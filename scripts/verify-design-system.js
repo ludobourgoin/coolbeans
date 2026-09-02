@@ -217,11 +217,21 @@ if (glob && geist) {
    Ces deux-la etaient hors liste et faisaient echouer cette assertion en
    permanence (constat 2026-09-01) : un garde-fou rouge en continu ne garde
    plus rien. Ils relevent de l'irreductible que la convention CSS prevoit,
-   pas d'un ecart a corriger. */
+   pas d'un ecart a corriger.
+
+   devis/[...slug] — la feuille d'impression du devis, envoye en PDF a cote
+   du devis Tiime. Trois choses qu'aucun utilitaire n'exprime : @page pour
+   les marges du papier, print-color-adjust pour que Chrome imprime les
+   aplats, et la reecriture de l'etat imprime de composants enfants
+   (l'infobulle repliee de Tooltip qu'on deplie en incise, le sommaire
+   sticky et le formulaire de reponse qu'on retire). Un @media print ne
+   s'exprime pas en classes posees sur du markup qu'on ne controle pas
+   depuis la page. Aucune couleur en dur, uniquement des mises a zero. */
 const ALLOWED = [
   'src/components/Flow.astro',
   'src/components/doc/Sop.astro',
   'src/pages/projets/[slug].astro',
+  'src/pages/devis/[...slug].astro',
 ];
 const styled = files.filter(f => f.endsWith('.astro') && (read(f) || '').includes('<style'));
 const illegal = styled.filter(f => !ALLOWED.includes(f.split(path.sep).join('/')));

@@ -38,6 +38,11 @@ const dateLongue = (d: Date) =>
   d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 
 const courante = versions[actif].data;
+
+/* Référence du document, reprise telle quelle sur le devis Tiime qui y
+   renvoie : c'est le suffixe à quatre chiffres du slug de la V1, stable
+   d'une version à l'autre puisque les suivantes n'ont pas d'URL propre. */
+const reference = versions[0].id.split("-").pop();
 ---
 
 <BaseLayout
@@ -101,6 +106,16 @@ const courante = versions[actif].data;
     }
   </div>
 
+  <!-- Pied du tirage PDF. Masqué à l'écran, où la page porte déjà son URL
+       dans la barre du navigateur ; indispensable sur un document qui
+       circule détaché, en pièce jointe d'un mail. -->
+  <div
+    class="container-site hidden pt-10x pb-4x text-center font-mono text-[11px] leading-[1.8] tracking-wide text-mute uppercase print:block"
+  >
+    Proposition n° {reference} · Version {courante.version} du {dateLongue(courante.date)}<br />
+    coolbeans.cc/devis/{versions[0].id} · Coolbeans — Ludovic Bourgoin
+  </div>
+
   <DevisReponse
     slug={versions[actif].id}
     enAttente={courante.sections.some((s) => s.budget?.enAttente)}
@@ -142,3 +157,95 @@ const courante = versions[actif].data;
     });
   });
 </script>
+
+<style is:global>
+  /* Feuille d'impression du devis. Le PDF part en pièce jointe d'un mail, à
+     côté du devis Tiime : c'est le document qui porte le détail de l'offre,
+     et il doit tenir seul, sans rien qui suppose un écran.
+
+     Irréductible aux utilitaires : @page, print-color-adjust et les
+     réécritures d'état d'un composant enfant n'existent pas en classes. */
+  @media print {
+    @page {
+      margin: 14mm 12mm;
+    }
+
+    /* Chrome n'imprime aucun aplat par défaut. Sans ça, les pastilles de
+       responsable, les encarts de note et le total perdent leur fond et se
+       lisent comme du texte courant. */
+    * {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Ce qui ne veut rien dire sur papier : un sommaire dont les ancres ne
+       mènent nulle part, un formulaire qu'on ne remplit pas, un pied de
+       site. */
+    [data-sticky-devis-nav],
+    [data-devis-reponse],
+    footer {
+      display: none !important;
+    }
+
+    /* Les onglets de version : on ne bascule pas d'onglet sur une feuille.
+       Reste la seule information qui compte, quelle version on tient entre
+       les mains, en texte discret. */
+    [role="tablist"] button:not([aria-pressed="true"]) {
+      display: none;
+    }
+    [role="tablist"] button[aria-pressed="true"] {
+      background: none;
+      color: inherit;
+      opacity: 0.55;
+    }
+
+    /* Les infobulles portent de l'argumentaire (périmètre du bilingue,
+       pourquoi une seule maquette…). Sur papier, le marqueur ⓘ ne mène
+       nulle part : on déplie la bulle en incise au lieu de perdre le texte. */
+    [data-tooltip] > button {
+      display: none;
+    }
+    [data-tooltip] {
+      position: static;
+      top: 0;
+    }
+    [data-tooltip] [data-bulle] {
+      display: inline !important;
+      position: static;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      background: none;
+      box-shadow: none;
+      transform: none !important;
+      color: inherit;
+      opacity: 0.6;
+      font-size: 0.92em;
+    }
+    [data-tooltip] [data-bulle]::before {
+      content: " — ";
+    }
+
+    /* Rien ne colle en haut d'une feuille. */
+    [class*="sticky"] {
+      position: static !important;
+    }
+
+    /* Une ligne de budget ou un jalon coupé en deux par un saut de page
+       sépare son libellé de son montant, ou sa date de son responsable.
+       Les sections, elles, restent coupables : Budget dépasse la page, et
+       une section insécable plus haute qu'une feuille produit une page
+       blanche. */
+    [data-devis-ligne],
+    [data-devis-jalon],
+    [data-banner],
+    .card {
+      break-inside: avoid;
+    }
+    h1,
+    h2,
+    h3 {
+      break-after: avoid;
+    }
+  }
+</style>
