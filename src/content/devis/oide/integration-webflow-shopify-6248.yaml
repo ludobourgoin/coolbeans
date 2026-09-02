@@ -9,9 +9,10 @@ contact: Clément
 linear:
   projet: Intégration Shopify
   affaire: https://linear.app/coolbeans-hq/issue/CRM-30
-envoi:
-  date: 2026-03-19
-  destinataire: clement.lhommet@oideparis.com
+# Pas de bloc `envoi` : le devis est forcément parti, l'affaire est signée,
+# mais aucune trace Gmail ne dit à qui ni quand. Une date inventée vaudrait
+# moins qu'un trou assumé — le cockpit affichera « Non envoyé », ce qui est
+# faux mais visible, là où une fausse date serait fausse et invisible.
 
 sections:
   - titre: Ce que j'ai compris
