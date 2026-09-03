@@ -9,9 +9,9 @@ linear:
 sections:
   - titre: Ce que j'ai compris
     texte: >-
-      Osmose ouvre comme un lieu, pas comme un cabinet : quatre à cinq praticiens
-      y consultent à leurs propres horaires, et l'association À l'Assaut y porte
-      les cercles de discussion et les soirées.
+      Osmose ouvre ses portes au public. C'est un espace commun, qui accueille
+      quatre à cinq praticiens du bien-être à leurs propres horaires et
+      l'association À l'Assaut pour les cercles de discussion et les soirées.
     liste:
       - texte: >-
           Aujourd'hui, on ne peut trouver Osmose qu'en passant devant la porte ou
@@ -37,9 +37,10 @@ sections:
           chez lui.
       - texte: >-
           Un atelier annoncé une fois profite à tout le monde : l'agenda est
-          commun, et quelqu'un venu pour un shiatsu voit passer le ciné-club.
+          commun, et quelqu'un venu pour un shiatsu voit aussi passer une séance
+          de ciné-club ou un atelier relaxation.
       - texte: >-
-          Tu ajoutes un praticien, un atelier ou une photo toi-même, sans me
+          Tu ajoutes toi-même un praticien, un atelier ou une photo, sans me
           demander et sans attendre.
 
   - titre: Le site
@@ -55,6 +56,10 @@ sections:
         tooltip: >-
           Les filtres par type d'événement attendront que le volume les rende
           utiles.
+      - texte: >-
+          Réserver le lieu : l'espace, ses dimensions et ce qu'on peut y faire,
+          pour une entreprise, une association ou un particulier qui cherche où
+          organiser son événement.
       - texte: >-
           Contact : ton numéro pour Osmose, et le renvoi vers chaque praticien
           pour les rendez-vous.
@@ -92,16 +97,16 @@ sections:
       lignes:
         - label: "**Identité de marque** : trois pistes, puis le picto, le logotype, la palette et les typographies"
           prix: 750
-        - label: "**Contenus des cinq pages** : je rédige à partir de la trame que tu remplis"
-          prix: 350
+        - label: "**Contenus des six pages** : je rédige à partir de la trame que tu remplis"
+          prix: 400
           tooltip: >-
             Je t'envoie une trame à compléter dans un simple fichier texte. Tu
             racontes le lieu avec tes mots, j'écris les pages et je les optimise
             pour Google. Tu ne pars pas de la page blanche.
-        - label: "**Maquettes des cinq pages** : validées avant l'intégration"
-          prix: 550
+        - label: "**Maquettes des six pages** : validées avant l'intégration"
+          prix: 650
         - label: "**Le site et son espace d'administration** : tu ajoutes un praticien ou un événement toi-même"
-          prix: 850
+          prix: 930
           tooltip: >-
             Le même outil que celui de setencorpsmieux.fr : tu l'administres déjà
             depuis juillet, il n'y a rien de neuf à apprendre.
@@ -113,10 +118,13 @@ sections:
           defaut: false
           tooltip: >-
             Une adresse propre à chacun, qu'il peut donner à ses propres clients.
-        - label: "Formulaire de réservation du lieu, pour les ateliers et les privatisations"
+        - label: "Formulaire de demande sur la page « Réserver le lieu »"
           prix: 250
           optionnel: true
           defaut: false
+          tooltip: >-
+            La page fonctionne sans : on s'en tient à ton numéro et à ton adresse
+            mail le temps de voir si les demandes arrivent.
         - label: "Fiche Google de l'établissement : horaires, photos, catégories, avis"
           prix: 180
           optionnel: true
@@ -144,7 +152,7 @@ sections:
             - { date: "16 sept.", label: "Tu choisis une piste, ou tu demandes un autre angle", owner: client }
             - { date: "18 sept.", label: "Logo, palette et fichiers livrés, prêts pour l'imprimeur", owner: coolbeans }
             - { date: "18 sept. → 2 oct.", label: "Tu remplis la trame et tu m'envoies les photos", owner: client }
-            - { date: "7 oct.", label: "Maquettes des cinq pages", owner: coolbeans }
+            - { date: "7 oct.", label: "Maquettes des six pages", owner: coolbeans }
             - { date: "12 oct.", label: "Tu valides les maquettes", owner: client }
             - { date: "13 → 27 oct.", label: "Intégration et espace d'administration", owner: coolbeans }
             - { date: "29 oct.", label: "Tu parcours le site et tu me fais tes retours", owner: client }
@@ -159,7 +167,8 @@ sections:
       Trois choses, et ce sont elles qui font tenir le calendrier.
     liste:
       - texte: >-
-          La trame que je t'envoie, remplie, et les photos des praticiens.
+          La trame que je t'envoie, remplie, les photos des praticiens et celles
+          de l'espace.
       - texte: >-
           Une seule personne qui tranche. Montre les maquettes aux praticiens autant
           que tu veux, mais c'est toi qui me réponds, d'une seule voix.

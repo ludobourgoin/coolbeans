@@ -429,12 +429,23 @@ const ancre = (titre: string) => ancreSection(titre, version);
      tout. Ce qui compte : ce total est un confort de lecture, jamais une
      source de vérité. Le montant qui engage est recalculé côté serveur à la
      soumission, depuis le YAML, à partir des seuls index cochés. */
-  const eur = new Intl.NumberFormat("fr-FR", {
+  /* Miroir de `eur` dans lib/devis.ts : rien après la virgule sur un compte
+     rond, deux décimales sinon. Si l'un des deux change, l'autre aussi. */
+  const eurRond = new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "EUR",
     minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+  const eurCentimes = new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+  const eur = {
+    format: (n: number) => (Number.isInteger(n) ? eurRond : eurCentimes).format(n),
+  };
 
   document.querySelectorAll<HTMLElement>("[data-devis-budget]").forEach((bloc) => {
     const cases = bloc.querySelectorAll<HTMLInputElement>("[data-devis-option]");

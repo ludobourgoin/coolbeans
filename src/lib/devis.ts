@@ -40,12 +40,26 @@ const liens = (s: string) =>
 export const riche = (s: string) =>
   liens(insecables(esc(s)).replace(/\*\*(.+?)\*\*/g, '<b class="font-bold">$1</b>'));
 
-export const eur = new Intl.NumberFormat("fr-FR", {
+/* Montants : pas de décimales sur un compte rond, deux sinon. Un format unique
+   à `maximumFractionDigits: 2` écrit « 737,5 € » dès qu'une remise tombe sur un
+   demi-euro — une centime manquante que personne ne pardonne sur un document
+   commercial. Le pendant de ce calcul vit dans le script client de
+   DevisCorps.astro : les deux doivent écrire pareil. */
+const eurRond = new Intl.NumberFormat("fr-FR", {
   style: "currency",
   currency: "EUR",
   minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+const eurCentimes = new Intl.NumberFormat("fr-FR", {
+  style: "currency",
+  currency: "EUR",
+  minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
+export const eur = {
+  format: (n: number) => (Number.isInteger(n) ? eurRond : eurCentimes).format(n),
+};
 
 /* id d'ancre stable à partir d'un titre de section */
 export const slugify = (s: string) =>
