@@ -17,8 +17,8 @@ sections:
           Aujourd'hui, on ne peut trouver Osmose qu'en passant devant la porte ou
           en connaissant quelqu'un.
       - texte: >-
-          Chaque praticien a déjà sa propre communication. Le lieu n'a pas à la
-          remplacer, il a à la rassembler et à y renvoyer.
+          Chaque praticien communique déjà de son côté. Le site du lieu ne remplace
+          pas leurs pages : il les réunit et renvoie vers elles.
       - texte: >-
           Il n'existe ni logo ni couleurs arrêtées. L'oiseau peint sur le mur est
           le bon point de départ, et tu veux quelque chose de sobre.
@@ -27,17 +27,14 @@ sections:
       toute la proposition est construite dessus.
 
   - titre: Ce que le site change
-    texte: >-
-      Deux publics vont le lire : toi, qui décides, et les praticiens du lieu, à
-      qui il doit servir autant qu'à toi.
     liste:
       - texte: >-
-          Une adresse à donner. « Je consulte au lieu Osmose » devient un lien qui
-          montre le cadre, les praticiens et les horaires.
+          Une adresse web à partager. « Je consulte au lieu Osmose » devient un lien
+          qui montre le cadre, les praticiens et les horaires.
       - texte: >-
-          Chaque praticien est présenté puis renvoyé vers son propre site ou sa
-          page Facebook. Le lieu envoie ses visiteurs vers eux, il ne les retient
-          pas.
+          Chaque praticien a sa présentation, avec un lien vers son propre site ou
+          sa page Facebook. Le visiteur qui cherche un rendez-vous part directement
+          chez lui.
       - texte: >-
           Un atelier annoncé une fois profite à tout le monde : l'agenda est
           commun, et quelqu'un venu pour un shiatsu voit passer le ciné-club.
@@ -50,8 +47,8 @@ sections:
       - texte: "Accueil : ce qu'est Osmose, qui y consulte, ce qui s'y passe bientôt."
       - texte: "À propos : l'ADN du lieu et sa raison d'être."
       - texte: >-
-          Praticiens : les quatre à cinq du lieu, leur discipline, leurs jours de
-          présence et le lien vers leur page.
+          Praticiens : qui consulte à Osmose, dans quelle discipline, quels jours,
+          et où le contacter.
       - texte: >-
           Événements : les ateliers et les soirées à venir, dans l'ordre, avec la
           photo de l'intervenant et l'horaire.
@@ -81,7 +78,7 @@ sections:
           La palette et les deux typographies retenues, avec leurs règles d'usage
           sur une page.
       - texte: >-
-          Les fichiers prêts à remettre à un imprimeur ou à un signaléticien.
+          Les fichiers prêts à donner à l'imprimeur.
     note: >-
       La devanture elle-même — banderole, lettres sur bois, enseigne murale — n'est
       pas dans cette proposition, et l'autorisation de la mairie reste de ton côté.
@@ -89,47 +86,51 @@ sections:
 
   - titre: Le budget
     texte: >-
-      Les quatre premières lignes forment le socle et tiennent dans le budget dont
-      on a parlé. Les suivantes se cochent et se décochent : le total suit.
+      Les six premières lignes forment le socle. Les suivantes se cochent et se
+      décochent : le total suit.
     budget:
       lignes:
-        - label: "**Identité de marque** : picto, logotype, palette et typographies"
-          prix: 840
-        - label: "**Maquettes des cinq pages** : une direction, validée avant l'intégration"
-          prix: 620
-        - label: "**Le site et son espace d'administration** : praticiens et événements que tu tiens seule"
-          prix: 960
+        - label: "**Identité de marque** : trois pistes, puis le picto, le logotype, la palette et les typographies"
+          prix: 750
+        - label: "**Contenus des cinq pages** : je rédige à partir de la trame que tu remplis"
+          prix: 350
+          tooltip: >-
+            Je t'envoie une trame à compléter dans un simple fichier texte. Tu
+            racontes le lieu avec tes mots, j'écris les pages et je les optimise
+            pour Google. Tu ne pars pas de la page blanche.
+        - label: "**Maquettes des cinq pages** : validées avant l'intégration"
+          prix: 550
+        - label: "**Le site et son espace d'administration** : tu ajoutes un praticien ou un événement toi-même"
+          prix: 850
           tooltip: >-
             Le même outil que celui de setencorpsmieux.fr : tu l'administres déjà
             depuis juillet, il n'y a rien de neuf à apprendre.
         - label: "**Mise en ligne** : nom de domaine, hébergement, référencement, recette"
-          prix: 240
-        - label: "Rédaction des cinq pages, à partir d'un entretien avec toi"
-          prix: 620
-          optionnel: true
-          defaut: false
+          prix: 220
+        - label: "**Délai accéléré** : le logo livré le 18 septembre, pour que l'enseigne soit posée le 9 octobre"
+          prix: 544
           tooltip: >-
-            Tu me racontes le lieu pendant une heure, j'écris, tu corriges. Tu ne
-            pars pas de la page blanche et tu n'as rien à faire valider avant.
+            Au rythme normal, le logo tomberait à la mi-octobre. Tenir le
+            18 septembre veut dire passer devant des projets déjà calés.
         - label: "Une page dédiée par praticien, plutôt qu'un bloc sur la page commune"
-          prix: 550
+          prix: 450
           optionnel: true
           defaut: false
           tooltip: >-
             Une adresse propre à chacun, qu'il peut donner à ses propres clients.
         - label: "Formulaire de réservation du lieu, pour les ateliers et les privatisations"
-          prix: 480
+          prix: 250
           optionnel: true
           defaut: false
         - label: "Fiche Google de l'établissement : horaires, photos, catégories, avis"
-          prix: 200
+          prix: 180
           optionnel: true
           defaut: false
           tooltip: >-
             C'est par là qu'on cherche un lieu à Sète, bien avant le site.
       remises:
-        - label: Tarif association
-          pct: 25
+        - label: Tarif association et tarif ami
+          pct: 45
       mention: HT
       reglement: >-
         30 % à la validation, qui lance le travail. Le solde à la mise en ligne, en
@@ -138,33 +139,32 @@ sections:
   - titre: Le déroulé
     planning:
       options:
-        - label: À partir de l'acompte
+        - label: Calendrier
           texte: >-
-            Les semaines comptent depuis le versement de l'acompte, pas depuis
-            aujourd'hui. Le logo est livré en semaine 2 : réglé avant la
-            mi-septembre, il est prêt largement avant le 9 octobre.
+            Le logo est livré le 18 septembre. Tu as trois semaines pour faire
+            imprimer l'enseigne et la poser avant le 9 octobre.
           jalons:
-            - { date: S1, label: "Trois pistes d'identité présentées", owner: coolbeans }
-            - { date: S1, label: "Tu choisis une piste, ou tu demandes un autre angle", owner: client }
-            - { date: S2, label: "Logo, palette et fichiers livrés", owner: coolbeans }
-            - { date: S2 → S3, label: "Textes et photos des praticiens transmis", owner: client }
-            - { date: S3, label: "Maquettes des cinq pages", owner: coolbeans }
-            - { date: S4, label: "Tu valides les maquettes", owner: client }
-            - { date: S4 → S6, label: "Intégration et espace d'administration", owner: coolbeans }
-            - { date: S6, label: "Tu parcours le site et tu me fais tes retours", owner: client }
-            - { date: S7, label: "Mise en ligne", owner: coolbeans }
+            - { date: "11 sept.", label: "Tu me donnes ta réponse", owner: client }
+            - { date: "14 sept.", label: "Trois pistes d'identité présentées", owner: coolbeans }
+            - { date: "16 sept.", label: "Tu choisis une piste, ou tu demandes un autre angle", owner: client }
+            - { date: "18 sept.", label: "Logo, palette et fichiers livrés, prêts pour l'imprimeur", owner: coolbeans }
+            - { date: "18 sept. → 2 oct.", label: "Tu remplis la trame et tu m'envoies les photos", owner: client }
+            - { date: "7 oct.", label: "Maquettes des cinq pages", owner: coolbeans }
+            - { date: "12 oct.", label: "Tu valides les maquettes", owner: client }
+            - { date: "13 → 27 oct.", label: "Intégration et espace d'administration", owner: coolbeans }
+            - { date: "29 oct.", label: "Tu parcours le site et tu me fais tes retours", owner: client }
+            - { date: "4 nov.", label: "Mise en ligne", owner: coolbeans }
           note: >-
-            Un retard de validation décale la suite de plus que le retard lui-même :
-            je travaille sur d'autres projets entre-temps et je reprends au créneau
-            suivant.
+            Ces dates supposent ta réponse d'ici le 11 septembre. Un retard de
+            validation décale la suite de plus que le retard lui-même : je travaille
+            sur d'autres projets entre-temps et je reprends au créneau suivant.
 
   - titre: De ton côté
     texte: >-
       Trois choses, et ce sont elles qui font tenir le calendrier.
     liste:
       - texte: >-
-          Les textes des cinq pages et les photos des praticiens, sauf si tu prends
-          la ligne de rédaction.
+          La trame que je t'envoie, remplie, et les photos des praticiens.
       - texte: >-
           Une seule personne qui tranche. Montre les maquettes aux praticiens autant
           que tu veux, mais c'est toi qui me réponds, d'une seule voix.
@@ -181,7 +181,7 @@ sections:
 notes:
   - tone: success
     texte: >-
-      Tarif association de 25 % appliqué sur l'ensemble, options comprises.
+      Tarif association et tarif ami, 45 % sur l'ensemble, options comprises.
   - texte: >-
       Aucun abonnement mensuel : l'hébergement et l'espace d'administration tiennent
       dans les offres gratuites. Seul le nom de domaine se renouvelle, autour de dix
