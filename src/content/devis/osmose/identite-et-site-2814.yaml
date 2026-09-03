@@ -86,7 +86,7 @@ sections:
 
   - titre: Le budget
     texte: >-
-      Les six premières lignes forment le socle. Les suivantes se cochent et se
+      Les cinq premières lignes forment le socle. Les suivantes se cochent et se
       décochent : le total suit.
     budget:
       lignes:
@@ -107,11 +107,6 @@ sections:
             depuis juillet, il n'y a rien de neuf à apprendre.
         - label: "**Mise en ligne** : nom de domaine, hébergement, référencement, recette"
           prix: 220
-        - label: "**Délai accéléré** : le logo livré le 18 septembre, pour que l'enseigne soit posée le 9 octobre"
-          prix: 544
-          tooltip: >-
-            Au rythme normal, le logo tomberait à la mi-octobre. Tenir le
-            18 septembre veut dire passer devant des projets déjà calés.
         - label: "Une page dédiée par praticien, plutôt qu'un bloc sur la page commune"
           prix: 450
           optionnel: true
@@ -129,8 +124,8 @@ sections:
           tooltip: >-
             C'est par là qu'on cherche un lieu à Sète, bien avant le site.
       remises:
-        - label: Tarif association et tarif ami
-          pct: 45
+        - label: Tarif association
+          pct: 25
       mention: HT
       reglement: >-
         30 % à la validation, qui lance le travail. Le solde à la mise en ligne, en
@@ -181,7 +176,7 @@ sections:
 notes:
   - tone: success
     texte: >-
-      Tarif association et tarif ami, 45 % sur l'ensemble, options comprises.
+      Tarif association de 25 % sur l'ensemble, options comprises.
   - texte: >-
       Aucun abonnement mensuel : l'hébergement et l'espace d'administration tiennent
       dans les offres gratuites. Seul le nom de domaine se renouvelle, autour de dix
