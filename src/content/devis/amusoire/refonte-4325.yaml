@@ -1,0 +1,91 @@
+titre: Amusoire × Coolbeans
+objet: Refonte Webflow et intégration technique du site Amusoire
+date: 2026-01-08
+contact: Baptiste
+linear:
+  projet: Refonte Webflow et intégration technique
+  affaire: CRM-82
+destinataire:
+  societe: TRIGGER
+  contact: Baptiste Garnot
+  adresse:
+    - 87 avenue de Lombez
+    - 31300 Toulouse
+
+sections:
+  - titre: Objectif
+    texte: >-
+      Refondre le site Amusoire sur Webflow et le rendre **autonome côté client** :
+      dix pages intégrées, les outils tiers connectés, et une documentation de
+      passation pour que l'équipe reprenne la main sur le contenu sans
+      intervention technique.
+
+  - titre: Périmètre
+    liste:
+      - texte: Arborescence et wireframes des dix pages
+        tooltip: >-
+          Le plan du site et la structure de chaque page sont fixés avant toute
+          intégration, pour que la construction ne se rejoue pas deux fois.
+      - texte: Intégration Webflow des dix pages, responsive et testée
+        tooltip: >-
+          Affichage vérifié sur ordinateur, tablette et téléphone, et tests QA sur
+          les trois principaux navigateurs.
+      - Configuration SEO et bonnes pratiques, optimisation des performances
+      - Configuration de l'hébergement et des DNS
+      - Documentation de passation Notion pour la prise en main de Webflow
+      - texte: Intégration 4escape
+        tooltip: >-
+          Adaptation du style et du comportement des widgets de réservation pour
+          qu'ils s'intègrent au site plutôt que d'y être posés.
+      - "Intégration des outils tiers : Analytics, GTM, bandeau de consentement"
+      - texte: Gestion et homogénéisation du domaine et des URLs
+        tooltip: >-
+          Le site et les landing pages partagent une même logique d'adresses, ce
+          qui évite les doublons d'indexation et les liens morts après refonte.
+      - Sécurisation SEO de la refonte
+      - Support et maintenance pendant six mois
+
+  - titre: Budget
+    budget:
+      lignes:
+        - label: Sitemap et wireframes (10 pages)
+          prix: 1125
+        - label: Intégration Webflow (10 pages)
+          prix: 7550
+          tooltip: >-
+            Responsive, configuration SEO, optimisation des performances, tests QA
+            sur les trois navigateurs principaux, documentation de passation Notion,
+            configuration de l'hébergement et des DNS.
+        - label: Développement custom
+          prix: 1725
+          tooltip: >-
+            Intégration 4escape, intégration des applications tierces et SEO,
+            gestion et optimisation du domaine et des URLs.
+        - label: Support et maintenance BOOST, jusqu'à 6 h par mois pendant 6 mois
+          prix: 2160
+      mention: HT
+      reglement: >-
+        Acompte à la commande, solde à la livraison. Montants exprimés hors taxes,
+        TVA de 20 % en sus, soit 15 072,00 € TTC.
+
+  - titre: Suites
+    texte: >-
+      Le site a été mis en ligne en juin 2026. Le forfait de support a démarré
+      dans la foulée et s'est révélé **très en dessous du besoin réel** : les six
+      enveloppes mensuelles ont été consommées environ quatre fois plus vite que
+      prévu. Trois chantiers ont ensuite été vendus séparément, la LP Anti-crise,
+      la migration UK et les témoignages vidéo.
+
+notes:
+  - tone: warning
+    texte: >-
+      **Document reconstitué a posteriori, le 3 septembre 2026.** Cette page
+      rejoue le devis n° 4325 du 8 janvier 2026, signé et intégralement réglé.
+      Elle n'a jamais été envoyée au client et n'a pas vocation à l'être : elle
+      sert de référence interne pour les chiffrages suivants et pour l'analyse du
+      chiffre d'affaires. Les intitulés et les montants sont repris du document
+      d'origine au centime, sans recalcul.
+  - tone: neutral
+    texte: >-
+      Le forfait BOOST n'est plus commercialisé sous cette forme. Sa refonte fait
+      partie du chantier de packaging de l'offre Coolbeans.
