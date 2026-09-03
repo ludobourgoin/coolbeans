@@ -6,6 +6,7 @@ import DevisCorps from "../../components/devis/DevisCorps.astro";
 import DevisEntetePrint from "../../components/devis/DevisEntetePrint.astro";
 import DevisReponse from "../../components/devis/DevisReponse.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
+import { dateLongue } from "../../lib/devis";
 
 /* Un devis peut avoir plusieurs versions (révision de périmètre). Elles
    partagent l'URL de la V1 — le lien déjà envoyé au client ne bouge jamais —
@@ -34,9 +35,9 @@ const dateCourte = (d: Date) =>
   d.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
 
 /* La date du devis n'était portée que par le frontmatter : le client ne la
-   voyait nulle part, alors qu'elle date l'engagement commercial. */
-const dateLongue = (d: Date) =>
-  d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+   voyait nulle part, alors qu'elle date l'engagement commercial. Le format
+   vient de `lib/devis` — trois copies locales de la même fonction avaient
+   divergé, et la correction du « 1er » n'en aurait touché qu'une. */
 
 const courante = versions[actif].data;
 

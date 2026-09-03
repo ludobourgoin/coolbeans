@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   ancreSection,
+  dateLongue,
   lignesRetenues,
   listeItem,
   remisesDe,
@@ -9,6 +10,21 @@ import {
   totaux,
   type DevisBudget,
 } from "./devis";
+
+describe("dateLongue", () => {
+  it("met l'ordinal sur le premier du mois", () => {
+    expect(dateLongue(new Date("2026-09-01T12:00:00Z"))).toBe("1er septembre 2026");
+  });
+  it("laisse les autres quantièmes en cardinal", () => {
+    expect(dateLongue(new Date("2026-09-08T12:00:00Z"))).toBe("8 septembre 2026");
+    expect(dateLongue(new Date("2026-09-21T12:00:00Z"))).toBe("21 septembre 2026");
+  });
+  it("n'ajoute pas l'ordinal à un 1 qui n'est pas le quantième", () => {
+    /* Le remplacement est ancré en début de chaîne, sinon « 11 septembre »
+       et l'année deviendraient eux aussi ordinaux. */
+    expect(dateLongue(new Date("2031-09-11T12:00:00Z"))).toBe("11 septembre 2031");
+  });
+});
 
 describe("ancreSection", () => {
   it("sans version, garde l'ancre nue", () => {

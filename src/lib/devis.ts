@@ -114,8 +114,14 @@ export const totaux = (budget: DevisBudget, selection?: SelectionOptions) => {
   };
 };
 
+/* `1 septembre 2026` est ce que rend Intl, et ce n'est pas du français :
+   le premier du mois s'écrit « 1er ». Seul ce quantième prend l'ordinal,
+   les autres restent cardinaux. Sur un document commercial daté, la faute
+   se voit d'autant plus qu'elle est en tête de page. */
 export const dateLongue = (date: Date) =>
-  new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(date);
+  new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" })
+    .format(date)
+    .replace(/^1 /, "1er ");
 
 /* qui porte chaque jalon du planning, en clair ; le contact client varie
    selon le devis, "Ludo" reste fixe côté Coolbeans. */

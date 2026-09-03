@@ -11,16 +11,13 @@
 
    Émetteur repris des mentions légales (src/pages/mentions-legales.astro) :
    une seule identité Coolbeans, deux endroits où elle s'affiche. */
-import type { DevisData } from "../../lib/devis";
+import { dateLongue, type DevisData } from "../../lib/devis";
 
 interface Props {
   d: DevisData;
   reference?: string;
 }
 const { d, reference } = Astro.props;
-
-const dateLongue = (date: Date) =>
-  date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 ---
 
 <div class="mx-auto hidden max-w-[880px] print:block">

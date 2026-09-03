@@ -4,6 +4,9 @@ date: 2026-09-01
 contact: Susanne
 version: 2
 versionDe: cafa/site-web-8791
+envoi:
+  date: 2026-09-02
+  destinataire: salerno@ms-associes.com
 destinataire:
   societe: Club Affaires Franco-Allemand Toulouse Midi-Pyrénées
   contact: Susanne Salerno
