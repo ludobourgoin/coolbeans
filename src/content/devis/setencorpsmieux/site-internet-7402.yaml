@@ -98,7 +98,8 @@ sections:
       remiseLabel: Tarif ami
       mention: HT
       reglement: >-
-        Montant et échéances à convenir ensemble. Rien n'a été facturé à ce jour.
+        Montant et échéances à convenir ensemble. Rien n'a été facturé à ce
+        jour. TVA de 20 % en sus.
 
   - titre: Le déroulé
     planning:
@@ -141,8 +142,3 @@ notes:
   - texte: >-
       Le flyer, le kakemono et le travail sur le logo de 2025 ne sont pas
       comptés ici. Ils étaient offerts, ils le restent.
-  - tone: warning
-    texte: >-
-      Ce document récapitule un travail déjà réalisé. Il n'a pas été précédé d'un
-      devis, et c'est une erreur de ma part : on aurait dû poser le cadre au
-      départ.
