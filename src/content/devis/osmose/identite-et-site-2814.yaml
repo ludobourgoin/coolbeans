@@ -69,8 +69,9 @@ sections:
 
   - titre: L'identité
     texte: >-
-      L'oiseau du mur devient un picto simple, posé à côté d'un « Osmose » aux
-      lettres espacées. On garde le vert et l'orange de tes flyers, resserrés.
+      Je te soumets trois pistes, tu en choisis une et on l'affine ensemble. L'une
+      d'elles part de l'oiseau peint sur le mur ; le vert et l'orange de tes flyers
+      restent sur la table, resserrés.
     liste:
       - texte: "Le picto et le logotype, livrés en fichiers vectoriels."
         tooltip: >-
@@ -141,10 +142,10 @@ sections:
           texte: >-
             Les semaines comptent depuis le versement de l'acompte, pas depuis
             aujourd'hui. Le logo est livré en semaine 2 : réglé avant la
-            mi-septembre, il est prêt largement avant le 10 octobre.
+            mi-septembre, il est prêt largement avant le 9 octobre.
           jalons:
-            - { date: S1, label: "Picto et logotype, une direction présentée", owner: coolbeans }
-            - { date: S1, label: "Tu valides la direction ou tu demandes un autre angle", owner: client }
+            - { date: S1, label: "Trois pistes d'identité présentées", owner: coolbeans }
+            - { date: S1, label: "Tu choisis une piste, ou tu demandes un autre angle", owner: client }
             - { date: S2, label: "Logo, palette et fichiers livrés", owner: coolbeans }
             - { date: S2 → S3, label: "Textes et photos des praticiens transmis", owner: client }
             - { date: S3, label: "Maquettes des cinq pages", owner: coolbeans }
