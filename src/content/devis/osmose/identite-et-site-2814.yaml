@@ -96,22 +96,22 @@ sections:
     budget:
       lignes:
         - label: "**Identité de marque** : trois pistes, puis le picto, le logotype, la palette et les typographies"
-          prix: 750
+          prix: 950
         - label: "**Contenus des six pages** : je rédige à partir de la trame que tu remplis"
-          prix: 400
+          prix: 450
           tooltip: >-
             Je t'envoie une trame à compléter dans un simple fichier texte. Tu
             racontes le lieu avec tes mots, j'écris les pages et je les optimise
             pour Google. Tu ne pars pas de la page blanche.
         - label: "**Maquettes des six pages** : validées avant l'intégration"
-          prix: 650
+          prix: 700
         - label: "**Le site et son espace d'administration** : tu ajoutes un praticien ou un événement toi-même"
-          prix: 930
+          prix: 980
           tooltip: >-
             Le même outil que celui de setencorpsmieux.fr : tu l'administres déjà
             depuis juillet, il n'y a rien de neuf à apprendre.
         - label: "**Mise en ligne** : nom de domaine, hébergement, référencement, recette"
-          prix: 220
+          prix: 250
         - label: "Une page dédiée par praticien, plutôt qu'un bloc sur la page commune"
           prix: 450
           optionnel: true
@@ -134,6 +134,8 @@ sections:
       remises:
         - label: Tarif association
           pct: 25
+        - label: Geste pour l'ouverture du lieu
+          pct: 30
       mention: HT
       reglement: >-
         30 % à la validation, qui lance le travail. Le solde à la mise en ligne, en
@@ -185,7 +187,9 @@ sections:
 notes:
   - tone: success
     texte: >-
-      Tarif association de 25 % sur l'ensemble, options comprises.
+      Tarif association de 25 %, puis un geste de 30 % pour l'ouverture du lieu.
+      Les deux s'appliquent à l'ensemble, options comprises : tu règles un peu
+      moins de la moitié du montant.
   - texte: >-
       Aucun abonnement mensuel : l'hébergement et l'espace d'administration tiennent
       dans les offres gratuites. Seul le nom de domaine se renouvelle, autour de dix
