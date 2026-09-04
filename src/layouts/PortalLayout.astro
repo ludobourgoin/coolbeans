@@ -35,9 +35,13 @@ interface Props {
   mainClass: string;
   /** Index de recherche ⌘K — seule la doc en fournit un. */
   searchIndex?: SearchEntry[];
+  /** Libère la max-width du bloc contenu + ancres, page par page.
+      Réservé aux pages qui portent de vrais tableaux de données : sur de la
+      prose, la ligne devient illisible bien avant le bord de l'écran. */
+  pleineLargeur?: boolean;
 }
 
-const { title, description, mainClass, searchIndex } = Astro.props;
+const { title, description, mainClass, searchIndex, pleineLargeur = false } = Astro.props;
 
 const { user, meta, client } = await getPortalContext(Astro);
 const admin = isAdmin(meta);
@@ -76,15 +80,20 @@ const prenomVue = admin && client ? (client.prenom ?? client.nom) : prenomDe(use
           aucun sélecteur. */}
       <PortalSidebar sections={sections} workspaces={clients} current={client} />
 
-      <main class={mainClass}>
-        <slot />
-      </main>
+      {/* La sidebar est collée au bord gauche, l'écran est pris en entier,
+          mais le contenu lisible reste plafonné : c'est ce bloc qui porte la
+          max-width, pas la coquille. Même parti que la doc Linear. */}
+      <div class:list={["doc-content", pleineLargeur && "doc-content--large"]}>
+        <main class={mainClass}>
+          <slot />
+        </main>
 
-      {/* « Sur cette page » : rempli côté client depuis les H2 du main. */}
-      <aside class="doc-right" aria-label="Sommaire de la page">
-        <div class="h" hidden data-toc-title>Sur cette page</div>
-        <nav id="doc-toc"></nav>
-      </aside>
+        {/* « Sur cette page » : rempli côté client depuis les H2 du main. */}
+        <aside class="doc-right" aria-label="Sommaire de la page">
+          <div class="h" hidden data-toc-title>Sur cette page</div>
+          <nav id="doc-toc"></nav>
+        </aside>
+      </div>
     </div>
   </div>
 

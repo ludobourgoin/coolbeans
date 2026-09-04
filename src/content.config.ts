@@ -224,6 +224,11 @@ const docs = defineCollection({
     status: z.enum(["draft", "review", "final"]).default("final"),
     updated: z.coerce.date(), // date de MAJ de la page
     description: z.string().optional(),
+    /* Libère la max-width du bloc contenu sur cette page seulement. À réserver
+       aux pages construites autour d'un tableau de données large : sur de la
+       prose, la ligne devient illisible avant d'atteindre le bord de l'écran
+       (d'où le plafond par défaut, cf. --portal-content dans doc.css). */
+    pleineLargeur: z.boolean().default(false),
   }),
 });
 
