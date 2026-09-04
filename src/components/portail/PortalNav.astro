@@ -19,6 +19,7 @@
 // mieux vaut pas d'entrée qu'une entrée morte.
 import { portalHref } from "../../lib/portail/nav";
 import SearchInput from "../ui/SearchInput.astro";
+import ThemeSwitch from "../ui/ThemeSwitch.astro";
 import Icon from "./Icon.astro";
 
 interface Props {
@@ -98,39 +99,9 @@ const support = portalHref("/messagerie", hostname);
 
     <div class="flex-1"></div>
 
-    {/* Même bouton clair/sombre que le site (Nav.astro) : lune en clair,
-        soleil en sombre. Seul le hook data-portal-theme diffère. */}
-    <button
-      class="btn btn-ghost btn-sm flex-none"
-      data-portal-theme
-      type="button"
-      aria-label="basculer clair / sombre"
-      title="basculer clair / sombre"
-    >
-      <svg
-        class="dm-moon block h-4.5 w-4.5 dark:hidden"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg
-      >
-      <svg
-        class="dm-sun hidden h-4.5 w-4.5 dark:block"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-        ><circle cx="12" cy="12" r="4.2"></circle><path
-          d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"
-        ></path></svg
-      >
-    </button>
+    {/* Exactement le même contrôle que le site vitrine : c'est le même
+        composant, plus une copie du markup. */}
+    <ThemeSwitch class="flex-none" />
 
     {
       withAccount && (
@@ -219,11 +190,7 @@ const support = portalHref("/messagerie", hostname);
     });
   }
 
-  // Même clé localStorage que l'anti-flash de BaseLayout.
-  document.querySelector("[data-portal-theme]")?.addEventListener("click", () => {
-    const dark = document.documentElement.classList.toggle("dark");
-    try {
-      localStorage.setItem("theme", dark ? "dark" : "light");
-    } catch {}
-  });
+  // La bascule de thème vit dans ThemeSwitch.astro, qui porte son propre
+  // écouteur délégué et la même clé localStorage que l'anti-flash de
+  // BaseLayout. Ne rien remettre ici.
 </script>

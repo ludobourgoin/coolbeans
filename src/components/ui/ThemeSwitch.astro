@@ -1,0 +1,111 @@
+---
+// Bascule clair / sombre, en pilule segmentee. Un seul composant pour le site
+// vitrine (Nav.astro) et le portail (PortalNav.astro) : avant le 2026-09-04 le
+// markup etait copie dans les deux, avec deux gestionnaires de clic distincts
+// qui divergeaient a chaque retouche.
+//
+// Le segment actif est designe en CSS depuis `html.dark`, jamais par du JS au
+// chargement. C'est ce qui evite un flash du mauvais segment, et surtout ce qui
+// reste juste quand aucun theme n'est stocke et que l'anti-FOUC de BaseLayout
+// retombe sur `prefers-color-scheme`.
+//
+// Limite connue et assumee (arbitrage du 2026-09-04) : deux etats seulement.
+// Des le premier clic une valeur est ecrite dans localStorage, et « suivre le
+// systeme » redevient inatteignable alors que l'anti-FOUC sait le gerer.
+// Y revenir voudrait dire un troisieme segment.
+
+interface Props {
+  /** Classes du conteneur, pour l'alignement dans la topbar hote. */
+  class?: string;
+}
+const { class: classe } = Astro.props;
+
+// Le segment actif porte le fond ; l'inactif reste transparent et attenue.
+// Les deux variantes sont l'exacte symetrie l'une de l'autre autour de `dark:`.
+const base =
+  "grid size-7 place-items-center rounded-full transition-colors cursor-pointer";
+const actifEnClair =
+  "bg-[var(--surface)] text-[var(--ink)] shadow-sm dark:bg-transparent dark:text-[var(--ink)]/45 dark:shadow-none";
+const actifEnSombre =
+  "bg-transparent text-[var(--ink)]/45 shadow-none dark:bg-[var(--surface)] dark:text-[var(--ink)] dark:shadow-sm";
+---
+
+<div
+  class:list={[
+    "inline-flex items-center gap-0.5 rounded-full border border-[var(--line)] bg-[var(--surface-subtle)] p-0.5",
+    classe,
+  ]}
+  role="group"
+  aria-label="Thème de l'interface"
+>
+  <button
+    class:list={[base, actifEnClair]}
+    type="button"
+    data-theme-set="light"
+    aria-label="Thème clair"
+    title="Thème clair"
+  >
+    <svg
+      class="size-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      ><circle cx="12" cy="12" r="4.2"></circle><path
+        d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"
+      ></path></svg
+    >
+  </button>
+  <button
+    class:list={[base, actifEnSombre]}
+    type="button"
+    data-theme-set="dark"
+    aria-label="Thème sombre"
+    title="Thème sombre"
+  >
+    <svg
+      class="size-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg
+    >
+  </button>
+</div>
+
+<script is:inline>
+  (function () {
+    // Delegation sur le document : le composant peut etre monte plusieurs fois
+    // sans multiplier les ecouteurs, et ce script est inclus une fois par
+    // instance — d'ou le garde ci-dessous.
+    if (window.__themeSwitchPret) return;
+    window.__themeSwitchPret = true;
+
+    function synchroniser() {
+      const sombre = document.documentElement.classList.contains("dark");
+      // `aria-pressed` est le seul etat que le CSS ne sait pas deriver.
+      document.querySelectorAll("[data-theme-set]").forEach((el) => {
+        el.setAttribute("aria-pressed", String((el.getAttribute("data-theme-set") === "dark") === sombre));
+      });
+    }
+
+    document.addEventListener("click", (ev) => {
+      const seg = ev.target instanceof Element ? ev.target.closest("[data-theme-set]") : null;
+      if (!seg) return;
+      const sombre = seg.getAttribute("data-theme-set") === "dark";
+      document.documentElement.classList.toggle("dark", sombre);
+      try {
+        localStorage.setItem("theme", sombre ? "dark" : "light");
+      } catch (e) {}
+      synchroniser();
+    });
+
+    synchroniser();
+  })();
+</script>
