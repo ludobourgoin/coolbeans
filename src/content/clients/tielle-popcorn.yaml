@@ -1,0 +1,18 @@
+nom: Tielle & Popcorn
+# Revendeur auquel ce workspace se rattache (spec 2026-08-19 §3.1).
+organisation: coolbeans
+prenom: Ludo
+# Doc publiee sur my.coolbeans.cc/docs/tielle-popcorn
+doc: tielle-popcorn
+# Association de Ludo : en tete du selecteur, avant le liseret qui separe les
+# workspaces clients.
+perso: true
+emoji: 🎬
+depuis: "2026-09-04"
+# Team « Tielle & Popcorn » (POP) du workspace Linear coolbeans-hq. Elle porte
+# les deux projets : refonte du site du cine-club, et site du festival.
+linearTeamId: 35e33f7b-6e73-4c2f-8bb3-568a9581fca7
+# Pas de module Support : les comptes de ce workspace sont ceux des
+# co-organisatrices et des partenaires du festival, pas des clients qui
+# ouvriraient un ticket a Coolbeans.
+messagerie: false
