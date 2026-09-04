@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# Refuse un push dont le build ne passe pas.
+#
+# Raison d'etre : `git push` sur `staging` ou `main` declenche un build
+# Cloudflare Workers. Un build rouge ne casse rien de visible — il laisse
+# simplement la prod figee sur la version precedente, sans erreur ni alerte.
+# On rafraichit la page et rien ne change, ce qui ressemble a de la lenteur
+# de deploiement alors que le deploiement n'aura jamais lieu.
+# (Incident du 2026-09-04 : trois commentaires HTML dans des .mdx.)
+#
+# Contourner ponctuellement : git push --no-verify
+
+set -e
+
+racine=$(git rev-parse --show-toplevel)
+cd "$racine"
+
+# Un push qui ne pousse aucun commit (suppression de branche distante,
+# tag seul) n'a pas de build a valider.
+a_des_commits=0
+while read -r _local_ref local_sha _remote_ref _remote_sha; do
+  [ "$local_sha" != "0000000000000000000000000000000000000000" ] && a_des_commits=1
+done
+[ "$a_des_commits" = "0" ] && exit 0
+
+if [ ! -d node_modules ]; then
+  echo "pre-push : node_modules absent dans $racine — lance 'npm ci' avant de pousser." >&2
+  exit 1
+fi
+
+echo "pre-push : astro build…"
+if ! sortie=$(npm run build 2>&1); then
+  echo "$sortie" | tail -30 >&2
+  echo "" >&2
+  echo "pre-push : BUILD ROUGE — push annule." >&2
+  echo "Pousser malgre tout laisserait la prod sur la version precedente," >&2
+  echo "sans aucun signal. Corrige, ou force avec --no-verify en connaissance de cause." >&2
+  exit 1
+fi
+
+echo "pre-push : build vert."
+exit 0
