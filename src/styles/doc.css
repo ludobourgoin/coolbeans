@@ -10,6 +10,12 @@
   /* Largeur partagée par la colonne sidebar ET la zone logo de la topbar
      (structure Geist, COO-80) : les deux doivent bouger ensemble. */
   --portal-col: 264px;
+  /* Plafond du bloc contenu + ancres. 1016px = l'ancien cadre de 1280px moins
+     la sidebar de 264px : la largeur de lecture est donc exactement celle
+     d'avant le 2026-09-04, seule la coquille autour a changé. Monter cette
+     valeur élargit la prose — la vérifier sur une page de doc rédigée, pas
+     sur un tableau. */
+  --portal-content: 1016px;
 
   /* palette Folk — uniquement les couleurs employées (admonitions, pastilles, todo) */
   --doc-iris: #c1aaf9;
@@ -37,16 +43,22 @@
   --doc-corail-bg: rgba(245, 78, 80, 0.15);
 }
 
-/* ---- Cadre Geist (COO-12) --------------------------------------------------
-   Tout le portail — topbar comprise — vit dans un conteneur centré et bordé
-   à gauche/droite, comme vercel.com/geist : rien n'est pleine largeur.
+/* ---- Cadre du portail ------------------------------------------------------
+   Le portail occupe toute la largeur de l'écran : la sidebar est collée au
+   bord gauche, et la colonne centrale prend tout ce que l'écran lui laisse.
+
+   Revient sur COO-12, qui enfermait le portail dans un conteneur centré et
+   bordé à gauche/droite façon vercel.com/geist. Le cadre convient à un site
+   de documentation qu'on lit ; il gaspille l'écran sur un outil de travail où
+   les tableaux et les listes veulent de la place. Décision du 2026-09-04.
+
+   Ne pas remettre `max-width` ici sans traiter la longueur de ligne dans
+   `.doc-main` : c'est le seul effet de bord réel du passage en pleine largeur.
+
    Scopé .portal-frame car design-system.astro réutilise .doc-root dans une
    carte où ce cadre n'a pas de sens. */
 .doc-root.portal-frame {
-  max-width: var(--container);
-  margin: 0 auto;
   min-height: 100dvh;
-  border-inline: 1px solid var(--line);
 }
 
 /* ---- Topbar minimale : logo + toggle thème -------------------------------- */
@@ -209,12 +221,31 @@
   background: var(--line);
 }
 
-/* ---- Grille 3 colonnes ---------------------------------------------------- */
+/* ---- Grille : sidebar collée à gauche, contenu plafonné ------------------
+   La coquille prend toute la largeur de l'écran et la sidebar reste au bord
+   gauche. La max-width vit un cran plus bas, sur `.doc-content`, qui groupe le
+   main et la colonne d'ancres et se centre dans la place restante.
+
+   C'est le parti de la doc Linear, et il règle l'effet de bord du passage en
+   pleine largeur : sans ce plafond, une ligne de prose suivrait le bord de
+   l'écran et deviendrait illisible sur un grand moniteur. */
 .doc-root .doc-shell {
   display: grid;
-  grid-template-columns: var(--portal-col) minmax(0, 1fr) 232px;
+  grid-template-columns: var(--portal-col) minmax(0, 1fr);
   align-items: start;
-  /* La largeur vient du cadre parent (.portal-frame), topbar alignée. */
+}
+.doc-root .doc-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 232px;
+  align-items: start;
+  max-width: var(--portal-content);
+  margin-inline: auto;
+  width: 100%;
+}
+/* Page à page, pour les vrais tableaux de données seulement : la prose, elle,
+   garde son plafond. Posé par la prop `pleineLargeur` de PortalLayout. */
+.doc-root .doc-content--large {
+  max-width: none;
 }
 .doc-root .doc-main {
   padding: 44px 56px 110px;
@@ -795,8 +826,10 @@
   .doc-root .doc-right {
     display: none;
   }
-  .doc-root .doc-shell {
-    grid-template-columns: var(--portal-col) minmax(0, 1fr);
+  /* La colonne d'ancres tombe : c'est `.doc-content` qui repasse sur une
+     colonne, la coquille garde sa sidebar. */
+  .doc-root .doc-content {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 @media (max-width: 860px) {

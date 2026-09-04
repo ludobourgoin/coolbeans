@@ -31,8 +31,10 @@ interface Props {
   prev: PrevNext | null;
   next: PrevNext | null;
   searchIndex: SearchEntry[];
+  /** Vient du frontmatter de la page de doc, cf. collection `docs`. */
+  pleineLargeur?: boolean;
 }
-const { title, client, prev, next, searchIndex } = Astro.props;
+const { title, client, prev, next, searchIndex, pleineLargeur = false } = Astro.props;
 const clientLabel = client.charAt(0).toUpperCase() + client.slice(1);
 ---
 
@@ -41,6 +43,7 @@ const clientLabel = client.charAt(0).toUpperCase() + client.slice(1);
   description={`Documentation de passation ${clientLabel}`}
   mainClass="doc-main"
   searchIndex={searchIndex}
+  pleineLargeur={pleineLargeur}
 >
   <slot />
   <footer class="doc-pagefoot">
