@@ -30,7 +30,28 @@
       // laisser à la couche assets est aussi ce qui les garde hors de Clerk,
       // le manifest étant récupéré sans cookie de session.
       "!/manifest.webmanifest",
-      "!/icons/*"
+      "!/icons/*",
+      // URL internes du serveur de dev Vite. Sans ces exclusions, `/*` les
+      // envoie au Worker, qui les passe au routeur Astro : 404 sur
+      // /@vite/client et sur le module de chaque page, donc AUCUN JavaScript
+      // client en dev. Le symptôme est muet — un bouton qui ne fait rien, pas
+      // une erreur — d'où le temps qu'il coûte (constaté le 2026-09-04).
+      //
+      // Sans effet en production : ces chemins n'y existent pas, la requête
+      // retomberait sur le Worker de toute façon.
+      "!/@vite/*",
+      "!/@id/*",
+      "!/@fs/*",
+      "!/src/*",
+      "!/node_modules/*",
+      // Astro sert le script inline de chaque page a un chemin ABSOLU du
+      // disque, pas a une URL relative a la racine : le module de /connexion
+      // arrive en « /Users/…/src/pages/connexion.astro?astro&type=script ».
+      // Sans cette ligne, ce module 404 et le formulaire n'a aucun
+      // gestionnaire de soumission — le bouton ne fait rien, en silence.
+      //
+      // Inerte en production : aucune URL publique ne commence par /Users/.
+      "!/Users/*"
     ]
   },
   "routes": [
