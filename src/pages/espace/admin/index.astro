@@ -1,0 +1,83 @@
+---
+// Premier occupant du préfixe /espace/admin/. Sommaire des outils réservés.
+//
+// Pas de `if (!isAdmin(meta))` ici, contrairement à clients.astro : c'est tout
+// l'objet du chantier. La garde est dans le middleware, portée par le chemin.
+// Voir docs/superpowers/specs/2026-09-01-portail-garde-admin-design.md
+export const prerender = false;
+
+import EspaceLayout from "../../../layouts/EspaceLayout.astro";
+
+// Une page derrière une garde ne doit jamais atterrir dans un cache
+// intermédiaire : même règle que clients.astro et utilisateurs.astro.
+Astro.response.headers.set("Cache-Control", "no-store");
+
+const outils = [
+  {
+    titre: "Mes clients",
+    href: "/espace/clients",
+    detail: "Le registre des workspaces et leur activité.",
+  },
+  {
+    titre: "Utilisateurs",
+    href: "/espace/utilisateurs",
+    detail: "Ouvrir, modifier ou fermer un accès.",
+  },
+  {
+    titre: "Devis",
+    href: "/espace/devis",
+    detail: "Cockpit des chiffrages et des réponses.",
+  },
+];
+---
+
+<EspaceLayout title="Admin">
+  <h1>Admin</h1>
+  <p class="sub">Les outils réservés à l'administrateur du portail.</p>
+
+  <ul class="outils">
+    {
+      outils.map((o) => (
+        <li>
+          <a href={o.href}>{o.titre}</a>
+          <p>{o.detail}</p>
+        </li>
+      ))
+    }
+  </ul>
+</EspaceLayout>
+
+<style>
+  /* Grille sobre : les cartes du portail se dessinent avec les tokens de
+     global.css, jamais avec des valeurs en dur. Ne pas nommer ces classes
+     `.card` — `doc.css` porte déjà `.doc-root .card`, de spécificité (0,2,0),
+     qui gagnerait contre tout utilitaire posé ici. */
+  .outils {
+    display: grid;
+    gap: var(--space-3x);
+    margin-top: var(--space-6x);
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 640px) {
+    .outils {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .outils li {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: var(--surface);
+    padding: var(--space-4x);
+  }
+  .outils a {
+    color: var(--ink);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .outils p {
+    margin: var(--space-2x) 0 0;
+    color: var(--mute);
+    font-size: 14px;
+  }
+</style>

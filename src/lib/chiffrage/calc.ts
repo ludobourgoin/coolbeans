@@ -6,7 +6,7 @@ export interface CalcDevis {
   plancher: number; // jours × tjm — plancher interne, jamais le prix
   ajusteAffinite: number;
   gestionMontant: number;
-  urgenceMontant: number; // exposé : affiché au devis en valeur absolue
+  urgenceMontant: number; // exposé : affiché sur la proposition en valeur absolue
   margeMontant: number;
   sousTotalAvantReduction: number;
   reductionMontant: number;
