@@ -1,4 +1,6 @@
 ---
+import ThemeSwitch from "./ui/ThemeSwitch.astro";
+
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
 
 // ordre du wireframe ; pages non construites → # pour l'instant.
@@ -150,37 +152,7 @@ const audience = [
     </nav>
 
     <div class="flex items-center gap-3.5 justify-self-end">
-      <button
-        id="theme-toggle"
-        class="btn btn-ghost btn-sm"
-        type="button"
-        aria-label="basculer clair / sombre"
-        title="basculer clair / sombre"
-      >
-        <svg
-          class="dm-moon block h-4.5 w-4.5 dark:hidden"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg
-        >
-        <svg
-          class="dm-sun hidden h-4.5 w-4.5 dark:block"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          ><circle cx="12" cy="12" r="4.2"></circle><path
-            d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"
-          ></path></svg
-        >
-      </button>
+      <ThemeSwitch />
       <a class="btn btn-sm" href="/contact">Contact</a>
     </div>
   </div>
@@ -188,13 +160,9 @@ const audience = [
 
 <script is:inline>
   (function () {
-    document.getElementById("theme-toggle")?.addEventListener("click", () => {
-      const dark = document.documentElement.classList.toggle("dark");
-      try {
-        localStorage.setItem("theme", dark ? "dark" : "light");
-      } catch (e) {}
-    });
-
+    // La bascule de thème vit dans ThemeSwitch.astro, qui porte son propre
+    // écouteur délégué. Ne rien remettre ici : deux écouteurs sur le même
+    // clic s'annulaient en basculant deux fois.
     const nav = document.getElementById("site-nav");
     if (nav) {
       let ticking = false;
