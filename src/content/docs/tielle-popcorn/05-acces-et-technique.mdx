@@ -1,0 +1,34 @@
+---
+client: "tielle-popcorn"
+title: "Accès et technique"
+order: 5
+status: "draft"
+updated: 2026-09-04
+description: "Où vit le code des deux sites, comment ils se déploient, et l'état du domaine du ciné-club."
+---
+
+Page de référence pour reprendre la main sur les sites, y compris par quelqu'un d'autre que Ludo.
+
+## Les deux sites
+
+| | Ciné-club | Festival |
+|---|---|---|
+| Dépôt | `ludobourgoin/tielle-et-popcorn` | `ludobourgoin/festival-notre-terre` |
+| Projet Sanity | `3ysz8m72` | `8ldjul9l` |
+| Domaine | `tielle-et-popcorn.org` | non arrêté |
+
+Même socle des deux côtés : Astro en rendu serveur, Tailwind, hébergement Cloudflare Workers, contenu dans Sanity avec le Studio embarqué sur `/studio`.
+
+## Déploiement
+
+Deux branches par dépôt. Un `push` sur `staging` publie la préproduction, un merge dans `main` publie la production. Compter environ six minutes entre le merge et le site à jour.
+
+## Deux points ouverts
+
+**Le domaine du ciné-club est encore servi par Webflow.** Le nouveau site ne le reprendra qu'à la bascule DNS. Avant de la planifier, il faut savoir chez quel registrar le domaine est déposé et qui détient le compte — ce n'est pas su au 4 septembre 2026.
+
+**Le festival n'a pas de nom de domaine.** `festival-notre-terre.org` est un provisoire écrit dans la configuration des deux côtés. Le vrai nom reste à choisir, à vérifier — y compris contre les marques déposées, pas seulement la disponibilité du domaine — et à acheter.
+
+## Versions épinglées
+
+Astro est bloqué en `~7.2.9` et l'adaptateur Cloudflare en `~14.2.5`, volontairement. Astro 7.3 a retiré un export dont dépend l'intégration Sanity, et l'adaptateur le plus récent exige Astro 7.3 : les deux contraintes se croisent, il n'existe pas de combinaison plus récente qui fonctionne. Ne pas « mettre à jour » ces deux lignes sans vérifier que le build passe.
