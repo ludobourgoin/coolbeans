@@ -18,7 +18,7 @@ export const REGLAGES_DEFAUT: Reglages = {
     stackTechnique:
       "On part sur Astro (développement) + Sanity (CMS) + Cloudflare (hébergement). Pages ultra-légères, site rapide. Coût d'usage nul : hébergement Cloudflare gratuit, aucun abonnement mensuel. Autonomie : vous gérez textes, images et contenus vous-même via Sanity, sans toucher au code. Vous restez libre : le code est dans un dépôt qui vous appartient, le contenu Sanity est exportable, n'importe quel développeur peut reprendre le site.",
     conditionsReglement:
-      "30 % à la validation du devis, qui lance la prestation. Solde à la livraison du site fonctionnel.",
+      "30 % à la validation de la proposition, qui lance la prestation. Solde à la livraison du site fonctionnel.",
     ceQueCaComprend:
       "Responsive (desktop, tablette, mobile)\nConfiguration SEO et bonnes pratiques\nOptimisation de la vitesse\nTests QA sur les 3 navigateurs principaux\nCertificat SSL, hébergement et raccordement du nom de domaine (DNS)\nMise en place du suivi de fréquentation (analytics sans cookies)\nLe code livré dans un dépôt qui vous appartient\nPages légales\nDoc de passation pour la prise en main du site\nSupport 30 jours après mise en ligne",
     horsPerimetre:

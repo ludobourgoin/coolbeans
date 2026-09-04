@@ -1,5 +1,11 @@
 /* Types métier du chiffrage. Zéro dépendance Astro/DOM : partagés entre
-   le cockpit, les Actions serveur, la skill devis (via script) et les tests. */
+   le cockpit, les Actions serveur, la skill `proposition-commerciale` (via
+   script) et les tests.
+
+   `devisTexts` garde son nom : c'est une clé persistée en KV, avec une
+   migration depuis le format legacy dans store.ts. La renommer demande une
+   migration KV, pas un rechercher-remplacer — cf. le lot B de la spec
+   2026-09-02-proposition-commerciale-design.md. */
 
 export type Affinite = "neutre" | "envie" | "pasenvie";
 
@@ -12,7 +18,7 @@ export interface Reglages {
   semainesMarge: number;
   chargesPct: number;
   gestionPct: number; // +15 % sur la totalité du projet (jamais hebdo)
-  urgencePct: number; // +20 %, affiché au devis en valeur absolue
+  urgencePct: number; // +20 %, affiché sur la proposition en valeur absolue
   affinite: { baisse: number; hausse: number };
   devisTexts: {
     stackTechnique: string;
