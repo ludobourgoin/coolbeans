@@ -48,8 +48,8 @@ sections:
       - texte: "Accueil : ce qu'est Osmose, qui y consulte, ce qui s'y passe bientôt."
       - texte: "À propos : l'ADN du lieu et sa raison d'être."
       - texte: >-
-          Praticiens : qui consulte à Osmose, dans quelle discipline, quels jours,
-          et où le contacter.
+          Praticiens : qui consulte à Osmose, dans quelle discipline, et où le
+          contacter.
       - texte: >-
           Événements : les ateliers et les soirées à venir, dans l'ordre, avec la
           photo de l'intervenant et l'horaire.
@@ -61,8 +61,7 @@ sections:
           pour une entreprise, une association ou un particulier qui cherche où
           organiser son événement.
       - texte: >-
-          Contact : ton numéro pour Osmose, et le renvoi vers chaque praticien
-          pour les rendez-vous.
+          Contact : ton numéro et ton adresse mail pour joindre Osmose.
     note: >-
       Compris dans tous les cas : responsive, configuration SEO, tests QA sur les
       3 navigateurs principaux, certificat SSL, hébergement et raccordement du nom
@@ -71,9 +70,8 @@ sections:
 
   - titre: L'identité
     texte: >-
-      Je te soumets trois pistes, tu en choisis une et on l'affine ensemble. L'une
-      d'elles part de l'oiseau peint sur le mur ; le vert et l'orange de tes flyers
-      restent sur la table, resserrés.
+      Je te soumets trois pistes, tu en choisis une et on l'affine ensemble. Le
+      vert et l'orange de tes flyers restent sur la table, resserrés.
     liste:
       - texte: "Le picto et le logotype, livrés en fichiers vectoriels."
         tooltip: >-
@@ -150,15 +148,15 @@ sections:
             imprimer l'enseigne et la poser avant le 9 octobre.
           jalons:
             - { date: "11 sept.", label: "Tu me donnes ta réponse", owner: client }
+            - { date: "12 → 19 sept.", label: "Tu remplis la trame et tu m'envoies les photos", owner: client }
             - { date: "14 sept.", label: "Trois pistes d'identité présentées", owner: coolbeans }
             - { date: "16 sept.", label: "Tu choisis une piste, ou tu demandes un autre angle", owner: client }
             - { date: "18 sept.", label: "Logo, palette et fichiers livrés, prêts pour l'imprimeur", owner: coolbeans }
-            - { date: "18 sept. → 2 oct.", label: "Tu remplis la trame et tu m'envoies les photos", owner: client }
-            - { date: "7 oct.", label: "Maquettes des six pages", owner: coolbeans }
-            - { date: "12 oct.", label: "Tu valides les maquettes", owner: client }
-            - { date: "13 → 27 oct.", label: "Intégration et espace d'administration", owner: coolbeans }
-            - { date: "29 oct.", label: "Tu parcours le site et tu me fais tes retours", owner: client }
-            - { date: "4 nov.", label: "Mise en ligne", owner: coolbeans }
+            - { date: "30 sept.", label: "Maquettes des six pages", owner: coolbeans }
+            - { date: "2 oct.", label: "Tu valides les maquettes", owner: client }
+            - { date: "5 → 9 oct.", label: "Intégration et espace d'administration", owner: coolbeans }
+            - { date: "14 oct.", label: "Tu parcours le site et tu me fais tes retours", owner: client }
+            - { date: "20 oct.", label: "Mise en ligne", owner: coolbeans }
           note: >-
             Ces dates supposent ta réponse d'ici le 11 septembre. Un retard de
             validation décale la suite de plus que le retard lui-même : je travaille
@@ -198,12 +196,5 @@ notes:
       Pour plus tard, si le lieu tourne : filtres sur les événements, inscription en
       ligne aux ateliers, accès pour que chaque praticien tienne sa propre page. Rien
       n'est chiffré ici, et rien ne l'empêche.
-  - tone: warning
-    texte: >-
-      Une marque « Osmose » est déjà déposée à l'INPI dans nos domaines, et
-      ajouter « Sète » n'y change rien : c'est le mot principal qui compte. Je
-      t'en avais parlé en juillet. Fais-le vérifier par un conseiller avant qu'on
-      engage le lot identité — je ne veux pas te facturer un logo que tu ne
-      pourrais pas exploiter.
   - texte: >-
       Proposition valable 30 jours.
