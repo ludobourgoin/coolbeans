@@ -87,6 +87,22 @@ qu'un écran d'erreur explicite. Le middleware traite l'authentification avant
 l'autorisation, donc ce cas se résout en redirection vers `/connexion` et ne se
 présente pas en pratique.
 
+**Conséquence découverte à l'implémentation (2026-09-01), non anticipée par
+cette spec :** en sortie `server`, Astro **refuse** de réécrire une route rendue
+à la demande vers une route prérendue statique — « You tried to rewrite the
+on-demand route '/espace/admin' with the static route '/404' ». La garde
+renvoyait un 500 au lieu du 404.
+
+Le point de méthode compte autant que le correctif : **la suite de tests
+unitaires était verte**. Seule une vérification en session réelle, avec deux
+comptes de rôles différents, l'a montré. Une garde ne se prouve pas par des
+fonctions pures.
+
+`src/pages/404.astro` porte donc `export const prerender = false`. Coût réel :
+chaque 404 du site public devient une invocation du Worker au lieu d'un actif
+statique. Négligeable à cette échelle, et la contrepartie est que la page 404
+de marque devient utilisable depuis n'importe quelle garde, présente ou future.
+
 ### La donnée financière ne quitte pas le serveur
 
 Les fichiers de `src/content/finances/` sont lus dans le frontmatter des pages

@@ -1,4 +1,12 @@
 ---
+// Rendue à la demande, et non prérendue : le middleware réécrit vers cette
+// page quand un compte non-admin touche une route /espace/admin/. Astro refuse
+// de réécrire une route on-demand vers une route statique en sortie `server`
+// (« You tried to rewrite the on-demand route ... with the static route »).
+// Sans ce drapeau, la garde renvoie un 500 au lieu du 404.
+// Voir docs/superpowers/specs/2026-09-01-portail-garde-admin-design.md
+export const prerender = false;
+
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
