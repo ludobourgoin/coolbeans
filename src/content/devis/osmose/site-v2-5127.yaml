@@ -1,0 +1,220 @@
+titre: Osmose x Coolbeans
+objet: Site du lieu
+date: 2026-09-08
+contact: Nathalie
+version: 2
+versionDe: osmose/identite-et-site-2814
+linear:
+  projet: Osmose — identité et site
+  affaire: CRM-71
+
+sections:
+  - titre: Ce que j'ai compris
+    texte: >-
+      Osmose ouvre ses portes au public. C'est un espace commun, qui accueille
+      quatre à cinq praticiens du bien-être à leurs propres horaires et
+      l'association À l'Assaut pour les cercles de discussion et les soirées.
+    liste:
+      - texte: >-
+          Aujourd'hui, on ne peut trouver Osmose qu'en passant devant la porte ou
+          en connaissant quelqu'un.
+      - texte: >-
+          Chaque praticien communique déjà de son côté. Le site du lieu ne remplace
+          pas leurs pages : il les réunit et renvoie vers elles.
+      - texte: >-
+          Une graphiste dessine ton identité de son côté. Je pars de ce qu'elle te
+          livre et je ne redessine rien : le site porte sa charte, pas une seconde
+          interprétation.
+    note: >-
+      Si l'un de ces trois points est faux, dis-le moi avant de lire le reste :
+      toute la proposition est construite dessus.
+
+  - titre: Ce que le site change
+    liste:
+      - texte: >-
+          Une adresse web à partager. « Je consulte au lieu Osmose » devient un lien
+          qui montre le cadre, les praticiens et les horaires.
+      - texte: >-
+          Chaque praticien a sa présentation, avec un lien vers son propre site ou
+          sa page Facebook. Le visiteur qui cherche un rendez-vous part directement
+          chez lui.
+      - texte: >-
+          Un atelier annoncé une fois profite à tout le monde : l'agenda est
+          commun, et quelqu'un venu pour un shiatsu voit aussi passer une séance
+          de ciné-club ou un atelier relaxation.
+      - texte: >-
+          Tu ajoutes toi-même un praticien, un atelier ou une photo, sans me
+          demander et sans attendre.
+
+  - titre: Le site
+    liste:
+      - texte: "Accueil : ce qu'est Osmose, qui y consulte, ce qui s'y passe bientôt."
+      - texte: "À propos : l'ADN du lieu et sa raison d'être."
+      - texte: >-
+          Praticiens : qui consulte à Osmose, dans quelle discipline, et où le
+          contacter.
+      - texte: >-
+          Événements : les ateliers et les soirées à venir, dans l'ordre, avec la
+          photo de l'intervenant et l'horaire.
+        tooltip: >-
+          Les filtres par type d'événement attendront que le volume les rende
+          utiles.
+      - texte: >-
+          Réserver le lieu : l'espace, ses dimensions et ce qu'on peut y faire,
+          pour une entreprise, une association ou un particulier qui cherche où
+          organiser son événement.
+      - texte: >-
+          Contact : ton numéro et ton adresse mail pour joindre Osmose.
+    note: >-
+      Compris dans tous les cas : responsive, configuration SEO, tests QA sur les
+      3 navigateurs principaux, certificat SSL, hébergement et raccordement du nom
+      de domaine, pages légales, doc de passation, support 30 jours après la mise
+      en ligne.
+
+  - titre: Ta charte, appliquée au site
+    texte: >-
+      Tu fais dessiner ton identité par une graphiste. Mon travail commence à sa
+      livraison, et il consiste à la faire vivre à l'écran.
+    liste:
+      - texte: >-
+          Je transpose sa charte pour le web : contrastes lisibles, déclinaisons en
+          petite taille, favicon, fond clair et fond sombre.
+        tooltip: >-
+          Une charte pensée pour une enseigne et des flyers ne s'utilise pas telle
+          quelle sur un écran. C'est un travail court, mais il existe.
+      - texte: >-
+          Je cale directement avec elle les formats et les licences dont j'ai
+          besoin, sans te servir d'intermédiaire.
+      - texte: >-
+          Je te montre une page de référence, mise à ta charte, avant d'intégrer
+          les cinq autres.
+    note: >-
+      Je ne redessine rien et je ne commente pas ses choix. S'il me manque un
+      élément pour que le site tienne — une déclinaison, une licence — je le lui
+      demande, pas à toi.
+
+  - titre: Le budget
+    texte: >-
+      Les quatre premières lignes forment le socle. Les suivantes se cochent et se
+      décochent : le total suit.
+    budget:
+      lignes:
+        - label: "**Contenus des six pages** : je rédige à partir de la trame que tu remplis"
+          prix: 450
+          tooltip: >-
+            Je t'envoie une trame à compléter dans un simple fichier texte. Tu
+            racontes le lieu avec tes mots, j'écris les pages et je les optimise
+            pour Google. Tu ne pars pas de la page blanche.
+        - label: "**Le site et son espace d'administration** : tu ajoutes un praticien ou un événement toi-même"
+          prix: 980
+          tooltip: >-
+            Le même outil que celui de setencorpsmieux.fr : tu l'administres déjà
+            depuis juillet, il n'y a rien de neuf à apprendre.
+        - label: "**Coordination avec ta graphiste** et adaptation de sa charte pour l'écran"
+          prix: 400
+          tooltip: >-
+            Les échanges avec elle, la reprise des fichiers, et la mise au point des
+            contrastes, des petites tailles et de la favicon.
+        - label: "**Mise en ligne** : nom de domaine, hébergement, référencement, recette"
+          prix: 250
+        - label: "Maquettes des six pages, validées avant l'intégration"
+          prix: 700
+          optionnel: true
+          defaut: false
+          tooltip: >-
+            La page de référence du calendrier fait déjà ce travail sur une page.
+            Cette ligne l'étend aux six, si tu veux tout voir avant que j'intègre.
+        - label: "Une page dédiée par praticien, plutôt qu'un bloc sur la page commune"
+          prix: 450
+          optionnel: true
+          defaut: false
+          tooltip: >-
+            Une adresse propre à chacun, qu'il peut donner à ses propres clients.
+        - label: "Formulaire de demande sur la page « Réserver le lieu »"
+          prix: 250
+          optionnel: true
+          defaut: false
+          tooltip: >-
+            La page fonctionne sans : on s'en tient à ton numéro et à ton adresse
+            mail le temps de voir si les demandes arrivent.
+        - label: "Fiche Google de l'établissement : horaires, photos, catégories, avis"
+          prix: 180
+          optionnel: true
+          defaut: false
+          tooltip: >-
+            C'est par là qu'on cherche un lieu à Sète, bien avant le site.
+      remises:
+        - label: Tarif association
+          pct: 25
+        - label: Geste pour l'ouverture du lieu
+          pct: 30
+      mention: HT
+      reglement: >-
+        30 % à la validation, qui lance le travail. Le solde à la mise en ligne, en
+        une ou plusieurs fois : on cale les échéances ensemble.
+
+  - titre: Le déroulé
+    planning:
+      options:
+        - label: Calendrier
+          indicatif: true
+          texte: >-
+            Les jalons comptent en jours à partir de ta réponse. Rien n'est calé sur
+            une date ferme tant qu'on n'a pas convenu du départ ensemble.
+          jalons:
+            - { date: "J+0", label: "Tu me donnes ta réponse", owner: client }
+            - { date: "J+5", label: "Tu m'envoies la trame remplie et les photos", owner: client }
+            - { date: "J+10", label: "Ta graphiste me livre la charte", owner: client }
+            - { date: "J+14", label: "Une page de référence, mise à ta charte", owner: coolbeans }
+            - { date: "J+17", label: "Tu valides la page de référence", owner: client }
+            - { date: "J+25", label: "Les six pages et l'espace d'administration", owner: coolbeans }
+            - { date: "J+28", label: "Tu parcours le site et tu me fais tes retours", owner: client }
+            - { date: "J+30", label: "Mise en ligne", owner: coolbeans }
+          note: >-
+            Le seul jalon qui ne dépend ni de toi ni de moi est la charte de ta
+            graphiste. Tant qu'elle n'est pas là, la page de référence ne démarre
+            pas et tout ce qui suit glisse d'autant.
+
+  - titre: De ton côté
+    texte: >-
+      Quatre choses, et ce sont elles qui font tenir le calendrier.
+    liste:
+      - texte: >-
+          La trame que je t'envoie, remplie, les photos des praticiens et celles
+          de l'espace.
+      - texte: >-
+          La charte de ta graphiste, exploitable telle quelle.
+        tooltip: >-
+          Ce qu'il me faut : le logo en fichier vectoriel, la palette en codes hex,
+          les typographies avec leur licence web, et les déclinaisons sur fond clair
+          et sur fond sombre. Sans la licence web, je ne peux pas installer ses
+          typographies sur le site.
+      - texte: >-
+          Une seule personne qui tranche. Montre la page de référence aux praticiens
+          autant que tu veux, mais c'est toi qui me réponds, d'une seule voix.
+        tooltip: >-
+          Arbitrer entre quatre ou cinq avis contradictoires est le seul poste
+          capable de faire déraper un projet de cette taille.
+      - texte: >-
+          Une réponse sous cinq jours ouvrés à chaque validation. Sans retour, je
+          considère l'étape validée et j'avance.
+    note: >-
+      Deux allers-retours sont prévus par livrable. Au-delà, on en reparle avant que
+      je continue.
+
+notes:
+  - tone: success
+    texte: >-
+      Tarif association de 25 %, puis un geste de 30 % pour l'ouverture du lieu.
+      Les deux s'appliquent à l'ensemble, options comprises : tu règles un peu
+      moins de la moitié du montant.
+  - texte: >-
+      Aucun abonnement mensuel : l'hébergement et l'espace d'administration tiennent
+      dans les offres gratuites. Seul le nom de domaine se renouvelle, autour de dix
+      euros par an.
+  - texte: >-
+      Pour plus tard, si le lieu tourne : filtres sur les événements, inscription en
+      ligne aux ateliers, accès pour que chaque praticien tienne sa propre page. Rien
+      n'est chiffré ici, et rien ne l'empêche.
+  - texte: >-
+      Proposition valable 30 jours.
