@@ -38,13 +38,15 @@ export default defineConfig({
     mdx(),
     sitemap({
       // Pages privées/utilitaires exclues du sitemap : espace client (SSR,
-      // déjà noindex), doc de passation (noindex), devis (pages noindex par
-      // définition), connexion (noindex ; `prerender = false` ne suffit pas à
+      // déjà noindex), doc de passation (noindex), devis et cadrage (documents
+      // commerciaux nominatifs, noindex par définition et bloqués par
+      // robots.txt), connexion (noindex ; `prerender = false` ne suffit pas à
       // l'exclure), design-system (référence interne, bloquée par robots.txt).
       filter: (page) =>
         !page.includes("/espace") &&
         !page.includes("/docs/") &&
         !page.includes("/devis/") &&
+        !page.includes("/cadrage/") &&
         !page.includes("/connexion") &&
         !page.includes("/design-system"),
     }),

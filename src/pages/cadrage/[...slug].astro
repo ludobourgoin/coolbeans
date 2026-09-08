@@ -1,0 +1,90 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import GridBackdrop from "../../components/GridBackdrop.astro";
+import Banner from "../../components/ui/Banner.astro";
+import Tooltip from "../../components/ui/Tooltip.astro";
+import CadrageIntro from "../../components/cadrage/CadrageIntro.astro";
+import CadrageComparatif from "../../components/cadrage/CadrageComparatif.astro";
+import CadrageFormulaire from "../../components/cadrage/CadrageFormulaire.astro";
+import DevisFooter from "../../components/devis/DevisFooter.astro";
+import { dateLongue, riche, ancreSection } from "../../lib/devis";
+
+/* Un document de cadrage par fichier YAML, une URL par fichier. Pas de
+   versions ici, contrairement au devis : un cadrage se remplit une fois et
+   n'a pas de périmètre à réviser. S'il faut reposer des questions, c'est un
+   autre document. */
+export async function getStaticPaths() {
+  const entries = await getCollection("cadrage");
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+
+/* Pas de tirage PDF pour ce document, donc pas de référence imprimée : il se
+   lit et se remplit dans le navigateur, il ne circule pas en pièce jointe
+   comme une proposition. */
+---
+
+<BaseLayout
+  title={`Cadrage ${d.titre} · Coolbeans`}
+  description={`Questionnaire de cadrage : ${d.objet}`}
+  noindex
+>
+  <!-- EN-TÊTE -->
+  <header class="relative overflow-hidden bg-surface-subtle">
+    <GridBackdrop />
+    <div class="container-site relative pt-24x pb-16x text-center">
+      <p class="label">Cadrage du besoin</p>
+      <h1 class="mx-auto mt-5 max-w-[18ch]">{d.titre}</h1>
+      <p class="mx-auto mt-6 max-w-[62ch] text-xl leading-[1.45] font-medium text-balance">
+        {d.objet}
+      </p>
+      <p class="mt-5 font-mono text-[12px] tracking-wide text-mute uppercase">
+        Document du {dateLongue(d.date)}
+      </p>
+    </div>
+  </header>
+
+  <div class="container-site">
+    <div class="mx-auto max-w-[880px] py-16x">
+      <CadrageIntro sections={d.intro} />
+
+      {
+        d.comparatif && (
+          <CadrageComparatif
+            titre={d.comparatif.titre}
+            texte={d.comparatif.texte}
+            solutions={d.comparatif.solutions}
+            criteres={d.comparatif.criteres}
+            mentionCout={d.comparatif.mentionCout}
+            ancre={ancreSection(d.comparatif.titre)}
+          />
+        )
+      }
+
+      {
+        d.notes.length > 0 && (
+          <div class="grid grid-cols-[180px_1fr] gap-10 border-t border-line pt-10 max-[700px]:grid-cols-1 max-[700px]:gap-4">
+            <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">
+              NB
+            </p>
+            <div class="flex max-w-[58ch] flex-col gap-3">
+              {d.notes.map((note) => (
+                <Banner tone={note.tone}>
+                  <Fragment set:html={riche(note.texte)} />
+                  {note.tooltip && <Tooltip texte={note.tooltip} />}
+                </Banner>
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  <CadrageFormulaire slug={entry.id} questions={d.questions} contact={d.contact} />
+
+  <DevisFooter />
+</BaseLayout>

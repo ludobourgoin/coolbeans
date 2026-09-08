@@ -1,7 +1,9 @@
 # Cadrage client — contenu et direction artistique dans le portail
 
 **Date :** 2026-08-18
-**Statut :** design validé, implémentation non commencée
+**Statut :** design validé. **Une V1 a été livrée le 2026-09-05, sur une
+architecture différente de celle décrite ici.** Voir le §13, qui prime sur les
+§4.2, §5, §6 et §8 partout où ils le contredisent.
 **Origine :** brainstorm du 2026-08-18, déclenché par le devis CAFA (CRM-9).
 
 ---
@@ -267,3 +269,85 @@ le module.
 | 2026-08-18 | Gel par instantané attaché au devis ; formulaire modifiable à vie |
 | 2026-08-18 | Quatre événements notifiés, le reste en état dans le cockpit |
 | 2026-08-18 | Option Rédaction définie par livrables nommés + clause de bascule |
+| 2026-09-05 | Accès par lien public non devinable, le lien magique est abandonné (§13.1) |
+| 2026-09-05 | Aucune écriture en base en V1, le mail est la trace (§13.2) |
+| 2026-09-05 | Le tableau comparatif devient le cœur du document (§13.3) |
+| 2026-09-05 | Le cadrage remplace parfois le rendez-vous, au lieu de le préparer (§13.4) |
+
+---
+
+## 13. Amendement du 2026-09-05 : ce qui a réellement été livré
+
+Suite COO-188. Le §0 demande qu'une session qui change une décision amende ce
+fichier dans le même commit : c'est ce que fait cette section.
+
+### 13.1 Lien public, pas lien magique
+
+Le §8 prévoyait un accès prospect par lien magique Better Auth. Abandonné.
+
+Le §8 se contredisait lui-même : il justifie le devis public par le fait qu'un
+document commercial se transfère au président, au trésorier, à un associé, et
+qu'un lien magique transféré ne fonctionne plus ou ouvre la session d'autrui.
+L'argument vaut mot pour mot pour un questionnaire de cadrage, qui se remplit
+souvent à plusieurs.
+
+Le cadrage suit donc le régime du devis : URL non devinable
+(`/cadrage/<client>/<projet>-<4 chiffres>`), balise `noindex`, `Disallow` dans
+`robots.txt`, exclusion du sitemap. Conséquence utile : la dépendance à la
+migration Better Auth tombe, et l'arbitrage A ou B du §8 devient sans objet.
+
+### 13.2 Pas de base de données en V1
+
+Le §4.2 prévoyait une table D1 `cadrage_reponses` append-only, qui fondait le
+calcul d'écart du §6.2. Rien de tout ça n'est livré.
+
+Raison : une migration D1 est un geste non parallélisable qui part en
+production dès le merge sur `staging`, et un cadrage ne pilote aucun statut de
+cockpit. Le mail de notification est la trace, et le lead reçoit une copie de
+ses réponses. Le gel, les écarts et les quatre notifications du §6 restent hors
+périmètre tant qu'aucune base n'existe.
+
+Ce qui tombe avec : l'export Markdown du §4.3, et le §5 (sommaire à badges,
+compteurs, enregistrement automatique) qui suppose un état persisté.
+
+### 13.3 Le tableau comparatif est le cœur du document
+
+Absent du design d'origine, et c'est ce qui lui manquait. Un questionnaire qui
+demande un budget sans avoir dit ce que chaque voie coûte récolte une réponse
+au hasard, inexploitable pour chiffrer.
+
+Le document présente donc, avant les questions, un tableau à une colonne par
+solution et une ligne par critère, dont une ligne de coût par colonne et une
+solution explicitement recommandée. Règle de rédaction : fonctionnalité X,
+bénéfice Y, coût Z. Les questions viennent ensuite et renvoient au tableau.
+
+Les fourchettes sont larges et marquées indicatives. Elles ancrent le lead
+avant qu'on ait ses réponses : c'est assumé, et cohérent avec le SOP qui veut
+que l'argent se parle tôt, mais ça inverse la règle « borne haute au devis,
+budget du lead au brief ».
+
+Cet amendement livre au passage le reste-à-faire noté dans
+`2026-08-19-process-vente-unifie-design.md` : les cases à cocher par besoin et
+les bibliothèques de besoins par type de projet.
+
+### 13.4 Le cadrage remplace le rendez-vous, il ne le prépare pas toujours
+
+Le §3 le plaçait systématiquement avant un call de brief qui avait lieu de
+toute façon. Le besoin réel est autre : éviter le rendez-vous quand il ferait
+perdre une heure, typiquement face à quelqu'un sans budget.
+
+Le cadrage occupe donc l'étape **S1b** du SOP, entre le premier contact et le
+rendez-vous, et il ouvre trois suites : chiffrer directement, caler un
+rendez-vous, ou classer. Les critères d'envoi et de non-envoi sont écrits dans
+la doc de vente et dans la skill `proposition-commerciale`.
+
+### 13.5 Ce qui reste valable du design d'origine
+
+- Le §4.1 : définition versionnée en YAML dans le repo, générée par Claude,
+  relue par Ludo avant envoi. Jamais d'envoi sans relecture.
+- Le §7 : option Rédaction définie par livrables nommés et clause de bascule.
+  Indépendant du module.
+- Le §9 : hors périmètre de la V1, toujours d'actualité.
+- Le §2, dans son intention : des questions fermées qui déplacent le prix. Le
+  drapeau `decisif` les marque et les fait remonter en tête du mail. La
+  séparation en deux blocs bloquant et non bloquant, elle, attend une base.

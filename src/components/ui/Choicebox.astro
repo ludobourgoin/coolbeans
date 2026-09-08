@@ -2,8 +2,14 @@
 interface Props {
   name: string;
   options: { value: string; title: string; hint?: string; checked?: boolean }[];
+  /* `radio` par défaut : c'est la forme d'origine du composant, et tous les
+     appels du devis la supposent. `checkbox` sert les questions de cadrage à
+     réponses multiples, où forcer un choix unique produit une réponse fausse
+     plutôt qu'une réponse incomplète. Le nom reste le même sur toutes les
+     cases d'un groupe, la lecture se fait avec FormData.getAll(). */
+  type?: "radio" | "checkbox";
 }
-const { name, options } = Astro.props;
+const { name, options, type = "radio" } = Astro.props;
 ---
 
 <div class="grid gap-3">
@@ -13,7 +19,7 @@ const { name, options } = Astro.props;
         class="flex cursor-pointer items-start gap-3 rounded-card border border-line bg-surface px-4 py-3.5 transition-colors duration-150 ease-in-out hover:border-[var(--ds-gray-500)] hover:bg-[var(--ds-gray-100)] has-checked:border-[var(--ds-blue-600)] has-checked:bg-[var(--ds-blue-100)] hover:has-checked:bg-[var(--ds-blue-200)]"
       >
         <input
-          type="radio"
+          type={type}
           name={name}
           value={o.value}
           checked={o.checked}

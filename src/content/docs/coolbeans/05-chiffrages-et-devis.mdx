@@ -3,8 +3,8 @@ client: "coolbeans"
 title: "Devis : outillage"
 order: 5
 status: "final"
-updated: 2026-09-01
-description: "La référence technique de la chaîne devis : cockpit /espace/devis, Réglages, schéma YAML, réponses en D1, API. Le workflow lui-même est documenté sur la page Workflow CRM."
+updated: 2026-09-05
+description: "La référence technique de la chaîne devis : cockpit /espace/devis, Réglages, schéma YAML, réponses en D1, API, et le document de cadrage. Le workflow lui-même est documenté sur la page Workflow CRM."
 ---
 
 import Callout from "../../../components/doc/Callout.astro";
@@ -136,7 +136,49 @@ notification mail via Resend. Si l'écriture D1 échoue, le mail part quand
 même — la notification prime, l'erreur est loguée. La table est append-only.
 
 Toutes les pages devis sont exclues des moteurs de recherche et du sitemap :
-accessibles à qui possède le lien, rien de plus.
+accessibles à qui possède le lien, rien de plus. La protection est double
+depuis le 2026-09-05 : `Disallow` dans `robots.txt` **et** balise `noindex`.
+Les deux se cumulent au lieu de se remplacer, parce qu'un `Disallow` seul
+empêche le robot de lire le `noindex`, et qu'un `noindex` seul laisse l'URL
+crawlable.
+
+## Le document de cadrage
+
+Document frère de la proposition, pas un de ses états. Le **workflow** (quand
+l'envoyer, quand ne pas l'envoyer, comment lire les réponses) est documenté sur
+la page Workflow CRM ; ici, l'outillage.
+
+Collection Astro `cadrage`, un fichier par document dans
+`src/content/cadrage/<client>/<projet>-<4 chiffres>.yaml`, rendu par
+`src/pages/cadrage/[...slug].astro`. Trois blocs, dans cet ordre :
+
+| Bloc | Rôle |
+| --- | --- |
+| `intro` | Sections au format des sections de devis (`titre`, `texte`, `liste`, `note`) |
+| `comparatif` | `solutions[]` (une par colonne, dont une `recommandee`) et `criteres[]` (une par ligne, `valeurs` alignées sur les colonnes) |
+| `questions` | `type: choix` (avec `multiple`, `autre`) ou `type: texte` (avec `long`), plus `decisif` et `requis` |
+
+<Callout type="piege" title="Les valeurs d'un critère sont alignées sur les colonnes, dans l'ordre">
+  Une ligne dont le nombre de valeurs ne correspond pas au nombre de solutions décale tout le tableau sans rien afficher d'anormal : le lead lit alors le coût d'une solution en face du nom d'une autre. `CadrageComparatif.astro` lève une erreur au build plutôt que de publier ça.
+</Callout>
+
+**Le navigateur n'envoie que des identifiants.** L'endpoint relit le YAML pour
+retrouver les libellés de question et d'option : une valeur absente du
+questionnaire est ignorée. C'est la même règle que les prix du devis, qui ne
+remontent jamais depuis une page publique.
+
+**Aucune écriture en base, aucun effet Linear.** Le mail est la trace. Un
+cadrage ne pilote aucun statut de cockpit, donc pas de table D1 et pas de
+migration ; et il ne valide rien, donc pas d'équivalent de `signature.ts`.
+
+| Élément | Emplacement |
+| --- | --- |
+| Cadrage YAML (contenu) | `src/content/cadrage/**/*.yaml`, schéma dans `src/content.config.ts` |
+| Rendu | `src/pages/cadrage/[...slug].astro` |
+| Composants | `src/components/cadrage/` (Intro, Comparatif, Formulaire) |
+| Traduction des réponses | `src/lib/cadrage.ts` (`reponsesLisibles`, `trierParPoids`) |
+| Soumission | `src/pages/api/cadrage-reponse.ts` |
+| Accusé de réception | `src/emails/cadrage-confirmation.ts` |
 
 ## Référence technique
 
