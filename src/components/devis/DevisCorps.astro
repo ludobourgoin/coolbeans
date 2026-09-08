@@ -69,23 +69,25 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
   </nav>
 </div>
 
-{
-  /* Légende du surlignage, juste sous la nav : le client la rencontre avant
-     le premier bloc jaune, jamais après. Un fond de couleur sans explication
-     se lit comme une coquille d'affichage.
+<div class="mx-auto max-w-[880px] py-16x">
+  {
+    /* Légende du surlignage, juste sous la nav : le client la rencontre avant
+       le premier bloc jaune, jamais après. Un fond de couleur sans explication
+       se lit comme une coquille d'affichage.
 
-     Absente sur la V1 — rien n'y est nouveau, il découvre le document. */
-  precedent && (
-    <div class="mx-auto max-w-[880px] pt-12 pb-4">
+       Elle vit dans le conteneur des sections plutôt qu'au-dessus, pour
+       partager son rythme : le pt-16x du conteneur l'écarte de la nav (64px),
+       le py-10 de la première section la rapproche du contenu (40px). Un
+       bandeau plus proche de ce qu'il décrit que de la barre au-dessus.
+
+       Absente sur la V1 — rien n'y est nouveau, il découvre le document. */
+    precedent && (
       <Banner tone="info">
         Ce qui a changé depuis la V{precedent.version} est{" "}
         <b class="font-bold">surligné en jaune</b>. Le reste est identique, mot pour mot.
       </Banner>
-    </div>
-  )
-}
-
-<div class="mx-auto max-w-[880px] py-16x">
+    )
+  }
   {
     d.sections.map((section, index) => (
       <section
