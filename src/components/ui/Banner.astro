@@ -14,10 +14,13 @@ const DOT: Record<string, string> = {
 
 <div
   data-banner
-  class="material-small flex items-center gap-3 rounded-control bg-surface px-3 py-2.5 text-sm"
+  class="material-small flex items-start gap-3 rounded-control bg-surface px-3 py-2.5 text-sm"
 >
+  <!-- mt-1.5 centre la puce (8 px) sur la premiere ligne (interligne 20 px),
+       pas sur la hauteur totale du bandeau : sur deux lignes, une puce
+       centree verticalement flotte entre les lignes. -->
   <span
-    class="block size-2 flex-none rounded-full"
+    class="mt-1.5 block size-2 flex-none rounded-full"
     style={`background:${DOT[tone]}`}
     aria-hidden="true"
   ></span>
