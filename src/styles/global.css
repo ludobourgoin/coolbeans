@@ -79,6 +79,11 @@
   --warning: var(--ds-amber-800);
   --error: var(--ds-red-800);
 
+  /* Fond de surlignage des nouveautés d'un devis révisé. L'échelle amber
+     s'inverse toute seule en sombre (#fff4d4 en clair, #331b00 en sombre),
+     donc le repère reste lisible dans les deux thèmes sans second token. */
+  --highlight-neuf: var(--ds-amber-200);
+
   --radius-control: 6px;
   --radius-card: 8px;
 
@@ -130,6 +135,7 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-error: var(--error);
+  --color-highlight-neuf: var(--highlight-neuf);
 
   --font-sans: "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   /* --font-display reste distinct de --font-sans par intention (les gros
