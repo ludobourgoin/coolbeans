@@ -138,7 +138,7 @@ export async function declencherSignature(
   const tache = await creerSousTache({
     apiKey,
     parentId: affaire.issueId,
-    title: `Devis et acompte — ${ctx.titre}`,
+    title: `Devis et acompte : ${ctx.titre}`,
     description: corpsTacheFacturation(ctx),
   });
   await marquerTacheLinear(reponseId, tache.id, d1);
