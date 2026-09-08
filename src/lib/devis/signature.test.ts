@@ -141,7 +141,7 @@ describe("declencherSignature", () => {
     expect(creerSousTache).toHaveBeenCalledWith(
       expect.objectContaining({
         parentId: "uuid-affaire-46",
-        title: "Devis et acompte — Site du salon Construire & Habiter Autrement",
+        title: "Devis et acompte : Site du salon Construire & Habiter Autrement",
       }),
     );
     expect(changerEtatAffaire).toHaveBeenCalledWith(
