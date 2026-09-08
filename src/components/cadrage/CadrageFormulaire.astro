@@ -1,0 +1,375 @@
+---
+/* Formulaire du document de cadrage, piloté par le YAML.
+
+   Jumeau de DevisReponse : même grille, même bloc d'identité, même
+   consentement, même filet de secours par courriel pré-rempli si l'API tombe.
+   Ce qui change : les questions viennent du contenu, pas du composant.
+
+   Le navigateur n'envoie que des identifiants (`id` de question, `valeur`
+   d'option) et les saisies libres. Les libellés sont relus dans le YAML par
+   l'endpoint : c'est la même règle que les prix du devis, qui ne remontent
+   jamais depuis la page publique. */
+import Choicebox from "../ui/Choicebox.astro";
+import { riche } from "../../lib/devis";
+import type { QuestionCadrage } from "../../lib/cadrage";
+
+interface Props {
+  slug: string;
+  questions: QuestionCadrage[];
+  /** Prénom du destinataire, pour pré-remplir et personnaliser l'intro. */
+  contact?: string;
+}
+const { slug, questions } = Astro.props;
+
+/* Descripteur minimal passé au script : de quoi savoir quoi lire dans le
+   formulaire, sans y réinjecter les libellés, qui n'ont rien à y faire. */
+const descripteurs = questions.map((q) => ({
+  id: q.id,
+  type: q.type,
+  multiple: q.multiple,
+  autre: q.autre,
+  requis: q.requis,
+  /* Sert au seul message d'erreur côté navigateur (« il manque la question
+     3 »). Tronqué : c'est un repère, pas le libellé de référence. */
+  repere: q.label.length > 60 ? `${q.label.slice(0, 57)}...` : q.label,
+}));
+
+const optionsDe = (q: QuestionCadrage) => [
+  ...(q.options ?? []).map((o) => ({ value: o.valeur, title: o.label, hint: o.aide })),
+  ...(q.autre ? [{ value: "autre", title: "Autre", hint: "À préciser juste en dessous." }] : []),
+];
+---
+
+<!-- QUESTIONNAIRE -->
+<section data-cadrage-formulaire class="border-t border-line bg-surface-subtle">
+  <div class="container-site py-24x">
+    <!-- Même grille que le corps d'intro (bloc 880, colonne de libellés 180,
+         gouttière 40) : sans elle, le formulaire se recentre sur l'axe de la
+         page et l'œil lit une rupture au passage d'un bloc à l'autre. -->
+    <div
+      class="mx-auto grid max-w-[880px] grid-cols-[180px_1fr] gap-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+    >
+      <div aria-hidden="true"></div>
+      <div>
+        <h2>Vos réponses</h2>
+        <p class="mt-4 max-w-[46ch] leading-[1.6] text-mute">
+          Rien n'est engagé ici. Vos réponses me servent à chiffrer juste, et à vous dire
+          honnêtement si le jeu en vaut la chandelle.
+        </p>
+
+        <form
+          id="cadrage-form"
+          class="card mt-10 grid gap-8"
+          data-slug={slug}
+          data-questions={JSON.stringify(descripteurs)}
+        >
+          <p class="text-[13px] text-mute">Les champs marqués d'une étoile sont obligatoires.</p>
+
+          {
+            questions.map((q, i) => (
+              <fieldset class="grid gap-3 border-0 p-0">
+                <legend class="mb-1 p-0">
+                  <span class="block font-mono text-[11px] font-bold tracking-wide text-mute uppercase">
+                    Question {i + 1}
+                    {q.decisif && " · décide du chiffrage"}
+                  </span>
+                  <span class="mt-1.5 block text-[16px] leading-[1.45] font-medium text-ink">
+                    <Fragment set:html={riche(q.label)} />
+                    {q.requis && (
+                      <span class="text-ink" aria-hidden="true">
+                        {" "}
+                        *
+                      </span>
+                    )}
+                  </span>
+                </legend>
+
+                {q.aide && (
+                  <p
+                    class="-mt-1 max-w-[52ch] text-[13px] leading-[1.6] text-mute"
+                    set:html={riche(q.aide)}
+                  />
+                )}
+
+                {q.type === "choix" ? (
+                  <>
+                    <Choicebox
+                      name={`q-${q.id}`}
+                      type={q.multiple ? "checkbox" : "radio"}
+                      options={optionsDe(q)}
+                    />
+                    {q.autre && (
+                      <input
+                        class="field mt-1"
+                        type="text"
+                        name={`autre-${q.id}`}
+                        data-cadrage-autre={q.id}
+                        placeholder="Précisez"
+                        hidden
+                      />
+                    )}
+                  </>
+                ) : q.long ? (
+                  <textarea
+                    class="field h-auto min-h-[110px] py-3"
+                    name={`q-${q.id}`}
+                    placeholder={q.placeholder ?? "Votre réponse"}
+                  />
+                ) : (
+                  <input
+                    class="field"
+                    type="text"
+                    name={`q-${q.id}`}
+                    placeholder={q.placeholder ?? "Votre réponse"}
+                  />
+                )}
+              </fieldset>
+            ))
+          }
+
+          <div class="grid gap-4 border-t border-line pt-8">
+            <p class="font-mono text-[11px] font-bold tracking-wide text-mute uppercase">
+              Pour vous répondre
+            </p>
+            <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
+              <div class="grid gap-2">
+                <label class="label field-label" for="cadrage-prenom">
+                  Prénom <span class="text-ink" aria-hidden="true">*</span>
+                </label>
+                <input
+                  class="field"
+                  type="text"
+                  id="cadrage-prenom"
+                  name="prenom"
+                  autocomplete="given-name"
+                  placeholder="Votre prénom"
+                  required
+                />
+              </div>
+              <div class="grid gap-2">
+                <label class="label field-label" for="cadrage-nom">
+                  Nom <span class="text-ink" aria-hidden="true">*</span>
+                </label>
+                <input
+                  class="field"
+                  type="text"
+                  id="cadrage-nom"
+                  name="nom"
+                  autocomplete="family-name"
+                  placeholder="Votre nom"
+                  required
+                />
+              </div>
+            </div>
+            <div class="grid gap-2">
+              <label class="label field-label" for="cadrage-email">
+                Email <span class="text-ink" aria-hidden="true">*</span>
+              </label>
+              <input
+                class="field"
+                type="email"
+                id="cadrage-email"
+                name="email"
+                autocomplete="email"
+                placeholder="vous@exemple.com"
+                required
+              />
+            </div>
+            <div class="grid gap-2">
+              <label class="label field-label" for="cadrage-message">
+                Quelque chose à ajouter
+              </label>
+              <textarea
+                class="field h-auto min-h-[100px] py-3"
+                id="cadrage-message"
+                name="message"
+                placeholder="Tout ce que les questions n'ont pas couvert"></textarea>
+            </div>
+          </div>
+
+          <div class="grid gap-2 border-t border-line pt-6">
+            <label
+              class="flex cursor-pointer items-start gap-3 text-[13px] leading-[1.6] text-mute"
+              for="cadrage-consentement"
+            >
+              <input
+                class="mt-0.75 size-4 shrink-0 accent-ink"
+                type="checkbox"
+                id="cadrage-consentement"
+                name="consentement"
+                required
+              />
+              <span>
+                J'accepte que Coolbeans conserve ces informations pour traiter ma demande et assurer
+                le suivi de notre collaboration.
+                <span class="text-ink" aria-hidden="true">*</span>
+              </span>
+            </label>
+            <p class="pl-7 text-[13px] leading-[1.6] text-mute">
+              Elles ne sont ni revendues ni transmises à des tiers, et peuvent être supprimées sur
+              simple demande à <a class="link" href="mailto:ludo@coolbeans.cc">ludo@coolbeans.cc</a
+              >.
+            </p>
+          </div>
+
+          <button class="btn btn-lg" type="submit">Envoyer mes réponses</button>
+          <p
+            data-cadrage-form-status
+            role="status"
+            class="hidden text-center text-[13px] font-medium"
+          >
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  interface Descripteur {
+    id: string;
+    type: "choix" | "texte";
+    multiple: boolean;
+    autre: boolean;
+    requis: boolean;
+    repere: string;
+  }
+
+  const form = document.querySelector<HTMLFormElement>("#cadrage-form");
+  const status = form?.querySelector<HTMLParagraphElement>("[data-cadrage-form-status]");
+  const descripteurs: Descripteur[] = JSON.parse(form?.dataset.questions ?? "[]");
+
+  /* Le champ « autre » ne s'affiche que quand l'option correspondante est
+     cochée. Visible en permanence, il invite à écrire une précision qui ne
+     partira pas ; masqué sans logique, il empêche de préciser. */
+  const syncAutre = () => {
+    if (!form) return;
+    const fd = new FormData(form);
+    descripteurs
+      .filter((d) => d.autre)
+      .forEach((d) => {
+        const champ = form.querySelector<HTMLInputElement>(`[data-cadrage-autre="${d.id}"]`);
+        if (champ) champ.hidden = !fd.getAll(`q-${d.id}`).includes("autre");
+      });
+  };
+  form?.addEventListener("change", syncAutre);
+  syncAutre();
+
+  /* Réponses au format attendu par l'API : des identifiants et des saisies
+     libres, jamais un libellé de question ni de réponse. */
+  const collecter = (fd: FormData) =>
+    descripteurs.map((d) => {
+      if (d.type === "texte") {
+        return { question: d.id, texte: String(fd.get(`q-${d.id}`) ?? "").trim() };
+      }
+      return {
+        question: d.id,
+        valeurs: fd.getAll(`q-${d.id}`).map(String),
+        texte: String(fd.get(`autre-${d.id}`) ?? "").trim(),
+      };
+    });
+
+  const estVide = (r: { valeurs?: string[]; texte?: string }) =>
+    !(r.valeurs?.length ?? 0) && !r.texte;
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (!status || !submitBtn) return;
+
+    const fd = new FormData(form);
+    const reponses = collecter(fd);
+
+    /* Les questions obligatoires se valident ici et non en `required` HTML :
+       sur un groupe de cases à cocher, `required` exige LA case portant
+       l'attribut, pas une case du groupe, et bloque la soumission sur une
+       erreur incompréhensible. */
+    const manquantes = descripteurs
+      .map((d, i) => ({ d, i, r: reponses[i] }))
+      .filter(({ d, r }) => d.requis && estVide(r));
+    if (manquantes.length) {
+      status.hidden = false;
+      status.textContent =
+        manquantes.length === 1
+          ? `Il manque la question ${manquantes[0].i + 1} : ${manquantes[0].d.repere}`
+          : `Il manque les questions ${manquantes.map((m) => m.i + 1).join(", ")}.`;
+      status.className = "text-center text-[13px] font-medium text-error";
+      return;
+    }
+
+    const payload = {
+      slug: form.dataset.slug,
+      reponses,
+      prenom: fd.get("prenom"),
+      nom: fd.get("nom"),
+      email: fd.get("email"),
+      message: fd.get("message"),
+      consentement: fd.get("consentement") === "on",
+    };
+
+    submitBtn.disabled = true;
+    status.hidden = false;
+    status.textContent = "Envoi en cours...";
+    status.className = "text-center text-[13px] font-medium text-mute";
+
+    try {
+      const res = await fetch("/api/cadrage-reponse", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error();
+      status.textContent =
+        "Merci, c'est envoyé. Vous recevez une copie de vos réponses par email à l'instant.";
+      status.className = "text-center text-[13px] font-medium text-success";
+      form.reset();
+      syncAutre();
+    } catch {
+      /* Filet de sécurité, repris du formulaire de devis : un envoi qui échoue
+         ne doit jamais laisser quelqu'un sans issue. Ici le coût d'une perte
+         est plus élevé qu'ailleurs, parce que la personne vient de passer dix
+         minutes à répondre. On lui rend sa saisie sous forme de courriel
+         pré-rempli, qui ne dépend d'aucun de nos services.
+
+         Les libellés viennent du DOM et pas du YAML : c'est le seul endroit du
+         parcours où c'est acceptable, puisque ce texte ne sert qu'à composer
+         un mail que la personne relit avant de l'envoyer. */
+      const lignes = descripteurs.map((d, i) => {
+        const champ = form.querySelector<HTMLElement>(`[name="q-${d.id}"]`);
+        const legende =
+          champ?.closest("fieldset")?.querySelector("legend")?.textContent?.trim() ??
+          `Question ${i + 1}`;
+        const r = reponses[i];
+        const valeur = estVide(r)
+          ? "(pas de réponse)"
+          : [...(r.valeurs ?? []), r.texte].filter(Boolean).join(" | ");
+        return `${legende.replace(/\s+/g, " ")}\n  ${valeur}`;
+      });
+
+      const corps = [
+        `Cadrage : ${payload.slug ?? ""}`,
+        "",
+        `Prénom : ${payload.prenom ?? ""}`,
+        `Nom : ${payload.nom ?? ""}`,
+        `Email : ${payload.email ?? ""}`,
+        "",
+        ...lignes,
+        "",
+        String(payload.message ?? "").trim() || "(pas de message)",
+      ].join("\n");
+
+      const lien =
+        "mailto:ludo@coolbeans.cc" +
+        `?subject=${encodeURIComponent(`Cadrage ${payload.slug ?? ""}`)}` +
+        `&body=${encodeURIComponent(corps)}`;
+
+      status.innerHTML =
+        "L'envoi automatique n'a pas abouti. Vos réponses ne sont pas perdues : " +
+        `<a class="link" href="${lien}">envoyez-les-moi par e-mail</a>, ` +
+        "le message est déjà prêt.";
+      status.className = "text-center text-[13px] font-medium text-error";
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+</script>

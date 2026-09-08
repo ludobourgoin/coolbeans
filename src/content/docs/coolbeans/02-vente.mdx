@@ -3,8 +3,8 @@ client: "coolbeans"
 title: "Workflow CRM"
 order: 2
 status: "final"
-updated: 2026-09-02
-description: "Le cycle de vie d'une affaire, du vivier de prospection au suivi d'après-vente : les conventions du CRM, le pipeline Linear à onze colonnes, la séparation entre proposition commerciale et devis Tiime, et le gabarit d'onboarding client."
+updated: 2026-09-05
+description: "Le cycle de vie d'une affaire, du vivier de prospection au suivi d'après-vente : les conventions du CRM, le pipeline Linear à onze colonnes, le document de cadrage, la séparation entre proposition commerciale et devis Tiime, et le gabarit d'onboarding client."
 ---
 
 import Callout from "../../../components/doc/Callout.astro";
@@ -104,6 +104,41 @@ Le passage dans cette colonne est **automatique** : la validation du formulaire 
 
   Les actions internes — émettre une facture, créer un compte, rédiger une étude de cas — vivent en sous-issues de l'affaire CRM, pas dans la team du client.
 </Callout>
+
+## Le document de cadrage
+
+Depuis le 2026-09-05, un troisième document commercial existe à côté de la proposition et du devis Tiime : le **cadrage**. C'est une page publique, `/cadrage/<client>/<projet>-<4 chiffres>`, au même format que la proposition, qui présente les solutions possibles puis pose des questions.
+
+Il sert deux choses, et la seconde est la plus importante.
+
+**Il qualifie.** Un rendez-vous de brief coûte une heure et se tient parfois avec quelqu'un qui n'a pas de budget. Le cadrage fait dire ce budget par écrit, avant l'heure passée.
+
+**Il permet de mieux chiffrer.** Un lead à qui on demande son enveloppe sans lui avoir dit ce que chaque voie coûte répond au hasard, et sa réponse ne sert à rien. Le document explique d'abord, il demande ensuite.
+
+<Callout type="tip" title="Le tableau comparatif est ce qui fait le document">
+  Sans lui, c'est un formulaire administratif de plus. Une colonne par solution, une ligne par critère, dont **une ligne de coût par colonne**, et la solution recommandée explicitement désignée.
+
+  La règle de rédaction est : fonctionnalité X, bénéfice Y, coût Z. Jamais une fonctionnalité seule, jamais un prix seul. Le lead doit pouvoir arbitrer entre ce dont il rêve et ce qu'il veut y mettre, et c'est cet arbitrage-là qu'on veut lire dans ses réponses.
+
+  Les questions viennent après le tableau et y renvoient explicitement (« colonne 1 du tableau ci-dessus »).
+</Callout>
+
+**Les questions décisives se marquent.** Le champ `decisif: true` du YAML fait remonter une question en tête du mail de notification, sous son propre titre. Sur neuf questions, les trois qui déplacent le prix ne doivent pas se lire au même rang que les six autres : une liste plate se parcourt en diagonale, et c'est exactement là qu'on rate l'information qui valait le questionnaire.
+
+<Callout type="piege" title="Quand ne PAS envoyer de cadrage">
+  Le document a un coût : il demande dix minutes de travail à quelqu'un à qui on n'a encore rien donné. Envoyé au mauvais moment, il se lit comme une barrière administrative et fait perdre l'affaire.
+
+  - **En compétition**, face à des concurrents déjà chiffrés. Sans prix, on sort du comparatif.
+  - **En prospection sortante.** Demander du travail à quelqu'un qui n'a rien demandé ne marche pas.
+  - **Sur un entrant très chaud** qu'un appel de quinze minutes fermerait mieux.
+  - **Quand le lead a déjà écrit son besoin en détail.** Le questionnaire redemanderait ce qu'on sait déjà, et donnerait l'impression de ne pas avoir lu.
+
+  Les bons cas sont l'inverse : besoin flou, plusieurs voies techniques aux coûts sans commune mesure, budget inconnu, ou client existant qui demande un hors périmètre.
+</Callout>
+
+**Ce que le cadrage n'est pas.** Il ne chiffre pas et n'engage sur rien. Les montants du tableau sont des ordres de grandeur, marqués comme tels. Le prix ferme vient dans la proposition commerciale, après les réponses. Un cadrage n'a ni date ni échéancier : une affaire ne porte de date qu'au versement de l'acompte.
+
+**Ce qui se passe à la soumission.** Les réponses arrivent par mail, avec les décisives en tête, et le lead reçoit une copie de ce qu'il a écrit. Rien n'est écrit en base et rien ne bouge dans Linear : c'est Ludo qui lit et qui décide. Le cadrage occupe l'étape **S1b** du SOP, entre le premier contact et le rendez-vous, et il le remplace au lieu de s'y ajouter.
 
 ## Le workflow Devis
 
@@ -216,7 +251,7 @@ Template de la team **🎯 CRM**. Il crée l'affaire directement en **👋 Conta
 **La check-list des seize étapes**, en markdown. Ce ne sont **pas** des sous-issues : les créer d'avance produirait des centaines d'issues fantômes héritant d'un statut de pipeline qui ne veut rien dire pour elles. On coche au fil de l'eau ; seule l'étape qui mérite une échéance est promue en sous-issue datée.
 
 1. Qualifier : besoin, budget, échéance, décideur
-2. Envoyer le lien de réservation
+2. Envoyer le lien de réservation, ou le document de cadrage
 3. Faire le rendez-vous de découverte
 4. Cadrer le périmètre et chiffrer
 5. Rédiger et publier la proposition commerciale

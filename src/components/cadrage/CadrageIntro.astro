@@ -1,0 +1,79 @@
+---
+/* Sections d'introduction du document de cadrage.
+
+   Reprend au caractère près la grille de DevisCorps (bloc 880, colonne de
+   libellés 180, gouttière 40, filet entre sections) : les deux documents
+   doivent se lire comme deux membres de la même famille, et un lead qui a
+   déjà reçu une proposition retrouve la même page.
+
+   Ce qui n'est PAS repris, volontairement : la nav de sections collante. Elle
+   n'aurait listé que l'intro, en ignorant le comparatif et le questionnaire
+   qui sont l'essentiel de la page. Une nav qui ne mène qu'à un tiers du
+   document désoriente au lieu d'orienter.
+
+   Ni budget ni planning ici : un cadrage ne chiffre pas et n'engage pas de
+   date. C'est le comparatif qui porte les ordres de grandeur, en les disant
+   indicatifs. */
+import Tooltip from "../ui/Tooltip.astro";
+import { riche, listeItem, ancreSection } from "../../lib/devis";
+
+interface Section {
+  titre: string;
+  texte?: string;
+  liste?: (string | { texte: string; tooltip?: string })[];
+  note?: string;
+}
+
+interface Props {
+  sections: Section[];
+}
+const { sections } = Astro.props;
+---
+
+{
+  sections.map((section, index) => (
+    <section
+      id={ancreSection(section.titre)}
+      class:list={[
+        "grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4",
+        index > 0 && "border-t border-line",
+      ]}
+    >
+      <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">
+        {section.titre}
+      </p>
+      <div>
+        {section.texte && (
+          <p
+            class:list={["max-w-[58ch] leading-[1.6]", section.liste && "mb-5"]}
+            set:html={riche(section.texte)}
+          />
+        )}
+
+        {section.liste && (
+          <ul class="flex list-none flex-col gap-3">
+            {section.liste.map((brut) => {
+              const item = listeItem(brut);
+              return (
+                <li class="flex items-start gap-3.5">
+                  <span class="mt-[0.55em] block size-1.5 flex-none bg-ink" aria-hidden="true" />
+                  <span class="max-w-[58ch]">
+                    <Fragment set:html={riche(item.texte)} />
+                    {item.tooltip && <Tooltip texte={item.tooltip} />}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+
+        {section.note && (
+          <p
+            class="mt-6 max-w-[58ch] text-[14px] leading-[1.6] text-mute"
+            set:html={riche(section.note)}
+          />
+        )}
+      </div>
+    </section>
+  ))
+}

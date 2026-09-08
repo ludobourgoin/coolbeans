@@ -296,4 +296,131 @@ const organisations = defineCollection({
   }),
 });
 
-export const collections = { devis, projets, docs, clients, organisations };
+/* Un fichier YAML par document de cadrage dans
+   src/content/cadrage/<client>/<projet>-<4 chiffres>.yaml ; le chemin devient
+   l'URL (/cadrage/<client>/<projet>-1234). Rendu par
+   src/pages/cadrage/[...slug].astro.
+
+   C'est le document FRÈRE de la proposition commerciale, pas un de ses états.
+   Il part AVANT de savoir s'il y aura une affaire : le devis engage un prix,
+   le cadrage recueille un besoin et qualifie. Les fondre en un seul objet
+   (spec 2026-08-19, amendée le 2026-09-05) obligeait à publier une page de
+   devis pour quelqu'un qu'on n'avait pas encore qualifié.
+
+   Trois blocs, dans cet ordre à l'écran :
+
+   - `intro` réutilise la forme des sections du devis (titre, texte, liste) et
+     se rend avec le même composant. Le gras s'écrit **comme en Markdown**.
+   - `comparatif` est ce qui distingue ce document d'un formulaire : une
+     colonne par solution possible, une ligne par critère, dont l'ordre de
+     grandeur du coût. Le lead ne peut pas arbitrer entre son besoin et son
+     budget si personne ne lui a dit ce que chaque voie implique.
+   - `questions` vient après, et s'y réfère. */
+const cadrage = defineCollection({
+  loader: glob({ pattern: "**/*.yaml", base: "./src/content/cadrage" }),
+  schema: z.object({
+    titre: z.string(),
+    objet: z.string(),
+    date: z.coerce.date(),
+    // Prénom du destinataire : ouvre l'accusé de réception, comme au devis.
+    contact: z.string().optional(),
+    linear: z
+      .object({
+        projet: z.string().optional(),
+        affaire: z.string().optional(),
+        /* Issue d'origine, quand le cadrage naît d'une demande hors périmètre
+           déjà tracée (« SET-16 »). Purement documentaire : rien n'est écrit
+           dans Linear par ce module. */
+        demande: z.string().optional(),
+      })
+      .optional(),
+    /* Sections d'introduction, au format des sections de devis pour être
+       rendues par DevisCorps sans dupliquer une mise en page. */
+    intro: z.array(
+      z.object({
+        titre: z.string(),
+        texte: z.string().optional(),
+        liste: z
+          .array(
+            z.union([z.string(), z.object({ texte: z.string(), tooltip: z.string().optional() })]),
+          )
+          .optional(),
+        note: z.string().optional(),
+      }),
+    ),
+    comparatif: z
+      .object({
+        titre: z.string().default("Les solutions possibles"),
+        texte: z.string().optional(),
+        /* Une entrée par colonne. `recommandee` met la colonne en avant :
+           un tableau qui ne dit pas ce qu'on conseille laisse le lead choisir
+           au hasard, ce qui n'est pas l'aider. */
+        solutions: z.array(
+          z.object({
+            nom: z.string(),
+            resume: z.string().optional(),
+            recommandee: z.boolean().default(false),
+          }),
+        ),
+        /* Une entrée par ligne. `valeurs` est aligné sur `solutions`, dans le
+           même ordre : une longueur différente est une erreur de rédaction, et
+           le composant la signale au build plutôt que de décaler le tableau. */
+        criteres: z.array(
+          z.object({
+            label: z.string(),
+            valeurs: z.array(z.string()),
+            tooltip: z.string().optional(),
+          }),
+        ),
+        /* Fourchettes affichées avant d'avoir les réponses : elles ancrent le
+           lead, donc elles se disent indicatives. Le texte par défaut le dit
+           une fois, sous le tableau, plutôt que sur chaque cellule. */
+        mentionCout: z
+          .string()
+          .default(
+            "Ordres de grandeur donnés avant cadrage, à confirmer une fois vos réponses connues.",
+          ),
+      })
+      .optional(),
+    questions: z.array(
+      z.object({
+        /* Identifiant stable, seul élément qui voyage du navigateur au
+           serveur. Les libellés sont relus dans ce YAML à la soumission : une
+           question réécrite depuis la console n'arriverait jamais dans le
+           mail. Même principe que les prix du devis. */
+        id: z.string().regex(/^[a-z0-9-]+$/),
+        label: z.string(),
+        aide: z.string().optional(),
+        type: z.enum(["choix", "texte"]),
+        /* Marque les questions dont la réponse déplace le chiffrage. Elles
+           remontent en tête du mail de notification, séparées du reste : sur
+           neuf réponses, les trois qui décident du prix ne doivent pas se
+           lire au même rang que les six autres. */
+        decisif: z.boolean().default(false),
+        requis: z.boolean().default(false),
+        // type: choix
+        multiple: z.boolean().default(false),
+        options: z
+          .array(z.object({ valeur: z.string(), label: z.string(), aide: z.string().optional() }))
+          .optional(),
+        /* Ajoute un « autre » à champ libre en fin de liste. Sans lui, une
+           liste fermée force une réponse fausse plutôt qu'une réponse vraie. */
+        autre: z.boolean().default(false),
+        // type: texte
+        long: z.boolean().default(false),
+        placeholder: z.string().optional(),
+      }),
+    ),
+    notes: z
+      .array(
+        z.object({
+          texte: z.string(),
+          tooltip: z.string().optional(),
+          tone: z.enum(["neutral", "info", "success", "warning", "error"]).default("info"),
+        }),
+      )
+      .default([]),
+  }),
+});
+
+export const collections = { devis, cadrage, projets, docs, clients, organisations };

@@ -2,8 +2,9 @@
 
 **Date :** 2026-08-19
 **Statut :** ⚠️ partiellement caduc — voir l'amendement du 2026-08-19 (soir)
-en section 7. La fusion questionnaire + devis en un seul objet est abandonnée ;
-ce qui reste valable : le questionnaire part avant le rendez-vous, la table
+en section 7, puis celui du 2026-09-05 en section 8. La fusion questionnaire +
+devis en un seul objet est abandonnée ; la dépendance au lien magique aussi.
+Ce qui reste valable : le questionnaire part avant le rendez-vous, la table
 « quand utiliser le premier jet », et les décisions sur le rendez-vous de brief.
 **Origine :** session devis Danaë / Vice Versa, 2026-08-19.
 
@@ -199,3 +200,42 @@ des réponses déjà écrites.
 | 2026-08-19 (soir) | Questionnaire et devis redeviennent deux objets ; le questionnaire vit dans le portail derrière un lien magique |
 | 2026-08-19 (soir) | Le questionnaire part avant le rendez-vous de brief, et non après comme prévu au 2026-08-18 |
 | 2026-08-19 (soir) | Le module Cadrage attend la migration Better Auth (option A) |
+
+---
+
+## 8. Amendement du 2026-09-05
+
+Suite COO-188, V1 livrée. Deux décisions du §7 tombent.
+
+**Le lien magique est abandonné, donc l'option A aussi.** Le document de
+cadrage est une page publique à URL non devinable, exactement comme le devis :
+`/cadrage/<client>/<projet>-<4 chiffres>`, `noindex`, `Disallow`, hors sitemap.
+La raison est celle qui rendait déjà le devis public : un document commercial
+se transfère au trésorier ou à un associé, et un lien magique transféré ne
+fonctionne plus. Un questionnaire de cadrage se remplit souvent à plusieurs.
+
+Conséquence : **le module ne dépend plus de la migration Better Auth**, et il
+est livré sans elle.
+
+**Le questionnaire ne prépare pas toujours le rendez-vous, il le remplace
+parfois.** Le §7 le plaçait avant un rendez-vous qui avait lieu de toute façon.
+Le besoin réel est d'éviter ce rendez-vous quand il ferait perdre une heure,
+face à quelqu'un sans budget. Le cadrage occupe l'étape S1b du SOP et ouvre
+trois suites : chiffrer directement, caler un rendez-vous, ou classer.
+
+**Le reste-à-faire du §5 est livré, en partie.** Les cases à cocher par besoin
+prennent la forme d'un tableau comparatif à une colonne par solution, une ligne
+par critère, dont une ligne de coût. Ce n'est pas une case « oui / V2 / plus
+tard / pas besoin » posée sur une liste de fonctionnalités, mais ça répond au
+même problème : faire arbitrer le lead entre son besoin et son budget, en lui
+disant ce que chaque voie implique.
+
+La table « quand utiliser le premier jet » du §2 reste la référence, et elle
+s'applique telle quelle au cadrage : pas en compétition, pas en prospection
+sortante.
+
+| Date | Décision |
+|---|---|
+| 2026-09-05 | Lien public au lieu du lien magique ; la dépendance Better Auth tombe |
+| 2026-09-05 | Le cadrage remplace parfois le rendez-vous au lieu de le préparer (S1b) |
+| 2026-09-05 | Les cases à cocher par besoin prennent la forme d'un tableau comparatif chiffré |

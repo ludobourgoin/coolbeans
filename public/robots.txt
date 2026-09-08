@@ -1,5 +1,11 @@
+# Les documents commerciaux nominatifs ne sont jamais indexés. Ils portent
+# aussi une balise noindex : les deux se cumulent au lieu de se remplacer,
+# parce qu'un Disallow seul empêche le robot de lire le noindex, et qu'un
+# noindex seul laisse l'URL crawlable.
 User-agent: *
 Allow: /
+Disallow: /devis
+Disallow: /cadrage
 Disallow: /design-system
 
 Sitemap: https://coolbeans.cc/sitemap-index.xml
