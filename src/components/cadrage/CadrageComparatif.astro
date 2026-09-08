@@ -1,0 +1,127 @@
+---
+/* Tableau comparatif des solutions possibles.
+
+   C'est ce bloc qui distingue un document de cadrage d'un simple formulaire.
+   Un lead à qui on demande « quel est votre budget ? » sans lui avoir dit ce
+   que chaque voie coûte répond au hasard, et sa réponse ne sert à rien pour
+   chiffrer. On explique d'abord, on demande ensuite : les questions qui
+   suivent renvoient à ce tableau.
+
+   Une colonne par solution, une ligne par critère, dont l'ordre de grandeur du
+   coût. La colonne recommandée est mise en avant : un tableau qui ne dit pas
+   ce qu'on conseille laisse le lead choisir seul, ce qui n'est pas l'aider. */
+import Tooltip from "../ui/Tooltip.astro";
+import { riche } from "../../lib/devis";
+
+interface Solution {
+  nom: string;
+  resume?: string;
+  recommandee: boolean;
+}
+interface Critere {
+  label: string;
+  valeurs: string[];
+  tooltip?: string;
+}
+
+interface Props {
+  titre: string;
+  texte?: string;
+  solutions: Solution[];
+  criteres: Critere[];
+  mentionCout: string;
+  /* Ancre de la nav de sections, cohérente avec celles du corps d'intro. */
+  ancre: string;
+}
+const { titre, texte, solutions, criteres, mentionCout, ancre } = Astro.props;
+
+/* Une ligne dont les valeurs ne s'alignent pas sur les colonnes décale tout
+   le tableau sans rien afficher d'anormal : le lead lit alors le coût d'une
+   solution en face du nom d'une autre. On échoue au build plutôt que de
+   publier ça. */
+for (const c of criteres) {
+  if (c.valeurs.length !== solutions.length) {
+    throw new Error(
+      `Comparatif « ${titre} » : le critère « ${c.label} » porte ${c.valeurs.length} valeur(s) ` +
+        `pour ${solutions.length} solution(s). Les deux doivent correspondre, dans le même ordre.`,
+    );
+  }
+}
+---
+
+<section
+  id={ancre}
+  class="grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+>
+  <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">{titre}</p>
+  <div>
+    {texte && <p class="mb-6 max-w-[58ch] leading-[1.6]" set:html={riche(texte)} />}
+
+    <!-- Le tableau déborde sur un téléphone dès trois colonnes. Il défile dans
+         son propre conteneur : c'est la page qui ne doit jamais défiler
+         horizontalement, pas le tableau. -->
+    <div class="-mx-1 overflow-x-auto px-1 pb-1">
+      <table class="w-full min-w-[560px] border-collapse text-[15px]">
+        <thead>
+          <tr>
+            <!-- Coin vide : la colonne des critères n'a pas d'en-tête, son
+                 contenu se lit de lui-même. -->
+            <th class="w-[26%] border-b border-line py-3 pr-4 text-left align-bottom"></th>
+            {
+              solutions.map((s) => (
+                <th
+                  scope="col"
+                  class:list={[
+                    "border-b border-line px-4 py-3 text-left align-bottom",
+                    s.recommandee && "bg-surface-subtle",
+                  ]}
+                >
+                  {s.recommandee && (
+                    <span class="mb-1.5 inline-block rounded-control bg-ink px-2 py-0.5 font-mono text-[10px] font-bold tracking-wide text-surface uppercase">
+                      Ce que je conseille
+                    </span>
+                  )}
+                  <span class="block leading-[1.3] font-semibold text-ink">{s.nom}</span>
+                  {s.resume && (
+                    <span
+                      class="mt-1 block text-[13px] leading-[1.5] font-normal text-mute"
+                      set:html={riche(s.resume)}
+                    />
+                  )}
+                </th>
+              ))
+            }
+          </tr>
+        </thead>
+        <tbody>
+          {
+            criteres.map((c) => (
+              <tr>
+                <th
+                  scope="row"
+                  class="border-b border-line py-3 pr-4 text-left align-top font-mono text-[12px] font-semibold tracking-wide text-mute uppercase"
+                >
+                  <span class="inline-flex items-baseline gap-1">
+                    {c.label}
+                    {c.tooltip && <Tooltip texte={c.tooltip} />}
+                  </span>
+                </th>
+                {c.valeurs.map((v, i) => (
+                  <td
+                    class:list={[
+                      "border-b border-line px-4 py-3 align-top leading-[1.5]",
+                      solutions[i]?.recommandee && "bg-surface-subtle",
+                    ]}
+                    set:html={riche(v)}
+                  />
+                ))}
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <p class="mt-4 max-w-[58ch] text-[13px] leading-[1.6] text-mute">{mentionCout}</p>
+  </div>
+</section>
