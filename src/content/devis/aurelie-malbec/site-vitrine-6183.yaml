@@ -1,0 +1,112 @@
+# Reconstitution rétroactive, écrite le 2026-09-08. Le devis d'origine n'a jamais
+# existé en PDF : il a vécu dans le fil Gmail « Proposition pour la refonte de ton
+# site », mail du 2025-05-21, renégocié le 22 mai et acté le 29 mai.
+#
+# CE DOCUMENT FAIT FOI ET N'EST PAS RECALCULÉ. Les deux lignes et le total sont
+# ceux du mail, au centime. Aucun coefficient des Réglages n'a été appliqué : le
+# prix a été accepté tel quel en 2025, le recalculer produirait un chiffre qui
+# n'a jamais existé.
+#
+# Deux arbitrages ont modifié le mail initial, dans cet ordre :
+#   - 2025-05-22 : 1 400 € HT devient 1 400 € TTC contre l'abandon du CMS.
+#   - 2025-05-29 : plan Webflow Basic acté, Ludo assure les mises à jour.
+# La seconde ligne était libellée « Développement (CMS) » dans le mail. Le CMS
+# ayant été écarté, elle est ici « Développement du site » — seule entorse à la
+# transcription littérale, pour ne pas décrire un CMS qui n'a pas été livré.
+#
+# Références de facture : NON RETROUVÉES. Rien dans ludo@coolbeans.cc. Règlement
+# confirmé par Ludo le 2026-09-08 : intégralement encaissé.
+#
+# Page interne. Elle ne se met pas en production et ne se renvoie à personne.
+titre: Aurélie Malbec x Coolbeans
+objet: Refonte du site aureliemalbec.com
+date: 2025-05-21
+contact: Aurélie
+linear:
+  projet: Refonte du site aureliemalbec.com
+
+sections:
+  - titre: Le projet
+    texte: >-
+      Une refonte sobre et claire, alignée sur ta nouvelle segmentation d'offre.
+      Un site qui donne à voir ton univers, inspire confiance, et facilite la
+      prise de contact sans pression.
+    liste:
+      - texte: >-
+          Mise en valeur de tes quatre offres, avec ce que chacune recouvre et
+          pour qui elle est faite.
+      - texte: >-
+          Tes dessins et tes photos au premier plan, dans une navigation qui ne
+          leur passe pas devant.
+      - texte: >-
+          Des témoignages et des logos de référence, pour que celui qui découvre
+          ton travail sache que d'autres t'ont déjà fait confiance.
+
+  - titre: Le site
+    liste:
+      - texte: >-
+          Accueil, Réalisations avec filtres par service, Qui suis-je et Contact.
+      - texte: >-
+          Une page par offre (Illustrations, Live sketching, Fresques, Atelier
+          et cours), avec les réalisations associées.
+        tooltip: >-
+          Les quatre pages partagent la même trame : tu décris ta démarche en
+          quatre étapes, puis tu montres.
+      - texte: >-
+          Les dates des événements passés et à venir sur la page Atelier.
+
+  - titre: Le travail, poste par poste
+    budget:
+      lignes:
+        - label: "**Wireframe et contenu** : arborescence, structure des pages et mise en forme de tes textes"
+          prix: 600
+        - label: "**Développement du site** : intégration des huit pages sous Webflow"
+          prix: 800
+        - label: "**Support et maintenance** pendant 30 jours après la livraison"
+      mention: TTC
+      reglement: >-
+        Montant net, sans TVA en sus. Reconstitution d'un devis de mai 2025 :
+        l'affaire est soldée.
+
+  - titre: Le déroulé
+    planning:
+      options:
+        - label: Ce qui s'est passé
+          texte: >-
+            Cinq mois, de mai à fin octobre 2025. Le calendrier annoncé visait le
+            24 juin ; il a glissé de quatre mois, le temps que les contenus
+            arrivent.
+          jalons:
+            - { date: 30/05, label: "Réunion de kick-off", owner: coolbeans }
+            - { date: 11/06, label: "Arborescence et liste des éléments à fournir", owner: coolbeans }
+            - { date: 16/06 → 24/06, label: "Textes des quatre offres et de l'accueil transmis", owner: client }
+            - { date: 26/07, label: "Images live sketching et fresques transmises", owner: client }
+            - { date: 01/09, label: "Première version complète en ligne sur une adresse temporaire", owner: coolbeans }
+            - { date: 09/09, label: "Abonnement Webflow Basic souscrit", owner: client }
+            - { date: 22/09 → 17/10, label: "Logo, visuels des quatre étapes, FAQ et témoignages transmis", owner: client }
+            - { date: 01/10, label: "Optimisation des visuels et passage responsive", owner: coolbeans }
+            - { date: 27/10, label: "Référencement et derniers ajustements", owner: coolbeans }
+            - { date: 31/10, label: "Mise en production sur aureliemalbec.com", owner: coolbeans }
+
+  - titre: Ce qui n'était pas compris
+    texte: >-
+      Ces postes restent à ta charge ou ont été offerts. Aucun n'a été facturé.
+    liste:
+      - "L'abonnement Webflow, plan Basic, que tu règles directement"
+      - "Le nom de domaine aureliemalbec.com, administré sur ton compte OVH"
+      - "Les recommandations marketing de lancement transmises à la livraison : fiche Google, newsletter, campagnes de prospection, Instagram"
+
+notes:
+  - tone: success
+    texte: >-
+      Les 1 400 € annoncés hors taxes sont devenus 1 400 € toutes taxes
+      comprises, en échange de l'abandon de l'espace d'administration. Le site
+      est livré sans interface d'édition : tu m'envoies tes nouveautés, je les
+      intègre.
+  - texte: >-
+      Support et maintenance pendant 30 jours après la mise en ligne, compris
+      dans le montant.
+  - tone: error
+    texte: >-
+      Le calendrier tient si les contenus arrivent aux dates convenues. Un
+      retard de fourniture décale la livraison de plus que le retard lui-même.
