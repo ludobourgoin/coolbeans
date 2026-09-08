@@ -172,3 +172,68 @@ export const montantTri = (d: DevisData): number => {
   if (!budget || budget.enAttente) return -1;
   return totaux(budget).totalFinal;
 };
+
+/* ---------------------------------------------------------------------------
+   Surlignage des nouveautés d'une version révisée.
+
+   Une V2 arrive chez un client qui a déjà lu la V1. Sans repère visuel il
+   relit tout, ou — plus souvent — ne relit rien et rate le changement de
+   périmètre. On compare donc chaque bloc lisible à la version précédente et on
+   surligne ce qui n'y figurait pas.
+
+   La comparaison porte sur la chaîne exacte : une reformulation compte comme
+   un changement, ce qui est le comportement voulu puisque le client la verra.
+   Le seul faux positif possible est un réordonnancement à contenu identique,
+   que la règle d'invariance des sections rend marginal.
+
+   Les clés doivent être construites par ces fonctions des deux côtés — celui
+   qui indexe la version précédente et celui qui teste la version courante.
+   Deux constructions divergentes surligneraient toute la page.
+--------------------------------------------------------------------------- */
+
+export const cleLigne = (l: { label: string; prix?: number }) =>
+  `ligne:${l.label}:${l.prix ?? ""}`;
+
+export const cleRemise = (r: { label: string; pct: number }) => `remise:${r.label}:${r.pct}`;
+
+export const cleJalon = (j: { date: string; label: string; owner?: string }) =>
+  `jalon:${j.date}:${j.label}:${j.owner ?? ""}`;
+
+/* Toutes les chaînes que le client lit dans une version, à plat. */
+export const empreintesDe = (d: DevisData): Set<string> => {
+  const vues = new Set<string>();
+  const noter = (v?: string | null) => {
+    if (v) vues.add(v.trim());
+  };
+
+  for (const section of d.sections) {
+    noter(section.texte);
+    noter(section.note);
+    for (const brut of section.liste ?? []) noter(listeItem(brut).texte);
+
+    const budget = section.budget;
+    if (budget) {
+      for (const ligne of budget.lignes) noter(cleLigne(ligne));
+      for (const remise of remisesDe(budget)) noter(cleRemise(remise));
+      noter(budget.reglement);
+    }
+
+    for (const option of section.planning?.options ?? []) {
+      noter(option.texte);
+      noter(option.note);
+      for (const jalon of option.jalons) noter(cleJalon(jalon));
+    }
+  }
+
+  for (const note of d.notes) noter(note.texte);
+  return vues;
+};
+
+/* Rend un prédicat « ce bloc est nouveau depuis la version précédente ».
+   Sans version précédente — la V1 — il répond toujours faux : rien n'est
+   nouveau sur un document que le client découvre en entier. */
+export const nouveautesDepuis = (precedent?: DevisData) => {
+  const connues = precedent ? empreintesDe(precedent) : undefined;
+  return (cle?: string | null): boolean =>
+    connues !== undefined && !!cle && !connues.has(cle.trim());
+};
