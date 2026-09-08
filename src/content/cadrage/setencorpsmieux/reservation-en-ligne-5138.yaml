@@ -9,11 +9,17 @@
 # sur ce sujet, et un appel d'une heure pour découvrir qu'il n'y en a pas est
 # une heure perdue pour tout le monde.
 #
+# Version raccourcie le 2026-09-08 : la première rédaction était trop longue
+# pour la cliente. Une seule section d'intro, tableau en fragments, cinq
+# questions dont les trois décisives. Ce qui a sauté (gêne principale, cours
+# concernés, suivi actuel, règle d'annulation) se demande de vive voix au
+# moment du chiffrage, une fois qu'on sait qu'il y a un budget.
+#
 # Tutoiement, comme sur sa proposition commerciale (site-internet-7402.yaml).
 # Le formulaire, lui, est vouvoyé : c'est un composant partagé par tous les
 # clients. Elle a déjà vu ce mélange sur son devis.
 titre: La réservation en ligne de tes cours
-objet: Quelques questions avant de te dire ce que ça coûte
+objet: Cinq questions avant de te dire ce que ça coûte
 date: 2026-09-05
 contact: Nathalie
 linear:
@@ -23,230 +29,109 @@ linear:
 intro:
   - titre: Pourquoi ce document
     texte: >-
-      Tu m'as demandé s'il était possible d'ajouter une réservation avec un
-      nombre de places maximum et une alerte de liste d'attente. La réponse est
-      oui, mais il y a plusieurs façons de le faire, et elles ne coûtent pas du
-      tout la même chose.
+      Tu veux limiter le nombre de places et prévenir une liste d'attente.
+      C'est possible, de trois façons, qui ne coûtent pas du tout la même
+      chose. Tu réponds, je chiffre.
     liste:
+      - texte: "**Ça ne t'engage à rien.** Rien n'est facturé, rien n'est lancé."
+      - texte: "**Cinq minutes.** Cinq questions."
       - texte: >-
-          **Ça ne t'engage à rien.** Rien n'est facturé, rien n'est lancé. Tu
-          réponds, je chiffre.
-      - texte: >-
-          **Dix minutes suffisent.** Neuf questions, dont trois qui décident
-          vraiment du prix.
-      - texte: >-
-          **Je te réponds honnêtement.** Si la solution la moins chère suffit,
-          c'est celle que je te proposerai.
+          **Si la solution la moins chère suffit,** c'est celle que je te
+          proposerai.
     note: >-
-      Ce que tu me dis ici remplace un rendez-vous. Si tu préfères qu'on en
-      parle de vive voix, dis-le moi et on cale un créneau.
-
-  - titre: Ce que ça implique
-    texte: >-
-      Ton site est aujourd'hui un site statique : il affiche des pages, il ne
-      retient rien. Faire réserver quelqu'un, c'est autre chose. Il faut garder
-      en mémoire qui a pris quelle place, envoyer des mails de confirmation, et
-      te donner un écran pour gérer tout ça.
-    liste:
-      - texte: >-
-          Afficher « complet » sur un cours est **simple** : c'est une
-          information que tu poses toi-même, comme un texte ou une photo.
-        tooltip: >-
-          Concrètement, une case à cocher dans ton espace d'administration, à
-          côté de chaque cours du planning.
-      - texte: >-
-          Faire **compter les places par le site** est un vrai projet : il faut
-          une base de données, des mails automatiques et une page de gestion.
-      - texte: >-
-          Entre les deux, il existe des **services tout faits** pour les cours
-          collectifs, qu'on branche au site sans rien construire.
+      Si tu préfères qu'on en parle de vive voix, dis-le moi et on cale un
+      créneau.
 
 comparatif:
   titre: Les trois voies
-  texte: >-
-    Trois façons de répondre à ton besoin, de la plus légère à la plus lourde.
-    Lis les lignes « ce que ça coûte » avant de répondre aux questions : c'est
-    ce qui te permettra de choisir entre ce dont tu rêves et ce que tu veux y
-    mettre.
+  texte: Lis les lignes de coût avant de répondre aux questions.
   solutions:
     - nom: Tu gardes la main
-      resume: Le site affiche « complet », tu tiens tes inscriptions comme aujourd'hui.
+      resume: Le site affiche « complet », tu tiens tes inscriptions.
     - nom: Un service de réservation
-      resume: Un outil extérieur branché à ton site, qui compte les places à ta place.
+      resume: Un outil extérieur branché à ton site, qui compte les places.
       recommandee: true
     - nom: Sur mesure dans ton site
-      resume: Tout se passe chez toi, réservation, jauge et liste d'attente comprises.
+      resume: Tout chez toi, jauge et liste d'attente comprises.
   criteres:
     - label: Pour toi
       valeurs:
-        - >-
-          Tu coches les cours complets quand ils le deviennent. Tu continues de
-          noter tes inscriptions comme tu le fais.
-        - >-
-          L'outil compte les places et te prévient quand un cours est plein. Tu
-          retrouves tous tes inscrits au même endroit.
-        - >-
-          Un écran de gestion fait pour ta façon de travailler, dans ton propre
-          espace d'administration.
+        - Tu coches les cours complets. Deux minutes.
+        - L'outil compte, et te prévient quand c'est plein.
+        - Un écran de gestion fait pour ta façon de travailler.
     - label: Pour tes élèves
       valeurs:
-        - >-
-          Ils voient « complet » avant de se déplacer, et ils s'inscrivent
-          auprès de toi comme d'habitude.
-        - >-
-          Ils réservent depuis leur téléphone et reçoivent une confirmation par
-          mail.
-        - >-
-          Ils réservent sans quitter ton site, dans la même mise en page que le
-          reste.
+        - Ils voient « complet », ils s'inscrivent auprès de toi.
+        - Ils réservent depuis leur téléphone, avec confirmation par mail.
+        - Ils réservent sans quitter ton site.
     - label: Liste d'attente
       valeurs:
-        - Aucune. Tu notes les noms de ton côté.
-        - "Automatique : une place libérée part au premier de la liste."
-        - Automatique, et réglée exactement comme tu veux.
-    - label: Ton travail chaque semaine
-      valeurs:
-        - Cocher les cours complets quand ça change. Deux minutes.
-        - Rien de plus qu'aujourd'hui, une fois ton planning saisi.
-        - Rien de plus qu'aujourd'hui.
+        - Aucune. Tu notes les noms.
+        - "Automatique : la place libérée part au premier."
+        - Automatique, réglée comme tu veux.
     - label: À installer
       tooltip: >-
         C'est mon temps de travail, facturé une seule fois. Les fourchettes
         sont larges tant que je ne connais pas le détail de ton besoin.
       valeurs:
-        - Environ 300 à 500 €
-        - Environ 500 à 900 €
-        - Environ 3 000 à 5 000 €
+        - 300 à 500 €
+        - 500 à 900 €
+        - 3 000 à 5 000 €
     - label: Tous les mois
       valeurs:
         - Rien.
-        - >-
-          Environ 30 € d'abonnement, avec une formule gratuite pour commencer.
-        - >-
-          Rien, mais un entretien technique à prévoir une fois par an.
+        - Environ 30 €, gratuit pour commencer.
+        - Rien, hors entretien annuel.
     - label: Le risque
       valeurs:
-        - >-
-          Si tu oublies de cocher, ton site annonce une place qui n'existe
-          plus.
-        - >-
-          Tes élèves les moins à l'aise avec le web peuvent renoncer à
-          réserver.
-        - >-
-          C'est un second projet, de la taille de ton site. Long, et il faut me
-          rappeler à chaque évolution.
+        - Un oubli de coche, et le site annonce une place qui n'existe plus.
+        - Les élèves les moins à l'aise avec le web renoncent.
+        - Un second projet, de la taille de ton site.
   mentionCout: >-
-    Ces montants sont des ordres de grandeur, donnés avant de connaître tes
-    réponses, pour t'aider à situer les trois voies l'une par rapport à
-    l'autre. Le prix ferme vient après, et il figurera dans une proposition en
-    bonne et due forme.
+    Ordres de grandeur, donnés avant de connaître tes réponses. Le prix ferme
+    vient après, dans une proposition en bonne et due forme.
 
 questions:
-  - id: gene
-    label: Aujourd'hui, qu'est-ce qui te gêne le plus ?
-    type: choix
-    requis: true
-    autre: true
-    options:
-      - { valeur: salle-pleine, label: Il y a trop de monde dans la salle }
-      - { valeur: messages, label: Je passe trop de temps à répondre aux messages }
-      - { valeur: deplacements, label: Des gens se déplacent alors que c'est complet }
-
-  - id: cours-concernes
-    label: Quels cours sont concernés, et à peu près combien de fois par mois sont-ils pleins ?
-    aide: >-
-      Une réponse approximative suffit. « Le Pilates du mardi soir, deux ou
-      trois fois par mois » est parfait.
-    type: texte
-    long: true
-    requis: true
-    placeholder: Les cours concernés, et à quelle fréquence ils affichent complet
-
-  - id: places
-    label: Combien de places au maximum par cours, et est-ce le même nombre partout ?
-    aide: >-
-      Si la jauge change selon la salle ou selon l'activité, dis-le moi : ça
-      change la façon de construire.
-    type: texte
-    long: true
-    requis: true
-    placeholder: Le nombre de places, et s'il varie d'un cours à l'autre
-
-  - id: suivi-actuel
-    label: Aujourd'hui, comment sais-tu qui vient ?
-    aide: Plusieurs réponses possibles.
-    type: choix
-    multiple: true
-    autre: true
-    options:
-      - { valeur: tete, label: De tête }
-      - { valeur: cahier, label: Un cahier ou un carnet }
-      - { valeur: messages, label: Les messages, WhatsApp ou SMS }
-      - { valeur: rien, label: Rien de particulier, les gens viennent }
-
-  - id: rythme
-    label: Tes élèves viennent plutôt au trimestre, à la carte, ou séance par séance ?
-    aide: >-
-      Cette réponse compte beaucoup : un abonné au trimestre a déjà sa place,
-      alors qu'un élève à la séance la prend au moment où il réserve. Ce n'est
-      pas la même chose à construire.
-    type: choix
-    decisif: true
-    requis: true
-    autre: true
-    options:
-      - { valeur: trimestre, label: Plutôt au trimestre }
-      - { valeur: carte, label: Plutôt à la carte, avec une carte de séances }
-      - { valeur: seance, label: Plutôt séance par séance }
-      - { valeur: melange, label: Un peu des trois, selon les élèves }
-
   - id: mode
     label: >-
-      Tu préfères que les gens réservent eux-mêmes et que le site tienne les
-      comptes, ou que tu gardes la main et que le site affiche seulement
-      « complet » ?
+      Tu préfères que les gens réservent eux-mêmes, ou garder la main et que le
+      site affiche seulement « complet » ?
     aide: >-
       C'est **la** question qui décide du prix. Garder la main tient en une
-      demi-journée de travail. Faire réserver les gens est un projet à part
-      entière.
+      demi-journée. Faire réserver les gens est un projet à part entière.
     type: choix
     decisif: true
     requis: true
     options:
       - valeur: reservent
         label: Les gens réservent eux-mêmes, le site tient les comptes
-        aide: Colonnes 2 et 3 du tableau ci-dessus.
+        aide: Colonnes 2 et 3 du tableau.
       - valeur: garde-main
         label: Je garde la main, le site affiche seulement « complet »
-        aide: Colonne 1 du tableau ci-dessus.
+        aide: Colonne 1 du tableau.
       - valeur: indecis
         label: Je ne sais pas encore, j'aimerais qu'on en parle
 
-  - id: annulation
-    label: Si quelqu'un annule, la place va à la première personne en attente automatiquement, ou tu choisis ?
-    type: choix
-    options:
-      - { valeur: auto, label: Automatiquement, au premier de la liste }
-      - { valeur: moi, label: Je choisis qui prend la place }
-      - { valeur: depend, label: Ça dépend des cours }
-
-  - id: aisance
-    label: Tes élèves sont-ils à l'aise avec un site web, notamment en gym sénior ?
+  - id: rythme
+    label: Tes élèves viennent au trimestre, à la carte, ou séance par séance ?
     aide: >-
-      Sans détour : si une partie de tes élèves ne réservera jamais en ligne,
-      un outil de réservation te fera gérer deux systèmes au lieu d'un.
+      Un abonné au trimestre a déjà sa place. Un élève à la séance la prend au
+      moment où il réserve. Ce n'est pas la même chose à construire.
     type: choix
+    decisif: true
+    requis: true
+    autre: true
     options:
-      - { valeur: alaise, label: Oui, dans l'ensemble ils se débrouillent }
-      - { valeur: mixte, label: Une partie oui, une partie non }
-      - { valeur: telephone, label: Non, c'est plutôt téléphone et WhatsApp }
+      - { valeur: trimestre, label: Plutôt au trimestre }
+      - { valeur: carte, label: Plutôt à la carte }
+      - { valeur: seance, label: Plutôt séance par séance }
+      - { valeur: melange, label: Un peu des trois }
 
   - id: budget
-    label: Quel ordre de grandeur peux-tu consacrer à ce projet ?
+    label: Quel ordre de grandeur peux-tu y consacrer ?
     aide: >-
-      Réponds franchement, y compris « je ne sais pas ». Ça ne sert pas à
-      ajuster mon prix vers le haut, ça sert à ne pas te proposer quelque chose
-      que tu ne prendras pas.
+      Réponds franchement, y compris « je ne sais pas ». Ça sert à ne pas te
+      proposer quelque chose que tu ne prendras pas.
     type: choix
     decisif: true
     requis: true
@@ -257,12 +142,27 @@ questions:
       - { valeur: plus-3000, label: Plus de 3 000 € }
       - { valeur: inconnu, label: Je ne sais pas encore }
 
+  - id: places
+    label: Quels cours, et combien de places au maximum ?
+    aide: Une réponse approximative suffit. Dis-moi si la jauge change d'un cours à l'autre.
+    type: texte
+    long: true
+    requis: true
+    placeholder: Les cours concernés, et le nombre de places
+
+  - id: aisance
+    label: Tes élèves sont-ils à l'aise avec un site web ?
+    aide: >-
+      Sans détour : si une partie d'entre eux ne réservera jamais en ligne, un
+      outil de réservation te fera gérer deux systèmes au lieu d'un.
+    type: choix
+    options:
+      - { valeur: alaise, label: Oui, dans l'ensemble }
+      - { valeur: mixte, label: Une partie oui, une partie non }
+      - { valeur: telephone, label: Non, c'est plutôt téléphone et WhatsApp }
+
 notes:
   - tone: info
     texte: >-
-      Ce document ne t'engage à rien et ne déclenche aucune facturation. Il
-      sert à te donner un prix juste, et à te dire honnêtement si le jeu en
-      vaut la chandelle.
-  - texte: >-
-      Tes réponses arrivent directement dans ma boîte mail, et tu en reçois une
-      copie par mail dans la foulée.
+      Tes réponses arrivent dans ma boîte mail, et tu en reçois une copie.
+      Rien n'est facturé.
