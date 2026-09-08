@@ -84,6 +84,16 @@ export const toolCategories: ToolCategory[] = [
         "logo": "/img/tools/react.png"
       },
       {
+        "name": "Next.js",
+        "desc": "Framework React full-stack : App Router, rendu serveur et routes API. Quand le projet est une app, pas un site.",
+        "chips": [
+          "Framework",
+          "React"
+        ],
+        "href": "https://nextjs.org",
+        "logo": "/img/tools/nextjs.svg"
+      },
+      {
         "name": "Tailwind CSS",
         "desc": "CSS utility-first : styling rapide, cohérent et purgé à la compilation. Zéro feuille de style qui dérive.",
         "chips": [

@@ -11,7 +11,7 @@ réseau au runtime, et aucune dépendance à un service de favicons tiers.
 >
 > L'intérêt du favicon comme source unique : il est **déjà dessiné comme une icône
 > d'app** — cadrage carré, marges internes, lisible en petit. C'est ce qui permet
-> aux 53 vignettes d'avoir la même densité optique sans retouche individuelle.
+> aux 54 vignettes d'avoir la même densité optique sans retouche individuelle.
 
 Le champ `logo` de `Tool` est **obligatoire** (`string`, pas `string | null`) : plus
 de fallback « initiales ». Ajouter un outil sans icône ne compile pas, c'est voulu.
@@ -38,6 +38,8 @@ Autres points à savoir :
   est derrière une protection anti-bot qui répond `429` à tout téléchargement direct.
 - **`clerk.svg`** vient de Simple Icons (teinté au violet de marque `#6C47FF`) : le
   favicon officiel plafonne à 32×32.
+- **`nextjs.svg`** vient de Simple Icons aussi : `nextjs.org` ne déclare qu'un
+  `favicon.ico` 48×48, et n'expose ni `apple-icon.png` ni `icon.png`.
 - **Fichiers orphelins** (plus référencés par `tools.ts`, conservés au cas où l'outil
   reviendrait dans la liste) : `clerk.svg` — carte remplacée par Better Auth — et
   `asana.png` — carte retirée, Linear a pris la place.
