@@ -152,10 +152,11 @@ sections:
         - label: Calendrier
           indicatif: true
           texte: >-
-            Les jalons comptent en jours à partir de ta réponse. Rien n'est calé sur
-            une date ferme tant qu'on n'a pas convenu du départ ensemble.
+            Les jalons comptent en jours à partir du démarrage, et le démarrage se
+            cale ensemble une fois la proposition validée. Ce n'est pas le jour de
+            ta réponse : je travaille sur d'autres projets, et le créneau se réserve.
           jalons:
-            - { date: "J+0", label: "Tu me donnes ta réponse", owner: client }
+            - { date: "J+0", label: "Démarrage, à la date qu'on aura convenue" }
             - { date: "J+5", label: "Tu m'envoies les textes et les photos", owner: client }
             - { date: "J+10", label: "Tu m'envoies ton logo, ta palette et tes typographies", owner: client }
             - { date: "J+16", label: "Les maquettes des six pages", owner: coolbeans }
@@ -165,7 +166,9 @@ sections:
             - { date: "J+30", label: "Mise en ligne", owner: coolbeans }
           note: >-
             Les maquettes ne démarrent pas avant que j'aie les fichiers de ton
-            identité. C'est le seul jalon qui commande tous les suivants.
+            identité. C'est le jalon qui commande tous les suivants. Et un retard de
+            validation décale la suite de plus que le retard lui-même : je travaille
+            sur d'autres projets entre-temps et je reprends au créneau suivant.
 
   - titre: De ton côté
     texte: >-
