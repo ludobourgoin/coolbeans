@@ -6,10 +6,10 @@ Astro autonome — plus aucune dépendance réseau à l'exécution.
 
 ## Où ils servent
 
-- **about · bande proof** (marquee sous le hero) : webflow, astro-icon, gsap-icon,
-  shopify, sanity, make, zapier-icon, figma, notion, airtable, hubspot,
+- **about · bande proof** (marquee sous le hero) : webflow, astro-icon, nextjs,
+  gsap-icon, shopify, sanity, make, zapier-icon, figma, notion, airtable, hubspot,
   google-analytics, slack-icon, github-icon, cloudflare-icon.
-- **home · visuel « flux »** (hero) : figma, astro-icon, gsap-icon, cloudflare-icon,
+- **home · visuel « flux »** (hero) : figma, astro-icon, nextjs, gsap-icon, cloudflare-icon,
   stripe, make, sanity, notion, github-icon, netlify-icon, supabase-icon, sentry-icon,
   visual-studio-code, brevo, resend, posthog, n8n, claude, hubspot…
 
@@ -32,6 +32,7 @@ Astro autonome — plus aucune dépendance réseau à l'exécution.
 | `*.svg` (multicolore, ex. figma, shopify, astro, sanity) | `api.iconify.design/logos/<nom>.svg` |
 | `*-icon.svg` (glyphe seul, ex. cloudflare-icon, github-icon) | `api.iconify.design/logos/<nom>-icon.svg` |
 | `notion.svg`, `stripe.svg`, `make.svg`, `hubspot.svg`… | `cdn.simpleicons.org/<nom>/<hex>` (monochromes teintés) |
+| `nextjs.svg` (le N cerclé) | Simple Icons `nextdotjs` — `nextjs.org` ne déclare qu'un `favicon.ico` 48×48, et n'expose ni `apple-icon.png` ni `icon.png`. Encre noire, donc `mono: true` dans la bande proof. Fichier identique à `../tools/nextjs.svg`, gardé en double pour respecter la séparation des deux jeux. |
 | `gsap-icon.svg` (picto 4 cercles) | `gsap.com/safari-pinned-tab.svg` — seul picto carré officiel en vectoriel, recoloré au vert de marque `#0AE448` |
 | `gsap.svg` (wordmark) | `cdn.simpleicons.org/gsap/0AE448` — **inutilisé** depuis le passage de la bande proof au picto + nom. Conservé au cas où un lockup serait utile ailleurs. |
 

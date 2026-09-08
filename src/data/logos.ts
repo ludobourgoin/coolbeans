@@ -15,6 +15,7 @@ export interface Logo {
 export const proofPrimary: Logo[] = [
   { src: "/img/logos/webflow.svg", name: "Webflow" },
   { src: "/img/logos/astro-icon.svg", name: "Astro", mono: true },
+  { src: "/img/logos/nextjs.svg", name: "Next.js", mono: true },
   { src: "/img/logos/gsap-icon.svg", name: "GSAP" },
   { src: "/img/logos/shopify.svg", name: "Shopify" },
   { src: "/img/logos/sanity.svg", name: "Sanity" },
