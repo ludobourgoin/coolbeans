@@ -6,7 +6,6 @@ import DevisCorps from "../../components/devis/DevisCorps.astro";
 import DevisEntetePrint from "../../components/devis/DevisEntetePrint.astro";
 import DevisReponse from "../../components/devis/DevisReponse.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
-import Banner from "../../components/ui/Banner.astro";
 import { dateLongue } from "../../lib/devis";
 
 /* Un devis peut avoir plusieurs versions (révision de périmètre). Elles
@@ -104,18 +103,6 @@ const reference = versions[0].id.split("-").pop();
       versions.map((v, i) => (
         <div data-devis-pane={i} hidden={i !== actif}>
           <DevisEntetePrint d={v.data} reference={reference} />
-          {i > 0 && (
-            /* Le client a déjà lu la version d'avant. Sans ce repère il relit
-               tout, ou — plus souvent — ne relit rien et rate le changement de
-               périmètre. La légende est obligatoire : un fond de couleur sans
-               explication se lit comme une coquille d'affichage. */
-            <div class="mx-auto max-w-[880px] pt-10">
-              <Banner tone="info">
-                Ce qui a changé depuis la V{versions[i - 1].data.version} est{" "}
-                <b class="font-bold">surligné en jaune</b>. Le reste est identique, mot pour mot.
-              </Banner>
-            </div>
-          )}
           <DevisCorps
             d={v.data}
             version={versions.length > 1 ? v.data.version : undefined}
