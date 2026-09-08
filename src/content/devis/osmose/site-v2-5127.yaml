@@ -139,7 +139,7 @@ sections:
           pct: 25
         - label: Geste pour l'ouverture du lieu
           pct: 30
-        - label: Réutilisation de ton espace d'administration
+        - label: Deuxième projet ensemble
           pct: 15
       mention: HT
       reglement: >-
@@ -197,9 +197,8 @@ notes:
   - tone: success
     texte: >-
       Tarif association de 25 %, geste de 30 % pour l'ouverture du lieu, et 15 %
-      parce que ton espace d'administration existe déjà et que je le réutilise.
-      Les trois s'appliquent à l'ensemble, options comprises : tu règles moins de
-      la moitié du montant.
+      parce que c'est notre deuxième projet ensemble. Les trois s'appliquent à
+      l'ensemble, options comprises : tu règles moins de la moitié du montant.
   - texte: >-
       Aucun abonnement mensuel : l'hébergement et l'espace d'administration tiennent
       dans les offres gratuites. Seul le nom de domaine se renouvelle, autour de dix
