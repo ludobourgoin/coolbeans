@@ -106,7 +106,7 @@ sections:
             Je t'envoie une trame à compléter dans un simple fichier texte. Tu
             racontes le lieu avec tes mots, j'écris les pages et je les optimise
             pour Google. Tu ne pars pas de la page blanche.
-        - label: "**Maquettes des six pages** : ton identité déclinée à l'écran, validées avant l'intégration"
+        - label: "**Maquettes des six pages** : validées avant l'intégration"
           prix: 700
         - label: "**Le site et son espace d'administration** : tu ajoutes un praticien ou un événement toi-même"
           prix: 980
