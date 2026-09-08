@@ -35,49 +35,19 @@ const outils = [
   <h1>Admin</h1>
   <p class="sub">Les outils réservés à l'administrateur du portail.</p>
 
-  <ul class="outils">
+  {/* Grille sobre, en utilitaires sur les tokens de global.css. Surtout ne pas
+      nommer ces cartes `.card` : `doc.css` porte déjà `.doc-root .card`, de
+      spécificité (0,2,0), qui gagnerait contre tout utilitaire posé ici. */}
+  <ul class="mt-6x grid list-none gap-3x p-0 sm:grid-cols-2">
     {
       outils.map((o) => (
-        <li>
-          <a href={o.href}>{o.titre}</a>
-          <p>{o.detail}</p>
+        <li class="rounded-card border border-line bg-surface p-4x">
+          <a href={o.href} class="font-medium text-ink no-underline">
+            {o.titre}
+          </a>
+          <p class="mt-2x text-[14px] text-mute">{o.detail}</p>
         </li>
       ))
     }
   </ul>
 </EspaceLayout>
-
-<style>
-  /* Grille sobre : les cartes du portail se dessinent avec les tokens de
-     global.css, jamais avec des valeurs en dur. Ne pas nommer ces classes
-     `.card` — `doc.css` porte déjà `.doc-root .card`, de spécificité (0,2,0),
-     qui gagnerait contre tout utilitaire posé ici. */
-  .outils {
-    display: grid;
-    gap: var(--space-3x);
-    margin-top: var(--space-6x);
-    padding: 0;
-    list-style: none;
-  }
-  @media (min-width: 640px) {
-    .outils {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  .outils li {
-    border: 1px solid var(--line);
-    border-radius: var(--radius-card);
-    background: var(--surface);
-    padding: var(--space-4x);
-  }
-  .outils a {
-    color: var(--ink);
-    font-weight: 500;
-    text-decoration: none;
-  }
-  .outils p {
-    margin: var(--space-2x) 0 0;
-    color: var(--mute);
-    font-size: 14px;
-  }
-</style>
