@@ -138,7 +138,7 @@ sections:
         - label: Tarif association
           pct: 25
         - label: Geste pour l'ouverture du lieu
-          pct: 40
+          pct: 35
       mention: HT
       reglement: >-
         30 % à la validation, qui lance le travail. Le solde à la mise en ligne, en
@@ -194,7 +194,7 @@ sections:
 notes:
   - tone: success
     texte: >-
-      Tarif association de 25 %, puis un geste de 40 % pour l'ouverture du lieu.
+      Tarif association de 25 %, puis un geste de 35 % pour l'ouverture du lieu.
       Les deux s'appliquent à l'ensemble, options comprises : tu règles un peu
       moins de la moitié du montant.
   - texte: >-
