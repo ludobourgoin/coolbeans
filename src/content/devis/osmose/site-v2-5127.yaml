@@ -106,7 +106,7 @@ sections:
             Je t'envoie une trame à compléter dans un simple fichier texte. Tu
             racontes le lieu avec tes mots, j'écris les pages et je les optimise
             pour Google. Tu ne pars pas de la page blanche.
-        - label: "**Maquettes des six pages** : ton identité déclinée à l'écran, validées avant l'intégration"
+        - label: "**Maquettes des six pages** : validées avant l'intégration"
           prix: 700
         - label: "**Le site et son espace d'administration** : tu ajoutes un praticien ou un événement toi-même"
           prix: 980
@@ -138,9 +138,7 @@ sections:
         - label: Tarif association
           pct: 25
         - label: Geste pour l'ouverture du lieu
-          pct: 30
-        - label: Réutilisation de ton espace d'administration
-          pct: 15
+          pct: 40
       mention: HT
       reglement: >-
         30 % à la validation, qui lance le travail. Le solde à la mise en ligne, en
@@ -196,10 +194,9 @@ sections:
 notes:
   - tone: success
     texte: >-
-      Tarif association de 25 %, geste de 30 % pour l'ouverture du lieu, et 15 %
-      parce que ton espace d'administration existe déjà et que je le réutilise.
-      Les trois s'appliquent à l'ensemble, options comprises : tu règles moins de
-      la moitié du montant.
+      Tarif association de 25 %, puis un geste de 40 % pour l'ouverture du lieu.
+      Les deux s'appliquent à l'ensemble, options comprises : tu règles un peu
+      moins de la moitié du montant.
   - texte: >-
       Aucun abonnement mensuel : l'hébergement et l'espace d'administration tiennent
       dans les offres gratuites. Seul le nom de domaine se renouvelle, autour de dix

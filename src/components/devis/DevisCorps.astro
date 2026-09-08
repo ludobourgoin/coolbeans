@@ -8,6 +8,10 @@ import {
   totaux,
   ownerLabel,
   listeItem,
+  nouveautesDepuis,
+  cleLigne,
+  cleRemise,
+  cleJalon,
   OWNER_DOT,
   OWNER_BADGE,
   type DevisData,
@@ -18,10 +22,25 @@ interface Props {
   /* Renseigné uniquement quand le devis a plusieurs versions : elles
      coexistent dans le DOM et leurs ancres doivent rester distinctes. */
   version?: number;
+  /* La version d'avant, pour surligner ce qui a changé depuis. Absente sur la
+     V1 : rien n'est « nouveau » dans un document qu'on découvre en entier. */
+  precedent?: DevisData;
 }
-const { d, version } = Astro.props;
+const { d, version, precedent } = Astro.props;
 
 const ancre = (titre: string) => ancreSection(titre, version);
+
+const estNeuf = nouveautesDepuis(precedent);
+
+/* Surlignage d'un bloc nouveau. Le box-shadow tient lieu de padding : il
+   élargit le fond de trois pixels sans rien déplacer dans une grille ni
+   décaler une ligne à filet. */
+const NEUF_FOND = "bg-highlight-neuf shadow-[0_0_0_3px_var(--highlight-neuf)]";
+const NEUF = `${NEUF_FOND} rounded-[2px]`;
+/* Un bandeau NB est opaque : le fond jaune ne se voit qu'en halo autour de
+   lui, et ce halo doit épouser son rayon sous peine d'angles carrés collés à
+   des angles arrondis. */
+const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
 ---
 
 <!-- BLOC STICKY : nav de sections. Colle au sommet du viewport, la page
@@ -50,6 +69,22 @@ const ancre = (titre: string) => ancreSection(titre, version);
   </nav>
 </div>
 
+{
+  /* Légende du surlignage, juste sous la nav : le client la rencontre avant
+     le premier bloc jaune, jamais après. Un fond de couleur sans explication
+     se lit comme une coquille d'affichage.
+
+     Absente sur la V1 — rien n'y est nouveau, il découvre le document. */
+  precedent && (
+    <div class="mx-auto max-w-[880px] pt-12 pb-4">
+      <Banner tone="info">
+        Ce qui a changé depuis la V{precedent.version} est{" "}
+        <b class="font-bold">surligné en jaune</b>. Le reste est identique, mot pour mot.
+      </Banner>
+    </div>
+  )
+}
+
 <div class="mx-auto max-w-[880px] py-16x">
   {
     d.sections.map((section, index) => (
@@ -69,6 +104,7 @@ const ancre = (titre: string) => ancreSection(titre, version);
               class:list={[
                 "max-w-[58ch] leading-[1.6]",
                 (section.liste || section.budget || section.planning || section.diagram) && "mb-5",
+                estNeuf(section.texte) && NEUF,
               ]}
               set:html={riche(section.texte)}
             />
@@ -81,7 +117,7 @@ const ancre = (titre: string) => ancreSection(titre, version);
                 return (
                   <li class="flex items-start gap-3.5">
                     <span class="mt-[0.55em] block size-1.5 flex-none bg-ink" aria-hidden="true" />
-                    <span class="max-w-[58ch]">
+                    <span class:list={["max-w-[58ch]", estNeuf(item.texte) && NEUF]}>
                       <Fragment set:html={riche(item.texte)} />
                       {item.tooltip && <Tooltip texte={item.tooltip} />}
                     </span>
@@ -130,8 +166,15 @@ const ancre = (titre: string) => ancreSection(titre, version);
                 >
                   {b.lignes.map((ligne, i) => {
                     const aCase = cochable && ligne.optionnel;
-                    const classes =
-                      "flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] max-[700px]:text-[16px]";
+                    /* Une ligne compte comme neuve si son libellé OU son prix
+                       a bougé : surligner le seul libellé laisserait passer un
+                       changement de montant, qui est justement ce que le
+                       client cherche en rouvrant une version révisée. */
+                    const neuf = estNeuf(cleLigne(ligne));
+                    const classes = [
+                      "flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] max-[700px]:text-[16px]",
+                      neuf && NEUF,
+                    ];
                     /* Libellé et prix sont identiques dans les deux branches ;
                        seul l'emballage change — un <label> cliquable autour de
                        la case, ou la ligne nue du socle. */
@@ -182,12 +225,19 @@ const ancre = (titre: string) => ancreSection(titre, version);
                           <label
                             data-devis-ligne
                             data-prix={ligne.prix ?? 0}
-                            class={`${classes} cursor-pointer transition-colors duration-150 ease-in-out hover:bg-surface-subtle`}
+                            class:list={[
+                              classes,
+                              "cursor-pointer transition-colors duration-150 ease-in-out",
+                              /* Le survol ne repeint pas une ligne surlignée :
+                                 voir le repère disparaître sous le curseur se
+                                 lit comme un bug, pas comme un survol. */
+                              !neuf && "hover:bg-surface-subtle",
+                            ]}
                           >
                             {contenu}
                           </label>
                         ) : (
-                          <div data-devis-ligne data-prix={ligne.prix ?? 0} class={classes}>
+                          <div data-devis-ligne data-prix={ligne.prix ?? 0} class:list={classes}>
                             {contenu}
                           </div>
                         )}
@@ -211,7 +261,12 @@ const ancre = (titre: string) => ancreSection(titre, version);
                         </span>
                       </div>
                       {paliers.map((palier) => (
-                        <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute max-[700px]:text-[16px]">
+                        <div
+                          class:list={[
+                            "flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute max-[700px]:text-[16px]",
+                            estNeuf(cleRemise(palier)) && NEUF,
+                          ]}
+                        >
                           <span>
                             {palier.label} (−{palier.pct}&nbsp;%)
                           </span>
@@ -244,7 +299,7 @@ const ancre = (titre: string) => ancreSection(titre, version);
                   {b.reglement && (
                     /* mt-6 : sans marge, les conditions se collaient au total
                        (ou au bandeau d'attente) et se lisaient comme sa suite. */
-                    <p class="mt-6 text-[13px] text-mute">
+                    <p class:list={["mt-6 text-[13px] text-mute", estNeuf(b.reglement) && NEUF]}>
                       Conditions de règlement : <Fragment set:html={riche(b.reglement)} />
                     </p>
                   )}
@@ -291,13 +346,22 @@ const ancre = (titre: string) => ancreSection(titre, version);
                         </div>
                       )}
                       {option.texte && (
-                        <p class="mb-5 max-w-[58ch] leading-[1.6]" set:html={riche(option.texte)} />
+                        <p
+                          class:list={[
+                            "mb-5 max-w-[58ch] leading-[1.6]",
+                            estNeuf(option.texte) && NEUF,
+                          ]}
+                          set:html={riche(option.texte)}
+                        />
                       )}
                       <div>
                         {option.jalons.map((jalon) => (
                           <div
                             data-devis-jalon
-                            class="grid grid-cols-[150px_1fr_auto] items-baseline gap-x-4 border-b border-line py-2.5 text-[15px] max-[700px]:grid-cols-[90px_1fr]"
+                            class:list={[
+                              "grid grid-cols-[150px_1fr_auto] items-baseline gap-x-4 border-b border-line py-2.5 text-[15px] max-[700px]:grid-cols-[90px_1fr]",
+                              estNeuf(cleJalon(jalon)) && NEUF,
+                            ]}
                           >
                             <span class="font-mono text-[13px] font-bold text-ink">
                               {jalon.date}
@@ -324,7 +388,10 @@ const ancre = (titre: string) => ancreSection(titre, version);
                         ))}
                       </div>
                       {option.note && (
-                        <p class="mt-4 text-[13px] text-mute" set:html={riche(option.note)} />
+                        <p
+                          class:list={["mt-4 text-[13px] text-mute", estNeuf(option.note) && NEUF]}
+                          set:html={riche(option.note)}
+                        />
                       )}
                     </div>
                   ))}
@@ -334,7 +401,10 @@ const ancre = (titre: string) => ancreSection(titre, version);
 
           {section.note && (
             <p
-              class="mt-6 max-w-[58ch] text-[14px] leading-[1.6] text-mute"
+              class:list={[
+                "mt-6 max-w-[58ch] text-[14px] leading-[1.6] text-mute",
+                estNeuf(section.note) && NEUF,
+              ]}
               set:html={riche(section.note)}
             />
           )}
@@ -352,10 +422,12 @@ const ancre = (titre: string) => ancreSection(titre, version);
         <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">NB</p>
         <div class="flex max-w-[58ch] flex-col gap-3">
           {d.notes.map((note) => (
-            <Banner tone={note.tone}>
-              <Fragment set:html={riche(note.texte)} />
-              {note.tooltip && <Tooltip texte={note.tooltip} />}
-            </Banner>
+            <div class:list={[estNeuf(note.texte) && NEUF_BANDEAU]}>
+              <Banner tone={note.tone}>
+                <Fragment set:html={riche(note.texte)} />
+                {note.tooltip && <Tooltip texte={note.tooltip} />}
+              </Banner>
+            </div>
           ))}
         </div>
       </div>

@@ -103,7 +103,11 @@ const reference = versions[0].id.split("-").pop();
       versions.map((v, i) => (
         <div data-devis-pane={i} hidden={i !== actif}>
           <DevisEntetePrint d={v.data} reference={reference} />
-          <DevisCorps d={v.data} version={versions.length > 1 ? v.data.version : undefined} />
+          <DevisCorps
+            d={v.data}
+            version={versions.length > 1 ? v.data.version : undefined}
+            precedent={i > 0 ? versions[i - 1].data : undefined}
+          />
         </div>
       ))
     }
