@@ -24,8 +24,9 @@
 # prix : sans aucun chiffre, le lead ancre lui-même et il ancre haut (retex Vice
 # Versa du 2026-08-27).
 #
-# Tutoiement, comme son mail. Le formulaire, lui, est vouvoyé : c'est un composant
-# partagé par tous les clients.
+# Tutoiement, comme son mail, formulaire compris : le drapeau `tutoiement` bascule
+# les phrases du composant qui portent un pronom. Le vouvoiement reste le défaut
+# pour les autres documents.
 titre: Le site de Sérial'Générations
 objet: Six questions avant de t'envoyer une proposition
 date: 2026-09-10
@@ -150,4 +151,4 @@ notes:
       Les réseaux sociaux sont hors périmètre. Le site est préparé pour qu'un
       partage sur Facebook ou Instagram s'affiche avec son titre, son texte et
       son image, mais l'ouverture des comptes et leur animation restent chez
-      vous.
+      toi.
