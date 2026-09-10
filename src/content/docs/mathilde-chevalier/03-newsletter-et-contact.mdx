@@ -1,0 +1,58 @@
+---
+client: "mathilde-chevalier"
+title: "Newsletter et contact"
+order: 3
+status: "final"
+updated: 2026-09-10
+description: "Où arrivent les abonnés, où arrivent les demandes, et comment leur écrire."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+## Le formulaire d'abonnement
+
+Il est présent **en pied de chaque page** du site, et en haut de la page Blog.
+
+Le lien à donner pour s'abonner, c'est simplement l'adresse de ton site : le
+formulaire est déjà dessus. Il n'y a pas d'autre page d'inscription à
+transmettre.
+
+Chaque nouvel abonné part automatiquement dans ta base **MailerLite**. Tu n'as
+rien à recopier.
+
+## Écrire ta newsletter
+
+Tout se passe dans MailerLite, pas dans Webflow.
+
+1. Connecte-toi à MailerLite.
+2. **Campaigns**, puis nouvelle campagne.
+3. Pars du gabarit existant plutôt que d'une page blanche : il porte déjà tes
+   couleurs et ton logo.
+4. Envoie-toi un test avant l'envoi réel. Toujours.
+
+<Callout type="note">
+  Un envoi parti ne se rattrape pas. Le test à toi-même coûte trente secondes
+  et évite la faute de frappe que six cents personnes liront.
+</Callout>
+
+## Le formulaire de contact
+
+La page `/contact` porte le formulaire principal. Les demandes arrivent
+aujourd'hui dans le back-office Webflow, onglet **Forms**, et te sont
+notifiées par mail.
+
+Trois boutons du site mènent à cette page : « Contactez-moi » dans la
+navigation, « Parlons de votre équipe » et « Démarrer dès maintenant » sur la
+page d'accueil. Ils pointent tous au même endroit.
+
+<Callout type="note">
+  Si tu ne reçois plus les notifications, regarde d'abord tes spams. C'est la
+  cause dans la grande majorité des cas.
+</Callout>
+
+## Ce qui change avec la refonte
+
+Le formulaire d'abonnement restera raccordé à MailerLite, à l'identique. Le
+formulaire de contact, lui, n'aura plus de back-office Webflow derrière : les
+demandes t'arriveront directement par mail, sans passer par un tableau de bord
+qu'il faut penser à ouvrir.

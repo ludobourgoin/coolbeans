@@ -1,0 +1,75 @@
+---
+client: "mathilde-chevalier"
+title: "Éditer le site"
+order: 2
+status: "final"
+updated: 2026-09-10
+description: "Publier un article, coller un lecteur de podcast, ajouter un logo de partenaire."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+Trois gestes couvrent presque tout ce que tu as eu à faire depuis un an. Ils
+sont détaillés ici parce que tu me les as redemandés plusieurs fois, et c'est
+normal : Webflow ne les rend pas évidents.
+
+<Callout type="note">
+  Rien n'est en ligne tant que tu n'as pas cliqué sur **Publish**, en haut à
+  droite. Tu peux te tromper autant que tu veux avant.
+</Callout>
+
+## Publier un article
+
+Le blog est une **collection** Webflow, pas une suite de pages. Tu ajoutes un
+élément à la collection, la page se fabrique toute seule à l'adresse
+`/post/<titre>`.
+
+1. Tableau de bord Webflow, ouvre le site, puis l'onglet **CMS** dans la barre
+   de gauche.
+2. Collection **Blog**, bouton **New Blog**.
+3. Remplis le titre, le résumé, l'image de couverture et le corps de l'article.
+4. **Create and publish**.
+
+Le corps de l'article se découpe en trois à cinq parties titrées. C'est ce qui
+le rend lisible, et c'est aussi ce que Google lit pour comprendre de quoi il
+parle.
+
+## Coller un lecteur de podcast ou une vidéo
+
+C'est le geste qui t'a le plus coûté. Dans le corps de l'article, l'éditeur
+propose un bloc **HTML Embed** : c'est lui qu'il faut, jamais un simple lien
+collé.
+
+1. Sur Spotify, YouTube ou Audiomeans, bouton **Partager**, puis **Intégrer**
+   (ou *Embed*). Copie le code proposé, celui qui commence par `<iframe`.
+2. Dans l'article, à l'endroit voulu, ajoute un bloc **HTML Embed**.
+3. Colle le code, **Save**.
+
+<Callout type="note">
+  Un lien collé tel quel affiche l'adresse web en toutes lettres au milieu du
+  texte. Le bloc HTML Embed affiche le lecteur, avec le bouton lecture.
+</Callout>
+
+## Ajouter un logo de partenaire
+
+Le bandeau « Ils me font confiance » vit sur la page d'accueil.
+
+1. Ouvre la page **Accueil** dans l'éditeur.
+2. Le bandeau de logos est une grille : clique sur un logo existant, copie-le
+   (`Cmd + C`, `Cmd + V`).
+3. Sur la copie, panneau de droite, remplace l'image par le nouveau logo.
+4. **Publish**.
+
+Le logo doit arriver **sur fond transparent**, en PNG ou en SVG. Un logo avec
+son fond blanc se voit immédiatement dans le bandeau.
+
+## Ce qu'il ne faut pas toucher
+
+- La barre de navigation et le pied de page : ils sont partagés par toutes les
+  pages, une modification les change partout.
+- Les classes et les styles dans le panneau de droite : ils sont partagés eux
+  aussi, et une valeur changée à un endroit se propage.
+- Le formulaire de contact et le formulaire d'abonnement : ils sont raccordés à
+  des services externes, et un champ renommé casse le raccordement.
+
+En cas de doute, écris-moi. Ça me prend deux minutes.
