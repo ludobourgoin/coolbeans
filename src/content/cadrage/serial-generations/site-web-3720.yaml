@@ -52,18 +52,16 @@ intro:
       - texte: "**Un budget de 1 500 à 2 000 €.**"
     note: >-
       Ordre de grandeur pour ce périmètre : 1 500 à 2 500 €. Hébergement gratuit,
-      aucun abonnement. Quatre à six semaines de production, à partir du jour où
-      tu m'as remis tes textes et tes images. Le prix ferme vient après tes
-      réponses. Si tu préfères qu'on en parle de vive voix, dis-le moi et on cale
-      un créneau.
+      aucun abonnement. Deux semaines entre le démarrage et la livraison du site
+      fonctionnel. Le prix ferme vient après tes réponses. Si tu préfères qu'on en
+      parle de vive voix, dis-le moi et on cale un créneau.
 
 questions:
   - id: budget
     label: Tes 1 500 à 2 000 €, c'est hors taxes ou toutes taxes comprises ?
     aide: >-
-      Un laboratoire ne récupère pas la TVA, donc il raisonne souvent en TTC.
-      Entre les deux réponses, l'écart vaut 20 % de ce que je peux mettre dans le
-      site.
+      Coolbeans facture la TVA. Je ne sais pas si celle-ci est récupérable par
+      l'Université.
     type: choix
     decisif: true
     requis: true
@@ -115,6 +113,7 @@ questions:
       afficher ces vidéos dans ses pages. Les autres solutions coûtent, en argent
       ou en publicité.
     type: choix
+    autre: true
     options:
       - { valeur: pod, label: "Sur Pod, la plateforme de l'université" }
       - { valeur: youtube, label: "Sur YouTube ou Vimeo" }
