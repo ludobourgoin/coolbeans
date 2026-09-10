@@ -49,7 +49,7 @@ sections:
           reprendre le site.
 
   - titre: Le site
-    texte: Les neuf pages reprises à l'identique, et tes sept articles.
+    texte: Les neuf pages reprises à l'identique, et tout ton blog.
     liste:
       - texte: >-
           Accueil, avec ton bandeau de logos partenaires et tes témoignages.
@@ -59,8 +59,12 @@ sections:
           pose pas : c'est ce qui permet à tes réponses de remonter directement
           dans les résultats Google.
       - texte: >-
-          Blog et tes sept articles, à leur adresse actuelle. Aucun lien que tu
-          as déjà partagé ne casse.
+          Blog et tes articles, à leur adresse actuelle. Aucun lien que tu as
+          déjà partagé ne casse.
+        tooltip: >-
+          Onze articles en ligne et treize brouillons, dont trois épisodes de
+          podcast prêts à partir. Je reprends tout, y compris ce qui n'est pas
+          publié.
       - texte: >-
           Mentions légales, politique de confidentialité, politique de cookies.
       - texte: >-
@@ -102,11 +106,13 @@ sections:
       lignes:
         - label: "**Les neuf pages**, reconstruites à l'identique"
           prix: 420
-        - label: "**Ton espace de rédaction** et la reprise de tes sept articles"
+        - label: "**Ton espace de rédaction** et la reprise de tout ton blog"
           prix: 250
           tooltip: >-
-            Tes articles gardent leur date de publication d'origine, leurs
-            images et leurs lecteurs intégrés.
+            Tes vingt-quatre articles, publiés comme brouillons, avec leur date
+            d'origine, leurs images et leurs lecteurs intégrés. On fait le tri
+            ensemble : il y a quelques doublons et des restes du gabarit de
+            départ.
         - label: "Formulaire de contact et abonnement à la newsletter"
           prix: 90
         - label: "**Mise en ligne** : bascule du nom de domaine, référencement, recette"
