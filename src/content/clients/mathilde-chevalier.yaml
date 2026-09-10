@@ -1,0 +1,13 @@
+nom: Mathilde Chevalier
+# Cliente directe : pas de revendeur entre elle et Coolbeans (spec 2026-08-19 §3.1).
+organisation: coolbeans
+prenom: Mathilde
+# Emoji du sélecteur, repris de l'icône de la team Linear (micro, pour le
+# podcast « Au cœur du travail »).
+emoji: 🎙️
+# Accord sur la mission d'origine, par mail. Plus précis que la création de la
+# team Linear (2026-08-13), qui ne fait foi qu'à défaut.
+depuis: "2025-11-18"
+doc: mathilde-chevalier
+# Team « Mathilde Chevalier » du workspace Linear coolbeans-hq.
+linearTeamId: d84c9067-5a27-41d2-8d8c-3852df069161

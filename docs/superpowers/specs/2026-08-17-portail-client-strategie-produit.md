@@ -206,14 +206,16 @@ Les chiffres qui engagent sont consultés. C'est un moteur de retour fiable.
 
 ### 3.9 Documents et assets
 **État :** à créer. Stockage Cloudflare R2 déjà arbitré.
+Conception détaillée : `2026-09-08-documents-workspace-design.md`, qui prévaut sur cette section en cas d'écart.
 
-- Bibliothèque par client : logos (vectoriels inclus), chartes, photos, contrats, livrables, exports.
+- Bibliothèque par client : logos (vectoriels inclus), chartes, photos, contrats, livrables, exports. S'y ajoutent les cadrages et propositions commerciales, qui sont des pages du site, et les liens externes (Google Docs, Granola).
 - **Upload depuis la vue admin de Ludo sur le portail du client.** Pas d'outil séparé.
-- **Notification différée de 15 minutes après le dernier ajout**, groupée : un seul email listant tous les fichiers ajoutés dans la fenêtre, avec lien vers la page « Documents ». Le délai sert de fenêtre de regroupement et permet de corriger une erreur avant l'envoi.
-- Versionnage simple : conserver la version précédente d'un fichier remplacé.
+- **Visibilité décidée document par document.** Tout arrive masqué. Ludo rend visible en un clic depuis le workspace du client, et remasque de même. Une pastille signale les documents que le client ne voit pas.
+- **Aucune notification automatique au client.** Décision de Ludo du 2026-09-08, qui remplace la notification différée de 15 minutes prévue jusque là : il prévient ses clients lui-même depuis Gmail quand il a mis à jour leur workspace. COO-90 est annulée, pas reportée.
+- Versionnage simple : conserver la version précédente d'un fichier remplacé. Hors V1, voir COO-89.
 - **Aucun identifiant ni secret déposé ici.** Voir 4.4.
 
-**Critères d'acceptation :** upload admin fonctionnel, débounce de 15 min avec regroupement, un seul email par lot, liens signés à durée de vie limitée pour le téléchargement.
+**Critères d'acceptation :** upload admin fonctionnel, bascule de visibilité en un clic dans les deux sens, aucun document masqué servi à un client (ni dans la liste, ni par la route de téléchargement), ouverture en nouvel onglet, picto et nom du document sur chaque ligne.
 
 ---
 

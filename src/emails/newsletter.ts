@@ -50,7 +50,7 @@ export function renderNewsletter({
       contenu,
       bouton ? cta(bouton.label, bouton.url) : "",
     ].join(""),
-    pied: `Coolbeans — l'op&eacute;rationnel qui tourne tout seul.<br>
+    pied: `Coolbeans, l'op&eacute;rationnel qui tourne tout seul.<br>
               Tu re&ccedil;ois cet email parce que tu t'es inscrit sur
               <a href="https://coolbeans.cc" style="color:${MUTE};text-decoration:underline;">coolbeans.cc</a>.<br>
               <a href="${unsubscribeUrl}" style="color:${MUTE};text-decoration:underline;">Se d&eacute;sinscrire</a>`,

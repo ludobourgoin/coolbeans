@@ -80,7 +80,7 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
        le py-10 de la première section la rapproche du contenu (40px). Un
        bandeau plus proche de ce qu'il décrit que de la barre au-dessus.
 
-       Absente sur la V1 — rien n'y est nouveau, il découvre le document. */
+       Absente sur la V1 : rien n'y est nouveau, il découvre le document. */
     precedent && (
       <Banner tone="info">
         Ce qui a changé depuis la V{precedent.version} est{" "}
@@ -178,7 +178,7 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
                       neuf && NEUF,
                     ];
                     /* Libellé et prix sont identiques dans les deux branches ;
-                       seul l'emballage change — un <label> cliquable autour de
+                       seul l'emballage change : un <label> cliquable autour de
                        la case, ou la ligne nue du socle. */
                     const contenu = (
                       <>
@@ -189,7 +189,7 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
                               data-devis-option
                               value={i}
                               checked={ligne.defaut}
-                              class="mt-[0.2em] size-4 flex-none accent-ink"
+                              class="checkbox"
                             />
                           )}
                           <span>
@@ -499,7 +499,7 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
 
   /* Budget composable : le client coche ses options, les totaux suivent.
      Le rendu Astro a déjà écrit les montants de la sélection par défaut, donc
-     une page sans JavaScript reste juste — elle n'est pas modifiable, c'est
+     une page sans JavaScript reste juste : elle n'est pas modifiable, c'est
      tout. Ce qui compte : ce total est un confort de lecture, jamais une
      source de vérité. Le montant qui engage est recalculé côté serveur à la
      soumission, depuis le YAML, à partir des seuls index cochés. */

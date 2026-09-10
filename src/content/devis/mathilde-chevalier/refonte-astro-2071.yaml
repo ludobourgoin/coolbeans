@@ -1,0 +1,191 @@
+titre: Mathilde Chevalier x Coolbeans
+objet: La V2 de ton site
+date: 2026-09-10
+contact: Mathilde
+linear:
+  projet: "Refonte du site : Webflow vers Astro"
+  affaire: CRM-90
+
+sections:
+  - titre: Ce que j'ai compris
+    texte: >-
+      Ton site marche, et il n'y a rien à refaire dessus. Mais tu paies environ
+      300 € par an à Webflow, et tu passes par moi pour la moindre modification.
+      Les deux se règlent d'un coup.
+    liste:
+      - texte: >-
+          Le plan que tu paies sert surtout à avoir le droit de publier un
+          article. Sans lui, ton blog serait figé.
+      - texte: >-
+          Ajouter un logo de partenaire, coller un lecteur de podcast, mettre un
+          épisode en ligne : à chaque fois tu m'écris. On l'a fait une dizaine de
+          fois depuis janvier.
+      - texte: >-
+          Trois épisodes de ton podcast sont prêts sur ton site depuis le 19
+          août, et ils ne sont jamais partis en ligne.
+      - texte: >-
+          Tu ne sais pas combien de personnes lisent tes articles. Il n'y a
+          aucune mesure d'audience installée.
+    note: >-
+      Si l'un de ces points est faux, dis-le moi avant de lire la suite : toute
+      la proposition est construite dessus.
+
+  - titre: Ce que la V2 change
+    liste:
+      - texte: >-
+          **Plus d'abonnement.** L'hébergement et ton espace de rédaction
+          tiennent dans des offres gratuites. Il ne te reste que ton nom de
+          domaine, autour de dix euros par an.
+      - texte: >-
+          **Une page dédiée à ton podcast.** Tous tes épisodes au même endroit,
+          avec leur lecteur, et tu en ajoutes un toi-même en trois minutes.
+      - texte: >-
+          **Tes trois épisodes en attente partent en ligne** le jour de la mise
+          en ligne.
+      - texte: >-
+          **Tu sais enfin qui te lit.** Nombre de visites, pages les plus lues,
+          d'où viennent les gens. Sans cookie, donc sans bandeau à faire
+          accepter.
+        tooltip: >-
+          Aucune donnée personnelle n'est collectée, donc rien à déclarer et
+          aucun consentement à demander. C'est plus simple et plus respectueux
+          que Google Analytics.
+      - texte: >-
+          **Tu ajoutes tes logos de partenaires et tes témoignages toi-même.**
+          C'est ce que tu me demandes le plus souvent.
+      - texte: >-
+          **Ton blog remis d'aplomb.** Quatre de tes articles sont en ligne mais
+          mal signalés à Google, et il traîne quelques doublons. On nettoie.
+      - texte: >-
+          **Le même design, les mêmes adresses.** La seule différence visible,
+          c'est que ça s'affiche plus vite.
+
+  - titre: Le site
+    texte: Tes pages actuelles, reprises à l'identique, plus la page podcast.
+    liste:
+      - texte: >-
+          Accueil, avec ton bandeau de logos partenaires et tes témoignages.
+      - texte: "Qui suis-je, Contact et son formulaire, FAQ."
+        tooltip: >-
+          J'ajoute au passage les données structurées sur la FAQ, que Webflow ne
+          pose pas : c'est ce qui permet à tes réponses de remonter directement
+          dans les résultats Google.
+      - texte: >-
+          Blog et tes articles, à leur adresse actuelle. Aucun lien que tu as
+          déjà partagé ne casse.
+        tooltip: >-
+          Onze articles en ligne et treize brouillons, dont tes trois épisodes en
+          attente. Je reprends tout, y compris ce qui n'est pas publié.
+      - texte: >-
+          Podcast : tous les épisodes d'« Au cœur du travail », avec leur
+          lecteur, dans l'ordre.
+      - texte: >-
+          Mentions légales, politique de confidentialité, politique de cookies.
+    note: >-
+      Compris dans tous les cas : responsive, configuration SEO, optimisation de
+      la vitesse, tests QA sur les 3 navigateurs principaux, certificat SSL,
+      hébergement et raccordement du nom de domaine, doc de passation, support
+      30 jours après la mise en ligne.
+
+  - titre: La machine dessous
+    texte: >-
+      Trois outils, dont deux que tu ne verras jamais. Le seul que tu ouvriras,
+      c'est celui où tu écris.
+    liste:
+      - texte: >-
+          Ton espace de rédaction : une adresse web, ton mot de passe, une liste
+          d'articles. Depuis un ordinateur comme depuis ton téléphone.
+        tooltip: >-
+          Quatre choses seulement à l'intérieur : tes articles, leurs
+          catégories, tes logos de partenaires et tes témoignages. Volontairement
+          court, pour qu'il n'y ait rien à arbitrer avant de publier.
+      - texte: >-
+          L'hébergement, réparti sur un réseau mondial. Ta page part du serveur
+          le plus proche de qui la consulte.
+      - texte: >-
+          Le site lui-même, reconstruit page par page. C'est la partie qui prend
+          le temps, et c'est la seule.
+    note: >-
+      Tu n'as rien à installer et rien de nouveau à payer. La prise en main tient
+      en une heure, en visio, et je te l'enregistre.
+
+  - titre: Le budget
+    budget:
+      lignes:
+        - label: "**Tes pages actuelles**, reconstruites à l'identique"
+          prix: 300
+        - label: "**La page podcast**, avec tous tes épisodes"
+          prix: 200
+          tooltip: >-
+            Tu ajoutes un épisode toi-même : un titre, un texte, le code de
+            partage du lecteur, et c'est en ligne.
+        - label: "**Ton espace de rédaction** et la reprise de tout ton blog"
+          prix: 220
+          tooltip: >-
+            Tes vingt-quatre articles, publiés comme brouillons, avec leur date
+            d'origine, leurs images et leurs lecteurs. On fait le tri ensemble :
+            il y a quelques doublons et des restes du gabarit de départ.
+        - label: "Formulaire de contact et abonnement à la newsletter"
+          prix: 70
+        - label: "**Mise en ligne** : nom de domaine, référencement, mesure d'audience, recette"
+          prix: 100
+          tooltip: >-
+            Je compare page à page avec ton site actuel avant de basculer, et je
+            mesure la vitesse avant et après.
+      mention: HT
+      reglement: >-
+        En une fois, à la mise en ligne. Rien à avancer, et on cale l'échéance
+        ensemble.
+    note: >-
+      Ton design existe et tes textes existent : il n'y a ni maquette ni
+      rédaction à refaire. C'est ce qui rend ce chantier court, et c'est ce qui
+      explique le prix.
+
+  - titre: Le déroulé
+    planning:
+      options:
+        - label: Calendrier
+          texte: >-
+            Les jalons comptent en jours à partir du démarrage, et le démarrage
+            se cale ensemble. Ce n'est pas le jour de ta réponse : je travaille
+            sur d'autres projets, et le créneau se réserve.
+          jalons:
+            - { date: "J+0", label: "Démarrage, à la date qu'on aura convenue" }
+            - { date: "J+9", label: "Le site complet, à parcourir avant la mise en ligne", owner: coolbeans }
+            - { date: "J+12", label: "Tu le parcours et tu me fais tes retours", owner: client }
+            - { date: "J+14", label: "Corrections", owner: coolbeans }
+            - { date: "J+16", label: "Bascule du nom de domaine et mise en ligne", owner: coolbeans }
+            - { date: "J+18", label: "Prise en main de ton espace de rédaction, une heure en visio", owner: coolbeans }
+            - { date: "J+21", label: "Tu résilies ton abonnement Webflow", owner: client }
+          note: >-
+            Ne résilie pas Webflow avant la bascule : tant que le nom de domaine
+            n'a pas changé de main, c'est Webflow qui sert ton site, et une
+            résiliation anticipée le couperait.
+
+  - titre: De ton côté
+    texte: >-
+      Presque rien, et c'est voulu. J'ai déjà tes accès.
+    liste:
+      - texte: >-
+          Une heure pour parcourir le site avant la mise en ligne, et me dire ce
+          qui cloche.
+      - texte: >-
+          Une heure pour la prise en main de ton espace de rédaction.
+      - texte: >-
+          Un avis sur les articles à garder : il y a des doublons et des restes
+          du gabarit de départ, je ne les jette pas sans toi.
+    note: >-
+      Deux allers-retours sont prévus. Au-delà, on en reparle avant que je
+      continue.
+
+notes:
+  - tone: success
+    texte: >-
+      Tu paies environ 300 € par an aujourd'hui. Après la bascule, il ne reste
+      que ton nom de domaine, autour de dix euros par an. La V2 se rembourse en
+      trois ans, et elle te rend autonome tout de suite.
+  - texte: >-
+      Le périmètre s'arrête là. Si tu veux faire évoluer le design ou repenser un
+      parcours, c'est un autre sujet et on le chiffre à part.
+  - texte: >-
+      Proposition valable 30 jours.

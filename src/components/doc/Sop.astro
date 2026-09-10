@@ -88,7 +88,7 @@ const nomPhase = (id: string) => phases.find((p) => p.id === id)?.nom ?? id;
                   {branchesDe(e).map((s) => (
                     <a href={`#${s.vers}`} class="sop-branche">
                       <span aria-hidden="true">↳</span> {parId.get(s.vers)?.titre}
-                      <span class="sop-branche-si"> — si {s.si}</span>
+                      <span class="sop-branche-si"> (si {s.si})</span>
                     </a>
                   ))}
                 </div>
@@ -191,7 +191,7 @@ const nomPhase = (id: string) => phases.find((p) => p.id === id)?.nom ?? id;
                       <a href={`#${s.vers}`} class="sop-suivant">
                         {s.vers} · {parId.get(s.vers)?.titre}
                       </a>{" "}
-                      <span class="text-mute">— si {s.si}</span>
+                      <span class="text-mute">(si {s.si})</span>
                     </li>
                   ))}
                 </ul>

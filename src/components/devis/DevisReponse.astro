@@ -7,7 +7,7 @@ interface Props {
   slug: string; // identifiant envoyé dans l'email via /api/devis-reponse
   /* Devis en construction (budget.enAttente) : il n'y a pas de montant, donc
      rien à valider. Proposer « je valide cette proposition » sur un document
-     sans prix ferait signer un engagement vide — le formulaire se replie sur
+     sans prix ferait signer un engagement vide : le formulaire se replie sur
      la seule réponse qui ait du sens, et les champs de facturation avec. */
   enAttente?: boolean;
 }
@@ -174,7 +174,7 @@ const { slug, enAttente = false } = Astro.props;
               for="devis-consentement"
             >
               <input
-                class="mt-0.75 size-4 shrink-0 accent-ink"
+                class="checkbox"
                 type="checkbox"
                 id="devis-consentement"
                 name="consentement"
@@ -229,7 +229,7 @@ const { slug, enAttente = false } = Astro.props;
     /* Options cochées de la version affichée. Les versions d'un devis
        coexistent dans le DOM, une seule visible : ramasser les cases de tout
        le document ferait remonter celles d'une V1 masquée avec une réponse
-       à la V2. On ne transmet que des index — le serveur retrouve les prix
+       à la V2. On ne transmet que des index : le serveur retrouve les prix
        dans le YAML, un montant venu du navigateur ne s'écrit jamais en base. */
     const pane = document.querySelector<HTMLElement>("[data-devis-pane]:not([hidden])");
     const options = [

@@ -20,7 +20,7 @@ Elle est **interne**. La doc d'un client reste purement technique : aucun conten
 <Callout type="tip" title="L'affaire suit l'argent, la team du client suit le travail">
   Une issue de la team **🎯 CRM** représente **une affaire** : elle naît au premier contact qualifiant et meurt au règlement de la facture de solde. Elle reste ouverte pendant toute la production.
 
-  La team Linear du client représente **le travail** : elle s'ouvre à l'encaissement de l'acompte et vit **au-delà** de la clôture de l'affaire, puisque l'après-vente — garantie, étude de cas, suivi — s'y déroule. La production ne se duplique jamais entre les deux.
+  La team Linear du client représente **le travail** : elle s'ouvre à l'encaissement de l'acompte et vit **au-delà** de la clôture de l'affaire, puisque l'après-vente (garantie, étude de cas, suivi) s'y déroule. La production ne se duplique jamais entre les deux.
 </Callout>
 
 La seconde règle sépare deux étages qu'on est constamment tenté de mélanger.
@@ -32,12 +32,12 @@ Le **pipeline**, c'est la team Linear **🎯 CRM**. Une affaire y naît **dès q
 <Callout type="piege" title="Ne jamais verser le vivier dans le CRM">
   La tentation est permanente, et c'est une erreur. Des dizaines d'affaires dormantes rendraient la colonne **👋 Contacté** illisible et le pipeline impossible à lire d'un coup d'œil.
 
-  Le vivier a un mode d'échec connu : une feuille de calcul n'a ni échéance ni rappel, et une liste de réseau finit par ne plus jamais être relue. Le correctif retenu est un **évènement mensuel récurrent dans Notion Calendar** — Linear ne sait pas rendre une issue récurrente, aucun type de son schéma n'évoque la récurrence. Il déclenche la recréation de l'issue `COO-157 · 🔁 Revue vivier + hygiène pipeline`, dans la team Coolbeans et non dans le CRM, qui porte la relecture de la feuille. Elle suppose que la feuille porte au minimum une date de dernier contact et une colonne « prochaine action ».
+  Le vivier a un mode d'échec connu : une feuille de calcul n'a ni échéance ni rappel, et une liste de réseau finit par ne plus jamais être relue. Le correctif retenu est un **évènement mensuel récurrent dans Notion Calendar** : Linear ne sait pas rendre une issue récurrente, aucun type de son schéma n'évoque la récurrence. Il déclenche la recréation de l'issue `COO-157 · 🔁 Revue vivier + hygiène pipeline`, dans la team Coolbeans et non dans le CRM, qui porte la relecture de la feuille. Elle suppose que la feuille porte au minimum une date de dernier contact et une colonne « prochaine action ».
 </Callout>
 
 ## Les conventions du CRM
 
-Trois conventions tiennent le board. Elles ne compensent plus les limites d'un outil — Linear sait tout faire — mais elles disent ce qui, ici, se range où.
+Trois conventions tiennent le board. Elles ne compensent plus les limites d'un outil (Linear sait tout faire), mais elles disent ce qui, ici, se range où.
 
 **1 · L'affaire ne porte ni date ni case cochée. Ce sont ses sous-issues qui travaillent.**
 Une issue du CRM représente **une affaire**, pas une action : elle n'a pas de deadline et ne se ferme pas à la main. Elle avance de colonne, puis se clôt au règlement du solde. Lui coller une échéance la ferait apparaître en retard permanent dans « Mes issues ».
@@ -52,7 +52,7 @@ Relances : `relance-1`, `relance-2`, `relance-3`.
 Perte : `prix`, `timing`, `silence`, `concurrent`, `hors-cible`.
 
 **3 · Le montant va dans le titre de l'affaire**, au format `Client — Objet [3 500 €]`.
-Inélégant, mais c'est le seul moyen de lire le pipeline d'un coup d'œil. **Un titre sans montant veut dire que l'affaire n'est pas encore estimée** — c'est une information, pas un oubli. Le montant s'écrit au titre en même temps que le chiffrage s'arrête, en S4.
+Inélégant, mais c'est le seul moyen de lire le pipeline d'un coup d'œil. **Un titre sans montant veut dire que l'affaire n'est pas encore estimée** : c'est une information, pas un oubli. Le montant s'écrit au titre en même temps que le chiffrage s'arrête, en S4.
 
 ## Le pipeline
 
@@ -85,15 +85,15 @@ Refondu le 2026-08-29 : de 17 statuts à 13, dont 10 colonnes d'affaires. Spec `
   </tbody>
 </table>
 
-**Les sous-issues n'utilisent que `Todo` et `Done`.** Dans Linear, les statuts sont définis **par team, pas par type d'objet** : affaires et actions partagent forcément le même jeu de colonnes. Une convention seule ne tient pas — elle a dérivé jusqu'à ce que des sous-issues se retrouvent classées `🪦 Perdue`. Ce qui la remplace : la vue **« Affaires »**, qui exclut les sous-issues, et le gabarit qui pose `Todo` à la création. Linear n'expose aucun statut par défaut propre aux sous-issues, ce garde-fou ne peut donc pas vivre dans les réglages de la team.
+**Les sous-issues n'utilisent que `Todo` et `Done`.** Dans Linear, les statuts sont définis **par team, pas par type d'objet** : affaires et actions partagent forcément le même jeu de colonnes. Une convention seule ne tient pas : elle a dérivé jusqu'à ce que des sous-issues se retrouvent classées `🪦 Perdue`. Ce qui la remplace : la vue **« Affaires »**, qui exclut les sous-issues, et le gabarit qui pose `Todo` à la création. Linear n'expose aucun statut par défaut propre aux sous-issues, ce garde-fou ne peut donc pas vivre dans les réglages de la team.
 
 **Une relance ne change pas la colonne.** L'affaire reste en **📝 Proposition envoyée** jusqu'à la réponse, au report ou à la perte : une relance est un événement daté, pas un état. Les labels `relance-n` disent combien de fois, la sous-issue datée dit quand tombe la suivante. C'est pourquoi la colonne `☄️ Lead relancé` a été supprimée, en même temps que `💪 Négo`, qui décrivait un moment de la proposition envoyée.
 
-**✍️ Proposition validée sépare le oui de l'argent.** Le lead a validé le formulaire, rien n'est encaissé. C'est la fenêtre où une affaire se perd le plus facilement, et elle n'avait aucune colonne : le pipeline sautait de la proposition envoyée à l'affaire signée, ce que la skill `proposition-commerciale` signalait déjà comme un trou. Trois gestes s'y logent, dans cet ordre : émettre le devis dans Tiime, émettre la facture d'acompte, puis envoyer **les trois documents dans un seul mail** — proposition validée, devis, facture d'acompte.
+**✍️ Proposition validée sépare le oui de l'argent.** Le lead a validé le formulaire, rien n'est encaissé. C'est la fenêtre où une affaire se perd le plus facilement, et elle n'avait aucune colonne : le pipeline sautait de la proposition envoyée à l'affaire signée, ce que la skill `proposition-commerciale` signalait déjà comme un trou. Trois gestes s'y logent, dans cet ordre : émettre le devis dans Tiime, émettre la facture d'acompte, puis envoyer **les trois documents dans un seul mail** : proposition validée, devis, facture d'acompte.
 
 Le passage dans cette colonne est **automatique** : la validation du formulaire y déplace l'affaire et crée la sous-tâche `Devis et acompte : …` avec les coordonnées de facturation transmises. Le passage en **🏆 Signée**, lui, reste à la main : sans API Tiime ni webhook bancaire, rien ne peut constater l'encaissement à la place de Ludo. La dernière case de la sous-tâche est là pour ça.
 
-**Le post-signature tient en deux colonnes.** **🏆 Signée** dit que l'acompte est réglé et que la production tourne — ailleurs, dans la team du client. **🧾 Solde à encaisser** est un rappel d'argent : sans elle, deux factures de solde ont dormi plusieurs semaines pour 3 500 €. Détailler la production ici la dupliquerait.
+**Le post-signature tient en deux colonnes.** **🏆 Signée** dit que l'acompte est réglé et que la production tourne, ailleurs, dans la team du client. **🧾 Solde à encaisser** est un rappel d'argent : sans elle, deux factures de solde ont dormi plusieurs semaines pour 3 500 €. Détailler la production ici la dupliquerait.
 
 **🧊 En veille n'est pas un cimetière.** Elle sépare « pas maintenant, rappelle-moi en septembre » de « perdu ». Une affaire en veille porte **obligatoirement** une relance datée à J+30 ou J+90 ; si elle est jugée morte, elle ne va pas en veille mais en **🪦 Perdue**, avec son label de perte.
 
@@ -102,7 +102,7 @@ Le passage dans cette colonne est **automatique** : la validation du formulaire 
 
   Le travail d'un client vit dans sa team Linear, non synchronisée au portail pour l'instant (chantier engineering séparé, non commencé). En attendant, ne rien poser dans ses issues Linear qui ne devrait pas un jour être vu du client : mettre les remarques internes en commentaire, jamais en description.
 
-  Les actions internes — émettre une facture, créer un compte, rédiger une étude de cas — vivent en sous-issues de l'affaire CRM, pas dans la team du client.
+  Les actions internes (émettre une facture, créer un compte, rédiger une étude de cas) vivent en sous-issues de l'affaire CRM, pas dans la team du client.
 </Callout>
 
 ## Le document de cadrage
@@ -144,27 +144,27 @@ Il sert deux choses, et la seconde est la plus importante.
 
 Depuis 2026-08-17, le devis ne se compose plus à la main dans l'admin : il se **dérive** d'un projet Linear. La chaîne complète, spec `docs/superpowers/specs/2026-08-17-cockpit-devis-design.md` :
 
-1. **L'affaire naît au CRM** (une carte = une affaire), et un **projet Proposal** se crée à la main dans la team Linear du client, depuis le template de projet qui pré-remplit le **bloc Chiffrage** en fin de description : contact (avec e-mail), segment, affinité, gestion de projet, urgence, marge, réduction, prix cible, échéancier, validité. Ce bloc est la source de vérité commerciale du projet — les chiffres sensibles (TJM, coefficients), eux, vivent dans les [Réglages](/espace/devis/reglages).
-2. **Ludo crée les issues estimées** (1 pt = 1 h, 7 h = 1 jour) — c'est le cœur du réacteur : la base de calcul est `temps × TJM`. Les lignes optionnelles portent le label `Option`. Les titres sont sobres et lisibles client : ils deviennent le périmètre du devis.
-3. **Passe 1, avant le brief** (optionnelle) : la skill `proposition-commerciale` tourne en mode dégradé et produit deux livrables — une **fourchette de prix** à annoncer au rendez-vous, et un **guide de brief client-safe** : les questions à poser au lead, sans jamais exposer affinité, marge, coefficients ni plancher interne. Le lead est prévenu cordialement : si ce n'est pas dans son budget, Coolbeans n'est peut-être pas la bonne personne.
-4. **Le brief** : Granola enregistre, le guide sert de fil. **Rien ne se saisit dans Linear devant le lead** — le bloc Chiffrage et les Réglages ne s'affichent jamais en partage d'écran. Le write-back se fait après, depuis le CR.
-5. **Passe 2, après le brief** : la skill collecte tout (Linear, Gmail, Granola, web public du client), challenge les estimates **et les prix par la valeur** — le temps × TJM est un plancher, pas un prix : une ligne de 15 minutes peut valoir 3× plus, un total peut faire peur vs le budget annoncé — puis met à jour le bloc Chiffrage dans Linear. **Le budget du lead définit le projet** : ce qui déborde passe en option cochable ou en piste « V2 du site » sans prix ferme.
+1. **L'affaire naît au CRM** (une carte = une affaire), et un **projet Proposal** se crée à la main dans la team Linear du client, depuis le template de projet qui pré-remplit le **bloc Chiffrage** en fin de description : contact (avec e-mail), segment, affinité, gestion de projet, urgence, marge, réduction, prix cible, échéancier, validité. Ce bloc est la source de vérité commerciale du projet ; les chiffres sensibles (TJM, coefficients), eux, vivent dans les [Réglages](/espace/devis/reglages).
+2. **Ludo crée les issues estimées** (1 pt = 1 h, 7 h = 1 jour), c'est le cœur du réacteur : la base de calcul est `temps × TJM`. Les lignes optionnelles portent le label `Option`. Les titres sont sobres et lisibles client : ils deviennent le périmètre du devis.
+3. **Passe 1, avant le brief** (optionnelle) : la skill `proposition-commerciale` tourne en mode dégradé et produit deux livrables : une **fourchette de prix** à annoncer au rendez-vous, et un **guide de brief client-safe** : les questions à poser au lead, sans jamais exposer affinité, marge, coefficients ni plancher interne. Le lead est prévenu cordialement : si ce n'est pas dans son budget, Coolbeans n'est peut-être pas la bonne personne.
+4. **Le brief** : Granola enregistre, le guide sert de fil. **Rien ne se saisit dans Linear devant le lead** : le bloc Chiffrage et les Réglages ne s'affichent jamais en partage d'écran. Le write-back se fait après, depuis le CR.
+5. **Passe 2, après le brief** : la skill collecte tout (Linear, Gmail, Granola, web public du client), challenge les estimates **et les prix par la valeur** (le temps × TJM est un plancher, pas un prix : une ligne de 15 minutes peut valoir 3× plus, un total peut faire peur vs le budget annoncé), puis met à jour le bloc Chiffrage dans Linear. **Le budget du lead définit le projet** : ce qui déborde passe en option cochable ou en piste « V2 du site » sans prix ferme.
 6. **Génération** : la skill compose `src/content/devis/<slug>.yaml` (total unique, lignes sans prix, seules les options chiffrées, urgence en valeur absolue avec tooltip), preview en staging, prod sur ordre explicite.
 7. **Envoi** : **à la main, par Ludo**, jamais depuis Claude (règle du 2026-09-01). Objet « Proposition : *Nom du projet* », le lien de la page publique. La sous-issue CRM d'envoi passe en Done. L'affaire va en **📝 Proposition envoyée**.
 8. **Validation** : le lead valide depuis la page publique. L'affaire passe **automatiquement** en **✍️ Proposition validée** et reçoit sa sous-tâche `Devis et acompte : …`, avec raison sociale, SIREN, adresse, TVA et modalités de règlement. Rien ne part vers le lead à ce moment-là.
-9. **Documents comptables** : devis Tiime au périmètre validé, puis facture d'acompte, puis **un seul mail portant les trois documents** — proposition validée, devis, facture d'acompte. À l'encaissement seulement, l'affaire passe en **🏆 Signée**, à la main.
-10. **Suivi** : la réponse du client s'écrit en D1 puis notifie par mail ; le cockpit [/espace/devis](/espace/devis) affiche le pipeline — Publié → Envoyé → Répondu — avec liens vers la page publique, le projet Linear et l'affaire CRM.
+9. **Documents comptables** : devis Tiime au périmètre validé, puis facture d'acompte, puis **un seul mail portant les trois documents** : proposition validée, devis, facture d'acompte. À l'encaissement seulement, l'affaire passe en **🏆 Signée**, à la main.
+10. **Suivi** : la réponse du client s'écrit en D1 puis notifie par mail ; le cockpit [/espace/devis](/espace/devis) affiche le pipeline (Publié → Envoyé → Répondu) avec liens vers la page publique, le projet Linear et l'affaire CRM.
 
 ### La trame de brief
 
-Questions universelles, client-safe par construction — la skill y ajoute en passe 1 les questions spécifiques au lead :
+Questions universelles, client-safe par construction : la skill y ajoute en passe 1 les questions spécifiques au lead :
 
 - **Objectif business** : à quoi ce site doit-il servir dans un an ? Qu'est-ce qui déclenche le projet maintenant ?
 - **Cible** : qui doit être convaincu en visitant le site ?
-- **Contenu** : textes, photos, logo — qui fournit quoi, qu'est-ce qui existe déjà ?
+- **Contenu** : textes, photos, logo : qui fournit quoi, qu'est-ce qui existe déjà ?
 - **Existant** : site ou blog actuel, que garde-t-on, que migre-t-on ?
 - **Échéance** : quelle date, et pourquoi celle-là ?
-- **Budget** : quelle enveloppe est envisagée ? (posé simplement — c'est la question qui cadre tout le reste)
+- **Budget** : quelle enveloppe est envisagée ? (posé simplement, c'est la question qui cadre tout le reste)
 - **Décideurs** : qui valide, qui paie, qui donne les retours ?
 - **Tiers** : designer, agence, prestataire déjà impliqué ?
 
@@ -215,9 +215,9 @@ cinq minutes ce qu'on aurait mis trois semaines à découvrir.
 
 Trois niveaux, à faire choisir explicitement :
 
-1. **Sobre et minimaliste, à partir d'une charte existante** — Coolbeans.
-2. **Sobre et minimaliste, sans charte** — Coolbeans, avec une étape moodboard.
-3. **Identité de marque poussée** — un directeur ou une directrice artistique
+1. **Sobre et minimaliste, à partir d'une charte existante** : Coolbeans.
+2. **Sobre et minimaliste, sans charte** : Coolbeans, avec une étape moodboard.
+3. **Identité de marque poussée** : un directeur ou une directrice artistique
    partenaire, que Coolbeans recommande et coordonne.
 
 <Callout type="tip" title="Savoir où l'on s'arrête est un argument de vente">
@@ -267,7 +267,7 @@ Template de la team **🎯 CRM**. Il crée l'affaire directement en **👋 Conta
 15. Envoyer le mail d'onboarding et acter par écrit les engagements du client
 16. Émettre la facture de solde dans Tiime
 
-Les étapes 7 à 9 sont indissociables et n'existent qu'une fois la proposition validée : c'est le contenu de la colonne **✍️ Proposition validée**. Les étapes 11 à 15 s'exécutent **avant** que la team du client soit peuplée — la 11 la crée. Elles n'auraient donc pas pu y vivre de toute façon. La 16 suit la règle d'ouverture de cette page : l'affaire suit l'argent. Le détail opérationnel de 11 à 15 est porté par la skill `onboarding-client`, et le SOP le reprend en **S10**.
+Les étapes 7 à 9 sont indissociables et n'existent qu'une fois la proposition validée : c'est le contenu de la colonne **✍️ Proposition validée**. Les étapes 11 à 15 s'exécutent **avant** que la team du client soit peuplée : la 11 la crée. Elles n'auraient donc pas pu y vivre de toute façon. La 16 suit la règle d'ouverture de cette page : l'affaire suit l'argent. Le détail opérationnel de 11 à 15 est porté par la skill `onboarding-client`, et le SOP le reprend en **S10**.
 
 <Callout type="tip" title="Le routage précède la check-list">
   Les étapes 11 à 15 ne s'appliquent pas toutes à tout projet. Cinq questions se posent avant d'exécuter : repo GitHub ? quelle stack (celle écrite au devis, jamais celle qu'on préfère) ? workspace portail ? compte utilisateur ? monitoring ? Un site Webflow n'a pas de repo, une prestation ponctuelle n'a pas de workspace, et un compte créé puis jamais utilisé est une dette.
@@ -277,17 +277,17 @@ Les étapes 7 à 9 sont indissociables et n'existent qu'une fois la proposition 
 
 ### Modèle B · la team Linear « Modèle client »
 
-Team Linear dormante, séparée de Coolbeans, que Ludo ne rejoint pas — elle n'existe que comme config de référence. Au démarrage d'un client, sa team se crée par **« Copy team settings »** depuis Modèle client (Workspace Settings → Teams → New team → champ *Copy from team*) : ça reprend les statuts, les cycles et les settings d'équipe, pas les membres.
+Team Linear dormante, séparée de Coolbeans, que Ludo ne rejoint pas : elle n'existe que comme config de référence. Au démarrage d'un client, sa team se crée par **« Copy team settings »** depuis Modèle client (Workspace Settings → Teams → New team → champ *Copy from team*) : ça reprend les statuts, les cycles et les settings d'équipe, pas les membres.
 
 Ce qu'elle porte :
 
-- Statuts par défaut Linear (Backlog, Todo, In Progress, In Review, Done, Canceled) — rien à recréer, ils collent déjà au kanban historique.
+- Statuts par défaut Linear (Backlog, Todo, In Progress, In Review, Done, Canceled) : rien à recréer, ils collent déjà au kanban historique.
 - Triage activé, Cycles hebdomadaires (même jour de démarrage que Coolbeans, pour que « mon sprint » désigne la même semaine partout), Estimates activé.
 - Les labels `Bug` / `Feature` / `Improvement` sont au niveau workspace : ils apparaissent automatiquement sur toute nouvelle team, rien à dupliquer non plus.
 - Un template de ticket **« Livraison et suivi client »** (Team Settings → Modèle client → Templates), avec la checklist :
   - Mise en ligne (après correction des retours de recette)
   - Recette avec le client (sur le périmètre du devis uniquement ; tout débordement part en Triage et donne lieu à un avenant)
-  - Envoyer le mail de livraison + les trois questions du témoignage — rappeler la garantie 30 jours avec date de fin explicite
+  - Envoyer le mail de livraison + les trois questions du témoignage, rappeler la garantie 30 jours avec date de fin explicite
   - Rédiger la doc de passation (depuis `_template`, purement technique)
   - J+30 : clôture de la garantie, lister les bugs traités, proposer le care plan
   - Point trimestriel : veille sur les opportunités (nouvelle page, refonte, automatisation, care plan)
@@ -296,7 +296,7 @@ Ce qu'elle porte :
   C'est la seule façon qu'elle ne soit jamais oubliée. Elle se date en même temps que les autres jalons de livraison.
 </Callout>
 
-Les trois tâches de l'**étude de cas** — rédiger le brouillon, faire valider par le client, publier et mettre à jour le SEO — ne figurent nulle part pour l'instant. C'est du contenu marketing Coolbeans, pas un livrable du client, et leur emplacement reste à trancher.
+Les trois tâches de l'**étude de cas** (rédiger le brouillon, faire valider par le client, publier et mettre à jour le SEO) ne figurent nulle part pour l'instant. C'est du contenu marketing Coolbeans, pas un livrable du client, et leur emplacement reste à trancher.
 
 ## Ce qui reste ouvert
 

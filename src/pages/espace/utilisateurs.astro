@@ -78,7 +78,7 @@ Astro.response.headers.set("Cache-Control", "no-store");
           <div class="flex flex-wrap items-baseline gap-4 text-[13px]">
             <span class="text-[11px] font-bold uppercase">{TYPE_LABEL[c.portalRole] ?? c.portalRole}</span>
             <span class="font-mono text-mute">
-              {c.organisation ?? "—"}
+              {c.organisation ?? "·"}
               {c.workspace ? ` · ${c.workspace}` : ""}
             </span>
             <form method="POST" action={actions.utilisateurs.revoquer}>
@@ -112,16 +112,16 @@ Astro.response.headers.set("Cache-Control", "no-store");
     <div class="grid gap-1">
       <label class="label field-label" for="portalRole">Type de compte</label>
       <select id="portalRole" name="portalRole" required>
-        <option value="client">Client — un seul workspace</option>
-        <option value="revendeur">Revendeur — tous les workspaces de son organisation</option>
-        <option value="admin">Admin — tout le registre</option>
+        <option value="client">Client : un seul workspace</option>
+        <option value="revendeur">Revendeur : tous les workspaces de son organisation</option>
+        <option value="admin">Admin : tout le registre</option>
       </select>
     </div>
 
     <div class="grid gap-1">
       <label class="label field-label" for="organisation">Organisation</label>
       <select id="organisation" name="organisation">
-        <option value="">— aucune (admin seulement)</option>
+        <option value="">aucune (admin seulement)</option>
         {organisations.map((o) => <option value={o.slug}>{o.nom}</option>)}
       </select>
     </div>
@@ -129,15 +129,15 @@ Astro.response.headers.set("Cache-Control", "no-store");
     <div class="grid gap-1">
       <label class="label field-label" for="workspace">Workspace (comptes clients)</label>
       <select id="workspace" name="workspace">
-        <option value="">— aucun</option>
+        <option value="">aucun</option>
         {workspaces.map((w) => (
           <option value={w.slug}>{w.nom} ({w.organisation})</option>
         ))}
       </select>
     </div>
 
-    <label class="flex items-center gap-2 text-[13px]">
-      <input type="checkbox" name="envoyerLeMail" value="true" />
+    <label class="flex items-start gap-2 text-[13px]">
+      <input class="checkbox" type="checkbox" name="envoyerLeMail" value="true" />
       Envoyer tout de suite le lien de connexion à cette adresse
     </label>
 

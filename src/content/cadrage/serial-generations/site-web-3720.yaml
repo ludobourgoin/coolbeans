@@ -1,0 +1,153 @@
+# Cadrage du site de Sérial'Générations. Affaire CRM-91.
+#
+# Origine : mail d'Isabelle Tournier le 2026-09-10, après une conversation de vive
+# voix la veille. Maîtresse de conférences en neuropsychologie au laboratoire
+# EPSYLON, Université Paul-Valéry Montpellier 3, amie de Ludo.
+#
+# Révision du 2026-09-10, sur retour de Ludo. Trois coupes :
+#   - la section « Pourquoi ce document » : un titre dit ce que la section
+#     contient, il ne justifie pas son existence ;
+#   - le tableau comparatif des trois voies : refusé en bloc. Ce qui décrivait la
+#     colonne « site sur mesure » est passé en « Ce que j'ai compris » ;
+#   - la question sur le circuit d'achat : hors sujet à ce stade.
+#
+# Correction du même jour, relevée par Ludo : « Tes captations sur Pod » figurait
+# dans « Ce que j'ai compris » alors qu'Isabelle n'a jamais parlé de Pod. Le nom
+# venait d'un lien de salle visio dans sa signature de mail. Cette section ne
+# contient plus que ce qu'elle a écrit ; Pod n'apparaît que dans l'aide de la
+# question sur les vidéos, et comme instance de son université, pas comme un
+# usage qu'on lui prête.
+#
+# Alerte issue du retex Osmose : même fourchette annoncée, 1 500 à 2 000 €, et
+# Osmose a refusé à 1 748 € en restant dedans. La fourchette plafonne le projet,
+# elle n'autorise pas à le remplir. D'où l'ordre de grandeur en note plutôt qu'un
+# prix : sans aucun chiffre, le lead ancre lui-même et il ancre haut (retex Vice
+# Versa du 2026-08-27).
+#
+# Tutoiement, comme son mail, formulaire compris : le drapeau `tutoiement` bascule
+# les phrases du composant qui portent un pronom. Le vouvoiement reste le défaut
+# pour les autres documents.
+titre: Le site de Sérial'Générations
+objet: Six questions avant de t'envoyer une proposition
+date: 2026-09-10
+contact: Isabelle
+tutoiement: true
+linear:
+  affaire: CRM-91
+
+intro:
+  - titre: Ce que j'ai compris
+    texte: >-
+      Tu veux un site qui fasse plus professionnel sans perdre le grand public.
+    liste:
+      - texte: >-
+          **Le sérieux de tes deux exemples**, en restant attractif pour des
+          non-universitaires.
+      - texte: >-
+          **Des liens et des PDF**, mais aussi des captations d'événements et des
+          micros-trottoirs.
+      - texte: >-
+          **Un lien avec Facebook et Instagram**, pour toucher les gens qui
+          regardent les séries quotidiennes.
+      - texte: "**Un budget de 1 500 à 2 000 €.**"
+    note: >-
+      Ordre de grandeur pour ce périmètre : 1 500 à 2 500 €. Hébergement gratuit,
+      aucun abonnement. Deux semaines entre le démarrage et la livraison du site
+      fonctionnel. Le prix ferme vient après tes réponses. Si tu préfères qu'on en
+      parle de vive voix, dis-le moi et on cale un créneau.
+
+questions:
+  - id: budget
+    label: Tes 1 500 à 2 000 €, c'est hors taxes ou toutes taxes comprises ?
+    aide: >-
+      Coolbeans facture la TVA. Je ne sais pas si celle-ci est récupérable par
+      l'Université.
+    type: choix
+    decisif: true
+    requis: true
+    options:
+      - valeur: ht
+        label: Hors taxes
+        aide: La TVA vient en plus, la facture monte à 2 400 € au maximum.
+      - valeur: ttc
+        label: Toutes taxes comprises
+        aide: La facture ne dépasse pas 2 000 €, TVA incluse.
+      - valeur: verifie
+        label: Je vérifie auprès de la gestion et je te le dis
+
+  - id: contenu
+    label: Les textes du site actuel, on les reprend tels quels ou on les réécrit ?
+    aide: >-
+      C'est le poste qui bouge le plus. Reprendre tes textes en les nettoyant
+      tient dans ton budget. Les réécrire pour parler au grand public est un
+      travail à part, et il se chiffre à part.
+    type: choix
+    decisif: true
+    requis: true
+    options:
+      - valeur: reprise
+        label: On reprend mes textes, je m'occupe des corrections
+        aide: Le montage le plus économique.
+      - valeur: structure
+        label: On garde la structure, mais il faut réécrire pour le grand public
+      - valeur: neuf
+        label: Presque tout est à écrire
+
+  - id: contraintes
+    label: Ton université impose-t-elle quelque chose sur le site ?
+    aide: Une charte, un hébergement, des règles à suivre.
+    type: choix
+    requis: true
+    options:
+      - { valeur: non, label: "Non, on fait ce qu'on veut" }
+      - valeur: oui
+        label: Oui, il y a des règles à respecter
+        aide: Dis-moi lesquelles dans le champ libre en bas de page.
+      - { valeur: inconnu, label: "Je me renseigne" }
+
+  - id: videos
+    label: Tes captations et tes micros-trottoirs, tu comptes les mettre où ?
+    aide: >-
+      Ton université a son instance de Pod, la plateforme vidéo de l'enseignement
+      supérieur. C'est gratuit, ça dure au-delà du projet, et le site sait
+      afficher ces vidéos dans ses pages. Les autres solutions coûtent, en argent
+      ou en publicité.
+    type: choix
+    autre: true
+    options:
+      - { valeur: pod, label: "Sur Pod, la plateforme de l'université" }
+      - { valeur: youtube, label: "Sur YouTube ou Vimeo" }
+      - { valeur: inconnu, label: "Je ne sais pas encore" }
+
+  - id: reglement
+    label: Comment se passe le règlement de ton côté ?
+    aide: >-
+      Bon de commande, acompte possible ou non, délai de paiement. Je le prévois
+      dans la proposition plutôt que de le découvrir à la facture.
+    type: choix
+    requis: true
+    autre: true
+    options:
+      - { valeur: bon-commande, label: "Bon de commande de l'université" }
+      - { valeur: labo, label: "Le laboratoire règle directement" }
+      - { valeur: perso, label: "J'avance et je me fais rembourser" }
+      - { valeur: inconnu, label: "Je me renseigne" }
+
+  - id: echeance
+    label: Une date à tenir ?
+    aide: >-
+      Si une échéance commande la mise en ligne, dis-la maintenant : elle change
+      l'ordre dans lequel je travaille.
+    type: texte
+    long: true
+    placeholder: Fin de financement, colloque, table ronde, campagne de recrutement
+
+notes:
+  - tone: info
+    texte: Tes réponses arrivent dans ma boîte mail, et tu en reçois une copie.
+  - tone: info
+    texte: >-
+      Les réseaux sociaux sont hors périmètre. Le site est préparé pour qu'un
+      partage sur Facebook ou Instagram s'affiche avec son titre, son texte et
+      son image, mais l'ouverture des comptes et leur animation restent chez
+      toi.
