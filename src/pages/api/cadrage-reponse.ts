@@ -9,6 +9,7 @@ import {
   kv,
   p,
   renderTransactionnel,
+  qr,
   titreSection,
 } from "../../emails/transactionnel";
 import {
@@ -51,11 +52,7 @@ export const POST: APIRoute = async ({ request }) => {
   >;
 
   // Slug borné et validé : il sert à relire le YAML et à composer une URL.
-  if (
-    typeof slug !== "string" ||
-    !/^[a-z0-9-]+(?:\/[a-z0-9-]+)*$/.test(slug) ||
-    slug.length > 96
-  ) {
+  if (typeof slug !== "string" || !/^[a-z0-9-]+(?:\/[a-z0-9-]+)*$/.test(slug) || slug.length > 96) {
     return json({ error: "Requête invalide." }, 400);
   }
   if (
@@ -128,7 +125,7 @@ export const POST: APIRoute = async ({ request }) => {
   const traceConsentement = "Accord&eacute; via le formulaire de cadrage";
 
   const paires = (rs: typeof lisibles): Array<[string, string]> =>
-    rs.map((r) => [r.question, esc(r.reponse)] as [string, string]);
+    rs.map((r) => [esc(r.question), esc(r.reponse)] as [string, string]);
 
   const html = renderTransactionnel({
     preheader: `Cadrage complété · ${esc(doc.data.titre)}`,
@@ -146,8 +143,8 @@ export const POST: APIRoute = async ({ request }) => {
          ne doivent pas se lire au même rang que les six autres : une liste
          plate se parcourt en diagonale, et c'est exactement là qu'on rate
          l'information qui valait le questionnaire. */
-      decisives.length ? titreSection("Ce qui décide du chiffrage") + kv(paires(decisives)) : "",
-      autres.length ? titreSection("Le reste des réponses") + kv(paires(autres)) : "",
+      decisives.length ? titreSection("Ce qui décide du chiffrage") + qr(paires(decisives)) : "",
+      autres.length ? titreSection("Le reste des réponses") + qr(paires(autres)) : "",
       messageLead
         ? titreSection("Message") + citation(esc(messageLead).replace(/\n/g, "<br>"))
         : titreSection("Message") + p("(pas de message)"),
@@ -179,7 +176,9 @@ export const POST: APIRoute = async ({ request }) => {
         `Email : ${emailLead}`,
         "Consentement : accordé via le formulaire de cadrage",
         "",
-        ...(decisives.length ? ["CE QUI DÉCIDE DU CHIFFRAGE", ...decisives.map(ligneTexte), ""] : []),
+        ...(decisives.length
+          ? ["CE QUI DÉCIDE DU CHIFFRAGE", ...decisives.map(ligneTexte), ""]
+          : []),
         ...(autres.length ? ["LE RESTE DES RÉPONSES", ...autres.map(ligneTexte), ""] : []),
         messageLead ?? "(pas de message)",
       ].join("\n"),
@@ -196,6 +195,7 @@ export const POST: APIRoute = async ({ request }) => {
       titre: doc.data.titre,
       reponses: lisibles,
       message: messageLead,
+      tutoiement: doc.data.tutoiement,
     });
 
     const { error: erreurConfirmation } = await resend.emails.send({

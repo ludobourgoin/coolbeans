@@ -46,8 +46,8 @@ n'ait à connaître la notion de signature.
 
 - **Type** : journée entière, à la `targetDate` de la milestone.
   `start.date = targetDate`, `end.date = targetDate + 1 jour`.
-- **Titre** : `<CLÉ_TEAM>-<étape>`, par exemple `CAF-Design`,
-  `REV-Mise en ligne V1`, `SET-Développement`.
+- **Titre** : `<CLÉ_TEAM>-<étape>`, par exemple `LIT-Intégration`,
+  `REV-Mise en ligne V1`, `AMU-Livraison finale`.
   - `CLÉ_TEAM` est la clé de la première team du projet Linear (`CAF`, `SET`,
     `REV`…). Elle n'est jamais saisie à la main. Un projet rattaché à plusieurs
     teams prend la première renvoyée par l'API ; le cas ne se présente pas
@@ -60,7 +60,17 @@ n'ait à connaître la notion de signature.
 
 ### Normalisation du nom de milestone
 
-Deux traitements, dans cet ordre :
+> Arbitrage du 2026-09-10. La première version de cette spec demandait de
+> renommer les milestones en un seul mot. C'est refusé, et à raison : une
+> milestone est un objet contractuel, relu par Ludo et repris dans la
+> proposition commerciale. Elle reste explicite. **Le raccourci se fait
+> uniquement à l'écriture dans le calendrier, Linear n'est jamais modifié.**
+
+Une ligne `Agenda : <libellé>` dans la description de la milestone l'emporte
+sur tout le reste. C'est la porte de sortie quand la coupe automatique tombe
+mal. La description est interne, elle n'apparaît nulle part côté client.
+
+Sans cette ligne, trois traitements, dans cet ordre :
 
 1. Retrait d'un préfixe de code en tête :
    `^[A-Z]?\d+\s*[·\u2014\u2013-]\s*`. Les deux échappements sont le cadratin
@@ -69,13 +79,22 @@ Deux traitements, dans cet ordre :
    utilisent comme séparateur. `P7 · Moteur d'observations` devient
    `Moteur d'observations` ; `S0`, suivi d'un cadratin puis de `Fondations`,
    devient `Fondations`.
-2. Troncature à 30 caractères, avec `…` en fin si coupée.
+2. Coupe au premier connecteur rencontré, s'il n'est pas en tête :
+   `\b(et|ou|puis|à|vers|conforme|avec|pour|afin|selon)\b` ou l'un des
+   caractères `(`, `,`, `:`, `+`. `Intégration conforme à la maquette` donne
+   `Intégration`, `Compléments de contenu et ajustements` donne
+   `Compléments de contenu`, `Livraison finale (retours client)` donne
+   `Livraison finale`.
+3. Troncature à 30 caractères, avec `…` en fin si coupée.
 
-Ce n'est pas la façon d'obtenir un bon titre, c'est un garde-fou. La convention
-retenue est que **les milestones portent des noms courts et parlants**
-(`Design`, `Développement`, `Mise en ligne`, `Recette`). La normalisation
-garantit qu'une milestone jamais renommée produit tout de même un événement
-lisible.
+La règle a été vérifiée sur les 24 milestones existantes : 22 donnent une
+étiquette juste. Les deux autres motivent la porte de sortie ci-dessus,
+`Livraison et mise en ligne` (le sens est dans la seconde moitié) et
+`P12 · Sortie, export et contractuel` (coupe trop tôt sur la virgule).
+
+`&` n'est volontairement pas un connecteur de coupe : `Recherche &
+Correspondance` et `Support & compte` sont des étiquettes correctes telles
+quelles.
 
 ## Mécanique de synchronisation
 
@@ -190,8 +209,9 @@ pour l'appel HTTP ; la requête des milestones lui est propre et vit dans
 
 Tests unitaires purs (`vitest`), aucun appel réseau :
 
-- normalisation du nom : préfixe de code retiré, troncature à 30 caractères,
-  nom déjà court laissé intact ;
+- normalisation du nom : préfixe de code retiré, coupe au connecteur, `&`
+  préservé, troncature à 30 caractères, nom déjà court laissé intact ;
+- priorité de la ligne `Agenda :` de la description sur la règle de coupe ;
 - composition du titre avec la clé de team ;
 - dérivation de l'identifiant d'événement depuis un UUID, et validité du jeu de
   caractères ;
@@ -210,14 +230,17 @@ du calendrier.
 2. Créer le calendrier « Livraisons » dans Google Agenda.
 3. Le partager avec l'adresse du compte de service, droit « Apporter des
    modifications aux événements ».
-4. Transmettre les trois valeurs pour la pose des secrets en production.
-5. Renommer progressivement les milestones des teams clientes vers des noms
-   courts.
+4. Poser les trois secrets en production. Les valeurs ne transitent jamais par
+   la conversation : Ludo les saisit lui-même dans les invites de
+   `wrangler secret put`.
+5. Rien à faire sur les milestones. Au fil de l'eau, ajouter une ligne
+   `Agenda : <libellé>` dans la description des rares milestones dont la coupe
+   automatique tombe mal.
 
 ## Hors périmètre
 
 - Les issues Linear datées. Le calendrier ne porte que des livraisons.
 - L'écriture inverse (agenda vers Linear). Le miroir est à sens unique.
 - L'affichage de ces échéances dans le portail client.
-- Le renommage en lot des milestones existantes : convention adoptée pour la
-  suite, reprise au fil de l'eau.
+- Toute modification des milestones Linear. Leurs noms restent explicites, le
+  calendrier s'adapte à eux et jamais l'inverse.

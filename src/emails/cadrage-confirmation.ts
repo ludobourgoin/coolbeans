@@ -10,17 +10,13 @@
    trace de ce qu'il a écrit, sans quoi il n'a aucun moyen de se relire ni de
    corriger.
 
+   Le pronom suit celui du document (drapeau `tutoiement` du YAML) : un lead
+   tutoyé sur la page qui reçoit un accusé vouvoyé lit deux interlocuteurs.
+
    L'email interne qui prévient Ludo est composé dans /api/cadrage-reponse.
    ========================================================================== */
 
-import {
-  citation,
-  esc,
-  kv,
-  p,
-  renderTransactionnel,
-  titreSection,
-} from "./transactionnel";
+import { citation, esc, p, qr, renderTransactionnel, titreSection } from "./transactionnel";
 import type { ReponseLisible } from "../lib/cadrage";
 
 export interface CadrageConfirmationProps {
@@ -31,6 +27,8 @@ export interface CadrageConfirmationProps {
   titre: string;
   reponses: ReponseLisible[];
   message?: string;
+  /** Aligne le pronom sur celui du document. Vouvoiement par défaut. */
+  tutoiement?: boolean;
 }
 
 export interface EmailPret {
@@ -45,49 +43,68 @@ export interface EmailPret {
    que [a-z0-9-] et des slashs. */
 const urlCadrage = (slug: string): string => `https://coolbeans.cc/cadrage/${slug}`;
 
-const PIED = "Vous recevez cet email suite &agrave; vos r&eacute;ponses sur coolbeans.cc.";
+const textes = (tutoiement: boolean) =>
+  tutoiement
+    ? {
+        preheader: "Tes réponses sont bien arrivées, je reviens vers toi avec un chiffrage.",
+        accuse:
+          "Tes réponses sont bien arrivées. Je les lis, et je reviens vers toi avec un chiffrage ou avec les quelques questions qui resteraient.",
+        recap: "Ce que tu m'as répondu",
+        message: "Ton message",
+        correction:
+          "Une réponse à corriger, ou quelque chose à ajouter&nbsp;? Réponds simplement à cet email.",
+        correctionTexte:
+          "Une réponse à corriger, ou quelque chose à ajouter ? Réponds simplement à cet email.",
+        pied: "Tu re&ccedil;ois cet email suite &agrave; tes r&eacute;ponses sur coolbeans.cc.",
+        objet: "tes réponses sont bien arrivées",
+      }
+    : {
+        preheader: "Vos réponses sont bien arrivées, je reviens vers vous avec un chiffrage.",
+        accuse:
+          "Vos réponses sont bien arrivées. Je les lis, et je reviens vers vous avec un chiffrage ou avec les quelques questions qui resteraient.",
+        recap: "Ce que vous m'avez répondu",
+        message: "Votre message",
+        correction:
+          "Une réponse à corriger, ou quelque chose à ajouter&nbsp;? Répondez simplement à cet email.",
+        correctionTexte:
+          "Une réponse à corriger, ou quelque chose à ajouter ? Répondez simplement à cet email.",
+        pied: "Vous recevez cet email suite &agrave; vos r&eacute;ponses sur coolbeans.cc.",
+        objet: "vos réponses sont bien arrivées",
+      };
 
 export function renderCadrageConfirmation(props: CadrageConfirmationProps): EmailPret {
-  const { slug, prenom, titre, reponses, message } = props;
+  const { slug, prenom, titre, reponses, message, tutoiement = false } = props;
   const lien = urlCadrage(slug);
+  const t = textes(tutoiement);
 
   const html = renderTransactionnel({
-    preheader: "Vos réponses sont bien arrivées, je reviens vers vous avec un chiffrage.",
+    preheader: t.preheader,
     kicker: `Cadrage · ${esc(titre)}`,
     titre: "Bien reçu, merci",
     contenu: [
       p(`Bonjour ${esc(prenom)},`),
-      p(
-        "Vos réponses sont bien arrivées. Je les lis, et je reviens vers vous avec un chiffrage ou avec les quelques questions qui resteraient.",
-      ),
-      p(
-        "<strong>Rien n'est engagé&nbsp;:</strong> ce document sert à cadrer le besoin et à vous donner un prix juste, pas à démarrer quoi que ce soit.",
-      ),
-      titreSection("Ce que vous m'avez répondu"),
-      kv(reponses.map((r) => [r.question, esc(r.reponse)] as [string, string])),
-      message
-        ? titreSection("Votre message") + citation(esc(message).replace(/\n/g, "<br>"))
-        : "",
-      p("Une réponse à corriger, ou quelque chose à ajouter&nbsp;? Répondez simplement à cet email."),
+      p(t.accuse),
+      titreSection(t.recap),
+      qr(reponses.map((r) => [esc(r.question), esc(r.reponse)] as [string, string])),
+      message ? titreSection(t.message) + citation(esc(message).replace(/\n/g, "<br>")) : "",
+      p(t.correction),
       p("À très vite,<br>Ludo"),
     ].join(""),
     cta: { label: "Revoir le document", url: lien },
-    piedContexte: PIED,
+    piedContexte: t.pied,
   });
 
   const text = [
     `Bonjour ${prenom},`,
     "",
-    "Vos réponses sont bien arrivées. Je les lis, et je reviens vers vous avec un chiffrage ou avec les quelques questions qui resteraient.",
+    t.accuse,
     "",
-    "Rien n'est engagé : ce document sert à cadrer le besoin et à vous donner un prix juste, pas à démarrer quoi que ce soit.",
-    "",
-    "Ce que vous m'avez répondu :",
+    `${t.recap} :`,
     ...reponses.map((r) => `- ${r.question}\n  ${r.reponse}`),
     message ? "" : null,
-    message ? `Votre message :\n${message}` : null,
+    message ? `${t.message} :\n${message}` : null,
     "",
-    "Une réponse à corriger, ou quelque chose à ajouter ? Répondez simplement à cet email.",
+    t.correctionTexte,
     "",
     `Revoir le document : ${lien}`,
     "",
@@ -97,5 +114,5 @@ export function renderCadrageConfirmation(props: CadrageConfirmationProps): Emai
     .filter((ligne) => ligne !== null)
     .join("\n");
 
-  return { subject: `${titre} : vos réponses sont bien arrivées`, html, text };
+  return { subject: `${titre} : ${t.objet}`, html, text };
 }
