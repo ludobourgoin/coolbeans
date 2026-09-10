@@ -20,10 +20,12 @@ import GridBackdrop from "../components/GridBackdrop.astro";
 >
   <Nav />
 
-  <section class="relative overflow-hidden border-b border-line bg-surface-subtle">
+  <section
+    class="relative flex flex-1 flex-col justify-center overflow-hidden border-b border-line bg-surface-subtle"
+  >
     <GridBackdrop />
     <div
-      class="container-site relative flex flex-col items-center pt-20 pb-24 text-center"
+      class="container-site relative flex flex-col items-center py-24 text-center"
     >
       <p class="label">erreur 404</p>
 
@@ -75,6 +77,17 @@ import GridBackdrop from "../components/GridBackdrop.astro";
 
   <Footer />
 </BaseLayout>
+
+{/* Irréductible : aucun utilitaire ne porte sur `body`, qui appartient au
+    layout. Sans ça, la page 404 est trop courte pour remplir l'écran et le
+    footer s'arrête au milieu du viewport. */}
+<style is:global>
+  body {
+    display: flex;
+    min-height: 100svh;
+    flex-direction: column;
+  }
+</style>
 
 <script>
   const el = document.getElementById("req-path");
