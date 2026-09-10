@@ -11,6 +11,13 @@
 #     colonne « site sur mesure » est passé en « Ce que j'ai compris » ;
 #   - la question sur le circuit d'achat : hors sujet à ce stade.
 #
+# Correction du même jour, relevée par Ludo : « Tes captations sur Pod » figurait
+# dans « Ce que j'ai compris » alors qu'Isabelle n'a jamais parlé de Pod. Le nom
+# venait d'un lien de salle visio dans sa signature de mail. Cette section ne
+# contient plus que ce qu'elle a écrit ; Pod n'apparaît que dans l'aide de la
+# question sur les vidéos, et comme instance de son université, pas comme un
+# usage qu'on lui prête.
+#
 # Alerte issue du retex Osmose : même fourchette annoncée, 1 500 à 2 000 €, et
 # Osmose a refusé à 1 748 € en restant dedans. La fourchette plafonne le projet,
 # elle n'autorise pas à le remplir. D'où l'ordre de grandeur en note plutôt qu'un
@@ -32,19 +39,16 @@ intro:
       Tu veux un site qui fasse plus professionnel sans perdre le grand public.
     liste:
       - texte: >-
-          **Un site dessiné pour Sérial'Générations**, lisible par les chercheurs
-          comme par les spectateurs des séries.
+          **Le sérieux de tes deux exemples**, avec une entrée pour les gens qui
+          regardent les séries.
       - texte: >-
-          **Un espace d'administration** où tu gères tes actualités, tes
-          publications et tes événements sans passer par moi.
-      - texte: >-
-          **Tes captations sur Pod**, intégrées aux pages, et tes PDF classés par
-          thème.
-      - texte: >-
-          **Quatre à six semaines** de production, une fois le contenu réuni.
+          **Des liens et des PDF**, mais aussi des captations d'événements et des
+          micros-trottoirs.
+      - texte: "**Un budget de 1 500 à 2 000 €.**"
     note: >-
-      Ordre de grandeur pour ce périmètre : 1 500 à 2 500 € une fois, puis rien.
-      Hébergement gratuit, aucun abonnement. Le prix ferme vient après tes
+      Ordre de grandeur pour ce périmètre : 1 500 à 2 500 €. Hébergement gratuit,
+      aucun abonnement. Quatre à six semaines de production, à partir du jour où
+      tu m'as remis tes textes et tes images. Le prix ferme vient après tes
       réponses. Si tu préfères qu'on en parle de vive voix, dis-le moi et on cale
       un créneau.
 
@@ -80,7 +84,7 @@ questions:
     options:
       - valeur: reprise
         label: On reprend mes textes, je m'occupe des corrections
-        aide: Le montage le plus économique des trois.
+        aide: Le montage le plus économique.
       - valeur: structure
         label: On garde la structure, mais il faut réécrire pour le grand public
       - valeur: neuf
@@ -107,10 +111,10 @@ questions:
   - id: videos
     label: Tes captations et tes micros-trottoirs, tu comptes les mettre où ?
     aide: >-
-      Tu as déjà un accès à Pod, la plateforme vidéo de l'enseignement supérieur.
-      C'est gratuit, ça dure au-delà du projet, et le site sait afficher ces
-      vidéos dans ses pages. Les autres solutions coûtent, en argent ou en
-      publicité.
+      Ton université a son instance de Pod, la plateforme vidéo de l'enseignement
+      supérieur. C'est gratuit, ça dure au-delà du projet, et le site sait
+      afficher ces vidéos dans ses pages. Les autres solutions coûtent, en argent
+      ou en publicité.
     type: choix
     options:
       - { valeur: pod, label: "Sur Pod, la plateforme de l'université" }
@@ -131,8 +135,7 @@ notes:
     texte: Tes réponses arrivent dans ma boîte mail, et tu en reçois une copie.
   - tone: info
     texte: >-
-      Deux choses hors périmètre. Les réseaux sociaux : le site est préparé pour
-      qu'un partage sur Facebook ou Instagram s'affiche avec son titre, son texte
-      et son image, mais l'ouverture des comptes et leur animation restent chez
-      vous. Le montage des captations : je les intègre au site, je ne les monte
-      pas.
+      Les réseaux sociaux sont hors périmètre. Le site est préparé pour qu'un
+      partage sur Facebook ou Instagram s'affiche avec son titre, son texte et
+      son image, mais l'ouverture des comptes et leur animation restent chez
+      vous.
