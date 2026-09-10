@@ -8,7 +8,14 @@
    Le navigateur n'envoie que des identifiants (`id` de question, `valeur`
    d'option) et les saisies libres. Les libellés sont relus dans le YAML par
    l'endpoint : c'est la même règle que les prix du devis, qui ne remontent
-   jamais depuis la page publique. */
+   jamais depuis la page publique.
+
+   Hiérarchie des questions, refaite le 2026-09-10 : l'énoncé était en 16px
+   medium, soit le rang de l'aide de la question précédente, et les blocs ne
+   se distinguaient que par un espacement. Trois corrections tenues ensemble,
+   aucune ne suffit seule : énoncé en 19px semibold, filet et retrait entre
+   deux questions (jamais avant la première), et « Décide du chiffrage » sorti
+   du surtitre gris pour devenir une pastille ambre pâle. */
 import Choicebox from "../ui/Choicebox.astro";
 import { riche } from "../../lib/devis";
 import type { QuestionCadrage } from "../../lib/cadrage";
@@ -51,10 +58,10 @@ const optionsDe = (q: QuestionCadrage) => [
     >
       <div aria-hidden="true"></div>
       <div>
-        <h2>Vos réponses</h2>
+        <h2>Questions</h2>
         <p class="mt-4 max-w-[46ch] leading-[1.6] text-mute">
-          Rien n'est engagé ici. Vos réponses me servent à chiffrer juste, et à vous dire
-          honnêtement si le jeu en vaut la chandelle.
+          Vos réponses me servent à définir le périmètre du projet et à choisir la solution
+          technique la plus adaptée.
         </p>
 
         <form
@@ -67,13 +74,19 @@ const optionsDe = (q: QuestionCadrage) => [
 
           {
             questions.map((q, i) => (
-              <fieldset class="grid gap-3 border-0 p-0">
-                <legend class="mb-1 p-0">
-                  <span class="block font-mono text-[11px] font-bold tracking-wide text-mute uppercase">
-                    Question {i + 1}
-                    {q.decisif && " · décide du chiffrage"}
+              <fieldset class:list={["grid gap-3 p-0", i > 0 && "border-t border-line pt-9"]}>
+                <legend class="mb-1 w-full p-0">
+                  <span class="flex flex-wrap items-center gap-2">
+                    <span class="font-mono text-[11px] font-bold tracking-wide text-mute uppercase">
+                      Question {i + 1}
+                    </span>
+                    {q.decisif && (
+                      <span class="rounded-full border border-[var(--ds-amber-300)] bg-[var(--ds-amber-100)] px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wide text-[var(--ds-amber-900)] uppercase">
+                        Décide du chiffrage
+                      </span>
+                    )}
                   </span>
-                  <span class="mt-1.5 block text-[16px] leading-[1.45] font-medium text-ink">
+                  <span class="mt-2.5 block text-[19px] leading-[1.35] font-semibold text-ink">
                     <Fragment set:html={riche(q.label)} />
                     {q.requis && (
                       <span class="text-ink" aria-hidden="true">

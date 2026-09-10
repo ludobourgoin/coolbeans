@@ -1,139 +1,60 @@
 # Cadrage du site de Sérial'Générations. Affaire CRM-91.
 #
 # Origine : mail d'Isabelle Tournier le 2026-09-10, après une conversation de vive
-# voix la veille. Elle est maîtresse de conférences en neuropsychologie au
-# laboratoire EPSYLON, Université Paul-Valéry Montpellier 3, et amie de Ludo.
+# voix la veille. Maîtresse de conférences en neuropsychologie au laboratoire
+# EPSYLON, Université Paul-Valéry Montpellier 3, amie de Ludo.
 #
-# Pourquoi un cadrage plutôt qu'une proposition directe, alors qu'elle a écrit son
-# besoin et donné un budget : les deux sites qu'elle cite en référence sont des
-# WordPress hébergés par des universités, donc gratuits pour un laboratoire. Sans
-# un tableau qui dit ce que chaque voie coûte et ce qu'elle vaut, elle n'a aucune
-# raison de comprendre pourquoi elle paierait. Décision Ludo du 2026-09-10.
-#
-# Deux inconnues bloquent le chiffrage et ne dépendent pas d'elle : le circuit
-# d'achat de l'université, qui interdit peut-être l'acompte, et l'exigence
-# d'accessibilité RGAA, qui est une obligation légale pour un établissement
-# public et ne tient pas dans son budget si elle est demandée à la lettre.
+# Révision du 2026-09-10, sur retour de Ludo. Trois coupes :
+#   - la section « Pourquoi ce document » : un titre dit ce que la section
+#     contient, il ne justifie pas son existence ;
+#   - le tableau comparatif des trois voies : refusé en bloc. Ce qui décrivait la
+#     colonne « site sur mesure » est passé en « Ce que j'ai compris » ;
+#   - la question sur le circuit d'achat : hors sujet à ce stade.
 #
 # Alerte issue du retex Osmose : même fourchette annoncée, 1 500 à 2 000 €, et
 # Osmose a refusé à 1 748 € en restant dedans. La fourchette plafonne le projet,
-# elle n'autorise pas à le remplir. Le tableau vise donc le bas de sa fourchette.
+# elle n'autorise pas à le remplir. D'où l'ordre de grandeur en note plutôt qu'un
+# prix : sans aucun chiffre, le lead ancre lui-même et il ancre haut (retex Vice
+# Versa du 2026-08-27).
 #
 # Tutoiement, comme son mail. Le formulaire, lui, est vouvoyé : c'est un composant
 # partagé par tous les clients.
 titre: Le site de Sérial'Générations
-objet: Six questions avant de te dire ce que ça coûte
+objet: Cinq questions avant de te dire ce que ça coûte
 date: 2026-09-10
 contact: Isabelle
 linear:
   affaire: CRM-91
 
 intro:
-  - titre: Pourquoi ce document
+  - titre: Ce que j'ai compris
     texte: >-
       Tu veux un site qui fasse plus professionnel sans perdre le grand public.
-      Trois voies le permettent, et elles ne coûtent pas du tout la même chose.
-      Tu réponds, je chiffre.
     liste:
-      - texte: "**Ça ne t'engage à rien.** Rien n'est facturé, rien n'est lancé."
-      - texte: "**Cinq minutes.** Six questions, dont quatre qui décident du prix."
       - texte: >-
-          **Deux réponses ne dépendent pas de toi.** Le circuit d'achat et les
-          exigences de ton université se vérifient auprès de ton laboratoire.
-          Prends le temps qu'il faut.
+          **Un site dessiné pour Sérial'Générations**, lisible par les chercheurs
+          comme par les spectateurs des séries.
+      - texte: >-
+          **Un espace d'administration** où tu gères tes actualités, tes
+          publications et tes événements sans passer par moi.
+      - texte: >-
+          **Tes captations sur Pod**, intégrées aux pages, et tes PDF classés par
+          thème.
+      - texte: >-
+          **Quatre à six semaines** de production, une fois le contenu réuni.
     note: >-
-      Si tu préfères qu'on en parle de vive voix, dis-le moi et on cale un
-      créneau.
-
-comparatif:
-  titre: Les trois voies
-  texte: Lis les deux lignes de coût avant de répondre aux questions.
-  solutions:
-    - nom: Le site porté par ton université
-      resume: >-
-        Le modèle de tes deux exemples : un WordPress installé et hébergé par les
-        services de l'université.
-    - nom: Un site sur mesure
-      resume: >-
-        Conçu pour parler à tes publics, des chercheurs au grand public,
-        développé et hébergé hors de l'université.
-      recommandee: true
-    - nom: Un site que tu montes toi-même
-      resume: Un abonnement en ligne, un thème du marché, et tu t'en occupes.
-  criteres:
-    - label: L'allure
-      valeurs:
-        - La charte de l'université, sur un thème partagé avec d'autres projets.
-        - >-
-          Dessiné pour Sérial'Générations, pensé pour les chercheurs comme pour
-          le grand public.
-        - Un thème du commerce, que tu retouches toi-même.
-    - label: Qui l'alimente
-      valeurs:
-        - Toi, dans WordPress, une fois le compte ouvert par les services.
-        - >-
-          Toi, dans un espace d'administration fait pour tes contenus :
-          actualités, publications, événements.
-        - Toi, dans l'éditeur du service.
-    - label: Les vidéos et les PDF
-      valeurs:
-        - Pod et les fichiers de l'université, intégrés d'origine.
-        - Pod intégré aux pages, et les PDF classés par thème.
-        - Un lien vers Pod, sans mise en forme.
-    - label: Le délai
-      valeurs:
-        - Il dépend de la file d'attente des services. Compte en mois.
-        - Quatre à six semaines une fois le contenu réuni.
-        - Le temps que tu peux y consacrer.
-    - label: À installer
-      tooltip: >-
-        C'est du temps de travail, facturé une seule fois. Les fourchettes
-        restent larges tant que je ne connais pas tes réponses.
-      valeurs:
-        - Rien pour ton budget, du temps pour toi.
-        - 1 500 à 2 500 €
-        - 300 à 600 € si tu délègues la mise en route, rien si tu la fais.
-    - label: Tous les ans
-      valeurs:
-        - Rien.
-        - Rien. Hébergement gratuit, aucun abonnement.
-        - 200 à 400 € d'abonnement.
-    - label: Le risque
-      valeurs:
-        - >-
-          Le résultat ressemble à tes deux exemples : sérieux, mais peu de prise
-          sur le grand public.
-        - C'est le budget le plus élevé des trois.
-        - >-
-          Le temps que tu y passes est du temps que tu ne passes pas sur ta
-          recherche.
-  mentionCout: >-
-    Ordres de grandeur, donnés avant de connaître tes réponses. Le prix ferme
-    vient après, dans une proposition en bonne et due forme.
+      Ordre de grandeur pour ce périmètre : 1 500 à 2 500 € une fois, puis rien.
+      Hébergement gratuit, aucun abonnement. Le prix ferme vient après tes
+      réponses. Si tu préfères qu'on en parle de vive voix, dis-le moi et on cale
+      un créneau.
 
 questions:
-  - id: achat
-    label: Qui règle la facture, et par quel circuit ?
-    aide: >-
-      Cette réponse ne change pas le prix, elle change la forme du document et le
-      calendrier de paiement. Un bon de commande d'université, par exemple, ne
-      permet pas de verser d'acompte et paie après service fait.
-    type: choix
-    decisif: true
-    requis: true
-    autre: true
-    options:
-      - { valeur: bon-commande, label: "L'université, sur bon de commande" }
-      - { valeur: labo, label: "Le laboratoire, sur ses crédits de recherche" }
-      - { valeur: association, label: "Une association ou une structure porteuse" }
-      - { valeur: inconnu, label: "Je ne sais pas encore, je me renseigne" }
-
   - id: budget
     label: Tes 1 500 à 2 000 €, c'est hors taxes ou toutes taxes comprises ?
     aide: >-
       Un laboratoire ne récupère pas la TVA, donc il raisonne souvent en TTC.
       Entre les deux réponses, l'écart vaut 20 % de ce que je peux mettre dans le
-      site. Autant le savoir avant de dessiner quoi que ce soit.
+      site.
     type: choix
     decisif: true
     requis: true
@@ -168,10 +89,9 @@ questions:
   - id: contraintes
     label: Ton université impose-t-elle quelque chose sur le site du projet ?
     aide: >-
-      Trois exigences reviennent souvent, et la troisième pèse lourd :
-      l'accessibilité RGAA est une obligation légale pour les établissements
-      publics, avec une déclaration à publier. Demandée à la lettre, elle ne
-      tient pas dans ton budget, et il vaut mieux le savoir maintenant.
+      La troisième pèse lourd : l'accessibilité RGAA est une obligation légale
+      pour les établissements publics, avec une déclaration à publier. Demandée à
+      la lettre, elle ne tient pas dans ton budget.
     type: choix
     decisif: true
     requis: true
@@ -200,22 +120,19 @@ questions:
   - id: echeance
     label: Une date à tenir ?
     aide: >-
-      Un projet de recherche a ses jalons. Si une échéance commande la mise en
-      ligne, dis-la maintenant : elle change l'ordre dans lequel je travaille.
+      Si une échéance commande la mise en ligne, dis-la maintenant : elle change
+      l'ordre dans lequel je travaille.
     type: texte
     long: true
     placeholder: Fin de financement, colloque, table ronde, campagne de recrutement
 
 notes:
   - tone: info
-    texte: >-
-      Tes réponses arrivent dans ma boîte mail, et tu en reçois une copie. Rien
-      n'est facturé, rien n'est lancé.
+    texte: Tes réponses arrivent dans ma boîte mail, et tu en reçois une copie.
   - tone: info
     texte: >-
-      Deux choses restent hors de mon périmètre, autant le dire tout de suite.
-      Les réseaux sociaux d'abord : je prépare le site pour qu'un partage sur
-      Facebook ou Instagram s'affiche proprement, avec le titre, le texte et
-      l'image, mais l'ouverture des comptes et leur animation restent chez vous.
-      Le montage des captations ensuite : je les intègre au site, je ne les monte
+      Deux choses hors périmètre. Les réseaux sociaux : le site est préparé pour
+      qu'un partage sur Facebook ou Instagram s'affiche avec son titre, son texte
+      et son image, mais l'ouverture des comptes et leur animation restent chez
+      vous. Le montage des captations : je les intègre au site, je ne les monte
       pas.
