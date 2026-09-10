@@ -1,0 +1,221 @@
+# Cadrage du site de Sérial'Générations. Affaire CRM-91.
+#
+# Origine : mail d'Isabelle Tournier le 2026-09-10, après une conversation de vive
+# voix la veille. Elle est maîtresse de conférences en neuropsychologie au
+# laboratoire EPSYLON, Université Paul-Valéry Montpellier 3, et amie de Ludo.
+#
+# Pourquoi un cadrage plutôt qu'une proposition directe, alors qu'elle a écrit son
+# besoin et donné un budget : les deux sites qu'elle cite en référence sont des
+# WordPress hébergés par des universités, donc gratuits pour un laboratoire. Sans
+# un tableau qui dit ce que chaque voie coûte et ce qu'elle vaut, elle n'a aucune
+# raison de comprendre pourquoi elle paierait. Décision Ludo du 2026-09-10.
+#
+# Deux inconnues bloquent le chiffrage et ne dépendent pas d'elle : le circuit
+# d'achat de l'université, qui interdit peut-être l'acompte, et l'exigence
+# d'accessibilité RGAA, qui est une obligation légale pour un établissement
+# public et ne tient pas dans son budget si elle est demandée à la lettre.
+#
+# Alerte issue du retex Osmose : même fourchette annoncée, 1 500 à 2 000 €, et
+# Osmose a refusé à 1 748 € en restant dedans. La fourchette plafonne le projet,
+# elle n'autorise pas à le remplir. Le tableau vise donc le bas de sa fourchette.
+#
+# Tutoiement, comme son mail. Le formulaire, lui, est vouvoyé : c'est un composant
+# partagé par tous les clients.
+titre: Le site de Sérial'Générations
+objet: Six questions avant de te dire ce que ça coûte
+date: 2026-09-10
+contact: Isabelle
+linear:
+  affaire: CRM-91
+
+intro:
+  - titre: Pourquoi ce document
+    texte: >-
+      Tu veux un site qui fasse plus professionnel sans perdre le grand public.
+      Trois voies le permettent, et elles ne coûtent pas du tout la même chose.
+      Tu réponds, je chiffre.
+    liste:
+      - texte: "**Ça ne t'engage à rien.** Rien n'est facturé, rien n'est lancé."
+      - texte: "**Cinq minutes.** Six questions, dont quatre qui décident du prix."
+      - texte: >-
+          **Deux réponses ne dépendent pas de toi.** Le circuit d'achat et les
+          exigences de ton université se vérifient auprès de ton laboratoire.
+          Prends le temps qu'il faut.
+    note: >-
+      Si tu préfères qu'on en parle de vive voix, dis-le moi et on cale un
+      créneau.
+
+comparatif:
+  titre: Les trois voies
+  texte: Lis les deux lignes de coût avant de répondre aux questions.
+  solutions:
+    - nom: Le site porté par ton université
+      resume: >-
+        Le modèle de tes deux exemples : un WordPress installé et hébergé par les
+        services de l'université.
+    - nom: Un site sur mesure
+      resume: >-
+        Conçu pour parler à tes publics, des chercheurs au grand public,
+        développé et hébergé hors de l'université.
+      recommandee: true
+    - nom: Un site que tu montes toi-même
+      resume: Un abonnement en ligne, un thème du marché, et tu t'en occupes.
+  criteres:
+    - label: L'allure
+      valeurs:
+        - La charte de l'université, sur un thème partagé avec d'autres projets.
+        - >-
+          Dessiné pour Sérial'Générations, pensé pour les chercheurs comme pour
+          le grand public.
+        - Un thème du commerce, que tu retouches toi-même.
+    - label: Qui l'alimente
+      valeurs:
+        - Toi, dans WordPress, une fois le compte ouvert par les services.
+        - >-
+          Toi, dans un espace d'administration fait pour tes contenus :
+          actualités, publications, événements.
+        - Toi, dans l'éditeur du service.
+    - label: Les vidéos et les PDF
+      valeurs:
+        - Pod et les fichiers de l'université, intégrés d'origine.
+        - Pod intégré aux pages, et les PDF classés par thème.
+        - Un lien vers Pod, sans mise en forme.
+    - label: Le délai
+      valeurs:
+        - Il dépend de la file d'attente des services. Compte en mois.
+        - Quatre à six semaines une fois le contenu réuni.
+        - Le temps que tu peux y consacrer.
+    - label: À installer
+      tooltip: >-
+        C'est du temps de travail, facturé une seule fois. Les fourchettes
+        restent larges tant que je ne connais pas tes réponses.
+      valeurs:
+        - Rien pour ton budget, du temps pour toi.
+        - 1 500 à 2 500 €
+        - 300 à 600 € si tu délègues la mise en route, rien si tu la fais.
+    - label: Tous les ans
+      valeurs:
+        - Rien.
+        - Rien. Hébergement gratuit, aucun abonnement.
+        - 200 à 400 € d'abonnement.
+    - label: Le risque
+      valeurs:
+        - >-
+          Le résultat ressemble à tes deux exemples : sérieux, mais peu de prise
+          sur le grand public.
+        - C'est le budget le plus élevé des trois.
+        - >-
+          Le temps que tu y passes est du temps que tu ne passes pas sur ta
+          recherche.
+  mentionCout: >-
+    Ordres de grandeur, donnés avant de connaître tes réponses. Le prix ferme
+    vient après, dans une proposition en bonne et due forme.
+
+questions:
+  - id: achat
+    label: Qui règle la facture, et par quel circuit ?
+    aide: >-
+      Cette réponse ne change pas le prix, elle change la forme du document et le
+      calendrier de paiement. Un bon de commande d'université, par exemple, ne
+      permet pas de verser d'acompte et paie après service fait.
+    type: choix
+    decisif: true
+    requis: true
+    autre: true
+    options:
+      - { valeur: bon-commande, label: "L'université, sur bon de commande" }
+      - { valeur: labo, label: "Le laboratoire, sur ses crédits de recherche" }
+      - { valeur: association, label: "Une association ou une structure porteuse" }
+      - { valeur: inconnu, label: "Je ne sais pas encore, je me renseigne" }
+
+  - id: budget
+    label: Tes 1 500 à 2 000 €, c'est hors taxes ou toutes taxes comprises ?
+    aide: >-
+      Un laboratoire ne récupère pas la TVA, donc il raisonne souvent en TTC.
+      Entre les deux réponses, l'écart vaut 20 % de ce que je peux mettre dans le
+      site. Autant le savoir avant de dessiner quoi que ce soit.
+    type: choix
+    decisif: true
+    requis: true
+    options:
+      - valeur: ht
+        label: Hors taxes
+        aide: La TVA vient en plus, la facture monte à 2 400 € au maximum.
+      - valeur: ttc
+        label: Toutes taxes comprises
+        aide: La facture ne dépasse pas 2 000 €, TVA incluse.
+      - valeur: verifie
+        label: Je vérifie auprès de la gestion et je te le dis
+
+  - id: contenu
+    label: Les textes du site actuel, on les reprend tels quels ou on les réécrit ?
+    aide: >-
+      C'est le poste qui bouge le plus. Reprendre tes textes en les nettoyant
+      tient dans ton budget. Les réécrire pour parler au grand public est un
+      travail à part, et il se chiffre à part.
+    type: choix
+    decisif: true
+    requis: true
+    options:
+      - valeur: reprise
+        label: On reprend mes textes, je m'occupe des corrections
+        aide: Le montage le plus économique des trois.
+      - valeur: structure
+        label: On garde la structure, mais il faut réécrire pour le grand public
+      - valeur: neuf
+        label: Presque tout est à écrire
+
+  - id: contraintes
+    label: Ton université impose-t-elle quelque chose sur le site du projet ?
+    aide: >-
+      Trois exigences reviennent souvent, et la troisième pèse lourd :
+      l'accessibilité RGAA est une obligation légale pour les établissements
+      publics, avec une déclaration à publier. Demandée à la lettre, elle ne
+      tient pas dans ton budget, et il vaut mieux le savoir maintenant.
+    type: choix
+    decisif: true
+    requis: true
+    multiple: true
+    autre: true
+    options:
+      - { valeur: charte, label: "Une charte graphique à respecter" }
+      - { valeur: hebergement, label: "Un hébergement chez les services informatiques" }
+      - { valeur: rgaa, label: "L'accessibilité RGAA et sa déclaration" }
+      - { valeur: libre, label: "Rien de tout ça, le projet est libre de ses choix" }
+      - { valeur: inconnu, label: "Je ne sais pas, je me renseigne" }
+
+  - id: videos
+    label: Tes captations et tes micros-trottoirs, tu comptes les mettre où ?
+    aide: >-
+      Tu as déjà un accès à Pod, la plateforme vidéo de l'enseignement supérieur.
+      C'est gratuit, ça dure au-delà du projet, et le site sait afficher ces
+      vidéos dans ses pages. Les autres solutions coûtent, en argent ou en
+      publicité.
+    type: choix
+    options:
+      - { valeur: pod, label: "Sur Pod, la plateforme de l'université" }
+      - { valeur: youtube, label: "Sur YouTube ou Vimeo" }
+      - { valeur: inconnu, label: "Je ne sais pas encore" }
+
+  - id: echeance
+    label: Une date à tenir ?
+    aide: >-
+      Un projet de recherche a ses jalons. Si une échéance commande la mise en
+      ligne, dis-la maintenant : elle change l'ordre dans lequel je travaille.
+    type: texte
+    long: true
+    placeholder: Fin de financement, colloque, table ronde, campagne de recrutement
+
+notes:
+  - tone: info
+    texte: >-
+      Tes réponses arrivent dans ma boîte mail, et tu en reçois une copie. Rien
+      n'est facturé, rien n'est lancé.
+  - tone: info
+    texte: >-
+      Deux choses restent hors de mon périmètre, autant le dire tout de suite.
+      Les réseaux sociaux d'abord : je prépare le site pour qu'un partage sur
+      Facebook ou Instagram s'affiche proprement, avec le titre, le texte et
+      l'image, mais l'ouverture des comptes et leur animation restent chez vous.
+      Le montage des captations ensuite : je les intègre au site, je ne les monte
+      pas.
