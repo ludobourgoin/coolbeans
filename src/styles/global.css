@@ -498,4 +498,29 @@
   .field-label {
     padding-inline: 15px;
   }
+
+  /* Case à cocher alignée sur la PREMIÈRE ligne du texte qu'elle accompagne,
+     jamais sur le bloc entier : un libellé qui passe sur deux lignes laisserait
+     sinon sa case flotter au milieu. Le décalage centre la case de 16 px dans
+     la hauteur de ligne courante, quelle que soit la taille du texte, ce qui
+     évite les `mt-[0.2em]` réglés à la main sur chaque écran.
+
+     `font: inherit` n'est pas décoratif : sans lui, l'input garde la police par
+     défaut du navigateur et `1lh` mesurerait SA hauteur de ligne, pas celle du
+     texte voisin. Le rendu de la case, lui, ne dépend pas de la police.
+
+     `align-self` couvre le cas d'un parent en `items-baseline`, où une case
+     s'aligne par son bord inférieur et remonte trop haut. Sur un navigateur qui
+     ignore `1lh`, la déclaration saute et la case retombe en haut de ligne :
+     dégradé acceptable, jamais cassé. */
+  .checkbox {
+    flex: none;
+    align-self: flex-start;
+    inline-size: 16px;
+    block-size: 16px;
+    margin: 0;
+    font: inherit;
+    accent-color: var(--accent);
+    margin-block-start: calc((1lh - 16px) / 2);
+  }
 }
