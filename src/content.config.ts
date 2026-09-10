@@ -324,6 +324,13 @@ const cadrage = defineCollection({
     date: z.coerce.date(),
     // Prénom du destinataire : ouvre l'accusé de réception, comme au devis.
     contact: z.string().optional(),
+    /* Le formulaire vouvoie par défaut, parce qu'il est partagé par tous les
+       clients. Sur un document dont les questions tutoient, ce mélange se lit
+       à deux lignes d'écart : « Vos réponses » posé au-dessus de « Tes 1 500 à
+       2 000 € ». Le drapeau bascule les seules phrases du composant qui portent
+       un pronom ; les libellés, eux, viennent déjà du YAML. Relevé par Ludo le
+       2026-09-10 sur le cadrage Sérial'Générations. */
+    tutoiement: z.boolean().default(false),
     linear: z
       .object({
         projet: z.string().optional(),

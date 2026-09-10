@@ -27,9 +27,10 @@
 # Tutoiement, comme son mail. Le formulaire, lui, est vouvoyé : c'est un composant
 # partagé par tous les clients.
 titre: Le site de Sérial'Générations
-objet: Cinq questions avant de te dire ce que ça coûte
+objet: Six questions avant de t'envoyer une proposition
 date: 2026-09-10
 contact: Isabelle
+tutoiement: true
 linear:
   affaire: CRM-91
 
@@ -94,22 +95,16 @@ questions:
         label: Presque tout est à écrire
 
   - id: contraintes
-    label: Ton université impose-t-elle quelque chose sur le site du projet ?
-    aide: >-
-      La troisième pèse lourd : l'accessibilité RGAA est une obligation légale
-      pour les établissements publics, avec une déclaration à publier. Demandée à
-      la lettre, elle ne tient pas dans ton budget.
+    label: Ton université impose-t-elle quelque chose sur le site ?
+    aide: Une charte, un hébergement, des règles à suivre.
     type: choix
-    decisif: true
     requis: true
-    multiple: true
-    autre: true
     options:
-      - { valeur: charte, label: "Une charte graphique à respecter" }
-      - { valeur: hebergement, label: "Un hébergement chez les services informatiques" }
-      - { valeur: rgaa, label: "L'accessibilité RGAA et sa déclaration" }
-      - { valeur: libre, label: "Rien de tout ça, le projet est libre de ses choix" }
-      - { valeur: inconnu, label: "Je ne sais pas, je me renseigne" }
+      - { valeur: non, label: "Non, on fait ce qu'on veut" }
+      - valeur: oui
+        label: Oui, il y a des règles à respecter
+        aide: Dis-moi lesquelles dans le champ libre en bas de page.
+      - { valeur: inconnu, label: "Je me renseigne" }
 
   - id: videos
     label: Tes captations et tes micros-trottoirs, tu comptes les mettre où ?
@@ -123,6 +118,20 @@ questions:
       - { valeur: pod, label: "Sur Pod, la plateforme de l'université" }
       - { valeur: youtube, label: "Sur YouTube ou Vimeo" }
       - { valeur: inconnu, label: "Je ne sais pas encore" }
+
+  - id: reglement
+    label: Comment se passe le règlement de ton côté ?
+    aide: >-
+      Bon de commande, acompte possible ou non, délai de paiement. Je le prévois
+      dans la proposition plutôt que de le découvrir à la facture.
+    type: choix
+    requis: true
+    autre: true
+    options:
+      - { valeur: bon-commande, label: "Bon de commande de l'université" }
+      - { valeur: labo, label: "Le laboratoire règle directement" }
+      - { valeur: perso, label: "J'avance et je me fais rembourser" }
+      - { valeur: inconnu, label: "Je me renseigne" }
 
   - id: echeance
     label: Une date à tenir ?

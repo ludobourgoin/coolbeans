@@ -15,7 +15,13 @@
    se distinguaient que par un espacement. Trois corrections tenues ensemble,
    aucune ne suffit seule : énoncé en 19px semibold, filet et retrait entre
    deux questions (jamais avant la première), et « Décide du chiffrage » sorti
-   du surtitre gris pour devenir une pastille ambre pâle. */
+   du surtitre gris pour devenir une pastille ambre pâle.
+
+   Piège payé le même jour : le filet et le retrait sont portés par un `div`
+   qui enveloppe le `fieldset`, jamais par le `fieldset` lui-même. Dans un
+   fieldset, la légende sort du flux et le `padding-top` s'applique SOUS elle,
+   pas sous la bordure : un `pt-9` posé là ouvre trente-six pixels de vide
+   entre l'énoncé de la question et son aide, sans rien signaler au build. */
 import Choicebox from "../ui/Choicebox.astro";
 import { riche } from "../../lib/devis";
 import type { QuestionCadrage } from "../../lib/cadrage";
@@ -25,8 +31,42 @@ interface Props {
   questions: QuestionCadrage[];
   /** Prénom du destinataire, pour pré-remplir et personnaliser l'intro. */
   contact?: string;
+  /** Bascule les phrases du composant qui portent un pronom. Cf. content.config.ts. */
+  tutoiement?: boolean;
 }
-const { slug, questions } = Astro.props;
+const { slug, questions, tutoiement = false } = Astro.props;
+
+/* Les seules phrases du composant qui changent selon le pronom. Tout le reste
+   est déjà neutre ou à la première personne, et n'a rien à faire ici. */
+const t = tutoiement
+  ? {
+      accroche:
+        "Tes réponses me servent à définir le périmètre du projet et à choisir la solution technique la plus adaptée.",
+      identite: "Pour te répondre",
+      prenom: "Ton prénom",
+      nom: "Ton nom",
+      email: "toi@exemple.com",
+      ajout: "Tout ce que les questions n'ont pas couvert",
+      consentement:
+        "J'accepte que Coolbeans conserve ces informations pour traiter ma demande et assurer le suivi de notre collaboration.",
+      envoye: "Merci, c'est envoyé. Tu reçois une copie de tes réponses par email à l'instant.",
+      perdues: "Tes réponses ne sont pas perdues",
+      reponse: "Ta réponse",
+    }
+  : {
+      accroche:
+        "Vos réponses me servent à définir le périmètre du projet et à choisir la solution technique la plus adaptée.",
+      identite: "Pour vous répondre",
+      prenom: "Votre prénom",
+      nom: "Votre nom",
+      email: "vous@exemple.com",
+      ajout: "Tout ce que les questions n'ont pas couvert",
+      consentement:
+        "J'accepte que Coolbeans conserve ces informations pour traiter ma demande et assurer le suivi de notre collaboration.",
+      envoye: "Merci, c'est envoyé. Vous recevez une copie de vos réponses par email à l'instant.",
+      perdues: "Vos réponses ne sont pas perdues",
+      reponse: "Votre réponse",
+    };
 
 /* Descripteur minimal passé au script : de quoi savoir quoi lire dans le
    formulaire, sans y réinjecter les libellés, qui n'ont rien à y faire. */
@@ -59,90 +99,87 @@ const optionsDe = (q: QuestionCadrage) => [
       <div aria-hidden="true"></div>
       <div>
         <h2>Questions</h2>
-        <p class="mt-4 max-w-[46ch] leading-[1.6] text-mute">
-          Vos réponses me servent à définir le périmètre du projet et à choisir la solution
-          technique la plus adaptée.
-        </p>
+        <p class="mt-4 leading-[1.6] text-mute">{t.accroche}</p>
 
         <form
           id="cadrage-form"
-          class="card mt-10 grid gap-8"
+          class="card mt-10 grid gap-9"
           data-slug={slug}
           data-questions={JSON.stringify(descripteurs)}
+          data-textes={JSON.stringify({ envoye: t.envoye, perdues: t.perdues })}
         >
           <p class="text-[13px] text-mute">Les champs marqués d'une étoile sont obligatoires.</p>
 
           {
             questions.map((q, i) => (
-              <fieldset class:list={["grid gap-3 p-0", i > 0 && "border-t border-line pt-9"]}>
-                <legend class="mb-1 w-full p-0">
-                  <span class="flex flex-wrap items-center gap-2">
-                    <span class="font-mono text-[11px] font-bold tracking-wide text-mute uppercase">
-                      Question {i + 1}
+              <div class:list={[i > 0 && "border-t border-line pt-9"]}>
+                <fieldset class="grid gap-3 p-0">
+                  <legend class="mb-1 p-0">
+                    <span class="flex flex-wrap items-center gap-2">
+                      <span class="font-mono text-[11px] font-bold tracking-wide text-mute uppercase">
+                        Question {i + 1}
+                      </span>
+                      {q.decisif && (
+                        <span class="rounded-full border border-[var(--ds-amber-300)] bg-[var(--ds-amber-100)] px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wide text-[var(--ds-amber-900)] uppercase">
+                          Décide du chiffrage
+                        </span>
+                      )}
                     </span>
-                    {q.decisif && (
-                      <span class="rounded-full border border-[var(--ds-amber-300)] bg-[var(--ds-amber-100)] px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wide text-[var(--ds-amber-900)] uppercase">
-                        Décide du chiffrage
-                      </span>
-                    )}
-                  </span>
-                  <span class="mt-2.5 block text-[19px] leading-[1.35] font-semibold text-ink">
-                    <Fragment set:html={riche(q.label)} />
-                    {q.requis && (
-                      <span class="text-ink" aria-hidden="true">
-                        {" "}
-                        *
-                      </span>
-                    )}
-                  </span>
-                </legend>
+                    <span class="mt-2.5 block text-[19px] leading-[1.35] font-semibold text-ink">
+                      <Fragment set:html={riche(q.label)} />
+                      {q.requis && (
+                        <span class="text-ink" aria-hidden="true">
+                          {" "}
+                          *
+                        </span>
+                      )}
+                    </span>
+                  </legend>
 
-                {q.aide && (
-                  <p
-                    class="-mt-1 max-w-[52ch] text-[13px] leading-[1.6] text-mute"
-                    set:html={riche(q.aide)}
-                  />
-                )}
+                  {q.aide && (
+                    <p class="text-[13px] leading-[1.6] text-mute" set:html={riche(q.aide)} />
+                  )}
 
-                {q.type === "choix" ? (
-                  <>
-                    <Choicebox
-                      name={`q-${q.id}`}
-                      type={q.multiple ? "checkbox" : "radio"}
-                      options={optionsDe(q)}
-                    />
-                    {q.autre && (
-                      <input
-                        class="field mt-1"
-                        type="text"
-                        name={`autre-${q.id}`}
-                        data-cadrage-autre={q.id}
-                        placeholder="Précisez"
-                        hidden
+                  {q.type === "choix" ? (
+                    <>
+                      <Choicebox
+                        name={`q-${q.id}`}
+                        type={q.multiple ? "checkbox" : "radio"}
+                        options={optionsDe(q)}
                       />
-                    )}
-                  </>
-                ) : q.long ? (
-                  <textarea
-                    class="field h-auto min-h-[110px] py-3"
-                    name={`q-${q.id}`}
-                    placeholder={q.placeholder ?? "Votre réponse"}
-                  />
-                ) : (
-                  <input
-                    class="field"
-                    type="text"
-                    name={`q-${q.id}`}
-                    placeholder={q.placeholder ?? "Votre réponse"}
-                  />
-                )}
-              </fieldset>
+                      {q.autre && (
+                        <input
+                          class="field mt-1"
+                          type="text"
+                          name={`autre-${q.id}`}
+                          data-cadrage-autre={q.id}
+                          placeholder="Précisez"
+                          hidden
+                        />
+                      )}
+                    </>
+                  ) : q.long ? (
+                    <textarea
+                      class="field h-auto min-h-[110px] py-3"
+                      name={`q-${q.id}`}
+                      placeholder={q.placeholder ?? t.reponse}
+                    />
+                  ) : (
+                    <input
+                      class="field"
+                      type="text"
+                      name={`q-${q.id}`}
+                      placeholder={q.placeholder ?? t.reponse}
+                    />
+                  )}
+                </fieldset>
+              </div>
             ))
           }
 
           <div class="grid gap-4 border-t border-line pt-8">
             <p class="font-mono text-[11px] font-bold tracking-wide text-mute uppercase">
-              Pour vous répondre
+              {t.identite}
             </p>
             <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
               <div class="grid gap-2">
@@ -155,7 +192,7 @@ const optionsDe = (q: QuestionCadrage) => [
                   id="cadrage-prenom"
                   name="prenom"
                   autocomplete="given-name"
-                  placeholder="Votre prénom"
+                  placeholder={t.prenom}
                   required
                 />
               </div>
@@ -169,7 +206,7 @@ const optionsDe = (q: QuestionCadrage) => [
                   id="cadrage-nom"
                   name="nom"
                   autocomplete="family-name"
-                  placeholder="Votre nom"
+                  placeholder={t.nom}
                   required
                 />
               </div>
@@ -184,7 +221,7 @@ const optionsDe = (q: QuestionCadrage) => [
                 id="cadrage-email"
                 name="email"
                 autocomplete="email"
-                placeholder="vous@exemple.com"
+                placeholder={t.email}
                 required
               />
             </div>
@@ -251,6 +288,10 @@ const optionsDe = (q: QuestionCadrage) => [
   const form = document.querySelector<HTMLFormElement>("#cadrage-form");
   const status = form?.querySelector<HTMLParagraphElement>("[data-cadrage-form-status]");
   const descripteurs: Descripteur[] = JSON.parse(form?.dataset.questions ?? "[]");
+  /* Les deux phrases de statut portent un pronom, donc elles viennent du
+     composant plutôt que d'être écrites ici : le script ne sait pas si le
+     document tutoie. */
+  const textes: { envoye: string; perdues: string } = JSON.parse(form?.dataset.textes ?? "{}");
 
   /* Le champ « autre » ne s'affiche que quand l'option correspondante est
      cochée. Visible en permanence, il invite à écrire une précision qui ne
@@ -332,8 +373,7 @@ const optionsDe = (q: QuestionCadrage) => [
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error();
-      status.textContent =
-        "Merci, c'est envoyé. Vous recevez une copie de vos réponses par email à l'instant.";
+      status.textContent = textes.envoye;
       status.className = "text-center text-[13px] font-medium text-success";
       form.reset();
       syncAutre();
@@ -377,7 +417,7 @@ const optionsDe = (q: QuestionCadrage) => [
         `&body=${encodeURIComponent(corps)}`;
 
       status.innerHTML =
-        "L'envoi automatique n'a pas abouti. Vos réponses ne sont pas perdues : " +
+        `L'envoi automatique n'a pas abouti. ${textes.perdues} : ` +
         `<a class="link" href="${lien}">envoyez-les-moi par e-mail</a>, ` +
         "le message est déjà prêt.";
       status.className = "text-center text-[13px] font-medium text-error";

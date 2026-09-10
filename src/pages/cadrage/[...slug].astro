@@ -84,7 +84,12 @@ const d = entry.data;
     </div>
   </div>
 
-  <CadrageFormulaire slug={entry.id} questions={d.questions} contact={d.contact} />
+  <CadrageFormulaire
+    slug={entry.id}
+    questions={d.questions}
+    contact={d.contact}
+    tutoiement={d.tutoiement}
+  />
 
   <DevisFooter />
 </BaseLayout>
