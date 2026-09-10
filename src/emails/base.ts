@@ -21,16 +21,11 @@ export const SURFACE_SUBTLE = "#fafafa";
 export const FONT_SANS =
   "'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 export const FONT_DISPLAY = FONT_SANS;
-export const FONT_MONO =
-  "'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace";
+export const FONT_MONO = "'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace";
 
 /** Échappe une valeur non maîtrisée avant interpolation dans du HTML. */
 export const esc = (valeur: string): string =>
-  valeur
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+  valeur.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 /** Paragraphe standard. */
 export const p = (html: string): string =>
@@ -103,9 +98,26 @@ export const kv = (paires: Array<[string, string | undefined | null]>): string =
   const lignes = paires.filter((paire): paire is [string, string] => !!paire[1]);
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0;">${lignes
     .map(([cle, valeur], index) => {
-      const filet =
-        index === lignes.length - 1 ? "" : `border-bottom:1px solid ${LINE};`;
+      const filet = index === lignes.length - 1 ? "" : `border-bottom:1px solid ${LINE};`;
       return `<tr><td style="padding:9px 20px 9px 0;font-family:${FONT_MONO};font-size:11px;font-weight:700;letter-spacing:0.1em;line-height:24px;text-transform:uppercase;color:${MUTE};white-space:nowrap;vertical-align:top;">${cle}</td><td width="100%" style="padding:9px 0;font-family:${FONT_SANS};font-size:15px;line-height:24px;color:${INK};${filet}">${valeur}</td></tr>`;
+    })
+    .join("")}</table>`;
+};
+
+/**
+ * Question → réponse, empilées. À réserver aux cas où la clé est une phrase
+ * entière : kv() la pose dans une colonne `nowrap`, qui prend alors toute la
+ * largeur et laisse à la réponse une gouttière où chaque mot tombe sur sa
+ * propre ligne. Constaté le 2026-09-10 sur le mail de cadrage.
+ * La question passe donc au-dessus, en gris et en casse normale ; la réponse
+ * en dessous, en gras, parce que c'est elle qu'on vient lire.
+ */
+export const qr = (paires: Array<[string, string | undefined | null]>): string => {
+  const lignes = paires.filter((paire): paire is [string, string] => !!paire[1]);
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0;">${lignes
+    .map(([question, reponse], index) => {
+      const filet = index === lignes.length - 1 ? "" : `border-bottom:1px solid ${LINE};`;
+      return `<tr><td style="padding:14px 0;${filet}"><div style="font-family:${FONT_SANS};font-size:13px;line-height:1.45;color:${MUTE};">${question}</div><div style="margin-top:5px;font-family:${FONT_SANS};font-size:16px;font-weight:600;line-height:1.45;color:${INK};">${reponse}</div></td></tr>`;
     })
     .join("")}</table>`;
 };
