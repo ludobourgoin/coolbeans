@@ -4,7 +4,7 @@ title: "Système de doc"
 order: 6
 status: "final"
 updated: 2026-08-14
-description: "Comment les docs clients sont écrites, rangées, protégées et mises à jour — y compris celle-ci."
+description: "Comment les docs clients sont écrites, rangées, protégées et mises à jour, y compris celle-ci."
 ---
 
 import Callout from "../../../components/doc/Callout.astro";
@@ -17,7 +17,7 @@ ou fait évoluer une doc.
 
 Chaque client a **une** doc, faite de pages, servie sur
 `my.coolbeans.cc` derrière l'authentification. Un client ne voit que la
-sienne ; les admins voient tout. Principe fondateur : 1 client = 1 doc — un
+sienne ; les admins voient tout. Principe fondateur : 1 client = 1 doc : un
 client qui accumule plusieurs projets enrichit la même doc, il n'y a jamais
 de doc par projet.
 
@@ -26,7 +26,7 @@ de doc par projet.
 **Une page de doc** = un fichier MDX dans `src/content/docs/<client>/`,
 nommé `NN-slug.mdx` : le préfixe numérique fixe l'ordre dans la navigation,
 le reste devient l'adresse de la page. L'en-tête porte `client`, `title`,
-`order`, `status`, `updated`, `description` — tous contrôlés à la
+`order`, `status`, `updated`, `description`, tous contrôlés à la
 construction du site, un oubli bloque le build.
 
 Le statut suit le cycle `draft` → `review` → `final`. Seul un humain pose
@@ -38,12 +38,12 @@ en supprimant celles sans objet.
 
 ## Comment ça se met à jour : la skill doc-client
 
-La doc ne s'édite pas au fil des sessions de travail — c'est ainsi que naît
+La doc ne s'édite pas au fil des sessions de travail : c'est ainsi que naît
 une doc-journal, désordonnée et périmée. Elle se met à jour par la skill
 Claude Code `doc-client` (repo `coolbeans-claude-skills`, installée dans
 `~/.claude/skills/`) : la skill scanne l'état réel du projet, propose un
 récapitulatif des pages à créer ou modifier, attend validation, puis écrit
-en `draft`. Elle ne pose jamais `final` et ne committe jamais — relecture,
+en `draft`. Elle ne pose jamais `final` et ne committe jamais : relecture,
 validation et commit restent des gestes humains.
 
 Les règles d'écriture (une page par feature, profondeur progressive, langage
@@ -64,7 +64,7 @@ sélecteur.
   Les styles de la doc (`src/styles/doc.css`) utilisent des sélecteurs plus
   forts que les utilitaires Tailwind : une classe comme `card` y est déjà
   prise. Ne jamais réutiliser ces noms de classe dans un composant du
-  portail — le style de la doc gagnerait silencieusement.
+  portail : le style de la doc gagnerait silencieusement.
 </Callout>
 
 ## Référence technique

@@ -41,7 +41,7 @@ sections:
     liste:
       - texte: >-
           **Cadrage et base technique** : choix du thème, faisabilité, et la
-          configuration Shopify de fond — domaine, DNS, paiements, taxes,
+          configuration Shopify de fond : domaine, DNS, paiements, taxes,
           livraisons, paiement express
       - texte: >-
           **Intégration de la direction artistique** : couleurs, typographies,
@@ -54,9 +54,9 @@ sections:
           certifications
       - texte: >-
           **Template produit** : sections du thème et metafields, pour afficher
-          les caractéristiques propres à la gamme — bio, ingrédients…
+          les caractéristiques propres à la gamme : bio, ingrédients…
       - texte: >-
-          **Pages légales, bandeau cookies et page contact** — compris dans
+          **Pages légales, bandeau cookies et page contact** : compris dans
           l'intégration
       - texte: >-
           **Connectivité marketplaces** : synchronisation des stocks et des
@@ -100,8 +100,8 @@ sections:
     liste:
       - texte: >-
           **Les assets visuels finaux, prêts à l'emploi.** C'est la condition
-          qui tient le budget : je m'occupe du traitement technique — recadrage,
-          compression — pas de la production.
+          qui tient le budget : je m'occupe du traitement technique (recadrage,
+          compression), pas de la production.
       - texte: "**Les contenus éditoriaux** : storytelling de la page À propos, fiches produits, certifications"
       - texte: "**Les accès** : Shopify, le nom de domaine, et les comptes marketplaces"
       - texte: "**Les textes juridiques** des pages légales"
@@ -118,7 +118,7 @@ sections:
         tooltip: Solution recommandée pour l'emailing sur une boutique Shopify premium.
       - texte: >-
           **Applications tierces éventuelles**, en particulier celles des
-          marketplaces — l'app Ankorstore est gratuite, Amazon et Faire ont
+          marketplaces : l'app Ankorstore est gratuite, Amazon et Faire ont
           leurs propres grilles
       - "**Achat du thème premium**"
 

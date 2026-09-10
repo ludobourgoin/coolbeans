@@ -220,7 +220,7 @@ export const POST: APIRoute = async ({ request }) => {
       : tache?.statut === "deja_traite"
         ? [["Facturation", "Tâche déjà créée pour ce devis (soumission répétée)"]]
         : tache?.statut === "sans_affaire"
-          ? [["Facturation", "Aucune affaire CRM rattachée au devis — tâche à créer à la main"]]
+          ? [["Facturation", "Aucune affaire CRM rattachée au devis : tâche à créer à la main"]]
           : tache?.statut === "affaire_introuvable"
             ? [["Facturation", `Affaire CRM-${tache.numero} introuvable dans Linear`]]
             : [];
@@ -247,7 +247,7 @@ export const POST: APIRoute = async ({ request }) => {
     : [];
 
   const html = renderTransactionnel({
-    preheader: `${objetReponse} — devis ${esc(slug)}`,
+    preheader: `${objetReponse} · devis ${esc(slug)}`,
     kicker: `Devis · ${esc(slug)}`,
     titre: objetReponse,
     contenu: [
@@ -284,7 +284,7 @@ export const POST: APIRoute = async ({ request }) => {
       from: "Devis Coolbeans <devis@coolbeans.cc>",
       to: "ludo@coolbeans.cc",
       replyTo: emailClient,
-      subject: `Devis ${slug} — ${objetReponse}`,
+      subject: `Devis ${slug} · ${objetReponse}`,
       html,
       text: [
         `Devis : ${slug}`,
@@ -302,7 +302,7 @@ export const POST: APIRoute = async ({ request }) => {
         aDesOptions &&
           montantCompose !== undefined &&
           `Montant composé : ${eur.format(montantCompose)}`,
-        tache?.statut === "cree" && `Facturation : ${tache.tache.identifier} — ${tache.tache.url}`,
+        tache?.statut === "cree" && `Facturation : ${tache.tache.identifier} · ${tache.tache.url}`,
         tache?.statut === "sans_affaire" &&
           "Facturation : aucune affaire CRM rattachée au devis, tâche à créer à la main",
         "",

@@ -23,7 +23,7 @@ const CONTACT_DIRECT = "écrivez-moi à ludo@coolbeans.cc";
 export const POST: APIRoute = async (context) => {
   const { request } = context;
   const { user, client } = await getPortalContext(context);
-  if (!user) return json({ error: "Session expirée — reconnectez-vous puis réessayez." }, 401);
+  if (!user) return json({ error: "Session expirée : reconnectez-vous puis réessayez." }, 401);
 
   const fd = await request.formData();
   const ticketId = String(fd.get("ticketId") ?? "");
@@ -76,7 +76,7 @@ export const POST: APIRoute = async (context) => {
     // Chaîne bloquante D1/R2 : le front attend du JSON, pas la page d'erreur
     // générique Astro — même contrat que nouveau.ts.
     console.error("messagerie: enregistrement de la réponse (D1/R2) échoué", err);
-    return json({ error: `Envoi impossible pour le moment — ${CONTACT_DIRECT}.` }, 500);
+    return json({ error: `Envoi impossible pour le moment : ${CONTACT_DIRECT}.` }, 500);
   }
 
   // Prénom de l'émetteur RÉEL de cette réponse (portée organisation, spec §6 :
@@ -104,7 +104,7 @@ export const POST: APIRoute = async (context) => {
   try {
     const resend = new Resend(env.RESEND_API_KEY);
     const html = renderTransactionnel({
-      preheader: `${client.nom} — ${ticket.objet}`,
+      preheader: `${client.nom} · ${ticket.objet}`,
       kicker: `Messagerie · ${esc(client.nom)}`,
       titre: `Réponse de ${esc(prenomRepondeur)}`,
       contenu: citation(esc(message).replace(/\n/g, "<br>")),
@@ -117,11 +117,11 @@ export const POST: APIRoute = async (context) => {
       from: "Support Coolbeans <support@coolbeans.cc>",
       to: "ludo@coolbeans.cc",
       replyTo: ticket.author_email || undefined,
-      subject: `Réponse ${client.nom} — ${ticket.objet}`,
+      subject: `Réponse ${client.nom} · ${ticket.objet}`,
       html,
       text: [
         `Client : ${client.nom}`,
-        `De : ${ticket.author_prenom}${ticket.author_email ? ` — ${ticket.author_email}` : ""}`,
+        `De : ${ticket.author_prenom}${ticket.author_email ? ` · ${ticket.author_email}` : ""}`,
         ticket.linear_issue_url ? `Ticket : ${ticket.linear_issue_url}` : "Ticket : Linear indisponible",
         "",
         message,

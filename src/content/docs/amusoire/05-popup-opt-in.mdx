@@ -47,13 +47,13 @@ Le wrapper `modal-1` peut être en `display:none` au repos : Finsweet l'affiche 
 
 - **Ajouter à une page** : chemin dans `allowed` **+ poser l'instance du composant sur la page** + Publish.
 - **Retirer d'une page** : enlever le chemin de `allowed` (l'instance peut rester).
-- **Activer / couper partout** : `ENABLED` à `true`/`false` — prévu pour les évènements ponctuels (fête de la musique…).
+- **Activer / couper partout** : `ENABLED` à `true`/`false` : prévu pour les évènements ponctuels (fête de la musique…).
 - **Délai / fréquence** : `DELAY_MS` et `COOLDOWN_DAYS`.
 
 ## Points de vigilance
 
-- **Le composant doit être présent sur la page** : `allowed` seul ne suffit pas — sans markup, le script sort en silence.
-- Lib chargée une seule fois en global — ne pas remettre le loader dans le composant.
+- **Le composant doit être présent sur la page** : `allowed` seul ne suffit pas : sans markup, le script sort en silence.
+- Lib chargée une seule fois en global : ne pas remettre le loader dans le composant.
 - **Attributes v1 uniquement** : jamais de v2 sur le site (incompatibles).
 - Cooldown pendant les tests : navigation privée ou `localStorage.removeItem('optin_popup_seen')`.
 - Ne pas remplacer l'attente Finsweet (`fsAttributes.push`) par un `.click()` direct : race condition, le modal ne s'ouvrirait pas. Si l'init n'arrive pas, le cooldown n'est pas brûlé.
@@ -111,7 +111,7 @@ Le script déclencheur complet (bloc `<!-- Pop up -->` du même footer) :
     setTimeout(resolve, DELAY_MS + MAX_WAIT_MS);
   });
 
-  // Clic quand : délai écoulé ET Finsweet prêt — au plus tard au filet de sécurité.
+  // Clic quand : délai écoulé ET Finsweet prêt, au plus tard au filet de sécurité.
   Promise.all([timerDone, Promise.race([finsweetReady, safety])]).then(function () {
     if (!fsReady) return; // init jamais arrivée : on ne brûle pas le cooldown, on retentera
 

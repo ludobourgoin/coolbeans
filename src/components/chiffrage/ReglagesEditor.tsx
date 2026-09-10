@@ -79,7 +79,7 @@ export default function ReglagesEditor({ initial }: { initial: Reglages }) {
       </section>
 
       <section class="card grid gap-4">
-        <h2>Devis client — textes de base</h2>
+        <h2>Devis client : textes de base</h2>
         {([
           ["stackTechnique", "Stack technique recommandée"],
           ["conditionsReglement", "Conditions de règlement"],

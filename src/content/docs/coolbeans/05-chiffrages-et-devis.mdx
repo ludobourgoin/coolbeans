@@ -10,7 +10,7 @@ description: "La référence technique de la chaîne devis : cockpit /espace/dev
 import Callout from "../../../components/doc/Callout.astro";
 
 La référence technique de la chaîne devis. Le **workflow** (brief, chiffrage,
-passes 1 et 2, envoi) est documenté sur la page Workflow CRM — ici, l'outillage qui
+passes 1 et 2, envoi) est documenté sur la page Workflow CRM ; ici, l'outillage qui
 le porte. L'ancien module de chiffrage manuel (configurateur, catalogue par
 niveaux, publication KV) a été supprimé le 2026-08-17 : le devis se dérive
 désormais d'un projet Linear via la skill `proposition-commerciale`.
@@ -34,7 +34,7 @@ Le statut d'un devis est **dérivé, jamais stocké** :
 | --- | --- |
 | Publié | YAML en prod, sans champ `envoi` |
 | Envoyé | `envoi.date` présent dans le YAML (écrit par la skill à l'envoi) |
-| Répondu | Une ligne existe en D1 pour ce slug — prioritaire, même sans `envoi` |
+| Répondu | Une ligne existe en D1 pour ce slug : prioritaire, même sans `envoi` |
 
 Chaque ligne du cockpit relie la page publique, le projet Linear et
 l'affaire CRM (champs `linear.projet` / `linear.affaire` du YAML), et
@@ -43,7 +43,7 @@ déplie la dernière réponse du client quand elle existe.
 ## Les Réglages
 
 Clé KV `pilotage:reglages` (binding `PORTAL_KV`), éditée par l'action
-`reglages.sauvegarder` — garde admin doublée : la page vérifie le rôle, et
+`reglages.sauvegarder`, garde admin doublée : la page vérifie le rôle, et
 l'action serveur refait la même vérification de son côté.
 
 | Champ | Rôle |
@@ -61,7 +61,7 @@ l'action serveur refait la même vérification de son côté.
 À la première lecture, l'ancienne clé `pilotage:catalog` est migrée en
 douceur (jamais réécrite ni supprimée) ; une entrée corrompue retombe
 silencieusement sur les défauts. Le calcul lui-même vit dans
-`src/lib/chiffrage/calc.ts` (`calculerDevis`), pur et testé — la skill peut
+`src/lib/chiffrage/calc.ts` (`calculerDevis`), pur et testé : la skill peut
 l'exécuter via `npx tsx` plutôt que de calculer de tête.
 
 ### Ces réglages sont globaux
@@ -77,7 +77,7 @@ relation client, les +15 % n'ont pas lieu d'être.
 ## Chiffrer un petit lot
 
 Deux biais se croisent sur les prestations de quelques heures, et ils vont en
-sens inverse — d'où l'illusion d'avoir chiffré juste.
+sens inverse, d'où l'illusion d'avoir chiffré juste.
 
 **Le TJM sous-facture.** Un lot de 3 heures porte le même coût de mise en
 route qu'un lot de 3 jours : comprendre la demande, ouvrir le projet,
@@ -88,8 +88,8 @@ recetter, publier, facturer. Le taux visé sur les petits lots tourne autour de
   Les 106 €/h viennent de deux lots Miharu chiffrés, dont **aucun n'a été
   accepté ni facturé** : sur le premier, la cliente répond « les 300 € je ne
   suis pas sûre qu'on les ait pour ça » (2026-07-23) et l'affaire est perdue
-  sur le prix. Le raisonnement du coût fixe tient — il décrit ce que coûte
-  une intervention courte — mais personne ne l'a validé en payant. Ne jamais
+  sur le prix. Le raisonnement du coût fixe tient (il décrit ce que coûte
+  une intervention courte), mais personne ne l'a validé en payant. Ne jamais
   l'employer devant un client comme s'il s'agissait d'un tarif de marché
   observé.
 </Callout>
@@ -103,7 +103,7 @@ La méthode : chiffrer le temps tâche par tâche en minutes, convertir, puis
 **vérifier le €/h obtenu** contre l'historique de facturation
 (`~/.claude/skills/devis/references/historique-facturation.md`). Sur un client
 déjà servi, un écart de plus de 30 % avec sa dernière prestation se justifie
-ou se corrige — il ne se découvre pas dans la conversation. Et regarder la
+ou se corrige : il ne se découvre pas dans la conversation. Et regarder la
 colonne « Issue » avant de s'appuyer sur une ligne : une proposition refusée
 calibre mal.
 
@@ -117,13 +117,13 @@ Ajouts du 2026-08-17 :
 
 - **`tooltip`** sur les items de liste (`{ texte, tooltip }`), les lignes de
   budget et les notes : un marqueur ⓘ accessible (survol et focus) qui sort
-  l'explication du fil principal — la justification du +20 % d'urgence, le
+  l'explication du fil principal : la justification du +20 % d'urgence, le
   contenu d'un poste.
 - **`envoi { date, destinataire }`** et **`linear { projet, affaire }`** :
   champs internes lus par le cockpit, **jamais rendus** sur la page
   publique.
 
-Présentation : un **montant total unique** — les lignes du périmètre sont
+Présentation : un **montant total unique** : les lignes du périmètre sont
 sobres et sans prix, seules les options affichent le leur. On vend un
 projet, pas du temps.
 
@@ -133,7 +133,7 @@ La page publique d'un devis porte le formulaire de réponse
 (`src/pages/api/devis-reponse.ts`) : la réponse s'écrit d'abord dans la
 table D1 `devis_reponses` (base `PORTAL_DB`, migration `0002`), puis part en
 notification mail via Resend. Si l'écriture D1 échoue, le mail part quand
-même — la notification prime, l'erreur est loguée. La table est append-only.
+même : la notification prime, l'erreur est loguée. La table est append-only.
 
 Toutes les pages devis sont exclues des moteurs de recherche et du sitemap :
 accessibles à qui possède le lien, rien de plus. La protection est double
@@ -192,4 +192,4 @@ migration ; et il ne valide rien, donc pas d'équivalent de `signature.ts`.
 | Devis YAML (contenu) | `src/content/devis/*.yaml`, schéma dans `src/content.config.ts` |
 | Rendu devis | `src/pages/devis/[slug].astro`, tooltips via `src/components/ui/Tooltip.astro` |
 | Réponse au devis | `src/pages/api/devis-reponse.ts`, table `devis_reponses` (migration `0002`) |
-| Ancienne route supprimée | `/devis/[client]/[projetId]` — aucun devis KV n'était en circulation |
+| Ancienne route supprimée | `/devis/[client]/[projetId]` : aucun devis KV n'était en circulation |

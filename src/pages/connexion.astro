@@ -141,7 +141,7 @@ const suite = destination(Astro.url.searchParams.get("redirect_url"));
           "error",
         );
       } catch {
-        dire("Connexion impossible — vérifiez votre réseau, puis réessayez.", "error");
+        dire("Connexion impossible : vérifiez votre réseau, puis réessayez.", "error");
       } finally {
         submitBtn.disabled = false;
       }

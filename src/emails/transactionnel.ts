@@ -62,7 +62,7 @@ export function renderTransactionnel({
       contenu,
       bouton ? cta(bouton.label, bouton.url) : "",
     ].join(""),
-    pied: `Coolbeans — l'op&eacute;rationnel qui tourne tout seul.<br>
+    pied: `Coolbeans, l'op&eacute;rationnel qui tourne tout seul.<br>
               ${piedContexte}<br>
               <a href="https://coolbeans.cc" style="color:${MUTE};text-decoration:underline;">coolbeans.cc</a>`,
   });
