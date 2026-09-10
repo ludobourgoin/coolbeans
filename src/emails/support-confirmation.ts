@@ -38,9 +38,9 @@ export function renderConfirmationSupport(props: SupportConfirmationProps): Emai
     contenu: [
       p(esc(bonjour)),
       p(
-        "Votre demande est bien enregistrée et arrive directement dans mon outil de suivi. Je reviens vers vous rapidement — en général sous un jour ouvré.",
+        "Votre demande est bien enregistrée et arrive directement dans mon outil de suivi. Je reviens vers vous rapidement, en général sous un jour ouvré.",
       ),
-      titreSection(`Votre demande — ${esc(objet)}`),
+      titreSection(`Votre demande · ${esc(objet)}`),
       citation(esc(description).replace(/\n/g, "<br>")),
       p("Un détail à ajouter entre-temps&nbsp;? Répondez simplement à cet email."),
       p("À très vite,<br>Ludo"),
@@ -51,9 +51,9 @@ export function renderConfirmationSupport(props: SupportConfirmationProps): Emai
   const text = [
     bonjour,
     "",
-    "Votre demande est bien enregistrée et arrive directement dans mon outil de suivi. Je reviens vers vous rapidement — en général sous un jour ouvré.",
+    "Votre demande est bien enregistrée et arrive directement dans mon outil de suivi. Je reviens vers vous rapidement, en général sous un jour ouvré.",
     "",
-    `Votre demande — ${objet} :`,
+    `Votre demande · ${objet} :`,
     description,
     "",
     "Un détail à ajouter entre-temps ? Répondez simplement à cet email.",
@@ -62,5 +62,5 @@ export function renderConfirmationSupport(props: SupportConfirmationProps): Emai
     "Ludo",
   ].join("\n");
 
-  return { subject: `Support — bien reçu : ${objet}`, html, text };
+  return { subject: `Support · bien reçu : ${objet}`, html, text };
 }

@@ -16,11 +16,11 @@ Le prospect simule le CA additionnel généré par les jeux Amusoire dans son é
 ## Flow & stack
 
 ```text
-Étape 1 — Secteur d'activité (radios)
-Étape 2 — Modes d'utilisation (1 à 3 checkboxes) : RDV récurrents · Espace privatif · Team Building
-Étape 3 — Saisie des données (blocs conditionnels selon l'étape 2)
-Étape 4 — ROI calculé (CA brut, coût licence, gain net)
-Étape 5 — Contact + submit → Webhook Make → HubSpot + Resend
+Étape 1 · Secteur d'activité (radios)
+Étape 2 · Modes d'utilisation (1 à 3 checkboxes) : RDV récurrents · Espace privatif · Team Building
+Étape 3 · Saisie des données (blocs conditionnels selon l'étape 2)
+Étape 4 · ROI calculé (CA brut, coût licence, gain net)
+Étape 5 · Contact + submit → Webhook Make → HubSpot + Resend
 ```
 
 | Couche | Outil | Rôle |
@@ -33,7 +33,7 @@ Le prospect simule le CA additionnel généré par les jeux Amusoire dans son é
 | CRM | HubSpot `25692189` | Contact / company / form submission |
 | Email | Resend (`send.amusoire.com`) | Mail récapitulatif |
 
-<Callout type="note" title="Note — pourquoi Resend">
+<Callout type="note" title="Note : pourquoi Resend">
   Le mail prospect passe par Resend, pas par HubSpot : l'add-on Transactional Email HubSpot coûte ~600 $/mois. Resend : délivrabilité équivalente, quota gratuit 3 000 mails/mois (100/jour), découplé du CRM.
 </Callout>
 
@@ -59,7 +59,7 @@ Attributs posés sur `.simulator_form-wrapper` (Designer → Settings → Custom
 | Privatif | `(#input-surface ÷ privatif-ratio) × #input-prix-joueur × #input-jours × 52` | 279 € (BUSINESS) |
 | Team Building | `#input-personnes × #input-prix-joueur-team-b × #input-frequence × 12` | gratuit (0) |
 
-<Callout type="piege" title="Piège — palier max, pas la somme">
+<Callout type="piege" title="Piège : palier max, pas la somme">
   **Coût licence annuel = `max(paliers cochés) × 12`**. Plusieurs objectifs cochés = une seule licence, la plus élevée. Ex : RDV + Privatif → `max(159, 279) × 12 = 3 348 €`, et non `(159 + 279) × 12`.
 </Callout>
 
@@ -73,13 +73,13 @@ Attributs posés sur `.simulator_form-wrapper` (Designer → Settings → Custom
 
 | Name (clé Make) | Contenu |
 | --- | --- |
-| `form_type` | `simulateur` (constant — filtre de la route mail) |
+| `form_type` | `simulateur` (constant, filtre de la route mail) |
 | `ca_rdv` · `ca_privatif` · `ca_team_building` | CA additionnel annuel par levier (€) |
 | `ca_total` · `cout_licence` · `gain_net` | Totaux (€) |
-| `flag_rdv` · `flag_privatif` · `flag_team_building` | `"true"` / `""` — levier sélectionné |
+| `flag_rdv` · `flag_privatif` · `flag_team_building` | `"true"` / `""` : levier sélectionné |
 | `flag_tout_coche` | non utilisé côté Make (logique `&` des 3 flags dans le module 52) ; injecté pour usage futur |
 
-<Callout type="piege" title="Piège — jamais « false »">
+<Callout type="piege" title="Piège : jamais « false »">
   Make évalue toute chaîne non vide comme truthy dans `{{if(...)}}` : `"false"` passerait la condition à vrai. Non coché = **chaîne vide**, la seule valeur falsy fiable.
 </Callout>
 
@@ -87,11 +87,11 @@ Attributs posés sur `.simulator_form-wrapper` (Designer → Settings → Custom
   **`required` à retirer côté Webflow** sur tous les hidden inputs et la checkbox RGPD : un champ requis invisible bloque la soumission sans erreur visible. La validation RGPD est faite en JS (`validation.ts`).
 </Callout>
 
-## DOM Webflow — référence
+## DOM Webflow · référence
 
 | Élément | Sélecteur · note |
 | --- | --- |
-| Formulaire | `#formulaire-simulateur` — si renommé, mettre à jour `validation.ts:77` |
+| Formulaire | `#formulaire-simulateur` : si renommé, mettre à jour `validation.ts:77` |
 | Étapes / navigation | `.simulator_step` · `[if-element="button-next"]` · `[if-step="ROI"]` · `.progress_item` (Inputflow) |
 | Checkboxes étape 2 | `secteur-activite` · `utilisation-rdv` · `utilisation-privatif` · `utilisation-team-building` |
 | Inputs étape 3 | `#rdv-ca` · `#input-surface` · `#input-prix-joueur` · `#input-jours` · `#input-personnes` · `#input-prix-joueur-team-b` · `#input-frequence` |
@@ -110,16 +110,16 @@ Webhook (id 3) → Router 12
   ├─ Route 1 : Flux Amusoire   (account_target = "amusoire") → HubSpot CRM
   ├─ Route 2 : Flux Blindtest  (account_target = "blindtest")
   └─ Route 3 : Mail simulateur (account_target = "amusoire" AND form_type = "simulateur")
-      ├─ SetVariables "chunks" (id 51)              — 7 chunks HTML en variables
-      ├─ SetVariables "blocs conditionnels" (id 52) — 7 if(truthiness) + cta_url
-      └─ Resend "Send an Email" (id 47)             — squelette avec {{52.bloc_*}} et {{52.cta_url}}
+      ├─ SetVariables "chunks" (id 51)              : 7 chunks HTML en variables
+      ├─ SetVariables "blocs conditionnels" (id 52) : 7 if(truthiness) + cta_url
+      └─ Resend "Send an Email" (id 47)             : squelette avec {{52.bloc_*}} et {{52.cta_url}}
 ```
 
-<Callout type="danger" title="Danger — filtre de la route 3">
+<Callout type="danger" title="Danger : filtre de la route 3">
   Colonne A = la **variable Make** (`{{3.payload.data.account_target}}`), colonne B = la **string littérale**. L'inverse (texte brut en colonne A) rend le filtre toujours faux → aucun mail. Le double filtre est indispensable : sans `form_type = simulateur`, un mail partirait pour **toutes** les soumissions Amusoire.
 </Callout>
 
-Module 51 « chunks » *(scope roundtrip)* — coller chaque fichier dans sa variable :
+Module 51 « chunks » *(scope roundtrip)*, coller chaque fichier dans sa variable :
 
 | Variable Make | Source repo |
 | --- | --- |
@@ -127,7 +127,7 @@ Module 51 « chunks » *(scope roundtrip)* — coller chaque fichier dans sa var
 | `chunk_allez_plus_loin_header` | `email/chunks/allez-plus-loin-header.html` |
 | `chunk_not_rdv` · `chunk_not_privatif` · `chunk_not_team_building` | `email/chunks/not-*.html` |
 
-Module 52 « blocs conditionnels » — 7 expressions IML (truthiness sur les flags, chaîne vide = falsy) :
+Module 52 « blocs conditionnels », 7 expressions IML (truthiness sur les flags, chaîne vide = falsy) :
 
 ```text
 bloc_rdv               {{if(3.payload.data.flag_rdv; 51.chunk_rdv; )}}
@@ -153,9 +153,9 @@ Le bouton CTA pointe vers l'un de 4 calendriers HubSpot Meetings selon le couple
 | Critère | Calendrier |
 | --- | --- |
 | Département 75, tout secteur | `…/thisisblindtest/rdv-demo` |
-| Hors 75 — Bar/Restaurant ou Hôtel | `…/noemie-boiton/rdvdemo` |
-| Hors 75 — Camping/Club ou Loisirs | `…/maxime-costeau/reserver-demo` |
-| Hors 75 — Autre (fallback) | `…/noemie-boiton/rdv-demo` |
+| Hors 75 · Bar/Restaurant ou Hôtel | `…/noemie-boiton/rdvdemo` |
+| Hors 75 · Camping/Club ou Loisirs | `…/maxime-costeau/reserver-demo` |
+| Hors 75 · Autre (fallback) | `…/noemie-boiton/rdv-demo` |
 
 ```text
 {{if(substring(3.payload.data.zip + ""; 0; 2) = "75";
@@ -171,10 +171,10 @@ Le bouton CTA pointe vers l'un de 4 calendriers HubSpot Meetings selon le couple
 - `zip + ""` caste le zip (number) en texte avant `substring` ; `get(…)` est obligatoire car `secteur-activite` contient un tiret (la dot-notation serait lue comme une soustraction).
 - Tester les 4 buckets : History → « Run once » en modifiant le payload (`75010` · `33000 + bar-restau` · `44000 + camping` · `69000 + autre`).
 
-## Mail prospect — édition
+## Mail prospect · édition
 
-<Callout type="note" title="Note — workflow client">
-  Le client ne touche ni à Make ni au repo : toute demande de modif par email à `ludo@trigger.fr` (bloc concerné + phrase actuelle → nouvelle version). Livraison sous **48–72 h ouvrées**. Inclus : copy, coquille, objet/preheader, structure mineure. Sur devis : refonte design, nouveau bloc conditionnel, nouvelle logique.
+<Callout type="note" title="Note : workflow client">
+  Le client ne touche ni à Make ni au repo : toute demande de modif par email à `ludo@trigger.fr` (bloc concerné + phrase actuelle → nouvelle version). Livraison sous **48 à 72 h ouvrées**. Inclus : copy, coquille, objet/preheader, structure mineure. Sur devis : refonte design, nouveau bloc conditionnel, nouvelle logique.
 </Callout>
 
 ```text
@@ -201,7 +201,7 @@ email/template-resend-body.html  ← squelette {{N.bloc_*}} → module Resend 47
 
 Le logo du mail est servi depuis le **HubSpot File Manager** du client (pas le repo) : uploader la nouvelle version → coller l'URL dans `template.mjml` → recompiler.
 
-## Bundle JS — intégration Webflow
+## Bundle JS · intégration Webflow
 
 TypeScript + esbuild (starter Finsweet), pnpm. Sortie : `dist/index.js` (~5 KB) + `dist/index.css` (~2,5 KB). Scripts : `pnpm dev` (watch + localhost:3000) · `pnpm build` · `pnpm check` · `pnpm lint`.
 
@@ -220,12 +220,12 @@ TypeScript + esbuild (starter Finsweet), pnpm. Sortie : `dist/index.js` (~5 KB) 
 
 ## Vigilance
 
-- `required` sur blocs masqués : géré par `conditionalDisplay.ts` (`dataset.wasRequired`) — ne pas retirer cette logique.
+- `required` sur blocs masqués : géré par `conditionalDisplay.ts` (`dataset.wasRequired`) : ne pas retirer cette logique.
 - Checkbox RGPD : validation JS (`validation.ts`), ne pas réactiver `required` côté Webflow.
 - Coefficients business : toujours passer par les Custom Attributes, pas par le code.
-- Scénario Make : stable — le mail prospect = 3 modules (51/52/47) sur la route 3, pas de scénario séparé. Ne pas réécrire les branches existantes.
+- Scénario Make : stable, le mail prospect = 3 modules (51/52/47) sur la route 3, pas de scénario séparé. Ne pas réécrire les branches existantes.
 - Flags : strings `"true"`/`""`, jamais `"false"`.
-- CTA : 4 URLs en dur dans la formule du module 52 — à mettre à jour si un calendrier change ou un commercial arrive.
+- CTA : 4 URLs en dur dans la formule du module 52, à mettre à jour si un calendrier change ou un commercial arrive.
 - API Key Resend : jamais dans le repo (module Make / coffre client).
 - En prod : vérifier que le script est bien inliné, aucune référence `cdn.jsdelivr.net/gh/ludobourgoin/amusoire` (404, repo privé).
 
@@ -234,7 +234,7 @@ TypeScript + esbuild (starter Finsweet), pnpm. Sortie : `dist/index.js` (~5 KB) 
 Source complète du bundle (repo `ludobourgoin/amusoire`, dossier `src/`), compilée par esbuild en `dist/index.js` + `dist/index.css` (générés, non reproduits ici).
 
 <details>
-<summary>`src/index.ts` — point d'entrée (init des 4 modules)</summary>
+<summary>`src/index.ts` : point d'entrée (init des 4 modules)</summary>
 
 ```ts
 import './index.css';
@@ -257,7 +257,7 @@ window.Webflow.push(() => {
 </details>
 
 <details>
-<summary>`src/utils/calculator.ts` — calcul ROI + hidden inputs</summary>
+<summary>`src/utils/calculator.ts` : calcul ROI + hidden inputs</summary>
 
 ```ts
 /**
@@ -448,7 +448,7 @@ export const setupCalculator = (): void => {
 </details>
 
 <details>
-<summary>`src/utils/validation.ts` — validation des étapes + RGPD</summary>
+<summary>`src/utils/validation.ts` : validation des étapes + RGPD</summary>
 
 ```ts
 export const setupStepValidation = () => {
@@ -572,7 +572,7 @@ export const setupStepValidation = () => {
 </details>
 
 <details>
-<summary>`src/utils/conditionalDisplay.ts` — blocs conditionnels + gestion du required</summary>
+<summary>`src/utils/conditionalDisplay.ts` : blocs conditionnels + gestion du required</summary>
 
 ```ts
 export const setupConditionalDisplay = () => {
@@ -632,7 +632,7 @@ export const setupConditionalDisplay = () => {
 </details>
 
 <details>
-<summary>`src/utils/progressBar.ts` — barre de progression</summary>
+<summary>`src/utils/progressBar.ts` : barre de progression</summary>
 
 ```ts
 export const setupProgressBarObserver = () => {
@@ -691,7 +691,7 @@ export const setupProgressBarObserver = () => {
 </details>
 
 <details>
-<summary>`src/index.css` — styles injectés (progression, cartes radio/checkbox)</summary>
+<summary>`src/index.css` : styles injectés (progression, cartes radio/checkbox)</summary>
 
 ```css
 /* =========================================

@@ -1,5 +1,5 @@
-titre: UnlockBreath x Coolbeans — V2
-objet: Avenant au devis de février 2026 — reprise de la plateforme sur une base sur-mesure
+titre: UnlockBreath x Coolbeans · V2
+objet: Avenant au devis de février 2026 · reprise de la plateforme sur une base sur-mesure
 date: 2026-08-30
 contact: Thierry
 version: 2
@@ -23,7 +23,7 @@ sections:
           Le périmètre fonctionnel ne bouge pas : mêmes onze pages, mêmes deux
           offres, même programme en sept semaines, mêmes six langues.
       - texte: >-
-          Ce qui change, c'est **la manière de le construire** — et ce que la
+          Ce qui change, c'est **la manière de le construire**, et ce que la
           plateforme vous coûtera chaque mois une fois en ligne.
     note: >-
       Cet avenant remplace le volet développement du devis n° 004326 du
@@ -38,7 +38,7 @@ sections:
           que vous cessez de payer.
         tooltip: >-
           Aujourd'hui : Webflow 20 à 34 €, Memberstack 25 à 45 €, Make 15 €,
-          Localize 8 € par langue supplémentaire — soit 100 à 134 € par mois.
+          Localize 8 € par langue supplémentaire, soit 100 à 134 € par mois.
           Demain : 20 à 40 € par mois. Le détail est dans la section « Ce que
           vous payez chaque mois ».
       - texte: >-
@@ -69,8 +69,8 @@ sections:
       - Les libellés et destinations des boutons d'action
     note: >-
       Formation à l'outil et guide écrit remis à la livraison, comme prévu au
-      cadrage initial. Ce qui relève du code — une nouvelle page, une nouvelle
-      fonctionnalité — reste de mon ressort, exactement comme avec Webflow.
+      cadrage initial. Ce qui relève du code (une nouvelle page, une nouvelle
+      fonctionnalité) reste de mon ressort, exactement comme avec Webflow.
 
   - titre: Socle technique
     texte: >-
@@ -149,7 +149,7 @@ sections:
         **L'acompte de 2 683,88 € HT déjà versé s'impute intégralement sur ce
         montant.** Aucune page n'ayant été produite, rien de ce que vous avez
         versé n'est consommé. **Reste dû : 7 771,12 € HT**, selon le même
-        échéancier qu'en février — la moitié au démarrage, la moitié au plus
+        échéancier qu'en février : la moitié au démarrage, la moitié au plus
         tard 30 jours après la livraison. TVA de 20 % en sus.
 
   - titre: Ce que ça comprend
@@ -252,8 +252,8 @@ notes:
       cessez de payer, et vous continuez d'économiser ensuite, chaque année.
   - texte: >-
       Le périmètre fonctionnel V01 est inchangé. Les éléments renvoyés à une
-      V02 en février — sous-catégories de Science of Breathing, langues
-      asiatiques — le restent.
+      V02 en février (sous-catégories de Science of Breathing, langues
+      asiatiques) le restent.
   - tone: warning
     texte: >-
       Ce devis chiffre l'intégration à partir de maquettes fournies par votre

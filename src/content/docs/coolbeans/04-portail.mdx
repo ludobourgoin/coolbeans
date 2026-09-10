@@ -29,13 +29,13 @@ préfixe technique.
 | Champ | Rôle |
 | --- | --- |
 | `nom` | Nom affiché dans le portail et le sélecteur admin |
-| `doc` | Identifiant de sa doc (dossier dans `src/content/docs/`) — absent, le module Doc affiche un état vide |
+| `doc` | Identifiant de sa doc (dossier dans `src/content/docs/`). Absent, le module Doc affiche un état vide |
 | `uptimerobot_monitor_ids` | Monitors de disponibilité de ses sites (prévu pour le module Site) |
 | `archive` | `true` sort le client du sélecteur sans rien supprimer |
 
 Un module dont le mapping est absent affiche un **état vide** explicite, pas
 une erreur : on peut créer un client incomplet et compléter ensuite. Un
-encart de diagnostic, visible des seuls admins, liste ce qui manque — c'est
+encart de diagnostic, visible des seuls admins, liste ce qui manque : c'est
 le contrôle prévu par le runbook d'onboarding après la création d'un client.
 
 ## Comment ça marche
@@ -46,21 +46,21 @@ de domaine : sur `my.coolbeans.cc`, il sert en interne les pages `/espace/…`
 sous des adresses courtes ; sur `coolbeans.cc`, il sert le site marketing.
 Les anciennes adresses redirigent vers les canoniques. Cette réécriture vit
 dans le Worker et non dans Astro, car les pages statiques du site sont
-servies avant même qu'Astro ne s'exécute — seul le Worker voit tous les noms
+servies avant même qu'Astro ne s'exécute : seul le Worker voit tous les noms
 de domaine. Staging suit le même schéma avec `staging.coolbeans.cc` et
 `my-staging.coolbeans.cc`.
 
 **L'authentification.** Better Auth protège tout `/espace` et tout `/docs`
 (`src/middleware.ts`). Il est auto-hébergé : pas de fournisseur tiers, les
 comptes et les sessions vivent dans la base D1 du portail. Chaque compte
-porte un type — `admin`, `revendeur` ou `client` — et sa portée vient de ses
+porte un type (`admin`, `revendeur` ou `client`) et sa portée vient de ses
 appartenances : une organisation (le revendeur) et une team (le workspace du
 client), dont le slug pointe vers le registre YAML ci-dessus, qui reste la
 source de vérité. Connexion par e-mail et mot de passe sur `/connexion` ;
 **aucune inscription publique** : les comptes sont créés à la main.
 
 **Le sélecteur admin.** Un admin choisit son « client courant » ; le choix
-est mémorisé dans un cookie. Règle d'arbitrage : **l'URL gagne** — un admin
+est mémorisé dans un cookie. Règle d'arbitrage : **l'URL gagne** : un admin
 qui ouvre la doc d'un client alors que son sélecteur est ailleurs bascule
 automatiquement sur ce client, pour que l'écran et le sélecteur racontent la
 même chose.

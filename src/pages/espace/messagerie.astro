@@ -36,7 +36,7 @@ const users =
   admin && client
     ? (await comptesDuWorkspace(env.PORTAL_DB, client.slug)).map((c) => ({
         id: c.id,
-        label: `${c.nom || "?"} — ${c.email}`,
+        label: `${c.nom || "?"} · ${c.email}`,
       }))
     : [];
 
@@ -60,7 +60,7 @@ const lignes = tickets.map((t) => ({
 <EspaceLayout title="Messagerie">
   <h1>Messagerie</h1>
   <p class="sub">
-    Un message = un sujet. Trois sujets&nbsp;? Trois demandes séparées — on vous répondra plus
+    Un message = un sujet. Trois sujets&nbsp;? Trois demandes séparées : on vous répondra plus
     vite.
   </p>
 
@@ -89,7 +89,7 @@ const lignes = tickets.map((t) => ({
     <Collapse question="Comment bien formuler ma demande ?">
       Un message = un sujet. Si vous avez deux choses à signaler, envoyez deux demandes
       séparées : chacune suit son propre fil, rien ne se perd en route. Plus la description est
-      concrète — la page concernée, ce que vous attendiez, ce qui s'est passé — plus la réponse
+      concrète (la page concernée, ce que vous attendiez, ce qui s'est passé), plus la réponse
       est rapide.
     </Collapse>
     <Collapse question="Sous quel délai aurai-je une réponse ?">
@@ -100,7 +100,7 @@ const lignes = tickets.map((t) => ({
     <Collapse question="Puis-je toujours passer par email ?">
       Bien sûr. Un message à
       <a class="link" href="mailto:ludo@coolbeans.cc">ludo@coolbeans.cc</a> fonctionne
-      toujours — la messagerie a simplement l'avantage d'arriver directement dans mon outil de
+      toujours : la messagerie a simplement l'avantage d'arriver directement dans mon outil de
       suivi, avec un accusé de réception immédiat.
     </Collapse>
   </section>

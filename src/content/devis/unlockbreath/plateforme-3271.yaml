@@ -1,5 +1,5 @@
 titre: UnlockBreath x Coolbeans
-objet: Développement de la plateforme UnlockBreath — V01
+objet: Développement de la plateforme UnlockBreath · V01
 date: 2026-02-02
 contact: Thierry
 linear:
@@ -15,7 +15,7 @@ sections:
       UnlockBreath est une **plateforme de coaching respiratoire en ligne**
       destinée aux sportifs, aux professionnels de santé et aux patients en
       reprise d'activité. Le cœur du produit est un **programme vidéo de sept
-      semaines** — la première gratuite, les six suivantes payantes — vendu sous
+      semaines** (la première gratuite, les six suivantes payantes), vendu sous
       deux offres à durée d'accès, en dollars.
     liste:
       - texte: >-
@@ -89,29 +89,29 @@ sections:
   - titre: Budget
     budget:
       lignes:
-        - label: "**Accueil** — page avancée"
+        - label: "**Accueil** · page avancée"
           prix: 1100
-        - label: Science of Breathing — page standard
+        - label: Science of Breathing · page standard
           prix: 650
-        - label: Your Physiotherapist Guide — page standard
+        - label: Your Physiotherapist Guide · page standard
           prix: 650
-        - label: Program — page standard
+        - label: Program · page standard
           prix: 650
-        - label: FAQ — page basique
+        - label: FAQ · page basique
           prix: 350
-        - label: Contact — page basique
+        - label: Contact · page basique
           prix: 350
-        - label: Pages légales (x3) — pages basiques
+        - label: Pages légales (x3) · pages basiques
           prix: 350
-        - label: Log in / Sign up — page standard
+        - label: Log in / Sign up · page standard
           prix: 650
           tooltip: Email et mot de passe, ou inscription via Google et Facebook.
-        - label: Dashboard — page standard
+        - label: Dashboard · page standard
           prix: 650
-        - label: "**The course** — page avancée"
+        - label: "**The course** · page avancée"
           prix: 1100
           tooltip: Interface de suivi de la formation, la page la plus dense du produit.
-        - label: "**Settings** — page avancée"
+        - label: "**Settings** · page avancée"
           prix: 1100
           tooltip: Modification du mot de passe et du moyen de paiement.
         - label: >-
@@ -225,8 +225,8 @@ sections:
         tooltip: >-
           À préférer si votre besoin est ponctuel plutôt que mensuel.
     note: >-
-      Les mises à jour simples — textes, couleurs, vidéos, déplacement d'un
-      élément d'interface — relèvent de SOVANB, à 35 € HT de l'heure.
+      Les mises à jour simples (textes, couleurs, vidéos, déplacement d'un
+      élément d'interface) relèvent de SOVANB, à 35 € HT de l'heure.
 
 notes:
   - tone: success

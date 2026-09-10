@@ -38,7 +38,7 @@ const CONTACT_DIRECT = "écrivez-moi à ludo@coolbeans.cc";
 export const POST: APIRoute = async (context) => {
   const { request } = context;
   const { user, meta, client } = await getPortalContext(context);
-  if (!user) return json({ error: "Session expirée — reconnectez-vous puis réessayez." }, 401);
+  if (!user) return json({ error: "Session expirée : reconnectez-vous puis réessayez." }, 401);
 
   const fd = await request.formData();
   const objet = String(fd.get("objet") ?? "").trim().slice(0, 200);
@@ -49,12 +49,12 @@ export const POST: APIRoute = async (context) => {
   const erreurFichiers = validerFichiers(fichiers);
   if (erreurFichiers) return json({ error: erreurFichiers }, 400);
   if (!client?.linearTeamId || client.messagerie === false) {
-    return json({ error: `La messagerie n'est pas encore raccordée — ${CONTACT_DIRECT}.` }, 409);
+    return json({ error: `La messagerie n'est pas encore raccordée : ${CONTACT_DIRECT}.` }, 409);
   }
   const apiKey = env.LINEAR_API_KEY;
   if (!apiKey) {
     console.error("messagerie: LINEAR_API_KEY absent de cet environnement");
-    return json({ error: `Envoi impossible pour le moment — ${CONTACT_DIRECT}.` }, 503);
+    return json({ error: `Envoi impossible pour le moment : ${CONTACT_DIRECT}.` }, 503);
   }
 
   const jour = new Date().toISOString().slice(0, 10);
@@ -83,7 +83,7 @@ export const POST: APIRoute = async (context) => {
       cible = await compteDuWorkspace(env.PORTAL_DB, pourCompteId, client.slug);
     } catch (err) {
       console.error("messagerie: lecture du compte cible impossible", err);
-      return json({ error: `Envoi impossible pour le moment — ${CONTACT_DIRECT}.` }, 503);
+      return json({ error: `Envoi impossible pour le moment : ${CONTACT_DIRECT}.` }, 503);
     }
     if (!cible) {
       return json({ error: "Cet utilisateur n'appartient pas au client sélectionné." }, 400);
@@ -114,7 +114,7 @@ export const POST: APIRoute = async (context) => {
     createdVia === "admin"
       ? `Ticket ouvert par Ludo pour **${auteur.prenom}**${
           auteur.email ? ` (${auteur.email})` : ""
-        } le ${jour} — demande reçue hors portail.`
+        } le ${jour}, demande reçue hors portail.`
       : `Demande envoyée depuis le portail myCoolbeans par **${nomClient}**${
           emailClient ? ` (${emailClient})` : ""
         } le ${jour}.`;
@@ -191,7 +191,7 @@ export const POST: APIRoute = async (context) => {
     // générique Astro. Pas de rollback R2 en v1 — un log suffit, ça reste
     // rattrapable à la main vu le faible volume attendu.
     console.error("messagerie: création du ticket (D1/R2) échouée", err);
-    return json({ error: `Envoi impossible pour le moment — ${CONTACT_DIRECT}.` }, 500);
+    return json({ error: `Envoi impossible pour le moment : ${CONTACT_DIRECT}.` }, 500);
   }
 
   // Best-effort : le ticket existe déjà côté client (D1), un échec Linear ici
@@ -218,17 +218,17 @@ export const POST: APIRoute = async (context) => {
     // Notification interne inutile côté admin : c'est Ludo lui-même qui saisit.
     if (createdVia !== "admin") {
       const htmlInterne = renderTransactionnel({
-        preheader: `${client.nom} — ${objet}`,
+        preheader: `${client.nom} · ${objet}`,
         kicker: `Support · ${esc(client.nom)}`,
         titre: "Nouvelle demande support",
         contenu: [
           kv([
             ["Client", esc(client.nom)],
-            ["De", esc(nomClient) + (emailClient ? ` — ${esc(emailClient)}` : "")],
-            ["Ticket", ticket ? esc(ticket.identifier) : "— (Linear indisponible)"],
+            ["De", esc(nomClient) + (emailClient ? ` · ${esc(emailClient)}` : "")],
+            ["Ticket", ticket ? esc(ticket.identifier) : "Non créé (Linear indisponible)"],
             ["Date", jour],
           ]),
-          titreSection(`Demande — ${esc(objet)}`),
+          titreSection(`Demande · ${esc(objet)}`),
           citation(esc(description).replace(/\n/g, "<br>")),
         ].join(""),
         cta: ticket ? { label: "Ouvrir dans Linear", url: ticket.url } : undefined,
@@ -239,15 +239,15 @@ export const POST: APIRoute = async (context) => {
         from: "Support Coolbeans <support@coolbeans.cc>",
         to: "ludo@coolbeans.cc",
         replyTo: emailClient ?? undefined,
-        subject: `Support ${client.nom} — ${objet}${ticket ? ` (${ticket.identifier})` : ""}`,
+        subject: `Support ${client.nom} · ${objet}${ticket ? ` (${ticket.identifier})` : ""}`,
         html: htmlInterne,
         text: [
           `Client : ${client.nom}`,
-          `De : ${nomClient}${emailClient ? ` — ${emailClient}` : ""}`,
-          ticket ? `Ticket : ${ticket.identifier} — ${ticket.url}` : "Ticket : Linear indisponible",
+          `De : ${nomClient}${emailClient ? ` · ${emailClient}` : ""}`,
+          ticket ? `Ticket : ${ticket.identifier} · ${ticket.url}` : "Ticket : Linear indisponible",
           `Date : ${jour}`,
           "",
-          `Demande — ${objet} :`,
+          `Demande · ${objet} :`,
           description,
         ].join("\n"),
       });
@@ -271,7 +271,7 @@ export const POST: APIRoute = async (context) => {
         from: "Ludo de Coolbeans <support@coolbeans.cc>",
         to: auteur.email,
         replyTo: "ludo@coolbeans.cc",
-        subject: `Ludo a ouvert un ticket pour vous — ${objet}`,
+        subject: `Ludo a ouvert un ticket pour vous · ${objet}`,
         html,
         text: `Ludo a ouvert un ticket pour vous.\n\nSuite à votre demande, votre ticket est ouvert et suivi ici : ${urlTicket}`,
       });

@@ -35,7 +35,7 @@ pas une branche de feature : elle ne se supprime jamais.
 
 ## Développement local
 
-- `npm run dev` : serveur de développement — il tourne en démon persistant
+- `npm run dev` : serveur de développement : il tourne en démon persistant
   (`npx astro dev status`, `logs`, `stop`).
 - `npm test` : tests unitaires (vitest).
 - `npm run build` puis `npm run preview` : construction et prévisualisation.
@@ -56,7 +56,7 @@ directement.
 **Le secret d'authentification.** Better Auth étant auto-hébergé, il n'y a
 aucune clé publique à injecter au moment de la construction : tout se joue
 côté Worker. `BETTER_AUTH_SECRET` est un secret du Worker, posé dans
-Cloudflare, jamais dans le repo — un par environnement, et deux valeurs
+Cloudflare, jamais dans le repo : un par environnement, et deux valeurs
 différentes entre production et staging, sinon un cookie de staging ouvrirait
 la production. Les comptes et les sessions vivent dans la base D1 du portail,
 qui est elle aussi distincte entre les deux environnements.
@@ -70,9 +70,9 @@ courante, à vérifier dans les dashboards concernés) :
 | --- | --- |
 | Cloudflare | DNS de `coolbeans.cc` + hébergement des deux Workers |
 | Google Workspace | Boîtes mail `@coolbeans.cc` |
-| SendGrid | Envoi transactionnel — subuser actif `u44751929` ; le subuser `u28242587` est hors service, ne pas l'utiliser |
+| SendGrid | Envoi transactionnel : subuser actif `u44751929` ; le subuser `u28242587` est hors service, ne pas l'utiliser |
 | MailerLite | Emailing marketing |
-| Resend | Notifications applicatives du site (réponse aux devis, newsletter — `src/emails/newsletter.ts`) |
+| Resend | Notifications applicatives du site (réponse aux devis, newsletter : `src/emails/newsletter.ts`) |
 
 ## Référence technique
 
