@@ -1,0 +1,177 @@
+titre: Mathilde Chevalier x Coolbeans
+objet: Refonte du site, hors de Webflow
+date: 2026-09-10
+contact: Mathilde
+linear:
+  projet: "Refonte du site : Webflow vers Astro"
+  affaire: CRM-90
+
+sections:
+  - titre: Ce que j'ai compris
+    texte: >-
+      Ton site marche et il n'y a rien à refaire dessus. Ce n'est pas ce que je
+      te propose. Ce qui coûte, c'est la machine en dessous : Webflow te facture
+      environ 300 € par an pour héberger un site qui n'a plus besoin de lui.
+    liste:
+      - texte: >-
+          Tu paies le plan CMS uniquement pour avoir le droit de publier un
+          article. Sans lui, ton blog serait figé.
+      - texte: >-
+          Chaque geste sur le site passe par moi : ajouter un logo de
+          partenaire, coller un lecteur de podcast, publier un épisode. On l'a
+          fait une dizaine de fois depuis janvier.
+      - texte: >-
+          Tes pages traînent une feuille de style de 130 ko que Webflow sert
+          partout, et des polices chargées chez Google avant le premier mot
+          affiché.
+    note: >-
+      Si l'un de ces trois points est faux, dis-le moi avant de lire la suite :
+      toute la proposition est construite dessus.
+
+  - titre: Ce que la refonte change
+    liste:
+      - texte: >-
+          Plus d'abonnement. L'hébergement et l'espace de rédaction tiennent
+          dans des offres gratuites. Il ne te reste que ton nom de domaine,
+          autour de dix euros par an.
+      - texte: >-
+          Ton site reste identique. Même design, mêmes textes, mêmes adresses
+          de pages. Personne ne verra la différence, sauf sur la vitesse.
+      - texte: >-
+          Tu publies un article, tu y colles ton lecteur de podcast, tu ajoutes
+          un logo de partenaire. Sans me demander et sans attendre.
+        tooltip: >-
+          Le champ du lecteur est nommé et expliqué dans l'outil. Plus de
+          « HTML Embed » à aller chercher.
+      - texte: >-
+          Le code est dans un dépôt qui t'appartient et ton contenu s'exporte.
+          Tu n'es enfermée nulle part, et n'importe quel développeur peut
+          reprendre le site.
+
+  - titre: Le site
+    texte: Les neuf pages reprises à l'identique, et tes sept articles.
+    liste:
+      - texte: >-
+          Accueil, avec ton bandeau de logos partenaires et tes témoignages.
+      - texte: "Qui suis-je, Contact et son formulaire, FAQ."
+        tooltip: >-
+          J'ajoute au passage les données structurées sur la FAQ, que Webflow ne
+          pose pas : c'est ce qui permet à tes réponses de remonter directement
+          dans les résultats Google.
+      - texte: >-
+          Blog et tes sept articles, à leur adresse actuelle. Aucun lien que tu
+          as déjà partagé ne casse.
+      - texte: >-
+          Mentions légales, politique de confidentialité, politique de cookies.
+      - texte: >-
+          Ton formulaire d'abonnement à la newsletter, en pied de page et en
+          tête du blog, toujours raccordé à MailerLite.
+    note: >-
+      Compris dans tous les cas : responsive, configuration SEO, optimisation de
+      la vitesse, tests QA sur les 3 navigateurs principaux, certificat SSL,
+      hébergement et raccordement du nom de domaine, doc de passation, support
+      30 jours après la mise en ligne.
+
+  - titre: La machine dessous
+    texte: >-
+      Trois outils, dont deux que tu ne verras jamais. Le seul que tu ouvriras,
+      c'est celui où tu écris.
+    liste:
+      - texte: >-
+          Ton espace de rédaction : une adresse web, ton mot de passe, et une
+          liste d'articles. Depuis un ordinateur comme depuis ton téléphone.
+        tooltip: >-
+          Quatre choses seulement à l'intérieur : tes articles, leurs
+          catégories, tes logos de partenaires et tes témoignages. Volontairement
+          court, pour qu'il n'y ait rien à arbitrer avant de publier.
+      - texte: >-
+          L'hébergement, réparti sur un réseau mondial. Ta page part du serveur
+          le plus proche de qui la consulte.
+      - texte: >-
+          Le site lui-même, reconstruit page par page. C'est la partie qui prend
+          le temps, et c'est la seule.
+    note: >-
+      Tu n'as rien à installer et rien de nouveau à payer. La prise en main tient
+      en une heure, en visio, et je te l'enregistre.
+
+  - titre: Le budget
+    texte: >-
+      Les quatre premières lignes forment l'ensemble. La dernière se coche et se
+      décoche : le total suit.
+    budget:
+      lignes:
+        - label: "**Les neuf pages**, reconstruites à l'identique"
+          prix: 420
+        - label: "**Ton espace de rédaction** et la reprise de tes sept articles"
+          prix: 250
+          tooltip: >-
+            Tes articles gardent leur date de publication d'origine, leurs
+            images et leurs lecteurs intégrés.
+        - label: "Formulaire de contact et abonnement à la newsletter"
+          prix: 90
+        - label: "**Mise en ligne** : bascule du nom de domaine, référencement, recette"
+          prix: 130
+          tooltip: >-
+            Je compare page à page avec ton site actuel avant de basculer, et je
+            mesure la vitesse avant et après.
+        - label: "Une page dédiée à ton podcast, avec tous tes épisodes"
+          prix: 400
+          optionnel: true
+          defaut: false
+          tooltip: >-
+            C'était au périmètre en novembre, puis reporté au profit de la page
+            Actus. C'est le poste qui te rendrait le plus autonome : aujourd'hui
+            tu me demandes à chaque épisode.
+      mention: HT
+      reglement: >-
+        En une fois, à la mise en ligne. Rien à avancer.
+    note: >-
+      C'est une migration technique : ton design existe, tes textes existent, il
+      n'y a ni maquette ni rédaction à refaire. C'est ce qui la rend courte, et
+      c'est ce qui explique le prix.
+
+  - titre: Le déroulé
+    planning:
+      options:
+        - label: Calendrier
+          texte: >-
+            Les jalons comptent en jours à partir du démarrage, et le démarrage
+            se cale ensemble. Ce n'est pas le jour de ta réponse : je travaille
+            sur d'autres projets, et le créneau se réserve.
+          jalons:
+            - { date: "J+0", label: "Démarrage, à la date qu'on aura convenue" }
+            - { date: "J+8", label: "Le site complet, à parcourir avant la mise en ligne", owner: coolbeans }
+            - { date: "J+11", label: "Tu le parcours et tu me fais tes retours", owner: client }
+            - { date: "J+13", label: "Corrections", owner: coolbeans }
+            - { date: "J+15", label: "Bascule du nom de domaine et mise en ligne", owner: coolbeans }
+            - { date: "J+17", label: "Prise en main de ton espace de rédaction, une heure en visio", owner: coolbeans }
+            - { date: "J+20", label: "Tu résilies ton abonnement Webflow", owner: client }
+          note: >-
+            Ne résilie pas Webflow avant la bascule : tant que le nom de domaine
+            n'a pas changé de main, c'est Webflow qui sert ton site, et une
+            résiliation anticipée le couperait.
+
+  - titre: De ton côté
+    texte: Deux choses, et elles ne te prennent pas longtemps.
+    liste:
+      - texte: >-
+          Tes accès Webflow et MailerLite, le temps de la migration.
+        tooltip: >-
+          Il me faut le contenu de ta collection Blog et la clé qui relie ton
+          formulaire à MailerLite. Je te dis exactement où cliquer.
+      - texte: >-
+          Une heure pour parcourir le site avant la mise en ligne, et une heure
+          pour la prise en main.
+    note: >-
+      Deux allers-retours sont prévus. Au-delà, on en reparle avant que je
+      continue.
+
+notes:
+  - texte: >-
+      Le périmètre s'arrête à la migration. Si tu veux faire évoluer le design ou
+      revoir un parcours, c'est un autre sujet et on le chiffre à part.
+  - texte: >-
+      Aucun abonnement mensuel après la bascule. Seul ton nom de domaine se
+      renouvelle, autour de dix euros par an.
+  - texte: >-
+      Proposition valable 30 jours.
