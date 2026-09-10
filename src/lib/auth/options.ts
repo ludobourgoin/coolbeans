@@ -9,6 +9,7 @@
 // scripts/generer-schema-auth.ts les lit telles quelles, sur une SQLite vide.
 
 import { magicLink } from "better-auth/plugins/magic-link";
+import { EN_TETE_CAPTURE, deposerLien } from "./capture-lien";
 import { organization } from "better-auth/plugins/organization";
 import {
   envoyerMailAuth,
@@ -55,8 +56,16 @@ export function optionsAuth(env?: Env, baseURL = "https://my.coolbeans.cc") {
         // Meme verrou : sans lui, demander un lien magique pour une adresse
         // inconnue CREE le compte.
         disableSignUp: true,
-        sendMagicLink: async ({ email, url }: { email: string; url: string }) => {
+        sendMagicLink: async (
+          { email, url }: { email: string; url: string },
+          request?: Request,
+        ) => {
           if (!env) return; // generation de schema
+          /* Capture demandee par la route admin : on depose l'URL et on
+             n'envoie RIEN. Le depot n'aboutit que si le jeton a ete reserve
+             au prealable, sans quoi un en-tete pose au hasard suffirait a
+             empecher un mail de partir. */
+          if (deposerLien(request?.headers.get(EN_TETE_CAPTURE), url)) return;
           await envoyerMailAuth(env, email, renderLienMagique({ url }));
         },
       }),
