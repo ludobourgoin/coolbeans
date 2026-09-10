@@ -1,20 +1,142 @@
 ---
-// Page-souche « Documents » (section Projets, spec sidebar 2026-08-14).
-// Entrée `wip` du registre : l'espace façon Drive arrive avec COO-70.
+// Documents du workspace (spec 2026-09-08-documents-workspace-design.md).
+//
+// Deux vues, une seule requête différente. Le filtre de visibilité vit dans la
+// requête SQL, jamais dans le rendu : une ligne masquée ne doit pas atteindre
+// le navigateur d'un client, même cachée en CSS.
+//
+// L'enregistrement automatique des pages du repo ne tourne QUE en vue admin.
+// La vue client lit, elle n'écrit pas.
 export const prerender = false;
 
+import { env } from "cloudflare:workers";
 import EspaceLayout from "../../../layouts/EspaceLayout.astro";
 import EmptyState from "../../../components/portail/EmptyState.astro";
+import ListeDocuments from "../../../components/portail/ListeDocuments";
+import { getPortalContext } from "../../../lib/portail/context";
+import { isAdmin } from "../../../lib/portail/metadata";
+import { documentsDuClientAdmin, documentsVisibles } from "../../../lib/portail/documents/store";
+import { orphelines, pagesDuRepo, synchroniserPagesDuRepo } from "../../../lib/portail/documents/sync";
 
+const { meta, client } = await getPortalContext(Astro);
+const admin = isAdmin(meta);
 Astro.response.headers.set("Cache-Control", "no-store");
+
+let lignes: Awaited<ReturnType<typeof documentsDuClientAdmin>> = [];
+let mortes = new Set<string>();
+
+if (client) {
+  if (admin) {
+    await synchroniserPagesDuRepo(env.PORTAL_DB, client.slug);
+    lignes = await documentsDuClientAdmin(env.PORTAL_DB, client.slug);
+    mortes = orphelines(
+      lignes.map((l) => l.cle_source),
+      await pagesDuRepo(client.slug),
+    );
+  } else {
+    lignes = await documentsVisibles(env.PORTAL_DB, client.slug);
+  }
+}
+
+const vues = lignes.map((l) => ({
+  id: l.id,
+  titre: l.titre,
+  source: l.source,
+  url: l.url,
+  mime: l.mime,
+  date_doc: l.date_doc,
+  visible: l.visible === 1,
+  orpheline: Boolean(l.cle_source && mortes.has(l.cle_source)),
+}));
+
+const aujourdhui = new Date().toISOString().slice(0, 10);
 ---
 
 <EspaceLayout title="Documents">
   <h1>Documents</h1>
-  <p class="sub">Vos devis, contrats et comptes rendus.</p>
+  <p class="sub">
+    {
+      admin
+        ? "Tout ce que Coolbeans a produit pour ce client. Rien n'est visible tant que vous ne l'avez pas décidé, document par document."
+        : "Vos propositions, contrats, comptes rendus et fichiers, au même endroit."
+    }
+  </p>
 
-  <EmptyState title="Bientôt disponible">
-    Vos documents arriveront ici : devis, contrats, comptes rendus, téléchargeables, avec une
-    icône par type de fichier.
-  </EmptyState>
+  {
+    vues.length === 0 ? (
+      <div class="mt-6">
+        <EmptyState title={admin ? "Aucun document" : "Rien pour l'instant"}>
+          {admin
+            ? "Les propositions et cadrages de ce client apparaîtront ici automatiquement dès qu'ils existent dans le repo. Vous pouvez aussi déposer un fichier ou ajouter un lien."
+            : "Les documents de votre projet arriveront ici. Vous recevrez un message quand il y aura du nouveau."}
+        </EmptyState>
+      </div>
+    ) : (
+      <ListeDocuments client:load documents={vues} admin={admin} />
+    )
+  }
+
+  {
+    admin && (
+      <div class="mt-10">
+        {/* `details` natif plutôt que le composant Collapse, dont le corps est
+            calibré pour une réponse de FAQ (texte atténué, largeur bornée) et
+            écraserait la mise en page du formulaire. */}
+        <details class="group border-t border-line">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-base font-medium text-ink [&::-webkit-details-marker]:hidden">
+            Ajouter un document
+            <span
+              class="font-mono text-mute after:content-['+'] group-open:after:content-['−']"
+              aria-hidden="true"
+            />
+          </summary>
+          {/* Deux natures dans un seul formulaire : un fichier déposé, ou un
+              lien externe. Le premier renseigné gagne, et le document naît
+              masqué dans les deux cas. */}
+          <form
+            class="card mt-4 grid gap-4"
+            method="POST"
+            action="/api/documents/nouveau"
+            enctype="multipart/form-data"
+          >
+            <div class="grid gap-1">
+              <label class="label field-label" for="doc-titre">Nom affiché</label>
+              <input
+                class="field"
+                id="doc-titre"
+                name="titre"
+                type="text"
+                placeholder="Laisser vide pour reprendre le nom du fichier"
+              />
+            </div>
+
+            <div class="grid gap-1">
+              <label class="label field-label" for="doc-fichier">Fichier</label>
+              <input id="doc-fichier" name="fichier" type="file" />
+            </div>
+
+            <div class="grid gap-1">
+              <label class="label field-label" for="doc-url">ou adresse d'un lien</label>
+              <input
+                class="field"
+                id="doc-url"
+                name="url"
+                type="url"
+                placeholder="https://docs.google.com/..."
+              />
+            </div>
+
+            <div class="grid gap-1">
+              <label class="label field-label" for="doc-date">Date du document</label>
+              <input class="field" id="doc-date" name="date" type="date" value={aujourdhui} />
+            </div>
+
+            <div>
+              <button class="btn" type="submit">Ajouter, masqué</button>
+            </div>
+          </form>
+        </details>
+      </div>
+    )
+  }
 </EspaceLayout>

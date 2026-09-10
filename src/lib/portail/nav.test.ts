@@ -71,6 +71,7 @@ describe("buildSidebar · visibilité côté client", () => {
       "Introduction",
       "Vue d'ensemble",
       "Édition",
+      "Documents",
       "Ressources",
     ]);
   });
@@ -92,8 +93,9 @@ describe("buildSidebar · visibilité côté client", () => {
 
   it("fait disparaître une section dont aucune page n'est prête", () => {
     const sections = buildSidebar("my.coolbeans.cc", client, avecDoc, docPages);
-    // Mon site et Projets : tout est wip aujourd'hui.
-    expect(sections.map((s) => s.key)).toEqual(["bienvenue", "doc", "aide"]);
+    // Mon site : tout est wip aujourd'hui. Projets survit par Documents, seule
+    // page lancée de la section depuis COO-70.
+    expect(sections.map((s) => s.key)).toEqual(["bienvenue", "doc", "projets", "aide"]);
   });
 });
 
@@ -145,6 +147,7 @@ describe("buildSidebar · liens et préfixe d'hôte", () => {
       "/espace",
       "/docs/amusoire/vue-densemble",
       "/docs/amusoire/edition",
+      "/espace/projets/documents",
       "/espace/ressources",
     ]);
   });

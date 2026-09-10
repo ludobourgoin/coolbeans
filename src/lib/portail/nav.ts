@@ -152,7 +152,7 @@ const SECTIONS: SectionDef[] = [
     pages: [
       { label: "Actifs", path: "/projets", flag: "wip" }, // COO-69 (sync Linear)
       { label: "Terminés", path: "/projets/termines", flag: "wip" }, // COO-69
-      { label: "Documents", path: "/projets/documents", flag: "wip" }, // COO-70
+      { label: "Documents", path: "/projets/documents", flag: "live" }, // COO-70
     ],
   },
   {
