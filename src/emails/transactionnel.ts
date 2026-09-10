@@ -25,6 +25,7 @@ export {
   espace,
   cta,
   kv,
+  qr,
   esc,
   citation,
   label,
