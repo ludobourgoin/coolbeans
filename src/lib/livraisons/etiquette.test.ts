@@ -17,7 +17,7 @@ describe("etiquetteMilestone", () => {
 
   it("retire un préfixe de code", () => {
     expect(etiquetteMilestone(m("P7 · Moteur d'observations"))).toBe("Moteur d'observations");
-    expect(etiquetteMilestone(m("S1 — Progression et notes"))).toBe("Progression");
+    expect(etiquetteMilestone(m("S1 \u2014 Progression et notes"))).toBe("Progression");
   });
 
   it("laisse intact un nom déjà court", () => {

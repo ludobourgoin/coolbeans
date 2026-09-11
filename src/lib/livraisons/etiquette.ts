@@ -9,7 +9,7 @@ const MAX = 30;
 // Prefixe de code en tete : "S0 <cadratin> ", "P7 <point median> ", "12- ".
 // Les deux echappements sont le cadratin et le demi-cadratin, ecrits ainsi
 // pour respecter la regle de redaction du depot.
-const PREFIXE_CODE = /^[A-Z]?\d+\s*[·—–-]\s*/;
+const PREFIXE_CODE = /^[A-Z]?\d+\s*[·\u2014\u2013-]\s*/;
 
 // Coupe au premier connecteur. La forme " mot" plutot que "\bmot\b" est
 // deliberee : en JavaScript, \b est ASCII, donc "\ba\b" ne matcherait jamais
