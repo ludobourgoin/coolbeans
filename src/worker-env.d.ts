@@ -46,6 +46,27 @@ interface PortalSecrets {
    * a rendre une session de staging valable en production.
    */
   BETTER_AUTH_SECRET?: string;
+
+  /**
+   * Compte de service Google (adresse en @...iam.gserviceaccount.com) : ecriture
+   * du calendrier Livraisons depuis le cron. `wrangler secret put
+   * GOOGLE_SA_EMAIL`, production uniquement.
+   */
+  GOOGLE_SA_EMAIL?: string;
+
+  /**
+   * Cle privee PEM du compte de service, encodee en base64 pour survivre au
+   * passage d'une valeur multiligne en secret. `wrangler secret put
+   * GOOGLE_SA_PRIVATE_KEY`, production uniquement.
+   */
+  GOOGLE_SA_PRIVATE_KEY?: string;
+
+  /**
+   * Identifiant du calendrier Google « Livraisons » (Parametres du calendrier
+   * > Integrer le calendrier). `wrangler secret put
+   * GOOGLE_CALENDAR_LIVRAISONS_ID`, production uniquement.
+   */
+  GOOGLE_CALENDAR_LIVRAISONS_ID?: string;
 }
 
 interface Env extends PortalSecrets {}

@@ -27,3 +27,11 @@ RESEND_API_KEY=
 # production :
 #   openssl rand -base64 32
 BETTER_AUTH_SECRET=
+
+# Calendrier Google « Livraisons » : le cron y ecrit les milestones Linear
+# datees. Production uniquement, laisser vide en local et en staging (la tache
+# se saute d'elle-meme). La cle privee est le champ `private_key` du JSON du
+# compte de service, encode en base64.
+GOOGLE_SA_EMAIL=
+GOOGLE_SA_PRIVATE_KEY=
+GOOGLE_CALENDAR_LIVRAISONS_ID=

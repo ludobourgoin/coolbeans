@@ -17,6 +17,7 @@
 import { handle } from "@astrojs/cloudflare/handler";
 import { ouvrirLesDues } from "./lib/portail/messagerie/ouvrir";
 import { publierLesDues } from "./lib/portail/messagerie/publier";
+import { synchroniserLivraisons } from "./lib/livraisons/sync";
 
 const PORTAL_OF: Record<string, string> = {
   "coolbeans.cc": "my.coolbeans.cc",
@@ -110,5 +111,29 @@ export default {
           console.log(JSON.stringify({ event: "messagerie_ouverture", status: "error", message: String(err), scheduled_at: scheduledAt })),
         ),
     );
+    // Calendrier Livraisons : le cron tourne toutes les 5 minutes, la
+    // synchronisation ne s'execute qu'au premier passage de chaque heure.
+    // Production uniquement : sans les secrets Google la tache se saute, ce
+    // qui evite que staging et prod se disputent le meme agenda.
+    if (new Date(controller.scheduledTime).getUTCMinutes() < 5) {
+      if (!env.LINEAR_API_KEY || !env.GOOGLE_SA_EMAIL || !env.GOOGLE_SA_PRIVATE_KEY || !env.GOOGLE_CALENDAR_LIVRAISONS_ID) {
+        console.log(JSON.stringify({ event: "livraisons_sync", status: "skipped_missing_secrets", scheduled_at: scheduledAt }));
+      } else {
+        ctx.waitUntil(
+          synchroniserLivraisons({
+            apiKey: env.LINEAR_API_KEY,
+            email: env.GOOGLE_SA_EMAIL,
+            clePriveeBase64: env.GOOGLE_SA_PRIVATE_KEY,
+            calendarId: env.GOOGLE_CALENDAR_LIVRAISONS_ID,
+          })
+            .then((r) =>
+              console.log(JSON.stringify({ event: "livraisons_sync", status: "ok", ...r, scheduled_at: scheduledAt })),
+            )
+            .catch((err) =>
+              console.log(JSON.stringify({ event: "livraisons_sync", status: "error", message: String(err), scheduled_at: scheduledAt })),
+            ),
+        );
+      }
+    }
   },
 } satisfies ExportedHandler<Env>;
