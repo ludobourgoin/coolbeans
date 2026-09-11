@@ -81,11 +81,18 @@ sections:
           lecteur, dans l'ordre.
       - texte: >-
           Mentions légales, politique de confidentialité, politique de cookies.
-    note: >-
-      Compris dans tous les cas : responsive, configuration SEO, optimisation de
-      la vitesse, tests QA sur les 3 navigateurs principaux, certificat SSL,
-      hébergement et raccordement du nom de domaine, doc de passation, support
-      30 jours après la mise en ligne.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Responsive (desktop, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation des web perfs (vitesse, Core Web Vitals…)
+      - Tests QA sur les 3 navigateurs principaux
+      - Setup tracking (analytics sans cookies)
+      - Certificat SSL, hébergement et DNS
+      - Pages légales
+      - Doc de passation pour la prise en main du CMS
+      - Support 30 jours après mise en ligne
 
   - titre: La machine dessous
     texte: >-
