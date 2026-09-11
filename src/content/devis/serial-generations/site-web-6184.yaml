@@ -22,6 +22,15 @@
 #   - les noms de pages passent en gras dans la section « Le site » ;
 #   - formulations réécrites en français simple.
 #
+# Page Ressources ajoutée au socle le 2026-09-11, décision de Ludo : les liens
+# et les PDF annoncés dans son premier mail n'avaient aucune page d'accueil. Le
+# socle passe de cinq à six pages, **à prix constant** : son plafond de 2 000 €
+# TTC ne laisse que 50 € de marge, donc facturer la page reviendrait à sortir de
+# sa fourchette. L'option devient une septième page.
+#
+# Corrigé au passage : le document affirmait que les PDF se déposent sur Pod.
+# C'est faux, Pod ne prend que de la vidéo ; les PDF vont dans Sanity.
+#
 # Déroulé revu le 2026-09-11, décision de Ludo : à ce prix et à cette date, pas
 # d'allers-retours sur la maquette. Un rendez-vous de lancement d'une heure
 # remplace la validation de maquette, puis le site se construit d'une traite et
@@ -74,7 +83,9 @@ sections:
           L'équipe publie elle-même aujourd'hui, et doit pouvoir continuer.
 
   - titre: Le site
-    texte: Cinq pages, au lieu des sept que le menu annonce aujourd'hui.
+    texte: >-
+      Six pages, contre sept aujourd'hui : deux des pages actuelles fusionnent,
+      et une page nouvelle accueille les documents.
     liste:
       - texte: >-
           **Accueil** : ce qu'est Sérial Générations, présenté dans une langue
@@ -88,6 +99,10 @@ sections:
           **Partenaires et financeurs** : les acteurs de l'audiovisuel et du
           secteur culturel d'un côté, les financeurs de l'autre, réunis sur une
           page.
+      - texte: >-
+          **Ressources** : les documents à télécharger et les liens vers les
+          publications, les partenaires et les travaux cités. C'est la page qui
+          manque aujourd'hui.
       - texte: >-
           **Actualités** : tables rondes, ateliers, publications. C'est la page
           qui évolue, et l'équipe l'alimente sans intervention extérieure.
@@ -107,7 +122,8 @@ sections:
       - texte: >-
           **Les captations** restent sur Pod, l'instance vidéo de l'Université
           Paul-Valéry. Il suffit d'y coller l'adresse d'une vidéo pour qu'elle
-          s'affiche dans la page. Les documents PDF se déposent au même endroit.
+          s'affiche dans la page. Les documents PDF, eux, se déposent
+          directement dans l'espace de rédaction.
       - texte: >-
           **L'hébergement** est assuré par Cloudflare, sans abonnement à
           renouveler.
@@ -118,7 +134,7 @@ sections:
   - titre: Le budget
     budget:
       lignes:
-        - label: "**Les cinq pages**, conçues et intégrées"
+        - label: "**Les six pages**, conçues et intégrées"
           prix: 900
         - label: "**L'espace de rédaction**, pour publier sans intermédiaire"
           prix: 850
@@ -128,7 +144,7 @@ sections:
           prix: 200
         - label: "**Mise en ligne** : nom de domaine, référencement, recette"
           prix: 250
-        - label: "Une sixième page, en cas de besoin"
+        - label: "Une septième page, en cas de besoin"
           prix: 250
           optionnel: true
           defaut: false
