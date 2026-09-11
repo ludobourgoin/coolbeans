@@ -40,13 +40,16 @@ export interface MilestoneLinear {
   project: ProjetDeMilestone | null;
 }
 
-// Mesure faite contre le workspace reel (2026-09-11) : `includeArchived: true`
-// sur cette racine ne change rien au nombre de milestones renvoyees, les
-// projets archives sont deja couverts par defaut. Le parametre est donc
-// omis, il n'apporterait rien ici.
+// Le parametre `includeArchived: true` est ajoute par precaution. La spec
+// veut qu'une milestone terminee garde son evenement : "Une milestone
+// terminee garde son evenement. Le calendrier est une trace des echeances,
+// il ne reecrit pas le passe." Aucune donnee actuellement disponible ne
+// permet de verifier le comportement de Linear si un projet archive porte
+// une milestone : le workspace ne compte que des projets archives gabarit
+// (vides), sans milestone. Le parametre couvre ce cas non teste.
 const REQUETE = `
   query Livraisons {
-    projectMilestones(first: 250) {
+    projectMilestones(first: 250, includeArchived: true) {
       pageInfo { hasNextPage }
       nodes {
         id
