@@ -1,4 +1,8 @@
-# Cadrage du site de Sérial'Générations. Affaire CRM-91.
+# Cadrage du site de Sérial Générations. Affaire CRM-91.
+#
+# Nom corrigé le 2026-09-11 : l'apostrophe venait de la signature de mail
+# d'Isabelle, alors que le site du projet écrit le nom en deux mots. Le slug et
+# l'URL ne changent pas, le lien déjà envoyé reste valide.
 #
 # Origine : mail d'Isabelle Tournier le 2026-09-10, après une conversation de vive
 # voix la veille. Maîtresse de conférences en neuropsychologie au laboratoire
@@ -27,7 +31,7 @@
 # Tutoiement, comme son mail, formulaire compris : le drapeau `tutoiement` bascule
 # les phrases du composant qui portent un pronom. Le vouvoiement reste le défaut
 # pour les autres documents.
-titre: Le site de Sérial'Générations
+titre: Le site de Sérial Générations
 objet: Six questions avant de t'envoyer une proposition
 date: 2026-09-10
 contact: Isabelle
