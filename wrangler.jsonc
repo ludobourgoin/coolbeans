@@ -71,6 +71,12 @@
   // `triggers` est une clé héritable : l'environnement staging reprend ce cron.
   // Un seul trigger, donc 1 sur les 5 par COMPTE du plan gratuit (prod +
   // staging en consomment déjà 2).
+  //
+  // La valeur "*/5" est aussi une dépendance de la condition de cadence du
+  // calendrier Livraisons dans src/worker.ts (getUTCMinutes() < 5, qui ne
+  // laisse passer que le premier des cinq déclenchements de chaque heure).
+  // La faire passer à "*/1" déclencherait cinq synchronisations par heure
+  // au lieu d'une.
   "triggers": { "crons": ["*/5 * * * *"] },
   // `kv_namespaces` n'est PAS hérité par les environnements nommés
   // (contrairement à `triggers`, `assets` et `routes`) : d'où la duplication.
