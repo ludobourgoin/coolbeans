@@ -1,0 +1,193 @@
+# Proposition pour le site de Sérial'Générations. Affaire CRM-91, projet UNI.
+#
+# Suite du cadrage publié le 2026-09-10 (cadrage/serial-generations/site-web-3720)
+# et complété par Isabelle le 2026-09-11. Deux réponses décident de ce document :
+# le budget est en TTC (donc 1 667 € HT de plafond, pas 2 000), et elle reprend
+# ses textes elle-même.
+#
+# Prix : base 2 500 € HT au prix de marché pour un livrable comparable, puis
+# remise de 35 % au titre du laboratoire de recherche public. Le motif est un
+# statut, antérieur au prix cible, et il n'est vendu nulle part ailleurs dans le
+# document comme un bénéfice.
+#
+# Deux dérogations, décidées par Ludo le 2026-09-11 :
+#   - date de livraison ferme au 2 octobre, alors que le circuit administratif
+#     de l'université n'est pas sous notre contrôle ;
+#   - démarrage à sa parole, sans acompte ni bon de commande préalable. Un labo
+#     public paie après service fait, l'attendre coûterait la date.
+#
+# Tutoiement, comme le cadrage et comme son mail.
+titre: Sérial'Générations x Coolbeans
+objet: Le site du projet
+date: 2026-09-11
+contact: Isabelle
+linear:
+  projet: Sérial Générations
+  affaire: CRM-91
+destinataire:
+  societe: Université Paul-Valéry Montpellier 3, laboratoire EPSYLON (EA 4556)
+  contact: Isabelle Tournier
+  adresse:
+    - Site de Saint-Charles
+    - Rue du Professeur Henri Serre
+    - 34080 Montpellier
+
+sections:
+  - titre: Ce que j'ai compris
+    texte: >-
+      Ton site se présente comme un blog, alors que Sérial'Générations est un
+      projet financé, porté par une équipe et suivi par des partenaires. C'est
+      cet écart que tu veux corriger.
+    liste:
+      - texte: >-
+          Le menu annonce sept pages. Un seul billet est publié depuis mai.
+      - texte: >-
+          Tes captations de tables rondes et tes micros-trottoirs n'ont
+          aujourd'hui aucune place sur le site.
+      - texte: >-
+          Tu veux rester lisible pour le grand public, pas seulement pour tes
+          pairs.
+      - texte: >-
+          Tu publies toi-même aujourd'hui, et tu veux continuer.
+    note: >-
+      Si l'un de ces points est faux, dis-le moi avant de lire la suite : toute
+      la proposition est construite dessus.
+
+  - titre: Le site
+    texte: Cinq pages, au lieu des sept que ton menu annonce aujourd'hui.
+    liste:
+      - texte: >-
+          Accueil : ce qu'est Sérial'Générations, sur une page qui se lit sans
+          être du métier.
+      - texte: >-
+          Le projet : le contexte et l'objet d'étude réunis. Ce sont deux pages
+          aujourd'hui, et elles racontent la même chose.
+      - texte: >-
+          L'équipe : les membres, leur discipline, leur laboratoire.
+      - texte: >-
+          Partenaires et financeurs : les acteurs de l'audiovisuel et du secteur
+          culturel d'un côté, les financeurs de l'autre, sur une seule page.
+      - texte: >-
+          Actualités : tables rondes, ateliers, publications. C'est la page qui
+          bouge, et c'est toi qui la fais vivre.
+    note: >-
+      Compris dans tous les cas : responsive, configuration SEO, optimisation de
+      la vitesse, tests QA sur les 3 navigateurs principaux, certificat SSL,
+      hébergement et raccordement du nom de domaine, doc de passation, support
+      30 jours après la mise en ligne.
+
+  - titre: La machine dessous
+    texte: Deux outils, et un seul que tu ouvriras.
+    liste:
+      - texte: >-
+          Ton espace de rédaction : une adresse web, ton mot de passe. Tu ajoutes
+          une actualité, un membre de l'équipe, un partenaire ou une vidéo.
+          Depuis un ordinateur comme depuis ton téléphone.
+        tooltip: >-
+          Quatre choses seulement à l'intérieur, pour qu'il n'y ait rien à
+          arbitrer avant de publier.
+      - texte: >-
+          Tes captations restent sur Pod, l'instance vidéo de ton université. Tu
+          colles l'adresse de la vidéo, elle s'affiche dans la page.
+        tooltip: >-
+          Gratuit, sans publicité, et indépendant de la durée du financement du
+          projet. Tes PDF se déposent au même endroit.
+      - texte: >-
+          L'hébergement, sur le réseau Cloudflare. Gratuit, sans abonnement à
+          renouveler.
+    note: >-
+      Tu ne paies rien de plus après la mise en ligne. Il te reste ton nom de
+      domaine, que tu as déjà.
+
+  - titre: Le budget
+    budget:
+      lignes:
+        - label: "**Les cinq pages**, maquettées puis intégrées"
+          prix: 900
+        - label: "**Ton espace de rédaction**, d'où tu publies toi-même"
+          prix: 850
+          tooltip: >-
+            C'est ce qui remplace Blogger. Tu gardes la main que tu as
+            aujourd'hui, sans rien avoir à installer.
+        - label: "**Tes vidéos et tes documents**, affichés dans les pages"
+          prix: 300
+        - label: "La reprise de tes textes et de tes images actuels"
+          prix: 200
+        - label: "**Mise en ligne** : nom de domaine, référencement, recette"
+          prix: 250
+          tooltip: >-
+            Je compare page à page avec ton site actuel avant de basculer.
+        - label: "Une sixième page, si tu en veux une"
+          prix: 250
+          optionnel: true
+          defaut: false
+      remises:
+        - label: Laboratoire de recherche public
+          pct: 35
+      mention: HT
+      reglement: >-
+        Pas d'acompte : je démarre à ta parole, et ton bon de commande suit à son
+        rythme. Une seule facture, à la mise en ligne.
+    note: >-
+      Soit 1 950 € toutes taxes comprises, le montant que ta gestion verra.
+
+  - titre: Le déroulé
+    planning:
+      options:
+        - label: Calendrier
+          texte: >-
+            Tu vises le 3 octobre pour tes deux événements de la Fête de la
+            Science. Ce calendrier tient cette date, et il suppose ton feu vert
+            au plus tard le 15 septembre.
+          jalons:
+            - { date: "Mar. 15 sept.", label: "Ton feu vert et l'accès à ton nom de domaine", owner: client }
+            - { date: "Ven. 18 sept.", label: "La maquette de l'accueil", owner: coolbeans }
+            - { date: "Mar. 22 sept.", label: "Tu valides la direction visuelle", owner: client }
+            - { date: "Mar. 29 sept.", label: "Le site complet, à parcourir avant la mise en ligne", owner: coolbeans }
+            - { date: "Mer. 30 sept.", label: "Tu le parcours et tu me fais tes retours", owner: client }
+            - { date: "Jeu. 1er oct.", label: "Corrections", owner: coolbeans }
+            - { date: "Ven. 2 oct.", label: "Bascule du nom de domaine et mise en ligne", owner: coolbeans }
+            - { date: "Sam. 3 oct.", label: "Tes deux événements Fête de la Science" }
+          note: >-
+            Ce calendrier n'a aucune marge, et il suppose que tu décides seule :
+            trois jours pour valider la maquette, un jour pour tes retours sur le
+            site. Si les validations doivent passer par l'équipe, dis-le moi
+            maintenant et on vise fin octobre, comme tu l'avais envisagé.
+
+  - titre: De ton côté
+    texte: Peu de choses, mais ce sont elles qui tiennent la date.
+    liste:
+      - texte: >-
+          Ton feu vert avant le 15 septembre.
+      - texte: >-
+          L'accès à ton compte Wix, le temps de faire pointer ton nom de domaine
+          vers le nouveau site. Tu n'as rien à transférer et rien à résilier.
+      - texte: >-
+          Une seule personne qui tranche, et c'est toi.
+      - texte: >-
+          Tes corrections sur les textes repris, au moment où tu parcours le
+          site.
+    note: >-
+      Deux allers-retours sont prévus par livrable. Au-delà, on en reparle avant
+      que je continue.
+
+notes:
+  - tone: success
+    texte: >-
+      Remise de 35 % au titre du laboratoire de recherche public. Et pas
+      d'acompte : je démarre à ta parole, sans attendre que ton bon de commande
+      soit passé.
+  - tone: warning
+    texte: >-
+      Cette proposition suppose un hébergement libre et aucune charte imposée par
+      l'université. Si ta DSI impose son propre hébergement, ou si une mise en
+      conformité RGAA t'est demandée, dis-le moi : ce sont des sujets à part,
+      qu'on chiffre en plus.
+  - texte: >-
+      Les réseaux sociaux ne sont pas dans le périmètre. Le site est préparé pour
+      qu'un partage sur Facebook ou Instagram s'affiche avec son titre, son texte
+      et son image, mais l'ouverture des comptes et leur animation restent chez
+      toi.
+  - texte: >-
+      La rédaction des textes et la fourniture des visuels ne sont pas incluses.
+  - texte: Proposition valable 30 jours.
