@@ -22,6 +22,12 @@
 #   - les noms de pages passent en gras dans la section « Le site » ;
 #   - formulations réécrites en français simple.
 #
+# Logo ajouté le 2026-09-11 en note bornée, sans ligne de prix : le socle
+# consomme déjà le plafond TTC à 50 € près. Le fichier servi aujourd'hui fait
+# 467 x 436 px et Blogger n'en détient pas de plus grand, d'où la demande du
+# fichier source dans « De votre côté ». Sans lui, remonter le logo devient un
+# redessin, ce que la note exclut explicitement.
+#
 # Le planning est entièrement refait : Ludo est absent du 28 septembre au
 # 2 octobre, ce qui couvrait l'intégralité de l'ancienne fin de calendrier. La
 # mise en ligne remonte au vendredi 25 septembre, dernier jour ouvré avant son
@@ -164,6 +170,9 @@ sections:
           Une seule personne décisionnaire, désignée à l'avance.
       - texte: >-
           Les corrections sur les textes repris, au moment de la relecture.
+      - texte: >-
+          Le fichier source du logo. Le seul fichier disponible en ligne
+          aujourd'hui mesure 467 pixels de large, ce qui ne suffit pas.
     note: >-
       Deux allers-retours sont prévus par livrable. Au-delà, le point est
       rediscuté avant que le travail se poursuive.
@@ -187,4 +196,8 @@ notes:
       à la charge du projet.
   - texte: >-
       La rédaction des textes et la fourniture des visuels ne sont pas incluses.
+  - texte: >-
+      Le logo existant est remonté en format horizontal pour l'en-tête, à partir
+      de son fichier source. Redessiner le logo ou en créer un nouveau n'entre
+      pas dans le périmètre.
   - texte: Proposition valable 30 jours.
