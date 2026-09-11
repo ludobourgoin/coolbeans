@@ -112,9 +112,9 @@ export default {
         ),
     );
     // Calendrier Livraisons : le cron tourne toutes les 5 minutes, la
-    // synchronisation ne s'execute qu'au premier passage de chaque heure.
-    // Production uniquement : sans les secrets Google la tache se saute, ce
-    // qui evite que staging et prod se disputent le meme agenda.
+    // synchronisation ne s'exécute qu'au premier passage de chaque heure.
+    // Production uniquement : sans les secrets Google la tâche se saute, ce
+    // qui évite que staging et prod se disputent le même agenda.
     if (new Date(controller.scheduledTime).getUTCMinutes() < 5) {
       if (!env.LINEAR_API_KEY || !env.GOOGLE_SA_EMAIL || !env.GOOGLE_SA_PRIVATE_KEY || !env.GOOGLE_CALENDAR_LIVRAISONS_ID) {
         console.log(JSON.stringify({ event: "livraisons_sync", status: "skipped_missing_secrets", scheduled_at: scheduledAt }));
