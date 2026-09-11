@@ -22,6 +22,17 @@
 #   - les noms de pages passent en gras dans la section « Le site » ;
 #   - formulations réécrites en français simple.
 #
+# « Ce que ça comprend » remis en section propre le 2026-09-11, sur retour de
+# Ludo. Il était en note de fin de section, forme reprise du devis Mathilde du
+# 2026-09-10 : la skill dit que le YAML le plus récent fait foi, mais
+# composition.md décrit ce bloc comme une section standard. Les deux se
+# contredisaient, et c'est composition.md qui a raison. Le devis Mathilde porte
+# encore la forme en note, à corriger tant qu'il n'est pas envoyé.
+#
+# Attention : la liste des titres de section est un invariant entre versions.
+# Cette proposition n'ayant pas encore été envoyée, l'ajout est sans risque ;
+# une fois partie chez Isabelle, cette liste est gelée.
+#
 # Page Ressources ajoutée au socle le 2026-09-11, décision de Ludo : les liens
 # et les PDF annoncés dans son premier mail n'avaient aucune page d'accueil. Le
 # socle passe de cinq à six pages, **à prix constant** : son plafond de 2 000 €
@@ -106,11 +117,6 @@ sections:
       - texte: >-
           **Actualités** : tables rondes, ateliers, publications. C'est la page
           qui évolue, et l'équipe l'alimente sans intervention extérieure.
-    note: >-
-      Compris dans tous les cas : responsive, configuration SEO, optimisation de
-      la vitesse, tests QA sur les 3 navigateurs principaux, certificat SSL,
-      hébergement et raccordement du nom de domaine, doc de passation, support
-      30 jours après la mise en ligne.
 
   - titre: Les outils
     texte: Deux outils, dont un seul s'ouvre au quotidien.
@@ -130,6 +136,18 @@ sections:
     note: >-
       Aucun frais récurrent après la mise en ligne, hormis le nom de domaine,
       qui reste enregistré là où il l'est aujourd'hui.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Responsive (desktop, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation des web perfs (vitesse, Core Web Vitals…)
+      - Tests QA sur les 3 navigateurs principaux
+      - Setup tracking (analytics sans cookies)
+      - Certificat SSL, hébergement et DNS
+      - Pages légales
+      - Doc de passation pour la prise en main du CMS
+      - Support 30 jours après mise en ligne
 
   - titre: Le budget
     budget:
