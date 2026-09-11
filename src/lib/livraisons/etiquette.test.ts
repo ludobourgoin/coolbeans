@@ -32,6 +32,10 @@ describe("etiquetteMilestone", () => {
     expect(r.endsWith("…")).toBe(true);
   });
 
+  it("se rabat sur le nom brut si l'étiquette calculée est vide", () => {
+    expect(etiquetteMilestone(m("S3 -"))).toBe("S3 -");
+  });
+
   it("la ligne Agenda de la description l'emporte", () => {
     expect(
       etiquetteMilestone(m("Livraison et mise en ligne", "Contexte interne.\nAgenda : Mise en ligne\nSuite.")),

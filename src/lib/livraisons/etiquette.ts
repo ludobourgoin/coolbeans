@@ -33,6 +33,10 @@ export function etiquetteMilestone(m: { nom: string; description?: string | null
   if (coupe?.index !== undefined && coupe.index > 0) {
     nom = nom.slice(0, coupe.index).trim();
   }
+  // Un nom reduit a son seul prefixe de code ("S3 - ") laisserait une
+  // etiquette vide, donc un titre termine par un tiret et sans information :
+  // on se rabat alors sur le nom brut de la milestone.
+  if (!nom) return tronquer(m.nom);
   return tronquer(nom);
 }
 

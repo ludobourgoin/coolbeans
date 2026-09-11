@@ -14,6 +14,7 @@ const projet = (
   teams: { nodes: [{ key: cleTeam }] },
   projectMilestones: {
     nodes: milestones.map((m) => ({ ...m, description: null })),
+    pageInfo: { hasNextPage: false },
   },
 });
 

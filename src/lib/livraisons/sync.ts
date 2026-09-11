@@ -35,12 +35,19 @@ export async function reconcilier(deps: DepsSync): Promise<ResultatSync> {
   for (const l of livraisons) {
     cibles.add(idEvenement(l.milestoneId));
     try {
-      const issue = await deps.ecrire(l);
-      if (issue === "cree") resultat.crees += 1;
+      const ecriture = await deps.ecrire(l);
+      if (ecriture === "cree") resultat.crees += 1;
       else resultat.maj += 1;
     } catch {
       resultat.echecs += 1;
     }
+  }
+
+  // Garde-fou : une reponse Linear reussie mais vide ne doit jamais vider le
+  // calendrier. Sans lui, une cle API regeneree sur un autre workspace ou un
+  // archivage massif effacerait la totalite des evenements existants.
+  if (livraisons.length === 0 && idsExistants.length > 0) {
+    throw new Error(`Livraisons : 0 cible pour ${idsExistants.length} evenements, suppression refusee`);
   }
 
   for (const id of idsExistants) {

@@ -36,6 +36,10 @@ describe("lendemain", () => {
   it("franchit une fin d'annee", () => {
     expect(lendemain("2026-12-31")).toBe("2027-01-01");
   });
+
+  it("ignore une heure eventuellement presente dans l'entree", () => {
+    expect(lendemain("2026-09-12T08:30:00Z")).toBe("2026-09-13");
+  });
 });
 
 describe("corpsEvenement", () => {

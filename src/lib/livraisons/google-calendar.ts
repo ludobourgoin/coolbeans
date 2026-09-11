@@ -20,7 +20,10 @@ export function idEvenement(milestoneId: string): string {
 }
 
 export function lendemain(iso: string): string {
-  const d = new Date(`${iso}T00:00:00Z`);
+  // slice(0, 10) rend la fonction insensible a une entree qui porterait une
+  // heure : seule la date compte, l'evenement est journee entiere.
+  const date = iso.slice(0, 10);
+  const d = new Date(`${date}T00:00:00Z`);
   d.setUTCDate(d.getUTCDate() + 1);
   return d.toISOString().slice(0, 10);
 }
@@ -48,7 +51,17 @@ function base64url(octets: Uint8Array): string {
 const texteEnBase64url = (t: string) => base64url(new TextEncoder().encode(t));
 
 async function importerCle(clePriveeBase64: string): Promise<CryptoKey> {
-  const pem = atob(clePriveeBase64);
+  // `openssl base64` et plusieurs variantes de `base64` inserent des retours
+  // a la ligne dans leur sortie : sans ce nettoyage, atob leve une erreur
+  // opaque qui ne dit rien du vrai probleme.
+  const nettoye = clePriveeBase64.replace(/\s+/g, "");
+  const pem = atob(nettoye);
+  if (!pem.includes("BEGIN")) {
+    throw new Error(
+      "Google cle privee : le contenu decode ne contient pas BEGIN. La valeur attendue est le champ " +
+        "private_key du JSON du compte de service, encode en base64, pas le JSON entier.",
+    );
+  }
   const corps = pem.replace(/-----[^-]+-----/g, "").replace(/\s+/g, "");
   const der = Uint8Array.from(atob(corps), (c) => c.charCodeAt(0));
   return crypto.subtle.importKey(
@@ -68,7 +81,9 @@ export async function jetonAcces(email: string, clePriveeBase64: string): Promis
       iss: email,
       scope: SCOPE,
       aud: "https://oauth2.googleapis.com/token",
-      iat: maintenant,
+      // Recul de 60 secondes : un leger decalage d'horloge suffit a faire
+      // refuser par Google un jeton dont l'emission semble future.
+      iat: maintenant - 60,
       exp: maintenant + 3600,
     }),
   );
@@ -122,10 +137,11 @@ export async function ecrireEvenement(
   l: Livraison,
 ): Promise<"cree" | "maj"> {
   const corps = corpsEvenement(l);
+  const id = idEvenement(l.milestoneId);
   const base = `${API}/${encodeURIComponent(calendarId)}/events`;
   const entetes = { authorization: `Bearer ${jeton}`, "content-type": "application/json" };
 
-  const maj = await fetch(`${base}/${idEvenement(l.milestoneId)}`, {
+  const maj = await fetch(`${base}/${encodeURIComponent(id)}`, {
     method: "PUT",
     headers: entetes,
     body: JSON.stringify(corps),
@@ -134,8 +150,24 @@ export async function ecrireEvenement(
   if (maj.status !== 404) throw new Error(`Google put ${maj.status} : ${await maj.text()}`);
 
   const creation = await fetch(base, { method: "POST", headers: entetes, body: JSON.stringify(corps) });
-  if (!creation.ok) throw new Error(`Google post ${creation.status} : ${await creation.text()}`);
-  return "cree";
+  if (creation.ok) return "cree";
+  if (creation.status !== 409) throw new Error(`Google post ${creation.status} : ${await creation.text()}`);
+
+  // 409 sur la creation : Google garde la trace d'un evenement supprime puis
+  // recree avec le meme identifiant (date retiree d'une milestone, puis
+  // remise quelques jours plus tard). L'evenement existe donc reellement
+  // cote Google, il suffit de rejouer le PUT une fois.
+  const rattrapage = await fetch(`${base}/${encodeURIComponent(id)}`, {
+    method: "PUT",
+    headers: entetes,
+    body: JSON.stringify(corps),
+  });
+  if (!rattrapage.ok) {
+    throw new Error(
+      `Google put ${rattrapage.status} apres 409 en creation pour ${id} : ${await rattrapage.text()}`,
+    );
+  }
+  return "maj";
 }
 
 export async function supprimerEvenement(
@@ -143,7 +175,7 @@ export async function supprimerEvenement(
   calendarId: string,
   id: string,
 ): Promise<void> {
-  const res = await fetch(`${API}/${encodeURIComponent(calendarId)}/events/${id}`, {
+  const res = await fetch(`${API}/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(id)}`, {
     method: "DELETE",
     headers: { authorization: `Bearer ${jeton}` },
   });

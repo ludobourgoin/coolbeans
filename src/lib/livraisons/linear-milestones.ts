@@ -25,19 +25,26 @@ export interface ProjetLinear {
   teams: { nodes: Array<{ key: string }> };
   projectMilestones: {
     nodes: Array<{ id: string; name: string; description: string | null; targetDate: string | null }>;
+    pageInfo: { hasNextPage: boolean };
   };
 }
 
+// `includeArchived: true` sur `projects` : un projet archive garde ses
+// evenements passes (spec, section "Cycle complet"). Sans ce drapeau, les
+// connexions Linear excluent les archives par defaut et un projet termine
+// perdrait ses milestones datees a l'heure suivante.
 const REQUETE = `
   query Livraisons {
-    projects(first: 250) {
+    projects(first: 250, includeArchived: true) {
+      pageInfo { hasNextPage }
       nodes {
         id
         name
         url
         status { type }
         teams(first: 1) { nodes { key } }
-        projectMilestones(first: 50) {
+        projectMilestones(first: 250) {
+          pageInfo { hasNextPage }
           nodes { id name description targetDate }
         }
       }
@@ -73,6 +80,22 @@ export function livraisonsDepuisProjets(projets: ProjetLinear[]): Livraison[] {
 }
 
 export async function lireLivraisons(apiKey: string): Promise<Livraison[]> {
-  const data = await graphql<{ projects: { nodes: ProjetLinear[] } }>(apiKey, REQUETE, {});
+  const data = await graphql<{ projects: { pageInfo: { hasNextPage: boolean }; nodes: ProjetLinear[] } }>(
+    apiKey,
+    REQUETE,
+    {},
+  );
+  // Sans pagination, un projet ou une milestone au-dela de la page ne serait
+  // pas "perdu" mais supprime a la synchronisation suivante : mieux vaut
+  // arreter la synchronisation en le journalisant que d'effacer ce que le
+  // code n'a pas vu.
+  if (data.projects.pageInfo.hasNextPage) {
+    throw new Error("Livraisons : plus de 250 projets Linear, pagination requise");
+  }
+  for (const projet of data.projects.nodes) {
+    if (projet.projectMilestones.pageInfo.hasNextPage) {
+      throw new Error(`Livraisons : plus de 250 milestones pour le projet ${projet.name}, pagination requise`);
+    }
+  }
   return livraisonsDepuisProjets(data.projects.nodes);
 }
