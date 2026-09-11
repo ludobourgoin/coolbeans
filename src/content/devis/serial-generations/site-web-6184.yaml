@@ -67,6 +67,9 @@ contact: Isabelle
 linear:
   projet: Sérial Générations
   affaire: CRM-91
+envoi:
+  date: 2026-09-11
+  destinataire: isabelle.tournier@umpv.fr
 destinataire:
   societe: Université Paul-Valéry Montpellier 3, laboratoire EPSYLON (EA 4556)
   contact: Isabelle Tournier
