@@ -1,29 +1,36 @@
 import { describe, expect, it } from "vitest";
-import { livraisonsDepuisProjets, type ProjetLinear } from "./linear-milestones";
+import { livraisonsDepuisMilestones, type MilestoneLinear, type ProjetDeMilestone } from "./linear-milestones";
 
-const projet = (
-  nom: string,
-  cleTeam: string,
-  typeStatut: string,
-  milestones: Array<{ id: string; name: string; targetDate: string | null }>,
-): ProjetLinear => ({
+const projet = (nom: string, cleTeam: string, typeStatut: string | null): ProjetDeMilestone => ({
   id: `p-${nom}`,
   name: nom,
   url: `https://linear.app/coolbeans-hq/project/${nom}`,
-  status: { type: typeStatut },
-  teams: { nodes: [{ key: cleTeam }] },
-  projectMilestones: {
-    nodes: milestones.map((m) => ({ ...m, description: null })),
-    pageInfo: { hasNextPage: false },
-  },
+  status: typeStatut === null ? null : { type: typeStatut },
+  teams: { nodes: cleTeam ? [{ key: cleTeam }] : [] },
 });
 
-describe("livraisonsDepuisProjets", () => {
+const milestone = (
+  id: string,
+  name: string,
+  targetDate: string | null,
+  projetLie: ProjetDeMilestone | null,
+): MilestoneLinear => ({
+  id,
+  name,
+  description: null,
+  targetDate,
+  project: projetLie,
+});
+
+describe("livraisonsDepuisMilestones", () => {
   it("projette une milestone datee", () => {
-    const r = livraisonsDepuisProjets([
-      projet("Site vitrine LittleBox", "LIT", "started", [
-        { id: "8b6f09dd-e6bb-41fe-9bdb-617b6b85af80", name: "Intégration conforme à la maquette", targetDate: "2026-09-12" },
-      ]),
+    const r = livraisonsDepuisMilestones([
+      milestone(
+        "8b6f09dd-e6bb-41fe-9bdb-617b6b85af80",
+        "Intégration conforme à la maquette",
+        "2026-09-12",
+        projet("Site vitrine LittleBox", "LIT", "started"),
+      ),
     ]);
     expect(r).toEqual([
       {
@@ -38,40 +45,49 @@ describe("livraisonsDepuisProjets", () => {
   });
 
   it("ecarte une milestone sans date cible", () => {
-    const r = livraisonsDepuisProjets([
-      projet("Site web CAFA", "CAF", "backlog", [{ id: "a", name: "Livraison V1", targetDate: null }]),
+    const r = livraisonsDepuisMilestones([
+      milestone("a", "Livraison V1", null, projet("Site web CAFA", "CAF", "backlog")),
     ]);
     expect(r).toEqual([]);
   });
 
   it("ecarte un projet annule", () => {
-    const r = livraisonsDepuisProjets([
-      projet("Refonte du site En Haut", "ENH", "canceled", [{ id: "b", name: "Livraison V1", targetDate: "2026-10-01" }]),
+    const r = livraisonsDepuisMilestones([
+      milestone("b", "Livraison V1", "2026-10-01", projet("Refonte du site En Haut", "ENH", "canceled")),
     ]);
     expect(r).toEqual([]);
   });
 
   it("ecarte le gabarit Test de la team MOD", () => {
-    const r = livraisonsDepuisProjets([
-      projet("Test", "MOD", "backlog", [{ id: "c", name: "Livraison", targetDate: "2026-10-01" }]),
+    const r = livraisonsDepuisMilestones([
+      milestone("c", "Livraison", "2026-10-01", projet("Test", "MOD", "backlog")),
     ]);
     expect(r).toEqual([]);
   });
 
   it("garde un projet nomme Test dans une autre team", () => {
-    const r = livraisonsDepuisProjets([
-      projet("Test", "COO", "backlog", [{ id: "d", name: "Livraison", targetDate: "2026-10-01" }]),
+    const r = livraisonsDepuisMilestones([
+      milestone("d", "Livraison", "2026-10-01", projet("Test", "COO", "backlog")),
     ]);
     expect(r).toHaveLength(1);
   });
 
   it("ecarte un projet sans team", () => {
-    const sansTeam = { ...projet("Orphelin", "X", "started", [{ id: "e", name: "Livraison", targetDate: "2026-10-01" }]), teams: { nodes: [] } };
-    expect(livraisonsDepuisProjets([sansTeam])).toEqual([]);
+    const r = livraisonsDepuisMilestones([
+      milestone("e", "Livraison", "2026-10-01", projet("Orphelin", "", "started")),
+    ]);
+    expect(r).toEqual([]);
   });
 
   it("tolere un statut absent", () => {
-    const sansStatut = { ...projet("Sans statut", "COO", "started", [{ id: "f", name: "Livraison", targetDate: "2026-10-01" }]), status: null };
-    expect(livraisonsDepuisProjets([sansStatut])).toHaveLength(1);
+    const r = livraisonsDepuisMilestones([
+      milestone("f", "Livraison", "2026-10-01", projet("Sans statut", "COO", null)),
+    ]);
+    expect(r).toHaveLength(1);
+  });
+
+  it("ecarte une milestone sans projet", () => {
+    const r = livraisonsDepuisMilestones([milestone("g", "Livraison", "2026-10-01", null)]);
+    expect(r).toEqual([]);
   });
 });

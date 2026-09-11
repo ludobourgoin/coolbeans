@@ -4,6 +4,13 @@
 // date cible" n'est pas arbitraire, il traduit la regle "pas de date tant que
 // l'acompte n'est pas encaisse" : une affaire non signee ne porte donc aucun
 // evenement, sans que ce code connaisse la notion de signature.
+//
+// La requete interroge la racine `projectMilestones` et non `projects`.
+// La forme par projets (projects -> projectMilestones imbriquee, chacune
+// paginee a 250) depasse le plafond de complexite de l'API Linear et se
+// fait refuser en production. La racine `projectMilestones` porte son
+// projet en relation directe, tient en une seule page et suffit aux besoins
+// du module.
 
 import { graphql } from "../portail/linear-graphql";
 import { etiquetteMilestone } from "./etiquette";
@@ -17,85 +24,87 @@ export interface Livraison {
   projetUrl: string;
 }
 
-export interface ProjetLinear {
+export interface ProjetDeMilestone {
   id: string;
   name: string;
   url: string;
   status: { type: string } | null;
   teams: { nodes: Array<{ key: string }> };
-  projectMilestones: {
-    nodes: Array<{ id: string; name: string; description: string | null; targetDate: string | null }>;
-    pageInfo: { hasNextPage: boolean };
-  };
 }
 
-// `includeArchived: true` sur `projects` : un projet archive garde ses
-// evenements passes (spec, section "Cycle complet"). Sans ce drapeau, les
-// connexions Linear excluent les archives par defaut et un projet termine
-// perdrait ses milestones datees a l'heure suivante.
+export interface MilestoneLinear {
+  id: string;
+  name: string;
+  description: string | null;
+  targetDate: string | null;
+  project: ProjetDeMilestone | null;
+}
+
+// Mesure faite contre le workspace reel (2026-09-11) : `includeArchived: true`
+// sur cette racine ne change rien au nombre de milestones renvoyees, les
+// projets archives sont deja couverts par defaut. Le parametre est donc
+// omis, il n'apporterait rien ici.
 const REQUETE = `
   query Livraisons {
-    projects(first: 250, includeArchived: true) {
+    projectMilestones(first: 250) {
       pageInfo { hasNextPage }
       nodes {
         id
         name
-        url
-        status { type }
-        teams(first: 1) { nodes { key } }
-        projectMilestones(first: 250) {
-          pageInfo { hasNextPage }
-          nodes { id name description targetDate }
+        description
+        targetDate
+        project {
+          id
+          name
+          url
+          status { type }
+          teams(first: 1) { nodes { key } }
         }
       }
     }
   }
 `;
 
-export function livraisonsDepuisProjets(projets: ProjetLinear[]): Livraison[] {
+export function livraisonsDepuisMilestones(milestones: MilestoneLinear[]): Livraison[] {
   const livraisons: Livraison[] = [];
-  for (const projet of projets) {
+  for (const milestone of milestones) {
+    if (!milestone.targetDate) continue;
+
+    const projet = milestone.project;
+    if (!projet) continue;
     if (projet.status?.type === "canceled") continue;
     const cleTeam = projet.teams.nodes[0]?.key;
     if (!cleTeam) continue;
     // Gabarit du modele client : jamais un engagement reel.
     if (cleTeam === "MOD" && projet.name === "Test") continue;
 
-    for (const milestone of projet.projectMilestones.nodes) {
-      if (!milestone.targetDate) continue;
-      livraisons.push({
-        milestoneId: milestone.id,
-        cleTeam,
-        etiquette: etiquetteMilestone({
-          nom: milestone.name,
-          description: milestone.description,
-        }),
-        date: milestone.targetDate,
-        projetNom: projet.name,
-        projetUrl: projet.url,
-      });
-    }
+    livraisons.push({
+      milestoneId: milestone.id,
+      cleTeam,
+      etiquette: etiquetteMilestone({
+        nom: milestone.name,
+        description: milestone.description,
+      }),
+      date: milestone.targetDate,
+      projetNom: projet.name,
+      projetUrl: projet.url,
+    });
   }
   return livraisons;
 }
 
 export async function lireLivraisons(apiKey: string): Promise<Livraison[]> {
-  const data = await graphql<{ projects: { pageInfo: { hasNextPage: boolean }; nodes: ProjetLinear[] } }>(
+  const data = await graphql<{ projectMilestones: { pageInfo: { hasNextPage: boolean }; nodes: MilestoneLinear[] } }>(
     apiKey,
     REQUETE,
     {},
   );
-  // Sans pagination, un projet ou une milestone au-dela de la page ne serait
-  // pas "perdu" mais supprime a la synchronisation suivante : mieux vaut
+  // Sans ce garde-fou, une milestone au-dela de la page ne serait pas
+  // "perdue" mais supprimee a la synchronisation suivante : mieux vaut
   // arreter la synchronisation en le journalisant que d'effacer ce que le
   // code n'a pas vu.
-  if (data.projects.pageInfo.hasNextPage) {
-    throw new Error("Livraisons : plus de 250 projets Linear, pagination requise");
+  if (data.projectMilestones.pageInfo.hasNextPage) {
+    throw new Error("Livraisons : plus de 250 milestones Linear, pagination requise");
   }
-  for (const projet of data.projects.nodes) {
-    if (projet.projectMilestones.pageInfo.hasNextPage) {
-      throw new Error(`Livraisons : plus de 250 milestones pour le projet ${projet.name}, pagination requise`);
-    }
-  }
-  return livraisonsDepuisProjets(data.projects.nodes);
+  return livraisonsDepuisMilestones(data.projectMilestones.nodes);
 }
