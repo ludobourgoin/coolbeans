@@ -22,6 +22,14 @@
 #   - les noms de pages passent en gras dans la section « Le site » ;
 #   - formulations réécrites en français simple.
 #
+# Déroulé revu le 2026-09-11, décision de Ludo : à ce prix et à cette date, pas
+# d'allers-retours sur la maquette. Un rendez-vous de lancement d'une heure
+# remplace la validation de maquette, puis le site se construit d'une traite et
+# se présente terminé. La note du planning pose la borne qui va avec : la
+# relecture porte sur les contenus, pas sur la direction visuelle. Les étapes
+# DNS et recette sont conservées. En échange, Isabelle gagne deux jours de
+# réflexion, sa réponse ferme étant attendue au 16 et non plus au 14.
+#
 # Logo ajouté le 2026-09-11 en note bornée, sans ligne de prix : le socle
 # consomme déjà le plafond TTC à 50 € près. Le fichier servi aujourd'hui fait
 # 467 x 436 px et Blogger n'en détient pas de plus grand, d'où la demande du
@@ -110,7 +118,7 @@ sections:
   - titre: Le budget
     budget:
       lignes:
-        - label: "**Les cinq pages**, maquettées puis intégrées"
+        - label: "**Les cinq pages**, conçues et intégrées"
           prix: 900
         - label: "**L'espace de rédaction**, pour publier sans intermédiaire"
           prix: 850
@@ -139,29 +147,35 @@ sections:
         - label: Calendrier
           texte: >-
             Les deux événements de la Fête de la Science ont lieu le samedi
-            3 octobre. Je suis absent du 28 septembre au 2 octobre : le site est
-            donc mis en ligne le vendredi 25 septembre, huit jours avant, et
-            rien ne peut plus être modifié ensuite avant les événements.
+            3 octobre, et je suis absent du 28 septembre au 2 octobre. Le site
+            est donc mis en ligne le vendredi 25 septembre, huit jours avant.
+            Un rendez-vous d'une heure remplace les allers-retours de maquette :
+            la direction visuelle et la structure s'y décident, puis le site est
+            construit d'une traite et présenté terminé.
           jalons:
-            - { date: "Lun. 14 sept.", label: "Accord et accès au nom de domaine", owner: client }
-            - { date: "Jeu. 17 sept.", label: "Maquette de l'accueil", owner: coolbeans }
-            - { date: "Lun. 21 sept.", label: "Validation de la direction visuelle", owner: client }
+            - { date: "Mer. 16 sept.", label: "Réponse ferme sur la proposition", owner: client }
+            - { date: "Jeu. 17 sept.", label: "Rendez-vous de lancement, une heure" }
+            - { date: "Ven. 18 au 23 sept.", label: "Conception et construction du site", owner: coolbeans }
             - { date: "Mer. 23 sept.", label: "Site complet, à parcourir avant la mise en ligne", owner: coolbeans }
             - { date: "Jeu. 24 sept.", label: "Relecture et retours", owner: client }
             - { date: "Ven. 25 sept.", label: "Corrections, bascule du nom de domaine et mise en ligne", owner: coolbeans }
             - { date: "28 sept. au 2 oct.", label: "Indisponibilité, aucune intervention possible" }
             - { date: "Sam. 3 oct.", label: "Les deux événements de la Fête de la Science" }
           note: >-
-            Ce calendrier ne comporte aucune marge et suppose une seule personne
-            décisionnaire côté projet. Si les validations doivent passer par
-            l'équipe, ou si l'accord arrive après le 14 septembre, la mise en
-            ligne est reportée à la semaine du 5 octobre, à mon retour.
+            La relecture du 24 septembre porte sur les contenus et les
+            corrections, pas sur la direction visuelle, qui est arrêtée au
+            rendez-vous de lancement. Si la réponse arrive après le 16 septembre,
+            ou si les décisions doivent passer par l'équipe, la mise en ligne est
+            reportée à la semaine du 5 octobre, à mon retour.
 
   - titre: De votre côté
     texte: Peu de choses, mais ce sont elles qui tiennent la date.
     liste:
       - texte: >-
-          L'accord avant le lundi 14 septembre.
+          Une réponse ferme avant le mercredi 16 septembre.
+      - texte: >-
+          Une heure de disponibilité pour le rendez-vous de lancement, le jeudi
+          17 septembre. C'est le seul moment où la direction visuelle se décide.
       - texte: >-
           L'accès au compte Wix sur lequel le nom de domaine est enregistré, le
           temps de le faire pointer vers le nouveau site. Aucun transfert et
@@ -174,8 +188,8 @@ sections:
           Le fichier source du logo. Le seul fichier disponible en ligne
           aujourd'hui mesure 467 pixels de large, ce qui ne suffit pas.
     note: >-
-      Deux allers-retours sont prévus par livrable. Au-delà, le point est
-      rediscuté avant que le travail se poursuive.
+      Une seule relecture est prévue avant la mise en ligne. Le calendrier ne
+      permet pas d'en caler une deuxième avant les événements du 3 octobre.
 
 notes:
   - tone: success
