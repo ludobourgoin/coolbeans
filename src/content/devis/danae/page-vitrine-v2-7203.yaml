@@ -1,0 +1,172 @@
+titre: Vice Versa x Coolbeans
+objet: Une page vitrine pour Vice Versa
+date: 2026-09-11
+contact: Danaë
+version: 2
+versionDe: danae/page-vitrine-5619
+linear:
+  affaire: https://linear.app/coolbeans-hq/issue/CRM-42
+  projet: https://linear.app/coolbeans-hq/project/page-vitrine-vice-versa-52f28a6e9424
+
+sections:
+  - titre: Objectif
+    texte: >-
+      Une page unique pour Vice Versa : tes créations, ton concept, tes
+      prochains marchés. **Tu la mets à jour toi-même**, quand tu veux, depuis
+      ton ordi ou ton tel.
+
+  - titre: La page
+    texte: "Une seule page, de haut en bas :"
+    liste:
+      - "En-tête : logo, ancres vers les différentes sections, CTA"
+      - "Tes créations : la galerie"
+      - Le concept
+      - Prochains marchés
+      - Témoignages
+      - Qui tu es
+      - Contact direct
+      - Mentions légales et confidentialité
+
+  - titre: Fonctionnalités
+    liste:
+      - "Un CMS pour tout modifier toi-même : photos, textes, dates de marchés"
+      - "Les marchés passés disparaissent de la liste, sans action de ta part"
+
+  - titre: Quelques recos
+    texte: "Tu as répondu à chacune le 22 août. Ce qu'on retient :"
+    liste:
+      - Des photos portées.
+      - Un ordre de prix, même approximatif.
+      - Les matériaux.
+      - "Le délai et le mode de remise : envoi postal ou en main propre sur le marché."
+      - Trois témoignages, avec prénom et photo portée.
+      - Deux phrases sur ta fabrication.
+      - >-
+        Le bouton de commande répété : sans objet, maintenant que le formulaire
+        part en V2.
+      - >-
+        La liste de diffusion : écartée. Tu la reprendras si tu en vois
+        l'intérêt.
+    note: >-
+      Sans le formulaire, sans réseaux sociaux et sans liste de diffusion, il ne
+      reste qu'une seule façon de te commander quelque chose : t'écrire. Je mets
+      donc ton adresse mail en bouton, deux fois dans la page. Dis-moi si tu
+      préfères autre chose.
+
+  - titre: De ton côté
+    texte: "Ce qu'il me reste à recevoir, au plus tard le 4 octobre :"
+    liste:
+      - >-
+        Le nom de domaine. J'ai besoin du nom définitif pour le réserver, pas
+        pour commencer.
+      - >-
+        Tes photos : 8 à 10 des bijoux, dont 4 portées. Cinq ou six suffisent si
+        elles sont bonnes ; en dessous, la galerie se voit vide.
+      - "Un portrait de toi, grand sourire. Pas difficile 😉"
+      - "Tes textes : concept, bio, présentation"
+      - >-
+        Ta maquette, même grossière, avec tes typos et ta palette : de quoi
+        lancer la direction visuelle.
+
+  - titre: Technique
+    texte: "Ce que ça te donne :"
+    liste:
+      - >-
+        Un CMS éprouvé, celui que j'utilise sur tous mes projets clients.
+        Tes modifications sont en ligne en quelques secondes.
+      - >-
+        Aucun abonnement. Hébergement gratuit. Seul frais récurrent : le nom
+        de domaine, autour de 15 € par an
+      - >-
+        Rien à entretenir : pas de mise à jour, pas d'extension, pas de
+        faille à corriger dans l'urgence. Pas comme WordPress, Argh.
+      - "Tu restes libre : le code t'appartient, ton contenu est exportable"
+
+  - titre: Budget
+    budget:
+      lignes:
+        - label: Direction visuelle
+          prix: 350
+          tooltip: >-
+            Maquette de la page, à partir de ta charte et de tes références. Tu
+            la valides avant que j'écrive la moindre ligne de code.
+        - label: Intégration et mise en ligne
+          prix: 600
+          tooltip: >-
+            Développement de la page, mise en place du CMS, référencement de
+            base, déploiement sur ton nom de domaine.
+        - label: Agenda des marchés
+          prix: 150
+          tooltip: >-
+            La liste que tu remplis, et l'effacement automatique des dates
+            passées.
+        - label: Prise en main
+          prix: 100
+          tooltip: Une demi-heure ensemble, plus un guide écrit.
+      mention: HT
+      reglement: >-
+        30 % au démarrage, le solde à la livraison, sur le montant que tu auras
+        retenu.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Responsive (desktop, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation des web perfs (vitesse, Core Web Vitals…)
+      - Tests QA sur les 3 navigateurs principaux
+      - Setup tracking (analytics sans cookies)
+      - Certificat SSL, hébergement et DNS
+      - Pages légales
+      - Doc de passation pour la prise en main du CMS
+      - Support 30 jours après mise en ligne
+
+  - titre: Planning
+    planning:
+      options:
+        - label: Du 5 au 16 octobre
+          texte: >-
+            La fenêtre que tu proposes me va. Elle tient si j'ai tes éléments le
+            4 octobre.
+          jalons:
+            - {
+                date: Dim. 4 oct.,
+                label: "Tu m'envoies photos, textes, charte et ta maquette",
+                owner: client,
+              }
+            - { date: Mar. 6 oct., label: Maquette de la page, owner: coolbeans }
+            - {
+                date: Jeu. 8 oct.,
+                label: "Ton retour et validation de la maquette",
+                owner: client,
+              }
+            - {
+                date: Mer. 14 oct.,
+                label: "Développement et mise en place du CMS",
+                owner: coolbeans,
+              }
+            - { date: Jeu. 15 oct., label: Ta relecture finale, owner: client }
+            - {
+                date: Ven. 16 oct.,
+                label: "Mise en ligne, référencement, prise en main",
+                owner: coolbeans,
+              }
+          note: >-
+            Si tes éléments n'arrivent pas le 4, je ne décale pas de quelques
+            jours : je reprends au créneau libre suivant, et ton premier marché
+            de novembre devient serré.
+
+notes:
+  - tone: success
+    texte: >-
+      **Tu choisis ce que tu règles.** Les 1 200 € sont ce que je facturerais à
+      quelqu'un que je ne connais pas. Le seul montant que je ne peux pas
+      absorber, c'est ton nom de domaine, autour de 15 € par an.
+  - texte: >-
+      La rédaction des textes, la retouche des photos et la création d'un logo
+      ne sont pas comprises.
+  - texte: >-
+      Deux allers-retours sont prévus par livrable. Au-delà, budgété au temps
+      passé.
+  - texte: >-
+      Pour plus tard : le formulaire de commande et la liste de diffusion. Rien
+      n'est chiffré ici, et rien ne l'empêche.
