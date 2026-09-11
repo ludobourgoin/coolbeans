@@ -4,6 +4,9 @@ date: 2026-09-11
 contact: Danaë
 version: 2
 versionDe: danae/page-vitrine-5619
+envoi:
+  date: 2026-09-11
+  destinataire: danaealbanese@yahoo.fr
 linear:
   affaire: https://linear.app/coolbeans-hq/issue/CRM-42
   projet: https://linear.app/coolbeans-hq/project/page-vitrine-vice-versa-52f28a6e9424
