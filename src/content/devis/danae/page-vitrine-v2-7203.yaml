@@ -18,13 +18,13 @@ sections:
   - titre: La page
     texte: "Une seule page, de haut en bas :"
     liste:
-      - "En-tête : logo, ancres vers les différentes sections, CTA"
-      - "Tes créations : la galerie"
+      - "En-tête : logo, ancres vers les différentes sections, bouton pour t'écrire"
+      - "Tes créations : la galerie, suivie du bouton"
       - Le concept
       - Prochains marchés
-      - Témoignages
+      - "Témoignages, suivis du bouton"
       - Qui tu es
-      - Contact direct
+      - "Contact direct : ton adresse mail, en clair et en bouton"
       - Mentions légales et confidentialité
 
   - titre: Fonctionnalités
@@ -41,17 +41,12 @@ sections:
       - "Le délai et le mode de remise : envoi postal ou en main propre sur le marché."
       - Trois témoignages, avec prénom et photo portée.
       - Deux phrases sur ta fabrication.
-      - >-
-        Le bouton de commande répété : sans objet, maintenant que le formulaire
-        part en V2.
-      - >-
-        La liste de diffusion : écartée. Tu la reprendras si tu en vois
-        l'intérêt.
     note: >-
-      Sans le formulaire, sans réseaux sociaux et sans liste de diffusion, il ne
-      reste qu'une seule façon de te commander quelque chose : t'écrire. Je mets
-      donc ton adresse mail en bouton, deux fois dans la page. Dis-moi si tu
-      préfères autre chose.
+      Tu m'as dit garder le formulaire de commande pour une V2. Sans lui, sans
+      réseaux sociaux et sans liste de diffusion, il ne reste qu'une seule façon
+      de te commander quelque chose : t'écrire. C'est donc ton adresse mail qui
+      prend la place du bouton de commande, répétée après la galerie et après
+      les témoignages. Dis-moi si tu préfères autre chose.
 
   - titre: De ton côté
     texte: "Ce qu'il me reste à recevoir, au plus tard le 4 octobre :"
