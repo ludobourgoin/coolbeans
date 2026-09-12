@@ -3,9 +3,11 @@ client: "coolbeans"
 title: "Référence & support"
 order: 8
 status: "final"
-updated: 2026-08-14
-description: "Les commandes, l'annuaire des services et où trouver les décisions d'architecture."
+updated: 2026-09-12
+description: "Les commandes, l'annuaire des services, où trouver les décisions d'architecture, et l'imputation des tickets de support."
 ---
+
+import Callout from "../../../components/doc/Callout.astro";
 
 La page à ouvrir quand on cherche « où est quoi » : commandes du projet,
 services externes, et l'emplacement des décisions écrites.
@@ -49,3 +51,36 @@ spec du chantier, elle contient le contexte et les options écartées.
 
 Le canal d'entrée des demandes clients est le module Support du portail ;
 les demandes internes passent par la Triage de la team Linear Coolbeans.
+
+### Imputation : qui paie le ticket
+
+Posé le 2026-09-12. Un ticket qui porte le label `Support` ne passe pas en
+`Done` sans un label du groupe **Imputation**. Deux valeurs, une seule par
+ticket :
+
+| Label | Quand | Effet |
+| --- | --- | --- |
+| `Forfait client` | La demande porte sur autre chose que ce qui était commandé, ou le besoin du client a changé | Se décompte du forfait et se reporte dans le Google Sheet du forfait |
+| `Coolbeans` | Le ticket existe parce qu'on a mal livré, ou parce qu'on s'est trompé | Absorbé : ni facturé, ni décompté |
+
+Le test de départage tient en une question : **est-ce que ce ticket existe
+parce qu'on a mal livré ?** Un `Bug` sur un livrable Coolbeans est presque
+toujours `Coolbeans`. Un `Bug` causé par une manipulation du client ou par un
+tiers ne l'est pas.
+
+<Callout type="piege" title="Le label se pose à la clôture, jamais à l'ouverture">
+  À l'ouverture d'un ticket, on ne sait pas encore d'où vient le problème. AMU-62 ressemblait à un défaut d'import d'images ; c'était en réalité une classe CSS sans largeur au point d'arrêt Desktop, livrée par nous des mois plus tôt. Poser l'imputation tôt fige une conclusion non vérifiée, et c'est une décision d'argent.
+
+  Corollaire : l'imputation s'annonce à Ludo comme un constat qu'il peut contester, jamais comme une case cochée en silence.
+</Callout>
+
+Pourquoi ce groupe existe : le Google Sheet du forfait ne reçoit **que** ce qui
+est refacturable. Avant ce label, un ticket absorbé par Coolbeans ne laissait
+aucune trace nulle part, et la question « combien de tickets a-t-on absorbés ce
+trimestre » n'avait pas de réponse. C'est pourtant ce chiffre qui dit si un
+forfait est bien calibré : un forfait qui tient uniquement parce qu'on absorbe
+la moitié des tickets est un forfait sous-évalué, et rien ne le signalait.
+
+Les labels sont des labels de workspace, ils existent donc sur toutes les teams
+clientes. Le détail opérationnel, UUID compris, vit dans la skill `linear`,
+`references/taxonomie.md`, section « Groupe Imputation ».
