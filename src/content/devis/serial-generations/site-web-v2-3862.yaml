@@ -1,0 +1,213 @@
+# V2 : logo sobre ajouté en option, sur demande d'Isabelle le 2026-09-14
+# (fil Gmail « site web Serial'Générations »). Elle n'aime pas le logo
+# actuel, fait par une étudiante, et voudrait un logo simple, juste le nom
+# du projet écrit, dans l'esprit de la charte graphique du financeur
+# (Institut Miranda), sans que le reste du site suive cette charte.
+#
+# La V1 excluait explicitement un redessin du logo et ne prévoyait que le
+# remontage gratuit du fichier existant : c'est donc un ajout de périmètre,
+# pas une reformulation. Prix 180 € HT, décision de Ludo le 2026-09-14 :
+# ~2h à un taux petit-lot cohérent avec l'historique de facturation, sur un
+# logo texte seul sans recherche de marque.
+#
+# La ligne reste optionnelle et décochée par défaut, comme la septième page :
+# le budget est déjà à 1 950 € TTC sur le plafond de 2 000 € TTC confirmé par
+# Isabelle, et n'importe quel prix réaliste pour le logo dépasse ce plafond
+# une fois passé en TTC. Elle voit le prix et décide sciemment de le
+# dépasser, ou de renoncer à une autre ligne pour compenser.
+titre: Sérial Générations x Coolbeans
+objet: Le site du projet
+date: 2026-09-14
+contact: Isabelle
+version: 2
+versionDe: serial-generations/site-web-6184
+linear:
+  projet: Sérial Générations
+  affaire: CRM-91
+destinataire:
+  societe: Université Paul-Valéry Montpellier 3, laboratoire EPSYLON (EA 4556)
+  contact: Isabelle Tournier
+  adresse:
+    - Site de Saint-Charles
+    - Rue du Professeur Henri Serre
+    - 34080 Montpellier
+
+sections:
+  - titre: Ce que j'ai compris
+    texte: >-
+      Le site actuel se présente comme un blog, alors que Sérial Générations est
+      un projet de recherche financé, porté par une équipe et suivi par des
+      partenaires. C'est cet écart qu'il s'agit de corriger.
+    liste:
+      - texte: >-
+          Le menu annonce sept pages. Un seul billet a été publié depuis mai.
+      - texte: >-
+          Les captations de tables rondes et les micros-trottoirs n'ont
+          aujourd'hui aucune place sur le site.
+      - texte: >-
+          Le site doit rester lisible par le grand public, et pas seulement par
+          des universitaires.
+      - texte: >-
+          L'équipe publie elle-même aujourd'hui, et doit pouvoir continuer.
+
+  - titre: Le site
+    texte: >-
+      Six pages, contre sept aujourd'hui : deux des pages actuelles fusionnent,
+      et une page nouvelle accueille les documents.
+    liste:
+      - texte: >-
+          **Accueil** : ce qu'est Sérial Générations, présenté dans une langue
+          accessible à qui n'est pas chercheur.
+      - texte: >-
+          **Le projet** : le contexte et l'objet d'étude réunis. Ce sont deux
+          pages aujourd'hui, et elles disent la même chose.
+      - texte: >-
+          **L'équipe** : les membres, leur discipline, leur laboratoire.
+      - texte: >-
+          **Partenaires et financeurs** : les acteurs de l'audiovisuel et du
+          secteur culturel d'un côté, les financeurs de l'autre, réunis sur une
+          page.
+      - texte: >-
+          **Ressources** : les documents à télécharger et les liens vers les
+          publications et les travaux cités. C'est la page qui manque
+          aujourd'hui.
+      - texte: >-
+          **Actualités** : tables rondes, ateliers, publications. C'est la page
+          qui évolue, et l'équipe l'alimente sans intervention extérieure.
+
+  - titre: Les outils
+    texte: Deux outils, dont un seul s'ouvre au quotidien.
+    liste:
+      - texte: >-
+          **L'espace de rédaction** : une adresse web et un mot de passe. On y
+          ajoute une actualité, un membre de l'équipe, un partenaire ou une
+          vidéo, depuis un ordinateur comme depuis un téléphone.
+      - texte: >-
+          **Les captations** restent sur Pod, l'instance vidéo de l'Université
+          Paul-Valéry. Il suffit d'y coller l'adresse d'une vidéo pour qu'elle
+          s'affiche dans la page. Les documents PDF, eux, se déposent
+          directement dans l'espace de rédaction.
+      - texte: >-
+          **L'hébergement** est assuré par Cloudflare, sans abonnement à
+          renouveler.
+    note: >-
+      Aucun frais récurrent après la mise en ligne, hormis le nom de domaine,
+      qui reste enregistré là où il l'est aujourd'hui.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Responsive (desktop, tablette, mobile)
+      - Configuration SEO et bonnes pratiques
+      - Optimisation des web perfs (vitesse, Core Web Vitals…)
+      - Tests QA sur les 3 navigateurs principaux
+      - Setup tracking (analytics sans cookies)
+      - Certificat SSL, hébergement et DNS
+      - Pages légales
+      - Doc de passation pour la prise en main du CMS
+      - Support 30 jours après mise en ligne
+
+  - titre: Le budget
+    budget:
+      lignes:
+        - label: "**Les six pages**, conçues et intégrées"
+          prix: 900
+        - label: "**L'espace de rédaction**, pour publier sans intermédiaire"
+          prix: 850
+        - label: "**Les vidéos et les documents**, affichés dans les pages"
+          prix: 300
+        - label: "La reprise des textes et des images existants"
+          prix: 200
+        - label: "**Mise en ligne** : nom de domaine, référencement, recette"
+          prix: 250
+        - label: "Une septième page, en cas de besoin"
+          prix: 250
+          optionnel: true
+          defaut: false
+        - label: "**Un logo sobre**, le nom du projet mis en forme, dans l'esprit de la charte Miranda"
+          prix: 180
+          optionnel: true
+          defaut: false
+      remises:
+        - label: Laboratoire de recherche public
+          pct: 35
+      mention: HT
+      reglement: >-
+        Aucun acompte. Le travail démarre dès votre accord, sans attendre le bon
+        de commande, et une seule facture est émise à la mise en ligne.
+    note: Soit 1 950 € toutes taxes comprises, hors options.
+
+  - titre: Le déroulé
+    planning:
+      options:
+        - label: Calendrier
+          texte: >-
+            Les deux événements de la Fête de la Science ont lieu le samedi
+            3 octobre, et je suis absent du 28 septembre au 2 octobre. Le site
+            est donc mis en ligne le vendredi 25 septembre, huit jours avant.
+            Un rendez-vous d'une heure remplace les allers-retours de maquette :
+            la direction visuelle et la structure s'y décident, puis le site est
+            construit d'une traite et présenté terminé.
+          jalons:
+            - { date: "Mer. 16 sept.", label: "Réponse ferme sur la proposition", owner: client }
+            - { date: "Jeu. 17 sept.", label: "Rendez-vous de lancement, une heure" }
+            - { date: "Ven. 18 au 23 sept.", label: "Conception et construction du site", owner: coolbeans }
+            - { date: "Mer. 23 sept.", label: "Site complet, à parcourir avant la mise en ligne", owner: coolbeans }
+            - { date: "Jeu. 24 sept.", label: "Relecture et retours", owner: client }
+            - { date: "Ven. 25 sept.", label: "Corrections, bascule du nom de domaine et mise en ligne", owner: coolbeans }
+            - { date: "28 sept. au 2 oct.", label: "Indisponibilité, aucune intervention possible" }
+            - { date: "Sam. 3 oct.", label: "Les deux événements de la Fête de la Science" }
+          note: >-
+            La relecture du 24 septembre porte sur les contenus et les
+            corrections, pas sur la direction visuelle, qui est arrêtée au
+            rendez-vous de lancement. Si la réponse arrive après le 16 septembre,
+            ou si les décisions doivent passer par l'équipe, la mise en ligne est
+            reportée à la semaine du 5 octobre, à mon retour.
+
+  - titre: De votre côté
+    texte: Peu de choses, mais ce sont elles qui tiennent la date.
+    liste:
+      - texte: >-
+          Une réponse ferme avant le mercredi 16 septembre.
+      - texte: >-
+          Une heure de disponibilité pour le rendez-vous de lancement, le jeudi
+          17 septembre. C'est le seul moment où la direction visuelle se décide.
+      - texte: >-
+          L'accès au compte Wix sur lequel le nom de domaine est enregistré, le
+          temps de le faire pointer vers le nouveau site. Aucun transfert et
+          aucune résiliation ne sont nécessaires.
+      - texte: >-
+          Une seule personne décisionnaire, désignée à l'avance.
+      - texte: >-
+          Les corrections sur les textes repris, au moment de la relecture.
+      - texte: >-
+          Le fichier source du logo, si vous gardez le logo actuel. Le seul
+          fichier disponible en ligne aujourd'hui mesure 467 pixels de large, ce
+          qui ne suffit pas à le remonter proprement.
+    note: >-
+      Une seule relecture est prévue avant la mise en ligne. Le calendrier ne
+      permet pas d'en caler une deuxième avant les événements du 3 octobre.
+
+notes:
+  - tone: success
+    texte: >-
+      Remise de 35 % au titre du laboratoire de recherche public. Aucun acompte
+      n'est demandé : le travail démarre dès votre accord, sans attendre que le
+      bon de commande soit passé.
+  - tone: warning
+    texte: >-
+      Cette proposition suppose un hébergement libre et aucune charte imposée
+      par l'université. Si la direction des systèmes d'information impose son
+      propre hébergement, ou si une mise en conformité RGAA est exigée, ces
+      points font l'objet d'un avenant.
+  - texte: >-
+      Les réseaux sociaux ne sont pas dans le périmètre. Le site est préparé
+      pour qu'un partage sur Facebook ou Instagram s'affiche avec son titre, son
+      texte et son image, mais l'ouverture des comptes et leur animation restent
+      à la charge du projet.
+  - texte: >-
+      La rédaction des textes et la fourniture des visuels ne sont pas incluses.
+  - texte: >-
+      Sans l'option logo : le logo existant est remonté en format horizontal
+      pour l'en-tête, à partir de son fichier source. Redessiner le logo ou en
+      créer un nouveau n'entre pas dans le périmètre en dehors de cette option.
+  - texte: Proposition valable 30 jours.
