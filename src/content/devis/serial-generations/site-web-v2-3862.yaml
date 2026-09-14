@@ -22,6 +22,9 @@ date: 2026-09-14
 contact: Isabelle
 version: 2
 versionDe: serial-generations/site-web-6184
+envoi:
+  date: 2026-09-14
+  destinataire: isabelle.tournier@umpv.fr
 linear:
   projet: Sérial Générations
   affaire: CRM-91
