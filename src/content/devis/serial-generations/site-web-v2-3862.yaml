@@ -1,4 +1,4 @@
-# V2 : logo sobre ajouté en option, sur demande d'Isabelle le 2026-09-14
+# V2 : logo sobre ajouté au socle, sur demande d'Isabelle le 2026-09-14
 # (fil Gmail « site web Serial'Générations »). Elle n'aime pas le logo
 # actuel, fait par une étudiante, et voudrait un logo simple, juste le nom
 # du projet écrit, dans l'esprit de la charte graphique du financeur
@@ -10,11 +10,12 @@
 # ~2h à un taux petit-lot cohérent avec l'historique de facturation, sur un
 # logo texte seul sans recherche de marque.
 #
-# La ligne reste optionnelle et décochée par défaut, comme la septième page :
-# le budget est déjà à 1 950 € TTC sur le plafond de 2 000 € TTC confirmé par
-# Isabelle, et n'importe quel prix réaliste pour le logo dépasse ce plafond
-# une fois passé en TTC. Elle voit le prix et décide sciemment de le
-# dépasser, ou de renoncer à une autre ligne pour compenser.
+# D'abord posée en option décochée par défaut, la ligne passe au socle sur
+# décision explicite de Ludo le 2026-09-14, montant TTC recalculé en
+# conséquence : 2 090,40 € au lieu de 1 950 €, soit 90,40 € au-dessus du
+# plafond de 2 000 € TTC qu'Isabelle avait confirmé au cadrage. Le
+# dépassement n'est plus caché derrière une case à cocher ; il est dans le
+# prix affiché.
 titre: Sérial Générations x Coolbeans
 objet: Le site du projet
 date: 2026-09-14
@@ -119,12 +120,10 @@ sections:
           prix: 200
         - label: "**Mise en ligne** : nom de domaine, référencement, recette"
           prix: 250
-        - label: "Une septième page, en cas de besoin"
-          prix: 250
-          optionnel: true
-          defaut: false
         - label: "**Un logo sobre**, le nom du projet mis en forme, dans l'esprit de la charte Miranda"
           prix: 180
+        - label: "Une septième page, en cas de besoin"
+          prix: 250
           optionnel: true
           defaut: false
       remises:
@@ -134,7 +133,7 @@ sections:
       reglement: >-
         Aucun acompte. Le travail démarre dès votre accord, sans attendre le bon
         de commande, et une seule facture est émise à la mise en ligne.
-    note: Soit 1 950 € toutes taxes comprises, hors options.
+    note: Soit 2 090,40 € toutes taxes comprises, hors option.
 
   - titre: Le déroulé
     planning:
@@ -179,10 +178,6 @@ sections:
           Une seule personne décisionnaire, désignée à l'avance.
       - texte: >-
           Les corrections sur les textes repris, au moment de la relecture.
-      - texte: >-
-          Le fichier source du logo, si vous gardez le logo actuel. Le seul
-          fichier disponible en ligne aujourd'hui mesure 467 pixels de large, ce
-          qui ne suffit pas à le remonter proprement.
     note: >-
       Une seule relecture est prévue avant la mise en ligne. Le calendrier ne
       permet pas d'en caler une deuxième avant les événements du 3 octobre.
@@ -207,7 +202,7 @@ notes:
   - texte: >-
       La rédaction des textes et la fourniture des visuels ne sont pas incluses.
   - texte: >-
-      Sans l'option logo : le logo existant est remonté en format horizontal
-      pour l'en-tête, à partir de son fichier source. Redessiner le logo ou en
-      créer un nouveau n'entre pas dans le périmètre en dehors de cette option.
+      Le logo est un logotype sobre : le nom du projet mis en forme. Ce n'est
+      pas une identité graphique complète (déclinaisons, charte, favicon
+      retravaillé).
   - texte: Proposition valable 30 jours.
