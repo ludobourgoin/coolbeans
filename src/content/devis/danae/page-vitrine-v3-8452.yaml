@@ -61,6 +61,10 @@ sections:
       - >-
         Ta maquette, même grossière, avec tes typos et ta palette : de quoi
         lancer la direction visuelle.
+      - >-
+        Si tu veux, des éléments graphiques à toi (petites formes
+        géométriques) à poser en arrière-plan. Dis-moi le format quand tu
+        les as, je m'adapte.
     note: >-
       Si tes photos ne sont pas prêtes le 4 octobre (prototype pas fini, ton
       séjour dans le Lot), pas de souci : je mets la page en ligne sans elles,
@@ -102,9 +106,11 @@ sections:
         - label: Prise en main
           prix: 100
           tooltip: Une demi-heure ensemble, plus un guide écrit.
+      remisePct: 83.333
+      remiseLabel: Tarif d'amie, comme convenu
       mention: HT
       reglement: >-
-        200 € au démarrage, comme convenu entre nous.
+        100 % à la livraison, sur le montant retenu.
 
   - titre: Ce que ça comprend
     liste:
@@ -159,9 +165,8 @@ sections:
 notes:
   - tone: success
     texte: >-
-      **Montant retenu : 200 € HT.** Les 1 200 € restent ce que je facturerais
-      à quelqu'un que je ne connais pas. Le seul montant que je ne peux pas
-      absorber, c'est ton nom de domaine, autour de 15 € par an.
+      **Tarif d'amie.** Le seul montant que je ne peux pas absorber, c'est ton
+      nom de domaine, autour de 15 € par an.
   - texte: >-
       La rédaction des textes, la retouche des photos et la création d'un logo
       ne sont pas comprises.
