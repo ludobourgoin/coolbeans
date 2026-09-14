@@ -106,7 +106,7 @@ sections:
         - label: Prise en main
           prix: 100
           tooltip: Une demi-heure ensemble, plus un guide écrit.
-      remisePct: 83.333
+      remisePct: 83
       remiseLabel: Tarif d'amie, comme convenu
       mention: HT
       reglement: >-
@@ -165,8 +165,7 @@ sections:
 notes:
   - tone: success
     texte: >-
-      **Tarif d'amie.** Le seul montant que je ne peux pas absorber, c'est ton
-      nom de domaine, autour de 15 € par an.
+      **Tarif d'amie.**
   - texte: >-
       La rédaction des textes, la retouche des photos et la création d'un logo
       ne sont pas comprises.
