@@ -5,7 +5,7 @@
 titre: Oïde x Coolbeans
 objet: Intégration Webflow x Shopify · boutique Oïde
 date: 2026-03-19
-contact: Clément
+contact: Margaux
 linear:
   projet: Intégration Shopify
   affaire: https://linear.app/coolbeans-hq/issue/CRM-30
@@ -17,10 +17,7 @@ linear:
 sections:
   - titre: Ce que j'ai compris
     texte: >-
-      Oïde lance sa boutique en ligne à partir des **maquettes Figma du Studio
-      Caperky**. Le site vitrine est construit dans Webflow, le catalogue et le
-      paiement restent dans Shopify, et les deux sont raccordés : vous gardez la
-      main sur les produits d'un côté, sur le contenu éditorial de l'autre.
+      Oïde lance sa boutique en ligne.
     liste:
       - texte: >-
           **Neuf pages au total** : deux pages avancées, trois pages standard,
@@ -122,7 +119,7 @@ sections:
           texte: "Site fonctionnel prêt pour lancement le **10 décembre 2026**."
           jalons:
             - { date: 30/10, label: "Livraison des maquettes Figma finalisées et des contenus (catalogue, textes, visuels)", owner: client }
-            - { date: 09/11 → 13/11, label: "Intégration des neuf pages sur le thème Dawn (Shopify) et raccordement du catalogue produits", owner: coolbeans }
+            - { date: 02/11 → 06/11, label: "Intégration des neuf pages et raccordement du catalogue produits", owner: coolbeans }
             - { date: 16/11 → 18/11, label: "SEO, tracking, optimisation des performances et recette", owner: coolbeans }
             - { date: 01/12 → 05/12, label: "Derniers ajustements et mise en production", owner: coolbeans }
             - { date: 10/12, label: "Site fonctionnel prêt pour lancement", owner: coolbeans }
@@ -139,6 +136,6 @@ notes:
       passé.
   - tone: warning
     texte: >-
-      Ce devis chiffre l'intégration à partir de maquettes fournies par le
-      Studio Caperky. La direction artistique, la production des écrans et
+      Ce devis chiffre l'intégration à partir de maquettes fournies par
+      Margaux. La direction artistique, la production des écrans et
       leurs corrections ne sont pas comprises.
