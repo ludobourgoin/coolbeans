@@ -87,7 +87,7 @@ sections:
           texte: "Site fonctionnel prêt pour lancement le **10 décembre 2026**."
           jalons:
             - { date: 30/10, label: "Livraison des maquettes Figma finalisées et des contenus (catalogue, textes, visuels)", owner: client }
-            - { date: 02/11 → 06/11, label: "Intégration des neuf pages et raccordement du catalogue produits", owner: coolbeans }
+            - { date: 02/11 → 13/11, label: "Intégration des neuf pages et raccordement du catalogue produits", owner: coolbeans }
             - { date: 16/11 → 18/11, label: "SEO, tracking, optimisation des performances et recette", owner: coolbeans }
             - { date: 01/12 → 05/12, label: "Derniers ajustements et mise en production", owner: coolbeans }
             - { date: 10/12, label: "Site fonctionnel prêt pour lancement", owner: coolbeans }
