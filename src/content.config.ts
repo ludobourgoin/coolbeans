@@ -24,6 +24,9 @@ const devis = defineCollection({
     // Prénom du contact côté client, affiché sur les jalons de planning
     // attribués à "client" (owner: client). Chaque devis a son propre client.
     contact: z.string().optional(),
+    // Formulaire de validation masqué sur les devis déjà signés : la page
+    // sert alors de feuille de route, pas d'une proposition à valider.
+    formulaire: z.boolean().default(true),
     /* Versions successives d'un même devis. Une révision de périmètre n'est
        pas un devis neuf : le client garde son lien, et retrouve sous des
        onglets ce qu'on lui avait proposé avant. `versionDe` porte l'id de la
