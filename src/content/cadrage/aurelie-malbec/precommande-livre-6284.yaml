@@ -1,0 +1,138 @@
+# Cadrage de la précommande du livre d'Aurélie Malbec. Affaire CRM-95.
+#
+# Origine : WhatsApp du 2026-09-15. Aurélie a déjà un compte PayPal et
+# demande s'il est possible d'ajouter un lien de paiement sur son site pour
+# éviter une plateforme de précommande payante. Contenu de la comparaison
+# repris d'un premier brouillon fait par Ludo, remis en forme au patron des
+# cadrages existants (serial-generations, setencorpsmieux).
+#
+# Tutoiement, comme leurs échanges WhatsApp.
+titre: La précommande de ton livre en ligne
+objet: Quelques questions avant de te faire une proposition
+date: 2026-09-15
+contact: Aurélie
+tutoiement: true
+linear:
+  affaire: CRM-95
+
+intro:
+  - titre: Ce que j'ai compris
+    texte: >-
+      Tu veux ouvrir la précommande de ton livre sur ton site, plutôt que de
+      passer par une plateforme payante. Tu penses à PayPal parce que tu as
+      déjà un compte, mais il y a une autre option courante pour encaisser sur
+      un site : Stripe. Voici ce qui les distingue, pour que tu choisisses en
+      connaissance de cause.
+    note: >-
+      Tu vises début octobre pour lancer la précommande. Si tu préfères qu'on
+      en parle de vive voix, dis-le moi et on cale un créneau.
+
+comparatif:
+  titre: PayPal ou Stripe
+  texte: >-
+    Ce que chacun te prend sur une vente, et ce que ça change pour toi et pour
+    tes lecteurs.
+  solutions:
+    - nom: PayPal
+      resume: Le bouton que tu connais déjà, et que tu as toi-même.
+      recommandee: true
+    - nom: Stripe
+      resume: >-
+        Un formulaire de carte bancaire directement sur ton site, sans compte
+        à créer.
+  criteres:
+    - label: Commission en France et en Europe
+      valeurs:
+        - "2,90 % + 0,35 € par vente"
+        - "1,5 % + 0,25 € par vente"
+    - label: Commission hors Europe
+      valeurs:
+        - "+ 1,99 %"
+        - "3,15 % + 0,25 €, + 2 % en cas de conversion"
+    - label: En cas de litige avec un acheteur
+      valeurs:
+        - "14 €"
+        - "20 €"
+    - label: Ce que voit ton lecteur
+      valeurs:
+        - "Le bouton PayPal, connu et rassurant, surtout s'il a déjà un compte."
+        - "Un formulaire de carte bancaire, sans compte à créer."
+    - label: Mise en place
+      valeurs:
+        - "Tu as déjà un compte, à passer en professionnel."
+        - "Un compte à créer, un lien de paiement suffit pour démarrer."
+  mentionCout: >-
+    Sur un livre à 20 €, l'écart tourne autour de 0,40 € par vente en faveur
+    de Stripe. Ordres de grandeur donnés avant tes réponses, relevés en
+    septembre 2026 sur les grilles tarifaires officielles de Stripe et PayPal.
+
+questions:
+  - id: moyen-paiement
+    label: PayPal ou Stripe, tu penches pour lequel ?
+    aide: >-
+      Reporte-toi au tableau ci-dessus. Rien ne t'empêche non plus de
+      proposer les deux à tes lecteurs.
+    type: choix
+    decisif: true
+    requis: true
+    options:
+      - valeur: paypal
+        label: PayPal, je pars avec ce que j'ai déjà
+        aide: Colonne 1 du tableau.
+      - valeur: stripe
+        label: Stripe, je préfère la carte bancaire directe
+        aide: Colonne 2 du tableau.
+      - valeur: les-deux
+        label: Les deux, je laisse le choix à mes lecteurs
+      - valeur: indecis
+        label: Je ne sais pas encore, j'aimerais qu'on en parle
+
+  - id: formule
+    label: >-
+      Un simple bouton "Acheter le livre", ou une vraie boutique avec panier ?
+    aide: >-
+      Le bouton suffit pour un livre : une page de présentation, un bouton
+      qui ouvre le paiement, l'adresse de livraison demandée au moment de
+      payer. La boutique a du sens si tu comptes vendre autre chose (tirages,
+      cartes) en plus du livre, mais elle ajoute un abonnement au site.
+    type: choix
+    decisif: true
+    requis: true
+    options:
+      - valeur: bouton
+        label: Un bouton simple, je ne vends que ce livre pour l'instant
+      - valeur: boutique
+        label: Une vraie boutique, je compte vendre d'autres choses ensuite
+      - valeur: indecis
+        label: Je ne sais pas encore
+
+  - id: budget
+    label: Quel ordre de grandeur peux-tu y consacrer ?
+    aide: >-
+      Réponds franchement, y compris "je ne sais pas". Ça sert à ne pas te
+      proposer quelque chose que tu ne prendras pas.
+    type: choix
+    decisif: true
+    requis: true
+    options:
+      - valeur: sous-300
+        label: Moins de 300 €
+      - valeur: 300-600
+        label: De 300 à 600 €
+      - valeur: plus-600
+        label: Plus de 600 €
+      - valeur: inconnu
+        label: Je ne sais pas encore
+
+notes:
+  - tone: info
+    texte: >-
+      Tes réponses arrivent dans ma boîte mail, et tu en reçois une copie.
+      Rien n'est facturé.
+  - tone: warning
+    texte: >-
+      Avant de vendre, un point à régler : un compte PayPal personnel ne
+      suffit pas, et un paiement "entre proches" ne protège ni toi ni
+      l'acheteur. Dans les deux cas il faut un statut professionnel
+      (micro-entreprise, artiste-auteur...) pour encaisser. À vérifier avec
+      l'URSSAF ou un comptable.
