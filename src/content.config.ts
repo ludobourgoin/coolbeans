@@ -367,6 +367,11 @@ const cadrage = defineCollection({
             nom: z.string(),
             resume: z.string().optional(),
             recommandee: z.boolean().default(false),
+            /* Formule de frais de cette solution, en pourcentage du prix de
+               vente plus un montant fixe. Optionnelles : seules les solutions
+               qui en portent une entrent dans le simulateur ci-dessous. */
+            fraisPourcentage: z.number().optional(),
+            fraisFixe: z.number().optional(),
           }),
         ),
         /* Une entrée par ligne. `valeurs` est aligné sur `solutions`, dans le
@@ -387,6 +392,18 @@ const cadrage = defineCollection({
           .default(
             "Ordres de grandeur donnés avant cadrage, à confirmer une fois vos réponses connues.",
           ),
+        /* Simulateur optionnel : un curseur de prix qui recalcule en direct
+           ce que chaque solution portant une formule de frais prélève. Utile
+           quand la comparaison se joue sur un pourcentage abstrait que le
+           lead ne sait pas se représenter tant qu'il n'a pas vu de chiffre. */
+        simulateur: z
+          .object({
+            titre: z.string().default("Ce qu'il te reste sur chaque vente"),
+            prixDefaut: z.number(),
+            prixMin: z.number(),
+            prixMax: z.number(),
+          })
+          .optional(),
       })
       .optional(),
     questions: z.array(

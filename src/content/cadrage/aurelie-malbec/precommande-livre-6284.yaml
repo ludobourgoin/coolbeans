@@ -1,0 +1,172 @@
+# Cadrage de la précommande du livre d'Aurélie Malbec. Affaire CRM-95.
+#
+# Origine : WhatsApp du 2026-09-15. Aurélie a déjà un compte PayPal ; c'est
+# Ludo qui lui a parlé de PayPal ET de Stripe comme solutions possibles pour
+# encaisser en ligne, pas elle. Ce document détaille les deux pour qu'elle
+# tranche, avec un simulateur pour rendre le pourcentage concret sur son
+# prix à elle plutôt que sur un exemple abstrait.
+#
+# Aucune des deux solutions n'est recommandée dans le tableau, sur demande
+# explicite de Ludo le 2026-09-15 : Stripe convertit mieux (paiement sans
+# quitter le site), PayPal rassure par familiarité, et seule Aurélie sait
+# quel critère pèse le plus pour ses lecteurs.
+#
+# La question "bouton simple ou vraie boutique" a été retirée : c'est
+# tranché, la page est un ajout simple dans la nav principale. La section
+# d'accueil optionnelle (meilleure conversion que le seul header) est un
+# sujet de proposition, pas de cadrage : elle partira en option cochable au
+# chiffrage, pas ici.
+#
+# Tutoiement, comme leurs échanges WhatsApp.
+titre: La précommande de ton livre en ligne
+objet: Quelques questions avant de te faire une proposition
+date: 2026-09-15
+contact: Aurélie
+tutoiement: true
+linear:
+  affaire: CRM-95
+
+intro:
+  - titre: Ce que j'ai compris
+    texte: >-
+      Tu veux ouvrir la précommande de ton livre sur ton site, plutôt que de
+      passer par une plateforme payante. Je t'ai parlé de deux solutions pour
+      encaisser en ligne, PayPal et Stripe. Voici ce qui les distingue
+      concrètement, pour que tu choisisses en connaissance de cause.
+    note: >-
+      Tu vises début octobre pour lancer la précommande. Si tu préfères qu'on
+      en parle de vive voix, dis-le moi et on cale un créneau.
+
+comparatif:
+  titre: PayPal ou Stripe
+  texte: >-
+    Ce que chacun te prend sur une vente, et ce que ça change pour toi et pour
+    tes lecteurs. Aucune des deux n'est un choix par défaut : ça dépend de qui
+    t'achète le livre.
+  solutions:
+    - nom: PayPal
+      resume: Le bouton que tu connais déjà, et que tu as toi-même.
+      fraisPourcentage: 2.9
+      fraisFixe: 0.35
+    - nom: Stripe
+      resume: >-
+        Un formulaire de carte bancaire directement sur ton site, sans compte
+        à créer.
+      fraisPourcentage: 1.5
+      fraisFixe: 0.25
+  criteres:
+    - label: Commission en France et en Europe
+      valeurs:
+        - "2,90 % + 0,35 € par vente"
+        - "1,5 % + 0,25 € par vente"
+    - label: Commission hors Europe
+      valeurs:
+        - "+ 1,99 %"
+        - "3,15 % + 0,25 €, + 2 % en cas de conversion"
+    - label: En cas de litige avec un acheteur
+      valeurs:
+        - "14 €"
+        - "20 €"
+    - label: Au moment de payer
+      valeurs:
+        - "Ton lecteur clique sur un bouton PayPal connu, mais quitte ton site le temps du paiement."
+        - "Ton lecteur paie par carte sans quitter ta page. Moins d'étapes, souvent moins d'abandons."
+    - label: Mise en place
+      valeurs:
+        - "Tu as déjà un compte, à passer en professionnel."
+        - "Un compte à créer, un lien de paiement suffit pour démarrer."
+  mentionCout: >-
+    Ordres de grandeur donnés avant tes réponses, relevés en septembre 2026
+    sur les grilles tarifaires officielles de Stripe et PayPal.
+  simulateur:
+    titre: Ce qu'il te reste sur chaque vente
+    prixDefaut: 20
+    prixMin: 5
+    prixMax: 60
+
+questions:
+  - id: moyen-paiement
+    label: PayPal ou Stripe, tu penches pour lequel ?
+    aide: >-
+      Reporte-toi au tableau et au simulateur ci-dessus. Rien ne t'empêche
+      non plus de proposer les deux à tes lecteurs.
+    type: choix
+    decisif: true
+    requis: true
+    options:
+      - valeur: paypal
+        label: PayPal, je pars avec ce que j'ai déjà
+        aide: Colonne 1 du tableau.
+      - valeur: stripe
+        label: Stripe, je préfère la carte bancaire directe
+        aide: Colonne 2 du tableau.
+      - valeur: les-deux
+        label: Les deux, je laisse le choix à mes lecteurs
+      - valeur: indecis
+        label: Je ne sais pas encore, j'aimerais qu'on en parle
+
+  - id: support
+    label: Ton livre est en papier, en numérique, ou les deux ?
+    aide: Ça change ce qu'on demande à l'achat, une adresse de livraison ou pas.
+    type: choix
+    options:
+      - valeur: papier
+        label: Papier
+      - valeur: numerique
+        label: Numérique
+      - valeur: les-deux
+        label: Les deux
+
+  - id: budget
+    label: Quel ordre de grandeur peux-tu y consacrer ?
+    aide: >-
+      Réponds franchement, y compris "je ne sais pas". Ça sert à ne pas te
+      proposer quelque chose que tu ne prendras pas.
+    type: choix
+    decisif: true
+    requis: true
+    options:
+      - valeur: sous-300
+        label: Moins de 300 €
+      - valeur: 300-600
+        label: De 300 à 600 €
+      - valeur: plus-600
+        label: Plus de 600 €
+      - valeur: inconnu
+        label: Je ne sais pas encore
+
+  - id: process-contenu
+    label: >-
+      Pour le texte de la page, ça te va qu'on fonctionne comme ça : tu
+      m'envoies le sujet, à qui il s'adresse, pourquoi tu l'as écrit et le
+      prix, et je t'écris un texte qui donne envie de l'acheter ?
+    type: choix
+    requis: true
+    options:
+      - valeur: oui
+        label: Oui, ça me va
+      - valeur: on-en-discute
+        label: J'aimerais qu'on en discute avant
+
+  - id: infos-livre
+    label: Si oui, dis-m'en un peu plus sur ton livre
+    aide: >-
+      Le sujet en une phrase, à qui il s'adresse, pourquoi tu l'as écrit, et
+      le prix que tu envisages. Dis-moi aussi si tu as déjà une image de
+      couverture ou d'autres visuels à me transmettre.
+    type: texte
+    long: true
+    placeholder: Sujet, cible, pourquoi ce livre, prix envisagé, visuels disponibles...
+
+notes:
+  - tone: info
+    texte: >-
+      Tes réponses arrivent dans ma boîte mail, et tu en reçois une copie.
+      Rien n'est facturé.
+  - tone: warning
+    texte: >-
+      Avant de vendre, un point à régler : un compte PayPal personnel ne
+      suffit pas, et un paiement "entre proches" ne protège ni toi ni
+      l'acheteur. Dans les deux cas il faut un statut professionnel
+      (micro-entreprise, artiste-auteur...) pour encaisser. À vérifier avec
+      l'URSSAF ou un comptable.

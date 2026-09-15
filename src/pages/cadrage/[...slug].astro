@@ -6,6 +6,7 @@ import Banner from "../../components/ui/Banner.astro";
 import Tooltip from "../../components/ui/Tooltip.astro";
 import CadrageIntro from "../../components/cadrage/CadrageIntro.astro";
 import CadrageComparatif from "../../components/cadrage/CadrageComparatif.astro";
+import CadrageSimulateur from "../../components/cadrage/CadrageSimulateur.astro";
 import CadrageFormulaire from "../../components/cadrage/CadrageFormulaire.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
 import { dateLongue, riche, ancreSection } from "../../lib/devis";
@@ -60,6 +61,19 @@ const d = entry.data;
             criteres={d.comparatif.criteres}
             mentionCout={d.comparatif.mentionCout}
             ancre={ancreSection(d.comparatif.titre)}
+          />
+        )
+      }
+
+      {
+        d.comparatif?.simulateur && (
+          <CadrageSimulateur
+            titre={d.comparatif.simulateur.titre}
+            solutions={d.comparatif.solutions}
+            prixDefaut={d.comparatif.simulateur.prixDefaut}
+            prixMin={d.comparatif.simulateur.prixMin}
+            prixMax={d.comparatif.simulateur.prixMax}
+            ancre={ancreSection(d.comparatif.simulateur.titre)}
           />
         )
       }

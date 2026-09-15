@@ -1,0 +1,131 @@
+---
+/* Curseur de prix, recalculé en direct pour chaque solution du comparatif qui
+   porte une formule de frais. Sert quand le tableau ne suffit pas à faire
+   sentir un pourcentage : voir un montant en euros, sur SON prix à elle,
+   tranche plus vite qu'une ligne "1,5 % + 0,25 €" abstraite.
+
+   N'affiche que les solutions qui portent une formule ; une solution sans
+   frais chiffrés (mise en place gratuite, par exemple) n'a rien à faire
+   dans ce calcul et ne s'y glisse pas silencieusement en 0 €. */
+interface Solution {
+  nom: string;
+  fraisPourcentage?: number;
+  fraisFixe?: number;
+}
+interface Props {
+  titre: string;
+  solutions: Solution[];
+  prixDefaut: number;
+  prixMin: number;
+  prixMax: number;
+  ancre: string;
+}
+const { titre, solutions: toutesSolutions, prixDefaut, prixMin, prixMax, ancre } = Astro.props;
+
+const solutions = toutesSolutions.filter(
+  (s): s is Required<Solution> => s.fraisPourcentage !== undefined && s.fraisFixe !== undefined,
+);
+
+if (solutions.length < 2) {
+  throw new Error(
+    `Simulateur « ${titre} » : au moins deux solutions doivent porter une formule de frais ` +
+      `(fraisPourcentage et fraisFixe) pour qu'une comparaison ait un sens.`,
+  );
+}
+
+const id = ancre;
+---
+
+<section
+  id={id}
+  class="grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+>
+  <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">{titre}</p>
+  <div
+    class="flex flex-col gap-6 rounded-control border border-line bg-surface p-7 max-[520px]:p-5"
+    data-simulateur={id}
+    data-solutions={JSON.stringify(solutions)}
+  >
+    <label class="flex items-baseline justify-between gap-3 font-medium text-ink" for={`${id}-prix`}>
+      Prix de vente
+      <span class="font-mono text-2xl tabular-nums" data-role="prix-affiche">
+        {prixDefaut.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+      </span>
+    </label>
+    <input
+      type="range"
+      id={`${id}-prix`}
+      min={prixMin}
+      max={prixMax}
+      step="1"
+      value={prixDefaut}
+      class="w-full accent-ink"
+    />
+
+    <div class="grid gap-px overflow-hidden rounded-control border border-line bg-line max-[480px]:grid-cols-1" style={`grid-template-columns: repeat(${solutions.length}, 1fr)`}>
+      {
+        solutions.map((s) => (
+          <div class="flex flex-col gap-1 bg-surface p-4" data-role="resultat" data-nom={s.nom}>
+            <span class="font-semibold text-ink">{s.nom}</span>
+            <span class="font-mono text-[22px] leading-tight tabular-nums text-ink" data-role="frais" />
+            <span class="text-[13px] text-mute" data-role="net" />
+            <span class="mt-1 font-mono text-[11px] tracking-wide text-mute uppercase">
+              {s.fraisPourcentage}&nbsp;% + {s.fraisFixe.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+            </span>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="text-[13px] leading-[1.6] text-mute" data-role="ecart" aria-live="polite"></p>
+  </div>
+</section>
+
+<script>
+  const fmt = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+
+  document.querySelectorAll<HTMLElement>("[data-simulateur]").forEach((bloc) => {
+    const solutions: { nom: string; fraisPourcentage: number; fraisFixe: number }[] = JSON.parse(
+      bloc.dataset.solutions ?? "[]",
+    );
+    const id = bloc.dataset.simulateur;
+    const input = document.getElementById(`${id}-prix`) as HTMLInputElement | null;
+    const prixAffiche = bloc.querySelector<HTMLElement>('[data-role="prix-affiche"]');
+    const ecart = bloc.querySelector<HTMLElement>('[data-role="ecart"]');
+    if (!input) return;
+
+    function frais(prix: number, pct: number, fixe: number) {
+      return Math.round((prix * (pct / 100) + fixe) * 100) / 100;
+    }
+
+    function maj() {
+      const prix = Number(input!.value);
+      if (prixAffiche) prixAffiche.textContent = fmt.format(prix);
+
+      const montants = solutions.map((s) => frais(prix, s.fraisPourcentage, s.fraisFixe));
+
+      bloc.querySelectorAll<HTMLElement>('[data-role="resultat"]').forEach((el, i) => {
+        const m = montants[i];
+        const fraisEl = el.querySelector<HTMLElement>('[data-role="frais"]');
+        const netEl = el.querySelector<HTMLElement>('[data-role="net"]');
+        if (fraisEl) fraisEl.textContent = fmt.format(m);
+        if (netEl) netEl.textContent = `tu touches ${fmt.format(prix - m)}`;
+      });
+
+      if (ecart && montants.length >= 2) {
+        const max = Math.max(...montants);
+        const min = Math.min(...montants);
+        const iMax = montants.indexOf(max);
+        const iMin = montants.indexOf(min);
+        if (max > min) {
+          ecart.textContent = `Sur 100 ventes à ${fmt.format(prix)}, l'écart entre ${solutions[iMax].nom} et ${solutions[iMin].nom} est de ${fmt.format((max - min) * 100)}.`;
+        } else {
+          ecart.textContent = "";
+        }
+      }
+    }
+
+    input.addEventListener("input", maj);
+    maj();
+  });
+</script>
