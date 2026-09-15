@@ -55,8 +55,27 @@ export function optionsAuth(env?: Env, baseURL = "https://my.coolbeans.cc") {
         // Meme verrou : sans lui, demander un lien magique pour une adresse
         // inconnue CREE le compte.
         disableSignUp: true,
-        sendMagicLink: async ({ email, url }: { email: string; url: string }) => {
+        // Un seul endpoint sert deux moments tres differents : le premier
+        // acces d'un compte que l'admin vient d'ouvrir (utilisateurs.inviter,
+        // src/actions/index.ts), et le lien qu'un compte existant redemande
+        // depuis /connexion. La metadata posee par le premier cas est ce qui
+        // les distingue ici ; sans elle, on suppose un retour.
+        sendMagicLink: async (
+          { email, url, metadata }: { email: string; url: string; metadata?: Record<string, unknown> },
+        ) => {
           if (!env) return; // generation de schema
+          if (metadata?.invitation) {
+            await envoyerMailAuth(
+              env,
+              email,
+              renderInvitation({
+                url,
+                organisation: (metadata.organisation as string | undefined) ?? "myCoolbeans",
+                inviteur: metadata.inviteur as string | undefined,
+              }),
+            );
+            return;
+          }
           await envoyerMailAuth(env, email, renderLienMagique({ url }));
         },
       }),

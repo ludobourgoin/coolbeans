@@ -92,7 +92,7 @@ export interface NouvelUtilisateur {
 export async function creerUtilisateur(
   db: D1Database,
   nouveau: NouvelUtilisateur,
-): Promise<{ id: string }> {
+): Promise<{ id: string; nomAffichage: string }> {
   const existant = await db
     .prepare("SELECT id FROM user WHERE email = ?1")
     .bind(nouveau.email)
@@ -110,12 +110,18 @@ export async function creerUtilisateur(
       .bind(userId, nouveau.nom, nouveau.email, maintenant, nouveau.portalRole),
   ];
 
+  // Nom affiché dans le mail d'invitation : celui de la team si le compte en
+  // a une (le client connaît son projet par ce nom, jamais par le slug du
+  // revendeur), sinon celui de l'organisation.
+  let nomAffichage = "myCoolbeans";
+
   if (nouveau.organisation) {
     const org = await db
-      .prepare("SELECT id FROM organization WHERE slug = ?1")
+      .prepare("SELECT id, name FROM organization WHERE slug = ?1")
       .bind(nouveau.organisation)
-      .first<{ id: string }>();
+      .first<{ id: string; name: string }>();
     if (!org) throw new Error(`Organisation inconnue : ${nouveau.organisation}.`);
+    nomAffichage = org.name;
     instructions.push(
       db
         .prepare(
@@ -133,9 +139,9 @@ export async function creerUtilisateur(
 
     if (nouveau.workspace) {
       const team = await db
-        .prepare("SELECT id, organizationId FROM team WHERE slug = ?1")
+        .prepare("SELECT id, organizationId, name FROM team WHERE slug = ?1")
         .bind(nouveau.workspace)
-        .first<{ id: string; organizationId: string }>();
+        .first<{ id: string; organizationId: string; name: string }>();
       if (!team) throw new Error(`Workspace inconnu : ${nouveau.workspace}.`);
       // Le garde-fou de la spec §3.1 : une appartenance incohérente ouvrirait
       // une team au hasard. Mieux vaut refuser que poser un accès de travers.
@@ -144,6 +150,7 @@ export async function creerUtilisateur(
           `Le workspace ${nouveau.workspace} ne relève pas de l'organisation ${nouveau.organisation}.`,
         );
       }
+      nomAffichage = team.name;
       instructions.push(
         db
           .prepare(
@@ -156,7 +163,7 @@ export async function creerUtilisateur(
   }
 
   await db.batch(instructions);
-  return { id: userId };
+  return { id: userId, nomAffichage };
 }
 
 /** Change le type d'un compte. La portée, elle, ne bouge pas. */

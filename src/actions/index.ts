@@ -149,8 +149,9 @@ export const server = {
         const { env } = await import("cloudflare:workers");
         const { creerUtilisateur } = await import("../lib/portail/utilisateurs");
 
+        let nomAffichage = "myCoolbeans";
         try {
-          await creerUtilisateur(env.PORTAL_DB, input);
+          ({ nomAffichage } = await creerUtilisateur(env.PORTAL_DB, input));
         } catch (err) {
           throw new ActionError({
             code: "BAD_REQUEST",
@@ -160,9 +161,17 @@ export const server = {
 
         if (input.envoyerLeMail) {
           const { createAuth } = await import("../lib/auth/server");
+          const { user: admin } = await lireSession(context);
           const origine = new URL(context.request.url).origin;
           await createAuth(env, origine).api.signInMagicLink({
-            body: { email: input.email, callbackURL: "/" },
+            body: {
+              email: input.email,
+              callbackURL: "/",
+              // Distingue ce premier accès du lien magique qu'un compte déjà
+              // ouvert demande depuis /connexion : même endpoint, mais un mail
+              // différent (voir sendMagicLink dans lib/auth/options.ts).
+              metadata: { invitation: true, organisation: nomAffichage, inviteur: admin?.name ?? undefined },
+            },
             headers: context.request.headers,
           });
         }
