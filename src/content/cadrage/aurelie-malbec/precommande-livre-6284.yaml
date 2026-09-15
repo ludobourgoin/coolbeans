@@ -130,22 +130,24 @@ questions:
     decisif: true
     requis: true
     options:
-      - valeur: sous-300
-        label: Moins de 300 €
+      - valeur: sous-400
+        label: Moins de 400 €
         aide: >-
           La mise en place technique. Tu m'envoies ton texte final, je le
           mets en ligne sans l'optimiser.
-      - valeur: 600-1000
-        label: De 600 à 1 000 €
+      - valeur: 500-900
+        label: De 500 à 900 €
         aide: >-
           La technique, plus un texte et une mise en page pensés pour
           convertir, à partir de tes réponses à quelques questions sur le
           livre.
-      - valeur: plus-1000
-        label: Plus de 1 000 €
+      - valeur: plus-900
+        label: Plus de 900 €
         aide: >-
-          Comme la fourchette précédente, avec un visuel sur mesure et
-          plusieurs itérations sur le texte jusqu'à ce qu'il te convienne.
+          Une page ultra-optimisée, pensée comme une vraie machine à
+          vendre : tous les ingrédients de conversion, des témoignages de
+          lecteurs avec avis en étoiles, un visuel sur mesure, et plusieurs
+          itérations sur le texte jusqu'à ce qu'il te convienne.
       - valeur: inconnu
         label: Je ne sais pas encore
 
