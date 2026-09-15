@@ -120,43 +120,45 @@ questions:
   - id: budget
     label: Quel ordre de grandeur peux-tu y consacrer ?
     aide: >-
-      Réponds franchement, y compris "je ne sais pas". Ça sert à ne pas te
-      proposer quelque chose que tu ne prendras pas.
+      En dessous d'un certain budget, je pose la technique : la page, le
+      paiement qui marche, rien de plus. Au-dessus, j'ai la place pour
+      soigner la mise en page et le texte, le travail qui fait qu'un
+      visiteur achète plutôt qu'il hésite. Réponds franchement, y compris
+      "je ne sais pas".
     type: choix
     decisif: true
     requis: true
     options:
       - valeur: sous-300
         label: Moins de 300 €
+        aide: La mise en place technique seule, sans travail de mise en page ni de texte.
       - valeur: 300-600
         label: De 300 à 600 €
+        aide: >-
+          La technique, plus la mise en page et le texte pensés pour donner
+          envie d'acheter.
       - valeur: plus-600
         label: Plus de 600 €
+        aide: Comme la fourchette précédente, avec plus de place pour itérer.
       - valeur: inconnu
         label: Je ne sais pas encore
 
-  - id: process-contenu
-    label: >-
-      Pour le texte de la page, ça te va qu'on fonctionne comme ça : tu
-      m'envoies le sujet, à qui il s'adresse, pourquoi tu l'as écrit et le
-      prix, et je t'écris un texte qui donne envie de l'acheter ?
+  - id: redaction
+    label: Qui écrit le texte de la page, toi ou moi ?
+    aide: >-
+      Ça n'a pas le même prix. Tu peux l'écrire toi-même, à partir d'une
+      trame que je te donne : plus rapide, sans friction, et c'est ta voix.
+      Ou je peux m'en charger, à partir de ce que tu m'enverras sur le livre
+      (sujet, cible, pourquoi tu l'as écrit, prix) : ça demande plus de
+      travail de mon côté, donc ça compte dans le chiffrage.
     type: choix
+    decisif: true
     requis: true
     options:
-      - valeur: oui
-        label: Oui, ça me va
-      - valeur: on-en-discute
-        label: J'aimerais qu'on en discute avant
-
-  - id: infos-livre
-    label: Si oui, dis-m'en un peu plus sur ton livre
-    aide: >-
-      Le sujet en une phrase, à qui il s'adresse, pourquoi tu l'as écrit, et
-      le prix que tu envisages. Dis-moi aussi si tu as déjà une image de
-      couverture ou d'autres visuels à me transmettre.
-    type: texte
-    long: true
-    placeholder: Sujet, cible, pourquoi ce livre, prix envisagé, visuels disponibles...
+      - valeur: elle-ecrit
+        label: J'écris moi-même, à partir d'une trame
+      - valeur: ludo-ecrit
+        label: Tu écris le texte pour moi
 
 notes:
   - tone: info
