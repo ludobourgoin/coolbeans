@@ -3,6 +3,11 @@
 # transmise par son collègue (favorable à un hébergement WordPress plutôt
 # qu'au site sur mesure du devis déjà envoyé).
 #
+# Précision de Ludo le 2026-09-15 : le collègue parle d'un hébergement type
+# OVH avec WordPress auto-hébergé (logiciel gratuit et open source), pas de
+# l'offre WordPress.com. La V1 de ce document comparait au mauvais WordPress ;
+# corrigé ici.
+#
 # Ce document sort du cas d'usage documenté du mode cadrage : il part APRÈS
 # un prix ferme (devis V2, 2 090,40 € TTC, envoyé le 2026-09-14), pas avant.
 # Utilisé quand même pour son tableau comparatif, seul gabarit qui en porte
@@ -11,6 +16,16 @@
 # Le nom du collègue et son manque de suivi depuis plusieurs mois restent
 # hors document : c'est une lecture interne de la situation, jamais un
 # élément transmissible à Isabelle ou à son collègue.
+#
+# Chiffre Core Web Vitals (Astro 71 % contre WordPress 48 %) : vérifié le
+# 2026-09-15 sur astro.build, section « Astro Islands ». Source citée :
+# HTTP Archive et Chrome UX Report, lien vers le jeu de données complet.
+#
+# Vidéo YouTube (en anglais, demande explicite de Ludo) : « Content Platforms
+# Explained in 100 Seconds // Build your own with Sanity », chaîne Fireship
+# (vérifiée par oEmbed le 2026-09-15). Choisie plutôt que les vidéos
+# clickbait « WordPress is dead » trouvées en recherche, moins crédibles pour
+# une universitaire.
 titre: WordPress ou le site que je te propose
 objet: Ta question sur l'autonomie, et la remarque de ton collègue
 date: 2026-09-15
@@ -42,6 +57,35 @@ intro:
       distincte d'un article, une gestion des vidéos qui ne sait bien faire
       que YouTube. C'est cette limite que le nouveau site corrige, pas
       seulement son habillage.
+  - titre: La stack que je te propose
+    texte: >-
+      Quatre outils, chacun avec un rôle précis. Rien n'est propriétaire à
+      Coolbeans : les comptes qui comptent (hébergement, contenu) sont ouverts
+      à ton nom, pas au mien.
+    liste:
+      - texte: >-
+          **[Astro](https://astro.build)** construit le site. Sur les sites
+          réels mesurés par Google (Chrome UX Report), 71 % des sites Astro
+          passent les Core Web Vitals, contre 48 % pour WordPress : Astro
+          n'envoie que le strict nécessaire au navigateur, WordPress charge
+          son moteur de rendu à chaque visite.
+      - texte: >-
+          **[Sanity Studio](https://www.sanity.io)** est ton espace de
+          rédaction. Un CMS pensé pour être piloté depuis un formulaire
+          simple, gratuit à votre échelle de trafic, et qui t'appartient : le
+          compte est à ton nom, exportable si un jour tu changes de
+          prestataire.
+      - texte: >-
+          **[Cloudflare](https://www.cloudflare.com)** héberge le site. Le
+          même réseau que celui utilisé par une grande partie du web pour
+          servir vite partout dans le monde, gratuit à ce volume de trafic,
+          sans abonnement à renouveler.
+      - texte: >-
+          **[Tailwind CSS](https://tailwindcss.com)** met le site en forme.
+          Il garantit que chaque page garde la même cohérence visuelle, sans
+          feuille de style qui dérive au fil des ajouts.
+    note: >-
+      Jeu de données complet des Core Web Vitals : [httparchive.org](https://httparchive.org/reports/techreport/tech?client=mobile&tech=Astro,WordPress,Gatsby,Next.js,Nuxt.js&geo=ALL&rank=ALL&page=1).
 
 comparatif:
   titre: WordPress ou le site que je te propose
@@ -50,8 +94,10 @@ comparatif:
     La différence se joue sur le coût réel dans le temps et sur qui porte la
     charge de maintenance.
   solutions:
-    - nom: Un hébergement WordPress
-      resume: Vous prenez un hébergement et vous gérez le site vous-mêmes.
+    - nom: WordPress auto-hébergé
+      resume: >-
+        Un hébergement type OVH, le logiciel WordPress (gratuit, open
+        source), et vous gérez le site vous-mêmes.
     - nom: Le site que je te propose
       resume: Astro, Sanity et Cloudflare, livré clé en main.
       recommandee: true
@@ -59,10 +105,10 @@ comparatif:
     - label: Coût de départ
       valeurs:
         - >-
-          0 € sur l'offre gratuite de WordPress.com, mais sans nom de domaine
-          personnalisé, sans vidéos, et avec de la publicité imposée sur les
-          pages. Avec votre domaine et un vrai design, il faut un hébergement
-          payant, un thème et du temps de configuration
+          Le logiciel WordPress est gratuit. Mais il faut acheter
+          l'hébergement, choisir et souvent payer un thème, installer les
+          extensions pour les vidéos et la sécurité, puis tout configurer :
+          ce temps de mise en place a un coût, en argent ou en heures
         - >-
           1 950 € TTC, montant du devis déjà transmis : les six pages,
           l'espace de rédaction et la mise en ligne compris
@@ -70,7 +116,7 @@ comparatif:
       valeurs:
         - >-
           Hébergement et sauvegardes à renouveler, en général 50 à 150 € par
-          an, en plus du nom de domaine
+          an chez un hébergeur comme OVH, en plus du nom de domaine
         - >-
           Rien. L'hébergement ne facture pas ce volume de trafic. Seul le nom
           de domaine, déjà à vous, se renouvelle comme aujourd'hui
@@ -78,8 +124,8 @@ comparatif:
       valeurs:
         - >-
           Vous, ou quelqu'un que vous payez pour le faire. WordPress est le
-          logiciel de site le plus ciblé au monde, en bonne partie faute de
-          suivi des mises à jour
+          logiciel de site le plus ciblé au monde, en bonne partie à cause de
+          sites où les mises à jour prennent du retard
         - >-
           Personne. Il n'y a ni extension ni base de données à sécuriser : le
           site est reconstruit à chaque publication, jamais modifié en direct
@@ -95,6 +141,14 @@ comparatif:
       valeurs:
         - Dépend du thème et des extensions installées, se dégrade avec leur nombre
         - Optimisé dès la mise en ligne, sans extension inutile
+    - label: À qui appartiennent les comptes
+      valeurs:
+        - >-
+          À vous : hébergeur et WordPress sont ouverts et administrés à votre nom
+        - >-
+          À vous aussi : le compte Cloudflare et le compte Sanity sont ouverts
+          à votre nom. Rien n'est verrouillé chez Coolbeans, et rien ne
+          disparaît si vous changez de prestataire.
   mentionCout: >-
     Les montants WordPress sont des ordres de grandeur : ils dépendent de
     l'hébergeur choisi. Le prix du site sur mesure, lui, est déjà ferme :
@@ -109,3 +163,8 @@ notes:
       gratuite et ne l'était pas. Le point à vérifier avant de choisir, quelle
       que soit l'option : qui paie quoi, et quand. Le devis que je t'ai envoyé
       ne porte aucun frais caché ni récurrent.
+  - tone: neutral
+    texte: >-
+      Une vidéo courte (en anglais) sur ce qui distingue un CMS comme
+      WordPress d'un outil comme Sanity, si vous voulez creuser :
+      [Content Platforms Explained in 100 Seconds, par Fireship](https://www.youtube.com/watch?v=c_8cplBi_gE).
