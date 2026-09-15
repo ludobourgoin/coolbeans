@@ -108,8 +108,8 @@ comparatif:
     - label: Coût chaque année
       valeurs:
         - >-
-          Hébergement et sauvegardes à renouveler, 50 à 150 € par an chez un
-          hébergeur comme OVH, plus le nom de domaine
+          Hébergement à renouveler, 31 à 72 € HT par an chez OVH (pack
+          Starter à Perso), plus le nom de domaine
         - Rien. Seul le nom de domaine, déjà à vous, se renouvelle comme aujourd'hui
     - label: Qui gère les mises à jour et la sécurité
       valeurs:
