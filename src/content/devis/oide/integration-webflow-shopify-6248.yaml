@@ -118,15 +118,17 @@ sections:
   - titre: Planning
     planning:
       options:
-        - label: Intégration en mai
-          texte: "Mise en ligne visée **fin mai 2026**."
+        - label: Intégration en novembre-décembre
+          texte: "Site fonctionnel prêt pour lancement le **10 décembre 2026**."
           jalons:
-            - { date: 12/05, label: "Livraison des maquettes Figma validées", owner: client }
-            - { date: 15/05 → 30/05, label: "Intégration Webflow des neuf pages et raccordement Shopify", owner: coolbeans }
-            - { date: Fin mai, label: "Recette et mise en production", owner: coolbeans }
+            - { date: 30/10, label: "Livraison des maquettes Figma finalisées et des contenus (catalogue, textes, visuels)", owner: client }
+            - { date: 09/11 → 13/11, label: "Intégration des neuf pages sur le thème Dawn (Shopify) et raccordement du catalogue produits", owner: coolbeans }
+            - { date: 16/11 → 18/11, label: "SEO, tracking, optimisation des performances et recette", owner: coolbeans }
+            - { date: 01/12 → 05/12, label: "Derniers ajustements et mise en production", owner: coolbeans }
+            - { date: 10/12, label: "Site fonctionnel prêt pour lancement", owner: coolbeans }
           note: >-
-            Le calendrier tient à la date de livraison des maquettes. Un retard
-            sur celle-ci décale l'intégration d'autant.
+            Le calendrier tient à la date de livraison des maquettes et des
+            contenus. Un retard sur celle-ci décale le lancement d'autant.
 
 notes:
   - texte: >-

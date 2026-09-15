@@ -22,6 +22,7 @@ interface Section {
   texte?: string;
   liste?: (string | { texte: string; tooltip?: string })[];
   note?: string;
+  video?: { id: string; titre?: string };
 }
 
 interface Props {
@@ -65,6 +66,21 @@ const { sections } = Astro.props;
               );
             })}
           </ul>
+        )}
+
+        {section.video && (
+          <div class="mt-6 max-w-[520px] overflow-hidden rounded-lg border border-line">
+            <div class="relative aspect-video">
+              <iframe
+                class="absolute inset-0 size-full"
+                src={`https://www.youtube-nocookie.com/embed/${section.video.id}`}
+                title={section.video.titre ?? "Vidéo YouTube"}
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              />
+            </div>
+          </div>
         )}
 
         {section.note && (

@@ -1,0 +1,188 @@
+# Réponse au mail d'Isabelle du 2026-09-15, 09:39. Deux points dans son
+# message : sa propre question sur l'autonomie de gestion, et une remarque
+# transmise par son collègue (favorable à un hébergement WordPress plutôt
+# qu'au site sur mesure du devis déjà envoyé).
+#
+# Précision de Ludo le 2026-09-15 : le collègue parle d'un hébergement type
+# OVH avec WordPress auto-hébergé (logiciel gratuit et open source), pas de
+# l'offre WordPress.com. La V1 de ce document comparait au mauvais WordPress ;
+# corrigé ici.
+#
+# Ce document sort du cas d'usage documenté du mode cadrage : il part APRÈS
+# un prix ferme (devis V2, 2 090,40 € TTC, envoyé le 2026-09-14), pas avant.
+# Utilisé quand même pour son tableau comparatif, seul gabarit qui en porte
+# un dans le système de contenu actuel. Signalé à Ludo le 2026-09-15.
+#
+# Le nom du collègue et son manque de suivi depuis plusieurs mois restent
+# hors document : c'est une lecture interne de la situation, jamais un
+# élément transmissible à Isabelle ou à son collègue.
+#
+# Chiffre Core Web Vitals (Astro 71 % contre WordPress 48 %) : vérifié le
+# 2026-09-15 sur astro.build, section « Astro Islands ». Source citée :
+# HTTP Archive et Chrome UX Report, lien vers le jeu de données complet.
+#
+# Vidéo YouTube : la vidéo Fireship (v1) jugée trop technique par Ludo le
+# 2026-09-15 malgré la cible « utilisateur final ». Les deux vidéos qu'il a
+# proposées ensuite (Adam Lowe « Why Astro Keeps Showing Up », Chris Good
+# « Stop Playing It Safe ») vérifiées par description officielle : la
+# première s'adresse explicitement aux agences WordPress, la seconde discute
+# d'outils de page-building Astro (PhantomWP, Etch Studio, VSCode) sur
+# 27 minutes. Toutes deux plus techniques que la Fireship, pas moins.
+# Signalé à Ludo plutôt que choisi en silence.
+#
+# Retenue à la place : « Sanity Studio How-To for Content Editors:
+# Introduction and Overview », chaîne Dinghy Studio (vérifiée par oEmbed et
+# description officielle le 2026-09-15) : « focusing on usability for content
+# editors rather than developers [...] accessible for users transitioning
+# from platforms like WordPress ». C'est littéralement le public et l'angle
+# demandés.
+#
+# Article ajouté en lien (pas intégré, ce n'est pas une vidéo) :
+# contentious.ltd, retour d'expérience d'une agence passée de WordPress à
+# Astro, qui cite Sanity en bien pour un autre de leurs projets.
+titre: WordPress ou le site que je te propose
+objet: Ta question sur l'autonomie, et la remarque de ton collègue
+date: 2026-09-15
+contact: Isabelle
+tutoiement: true
+linear:
+  projet: Sérial Générations
+  affaire: CRM-91
+
+intro:
+  - titre: Sur l'autonomie
+    texte: >-
+      Oui, tu gardes la main. Une fois le site en ligne, tu ajoutes une
+      actualité, un membre de l'équipe, un partenaire ou une vidéo depuis un
+      espace de rédaction dédié, sans repasser par moi. C'est déjà dans le
+      devis que je t'ai envoyé : ça fait partie du prix, ce n'est pas une
+      option.
+  - titre: Sur la remarque de ton collègue
+    texte: >-
+      Sa question est légitime : pourquoi payer un prestataire plutôt que de
+      prendre un hébergement WordPress avec le nom de domaine que vous avez
+      déjà ? Le tableau ci-dessous compare les deux sur votre cas précis, pas
+      en théorie.
+  - titre: Sur le site actuel
+    texte: >-
+      Le site d'aujourd'hui est un Blogger, pas un WordPress : une
+      plateforme de blog, pas un site de projet de recherche. Le retravailler
+      ne change pas ses limites : pas de vraie page Équipe ou Partenaires
+      distincte d'un article, une gestion des vidéos qui ne sait bien faire
+      que YouTube. C'est cette limite que le nouveau site corrige, pas
+      seulement son habillage.
+  - titre: La stack que je te propose
+    texte: >-
+      Quatre outils, chacun avec un rôle précis. Rien n'est propriétaire à
+      Coolbeans : les comptes qui comptent (hébergement, contenu) sont ouverts
+      à ton nom, pas au mien.
+    liste:
+      - texte: >-
+          **[Astro](https://astro.build)** construit le site. Sur les sites
+          réels mesurés par Google (Chrome UX Report), 71 % des sites Astro
+          passent les Core Web Vitals, contre 48 % pour WordPress : Astro
+          n'envoie que le strict nécessaire au navigateur, WordPress charge
+          son moteur de rendu à chaque visite.
+      - texte: >-
+          **[Sanity Studio](https://www.sanity.io)** est ton espace de
+          rédaction. Un CMS pensé pour être piloté depuis un formulaire
+          simple, gratuit à votre échelle de trafic, et qui t'appartient : le
+          compte est à ton nom, exportable si un jour tu changes de
+          prestataire.
+      - texte: >-
+          **[Cloudflare](https://www.cloudflare.com)** héberge le site. Le
+          même réseau que celui utilisé par une grande partie du web pour
+          servir vite partout dans le monde, gratuit à ce volume de trafic,
+          sans abonnement à renouveler.
+      - texte: >-
+          **[Tailwind CSS](https://tailwindcss.com)** met le site en forme.
+          Il garantit que chaque page garde la même cohérence visuelle, sans
+          feuille de style qui dérive au fil des ajouts.
+    note: >-
+      Jeu de données complet des Core Web Vitals : [httparchive.org](https://httparchive.org/reports/techreport/tech?client=mobile&tech=Astro,WordPress,Gatsby,Next.js,Nuxt.js&geo=ALL&rank=ALL&page=1).
+  - titre: L'espace de rédaction, en vidéo
+    texte: >-
+      C'est le point que je veux te montrer plus que t'expliquer. Cette vidéo
+      présente Sanity Studio du point de vue de quelqu'un qui rédige, pas de
+      quelqu'un qui code, et elle s'adresse justement à des gens qui viennent
+      de WordPress. L'écran que tu y vois est tout ce que ton équipe aura
+      sous les yeux : vos actualités, votre équipe, vos partenaires, vos
+      vidéos. Rien d'autre à apprendre à ignorer.
+    video:
+      id: GLmcyRUqHdY
+      titre: "Sanity Studio pour les rédacteurs, par Dinghy Studio"
+    note: >-
+      Pour aller plus loin (en anglais aussi) : le retour d'expérience d'une
+      agence passée de WordPress à Astro, [chez
+      Contentious](https://contentious.ltd/resources/how-and-why-to-move-from-wordpress-to-astro).
+
+comparatif:
+  titre: WordPress ou le site que je te propose
+  texte: >-
+    Les deux permettent de publier seul, sans repasser par un prestataire.
+    La différence se joue sur le coût réel dans le temps et sur qui porte la
+    charge de maintenance.
+  solutions:
+    - nom: WordPress auto-hébergé
+      resume: >-
+        Un hébergement type OVH, le logiciel WordPress (gratuit, open
+        source), et vous gérez le site vous-mêmes.
+    - nom: Le site que je te propose
+      resume: Astro, Sanity et Cloudflare, livré clé en main.
+      recommandee: true
+  criteres:
+    - label: Coût de départ
+      valeurs:
+        - >-
+          Le logiciel WordPress est gratuit. Mais il faut acheter
+          l'hébergement, choisir et souvent payer un thème, installer les
+          extensions pour les vidéos et la sécurité, puis tout configurer :
+          ce temps de mise en place a un coût, en argent ou en heures
+        - >-
+          1 950 € TTC, montant du devis déjà transmis : les six pages,
+          l'espace de rédaction et la mise en ligne compris
+    - label: Coût chaque année
+      valeurs:
+        - >-
+          Hébergement et sauvegardes à renouveler, en général 50 à 150 € par
+          an chez un hébergeur comme OVH, en plus du nom de domaine
+        - >-
+          Rien. L'hébergement ne facture pas ce volume de trafic. Seul le nom
+          de domaine, déjà à vous, se renouvelle comme aujourd'hui
+    - label: Qui gère les mises à jour et la sécurité
+      valeurs:
+        - >-
+          Vous, ou quelqu'un que vous payez pour le faire. WordPress est le
+          logiciel de site le plus ciblé au monde, en bonne partie à cause de
+          sites où les mises à jour prennent du retard
+        - >-
+          Personne. Il n'y a ni extension ni base de données à sécuriser : le
+          site est reconstruit à chaque publication, jamais modifié en direct
+    - label: Autonomie au quotidien
+      valeurs:
+        - >-
+          Oui, avec un tableau de bord généraliste, pensé pour tous les
+          usages (blog, boutique, forum…), pas pour le vôtre
+        - >-
+          Oui, avec un espace pensé uniquement pour vos actualités, votre
+          équipe, vos partenaires et vos vidéos
+    - label: Vitesse et référencement
+      valeurs:
+        - Dépend du thème et des extensions installées, se dégrade avec leur nombre
+        - Optimisé dès la mise en ligne, sans extension inutile
+    - label: À qui appartiennent les comptes
+      valeurs:
+        - >-
+          À vous : hébergeur et WordPress sont ouverts et administrés à votre nom
+        - >-
+          À vous aussi : le compte Cloudflare et le compte Sanity sont ouverts
+          à votre nom. Rien n'est verrouillé chez Coolbeans, et rien ne
+          disparaît si vous changez de prestataire.
+  mentionCout: >-
+    Les montants WordPress sont des ordres de grandeur : ils dépendent de
+    l'hébergeur choisi. Le prix du site sur mesure, lui, est déjà ferme :
+    c'est celui du devis du 14 septembre.
+
+questions: []
+
+notes: []

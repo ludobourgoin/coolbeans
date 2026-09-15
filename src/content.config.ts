@@ -353,6 +353,17 @@ const cadrage = defineCollection({
           )
           .optional(),
         note: z.string().optional(),
+        /* Vidéo YouTube intégrée dans la section, pas un simple lien : posé le
+           2026-09-15 sur le cadrage Sérial'Générations. Seul l'identifiant est
+           stocké (les 11 caractères après `v=` ou `youtu.be/`), jamais l'URL
+           entière : ça évite de coder un parseur d'URL YouTube pour une seule
+           utilisation, et une regex suffit à repérer un id mal collé. */
+        video: z
+          .object({
+            id: z.string().regex(/^[A-Za-z0-9_-]{11}$/),
+            titre: z.string().optional(),
+          })
+          .optional(),
       }),
     ),
     comparatif: z
