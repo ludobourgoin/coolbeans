@@ -1,0 +1,111 @@
+# Réponse au mail d'Isabelle du 2026-09-15, 09:39. Deux points dans son
+# message : sa propre question sur l'autonomie de gestion, et une remarque
+# transmise par son collègue (favorable à un hébergement WordPress plutôt
+# qu'au site sur mesure du devis déjà envoyé).
+#
+# Ce document sort du cas d'usage documenté du mode cadrage : il part APRÈS
+# un prix ferme (devis V2, 2 090,40 € TTC, envoyé le 2026-09-14), pas avant.
+# Utilisé quand même pour son tableau comparatif, seul gabarit qui en porte
+# un dans le système de contenu actuel. Signalé à Ludo le 2026-09-15.
+#
+# Le nom du collègue et son manque de suivi depuis plusieurs mois restent
+# hors document : c'est une lecture interne de la situation, jamais un
+# élément transmissible à Isabelle ou à son collègue.
+titre: WordPress ou le site que je te propose
+objet: Ta question sur l'autonomie, et la remarque de ton collègue
+date: 2026-09-15
+contact: Isabelle
+tutoiement: true
+linear:
+  projet: Sérial Générations
+  affaire: CRM-91
+
+intro:
+  - titre: Sur l'autonomie
+    texte: >-
+      Oui, tu gardes la main. Une fois le site en ligne, tu ajoutes une
+      actualité, un membre de l'équipe, un partenaire ou une vidéo depuis un
+      espace de rédaction dédié, sans repasser par moi. C'est déjà dans le
+      devis que je t'ai envoyé : ça fait partie du prix, ce n'est pas une
+      option.
+  - titre: Sur la remarque de ton collègue
+    texte: >-
+      Sa question est légitime : pourquoi payer un prestataire plutôt que de
+      prendre un hébergement WordPress avec le nom de domaine que vous avez
+      déjà ? Le tableau ci-dessous compare les deux sur votre cas précis, pas
+      en théorie.
+  - titre: Sur le site actuel
+    texte: >-
+      Le site d'aujourd'hui est un Blogger, pas un WordPress : une
+      plateforme de blog, pas un site de projet de recherche. Le retravailler
+      ne change pas ses limites : pas de vraie page Équipe ou Partenaires
+      distincte d'un article, une gestion des vidéos qui ne sait bien faire
+      que YouTube. C'est cette limite que le nouveau site corrige, pas
+      seulement son habillage.
+
+comparatif:
+  titre: WordPress ou le site que je te propose
+  texte: >-
+    Les deux permettent de publier seul, sans repasser par un prestataire.
+    La différence se joue sur le coût réel dans le temps et sur qui porte la
+    charge de maintenance.
+  solutions:
+    - nom: Un hébergement WordPress
+      resume: Vous prenez un hébergement et vous gérez le site vous-mêmes.
+    - nom: Le site que je te propose
+      resume: Astro, Sanity et Cloudflare, livré clé en main.
+      recommandee: true
+  criteres:
+    - label: Coût de départ
+      valeurs:
+        - >-
+          0 € sur l'offre gratuite de WordPress.com, mais sans nom de domaine
+          personnalisé, sans vidéos, et avec de la publicité imposée sur les
+          pages. Avec votre domaine et un vrai design, il faut un hébergement
+          payant, un thème et du temps de configuration
+        - >-
+          1 950 € TTC, montant du devis déjà transmis : les six pages,
+          l'espace de rédaction et la mise en ligne compris
+    - label: Coût chaque année
+      valeurs:
+        - >-
+          Hébergement et sauvegardes à renouveler, en général 50 à 150 € par
+          an, en plus du nom de domaine
+        - >-
+          Rien. L'hébergement ne facture pas ce volume de trafic. Seul le nom
+          de domaine, déjà à vous, se renouvelle comme aujourd'hui
+    - label: Qui gère les mises à jour et la sécurité
+      valeurs:
+        - >-
+          Vous, ou quelqu'un que vous payez pour le faire. WordPress est le
+          logiciel de site le plus ciblé au monde, en bonne partie faute de
+          suivi des mises à jour
+        - >-
+          Personne. Il n'y a ni extension ni base de données à sécuriser : le
+          site est reconstruit à chaque publication, jamais modifié en direct
+    - label: Autonomie au quotidien
+      valeurs:
+        - >-
+          Oui, avec un tableau de bord généraliste, pensé pour tous les
+          usages (blog, boutique, forum…), pas pour le vôtre
+        - >-
+          Oui, avec un espace pensé uniquement pour vos actualités, votre
+          équipe, vos partenaires et vos vidéos
+    - label: Vitesse et référencement
+      valeurs:
+        - Dépend du thème et des extensions installées, se dégrade avec leur nombre
+        - Optimisé dès la mise en ligne, sans extension inutile
+  mentionCout: >-
+    Les montants WordPress sont des ordres de grandeur : ils dépendent de
+    l'hébergeur choisi. Le prix du site sur mesure, lui, est déjà ferme :
+    c'est celui du devis du 14 septembre.
+
+questions: []
+
+notes:
+  - tone: info
+    texte: >-
+      Vous avez déjà eu la mauvaise surprise d'une plateforme qui s'annonçait
+      gratuite et ne l'était pas. Le point à vérifier avant de choisir, quelle
+      que soit l'option : qui paie quoi, et quand. Le devis que je t'ai envoyé
+      ne porte aucun frais caché ni récurrent.
