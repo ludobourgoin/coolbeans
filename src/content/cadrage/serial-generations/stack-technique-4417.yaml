@@ -25,7 +25,9 @@
 # Explained in 100 Seconds // Build your own with Sanity », chaîne Fireship
 # (vérifiée par oEmbed le 2026-09-15). Choisie plutôt que les vidéos
 # clickbait « WordPress is dead » trouvées en recherche, moins crédibles pour
-# une universitaire.
+# une universitaire. Intégrée directement dans la page (pas un simple lien),
+# sur demande explicite de Ludo le 2026-09-15 : nouveau champ `video` sur les
+# sections d'intro du cadrage, cf. content.config.ts et CadrageIntro.astro.
 titre: WordPress ou le site que je te propose
 objet: Ta question sur l'autonomie, et la remarque de ton collègue
 date: 2026-09-15
@@ -84,8 +86,13 @@ intro:
           **[Tailwind CSS](https://tailwindcss.com)** met le site en forme.
           Il garantit que chaque page garde la même cohérence visuelle, sans
           feuille de style qui dérive au fil des ajouts.
+    video:
+      id: c_8cplBi_gE
+      titre: "Content Platforms Explained in 100 Seconds, par Fireship"
     note: >-
-      Jeu de données complet des Core Web Vitals : [httparchive.org](https://httparchive.org/reports/techreport/tech?client=mobile&tech=Astro,WordPress,Gatsby,Next.js,Nuxt.js&geo=ALL&rank=ALL&page=1).
+      Vidéo ci-dessus (en anglais) : ce qui distingue un CMS comme WordPress
+      d'un outil comme Sanity. Jeu de données complet des Core Web Vitals :
+      [httparchive.org](https://httparchive.org/reports/techreport/tech?client=mobile&tech=Astro,WordPress,Gatsby,Next.js,Nuxt.js&geo=ALL&rank=ALL&page=1).
 
 comparatif:
   titre: WordPress ou le site que je te propose
@@ -163,8 +170,3 @@ notes:
       gratuite et ne l'était pas. Le point à vérifier avant de choisir, quelle
       que soit l'option : qui paie quoi, et quand. Le devis que je t'ai envoyé
       ne porte aucun frais caché ni récurrent.
-  - tone: neutral
-    texte: >-
-      Une vidéo courte (en anglais) sur ce qui distingue un CMS comme
-      WordPress d'un outil comme Sanity, si vous voulez creuser :
-      [Content Platforms Explained in 100 Seconds, par Fireship](https://www.youtube.com/watch?v=c_8cplBi_gE).
