@@ -24,6 +24,14 @@
 # Révision du 2026-09-15 sur retour de Ludo : « pas en théorie » supprimé,
 # et tout le texte repris au style lapidaire (une idée par phrase, aucune
 # formule de transition).
+#
+# GitHub (là où le code vit vraiment) volontairement absent du document,
+# décision de Ludo : un outil de plus que seuls des développeurs comprennent
+# ferait peur, même avec le repo privé transmis en pratique.
+#
+# Ajout du critère « Avec le temps » (accumulation d'extensions côté
+# WordPress) sur demande de Ludo, pour couvrir les inconvénients WordPress
+# non encore dits, formulé sans jugement de valeur.
 titre: WordPress ou le site que je te propose
 objet: Ta question sur l'autonomie, et la remarque de ton collègue
 date: 2026-09-15
@@ -48,12 +56,11 @@ intro:
     texte: >-
       Le site actuel est un Blogger, pas un WordPress. Une plateforme de
       blog, pas un site de projet de recherche. Le retravailler n'y change
-      rien : pas de page Équipe ou Partenaires à part, vidéos limitées à
-      YouTube.
+      rien : pas de page Équipe ou Partenaires à part.
   - titre: La stack que je te propose
     texte: >-
-      Quatre outils. Les comptes (hébergement, contenu) sont à ton nom, pas
-      au mien.
+      Quatre outils. Les comptes (hébergement, contenu) sont à vous, pas à
+      moi.
     liste:
       - texte: >-
           **[Astro](https://astro.build)** construit le site. 71 % des sites
@@ -119,6 +126,15 @@ comparatif:
         - >-
           Personne. Ni extension ni base de données à sécuriser : le site
           est reconstruit à chaque publication
+    - label: Avec le temps
+      valeurs:
+        - >-
+          Les extensions s'accumulent au fil des besoins. Certaines cessent
+          d'être maintenues par leur auteur, sans que personne ne le
+          remarque avant un problème
+        - >-
+          Rien ne s'accumule. Le site ne grossit que si vous ajoutez du
+          contenu, jamais des dépendances
     - label: Autonomie au quotidien
       valeurs:
         - >-
