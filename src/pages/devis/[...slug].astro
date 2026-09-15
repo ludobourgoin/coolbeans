@@ -123,10 +123,14 @@ const reference = versions[0].id.split("-").pop();
     Proposition nᵒ {reference} · Version {courante.version} · coolbeans.cc/devis/{versions[0].id}
   </div>
 
-  <DevisReponse
-    slug={versions[actif].id}
-    enAttente={courante.sections.some((s) => s.budget?.enAttente)}
-  />
+  {
+    courante.formulaire && (
+      <DevisReponse
+        slug={versions[actif].id}
+        enAttente={courante.sections.some((s) => s.budget?.enAttente)}
+      />
+    )
+  }
 
   <DevisFooter />
 </BaseLayout>

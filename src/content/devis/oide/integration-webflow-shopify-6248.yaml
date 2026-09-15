@@ -6,6 +6,9 @@ titre: Oïde x Coolbeans
 objet: Intégration Webflow x Shopify · boutique Oïde
 date: 2026-03-19
 contact: Margaux
+# Affaire déjà signée : la page sert de feuille de route à Margaux et
+# Clément, pas de proposition à valider.
+formulaire: false
 linear:
   projet: Intégration Shopify
   affaire: https://linear.app/coolbeans-hq/issue/CRM-30
