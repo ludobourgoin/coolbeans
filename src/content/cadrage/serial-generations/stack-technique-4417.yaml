@@ -21,13 +21,25 @@
 # 2026-09-15 sur astro.build, section « Astro Islands ». Source citée :
 # HTTP Archive et Chrome UX Report, lien vers le jeu de données complet.
 #
-# Vidéo YouTube (en anglais, demande explicite de Ludo) : « Content Platforms
-# Explained in 100 Seconds // Build your own with Sanity », chaîne Fireship
-# (vérifiée par oEmbed le 2026-09-15). Choisie plutôt que les vidéos
-# clickbait « WordPress is dead » trouvées en recherche, moins crédibles pour
-# une universitaire. Intégrée directement dans la page (pas un simple lien),
-# sur demande explicite de Ludo le 2026-09-15 : nouveau champ `video` sur les
-# sections d'intro du cadrage, cf. content.config.ts et CadrageIntro.astro.
+# Vidéo YouTube : la vidéo Fireship (v1) jugée trop technique par Ludo le
+# 2026-09-15 malgré la cible « utilisateur final ». Les deux vidéos qu'il a
+# proposées ensuite (Adam Lowe « Why Astro Keeps Showing Up », Chris Good
+# « Stop Playing It Safe ») vérifiées par description officielle : la
+# première s'adresse explicitement aux agences WordPress, la seconde discute
+# d'outils de page-building Astro (PhantomWP, Etch Studio, VSCode) sur
+# 27 minutes. Toutes deux plus techniques que la Fireship, pas moins.
+# Signalé à Ludo plutôt que choisi en silence.
+#
+# Retenue à la place : « Sanity Studio How-To for Content Editors:
+# Introduction and Overview », chaîne Dinghy Studio (vérifiée par oEmbed et
+# description officielle le 2026-09-15) : « focusing on usability for content
+# editors rather than developers [...] accessible for users transitioning
+# from platforms like WordPress ». C'est littéralement le public et l'angle
+# demandés.
+#
+# Article ajouté en lien (pas intégré, ce n'est pas une vidéo) :
+# contentious.ltd, retour d'expérience d'une agence passée de WordPress à
+# Astro, qui cite Sanity en bien pour un autre de leurs projets.
 titre: WordPress ou le site que je te propose
 objet: Ta question sur l'autonomie, et la remarque de ton collègue
 date: 2026-09-15
@@ -86,13 +98,23 @@ intro:
           **[Tailwind CSS](https://tailwindcss.com)** met le site en forme.
           Il garantit que chaque page garde la même cohérence visuelle, sans
           feuille de style qui dérive au fil des ajouts.
-    video:
-      id: c_8cplBi_gE
-      titre: "Content Platforms Explained in 100 Seconds, par Fireship"
     note: >-
-      Vidéo ci-dessus (en anglais) : ce qui distingue un CMS comme WordPress
-      d'un outil comme Sanity. Jeu de données complet des Core Web Vitals :
-      [httparchive.org](https://httparchive.org/reports/techreport/tech?client=mobile&tech=Astro,WordPress,Gatsby,Next.js,Nuxt.js&geo=ALL&rank=ALL&page=1).
+      Jeu de données complet des Core Web Vitals : [httparchive.org](https://httparchive.org/reports/techreport/tech?client=mobile&tech=Astro,WordPress,Gatsby,Next.js,Nuxt.js&geo=ALL&rank=ALL&page=1).
+  - titre: L'espace de rédaction, en vidéo
+    texte: >-
+      C'est le point que je veux te montrer plus que t'expliquer. Cette vidéo
+      présente Sanity Studio du point de vue de quelqu'un qui rédige, pas de
+      quelqu'un qui code, et elle s'adresse justement à des gens qui viennent
+      de WordPress. L'écran que tu y vois est tout ce que ton équipe aura
+      sous les yeux : vos actualités, votre équipe, vos partenaires, vos
+      vidéos. Rien d'autre à apprendre à ignorer.
+    video:
+      id: GLmcyRUqHdY
+      titre: "Sanity Studio pour les rédacteurs, par Dinghy Studio"
+    note: >-
+      Pour aller plus loin (en anglais aussi) : le retour d'expérience d'une
+      agence passée de WordPress à Astro, [chez
+      Contentious](https://contentious.ltd/resources/how-and-why-to-move-from-wordpress-to-astro).
 
 comparatif:
   titre: WordPress ou le site que je te propose
