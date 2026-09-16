@@ -1,0 +1,81 @@
+titre: Aurélie x Coolbeans
+objet: La précommande de ton livre
+date: 2026-09-16
+contact: Aurélie
+tutoiement: true
+linear:
+  projet: "Précommande du livre"
+  affaire: CRM-95
+
+sections:
+  - titre: Ce que j'ai compris
+    texte: >-
+      Tu veux ouvrir la précommande de ton livre sur ton site, sans passer par
+      une plateforme payante. Tu pars sur Stripe : le paiement se fait par
+      carte, directement sur ta page, sans que ton lecteur la quitte.
+    note: >-
+      Le lien de paiement est dédié à ce livre. Si tu veux vendre autre chose
+      plus tard, c'est un nouveau chiffrage : ça se prépare différemment.
+
+  - titre: La page
+    texte: Une page dans ta nav principale, avec ton texte et tes visuels.
+    liste:
+      - texte: Ton texte de présentation du livre, tel que tu me l'envoies.
+      - texte: Ta couverture et tes visuels.
+      - texte: Le bouton de paiement Stripe, au prix que tu fixes.
+
+  - titre: Ce que ça comprend
+    liste:
+      - Intégration du paiement Stripe (checkout, confirmation de commande)
+      - Responsive (desktop, tablette, mobile)
+      - Tests QA sur les 3 navigateurs principaux
+      - Support 30 jours après mise en ligne
+
+  - titre: Le budget
+    budget:
+      lignes:
+        - label: "**La page**, avec ton texte et tes visuels"
+          prix: 200
+        - label: "**Le paiement Stripe**, intégré à ta page"
+          prix: 150
+      mention: TTC
+      reglement: En une fois, à la mise en ligne.
+    note: >-
+      Ton texte et tes visuels existent déjà : il n'y a ni rédaction ni
+      création graphique à faire. C'est ce qui rend ce chantier court.
+
+  - titre: Le déroulé
+    planning:
+      options:
+        - label: Calendrier
+          texte: >-
+            Pas de rendez-vous de démarrage nécessaire : dès que j'ai ton
+            texte, tes visuels et l'accès à ton compte Stripe, je peux
+            avancer.
+          jalons:
+            - { date: "J+0", label: "Démarrage, à la date qu'on aura convenue" }
+            - { date: "J+5", label: "Page livrée avec le parcours de paiement", owner: coolbeans }
+            - { date: "J+7", label: "Mise en ligne", owner: coolbeans }
+
+  - titre: De ton côté
+    texte: Trois choses, avant que je démarre.
+    liste:
+      - texte: Ton texte de présentation, ta couverture et tes visuels.
+      - texte: >-
+          Un compte Stripe à toi (je ne peux pas en créer un à ta place),
+          avec ludo@coolbeans.cc ajouté en administrateur.
+      - texte: >-
+          Le prix de ton livre, et s'il part avec une adresse de livraison
+          (papier) ou pas (numérique).
+
+notes:
+  - tone: warning
+    texte: >-
+      Avant de vendre, un point à régler de ton côté : un statut professionnel
+      (micro-entreprise, artiste-auteur…) est nécessaire pour encaisser. À
+      vérifier avec l'URSSAF ou un comptable.
+  - texte: >-
+      Le périmètre s'arrête à la technique. Si tu veux qu'on retravaille le
+      texte de vente ou qu'on ajoute d'autres produits, c'est un autre sujet.
+  - texte: >-
+      Proposition valable 30 jours.
