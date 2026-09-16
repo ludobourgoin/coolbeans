@@ -1,7 +1,7 @@
 ---
 // Planning de disponibilités de Coolbeans (COO-11, section Aide).
 //
-// Trois mois glissants, du lundi au vendredi, identiques pour tous les
+// Six mois glissants en calendrier complet, identiques pour tous les
 // workspaces : les plages viennent de src/content/indisponibilites/*.yaml,
 // les jours fériés sont calculés. Lecture seule, aucun mapping client.
 export const prerender = false;
@@ -41,13 +41,14 @@ const colonnes = ["L", "M", "M", "J", "V", "S", "D"];
 <EspaceLayout title="Disponibilités">
   <h1>Disponibilités</h1>
   <p class="sub">
-    Quand Coolbeans est disponible pour vos demandes, sur les trois prochains mois. Un message
+    Quand Coolbeans est disponible pour vos demandes, sur les six prochains mois. Un message
     envoyé un jour marqué ou un week-end reçoit sa réponse au jour ouvré suivant.
   </p>
 
   <ul class="legende mb-6x flex flex-wrap gap-x-6x gap-y-2x text-sm text-mute" aria-label="Légende">
     <li><span class="pastille" data-etat="indispo"></span> Indisponible</li>
     <li><span class="pastille" data-etat="ferie"></span> Jour férié</li>
+    <li><span class="pastille" data-weekend></span> Week-end</li>
     <li><span class="pastille" data-etat="aujourdhui"></span> Aujourd'hui</li>
   </ul>
 
@@ -151,22 +152,27 @@ const colonnes = ["L", "M", "M", "J", "V", "S", "D"];
     background: var(--ds-amber-200);
     color: var(--ds-amber-900);
   }
+  /* Férié et week-end sur la même échelle de gris, le week-end un cran plus
+     soutenu (retour du 2026-09-16) ; le week-end prime sur un férié ou une
+     absence qui y tombe, puisqu'il ne change rien pour le client. */
   .jour[data-etat="ferie"],
   .pastille[data-etat="ferie"] {
-    background: var(--surface-subtle);
-    color: var(--mute);
+    background: var(--ds-gray-400);
+    border-color: var(--ds-gray-600);
+    color: var(--ink);
+  }
+  .jour[data-weekend],
+  .pastille[data-weekend] {
+    background: var(--ds-gray-500);
+    color: var(--ink);
   }
   .jour[data-aujourdhui],
   .pastille[data-etat="aujourdhui"] {
     border-color: var(--ink);
     font-weight: 600;
   }
-  .jour[data-weekend] {
-    color: var(--mute);
-    opacity: 0.55;
-  }
   .jour[data-passe] {
-    opacity: 0.4;
+    opacity: 0.6;
   }
   .pastille {
     display: inline-block;

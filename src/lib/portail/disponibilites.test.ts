@@ -38,15 +38,19 @@ describe("feriesFrance", () => {
 });
 
 describe("moisGlissants", () => {
-  it("part du mois courant et en donne trois", () => {
-    expect(moisGlissants("2026-09-16")).toEqual([
+  it("part du mois courant et en donne six par défaut", () => {
+    expect(moisGlissants("2026-09-16").map((m) => m.mois)).toEqual([9, 10, 11, 12, 1, 2]);
+    expect(moisGlissants("2026-09-16").at(-1)).toEqual({ annee: 2027, mois: 2 });
+  });
+  it("respecte le nombre demandé", () => {
+    expect(moisGlissants("2026-09-16", 3)).toEqual([
       { annee: 2026, mois: 9 },
       { annee: 2026, mois: 10 },
       { annee: 2026, mois: 11 },
     ]);
   });
   it("passe l'année", () => {
-    expect(moisGlissants("2026-12-03")).toEqual([
+    expect(moisGlissants("2026-12-03", 3)).toEqual([
       { annee: 2026, mois: 12 },
       { annee: 2027, mois: 1 },
       { annee: 2027, mois: 2 },
@@ -137,7 +141,7 @@ describe("plagesAffichees", () => {
       { du: "2026-09-10", au: "2026-09-18", motif: "Chevauche le début" },
       { du: "2027-02-01", au: "2027-02-02", motif: "Trop loin" },
     ];
-    const res = plagesAffichees(plages, moisGlissants("2026-09-16"));
+    const res = plagesAffichees(plages, moisGlissants("2026-09-16", 3));
     expect(res.map((p) => p.motif)).toEqual(["Chevauche le début", "Chevauche la fin"]);
   });
 });

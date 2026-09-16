@@ -1,7 +1,7 @@
 /**
  * Planning de disponibilités du portail (COO-11, page /espace/disponibilites).
  *
- * Trois mois glissants en calendrier complet, week-ends grisés, avec deux sources :
+ * Six mois glissants en calendrier complet, week-ends grisés, avec deux sources :
  * - les jours fériés français, calculés ici (fixes + mobiles depuis Pâques) ;
  * - les plages d'indisponibilité de Coolbeans, lues dans la collection
  *   `indisponibilites` (YAML édité à la main, commun à tous les workspaces).
@@ -93,8 +93,8 @@ export function feriesFrance(annee: number): Map<string, string> {
   ]);
 }
 
-/** Le mois courant et les deux suivants. */
-export function moisGlissants(aujourdhui: string, nombre = 3): Mois[] {
+/** Le mois courant et les cinq suivants (six mois, retour de Ludo du 2026-09-16). */
+export function moisGlissants(aujourdhui: string, nombre = 6): Mois[] {
   const [annee, mois] = aujourdhui.split("-").map(Number);
   return Array.from({ length: nombre }, (_, i) => {
     const total = mois - 1 + i;

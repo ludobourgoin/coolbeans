@@ -36,9 +36,10 @@ préfixe technique.
 **Déclarer une indisponibilité** = une plage dans
 `src/content/indisponibilites/<année>.yaml` : un premier jour, un dernier
 jour (tous deux inclus) et un motif court, lu tel quel par le client. La page
-Disponibilités (section Aide) affiche ces plages à tous les clients, sur trois
-mois glissants du lundi au vendredi, avec les jours fériés français, qu'elle
-calcule elle-même. Le planning est commun à tous les workspaces.
+Disponibilités (section Aide) affiche ces plages à tous les clients, sur six
+mois glissants en calendrier complet, week-ends grisés, avec les jours fériés
+français, qu'elle calcule elle-même. Le planning est commun à tous les
+workspaces.
 
 Un module dont le mapping est absent affiche un **état vide** explicite, pas
 une erreur : on peut créer un client incomplet et compléter ensuite. Un
