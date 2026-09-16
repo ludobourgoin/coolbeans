@@ -15,6 +15,11 @@
 # pertinent, pas de repère géographique), lignes de disponibilité par
 # extension ajoutées au tableau (.eu abandonné, .org étant l'extension
 # traditionnelle des associations et .fr restant une alternative solide).
+#
+# Deuxième révision le même jour : ce document ne chiffre rien, donc aucune
+# question n'en "décide du chiffrage" ("decisif" retiré des deux restantes).
+# Les questions redirection et référence réseau retirées : Ludo ne rend pas
+# ces deux services, poser la question n'avait pas de sens.
 titre: Le nom de domaine de votre nouveau site
 objet: Trois pistes disponibles, avant la mise en ligne
 date: 2026-09-16
@@ -88,7 +93,6 @@ questions:
     label: Quel nom retenez-vous ?
     aide: Reportez-vous au tableau ci-dessus.
     type: choix
-    decisif: true
     requis: true
     options:
       - valeur: cafamp
@@ -109,7 +113,6 @@ questions:
       Les deux sont disponibles quel que soit le nom retenu (voir le
       tableau).
     type: choix
-    decisif: true
     requis: true
     options:
       - valeur: fr
@@ -118,30 +121,6 @@ questions:
       - valeur: org
         label: .org
         aide: Traditionnellement réservée aux associations.
-  - id: redirection
-    label: >-
-      Si vous choisissez un autre nom, faut-il aussi rediriger l'ancien
-      cafamp.org vers le nouveau site ?
-    type: choix
-    requis: false
-    options:
-      - valeur: oui
-        label: Oui, je préfère le reprendre en redirection
-      - valeur: non
-        label: Non, pas la peine
-      - valeur: ne-sait-pas
-        label: Je ne sais pas encore
-  - id: reference-reseau
-    label: >-
-      Une fois le nom choisi, voulez-vous que je vous aide à faire mettre à
-      jour votre fiche sur reseau-cafa.org ?
-    type: choix
-    requis: false
-    options:
-      - valeur: oui
-        label: Oui
-      - valeur: non
-        label: Non, je m'en charge
 
 notes:
   - tone: info
