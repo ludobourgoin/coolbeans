@@ -2,16 +2,21 @@
 # notait déjà "CAFA TOcc refusé par l'Afnic" et "cafamp.org qui ne répond
 # plus", sans plus de détail sur le motif du refus.
 #
-# Vérifications whois du 2026-09-16 : cafamp.org, cafa-toulouse.fr/.org/.eu,
-# club-cafa.fr, cafa31.fr et cafamp.fr sont tous libres à cette date.
+# Vérifications whois du 2026-09-16 : cafamp.org/.fr, cafa-toulouse.fr/.org
+# et cafa31.fr/.org sont tous libres à cette date.
 #
 # Convention de nommage du réseau relevée sur reseau-cafa.org/clubs-fr : la
 # plupart des clubs suivent "cafa-<ville ou région>" (cafa-bretagne.fr,
 # cafaura.fr, cafa-hdf.com, cafa-rso.eu...). Toulouse n'apparaît dans aucun
 # annuaire du réseau à ce jour, ce que Susanne a relevé elle-même dans son
 # mail du 15/09.
+#
+# Révision du 2026-09-16 sur retour de Ludo : club-cafa retiré (non
+# pertinent, pas de repère géographique), lignes de disponibilité par
+# extension ajoutées au tableau (.eu abandonné, .org étant l'extension
+# traditionnelle des associations et .fr restant une alternative solide).
 titre: Le nom de domaine de votre nouveau site
-objet: Quatre pistes disponibles, avant la mise en ligne
+objet: Trois pistes disponibles, avant la mise en ligne
 date: 2026-09-16
 contact: Susanne
 linear:
@@ -43,15 +48,13 @@ intro:
 comparatif:
   titre: Quel nom choisir
   texte: >-
-    Quatre pistes, toutes vérifiées disponibles à ce jour.
+    Trois pistes, toutes vérifiées disponibles à ce jour.
   solutions:
     - nom: cafamp.org
       resume: L'historique du club, à reprendre tel quel.
     - nom: cafa-toulouse
       resume: Le nom géographique, dans le même principe que les autres clubs du réseau.
       recommandee: true
-    - nom: club-cafa
-      resume: Un nom générique, sans repère de ville.
     - nom: cafa31
       resume: Repéré par département plutôt que par ville.
   criteres:
@@ -59,23 +62,26 @@ comparatif:
       valeurs:
         - "Déjà connu : c'est le nom que votre brochure et vos contacts ont en tête depuis des années."
         - "Le même principe que les autres clubs du réseau : un visiteur qui connaît cafa-bretagne.fr ou cafaura.fr reconnaît tout de suite le vôtre."
-        - "Court et facile à dicter au téléphone."
         - "Colle à votre département de rattachement."
     - label: Inconvénients
       valeurs:
         - "« MP » renvoie à Midi-Pyrénées, une région qui n'existe plus depuis 2016. Un nouveau contact peut ne pas comprendre le sigle."
         - "C'est un nom à refaire connaître, même s'il reprend celui de la ville."
-        - "Aucun repère géographique ou associatif pour quelqu'un qui découvre le club."
         - "Un numéro de département ne parle à personne côté allemand, et peu côté français."
-    - label: Coût annuel indicatif
+    - label: Disponible en .fr
       valeurs:
-        - "Environ 15 € TTC (extension .org)"
-        - "Environ 10 à 15 € TTC (extension .fr)"
-        - "Environ 10 à 15 € TTC (extension .fr)"
-        - "Environ 10 à 15 € TTC (extension .fr)"
+        - "🟢 oui (cafamp.fr)"
+        - "🟢 oui (cafa-toulouse.fr)"
+        - "🟢 oui (cafa31.fr)"
+    - label: Disponible en .org
+      valeurs:
+        - "🟢 oui (cafamp.org)"
+        - "🟢 oui (cafa-toulouse.org)"
+        - "🟢 oui (cafa31.org)"
   mentionCout: >-
-    Coût de renouvellement du domaine seul, à titre indicatif. Il ne dépend
-    pas du nom retenu et n'a aucun effet sur le prix du site déjà validé.
+    Disponibilités vérifiées le 16 septembre 2026, à titre indicatif : elles
+    peuvent changer d'ici votre réponse. Coût de renouvellement annuel, hors
+    choix du nom : environ 10 à 15 € TTC en .fr, environ 15 € TTC en .org.
 
 questions:
   - id: nom
@@ -91,16 +97,17 @@ questions:
       - valeur: cafa-toulouse
         label: cafa-toulouse (nouveau nom géographique)
         aide: Colonne 2 du tableau, ma recommandation.
-      - valeur: club-cafa
-        label: club-cafa (nom générique)
-        aide: Colonne 3 du tableau.
       - valeur: cafa31
         label: cafa31 (par département)
-        aide: Colonne 4 du tableau.
+        aide: Colonne 3 du tableau.
     autre: true
   - id: extension
     label: Et quelle extension ?
-    aide: Le réseau utilise indifféremment .fr, .org et .eu selon les clubs.
+    aide: >-
+      .org est traditionnellement réservée aux associations, comme la
+      vôtre. .fr reste une très bonne solution, plus courante en France.
+      Les deux sont disponibles quel que soit le nom retenu (voir le
+      tableau).
     type: choix
     decisif: true
     requis: true
@@ -110,10 +117,7 @@ questions:
         aide: L'extension la plus courante pour une association française.
       - valeur: org
         label: .org
-        aide: Celle du réseau lui-même, reseau-cafa.org.
-      - valeur: eu
-        label: .eu
-        aide: Cohérent avec un club franco-allemand, visibilité européenne.
+        aide: Traditionnellement réservée aux associations.
   - id: redirection
     label: >-
       Si vous choisissez un autre nom, faut-il aussi rediriger l'ancien
