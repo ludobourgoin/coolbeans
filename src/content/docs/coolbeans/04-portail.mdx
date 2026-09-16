@@ -33,6 +33,13 @@ préfixe technique.
 | `uptimerobot_monitor_ids` | Monitors de disponibilité de ses sites (prévu pour le module Site) |
 | `archive` | `true` sort le client du sélecteur sans rien supprimer |
 
+**Déclarer une indisponibilité** = une plage dans
+`src/content/indisponibilites/<année>.yaml` : un premier jour, un dernier
+jour (tous deux inclus) et un motif court, lu tel quel par le client. La page
+Disponibilités (section Aide) affiche ces plages à tous les clients, sur trois
+mois glissants du lundi au vendredi, avec les jours fériés français, qu'elle
+calcule elle-même. Le planning est commun à tous les workspaces.
+
 Un module dont le mapping est absent affiche un **état vide** explicite, pas
 une erreur : on peut créer un client incomplet et compléter ensuite. Un
 encart de diagnostic, visible des seuls admins, liste ce qui manque : c'est

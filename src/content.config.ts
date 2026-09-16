@@ -461,4 +461,41 @@ const cadrage = defineCollection({
   }),
 });
 
-export const collections = { devis, cadrage, projets, docs, clients, organisations };
+/* Indisponibilités de Coolbeans, affichées à tous les clients sur
+   /espace/disponibilites (COO-11). Un fichier par année dans
+   src/content/indisponibilites/, édité à la main : le planning est le même
+   pour tous les workspaces, il ne dépend d'aucune fiche client. Les jours
+   fériés ne s'y écrivent pas, la page les calcule. */
+/* YAML lit `2026-10-26` nu comme une Date (minuit UTC) et `"2026-10-26"`
+   comme une chaîne : les deux écritures donnent la même chaîne ISO. */
+const jourIso = z
+  .union([z.string().regex(/^\d{4}-\d{2}-\d{2}$/), z.date()])
+  .transform((v) => (typeof v === "string" ? v : v.toISOString().slice(0, 10)));
+
+const indisponibilites = defineCollection({
+  loader: glob({ pattern: "*.yaml", base: "./src/content/indisponibilites" }),
+  schema: z.object({
+    plages: z
+      .array(
+        z
+          .object({
+            du: jourIso,
+            au: jourIso,
+            // Court, lu par le client : « Vacances », « Déplacement ».
+            motif: z.string().optional(),
+          })
+          .refine((p) => p.du <= p.au, { message: "`du` doit précéder `au`" }),
+      )
+      .default([]),
+  }),
+});
+
+export const collections = {
+  devis,
+  cadrage,
+  projets,
+  docs,
+  clients,
+  organisations,
+  indisponibilites,
+};

@@ -1,0 +1,12 @@
+# Indisponibilités de Coolbeans pour 2026, affichées à tous les clients sur
+# my.coolbeans.cc/disponibilites. Édité à la main, un fichier par année.
+#
+# Une plage = un premier jour et un dernier jour, tous deux inclus, plus un
+# motif court que le client lira tel quel (absent, la page écrit
+# « Indisponible »). Les jours fériés ne se déclarent pas ici : la page les
+# calcule.
+plages:
+  - du: 2026-09-28
+    au: 2026-10-02
+  - du: 2026-12-21
+    au: 2026-12-31

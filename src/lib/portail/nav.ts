@@ -161,7 +161,7 @@ const SECTIONS: SectionDef[] = [
     icon: "help",
     pages: [
       { label: "Ressources", path: "/ressources", flag: "live" },
-      { label: "Disponibilités", path: "/disponibilites", flag: "wip" }, // COO-11
+      { label: "Disponibilités", path: "/disponibilites", flag: "live" }, // COO-11
     ],
   },
   {
