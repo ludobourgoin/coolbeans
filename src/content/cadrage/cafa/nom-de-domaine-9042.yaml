@@ -31,10 +31,8 @@ linear:
 intro:
   - titre: Pourquoi ce point
     texte: >-
-      Le site avance, la première version arrive dans les prochains jours.
-      Il ne manque plus qu'un nom de domaine définitif pour le mettre en
-      ligne. Ce document reprend les pistes possibles avant qu'on tranche
-      ensemble.
+      Ce document reprend les pistes possibles pour le nom de domaine
+      définitif.
   - titre: L'ancien nom, cafamp.org
     texte: >-
       Votre brochure actuelle renvoie vers cafamp.org. Ce domaine ne répond
@@ -45,8 +43,7 @@ intro:
       J'ai regardé comment les autres clubs nomment leur site, sur
       reseau-cafa.org. La plupart suivent le même principe : cafa suivi de
       la ville ou de la région. Bretagne, Aquitaine, Hauts-de-France,
-      Auvergne-Rhône-Alpes. Toulouse, lui, n'apparaît dans aucun annuaire du
-      réseau aujourd'hui.
+      Auvergne-Rhône-Alpes.
     note: >-
       Liste complète : [reseau-cafa.org/clubs-fr](https://reseau-cafa.org/clubs-fr/).
 
