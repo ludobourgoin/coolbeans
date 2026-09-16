@@ -64,7 +64,7 @@ describe("portalHref", () => {
 describe("buildSidebar · visibilité côté client", () => {
   // La règle à deux étages (spec sidebar 2026-08-14, COO-80) : un client ne
   // voit que les pages `live` ET configurées pour lui. Aujourd'hui seules
-  // Introduction, la doc et Ressources sont lancées.
+  // Introduction, la doc, Ressources et Disponibilités sont lancées.
   it("ne montre que les pages live et configurées", () => {
     const pages = flat(buildSidebar("my.coolbeans.cc", client, avecDoc, docPages));
     expect(pages.map((p) => p.label)).toEqual([
@@ -72,6 +72,7 @@ describe("buildSidebar · visibilité côté client", () => {
       "Vue d'ensemble",
       "Édition",
       "Ressources",
+      "Disponibilités",
     ]);
   });
 
@@ -146,6 +147,7 @@ describe("buildSidebar · liens et préfixe d'hôte", () => {
       "/docs/amusoire/vue-densemble",
       "/docs/amusoire/edition",
       "/espace/ressources",
+      "/espace/disponibilites",
     ]);
   });
 

@@ -1,21 +1,174 @@
 ---
-// Page-souche « Disponibilités » (section Aide, spec sidebar 2026-08-14).
-// Entrée `wip` du registre : l'alpha (planning 3 mois lun-ven, vacances YAML
-// + jours fériés français) arrive avec COO-11.
+// Planning de disponibilités de Coolbeans (COO-11, section Aide).
+//
+// Trois mois glissants, du lundi au vendredi, identiques pour tous les
+// workspaces : les plages viennent de src/content/indisponibilites/*.yaml,
+// les jours fériés sont calculés. Lecture seule, aucun mapping client.
 export const prerender = false;
 
+import { getCollection } from "astro:content";
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
-import EmptyState from "../../components/portail/EmptyState.astro";
+import {
+  aujourdhuiParis,
+  grilleMois,
+  moisGlissants,
+  periodeLisible,
+  plagesAffichees,
+  type Plage,
+} from "../../lib/portail/disponibilites";
 
 Astro.response.headers.set("Cache-Control", "no-store");
+
+const aujourdhui = aujourdhuiParis();
+const fenetre = moisGlissants(aujourdhui);
+
+const entries = await getCollection("indisponibilites");
+const plages: Plage[] = entries.flatMap((e) => e.data.plages);
+
+const grilles = fenetre.map((mois) => grilleMois(mois, { aujourdhui, plages }));
+const aVenir = plagesAffichees(plages, fenetre).filter((p) => p.au >= aujourdhui);
+
+/* Fériés à venir dans la fenêtre, un jour ouvré seulement : un férié qui
+   tombe un week-end ne change rien pour le client. */
+const feriesAVenir = grilles
+  .flatMap((g) => g.semaines.flat())
+  .filter((c) => c && c.etat === "ferie" && !c.passe)
+  .map((c) => ({ du: c!.iso, au: c!.iso, motif: c!.libelle }));
+
+const colonnes = ["L", "M", "M", "J", "V"];
 ---
 
 <EspaceLayout title="Disponibilités">
   <h1>Disponibilités</h1>
-  <p class="sub">Quand Coolbeans est disponible pour vos demandes.</p>
+  <p class="sub">
+    Quand Coolbeans est disponible pour vos demandes, sur les trois prochains mois. Un message
+    envoyé un jour marqué reçoit sa réponse au jour ouvré suivant.
+  </p>
 
-  <EmptyState title="Bientôt disponible">
-    Le planning des trois prochains mois arrivera ici : jours travaillés, congés et jours fériés,
-    pour savoir quand attendre une réponse.
-  </EmptyState>
+  <ul class="legende mb-6x flex flex-wrap gap-x-6x gap-y-2x text-sm text-mute" aria-label="Légende">
+    <li><span class="pastille" data-etat="indispo"></span> Indisponible</li>
+    <li><span class="pastille" data-etat="ferie"></span> Jour férié</li>
+    <li><span class="pastille" data-etat="aujourdhui"></span> Aujourd'hui</li>
+  </ul>
+
+  <div class="grid gap-6x md:grid-cols-3">
+    {
+      grilles.map((g) => (
+        <section class="rounded-card border border-line bg-surface p-4x">
+          <h2 class="mb-3x text-base font-semibold tracking-[-0.02em]">{g.titre}</h2>
+          <table class="planning w-full border-collapse text-center text-sm">
+            <thead>
+              <tr>
+                {colonnes.map((c) => (
+                  <th scope="col" class="label pb-2x font-normal text-mute">
+                    {c}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {g.semaines.map((s) => (
+                <tr>
+                  {s.map((c) =>
+                    c ? (
+                      <td>
+                        <span
+                          class="jour"
+                          data-etat={c.etat}
+                          data-aujourdhui={c.aujourdhui || undefined}
+                          data-passe={c.passe || undefined}
+                          title={c.libelle}
+                        >
+                          {c.jour}
+                          {c.libelle && <span class="sr-only"> : {c.libelle}</span>}
+                        </span>
+                      </td>
+                    ) : (
+                      <td />
+                    ),
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="mt-8x">
+    <h2 class="mb-3x text-base font-semibold tracking-[-0.02em]">À venir</h2>
+    {
+      aVenir.length === 0 && feriesAVenir.length === 0 ? (
+        <p class="text-sm text-mute">Aucune absence prévue sur la période.</p>
+      ) : (
+        <ul class="divide-y divide-line rounded-card border border-line bg-surface text-sm">
+          {aVenir.map((p) => (
+            <li class="flex flex-wrap items-baseline gap-x-4x gap-y-1 px-4x py-3x">
+              <span class="pastille" data-etat="indispo" />
+              <span class="font-medium">{p.motif ?? "Indisponible"}</span>
+              <span class="text-mute">{periodeLisible(p)}</span>
+            </li>
+          ))}
+          {feriesAVenir.map((p) => (
+            <li class="flex flex-wrap items-baseline gap-x-4x gap-y-1 px-4x py-3x">
+              <span class="pastille" data-etat="ferie" />
+              <span class="font-medium">{p.motif}</span>
+              <span class="text-mute">{periodeLisible(p)}</span>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
 </EspaceLayout>
+
+<style>
+  /* Les états d'une case du planning : seul irréductible aux utilitaires,
+     parce qu'ils se combinent (passé + indisponible, aujourd'hui + férié). */
+  .planning td {
+    padding: 2px 0;
+  }
+  .jour {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-control);
+    border: 1px solid transparent;
+    font-variant-numeric: tabular-nums;
+  }
+  .jour[data-etat="indispo"],
+  .pastille[data-etat="indispo"] {
+    background: var(--ds-amber-200);
+    color: var(--ds-amber-900);
+  }
+  .jour[data-etat="ferie"],
+  .pastille[data-etat="ferie"] {
+    background: var(--surface-subtle);
+    color: var(--mute);
+  }
+  .jour[data-aujourdhui],
+  .pastille[data-etat="aujourdhui"] {
+    border-color: var(--ink);
+    font-weight: 600;
+  }
+  .jour[data-passe] {
+    opacity: 0.4;
+  }
+  .pastille {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    vertical-align: -2px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    background: var(--surface);
+  }
+  .legende li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+</style>
