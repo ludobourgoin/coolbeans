@@ -1,0 +1,121 @@
+# Livrable V1 du site CAFA-TO, composé le 2026-09-17 pour la validation de la
+# direction visuelle et de l'intégration (CAF-17, CAF-4). Même numéro que la
+# proposition 8791 : le client retrouve la même référence d'un document à
+# l'autre. Une V2 se déclarera dans un autre fichier avec `versionDe`.
+titre: Votre nouveau site, prêt à être relu
+objet: La maquette est intégrée, avec vos contenus. Voici ce que j'ai fait, pourquoi, et ce qu'il vous reste à regarder.
+date: 2026-09-17
+contact: Susanne
+linear:
+  projet: Site web CAFA
+  affaire: CRM-9
+
+site:
+  url: https://cafa-staging.ludo-c97.workers.dev
+  label: Ouvrir le site de démonstration
+
+# Vidéo de présentation : coller ici le lien de partage CleanShot. Si l'outil
+# fournit une URL de lecteur intégrable, la mettre dans `embed`.
+# video:
+#   url: https://share.cleanshot.com/...
+#   duree: 6 min
+#   legende: Un tour du site, page par page.
+
+sections:
+  - titre: Ce que vous voyez
+    texte: >-
+      Le site tourne sur une adresse de démonstration, avec vos vrais
+      contenus : le texte de la brochure, le congrès de Montpellier, les
+      articles de l'ancien blog. Il existe en français et en allemand.
+    liste:
+      - texte: "**Ce n'est pas encore l'adresse définitive.** Le nom de domaine se choisit dans le document de cadrage que vous avez reçu."
+      - texte: "**Quelques textes sont provisoires**, je les ai écrits pour que les pages ne soient pas vides : l'accroche de l'accueil et la page Devenir membre. Vous pouvez les garder, les corriger ou les réécrire."
+      - texte: "**L'allemand est une première version**, à relire par vous comme convenu."
+
+  - titre: La logique
+    texte: >-
+      Le site a un seul but : montrer que le Club est vivant, et donner envie
+      de le rejoindre.
+    liste:
+      - texte: "**Le prochain rendez-vous ouvre la page d'accueil**, présenté comme un carton d'invitation. C'est ce qu'un visiteur cherche en premier."
+      - texte: "**L'agenda se vide tout seul.** Un événement passé disparaît de la liste le lendemain, sans rien avoir à faire."
+      - texte: "**Les actualités sont la mémoire du Club.** Les rencontres passées y restent, année après année. J'y ai repris 38 articles de l'ancien blog, ceux qui avaient de la matière ; les autres sont conservés et peuvent revenir."
+      - texte: "**Un menu court.** Événements, Actualités, un menu À propos qui regroupe le Club et ses partenaires, Devenir membre, Contact."
+      - texte: "**Deux langues, un seul site.** Un visiteur dont le navigateur est en allemand arrive directement sur la version allemande. Il peut changer à tout moment, et son choix est retenu."
+
+  - titre: Les choix esthétiques
+    texte: >-
+      J'ai regardé les sites des autres clubs du réseau. Ils se ressemblent :
+      bandeaux d'images, photos de banque, menus chargés. Le vôtre prend le
+      contre-pied.
+    liste:
+      - texte: "**Du blanc et une seule couleur**, le bleu de votre logo. Le dégradé du logo reste dans le logo, il n'est décliné nulle part ailleurs."
+      - texte: "**Pas de photo décorative.** Aucun site du réseau n'est meilleur grâce à ses photos, plusieurs en souffrent. La page se tient par le texte et l'espace. Les photos d'événements ont leur place dans les actualités, quand vous en avez."
+      - texte: "**Deux caractères typographiques** : une serif pour les titres, sobre et institutionnelle, une sans-serif pour tout le texte."
+      - texte: "**Le nom allemand en écho** sous le nom français, et l'inverse sur la version allemande. C'est ce qui dit, dès la première ligne, ce qu'est le Club."
+      - texte: "**Les membres du bureau en médaillons noir et blanc**, pour que deux photos très différentes se tiennent côte à côte."
+
+  - titre: Les choix techniques
+    texte: >-
+      Ce qui était prévu dans la proposition, et ce que ça change pour vous.
+    liste:
+      - texte: "**Vous mettez le site à jour vous-même**, depuis un espace d'administration en français, sans toucher au code. Ce que vous publiez apparaît sur le site en moins d'une minute."
+      - texte: "**Les formulaires arrivent dans votre boîte mail** : le contact, et la demande d'adhésion, qui remplace le bulletin à imprimer."
+      - texte: "**La fréquentation est mesurée sans cookie**, donc sans bandeau de consentement à faire accepter."
+      - texte: "**Pas d'abonnement.** Hébergement, administration et envoi des formulaires tiennent dans les offres gratuites de leurs fournisseurs."
+      - texte: "**Le code vous appartient.** Il est dans un dépôt au nom du Club, que je vous transmets à la livraison, avec la documentation."
+
+parcoursTitre: Le parcours
+parcours:
+  - page: Accueil
+    url: https://cafa-staging.ludo-c97.workers.dev/
+    texte: Le nom du Club, le prochain rendez-vous, les dernières actualités.
+  - page: Qui sommes-nous
+    url: https://cafa-staging.ludo-c97.workers.dev/qui-sommes-nous/
+    texte: Le texte de votre brochure, mis en scène, et le bureau.
+  - page: Événements à venir
+    url: https://cafa-staging.ludo-c97.workers.dev/evenements/
+    texte: L'agenda, avec le programme du congrès de Montpellier en exemple.
+  - page: Actualités
+    url: https://cafa-staging.ludo-c97.workers.dev/actualites/
+    texte: Les 38 articles repris de l'ancien blog, photos comprises.
+  - page: Devenir membre
+    url: https://cafa-staging.ludo-c97.workers.dev/devenir-membre/
+    texte: Pourquoi adhérer, et la demande d'adhésion en ligne.
+  - page: Partenaires
+    url: https://cafa-staging.ludo-c97.workers.dev/partenaires/
+    texte: Vide pour l'instant, en attendant les logos de vos partenaires.
+  - page: Contact
+    url: https://cafa-staging.ludo-c97.workers.dev/contact/
+    texte: Vos coordonnées et le formulaire.
+  - page: Version allemande
+    url: https://cafa-staging.ludo-c97.workers.dev/de/
+    texte: Le même site, en allemand.
+
+aVerifierTitre: Ce que je vous demande de vérifier
+aVerifier:
+  - "La direction visuelle dans son ensemble : est-ce que c'est le Club ?"
+  - "Le texte de la page Qui sommes-nous : c'est celui de la brochure, avec quelques phrases en gras que j'ai choisies."
+  - "L'accroche de l'accueil et la page Devenir membre, que j'ai écrites."
+  - "Les titres des anciens articles, repris tels quels de l'ancien blog."
+  - "Les mentions légales : le nom de la présidente comme directrice de la publication, et l'adresse du Club."
+  - "La version allemande, en particulier les actualités et l'événement."
+
+suiteTitre: La suite
+suite:
+  - texte: Choisir le nom de domaine, dans le document de cadrage.
+    owner: client
+  - texte: Créer le compte Resend, qui fera partir les formulaires, et m'y ajouter.
+    owner: client
+  - texte: "M'envoyer une photo de Karsten Fröhlke en bonne définition, et les logos de vos partenaires."
+    owner: client
+  - texte: Brancher les formulaires et la mesure de fréquentation, puis mettre le site en ligne sur votre domaine.
+    owner: coolbeans
+  - texte: Vous former à la mise à jour du site, et vous remettre la documentation.
+    owner: coolbeans
+
+notes:
+  - tone: info
+    texte: >-
+      Ce document se met à jour. Après vos retours, la nouvelle version
+      apparaît ici, au même lien, et la précédente reste consultable.

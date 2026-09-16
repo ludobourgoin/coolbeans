@@ -167,6 +167,75 @@ const devis = defineCollection({
    optionnelles : absentes, le composant Browser affiche « capture à
    fournir ». `brouillon: true` publie la page en noindex, le temps de la
    validation. Schéma pensé pour migrer tel quel vers Sanity plus tard. */
+/* Un fichier YAML par livrable dans src/content/livrable/<client>/<projet>-<4
+   chiffres>.yaml, même référence que la proposition dont il découle. Le chemin
+   devient l'URL (/livrable/<client>/<projet>-1234). Troisième membre de la
+   famille proposition / cadrage : la page qui présente un travail livré,
+   explique ses choix, et se termine par une validation ou des retours.
+   Versions comme au devis : la V2 se déclare par `versionDe` et partage
+   l'URL de la V1. */
+const livrable = defineCollection({
+  loader: glob({ pattern: "**/*.yaml", base: "./src/content/livrable" }),
+  schema: z.object({
+    titre: z.string(),
+    objet: z.string(),
+    date: z.coerce.date(),
+    contact: z.string().optional(),
+    tutoiement: z.boolean().default(false),
+    version: z.number().int().min(1).default(1),
+    versionDe: z.string().optional(),
+    envoi: z.object({ date: z.coerce.date(), destinataire: z.string() }).optional(),
+    linear: z.object({ projet: z.string().optional(), affaire: z.string().optional() }).optional(),
+    // Formulaire masqué une fois le livrable validé : la page devient une trace.
+    formulaire: z.boolean().default(true),
+    /* Le livrable lui-même, ouvert depuis l'en-tête. Adresse de démonstration
+       ou domaine définitif selon le moment. */
+    site: z.object({ url: z.string().url(), label: z.string().default("Ouvrir le site") }),
+    /* Vidéo de présentation : lien de partage, et lecteur intégrable si
+       l'outil en fournit un. Optionnelle, le document se lit sans. */
+    video: z
+      .object({
+        url: z.string().url(),
+        embed: z.string().url().optional(),
+        duree: z.string().optional(),
+        legende: z.string().optional(),
+      })
+      .optional(),
+    /* Sections au format des sections de cadrage, rendues par CadrageIntro. */
+    sections: z.array(
+      z.object({
+        titre: z.string(),
+        texte: z.string().optional(),
+        liste: z
+          .array(
+            z.union([z.string(), z.object({ texte: z.string(), tooltip: z.string().optional() })]),
+          )
+          .optional(),
+        note: z.string().optional(),
+      }),
+    ),
+    parcoursTitre: z.string().default("Le parcours"),
+    parcours: z
+      .array(z.object({ page: z.string(), url: z.string().url(), texte: z.string().optional() }))
+      .default([]),
+    aVerifierTitre: z.string().default("À vérifier"),
+    aVerifier: z.array(z.string()).default([]),
+    suiteTitre: z.string().default("La suite"),
+    suite: z
+      .array(z.object({ texte: z.string(), owner: z.enum(["coolbeans", "client"]) }))
+      .default([]),
+    notes: z
+      .array(
+        z.object({
+          texte: z.string(),
+          tooltip: z.string().optional(),
+          tone: z.enum(["neutral", "info", "success", "warning", "error"]).default("info"),
+        }),
+      )
+      .default([]),
+  }),
+});
+
 const projets = defineCollection({
   loader: glob({ pattern: "*.md", base: "./src/content/projets" }),
   schema: z.object({
@@ -493,6 +562,7 @@ const indisponibilites = defineCollection({
 export const collections = {
   devis,
   cadrage,
+  livrable,
   projets,
   docs,
   clients,

@@ -1,0 +1,237 @@
+---
+/* Formulaire de réponse au livrable : valider, ou déposer des retours.
+
+   Jumeau de DevisReponse et de CadrageFormulaire : même grille, même bloc
+   d'identité, même consentement, même filet de secours par courriel pré-rempli
+   si l'API tombe. Ce qui change : deux réponses possibles et un message qui
+   devient obligatoire quand on annonce des retours, parce qu'un « j'ai des
+   retours » sans les retours ne fait avancer personne. */
+import Choicebox from "../ui/Choicebox.astro";
+import { REPONSES_LIVRABLE } from "../../lib/livrable";
+
+interface Props {
+  slug: string;
+  tutoiement?: boolean;
+}
+const { slug, tutoiement = false } = Astro.props;
+
+const t = tutoiement
+  ? {
+      accroche: "Dis-moi si ce livrable te convient, ou ce que tu veux voir changer.",
+      prenom: "Ton prénom",
+      nom: "Ton nom",
+      email: "toi@exemple.com",
+      messageAide: "Page par page si possible : c'est ce qui me permet d'aller vite.",
+      envoye: "Merci, c'est envoyé. Tu reçois une copie par email à l'instant.",
+      perdue: "Ta réponse n'est pas perdue",
+      manque: "Tu annonces des retours : merci de les écrire dans le message.",
+    }
+  : {
+      accroche: "Dites-moi si ce livrable vous convient, ou ce que vous voulez voir changer.",
+      prenom: "Votre prénom",
+      nom: "Votre nom",
+      email: "vous@exemple.com",
+      messageAide: "Page par page si possible : c'est ce qui me permet d'aller vite.",
+      envoye: "Merci, c'est envoyé. Vous recevez une copie par email à l'instant.",
+      perdue: "Votre réponse n'est pas perdue",
+      manque: "Vous annoncez des retours : merci de les écrire dans le message.",
+    };
+---
+
+<!-- RÉPONSE -->
+<section data-livrable-reponse class="border-t border-line bg-surface-subtle">
+  <div class="container-site py-24x">
+    <div
+      class="mx-auto grid max-w-[880px] grid-cols-[180px_1fr] gap-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+    >
+      <div aria-hidden="true"></div>
+      <div>
+        <h2>Votre réponse</h2>
+        <p class="mt-4 max-w-[44ch] leading-[1.6] text-mute">{t.accroche}</p>
+        <form
+          id="livrable-form"
+          class="card mt-10 grid gap-6"
+          data-slug={slug}
+          data-textes={JSON.stringify({ envoye: t.envoye, perdue: t.perdue, manque: t.manque })}
+        >
+          <Choicebox
+            name="reponse"
+            options={[
+              {
+                value: "validation",
+                title: REPONSES_LIVRABLE.validation,
+                hint: "La mise en ligne peut se préparer.",
+                checked: true,
+              },
+              {
+                value: "retours",
+                title: REPONSES_LIVRABLE.retours,
+                hint: "Détaillez-les dans le message ci-dessous.",
+              },
+            ]}
+          />
+          <p class="text-[13px] text-mute">Les champs marqués d'une étoile sont obligatoires.</p>
+          <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
+            <div class="grid gap-2">
+              <label class="label field-label" for="livrable-prenom">
+                Prénom <span class="text-ink" aria-hidden="true">*</span>
+              </label>
+              <input
+                class="field"
+                type="text"
+                id="livrable-prenom"
+                name="prenom"
+                autocomplete="given-name"
+                placeholder={t.prenom}
+                required
+              />
+            </div>
+            <div class="grid gap-2">
+              <label class="label field-label" for="livrable-nom">
+                Nom <span class="text-ink" aria-hidden="true">*</span>
+              </label>
+              <input
+                class="field"
+                type="text"
+                id="livrable-nom"
+                name="nom"
+                autocomplete="family-name"
+                placeholder={t.nom}
+                required
+              />
+            </div>
+          </div>
+          <div class="grid gap-2">
+            <label class="label field-label" for="livrable-email">
+              Email <span class="text-ink" aria-hidden="true">*</span>
+            </label>
+            <input
+              class="field"
+              type="email"
+              id="livrable-email"
+              name="email"
+              autocomplete="email"
+              placeholder={t.email}
+              required
+            />
+          </div>
+          <div class="grid gap-2">
+            <label class="label field-label" for="livrable-message">Message</label>
+            <textarea
+              class="field h-auto min-h-[140px] py-3"
+              id="livrable-message"
+              name="message"
+              placeholder={t.messageAide}></textarea>
+          </div>
+          <div class="grid gap-2 border-t border-line pt-6">
+            <label
+              class="flex cursor-pointer items-start gap-3 text-[13px] leading-[1.6] text-mute"
+              for="livrable-consentement"
+            >
+              <input
+                class="checkbox"
+                type="checkbox"
+                id="livrable-consentement"
+                name="consentement"
+                required
+              />
+              <span>
+                J'accepte que Coolbeans conserve ces informations pour traiter ma demande et assurer
+                le suivi de notre collaboration.
+                <span class="text-ink" aria-hidden="true">*</span>
+              </span>
+            </label>
+            <p class="pl-7 text-[13px] leading-[1.6] text-mute">
+              Elles ne sont ni revendues ni transmises à des tiers, et peuvent être supprimées sur
+              simple demande à <a class="link" href="mailto:ludo@coolbeans.cc">ludo@coolbeans.cc</a
+              >.
+            </p>
+          </div>
+          <button class="btn btn-lg" type="submit">Envoyer ma réponse</button>
+          <p
+            data-livrable-form-status
+            role="status"
+            class="hidden text-center text-[13px] font-medium"
+          >
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#livrable-form");
+  const status = form?.querySelector<HTMLParagraphElement>("[data-livrable-form-status]");
+  const textes: { envoye: string; perdue: string; manque: string } = JSON.parse(
+    form?.dataset.textes ?? "{}",
+  );
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (!status || !submitBtn) return;
+
+    const fd = new FormData(form);
+    const payload = {
+      slug: form.dataset.slug,
+      reponse: fd.get("reponse"),
+      prenom: fd.get("prenom"),
+      nom: fd.get("nom"),
+      email: fd.get("email"),
+      message: fd.get("message"),
+      consentement: fd.get("consentement") === "on",
+    };
+
+    /* Des retours sans message ne font avancer personne. La règle vit ici et
+       non en `required` HTML, parce qu'elle dépend de l'option cochée. */
+    if (payload.reponse === "retours" && !String(payload.message ?? "").trim()) {
+      status.hidden = false;
+      status.textContent = textes.manque;
+      status.className = "text-center text-[13px] font-medium text-error";
+      return;
+    }
+
+    submitBtn.disabled = true;
+    status.hidden = false;
+    status.textContent = "Envoi en cours...";
+    status.className = "text-center text-[13px] font-medium text-mute";
+
+    try {
+      const res = await fetch("/api/livrable-reponse", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error();
+      status.textContent = textes.envoye;
+      status.className = "text-center text-[13px] font-medium text-success";
+      form.reset();
+    } catch {
+      /* Filet de sécurité, repris du devis : un envoi qui échoue ne doit jamais
+         laisser le client sans issue. On lui rend sa saisie sous forme de
+         courriel pré-rempli, qui ne dépend d'aucun de nos services. */
+      const corps = [
+        `Réponse au livrable : ${payload.slug ?? ""}`,
+        payload.reponse === "validation" ? "Je valide ce livrable." : "J'ai des retours.",
+        "",
+        `Prénom : ${payload.prenom ?? ""}`,
+        `Nom : ${payload.nom ?? ""}`,
+        `Email : ${payload.email ?? ""}`,
+        "",
+        String(payload.message ?? "").trim() || "(pas de message)",
+      ].join("\n");
+      const lien =
+        "mailto:ludo@coolbeans.cc" +
+        `?subject=${encodeURIComponent(`Réponse au livrable ${payload.slug ?? ""}`)}` +
+        `&body=${encodeURIComponent(corps)}`;
+      status.innerHTML =
+        `L'envoi automatique n'a pas abouti. ${textes.perdue} : ` +
+        `<a class="link" href="${lien}">envoyez-la-moi par e-mail</a>, ` +
+        "le message est déjà prêt.";
+      status.className = "text-center text-[13px] font-medium text-error";
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+</script>
