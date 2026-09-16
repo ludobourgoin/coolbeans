@@ -36,50 +36,56 @@ if (solutions.length < 2) {
 const id = ancre;
 ---
 
-<section
-  id={id}
-  class="grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
->
-  <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">{titre}</p>
-  <div
-    class="flex flex-col gap-6 rounded-control border border-line bg-surface p-7 max-[520px]:p-5"
-    data-simulateur={id}
-    data-solutions={JSON.stringify(solutions)}
-  >
-    <label class="flex items-baseline justify-between gap-3 font-medium text-ink" for={`${id}-prix`}>
-      Prix de vente
-      <span class="font-mono text-2xl tabular-nums" data-role="prix-affiche">
-        {prixDefaut.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
-      </span>
-    </label>
-    <input
-      type="range"
-      id={`${id}-prix`}
-      min={prixMin}
-      max={prixMax}
-      step="1"
-      value={prixDefaut}
-      class="w-full accent-ink"
-    />
+<!-- Même sortie de colonne que le comparatif : voir le commentaire dans
+     CadrageComparatif.astro. -->
+<div class="-mx-[calc((100vw-100%)/2)]">
+  <div class="container-site">
+    <section
+      id={id}
+      class="grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+    >
+      <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">{titre}</p>
+      <div
+        class="flex flex-col gap-6 rounded-control border border-line bg-surface p-7 max-[520px]:p-5"
+        data-simulateur={id}
+        data-solutions={JSON.stringify(solutions)}
+      >
+        <label class="flex items-baseline justify-between gap-3 font-medium text-ink" for={`${id}-prix`}>
+          Prix de vente
+          <span class="font-mono text-2xl tabular-nums" data-role="prix-affiche">
+            {prixDefaut.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+          </span>
+        </label>
+        <input
+          type="range"
+          id={`${id}-prix`}
+          min={prixMin}
+          max={prixMax}
+          step="1"
+          value={prixDefaut}
+          class="w-full accent-ink"
+        />
 
-    <div class="grid gap-px overflow-hidden rounded-control border border-line bg-line max-[480px]:grid-cols-1" style={`grid-template-columns: repeat(${solutions.length}, 1fr)`}>
-      {
-        solutions.map((s) => (
-          <div class="flex flex-col gap-1 bg-surface p-4" data-role="resultat" data-nom={s.nom}>
-            <span class="font-semibold text-ink">{s.nom}</span>
-            <span class="font-mono text-[22px] leading-tight tabular-nums text-ink" data-role="frais" />
-            <span class="text-[13px] text-mute" data-role="net" />
-            <span class="mt-1 font-mono text-[11px] tracking-wide text-mute uppercase">
-              {s.fraisPourcentage}&nbsp;% + {s.fraisFixe.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
-            </span>
-          </div>
-        ))
-      }
-    </div>
+        <div class="grid gap-px overflow-hidden rounded-control border border-line bg-line max-[480px]:grid-cols-1" style={`grid-template-columns: repeat(${solutions.length}, 1fr)`}>
+          {
+            solutions.map((s) => (
+              <div class="flex flex-col gap-1 bg-surface p-4" data-role="resultat" data-nom={s.nom}>
+                <span class="font-semibold text-ink">{s.nom}</span>
+                <span class="font-mono text-[22px] leading-tight tabular-nums text-ink" data-role="frais" />
+                <span class="text-[13px] text-mute" data-role="net" />
+                <span class="mt-1 font-mono text-[11px] tracking-wide text-mute uppercase">
+                  {s.fraisPourcentage}&nbsp;% + {s.fraisFixe.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+                </span>
+              </div>
+            ))
+          }
+        </div>
 
-    <p class="text-[13px] leading-[1.6] text-mute" data-role="ecart" aria-live="polite"></p>
+        <p class="text-[13px] leading-[1.6] text-mute" data-role="ecart" aria-live="polite"></p>
+      </div>
+    </section>
   </div>
-</section>
+</div>
 
 <script>
   const fmt = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });

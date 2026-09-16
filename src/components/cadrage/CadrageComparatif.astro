@@ -49,79 +49,125 @@ for (const c of criteres) {
 }
 ---
 
-<section
-  id={ancre}
-  class="grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
->
-  <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">{titre}</p>
-  <div>
-    {texte && <p class="mb-6 max-w-[58ch] leading-[1.6]" set:html={riche(texte)} />}
+<!-- Ce bloc sort de la colonne de lecture (880px) pour respirer jusqu'à la
+     largeur du site : un comparatif tassé dans la même colonne que du texte
+     courant perd ses colonnes dès trois solutions. La marge négative se
+     calcule sur 100%, pas sur 100vw, donc elle vaut quel que soit l'ancêtre
+     qui l'encadre (cf. le même principe sur la nav sticky de DevisCorps). -->
+<div class="-mx-[calc((100vw-100%)/2)]">
+  <div class="container-site">
+    <section
+      id={ancre}
+      class="grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+    >
+      <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">{titre}</p>
+      <div>
+        {texte && <p class="mb-6 max-w-[58ch] leading-[1.6]" set:html={riche(texte)} />}
 
-    <!-- Le tableau déborde sur un téléphone dès trois colonnes. Il défile dans
-         son propre conteneur : c'est la page qui ne doit jamais défiler
-         horizontalement, pas le tableau. -->
-    <div class="-mx-1 overflow-x-auto px-1 pb-1">
-      <table class="w-full min-w-[560px] border-collapse text-[15px]">
-        <thead>
-          <tr>
-            <!-- Coin vide : la colonne des critères n'a pas d'en-tête, son
-                 contenu se lit de lui-même. -->
-            <th class="w-[26%] border-b border-line py-3 pr-4 text-left align-bottom"></th>
-            {
-              solutions.map((s) => (
-                <th
-                  scope="col"
-                  class:list={[
-                    "border-b border-line px-4 py-3 text-left align-bottom",
-                    s.recommandee && "bg-surface-subtle",
-                  ]}
-                >
-                  {s.recommandee && (
-                    <span class="mb-1.5 inline-block rounded-control bg-ink px-2 py-0.5 font-mono text-[10px] font-bold tracking-wide text-surface uppercase">
-                      Ce que je conseille
-                    </span>
-                  )}
-                  <span class="block leading-[1.3] font-semibold text-ink">{s.nom}</span>
-                  {s.resume && (
-                    <span
-                      class="mt-1 block text-[13px] leading-[1.5] font-normal text-mute"
-                      set:html={riche(s.resume)}
-                    />
-                  )}
-                </th>
-              ))
-            }
-          </tr>
-        </thead>
-        <tbody>
-          {
-            criteres.map((c) => (
+        <!-- Tableau : à partir de 700px, où le sommaire des sections passe
+             lui aussi sur une ligne. Le -mx-1/px-1 laisse un peu d'air pour
+             l'ombre du scroll si la largeur venait à manquer malgré tout. -->
+        <div class="-mx-1 hidden overflow-x-auto px-1 pb-1 min-[700px]:block">
+          <table class="w-full min-w-[560px] border-collapse text-[15px]">
+            <thead>
               <tr>
-                <th
-                  scope="row"
-                  class="border-b border-line py-3 pr-4 text-left align-top font-mono text-[12px] font-semibold tracking-wide text-mute uppercase"
-                >
-                  <span class="inline-flex items-baseline gap-1">
-                    {c.label}
-                    {c.tooltip && <Tooltip texte={c.tooltip} />}
-                  </span>
-                </th>
-                {c.valeurs.map((v, i) => (
-                  <td
-                    class:list={[
-                      "border-b border-line px-4 py-3 align-top leading-[1.5]",
-                      solutions[i]?.recommandee && "bg-surface-subtle",
-                    ]}
-                    set:html={riche(v)}
-                  />
-                ))}
+                <!-- Coin vide : la colonne des critères n'a pas d'en-tête, son
+                     contenu se lit de lui-même. -->
+                <th class="w-[26%] border-b border-line py-3 pr-4 text-left align-bottom"></th>
+                {
+                  solutions.map((s) => (
+                    <th
+                      scope="col"
+                      class:list={[
+                        "border-b border-line px-4 py-3 text-left align-bottom",
+                        s.recommandee && "bg-surface-subtle",
+                      ]}
+                    >
+                      {s.recommandee && (
+                        <span class="mb-1.5 inline-block rounded-control bg-ink px-2 py-0.5 font-mono text-[10px] font-bold tracking-wide text-surface uppercase">
+                          Ce que je conseille
+                        </span>
+                      )}
+                      <span class="block leading-[1.3] font-semibold text-ink">{s.nom}</span>
+                      {s.resume && (
+                        <span
+                          class="mt-1 block text-[13px] leading-[1.5] font-normal text-mute"
+                          set:html={riche(s.resume)}
+                        />
+                      )}
+                    </th>
+                  ))
+                }
               </tr>
+            </thead>
+            <tbody>
+              {
+                criteres.map((c) => (
+                  <tr>
+                    <th
+                      scope="row"
+                      class="border-b border-line py-3 pr-4 text-left align-top font-mono text-[12px] font-semibold tracking-wide text-mute uppercase"
+                    >
+                      <span class="inline-flex items-baseline gap-1">
+                        {c.label}
+                        {c.tooltip && <Tooltip texte={c.tooltip} />}
+                      </span>
+                    </th>
+                    {c.valeurs.map((v, i) => (
+                      <td
+                        class:list={[
+                          "border-b border-line px-4 py-3 align-top leading-[1.5]",
+                          solutions[i]?.recommandee && "bg-surface-subtle",
+                        ]}
+                        set:html={riche(v)}
+                      />
+                    ))}
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Cartes : sous 700px, un tableau qui défile au doigt se lit mal.
+             Une carte par solution, les critères en dessous : rien à faire
+             défiler à l'horizontale, tout se lit dans l'ordre. -->
+        <div class="flex flex-col gap-4 min-[700px]:hidden">
+          {
+            solutions.map((s, i) => (
+              <div
+                class:list={[
+                  "rounded-control border border-line p-4",
+                  s.recommandee && "border-ink bg-surface-subtle",
+                ]}
+              >
+                {s.recommandee && (
+                  <span class="mb-2 inline-block rounded-control bg-ink px-2 py-0.5 font-mono text-[10px] font-bold tracking-wide text-surface uppercase">
+                    Ce que je conseille
+                  </span>
+                )}
+                <p class="leading-[1.3] font-semibold text-ink">{s.nom}</p>
+                {s.resume && (
+                  <p class="mt-1 text-[13px] leading-[1.5] text-mute" set:html={riche(s.resume)} />
+                )}
+                <dl class="mt-3 flex flex-col gap-2.5 border-t border-line pt-3">
+                  {criteres.map((c) => (
+                    <div>
+                      <dt class="inline-flex items-baseline gap-1 font-mono text-[11px] font-semibold tracking-wide text-mute uppercase">
+                        {c.label}
+                        {c.tooltip && <Tooltip texte={c.tooltip} />}
+                      </dt>
+                      <dd class="mt-0.5 leading-[1.5]" set:html={riche(c.valeurs[i])} />
+                    </div>
+                  ))}
+                </dl>
+              </div>
             ))
           }
-        </tbody>
-      </table>
-    </div>
+        </div>
 
-    <p class="mt-4 max-w-[58ch] text-[13px] leading-[1.6] text-mute">{mentionCout}</p>
+        <p class="mt-4 max-w-[58ch] text-[13px] leading-[1.6] text-mute">{mentionCout}</p>
+      </div>
+    </section>
   </div>
-</section>
+</div>
