@@ -60,20 +60,23 @@ describe("grilleMois", () => {
     { du: "2026-09-16", au: "2026-09-16" },
   ];
 
-  it("n'a que cinq colonnes et cale le 1er sur sa colonne", () => {
+  it("a sept colonnes et cale le 1er sur sa colonne", () => {
     /* Octobre 2026 commence un jeudi : la première semaine a trois cases
-       vides (lun, mar, mer) puis le 1 et le 2. */
+       vides (lun, mar, mer) puis du 1 au 4. */
     const g = grilleMois({ annee: 2026, mois: 10 }, { aujourdhui: "2026-09-16", plages });
-    expect(g.semaines[0].map((c) => c?.jour ?? null)).toEqual([null, null, null, 1, 2]);
-    expect(g.semaines.every((s) => s.length === 5)).toBe(true);
+    expect(g.semaines[0].map((c) => c?.jour ?? null)).toEqual([null, null, null, 1, 2, 3, 4]);
+    expect(g.semaines.every((s) => s.length === 7)).toBe(true);
+    expect(g.semaines.at(-1)!.map((c) => c?.jour ?? null)).toEqual([26, 27, 28, 29, 30, 31, null]);
   });
 
-  it("ne contient aucun samedi ni dimanche", () => {
+  it("marque les samedis et dimanches comme week-end", () => {
     const g = grilleMois({ annee: 2026, mois: 10 }, { aujourdhui: "2026-09-16", plages });
-    const jours = g.semaines.flat().filter(Boolean).map((c) => c!.jour);
-    expect(jours).not.toContain(3); // samedi 3 octobre
-    expect(jours).not.toContain(4); // dimanche 4 octobre
-    expect(jours.length).toBe(22); // jours ouvrés d'octobre 2026
+    const cellules = g.semaines.flat().filter(Boolean) as NonNullable<(typeof g.semaines)[0][0]>[];
+    expect(cellules.length).toBe(31);
+    expect(cellules.find((c) => c.jour === 3)!.weekend).toBe(true); // samedi
+    expect(cellules.find((c) => c.jour === 4)!.weekend).toBe(true); // dimanche
+    expect(cellules.find((c) => c.jour === 5)!.weekend).toBe(false); // lundi
+    expect(cellules.filter((c) => c.weekend).length).toBe(9);
   });
 
   it("marque les fériés avec leur nom", () => {

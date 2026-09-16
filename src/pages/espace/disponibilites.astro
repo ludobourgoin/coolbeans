@@ -32,17 +32,17 @@ const aVenir = plagesAffichees(plages, fenetre).filter((p) => p.au >= aujourdhui
    tombe un week-end ne change rien pour le client. */
 const feriesAVenir = grilles
   .flatMap((g) => g.semaines.flat())
-  .filter((c) => c && c.etat === "ferie" && !c.passe)
+  .filter((c) => c && c.etat === "ferie" && !c.passe && !c.weekend)
   .map((c) => ({ du: c!.iso, au: c!.iso, motif: c!.libelle }));
 
-const colonnes = ["L", "M", "M", "J", "V"];
+const colonnes = ["L", "M", "M", "J", "V", "S", "D"];
 ---
 
 <EspaceLayout title="Disponibilités">
   <h1>Disponibilités</h1>
   <p class="sub">
     Quand Coolbeans est disponible pour vos demandes, sur les trois prochains mois. Un message
-    envoyé un jour marqué reçoit sa réponse au jour ouvré suivant.
+    envoyé un jour marqué ou un week-end reçoit sa réponse au jour ouvré suivant.
   </p>
 
   <ul class="legende mb-6x flex flex-wrap gap-x-6x gap-y-2x text-sm text-mute" aria-label="Légende">
@@ -75,6 +75,7 @@ const colonnes = ["L", "M", "M", "J", "V"];
                         <span
                           class="jour"
                           data-etat={c.etat}
+                          data-weekend={c.weekend || undefined}
                           data-aujourdhui={c.aujourdhui || undefined}
                           data-passe={c.passe || undefined}
                           title={c.libelle}
@@ -126,13 +127,19 @@ const colonnes = ["L", "M", "M", "J", "V"];
 <style>
   /* Les états d'une case du planning : seul irréductible aux utilitaires,
      parce qu'ils se combinent (passé + indisponible, aujourd'hui + férié). */
+  /* Sept colonnes dans une carte en tiers de page : cases plus étroites et
+     largeur fixe, sinon la colonne du dimanche déborde de la carte. */
+  .planning {
+    table-layout: fixed;
+  }
   .planning td {
     padding: 2px 0;
   }
   .jour {
     display: inline-flex;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
     align-items: center;
     justify-content: center;
     border-radius: var(--radius-control);
@@ -153,6 +160,10 @@ const colonnes = ["L", "M", "M", "J", "V"];
   .pastille[data-etat="aujourdhui"] {
     border-color: var(--ink);
     font-weight: 600;
+  }
+  .jour[data-weekend] {
+    color: var(--mute);
+    opacity: 0.55;
   }
   .jour[data-passe] {
     opacity: 0.4;

@@ -1,7 +1,7 @@
 /**
  * Planning de disponibilités du portail (COO-11, page /espace/disponibilites).
  *
- * Trois mois glissants, du lundi au vendredi, avec deux sources :
+ * Trois mois glissants en calendrier complet, week-ends grisés, avec deux sources :
  * - les jours fériés français, calculés ici (fixes + mobiles depuis Pâques) ;
  * - les plages d'indisponibilité de Coolbeans, lues dans la collection
  *   `indisponibilites` (YAML édité à la main, commun à tous les workspaces).
@@ -34,6 +34,8 @@ export interface Cellule {
   etat: EtatJour;
   /** Nom du férié ou motif de la plage, absent pour un jour ouvré. */
   libelle?: string;
+  /** Samedi ou dimanche : affiché grisé, jamais compté dans « À venir ». */
+  weekend: boolean;
   aujourdhui: boolean;
   passe: boolean;
 }
@@ -41,7 +43,7 @@ export interface Cellule {
 export interface Grille {
   mois: Mois;
   titre: string;
-  /** Lignes de cinq cases lundi → vendredi ; `null` hors du mois. */
+  /** Lignes de sept cases lundi → dimanche ; `null` hors du mois. */
   semaines: (Cellule | null)[][];
 }
 
@@ -122,19 +124,10 @@ export function grilleMois(
 
   /* Colonne du 1er : lundi = 0 … dimanche = 6. */
   const premier = (new Date(Date.UTC(mois.annee, mois.mois - 1, 1)).getUTCDay() + 6) % 7;
-  for (let i = 0; i < Math.min(premier, 5); i++) semaine.push(null);
+  for (let i = 0; i < premier; i++) semaine.push(null);
 
   for (let jour = 1; jour <= nbJours; jour++) {
     const col = (premier + jour - 1) % 7;
-    if (col >= 5) {
-      /* Dimanche clôt la semaine ; une semaine ne contenant que du week-end
-         (un mois qui commence un samedi) ne produit aucune ligne. */
-      if (col === 6 && semaine.length) {
-        semaines.push(semaine);
-        semaine = [];
-      }
-      continue;
-    }
     const date = iso(mois.annee, mois.mois, jour);
     const ferie = feries.get(date);
     const plage = ferie ? undefined : plageDe(date, ctx.plages);
@@ -143,16 +136,17 @@ export function grilleMois(
       jour,
       etat: ferie ? "ferie" : plage ? "indispo" : "ouvre",
       libelle: ferie ?? plage?.motif,
+      weekend: col >= 5,
       aujourdhui: date === ctx.aujourdhui,
       passe: date < ctx.aujourdhui,
     });
-    if (col === 4) {
+    if (col === 6) {
       semaines.push(semaine);
       semaine = [];
     }
   }
   if (semaine.length) {
-    while (semaine.length < 5) semaine.push(null);
+    while (semaine.length < 7) semaine.push(null);
     semaines.push(semaine);
   }
 
