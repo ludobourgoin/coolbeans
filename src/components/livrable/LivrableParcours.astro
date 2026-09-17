@@ -26,7 +26,12 @@ const { titre, etapes } = Astro.props;
     {
       etapes.map((etape) => (
         <li class="grid gap-1 py-4 first:pt-0 last:pb-0 sm:grid-cols-[200px_1fr] sm:gap-6">
-          <a class="link font-semibold" href={etape.url} target="_blank" rel="noopener">
+          <a
+            class="link justify-self-start font-semibold"
+            href={etape.url}
+            target="_blank"
+            rel="noopener"
+          >
             {etape.page}
           </a>
           {etape.texte && (
