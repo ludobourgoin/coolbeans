@@ -3,8 +3,8 @@ client: "coolbeans"
 title: "Workflow CRM"
 order: 2
 status: "final"
-updated: 2026-09-05
-description: "Le cycle de vie d'une affaire, du vivier de prospection au suivi d'après-vente : les conventions du CRM, le pipeline Linear à onze colonnes, le document de cadrage, la séparation entre proposition commerciale et devis Tiime, et le gabarit d'onboarding client."
+updated: 2026-09-17
+description: "Le cycle de vie d'une affaire, du vivier de prospection au suivi d'après-vente : les conventions du CRM, le pipeline Linear à onze colonnes, le document de cadrage, la séparation entre proposition commerciale et devis Tiime, l'autorisation de présenter le projet et ce qu'elle vaut au devis, le gabarit d'onboarding et les trois moments de l'après-livraison."
 ---
 
 import Callout from "../../../components/doc/Callout.astro";
@@ -240,7 +240,7 @@ Trois niveaux, à faire choisir explicitement :
 
 ## Le process, de bout en bout
 
-Quatre phases, vingt-deux étapes. Chaque boîte du schéma renvoie à sa fiche : ce qui déclenche l'étape, qui agit, ce qu'il faut faire, ce qui prouve qu'elle est finie.
+Quatre phases, vingt-quatre étapes. Chaque boîte du schéma renvoie à sa fiche : ce qui déclenche l'étape, qui agit, ce qu'il faut faire, ce qui prouve qu'elle est finie.
 
 <Sop />
 
@@ -254,31 +254,35 @@ Template de la team **🎯 CRM**. Il crée l'affaire directement en **👋 Conta
 
 **La fiche** : source, contexte, besoin exprimé, budget évoqué, échéance souhaitée, décideur, lien du devis, projet Proposal, dossier Drive.
 
-**La check-list des seize étapes**, en markdown. Ce ne sont **pas** des sous-issues : les créer d'avance produirait des centaines d'issues fantômes héritant d'un statut de pipeline qui ne veut rien dire pour elles. On coche au fil de l'eau ; seule l'étape qui mérite une échéance est promue en sous-issue datée.
+**La check-list des dix-huit étapes**, en markdown. Ce ne sont **pas** des sous-issues : les créer d'avance produirait des centaines d'issues fantômes héritant d'un statut de pipeline qui ne veut rien dire pour elles. On coche au fil de l'eau ; seule l'étape qui mérite une échéance est promue en sous-issue datée.
 
 1. Qualifier : besoin, budget, échéance, décideur
 2. Envoyer le lien de réservation, ou le document de cadrage
 3. Faire le rendez-vous de découverte
 4. Cadrer le périmètre et chiffrer
-5. Rédiger et publier la proposition commerciale
-6. Relancer à J+3, J+7, J+14
-7. Émettre le devis dans Tiime, au périmètre de la proposition validée
-8. Émettre la facture d'acompte dans Tiime
-9. Envoyer les trois documents en un seul mail : proposition validée, devis, facture d'acompte
-10. Vérifier l'encaissement de l'acompte
-11. Créer la team Linear du client (« Copy team settings » depuis « Modèle client ») et y créer le premier projet
-12. Créer le repo GitHub, scaffolder la stack de la proposition, connecter le repo à l'intégration Git de Linear
-13. Créer la fiche client `src/content/clients/<slug>.yaml` avec son `linearTeamId`
-14. Créer le compte utilisateur dans Better Auth, le dossier Drive, le monitoring du domaine
-15. Envoyer le mail d'onboarding et acter par écrit les engagements du client
-16. Émettre la facture de solde dans Tiime
+5. Acter l'autorisation de présenter le projet sur coolbeans.cc, et poser sa ligne de remise au devis si elle est donnée
+6. Rédiger et publier la proposition commerciale
+7. Relancer à J+3, J+7, J+14
+8. Émettre le devis dans Tiime, au périmètre de la proposition validée
+9. Émettre la facture d'acompte dans Tiime
+10. Envoyer les trois documents en un seul mail : proposition validée, devis, facture d'acompte
+11. Vérifier l'encaissement de l'acompte
+12. Créer la team Linear du client (« Copy team settings » depuis « Modèle client ») et y créer le premier projet
+13. Créer le repo GitHub, scaffolder la stack de la proposition, connecter le repo à l'intégration Git de Linear
+14. Créer la fiche client `src/content/clients/<slug>.yaml` avec son `linearTeamId`
+15. Créer le compte utilisateur dans Better Auth, le dossier Drive, le monitoring du domaine
+16. Envoyer le mail d'onboarding et acter par écrit les engagements du client
+17. Émettre la facture de solde dans Tiime
+18. Avant de clore l'affaire : vérifier que les sous-issues **J+30** et **J+90** sont datées dans la team du client
 
-Les étapes 7 à 9 sont indissociables et n'existent qu'une fois la proposition validée : c'est le contenu de la colonne **✍️ Proposition validée**. Les étapes 11 à 15 s'exécutent **avant** que la team du client soit peuplée : la 11 la crée. Elles n'auraient donc pas pu y vivre de toute façon. La 16 suit la règle d'ouverture de cette page : l'affaire suit l'argent. Le détail opérationnel de 11 à 15 est porté par la skill `onboarding-client`, et le SOP le reprend en **S10**.
+Les étapes 8 à 10 sont indissociables et n'existent qu'une fois la proposition validée : c'est le contenu de la colonne **✍️ Proposition validée**. Les étapes 12 à 16 s'exécutent **avant** que la team du client soit peuplée : la 12 la crée. Elles n'auraient donc pas pu y vivre de toute façon. La 17 suit la règle d'ouverture de cette page : l'affaire suit l'argent. Le détail opérationnel de 12 à 16 est porté par la skill `onboarding-client`, et le SOP le reprend en **S10**.
+
+L'étape 5 est commerciale, pas relationnelle : c'est là que se décide le prix. L'étape 18 est un garde-fou, ajouté le 2026-09-17. L'affaire se clôt au règlement du solde, alors que le témoignage et le cas client arrivent après. Sans cette vérification, la clôture de l'affaire emporte tout ce qui restait à faire avec le client, et on s'en aperçoit six mois plus tard devant une page de portfolio jamais écrite.
 
 <Callout type="tip" title="Le routage précède la check-list">
-  Les étapes 11 à 15 ne s'appliquent pas toutes à tout projet. Cinq questions se posent avant d'exécuter : repo GitHub ? quelle stack (celle écrite au devis, jamais celle qu'on préfère) ? workspace portail ? compte utilisateur ? monitoring ? Un site Webflow n'a pas de repo, une prestation ponctuelle n'a pas de workspace, et un compte créé puis jamais utilisé est une dette.
+  Les étapes 12 à 16 ne s'appliquent pas toutes à tout projet. Cinq questions se posent avant d'exécuter : repo GitHub ? quelle stack (celle écrite au devis, jamais celle qu'on préfère) ? workspace portail ? compte utilisateur ? monitoring ? Un site Webflow n'a pas de repo, une prestation ponctuelle n'a pas de workspace, et un compte créé puis jamais utilisé est une dette.
 
-  Sans le `linearTeamId` de l'étape 13, le module Support du portail reste en empty state : c'est lui qui dit au formulaire support dans quelle team créer ses tickets (COO-30).
+  Sans le `linearTeamId` de l'étape 14, le module Support du portail reste en empty state : c'est lui qui dit au formulaire support dans quelle team créer ses tickets (COO-30).
 </Callout>
 
 ### Modèle B · la team Linear « Modèle client »
@@ -290,19 +294,53 @@ Ce qu'elle porte :
 - Statuts par défaut Linear (Backlog, Todo, In Progress, In Review, Done, Canceled) : rien à recréer, ils collent déjà au kanban historique.
 - Triage activé, Cycles hebdomadaires (même jour de démarrage que Coolbeans, pour que « mon sprint » désigne la même semaine partout), Estimates activé.
 - Les labels `Bug` / `Feature` / `Improvement` sont au niveau workspace : ils apparaissent automatiquement sur toute nouvelle team, rien à dupliquer non plus.
-- Un template de ticket **« Livraison et suivi client »** (Team Settings → Modèle client → Templates), avec la checklist :
-  - Mise en ligne (après correction des retours de recette)
-  - Recette avec le client (sur le périmètre du devis uniquement ; tout débordement part en Triage et donne lieu à un avenant)
-  - Envoyer le mail de livraison + les trois questions du témoignage, rappeler la garantie 30 jours avec date de fin explicite
-  - Rédiger la doc de passation (depuis `_template`, purement technique)
-  - J+30 : clôture de la garantie, lister les bugs traités, proposer le care plan
-  - Point trimestriel : veille sur les opportunités (nouvelle page, refonte, automatisation, care plan)
 
-<Callout type="warn" title="La tâche J+30 se date à la création, pas à la fin du projet">
-  C'est la seule façon qu'elle ne soit jamais oubliée. Elle se date en même temps que les autres jalons de livraison.
+Ce qu'elle ne porte pas, contrairement à ce que cette page affirmait jusqu'au 2026-09-17 : le gabarit de livraison. Il n'existait dans aucune team, et il a été créé ce jour-là **au niveau workspace**, pas dans Modèle client. Deux raisons. Un gabarit rangé dans une team que Ludo ne rejoint pas ne se voit jamais, ce qui explique probablement qu'il n'ait jamais été créé. Et « Copy team settings » ne garantit pas la reprise des templates, donc chaque nouvelle team cliente aurait hérité d'un trou.
+
+### Le gabarit 🚚 Livraison et suivi client
+
+Workspace, donc disponible dans toutes les teams clientes sans rien copier. Un ticket par livraison, quatre blocs :
+
+- **Recette et mise en ligne.** Recette sur le périmètre du devis uniquement, tout débordement part en Triage et donne lieu à un avenant. Puis retours corrigés, mise en ligne, doc de passation. Rien ne se demande au client tant qu'un retour de recette traîne.
+- **Livraison (J+0).** Mail de livraison avec la date de fin de garantie explicite, les trois questions du témoignage, l'alternative LinkedIn, la photo de profil. Page de cas client amorcée en `brouillon: true`. Sous-issues J+30 et J+90 créées et datées le jour même.
+- **Fin de garantie (J+30).** Bugs traités, care plan, page de cas client envoyée en validation, avis public demandé dans le même mail. Puis publication : `brouillon: false`, entrée dans `src/data/portfolio.ts`, sitemap et métadonnées.
+- **Résultats (J+90).** Ce qui a changé, les chiffres citables, la section « Et depuis », la mise en relation, et l'ouverture du point trimestriel.
+
+<Callout type="warn" title="Les tâches J+30 et J+90 se datent à la création, pas à la fin du projet">
+  C'est la seule façon qu'elles ne soient jamais oubliées. Elles se datent en même temps que les autres jalons de livraison.
 </Callout>
 
-Les trois tâches de l'**étude de cas** (rédiger le brouillon, faire valider par le client, publier et mettre à jour le SEO) ne figurent nulle part pour l'instant. C'est du contenu marketing Coolbeans, pas un livrable du client, et leur emplacement reste à trancher.
+<Callout type="tip" title="Le témoignage se récolte en deux passes">
+  Le meilleur moment pour le demander est la livraison : le client vient de voir son site, il est content, et il ne le sera jamais plus qu'aujourd'hui. Six mois plus tard, le site est devenu normal et la demande arrive de nulle part.
+
+  Mais l'enthousiasme ne dit pas ce que disent les résultats. À J+0, le client sait raconter ce qui coinçait avant et comment le projet s'est passé. Il ne sait pas ce que ça lui rapporte, il n'a rien mesuré. Lui poser la question ce jour-là produit une réponse vague, et c'est cette réponse vague qui se retrouve figée sur la page du projet.
+
+  D'où les deux passes : l'émotion à la livraison, la preuve à trois mois. La question « qu'est-ce qui a changé ? » a été déplacée à J+90 pour cette raison, et remplacée à J+0 par « comment ça s'est passé ? ».
+</Callout>
+
+Le détail des trois mails, les critères de la photo de profil et le mécanisme du faux texte vivent dans la skill `livraison-client`. Aucun de ces mails ne part depuis Claude.
+
+**Les tâches de cas client vivent ici, et non dans l'affaire CRM.** Question laissée ouverte jusqu'au 2026-09-17, tranchée ainsi : la séquence entière est une conversation avec le client, et la découper entre deux teams ferait perdre la moitié des tâches au moment où l'affaire se clôt sur le solde. Le client verra un jour ces lignes dans sa team, et c'est très bien : il a autorisé la publication au devis, il n'y a rien à lui cacher. Seule l'étape 18 de la check-list CRM reste au CRM, parce qu'elle garde la porte avant la clôture.
+
+## L'autorisation de présenter le projet
+
+Posée au **cadrage** (question standard `presentation-publique`, marquée décisive), actée au **devis** par une ligne de remise nommée. Décision du 2026-09-17.
+
+Le raisonnement tient en deux phrases. Un projet publiable et un projet confidentiel ne valent pas le même prix, parce que le second ne rapporte rien à la vitrine de Coolbeans. Reste à choisir comment l'écart s'affiche, et c'est là que tout se joue.
+
+<Callout type="tip" title="Une remise pour l'autorisation, jamais un surcoût pour la confidentialité">
+  Même argent, émotion inverse. « Plus cher parce que je ne peux pas le montrer » se lit comme une punition pour un besoin légitime : une association qui traite des données sensibles, un client sous accord de confidentialité, un projet interne. « Une remise si je peux le présenter » se lit comme un échange.
+
+  L'argument décisif n'est pourtant pas le confort du client, c'est la solidité du oui. Un client qui a reçu une remise pour cette autorisation ne se dédit pas le jour de la publication. Un client qui a dit oui pour éviter un surcoût, si, et on l'apprend un an plus tard, après avoir rédigé la page.
+</Callout>
+
+La question se pose **sans chiffre** au cadrage, parce que le cadrage ne chiffre jamais. Elle dit pourquoi ça compte, jamais ce qu'il en coûte de refuser : « sinon c'est plus cher » obtient un oui de façade, qui est pire que le refus. Le pourcentage apparaît dans la proposition, entre 5 et 10 % du total, plafonné en valeur absolue sur les gros montants.
+
+<Callout type="danger" title="Ne jamais gonfler le prix de référence pour financer la remise">
+  C'est le seul vrai piège du mécanisme. Le prix barré doit être le prix normal, celui qu'un client confidentiel paie vraiment. Deux clients qui comparent leurs devis suffisent à faire tomber tout l'édifice, et avec lui la crédibilité de toutes les autres lignes.
+</Callout>
+
+Un refus ne se relance pas et ne se rediscute pas : il se consigne en commentaire daté de l'affaire, pour ne pas être redemandé six mois plus tard. Et une autorisation obtenue après la signature ne rouvre pas le prix : le motif d'une remise ne se fabrique jamais après coup.
 
 ## Ce qui reste ouvert
 
