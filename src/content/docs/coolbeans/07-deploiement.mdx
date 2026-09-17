@@ -71,8 +71,8 @@ courante, à vérifier dans les dashboards concernés) :
 | Cloudflare | DNS de `coolbeans.cc` + hébergement des deux Workers |
 | Google Workspace | Boîtes mail `@coolbeans.cc` |
 | SendGrid | Envoi transactionnel : subuser actif `u44751929` ; le subuser `u28242587` est hors service, ne pas l'utiliser |
-| MailerLite | Emailing marketing |
-| Resend | Notifications applicatives du site (réponse aux devis, newsletter : `src/emails/newsletter.ts`) |
+| MailerLite | Emailing marketing. Reçoit les inscriptions du formulaire de newsletter du footer, via `/api/newsletter` et le secret `MAILERLITE_API_KEY`. Inscription directe, sans double opt-in : la preuve du consentement tient dans `opted_in_at` et `optin_ip`, envoyés à la création de l'abonné |
+| Resend | Notifications applicatives du site (réponse aux devis, gabarit de newsletter : `src/emails/newsletter.ts`) |
 
 ## Référence technique
 

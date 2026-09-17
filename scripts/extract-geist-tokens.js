@@ -108,19 +108,29 @@ const UA = { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Appl
    NE PAS ÉDITER À LA MAIN. Régénérer : node scripts/extract-geist-tokens.js
    Base en hex sRGB ; lab()/oklch() derrière @supports pour le grand gamut.
    Thème piloté par la classe .dark sur <html>.
+
+   .theme-invert porte le thème OPPOSÉ à celui de la page : en clair il reçoit
+   la palette sombre, en sombre la palette claire. C'est pour ça que chaque
+   bloc porte deux sélecteurs — la palette claire vaut pour :root ET pour une
+   zone inversée en page sombre, et réciproquement. Aucune valeur n'est
+   dupliquée : seuls les sélecteurs le sont.
    ========================================================================== */
 
-:root {
+:root,
+.dark .theme-invert {
 ${emit(out.light, '  ')}}
 
-.dark {
+.dark,
+:root:not(.dark) .theme-invert {
 ${emit(out.dark, '  ')}}
 
 @supports (color: lab(0% 0 0)) {
-  :root {
+  :root,
+  .dark .theme-invert {
 ${emit(out.lightWide, '    ')}  }
 
-  .dark {
+  .dark,
+  :root:not(.dark) .theme-invert {
 ${emit(out.darkWide, '    ')}  }
 }
 `;

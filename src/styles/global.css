@@ -49,8 +49,16 @@
    Les --ds-* basculent seuls avec .dark : presque rien à redéclarer en sombre.
    Attention au sens du retrait : en clair la section alternée est plus CLAIRE
    que le contenu, en sombre elle est plus NOIRE. C'est la logique de Geist.
+
+   .theme-invert est répété ici parce qu'une custom property est substituée sur
+   l'élément qui la DÉCLARE, puis sa valeur calculée descend par héritage.
+   Redéfinir les --ds-* sur la zone inversée (geist-tokens.css) ne suffirait
+   donc pas : --surface resterait la valeur résolue sur :root. Les mêmes
+   déclarations, posées une seconde fois sur .theme-invert, se résolvent contre
+   les --ds-* inversés de cet élément. Rien n'est dupliqué en valeur.
    -------------------------------------------------------------------------- */
-:root {
+:root,
+.theme-invert {
   --surface: var(--ds-background-100);
   --surface-subtle: var(--ds-background-200);
   --surface-raise: var(--ds-gray-100);
@@ -105,10 +113,19 @@
 }
 
 /* le primaire s'éclaircit en clair, s'assombrit en sombre :
-   dans les deux cas il se rapproche du fond au lieu de basculer dedans. */
-.dark {
+   dans les deux cas il se rapproche du fond au lieu de basculer dedans.
+   Les deux valeurs sont des hsl() littéraux, donc hors du jeu des --ds-* : la
+   zone inversée ne les récupère pas toute seule, il faut les basculer à la
+   main comme le reste du thème. */
+.dark,
+:root:not(.dark) .theme-invert {
   --accent-hover: hsl(0 0% 80%);
   --grid-line: var(--line-strong);
+}
+
+.dark .theme-invert {
+  --accent-hover: hsl(0 0% 22%);
+  --grid-line: var(--ds-gray-600);
 }
 
 @media (max-width: 1100px) {

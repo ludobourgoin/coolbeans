@@ -21,6 +21,11 @@ LINEAR_WEBHOOK_SECRET=
 # nouveau.ts et reponse.ts.
 RESEND_API_KEY=
 
+# Clé API MailerLite (Integrations > API, scope Subscribers en écriture) :
+# inscription à la newsletter depuis le footer du site, via /api/newsletter.
+# MailerLite porte l'emailing marketing, Resend le transactionnel du portail.
+MAILERLITE_API_KEY=
+
 # Secret de signature de Better Auth : sessions et jetons (liens magiques,
 # invitations, réinitialisation). Générer une valeur AU HASARD, différente par
 # environnement — partager la même rendrait une session de staging valable en

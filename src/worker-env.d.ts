@@ -40,6 +40,16 @@ interface PortalSecrets {
   RESEND_API_KEY?: string;
 
   /**
+   * Clé API MailerLite (Integrations > API, scope Subscribers en écriture) :
+   * inscription à la newsletter depuis le footer du site, via
+   * /api/newsletter. MailerLite porte l'emailing marketing, Resend le
+   * transactionnel du portail : les deux coexistent, ils ne se remplacent
+   * pas. `wrangler secret put MAILERLITE_API_KEY` sur chaque environnement,
+   * `.dev.vars` en local.
+   */
+  MAILERLITE_API_KEY?: string;
+
+  /**
    * Secret de signature de Better Auth (sessions et jetons) : `wrangler
    * secret put BETTER_AUTH_SECRET` sur chaque environnement, `.dev.vars` en
    * local. Une valeur differente par environnement — la partager reviendrait

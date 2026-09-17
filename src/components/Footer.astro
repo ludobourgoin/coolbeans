@@ -9,20 +9,28 @@ const exploreLinks = [
 ];
 ---
 
-<footer class="border-t border-line bg-surface-raise">
+{
+  /* theme-invert : le footer porte le thème opposé à celui de la page (sombre
+     en clair, clair en sombre). La bascule est entièrement dans les tokens,
+     voir la couche sémantique de global.css, d'où des utilitaires inchangés
+     ici. Seules exceptions plus bas : les deux wordmarks, dont les variantes
+     `dark:` suivent la classe .dark de <html> et pas les tokens, donc croisées
+     à la main. */
+}
+<footer class="theme-invert border-t border-line bg-surface-raise">
   <div
     class="container-site grid grid-cols-1 gap-10 py-16 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-[1fr_auto_1.5fr] lg:gap-x-20 lg:gap-y-10"
   >
     <div class="sm:col-span-2 lg:col-span-1">
       <a href="/" aria-label="coolbeans, accueil" class="inline-flex items-center leading-0">
         <img
-          class="block h-5.5 w-auto dark:hidden"
+          class="hidden h-5.5 w-auto dark:block"
           src="/img/coolbeans-wordmark.svg"
           alt="coolbeans"
           height="22"
         />
         <img
-          class="hidden h-5.5 w-auto dark:block"
+          class="block h-5.5 w-auto dark:hidden"
           src="/img/coolbeans-wordmark-white.svg"
           alt="coolbeans"
           height="22"
@@ -84,15 +92,10 @@ const exploreLinks = [
         Conseils et recommandations sur le web design, la perf web et l'IA. Une fois par mois,
         désinscription en un clic.
       </p>
-      {
-        /* pas encore branché : le formulaire soumettrait quand même en GET vers l'URL
-           courante à la touche Entrée (un seul champ email = la garde "more than one
-           blocking field" de la soumission implicite HTML ne se déclenche pas, même
-           sans bouton submit). Neutralisé par un vrai gestionnaire `submit` avec
-           preventDefault(), voir <script> plus bas. */
-      }
       <form
         id="footer-newsletter-form"
+        method="post"
+        action="/api/newsletter"
         class="mt-4 flex w-full max-w-88 items-center gap-2 rounded-full border border-line bg-surface py-1 pr-1 pl-4 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-(--focus)"
       >
         <label for="footer-newsletter-email" class="sr-only">adresse e-mail</label>
@@ -105,8 +108,34 @@ const exploreLinks = [
           placeholder="vous@exemple.com"
           class="field h-8 min-w-0 flex-1 border-0 bg-transparent px-0 text-sm focus:shadow-none"
         />
-        <button type="button" class="btn btn-sm shrink-0 rounded-full px-4">S'abonner</button>
+        {
+          /* Champ piège. `hidden` plutôt qu'une classe visuelle : il ne doit
+             être ni vu, ni lu par un lecteur d'écran, ni atteint au clavier.
+             tabindex="-1" et autocomplete="off" évitent qu'un gestionnaire de
+             mots de passe le remplisse à la place d'un robot. */
+        }
+        <input
+          type="text"
+          name="website"
+          hidden
+          tabindex="-1"
+          autocomplete="off"
+          aria-hidden="true"
+        />
+        <button type="submit" class="btn btn-sm shrink-0 rounded-full px-4">S'abonner</button>
       </form>
+      {
+        /* Retour d'état. aria-live pour que le résultat soit annoncé : la
+           personne qui vient de valider au clavier ne voit pas le message
+           apparaître sous le champ. */
+      }
+      <p
+        id="footer-newsletter-message"
+        role="status"
+        aria-live="polite"
+        class="mt-3 max-w-[36ch] text-sm text-mute empty:mt-0"
+      >
+      </p>
     </div>
   </div>
 
@@ -138,12 +167,46 @@ const exploreLinks = [
 
 <script is:inline>
   (function () {
-    // newsletter : pas encore branchée, on bloque la soumission native (voir commentaire au-dessus du <form>)
-    var newsletterForm = document.getElementById("footer-newsletter-form");
-    if (newsletterForm) {
-      newsletterForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-      });
-    }
+    var form = document.getElementById("footer-newsletter-form");
+    var message = document.getElementById("footer-newsletter-message");
+    if (!form || !message) return;
+
+    var bouton = form.querySelector('button[type="submit"]');
+    var champ = form.querySelector('input[name="email"]');
+    var piege = form.querySelector('input[name="website"]');
+
+    form.addEventListener("submit", function (e) {
+      // Le <form> garde method et action : sans JS il poste quand même, et
+      // l'endpoint répond du JSON plutôt que rien. Avec JS, on reste en place.
+      e.preventDefault();
+      if (bouton.disabled) return;
+
+      bouton.disabled = true;
+      message.textContent = "";
+
+      fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email: champ.value, website: piege ? piege.value : "" }),
+      })
+        .then(function (r) {
+          return r.json().then(function (corps) {
+            return { ok: r.ok, corps: corps };
+          });
+        })
+        .then(function (res) {
+          if (res.ok) {
+            form.hidden = true;
+            message.textContent = "C'est noté, tu es abonné.";
+          } else {
+            message.textContent = res.corps.error || "Inscription impossible pour le moment.";
+            bouton.disabled = false;
+          }
+        })
+        .catch(function () {
+          message.textContent = "Inscription impossible pour le moment.";
+          bouton.disabled = false;
+        });
+    });
   })();
 </script>

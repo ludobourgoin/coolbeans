@@ -30,14 +30,22 @@ for (const f of ['public/fonts/Geist-Variable.woff2', 'public/fonts/GeistMono-Va
 const geist = read('src/styles/geist-tokens.css');
 check('geist-tokens.css existe', !!geist);
 if (geist) {
-  check('bloc :root', /(^|\n):root \{/.test(geist));
-  check('bloc .dark', /(^|\n)\.dark \{/.test(geist));
+  /* Les deux blocs portent chacun DEUX sélecteurs depuis les zones inversées :
+     la palette claire vaut pour :root et pour un .theme-invert posé en page
+     sombre, la palette sombre pour .dark et pour un .theme-invert en page
+     claire. Les sélecteurs sont assertés en entier, et pas seulement leur
+     premier terme : perdre la seconde ligne casserait l'inversion du footer
+     sans casser aucun autre test. */
+  const SEL_CLAIR = /(^|\n):root,\n\.dark \.theme-invert \{/;
+  const SEL_SOMBRE = /(^|\n)\.dark,\n:root:not\(\.dark\) \.theme-invert \{/;
+  check('bloc :root, avec sa reprise .theme-invert', SEL_CLAIR.test(geist));
+  check('bloc .dark, avec sa reprise .theme-invert', SEL_SOMBRE.test(geist));
   check('couche @supports lab()', geist.includes('@supports'));
   for (const t of ['--ds-gray-1000', '--ds-background-100', '--ds-background-200',
                    '--ds-blue-700', '--ds-focus-color', '--ds-shadow-border-small'])
     check('token ' + t, geist.includes(t + ':'));
   check('background sombre distinct de la page',
-    /\.dark \{[\s\S]*?--ds-background-100: #0a0a0a;[\s\S]*?\n\}/.test(geist),
+    /\.dark,\n:root:not\(\.dark\) \.theme-invert \{[\s\S]*?--ds-background-100: #0a0a0a;[\s\S]*?\n\}/.test(geist),
     'background-100 sombre doit valoir #0a0a0a, pas #000');
 }
 
@@ -116,19 +124,48 @@ const lum = c => { const a = c.map(v => { v /= 255; return v <= .03928 ? v / 12.
 const ratio = (x, y) => { const a = lum(rgb(x)), b = lum(rgb(y));
   return (Math.max(a, b) + .05) / (Math.min(a, b) + .05); };
 
-/* Extrait le contenu d'un bloc top-level "sélecteur { ... }" par comptage
-   d'accolades. Suffisant ici : global.css et geist-tokens.css n'imbriquent
-   pas de règles dans leurs blocs :root / .dark de base. */
+/* Extrait le contenu du premier bloc dont la LISTE de sélecteurs contient
+   exactement `selector`, par comptage d'accolades. La liste compte : depuis
+   l'ajout des zones inversées (.theme-invert), le bloc clair s'écrit
+   ":root, .dark .theme-invert {" et le bloc sombre ".dark, :root:not(.dark)
+   .theme-invert {". Un indexOf(':root {') ne les trouverait plus, et un
+   indexOf(':root') attraperait le ":root:not(.dark)" du bloc sombre : d'où
+   la découpe sur les virgules et la comparaison terme à terme.
+
+   « Premier bloc » suffit : dans les deux fichiers, le bloc top-level précède
+   toujours sa reprise sous @supports. Suffisant aussi côté imbrication,
+   global.css et geist-tokens.css n'imbriquant pas de règles dans ces blocs. */
 const extractBlock = (css, selector) => {
-  const start = css.indexOf(selector);
-  if (start === -1) return null;
-  const braceStart = css.indexOf('{', start);
+  const cible = selector.replace(/\s*\{\s*$/, '').trim();
+  /* Les commentaires sont retirés d'abord : sans ça un « /* ... :root ... *​/ »
+     en prose se lirait comme un sélecteur, et les blocs de tête des deux
+     fichiers en portent un juste au-dessus. */
+  const src = css.replace(/\/\*[\s\S]*?\*\//g, '');
   let depth = 0;
-  for (let i = braceStart; i < css.length; i++) {
-    if (css[i] === '{') depth++;
-    else if (css[i] === '}') {
+  let selDebut = 0;
+  for (let i = 0; i < src.length; i++) {
+    const c = src[i];
+    if (c === '{') {
+      /* On ne retient que le niveau 0 : la reprise sous @supports porte les
+         mêmes sélecteurs et arrive plus loin, sans intérêt pour ces contrôles
+         (elle ne sert que le grand gamut). */
+      if (depth === 0) {
+        const liste = src.slice(selDebut, i).split(',').map(s => s.trim()).filter(Boolean);
+        if (liste.includes(cible)) {
+          let d = 0;
+          for (let j = i; j < src.length; j++) {
+            if (src[j] === '{') d++;
+            else if (src[j] === '}' && --d === 0) return src.slice(i + 1, j);
+          }
+          return null;
+        }
+      }
+      depth++;
+    } else if (c === '}') {
       depth--;
-      if (depth === 0) return css.slice(braceStart + 1, i);
+      if (depth === 0) selDebut = i + 1;
+    } else if (depth === 0 && c === ';') {
+      selDebut = i + 1; // @import, @charset : pas des règles
     }
   }
   return null;
