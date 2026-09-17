@@ -11,7 +11,7 @@ linear:
   affaire: CRM-9
 
 site:
-  url: https://cafa-staging.ludo-c97.workers.dev
+  url: https://cafa.ludo-c97.workers.dev
   label: Ouvrir le site de démonstration
 
 # Captures de l'accueil prises le 2026-09-17 sur l'adresse de démonstration,
@@ -39,6 +39,7 @@ sections:
       - texte: "**Ce n'est pas encore l'adresse définitive.** Le nom de domaine se choisit dans le document de cadrage que vous avez reçu."
       - texte: "**Quelques textes sont provisoires**, je les ai écrits pour que les pages ne soient pas vides : l'accroche de l'accueil et la page Devenir membre. Vous pouvez les garder, les corriger ou les réécrire."
       - texte: "**L'allemand est une première version**, à relire par vous comme convenu."
+      - texte: "**Les formulaires ne partent pas encore.** Ils attendent le compte Resend, voir La suite. Si vous les testez aujourd'hui, vous verrez un message d'erreur : c'est attendu."
 
   - titre: La logique
     texte: >-
@@ -76,28 +77,28 @@ sections:
 parcoursTitre: Le parcours
 parcours:
   - page: Accueil
-    url: https://cafa-staging.ludo-c97.workers.dev/
+    url: https://cafa.ludo-c97.workers.dev/
     texte: Le nom du Club, le prochain rendez-vous, les dernières actualités.
   - page: Qui sommes-nous
-    url: https://cafa-staging.ludo-c97.workers.dev/qui-sommes-nous/
+    url: https://cafa.ludo-c97.workers.dev/qui-sommes-nous/
     texte: Le texte de votre brochure, mis en scène, vos rencontres en photos, et le bureau.
   - page: Événements à venir
-    url: https://cafa-staging.ludo-c97.workers.dev/evenements/
+    url: https://cafa.ludo-c97.workers.dev/evenements/
     texte: L'agenda, avec le programme du congrès de Montpellier en exemple.
   - page: Actualités
-    url: https://cafa-staging.ludo-c97.workers.dev/actualites/
+    url: https://cafa.ludo-c97.workers.dev/actualites/
     texte: Les 38 articles repris de l'ancien blog, photos comprises.
   - page: Devenir membre
-    url: https://cafa-staging.ludo-c97.workers.dev/devenir-membre/
+    url: https://cafa.ludo-c97.workers.dev/devenir-membre/
     texte: Pourquoi adhérer, et la demande d'adhésion en ligne.
   - page: Partenaires
-    url: https://cafa-staging.ludo-c97.workers.dev/partenaires/
+    url: https://cafa.ludo-c97.workers.dev/partenaires/
     texte: Vide pour l'instant, en attendant les logos de vos partenaires.
   - page: Contact
-    url: https://cafa-staging.ludo-c97.workers.dev/contact/
+    url: https://cafa.ludo-c97.workers.dev/contact/
     texte: Vos coordonnées et le formulaire.
   - page: Version allemande
-    url: https://cafa-staging.ludo-c97.workers.dev/de/
+    url: https://cafa.ludo-c97.workers.dev/de/
     texte: Le même site, en allemand.
 
 aVerifierTitre: Ce que je vous demande de vérifier
