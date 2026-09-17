@@ -1,0 +1,218 @@
+---
+/* Aperçu du livrable : la page d'accueil capturée dans un navigateur de
+   bureau, et la même page dans un téléphone posé par-dessus. Le cadre de
+   navigateur (onglet, barre d'adresse) situe la capture : le client comprend
+   qu'il regarde un site, pas une maquette. Première chose visible sous
+   l'en-tête, avant la vidéo et les sections.
+
+   Les captures se prennent à 1440 × 900 (MacBook) et 402 × 874 (iPhone), en
+   haute densité, et se déposent dans public/livrable/<client>/. */
+interface Props {
+  bureau: string;
+  mobile?: string;
+  url: string;
+  titre?: string;
+  legende?: string;
+}
+const { bureau, mobile, url, titre, legende } = Astro.props;
+const adresse = url.replace(/^https?:\/\//, "").replace(/\/$/, "");
+---
+
+<div class="grid grid-cols-[180px_1fr] gap-10 py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4">
+  <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">L’accueil</p>
+  <div>
+    <div class:list={["apercu", mobile && "apercu-avec-mobile"]}>
+      <figure class="apercu-bureau">
+        <div class="apercu-onglets" aria-hidden="true">
+          <span class="apercu-feux"><i></i><i></i><i></i></span>
+          <span class="apercu-onglet">{titre ?? adresse}</span>
+        </div>
+        <div class="apercu-barre" aria-hidden="true">
+          <span class="apercu-fleches">‹ ›</span>
+          <span class="apercu-adresse">
+            <svg width="10" height="12" viewBox="0 0 10 12" fill="currentColor">
+              <path d="M2 5V3.5a3 3 0 0 1 6 0V5h.5A1.5 1.5 0 0 1 10 6.5v4A1.5 1.5 0 0 1 8.5 12h-7A1.5 1.5 0 0 1 0 10.5v-4A1.5 1.5 0 0 1 1.5 5H2Zm1.5 0h3V3.5a1.5 1.5 0 0 0-3 0V5Z" />
+            </svg>
+            {adresse}
+          </span>
+        </div>
+        <img src={bureau} alt={`Page d'accueil du site, vue sur un écran d'ordinateur (${adresse})`} loading="lazy" />
+      </figure>
+      {
+        mobile && (
+          <figure class="apercu-mobile">
+            <div class="apercu-ecran">
+              <div class="apercu-statut" aria-hidden="true">
+                <span>9:41</span>
+                <span class="apercu-ilot" />
+                <span class="apercu-batterie" />
+              </div>
+              <img src={mobile} alt="La même page d'accueil sur un iPhone" loading="lazy" />
+            </div>
+          </figure>
+        )
+      }
+    </div>
+    {legende && <p class="mt-3 text-[13px] text-mute">{legende}</p>}
+  </div>
+</div>
+
+<style>
+  .apercu {
+    position: relative;
+  }
+  /* Le téléphone déborde du navigateur en bas à droite, sans masquer le
+     carton d'invitation de l'accueil : réserve à droite et en dessous. */
+  .apercu-avec-mobile {
+    padding-bottom: 16%;
+    padding-right: 8%;
+  }
+
+  /* Navigateur de bureau, couleurs de Chrome en thème clair : un objet
+     photographié, il ne suit pas le thème de la page. */
+  .apercu-bureau {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 1px solid var(--ds-gray-400, #d9dde3);
+    background: #fff;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+  }
+  .apercu-bureau img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .apercu-onglets {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    height: 38px;
+    padding: 0 12px;
+    background: #dee1e6;
+  }
+  .apercu-feux {
+    display: flex;
+    gap: 6px;
+    padding-bottom: 12px;
+  }
+  .apercu-feux i {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #ff5f57;
+  }
+  .apercu-feux i:nth-child(2) {
+    background: #febc2e;
+  }
+  .apercu-feux i:nth-child(3) {
+    background: #28c840;
+  }
+  .apercu-onglet {
+    max-width: 220px;
+    overflow: hidden;
+    padding: 7px 14px;
+    border-radius: 8px 8px 0 0;
+    background: #fff;
+    color: #202124;
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .apercu-barre {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 12px;
+    background: #fff;
+    border-bottom: 1px solid #dadce0;
+  }
+  .apercu-fleches {
+    color: #5f6368;
+    font-size: 16px;
+    letter-spacing: 4px;
+  }
+  .apercu-adresse {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: #f1f3f4;
+    color: #202124;
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .apercu-adresse svg {
+    flex: none;
+    color: #5f6368;
+  }
+
+  /* Téléphone posé sur le coin du navigateur. */
+  .apercu-mobile {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 26%;
+    margin: 0;
+    padding: 9px;
+    border-radius: 12%/5.6%;
+    background: #111;
+    box-shadow:
+      0 24px 48px -12px rgb(0 0 0 / 0.35),
+      0 0 0 1px rgb(255 255 255 / 0.08) inset;
+  }
+  .apercu-ecran {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10%/4.7%;
+    background: #fff;
+  }
+  .apercu-ecran img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .apercu-statut {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5% 8% 2%;
+    color: #111;
+    font-size: clamp(8px, 0.7em, 12px);
+    font-weight: 600;
+    line-height: 1;
+  }
+  .apercu-ilot {
+    position: absolute;
+    top: 4%;
+    left: 50%;
+    width: 30%;
+    height: 3.2%;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: #111;
+  }
+  .apercu-batterie {
+    width: 1.6em;
+    height: 0.75em;
+    border-radius: 3px;
+    background: #111;
+  }
+
+  @media (max-width: 700px) {
+    .apercu-avec-mobile {
+      padding: 0;
+    }
+    .apercu-mobile {
+      position: static;
+      width: 56%;
+      margin: 24px auto 0;
+    }
+  }
+</style>

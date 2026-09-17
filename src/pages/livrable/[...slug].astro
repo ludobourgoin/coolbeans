@@ -5,6 +5,7 @@ import GridBackdrop from "../../components/GridBackdrop.astro";
 import Banner from "../../components/ui/Banner.astro";
 import Tooltip from "../../components/ui/Tooltip.astro";
 import CadrageIntro from "../../components/cadrage/CadrageIntro.astro";
+import LivrableApercu from "../../components/livrable/LivrableApercu.astro";
 import LivrableVideo from "../../components/livrable/LivrableVideo.astro";
 import LivrableParcours from "../../components/livrable/LivrableParcours.astro";
 import LivrableSuite from "../../components/livrable/LivrableSuite.astro";
@@ -98,16 +99,28 @@ const dateCourte = (d: Date) =>
     {
       versions.map((v, i) => (
         <div data-livrable-pane={i} hidden={i !== actif} class="mx-auto max-w-[880px] py-16x">
-          {v.data.video && (
-            <LivrableVideo
-              url={v.data.video.url}
-              embed={v.data.video.embed}
-              duree={v.data.video.duree}
-              legende={v.data.video.legende}
+          {v.data.apercu && (
+            <LivrableApercu
+              bureau={v.data.apercu.bureau}
+              mobile={v.data.apercu.mobile}
+              url={v.data.apercu.url ?? v.data.site.url}
+              titre={v.data.apercu.titre}
+              legende={v.data.apercu.legende}
             />
           )}
 
-          <div class:list={[v.data.video && "border-t border-line"]}>
+          {v.data.video && (
+            <div class:list={[v.data.apercu && "border-t border-line"]}>
+              <LivrableVideo
+                url={v.data.video.url}
+                embed={v.data.video.embed}
+                duree={v.data.video.duree}
+                legende={v.data.video.legende}
+              />
+            </div>
+          )}
+
+          <div class:list={[(v.data.apercu || v.data.video) && "border-t border-line"]}>
             <CadrageIntro sections={v.data.sections} />
           </div>
 

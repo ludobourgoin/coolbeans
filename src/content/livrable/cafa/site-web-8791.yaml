@@ -14,6 +14,14 @@ site:
   url: https://cafa-staging.ludo-c97.workers.dev
   label: Ouvrir le site de démonstration
 
+# Captures de l'accueil prises le 2026-09-17 sur l'adresse de démonstration,
+# 1440 × 900 en x2 et 402 × 874 en x3 (iPhone 17 Pro).
+apercu:
+  bureau: /livrable/cafa/accueil-macbook.png
+  mobile: /livrable/cafa/accueil-iphone.png
+  titre: Accueil · Club d'Affaires Franco-Allemand Toulouse Occitanie
+  legende: La page d'accueil, telle qu'elle s'affiche aujourd'hui sur ordinateur et sur téléphone.
+
 # Vidéo de présentation : coller ici le lien de partage CleanShot. Si l'outil
 # fournit une URL de lecteur intégrable, la mettre dans `embed`.
 # video:

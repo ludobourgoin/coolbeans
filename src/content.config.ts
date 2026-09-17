@@ -191,6 +191,18 @@ const livrable = defineCollection({
     /* Le livrable lui-même, ouvert depuis l'en-tête. Adresse de démonstration
        ou domaine définitif selon le moment. */
     site: z.object({ url: z.string().url(), label: z.string().default("Ouvrir le site") }),
+    /* Captures de l'accueil, chemins sous public/ : ordinateur obligatoire,
+       téléphone en option. L'URL et le titre habillent le cadre du navigateur ;
+       par défaut ceux du site. */
+    apercu: z
+      .object({
+        bureau: z.string(),
+        mobile: z.string().optional(),
+        url: z.string().url().optional(),
+        titre: z.string().optional(),
+        legende: z.string().optional(),
+      })
+      .optional(),
     /* Vidéo de présentation : lien de partage, et lecteur intégrable si
        l'outil en fournit un. Optionnelle, le document se lit sans. */
     video: z
