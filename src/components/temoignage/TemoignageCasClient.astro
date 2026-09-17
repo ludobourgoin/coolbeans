@@ -1,0 +1,76 @@
+---
+/* Le bloc qui montre la page de cas client à valider.
+
+   Il ne rejoue pas la page : il donne le lien, dit son statut, et rappelle que
+   le client a le dernier mot. Rejouer un aperçu ici reviendrait à maintenir
+   deux rendus de la même chose, dont l'un finirait par mentir.
+
+   Le statut de la page est le point qui désamorce le plus d'inquiétudes avant
+   qu'elles arrivent : tant que `brouillon: true`, elle est accessible à son
+   URL, marquée noindex, et absente de la liste /projets. Le dire évite la
+   question « c'est déjà en ligne ? », qui est la première que le client pose.
+
+   `fauxTexte` sert le mécanisme de relance : quand le témoignage n'est pas
+   encore arrivé, le bloc de citation de la page porte du lorem ipsum, et on
+   l'annonce. Un client qui voit du latin dans un encadré à son nom a envie de
+   le remplacer ; un bloc simplement absent ne réclame rien. */
+import Banner from "../ui/Banner.astro";
+import { riche } from "../../lib/devis";
+
+interface Props {
+  titre: string;
+  texte?: string;
+  slug: string;
+  label: string;
+  fauxTexte: boolean;
+  tutoiement: boolean;
+  ancre: string;
+}
+const { titre, texte, slug, label, fauxTexte, tutoiement, ancre }: Props = Astro.props;
+
+const t = tutoiement
+  ? {
+      statut:
+        "Elle n'est ni publiée ni indexée : seuls ceux qui ont le lien la voient, et elle n'apparaît nulle part sur le site.",
+      veto:
+        "Tu me dis si quelque chose te gêne et je le change. C'est ta boîte, tu as le dernier mot sur ce qui s'y écrit.",
+      faux:
+        "Le bloc de citation est rempli avec du faux texte : c'est la place de ta réponse aux questions ci-dessous.",
+    }
+  : {
+      statut:
+        "Elle n'est ni publiée ni indexée : seuls ceux qui ont le lien la voient, et elle n'apparaît nulle part sur le site.",
+      veto:
+        "Vous me dites si quelque chose vous gêne et je le change. C'est votre entreprise, vous avez le dernier mot sur ce qui s'y écrit.",
+      faux:
+        "Le bloc de citation est rempli avec du faux texte : c'est la place de votre réponse aux questions ci-dessous.",
+    };
+---
+
+<section
+  id={ancre}
+  class="mt-16x grid grid-cols-[180px_1fr] gap-10 border-t border-line pt-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+>
+  <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">
+    La page
+  </p>
+
+  <div class="max-w-[58ch]">
+    <h2>{titre}</h2>
+
+    {texte && <p class="mt-4 leading-[1.6]" set:html={riche(texte)} />}
+
+    <p class="mt-4 leading-[1.6] text-mute">{t.statut}</p>
+    <p class="mt-3 leading-[1.6] text-mute">{t.veto}</p>
+
+    <a class="btn mt-7" href={`/projets/${slug}`} target="_blank" rel="noopener">{label}</a>
+
+    {
+      fauxTexte && (
+        <div class="mt-7">
+          <Banner tone="info">{t.faux}</Banner>
+        </div>
+      )
+    }
+  </div>
+</section>

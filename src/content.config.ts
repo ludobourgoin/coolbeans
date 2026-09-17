@@ -571,10 +571,118 @@ const indisponibilites = defineCollection({
   }),
 });
 
+/* Un fichier YAML par page de témoignage dans
+   src/content/temoignage/<client>/<projet>-<4 chiffres>.yaml ; le chemin
+   devient l'URL (/temoignage/<client>/<projet>-1234). Rendu par
+   src/pages/temoignage/[...slug].astro.
+
+   Quatrième document de la famille, après le cadrage, la proposition et le
+   livrable. Celui-ci part APRÈS la livraison, et il demande trois choses au
+   même endroit : le témoignage, la photo qui l'accompagne, et la validation
+   de la page de cas client.
+
+   Il réutilise le moteur du cadrage sans le dupliquer : mêmes `intro` et
+   `questions`, même traduction des réponses par src/lib/cadrage.ts, réponses
+   par mail et rien en base. Ce qu'il ajoute tient en deux blocs : `casClient`,
+   qui montre la page à valider, et `photo`, seule pièce qu'un mail de
+   notification ne sait pas produire tout seul. */
+const temoignage = defineCollection({
+  loader: glob({ pattern: "**/*.yaml", base: "./src/content/temoignage" }),
+  schema: z.object({
+    titre: z.string(),
+    objet: z.string(),
+    date: z.coerce.date(),
+    contact: z.string().optional(),
+    tutoiement: z.boolean().default(false),
+    linear: z
+      .object({ projet: z.string().optional(), affaire: z.string().optional() })
+      .optional(),
+    /* Masque le formulaire une fois le témoignage reçu : la page devient une
+       trace, même mécanique que le livrable validé. */
+    formulaire: z.boolean().default(true),
+    /* Sections d'introduction, au format du cadrage et du devis. */
+    intro: z.array(
+      z.object({
+        titre: z.string(),
+        texte: z.string().optional(),
+        liste: z
+          .array(
+            z.union([z.string(), z.object({ texte: z.string(), tooltip: z.string().optional() })]),
+          )
+          .optional(),
+        note: z.string().optional(),
+      }),
+    ),
+    /* La page de cas client à faire valider. Absente quand le client a refusé
+       la publication : le document ne demande alors que le témoignage. */
+    casClient: z
+      .object({
+        titre: z.string().default("La page que je voudrais publier"),
+        texte: z.string().optional(),
+        /* Slug de la collection `projets`, donc /projets/<slug>. Tant que la
+           page porte `brouillon: true`, elle est accessible à son URL et
+           marquée noindex : exactement ce qu'il faut pour un lien de
+           validation. */
+        slug: z.string().regex(/^[a-z0-9-]+$/),
+        label: z.string().default("Ouvrir la page"),
+        /* Vrai tant que le témoignage n'est pas arrivé : le bloc de citation
+           de la page porte alors du faux texte, et le document le dit. Ce
+           n'est pas un pis-aller. Un client qui voit du latin dans un encadré
+           à son nom a envie de le remplacer, là où un bloc simplement absent
+           ne réclame rien. */
+        fauxTexte: z.boolean().default(true),
+      })
+      .optional(),
+    /* Dépôt de la photo de profil. Absent, le formulaire n'en demande pas :
+       un client déjà en ligne sur un autre cas n'a pas à la redonner. */
+    photo: z
+      .object({
+        titre: z.string().default("Votre photo"),
+        texte: z.string().optional(),
+        /* Exemple montré au client, sous /public/img/. Une photo d'exemple
+           vaut mieux qu'un cahier des charges : elle dit le cadrage attendu
+           sans donner l'impression qu'il faut un photographe. */
+        exemple: z.string().optional(),
+        exempleAlt: z.string().optional(),
+        requis: z.boolean().default(false),
+      })
+      .optional(),
+    questions: z.array(
+      z.object({
+        id: z.string().regex(/^[a-z0-9-]+$/),
+        label: z.string(),
+        aide: z.string().optional(),
+        type: z.enum(["choix", "texte"]),
+        /* Même champ que le cadrage, autre sens : ici, la réponse qui finira
+           citée sur la page publique. Elle remonte en tête du mail. */
+        decisif: z.boolean().default(false),
+        requis: z.boolean().default(false),
+        multiple: z.boolean().default(false),
+        options: z
+          .array(z.object({ valeur: z.string(), label: z.string(), aide: z.string().optional() }))
+          .optional(),
+        autre: z.boolean().default(false),
+        long: z.boolean().default(false),
+        placeholder: z.string().optional(),
+      }),
+    ),
+    notes: z
+      .array(
+        z.object({
+          texte: z.string(),
+          tooltip: z.string().optional(),
+          tone: z.enum(["neutral", "info", "success", "warning", "error"]).default("info"),
+        }),
+      )
+      .default([]),
+  }),
+});
+
 export const collections = {
   devis,
   cadrage,
   livrable,
+  temoignage,
   projets,
   docs,
   clients,
