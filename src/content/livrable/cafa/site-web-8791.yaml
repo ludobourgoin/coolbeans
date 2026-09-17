@@ -50,6 +50,7 @@ sections:
       - texte: "**L'agenda se vide tout seul.** Un événement passé disparaît de la liste le lendemain, sans rien avoir à faire."
       - texte: "**Les actualités sont la mémoire du Club.** Les rencontres passées y restent, année après année. J'y ai repris 38 articles de l'ancien blog, ceux qui avaient de la matière ; les autres sont conservés et peuvent revenir."
       - texte: "**Un menu court.** Événements, Actualités, un menu À propos qui regroupe le Club et ses partenaires, Devenir membre, Contact."
+      - texte: "**Le réseau des Clubs est relié**, comme vous l'avez demandé : un lien vers reseau-cafa.org dans le pied de page de chaque page, et une section « Le réseau » au bas de Qui sommes-nous."
       - texte: "**Deux langues, un seul site.** Un visiteur dont le navigateur est en allemand arrive directement sur la version allemande. Il peut changer à tout moment, et son choix est retenu."
 
   - titre: Les choix esthétiques
@@ -81,7 +82,7 @@ parcours:
     texte: Le nom du Club, le prochain rendez-vous, les dernières actualités.
   - page: Qui sommes-nous
     url: https://cafa.ludo-c97.workers.dev/qui-sommes-nous/
-    texte: Le texte de votre brochure, mis en scène, vos rencontres en photos, et le bureau.
+    texte: Le texte de votre brochure, mis en scène, vos rencontres en photos, le bureau, et le lien vers le réseau des Clubs.
   - page: Événements à venir
     url: https://cafa.ludo-c97.workers.dev/evenements/
     texte: L'agenda, avec le programme du congrès de Montpellier en exemple.
