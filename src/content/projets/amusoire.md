@@ -55,13 +55,19 @@ avantApres:
       alt: "La nouvelle homepage amusoire.com"
       # shot: /img/projets/amusoire/apres-home.avif
 
-# TODO : témoignage à demander au client, puis décommenter
-# temoignage:
-#   texte: >-
-#     …
-#   auteur: Prénom Nom
-#   role: Fondateur @ Amusoire
-#   photo: /img/projets/amusoire/contact.avif
+# Faux texte assumé, en attendant la réponse au document
+# /temoignage/amusoire/refonte-site-0040. Ce n'est pas un oubli : un client qui
+# voit du latin dans un encadré à son nom a envie de le remplacer, là où un bloc
+# simplement absent ne réclame rien. À remplacer mot pour mot par ses réponses,
+# sans les réécrire, et à retirer si le témoignage n'arrive jamais.
+temoignage:
+  texte: >-
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim veniam
+    quis nostrud exercitation ullamco laboris.
+  auteur: Votre nom
+  role: Votre rôle @ Amusoire
+  # photo: /img/projets/amusoire/contact.avif
 
 brouillon: true
 ---

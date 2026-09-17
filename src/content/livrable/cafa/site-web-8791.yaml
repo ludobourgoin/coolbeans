@@ -58,7 +58,7 @@ sections:
       contre-pied.
     liste:
       - texte: "**Du blanc et une seule couleur**, le bleu de votre logo. Le dégradé du logo reste dans le logo, il n'est décliné nulle part ailleurs."
-      - texte: "**Peu de photos, choisies.** Une vue de Toulouse sur l'accueil, la Garonne et le Pont Neuf, en écho aux briques et au bleu du logo. Et vos propres rencontres, reprises de votre page LinkedIn, sur la page Qui sommes-nous et dans l'actualité du 24 mars. Pas de banque d'images."
+      - texte: "**Peu de photos, choisies.** Une vue de Toulouse sur l'accueil, la Garonne et le Pont Neuf, en écho aux briques et au bleu du logo. Et vos propres rencontres, reprises de votre page LinkedIn à titre d'exemple, sur la page Qui sommes-nous et dans l'actualité du 24 mars. Pas de banque d'images."
       - texte: "**Deux caractères typographiques** : une serif pour les titres, sobre et institutionnelle, une sans-serif pour tout le texte."
       - texte: "**Le nom allemand en écho** sous le nom français, et l'inverse sur la version allemande. C'est ce qui dit, dès la première ligne, ce qu'est le Club."
       - texte: "**Les membres du bureau en médaillons noir et blanc**, pour que deux photos très différentes se tiennent côte à côte."
@@ -109,7 +109,8 @@ aVerifier:
   - "Les mentions légales : le nom de la présidente comme directrice de la publication, et l'adresse du Club."
   - "La version allemande, en particulier les actualités et l'événement."
   - "**La photo de Toulouse sur l'accueil.** J'en ai réuni treize, [à comparer ici](https://claude.ai/artifact/WKMeU4zhsVQJfYyzZHX6bJ). Celle en place est la n° 1. Laquelle gardez-vous ?"
-  - "Les quatre photos reprises de votre page LinkedIn. Si vous en avez d'autres, plus récentes ou mieux cadrées, elles se remplacent en un clic."
+  - "**Le bureau, sur la page Qui sommes-nous.** Il présente Susanne Salerno et Karsten Fröhlke. Voulez-vous y ajouter d'autres membres ? Et un lien vers le profil LinkedIn de chacun ?"
+  - "**Les photos de la page Qui sommes-nous sont un exemple**, pas un choix définitif : trois images reprises de votre page LinkedIn pour montrer l'effet. Envoyez-moi celles que vous voulez y voir, elles se remplacent en un clic."
 
 suiteTitre: La suite
 suite:

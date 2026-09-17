@@ -302,8 +302,8 @@ Ce qu'elle ne porte pas, contrairement à ce que cette page affirmait jusqu'au 2
 Workspace, donc disponible dans toutes les teams clientes sans rien copier. Un ticket par livraison, quatre blocs :
 
 - **Recette et mise en ligne.** Recette sur le périmètre du devis uniquement, tout débordement part en Triage et donne lieu à un avenant. Puis retours corrigés, mise en ligne, doc de passation. Rien ne se demande au client tant qu'un retour de recette traîne.
-- **Livraison (J+0).** Mail de livraison avec la date de fin de garantie explicite, les trois questions du témoignage, l'alternative LinkedIn, la photo de profil. Page de cas client amorcée en `brouillon: true`. Sous-issues J+30 et J+90 créées et datées le jour même.
-- **Fin de garantie (J+30).** Bugs traités, care plan, page de cas client envoyée en validation, avis public demandé dans le même mail. Puis publication : `brouillon: false`, entrée dans `src/data/portfolio.ts`, sitemap et métadonnées.
+- **Livraison (J+0).** Mail de livraison avec la date de fin de garantie explicite, portant le lien de la **page de témoignage**. Page de cas client amorcée en `brouillon: true`, avec du faux texte dans le bloc de citation. Sous-issues J+30 et J+90 créées et datées le jour même.
+- **Fin de garantie (J+30).** Bugs traités, care plan, avis public demandé. Retours du client intégrés, faux texte remplacé mot pour mot, puis publication : `brouillon: false`, entrée dans `src/data/portfolio.ts`, sitemap et métadonnées.
 - **Résultats (J+90).** Ce qui a changé, les chiffres citables, la section « Et depuis », la mise en relation, et l'ouverture du point trimestriel.
 
 <Callout type="warn" title="Les tâches J+30 et J+90 se datent à la création, pas à la fin du projet">
@@ -318,9 +318,25 @@ Workspace, donc disponible dans toutes les teams clientes sans rien copier. Un t
   D'où les deux passes : l'émotion à la livraison, la preuve à trois mois. La question « qu'est-ce qui a changé ? » a été déplacée à J+90 pour cette raison, et remplacée à J+0 par « comment ça s'est passé ? ».
 </Callout>
 
-Le détail des trois mails, les critères de la photo de profil et le mécanisme du faux texte vivent dans la skill `livraison-client`. Aucun de ces mails ne part depuis Claude.
-
 **Les tâches de cas client vivent ici, et non dans l'affaire CRM.** Question laissée ouverte jusqu'au 2026-09-17, tranchée ainsi : la séquence entière est une conversation avec le client, et la découper entre deux teams ferait perdre la moitié des tâches au moment où l'affaire se clôt sur le solde. Le client verra un jour ces lignes dans sa team, et c'est très bien : il a autorisé la publication au devis, il n'y a rien à lui cacher. Seule l'étape 18 de la check-list CRM reste au CRM, parce qu'elle garde la porte avant la clôture.
+
+## La page de témoignage
+
+Quatrième document de la famille, après le cadrage, la proposition et le livrable. Créé le 2026-09-17, à l'URL `/temoignage/<client>/<projet>-<4 chiffres>`.
+
+Il part après la livraison et demande trois choses au même endroit : le témoignage en trois questions, la photo qui l'accompagne, et la relecture de la page de cas client. Le mail de livraison ne fait que porter son lien.
+
+<Callout type="tip" title="Pourquoi un document et pas un mail">
+  Trois raisons, dans cet ordre d'importance. Une photo demandée par mail se perd dans un fil et arrive en pleine définition, de travers, trois semaines plus tard. La page de cas client se montre, elle ne se décrit pas. Et le client retrouve la forme qu'il connaît depuis le cadrage, ce qui fait de la demande une étape du projet plutôt qu'une faveur personnelle.
+
+  Les deux autres moments restent des mails : ils portent une demande chacun, et un document pour une question serait une cérémonie.
+</Callout>
+
+Techniquement, il réutilise le moteur du cadrage sans le dupliquer : mêmes `intro` et `questions`, même traduction des réponses par `src/lib/cadrage.ts`, réponses par mail et rien en base. Ce qui lui appartient tient en deux blocs : `casClient`, qui donne le lien de la page à relire et annonce son faux texte, et `photo`, qui ouvre un dépôt de fichier. La photo part en R2 **et** en pièce jointe du mail de notification : R2 est la copie durable, la pièce jointe évite d'écrire une route de téléchargement authentifiée pour une photo par projet.
+
+Le champ `decisif` existe comme au cadrage, avec un autre sens : il désigne la réponse qui finira citée sur la page publique. La pastille du formulaire dit « Ce que je citerais », parce que quelqu'un doit savoir où sa phrase atterrit avant de l'écrire, pas après.
+
+Le détail du gabarit, des trois mails et des critères de la photo vit dans la skill `livraison-client`. Aucun de ces mails ne part depuis Claude.
 
 ## L'autorisation de présenter le projet
 

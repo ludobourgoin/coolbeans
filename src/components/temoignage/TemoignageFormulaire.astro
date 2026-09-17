@@ -1,0 +1,487 @@
+---
+/* Formulaire de la page de témoignage, piloté par le YAML.
+
+   Quatrième de la famille, après DevisReponse, CadrageFormulaire et
+   LivrableReponse, et écrit comme eux plutôt qu'en généralisant le cadrage.
+   Le choix est assumé : CadrageFormulaire est devant des leads en ce moment
+   même, et trois de ses éléments changent ici (l'endpoint, la pastille des
+   questions marquées, le dépôt de photo). Le généraliser ferait porter un
+   risque de régression à une page qui tourne, pour économiser un fichier.
+
+   Deux différences de fond avec le cadrage :
+
+   - **Envoi en multipart, pas en JSON.** La photo voyage avec les réponses.
+     Un second appel obligerait à gérer un envoi à moitié réussi, précisément
+     sur le geste où la personne vient de donner dix minutes.
+   - **La pastille dit « Ce que je citerais »** au lieu de « Décide du
+     chiffrage ». Le champ `decisif` du YAML est le même, son sens ne l'est
+     pas : ici il désigne la réponse qui finira sur la page publique. Le dire
+     avant qu'elle écrive, pas après, est la moindre des choses.
+
+   Comme partout ailleurs, le navigateur n'envoie que des identifiants : les
+   libellés sont relus dans le YAML par l'endpoint. */
+import Choicebox from "../ui/Choicebox.astro";
+import { riche } from "../../lib/devis";
+import type { QuestionCadrage } from "../../lib/cadrage";
+
+interface Props {
+  slug: string;
+  questions: QuestionCadrage[];
+  tutoiement?: boolean;
+  photo?: {
+    titre: string;
+    texte?: string;
+    exemple?: string;
+    exempleAlt?: string;
+    requis: boolean;
+  };
+}
+const { slug, questions, tutoiement = false, photo }: Props = Astro.props;
+
+const t = tutoiement
+  ? {
+      accroche:
+        "Une phrase par question suffit. J'écris avec tes mots, je ne les réécris pas.",
+      identite: "Pour te répondre",
+      prenom: "Ton prénom",
+      nom: "Ton nom",
+      email: "toi@exemple.com",
+      consentement:
+        "J'accepte que Coolbeans conserve ces informations et publie mon retour sur son site.",
+      envoye: "Merci, c'est envoyé. Tu reçois une copie de tes réponses par email à l'instant.",
+      perdues: "Tes réponses ne sont pas perdues",
+      reponse: "Ta réponse",
+      ajout: "Tout ce que les questions n'ont pas couvert",
+    }
+  : {
+      accroche:
+        "Une phrase par question suffit. J'écris avec vos mots, je ne les réécris pas.",
+      identite: "Pour vous répondre",
+      prenom: "Votre prénom",
+      nom: "Votre nom",
+      email: "vous@exemple.com",
+      consentement:
+        "J'accepte que Coolbeans conserve ces informations et publie mon retour sur son site.",
+      envoye: "Merci, c'est envoyé. Vous recevez une copie de vos réponses par email à l'instant.",
+      perdues: "Vos réponses ne sont pas perdues",
+      reponse: "Votre réponse",
+      ajout: "Tout ce que les questions n'ont pas couvert",
+    };
+
+const descripteurs = questions.map((q) => ({
+  id: q.id,
+  type: q.type,
+  multiple: q.multiple,
+  autre: q.autre,
+  requis: q.requis,
+  repere: q.label.length > 60 ? `${q.label.slice(0, 57)}...` : q.label,
+}));
+
+const optionsDe = (q: QuestionCadrage) => [
+  ...(q.options ?? []).map((o) => ({ value: o.valeur, title: o.label, hint: o.aide })),
+  ...(q.autre ? [{ value: "autre", title: "Autre", hint: "À préciser juste en dessous." }] : []),
+];
+---
+
+<!-- QUESTIONNAIRE -->
+<section data-temoignage-formulaire class="border-t border-line bg-surface-subtle">
+  <div class="container-site py-24x">
+    <div
+      class="mx-auto grid max-w-[880px] grid-cols-[180px_1fr] gap-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+    >
+      <div aria-hidden="true"></div>
+      <div>
+        <h2>Questions</h2>
+        <p class="mt-4 leading-[1.6] text-mute">{t.accroche}</p>
+
+        <form
+          id="temoignage-form"
+          class="card mt-10 grid gap-9"
+          data-slug={slug}
+          data-questions={JSON.stringify(descripteurs)}
+          data-textes={JSON.stringify({ envoye: t.envoye, perdues: t.perdues })}
+          data-photo-requise={photo?.requis ? "1" : "0"}
+        >
+          <p class="text-[13px] text-mute">Les champs marqués d'une étoile sont obligatoires.</p>
+
+          {
+            questions.map((q, i) => (
+              <div class:list={[i > 0 && "border-t border-line pt-9"]}>
+                <fieldset class="grid gap-3 p-0">
+                  <legend class="mb-1 p-0">
+                    <span class="flex flex-wrap items-center gap-2">
+                      <span class="font-mono text-[11px] font-bold tracking-wide text-mute uppercase">
+                        Question {i + 1}
+                      </span>
+                      {q.decisif && (
+                        <span class="rounded-full border border-[var(--ds-amber-300)] bg-[var(--ds-amber-100)] px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wide text-[var(--ds-amber-900)] uppercase">
+                          Ce que je citerais
+                        </span>
+                      )}
+                    </span>
+                    <span class="mt-2.5 block text-[19px] leading-[1.35] font-semibold text-ink">
+                      <Fragment set:html={riche(q.label)} />
+                      {q.requis && (
+                        <span class="text-ink" aria-hidden="true">
+                          {" "}
+                          *
+                        </span>
+                      )}
+                    </span>
+                  </legend>
+
+                  {q.aide && (
+                    <p class="text-[13px] leading-[1.6] text-mute" set:html={riche(q.aide)} />
+                  )}
+
+                  {q.type === "choix" ? (
+                    <>
+                      <Choicebox
+                        name={`q-${q.id}`}
+                        type={q.multiple ? "checkbox" : "radio"}
+                        options={optionsDe(q)}
+                      />
+                      {q.autre && (
+                        <input
+                          class="field mt-1"
+                          type="text"
+                          name={`autre-${q.id}`}
+                          data-temoignage-autre={q.id}
+                          placeholder="Précisez"
+                          hidden
+                        />
+                      )}
+                    </>
+                  ) : q.long ? (
+                    <textarea
+                      class="field h-auto min-h-[110px] py-3"
+                      name={`q-${q.id}`}
+                      placeholder={q.placeholder ?? t.reponse}
+                    />
+                  ) : (
+                    <input
+                      class="field"
+                      type="text"
+                      name={`q-${q.id}`}
+                      placeholder={q.placeholder ?? t.reponse}
+                    />
+                  )}
+                </fieldset>
+              </div>
+            ))
+          }
+
+          {
+            photo && (
+              <div class="border-t border-line pt-9">
+                <p class="text-[19px] leading-[1.35] font-semibold text-ink">
+                  {photo.titre}
+                  {photo.requis && (
+                    <span class="text-ink" aria-hidden="true">
+                      {" "}
+                      *
+                    </span>
+                  )}
+                </p>
+
+                {photo.texte && (
+                  <p
+                    class="mt-3 text-[13px] leading-[1.6] text-mute"
+                    set:html={riche(photo.texte)}
+                  />
+                )}
+
+                {photo.exemple && (
+                  <figure class="mt-5 flex items-center gap-4">
+                    <img
+                      class="size-20 rounded-full border border-line object-cover"
+                      src={photo.exemple}
+                      alt={photo.exempleAlt ?? "Exemple de cadrage attendu"}
+                      width="80"
+                      height="80"
+                      loading="lazy"
+                    />
+                    <figcaption class="max-w-[38ch] text-[13px] leading-[1.6] text-mute">
+                      Voilà le cadrage attendu, et la taille à laquelle elle s'affichera.
+                    </figcaption>
+                  </figure>
+                )}
+
+                <input
+                  class="field mt-5 h-auto py-2.5"
+                  type="file"
+                  name="photo"
+                  accept="image/jpeg,image/png,image/webp,image/avif,image/heic"
+                  data-temoignage-photo
+                />
+                <p class="mt-2 text-[13px] leading-[1.6] text-mute">
+                  JPG, PNG, WEBP ou HEIC, 8 Mo maximum.
+                </p>
+              </div>
+            )
+          }
+
+          <div class="grid gap-4 border-t border-line pt-8">
+            <p class="font-mono text-[11px] font-bold tracking-wide text-mute uppercase">
+              {t.identite}
+            </p>
+            <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
+              <div class="grid gap-2">
+                <label class="label field-label" for="temoignage-prenom">
+                  Prénom <span class="text-ink" aria-hidden="true">*</span>
+                </label>
+                <input
+                  class="field"
+                  type="text"
+                  id="temoignage-prenom"
+                  name="prenom"
+                  autocomplete="given-name"
+                  placeholder={t.prenom}
+                  required
+                />
+              </div>
+              <div class="grid gap-2">
+                <label class="label field-label" for="temoignage-nom">
+                  Nom <span class="text-ink" aria-hidden="true">*</span>
+                </label>
+                <input
+                  class="field"
+                  type="text"
+                  id="temoignage-nom"
+                  name="nom"
+                  autocomplete="family-name"
+                  placeholder={t.nom}
+                  required
+                />
+              </div>
+            </div>
+            <div class="grid gap-2">
+              <label class="label field-label" for="temoignage-email">
+                Email <span class="text-ink" aria-hidden="true">*</span>
+              </label>
+              <input
+                class="field"
+                type="email"
+                id="temoignage-email"
+                name="email"
+                autocomplete="email"
+                placeholder={t.email}
+                required
+              />
+            </div>
+            <div class="grid gap-2">
+              <label class="label field-label" for="temoignage-message">
+                Quelque chose à ajouter
+              </label>
+              <textarea
+                class="field h-auto min-h-[100px] py-3"
+                id="temoignage-message"
+                name="message"
+                placeholder={t.ajout}></textarea>
+            </div>
+          </div>
+
+          <div class="grid gap-2 border-t border-line pt-6">
+            <label
+              class="flex cursor-pointer items-start gap-3 text-[13px] leading-[1.6] text-mute"
+              for="temoignage-consentement"
+            >
+              <input
+                class="checkbox"
+                type="checkbox"
+                id="temoignage-consentement"
+                name="consentement"
+                required
+              />
+              <span>
+                {t.consentement}
+                <span class="text-ink" aria-hidden="true">*</span>
+              </span>
+            </label>
+            <p class="pl-7 text-[13px] leading-[1.6] text-mute">
+              Elles ne sont ni revendues ni transmises à des tiers, et se retirent du site sur
+              simple demande à <a class="link" href="mailto:ludo@coolbeans.cc">ludo@coolbeans.cc</a
+              >.
+            </p>
+          </div>
+
+          <button class="btn btn-lg" type="submit">Envoyer</button>
+          <p
+            data-temoignage-form-status
+            role="status"
+            class="hidden text-center text-[13px] font-medium"
+          >
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  interface Descripteur {
+    id: string;
+    type: "choix" | "texte";
+    multiple: boolean;
+    autre: boolean;
+    requis: boolean;
+    repere: string;
+  }
+
+  const MAX_PHOTO = 8 * 1024 * 1024;
+
+  const form = document.querySelector<HTMLFormElement>("#temoignage-form");
+  const status = form?.querySelector<HTMLParagraphElement>("[data-temoignage-form-status]");
+  const descripteurs: Descripteur[] = JSON.parse(form?.dataset.questions ?? "[]");
+  const textes: { envoye: string; perdues: string } = JSON.parse(form?.dataset.textes ?? "{}");
+
+  const erreur = (message: string) => {
+    if (!status) return;
+    status.hidden = false;
+    status.textContent = message;
+    status.className = "text-center text-[13px] font-medium text-error";
+  };
+
+  /* Le champ « autre » ne s'affiche que quand l'option est cochée. Visible en
+     permanence, il invite à écrire une précision qui ne partira pas. */
+  const syncAutre = () => {
+    if (!form) return;
+    const fd = new FormData(form);
+    descripteurs
+      .filter((d) => d.autre)
+      .forEach((d) => {
+        const champ = form.querySelector<HTMLInputElement>(`[data-temoignage-autre="${d.id}"]`);
+        if (champ) champ.hidden = !fd.getAll(`q-${d.id}`).includes("autre");
+      });
+  };
+  form?.addEventListener("change", syncAutre);
+  syncAutre();
+
+  const collecter = (fd: FormData) =>
+    descripteurs.map((d) => {
+      if (d.type === "texte") {
+        return { question: d.id, texte: String(fd.get(`q-${d.id}`) ?? "").trim() };
+      }
+      return {
+        question: d.id,
+        valeurs: fd.getAll(`q-${d.id}`).map(String),
+        texte: String(fd.get(`autre-${d.id}`) ?? "").trim(),
+      };
+    });
+
+  const estVide = (r: { valeurs?: string[]; texte?: string }) =>
+    !(r.valeurs?.length ?? 0) && !r.texte;
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (!status || !submitBtn) return;
+
+    const fd = new FormData(form);
+    const reponses = collecter(fd);
+
+    /* Les questions obligatoires se valident ici et non en `required` HTML :
+       sur un groupe de cases à cocher, `required` exige LA case portant
+       l'attribut, pas une case du groupe. */
+    const manquantes = descripteurs
+      .map((d, i) => ({ d, i, r: reponses[i] }))
+      .filter(({ d, r }) => d.requis && estVide(r));
+    if (manquantes.length) {
+      erreur(
+        manquantes.length === 1
+          ? `Il manque la question ${manquantes[0].i + 1} : ${manquantes[0].d.repere}`
+          : `Il manque les questions ${manquantes.map((m) => m.i + 1).join(", ")}.`,
+      );
+      return;
+    }
+
+    /* Le poids de la photo se vérifie avant l'envoi : laisser partir huit
+       mégaoctets pour les refuser côté serveur fait attendre pour rien
+       quelqu'un qui est peut-être en 4G. */
+    const champPhoto = form.querySelector<HTMLInputElement>("[data-temoignage-photo]");
+    const photo = champPhoto?.files?.[0];
+    if (photo && photo.size > MAX_PHOTO) {
+      erreur("La photo dépasse 8 Mo. Une version plus légère fera l'affaire.");
+      return;
+    }
+    if (form.dataset.photoRequise === "1" && !photo) {
+      erreur("Il manque la photo.");
+      return;
+    }
+
+    const envoi = new FormData();
+    envoi.set("slug", form.dataset.slug ?? "");
+    envoi.set("reponses", JSON.stringify(reponses));
+    envoi.set("prenom", String(fd.get("prenom") ?? ""));
+    envoi.set("nom", String(fd.get("nom") ?? ""));
+    envoi.set("email", String(fd.get("email") ?? ""));
+    envoi.set("message", String(fd.get("message") ?? ""));
+    envoi.set("consentement", fd.get("consentement") === "on" ? "true" : "false");
+    if (photo) envoi.set("photo", photo);
+
+    submitBtn.disabled = true;
+    status.hidden = false;
+    status.textContent = "Envoi en cours...";
+    status.className = "text-center text-[13px] font-medium text-mute";
+
+    try {
+      /* Pas d'en-tête content-type : le navigateur pose lui-même le
+         multipart/form-data avec sa frontière. L'écrire à la main produit une
+         requête que le serveur n'arrive pas à découper. */
+      const res = await fetch("/api/temoignage-reponse", { method: "POST", body: envoi });
+      if (!res.ok) throw new Error();
+      status.textContent = textes.envoye;
+      status.className = "text-center text-[13px] font-medium text-success";
+      form.reset();
+      syncAutre();
+    } catch {
+      /* Filet de sécurité, repris des trois autres formulaires : un envoi qui
+         échoue ne laisse jamais quelqu'un sans issue. La photo, elle, ne peut
+         pas voyager dans un mailto : on le dit plutôt que de la perdre en
+         silence.
+
+         Les libellés viennent du DOM et pas du YAML : c'est le seul endroit du
+         parcours où c'est acceptable, puisque ce texte compose un mail que la
+         personne relit avant de l'envoyer. */
+      const lignes = descripteurs.map((d, i) => {
+        const champ = form.querySelector<HTMLElement>(`[name="q-${d.id}"]`);
+        const legende =
+          champ?.closest("fieldset")?.querySelector("legend")?.textContent?.trim() ??
+          `Question ${i + 1}`;
+        const r = reponses[i];
+        const valeur = estVide(r)
+          ? "(pas de réponse)"
+          : [...(r.valeurs ?? []), r.texte].filter(Boolean).join(" | ");
+        return `${legende.replace(/\s+/g, " ")}\n  ${valeur}`;
+      });
+
+      const corps = [
+        `Témoignage : ${form.dataset.slug ?? ""}`,
+        "",
+        `Prénom : ${fd.get("prenom") ?? ""}`,
+        `Nom : ${fd.get("nom") ?? ""}`,
+        `Email : ${fd.get("email") ?? ""}`,
+        "",
+        ...lignes,
+        "",
+        String(fd.get("message") ?? "").trim() || "(pas de message)",
+        "",
+        photo ? "(photo à joindre à ce message)" : "",
+      ].join("\n");
+
+      const lien =
+        "mailto:ludo@coolbeans.cc" +
+        `?subject=${encodeURIComponent(`Témoignage ${form.dataset.slug ?? ""}`)}` +
+        `&body=${encodeURIComponent(corps)}`;
+
+      status.innerHTML =
+        `L'envoi automatique n'a pas abouti. ${textes.perdues} : ` +
+        `<a class="link" href="${lien}">envoyez-les-moi par e-mail</a>, ` +
+        "le message est déjà prêt" +
+        (photo ? ", la photo est à y joindre à la main." : ".");
+      status.className = "text-center text-[13px] font-medium text-error";
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+</script>

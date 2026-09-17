@@ -1,0 +1,104 @@
+# Page de témoignage d'Amusoire, composée le 2026-09-17. Le numéro 0040 reprend
+# celui de l'étude de cas (« № 040 »), pour que le document et la page publiée
+# portent la même référence.
+#
+# Première instance de la collection : elle sert aussi de gabarit. Ce qui se
+# copie tel quel d'un client à l'autre, ce sont les quatre questions ; tout le
+# reste se réécrit avec les mots du projet.
+#
+# Rien n'a été envoyé. Le contact d'Amusoire n'est pas confirmé dans
+# src/content/projets/amusoire.md, et aucun mail ne part depuis Claude.
+titre: Votre site est en ligne, il me manque vos mots
+objet: Trois questions, une photo, et une page à relire. Un quart d'heure au total, et c'est ce qui m'amène mes prochains projets.
+date: 2026-09-17
+tutoiement: false
+linear:
+  projet: Refonte site Amusoire
+
+intro:
+  - titre: Pourquoi je vous demande ça
+    texte: >-
+      Je n'ai ni commerciaux ni publicité. Ce qui m'amène des projets, ce sont
+      les projets que je peux montrer, et ce que mes clients en disent.
+    liste:
+      - texte: "**Ça vous prend un quart d'heure.** Trois questions, une phrase chacune suffit."
+      - texte: "**Vous gardez la main sur tout.** Rien n'est publié sans votre accord, et une phrase se retire sur simple demande, même six mois plus tard."
+      - texte: "**Vous n'avez rien à rédiger.** Répondez comme vous parlez, je ne réécris pas vos mots."
+
+  - titre: Ce que j'en fais
+    texte: >-
+      Une page sur mon site, qui raconte le projet, et une citation de vous à
+      l'intérieur. Rien d'autre.
+    liste:
+      - texte: "**Pas de réseaux sociaux** sans vous le demander séparément."
+      - texte: "**Pas de démarchage** auprès de vos contacts. Votre nom ne sert pas de porte d'entrée."
+
+casClient:
+  titre: La page que je voudrais publier
+  texte: >-
+    Elle est écrite, il ne lui manque que vous. Regardez-la, et dites-moi ce
+    qui ne va pas : un chiffre inexact, une formulation qui vous gêne, un
+    détail technique que vous préférez garder pour vous.
+  slug: amusoire
+  label: Ouvrir la page
+  fauxTexte: true
+
+photo:
+  titre: Une photo de vous
+  texte: >-
+    Elle s'affiche en rond, à côté de votre citation. **Votre photo de profil
+    LinkedIn fait très bien l'affaire** : c'est exactement le cadrage attendu.
+    Si vous n'en avez pas, une photo prise au téléphone près d'une fenêtre
+    suffit largement, pas besoin de photographe.
+  exemple: /img/ludovic-home.jpg
+  exempleAlt: La photo de Ludovic, en exemple de cadrage
+  requis: false
+
+questions:
+  - id: avant
+    label: Qu'est-ce qui posait problème avant ?
+    aide: Ce qui coinçait, ce qui vous prenait du temps, ou ce qui vous empêchait d'avancer.
+    type: texte
+    long: true
+    decisif: true
+    requis: true
+    placeholder: Une ou deux phrases suffisent.
+
+  - id: passe
+    label: Comment ça s'est passé ?
+    aide: >-
+      Le déroulé du projet, pas ses résultats : vous n'avez pas encore le recul
+      pour ça, et je vous reposerai la question dans trois mois.
+    type: texte
+    long: true
+    decisif: true
+    requis: true
+    placeholder: Ce qui vous a marqué, en bien comme en moins bien.
+
+  - id: recommandation
+    label: À qui le recommanderiez-vous ?
+    aide: Le type d'entreprise ou de personne à qui ça servirait vraiment.
+    type: texte
+    long: false
+    decisif: true
+    requis: true
+    placeholder: "Par exemple : une PME qui refait son site sans équipe technique."
+
+  - id: linkedin
+    label: Préférez-vous le poster vous-même sur LinkedIn ?
+    aide: >-
+      Une recommandation sur mon profil, que je reprends ensuite sur le site.
+      Même effort pour vous, et ça reste visible chez vous.
+    type: choix
+    multiple: false
+    requis: false
+    options:
+      - { valeur: formulaire, label: "Non, ce formulaire me va très bien" }
+      - { valeur: linkedin, label: "Oui, envoyez-moi le lien de votre profil" }
+
+notes:
+  - tone: info
+    texte: >-
+      Je reviendrai vers vous dans trois mois, une seule fois, pour vous
+      demander ce que le site a changé concrètement. C'est la partie que je ne
+      peux pas écrire à votre place, et c'est celle que les gens lisent.
