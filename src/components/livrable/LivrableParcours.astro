@@ -1,0 +1,44 @@
+---
+/* Le parcours page par page : chaque entrée ouvre la page livrée dans un
+   nouvel onglet et dit en une ligne ce qu'on y regarde. C'est la table des
+   matières du site, pas un résumé de plus. */
+import { riche, ancreSection } from "../../lib/devis";
+
+interface Etape {
+  page: string;
+  url: string;
+  texte?: string;
+}
+
+interface Props {
+  titre: string;
+  etapes: Etape[];
+}
+const { titre, etapes } = Astro.props;
+---
+
+<section
+  id={ancreSection(titre)}
+  class="grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+>
+  <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">{titre}</p>
+  <ol class="flex list-none flex-col divide-y divide-line">
+    {
+      etapes.map((etape) => (
+        <li class="grid gap-1 py-4 first:pt-0 last:pb-0 sm:grid-cols-[200px_1fr] sm:gap-6">
+          <a
+            class="link justify-self-start font-semibold"
+            href={etape.url}
+            target="_blank"
+            rel="noopener"
+          >
+            {etape.page}
+          </a>
+          {etape.texte && (
+            <p class="max-w-[58ch] leading-[1.6] text-mute" set:html={riche(etape.texte)} />
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</section>

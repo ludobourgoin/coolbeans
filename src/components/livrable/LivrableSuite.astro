@@ -1,0 +1,73 @@
+---
+/* Ce que le client doit vérifier, puis ce qui reste à faire, de chaque côté.
+   Les pastilles d'attribution reprennent celles du planning du devis : noir
+   pour Coolbeans, bleu pour le client. Un livrable qui ne dit pas qui fait
+   quoi ensuite laisse le projet flotter entre deux mails. */
+import { riche, ancreSection, OWNER_DOT } from "../../lib/devis";
+
+interface Etape {
+  texte: string;
+  owner: "coolbeans" | "client";
+}
+
+interface Props {
+  aVerifier?: string[];
+  aVerifierTitre: string;
+  suite?: Etape[];
+  suiteTitre: string;
+  contact?: string;
+}
+const { aVerifier = [], aVerifierTitre, suite = [], suiteTitre, contact } = Astro.props;
+const libelle = { coolbeans: "Ludo", client: contact ?? "Vous" } as const;
+---
+
+{
+  aVerifier.length > 0 && (
+    <section
+      id={ancreSection(aVerifierTitre)}
+      class="grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+    >
+      <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">
+        {aVerifierTitre}
+      </p>
+      <ul class="flex list-none flex-col gap-3">
+        {aVerifier.map((item) => (
+          <li class="flex items-start gap-3.5">
+            <span
+              class="mt-[0.3em] block size-4 flex-none rounded-[4px] border border-[var(--ds-gray-500)]"
+              aria-hidden="true"
+            />
+            <span class="max-w-[58ch]" set:html={riche(item)} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+{
+  suite.length > 0 && (
+    <section
+      id={ancreSection(suiteTitre)}
+      class="grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+    >
+      <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">
+        {suiteTitre}
+      </p>
+      <ul class="flex list-none flex-col divide-y divide-line">
+        {suite.map((etape) => (
+          <li class="grid gap-2 py-3.5 first:pt-0 last:pb-0 sm:grid-cols-[1fr_auto] sm:gap-6">
+            <span class="max-w-[58ch] leading-[1.6]" set:html={riche(etape.texte)} />
+            <span class="inline-flex items-center gap-2 self-start rounded-full border border-line px-2.5 py-1 font-mono text-[11px] font-bold tracking-wide whitespace-nowrap text-mute uppercase">
+              <span
+                class:list={["block size-1.5 rounded-full", OWNER_DOT[etape.owner]]}
+                aria-hidden="true"
+              />
+              {libelle[etape.owner]}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
