@@ -50,7 +50,7 @@ sections:
       contre-pied.
     liste:
       - texte: "**Du blanc et une seule couleur**, le bleu de votre logo. Le dégradé du logo reste dans le logo, il n'est décliné nulle part ailleurs."
-      - texte: "**Pas de photo décorative.** Aucun site du réseau n'est meilleur grâce à ses photos, plusieurs en souffrent. La page se tient par le texte et l'espace. Les photos d'événements ont leur place dans les actualités, quand vous en avez."
+      - texte: "**Peu de photos, choisies.** Une vue de Toulouse sur l'accueil, la Garonne et le Pont Neuf, en écho aux briques et au bleu du logo. Et vos propres rencontres, reprises de votre page LinkedIn, sur la page Qui sommes-nous et dans l'actualité du 24 mars. Pas de banque d'images."
       - texte: "**Deux caractères typographiques** : une serif pour les titres, sobre et institutionnelle, une sans-serif pour tout le texte."
       - texte: "**Le nom allemand en écho** sous le nom français, et l'inverse sur la version allemande. C'est ce qui dit, dès la première ligne, ce qu'est le Club."
       - texte: "**Les membres du bureau en médaillons noir et blanc**, pour que deux photos très différentes se tiennent côte à côte."
@@ -72,7 +72,7 @@ parcours:
     texte: Le nom du Club, le prochain rendez-vous, les dernières actualités.
   - page: Qui sommes-nous
     url: https://cafa-staging.ludo-c97.workers.dev/qui-sommes-nous/
-    texte: Le texte de votre brochure, mis en scène, et le bureau.
+    texte: Le texte de votre brochure, mis en scène, vos rencontres en photos, et le bureau.
   - page: Événements à venir
     url: https://cafa-staging.ludo-c97.workers.dev/evenements/
     texte: L'agenda, avec le programme du congrès de Montpellier en exemple.
@@ -100,6 +100,7 @@ aVerifier:
   - "Les titres des anciens articles, repris tels quels de l'ancien blog."
   - "Les mentions légales : le nom de la présidente comme directrice de la publication, et l'adresse du Club."
   - "La version allemande, en particulier les actualités et l'événement."
+  - "Les photos : celle de Toulouse sur l'accueil, et les quatre reprises de votre page LinkedIn. Si vous en avez d'autres, plus récentes ou mieux cadrées, elles se remplacent en un clic."
 
 suiteTitre: La suite
 suite:
@@ -107,7 +108,7 @@ suite:
     owner: client
   - texte: Créer le compte Resend, qui fera partir les formulaires, et m'y ajouter.
     owner: client
-  - texte: "M'envoyer une photo de Karsten Fröhlke en bonne définition, et les logos de vos partenaires."
+  - texte: "M'envoyer une photo de Karsten Fröhlke en bonne définition, les logos de vos partenaires, et les photos d'événements que vous voulez voir sur le site."
     owner: client
   - texte: Brancher les formulaires et la mesure de fréquentation, puis mettre le site en ligne sur votre domaine.
     owner: coolbeans
