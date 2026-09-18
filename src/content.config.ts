@@ -227,9 +227,35 @@ const livrable = defineCollection({
       }),
     ),
     parcoursTitre: z.string().default("Le parcours"),
+    /* Le parcours sert aussi de liste de liens externes à suivre (relais à
+       relancer, pages à faire corriger). D'où `groupe`, qui coupe la liste en
+       sous-ensembles, `favicon`, chemin sous public/ affiché en vignette pour
+       reconnaître le site d'un coup d'oeil, et `statut`, la pastille d'état
+       quand la liste se lit comme une checklist. Les trois sont optionnels :
+       sans eux, la liste reste le parcours page par page d'un site livré. */
     parcours: z
-      .array(z.object({ page: z.string(), url: z.string().url(), texte: z.string().optional() }))
+      .array(
+        z.object({
+          page: z.string(),
+          url: z.string().url(),
+          texte: z.string().optional(),
+          groupe: z.string().optional(),
+          favicon: z.string().optional(),
+          statut: z.enum(["a-jour", "a-corriger", "hors-ligne"]).optional(),
+        }),
+      )
       .default([]),
+    /* Message tout prêt, quand le livrable demande au client d'écrire à des
+       tiers : il se copie d'un bloc depuis la page. Le corps garde ses retours
+       à la ligne, c'est un modèle de mail, pas un paragraphe. */
+    message: z
+      .object({
+        titre: z.string().default("Le message à envoyer"),
+        objet: z.string().optional(),
+        corps: z.string(),
+        note: z.string().optional(),
+      })
+      .optional(),
     aVerifierTitre: z.string().default("À vérifier"),
     aVerifier: z.array(z.string()).default([]),
     suiteTitre: z.string().default("La suite"),
@@ -594,9 +620,7 @@ const temoignage = defineCollection({
     date: z.coerce.date(),
     contact: z.string().optional(),
     tutoiement: z.boolean().default(false),
-    linear: z
-      .object({ projet: z.string().optional(), affaire: z.string().optional() })
-      .optional(),
+    linear: z.object({ projet: z.string().optional(), affaire: z.string().optional() }).optional(),
     /* Masque le formulaire une fois le témoignage reçu : la page devient une
        trace, même mécanique que le livrable validé. */
     formulaire: z.boolean().default(true),

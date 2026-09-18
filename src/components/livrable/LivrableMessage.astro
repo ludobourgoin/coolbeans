@@ -1,0 +1,68 @@
+---
+/* Le message tout prêt, quand le livrable demande au client d'écrire lui-même
+   à des tiers. Il se lit dans la page et se copie d'un geste : le corps est
+   rendu tel quel, retours à la ligne compris, parce qu'un modèle de mail perd
+   son sens reformaté en paragraphe. Le bouton de copie est un confort ; sans
+   JavaScript, le texte reste sélectionnable à la main. */
+import { ancreSection } from "../../lib/devis";
+
+interface Props {
+  titre: string;
+  objet?: string;
+  corps: string;
+  note?: string;
+}
+const { titre, objet, corps, note } = Astro.props;
+
+/* Ce qui part dans le presse-papier : l'objet et le corps, séparés d'une ligne
+   vide, pour coller d'un bloc dans un mail. */
+const presse = objet ? `Objet : ${objet}\n\n${corps}` : corps;
+---
+
+<section
+  id={ancreSection(titre)}
+  class="grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
+>
+  <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">{titre}</p>
+  <div class="flex max-w-[68ch] flex-col gap-4">
+    <div class="card flex flex-col gap-4 p-5">
+      {
+        objet && (
+          <p class="text-[15px] text-ink">
+            <span class="font-mono text-[13px] tracking-wide text-mute uppercase">Objet</span>
+            <span class="ml-2 font-semibold">{objet}</span>
+          </p>
+        )
+      }
+      <p class="leading-[1.7] whitespace-pre-wrap text-ink" data-message-corps>{corps}</p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button type="button" class="btn-ghost" data-message-copier data-presse={presse}>
+        Copier le message
+      </button>
+      <span class="font-mono text-[13px] text-mute" data-message-etat aria-live="polite"></span>
+    </div>
+
+    {note && <p class="text-[15px] leading-[1.6] text-mute">{note}</p>}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-message-copier]").forEach((bouton) => {
+    const etat = bouton.parentElement?.querySelector<HTMLElement>("[data-message-etat]");
+    bouton.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(bouton.dataset.presse ?? "");
+        if (etat) etat.textContent = "Copié";
+      } catch {
+        /* Presse-papier refusé (page non sécurisée, permission bloquée) : on le
+           dit plutôt que de laisser croire que c'est fait. */
+        if (etat) etat.textContent = "Copie refusée, sélectionne le texte";
+      }
+      window.setTimeout(() => {
+        if (etat) etat.textContent = "";
+      }, 4000);
+    });
+  });
+</script>
