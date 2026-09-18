@@ -58,86 +58,86 @@ sections:
 
 parcoursTitre: Les pages
 parcours:
-  - page: construire-habiter-autrement.org
+  - page: Le site du salon
     url: https://construire-habiter-autrement.org/
     groupe: Édition 2026 · 3 et 4 octobre
     statut: a-corriger
     texte: "**Le site du salon.** Page d'attente : les dates, le lieu, l'entrée libre, un lien Instagram et un formulaire pour être prévenu. Elle interdit son propre référencement, donc aucune recherche ne la trouve."
 
-  - page: laregion.fr
+  - page: Région Occitanie
     url: https://www.laregion.fr/Salon-Construire-Et-Habiter-Autrement
     favicon: /livrable/revolutions-douces/favicons/laregion.png
     groupe: Édition 2026 · 3 et 4 octobre
     statut: a-corriger
     texte: "**Agenda de la Région Occitanie**, mis à jour le 24 août 2026. Fiche complète : « Du 3 au 4 octobre », 10h-18h, l'adresse des Arènes, ton numéro de téléphone, gratuit. Le champ « Site web » donne l'événement Facebook. L'année n'est écrite nulle part."
 
-  - page: ville-agde.fr
+  - page: Ville d'Agde
     url: https://www.ville-agde.fr/agenda/economie/agenda/salon-construire-et-habiter-autrement-1
     favicon: /livrable/revolutions-douces/favicons/ville-agde.png
     groupe: Édition 2026 · 3 et 4 octobre
     statut: a-corriger
     texte: "**Agenda de la Ville d'Agde.** « les 3 et 4 octobre 2026 aux Arènes du Cap d'Agde », 10h-18h, gratuit, avec la liste des exposants et des animations. Aucun lien vers le site."
 
-  - page: lamaisonecologique.com
+  - page: La Maison Écologique
     url: https://lamaisonecologique.com/evenements/salon-construire-et-habiter-autrement-1
     favicon: /livrable/revolutions-douces/favicons/lamaisonecologique.png
     groupe: Édition 2026 · 3 et 4 octobre
     statut: a-corriger
     texte: "**Média spécialisé, fiche événement.** Rév'olutions Douces est nommée comme organisatrice, avec l'adresse et les dates du 3 au 4 octobre 2026, année comprise. Le texte de présentation est le tien. Le seul lien sortant est l'événement Facebook."
 
-  - page: facebook.com · l'événement
+  - page: L'événement Facebook
     url: https://www.facebook.com/events/1428925115147672
     favicon: /livrable/revolutions-douces/favicons/facebook.ico
     groupe: Édition 2026 · 3 et 4 octobre
     statut: a-corriger
     texte: "**La source de tout le reste.** C'est cette page que les relais citent et que les sites d'agendas recopient. Y ajouter l'adresse du site est le geste le plus rentable de la liste."
 
-  - page: allevents.in
+  - page: AllEvents
     url: https://allevents.in/agde/salon-construire-and-habiter-autrement-%C3%89dition-2/200029990037115
     favicon: /livrable/revolutions-douces/favicons/allevents.png
     groupe: Édition 2026 · 3 et 4 octobre
     texte: "Copie automatique de l'événement Facebook, annoncée comme l'édition 2 : samedi 3 octobre 10h au dimanche 4 octobre 18h, 85 personnes intéressées. Ne s'édite pas."
 
-  - page: happeningnext.com · le salon
+  - page: HappeningNext, le salon
     url: https://happeningnext.com/event/salon-%E2%80%93-construire-andamp-habiter-autrement-%C3%89dition-2-eid3a0dlr05hl
     favicon: /livrable/revolutions-douces/favicons/happeningnext.png
     groupe: Édition 2026 · 3 et 4 octobre
     texte: "Même copie automatique, sur un autre site du même réseau. Mêmes dates, mêmes horaires. Ne s'édite pas."
 
-  - page: happeningnext.com · la tombola
+  - page: HappeningNext, la tombola
     url: https://happeningnext.com/event/%F0%9F%8E%81-tombola-engag%C3%A9e-r%C3%A9volution-douce-salon-construire-andamp-habiter-autrement-eid3a0dxtk499
     favicon: /livrable/revolutions-douces/favicons/happeningnext.png
     groupe: Édition 2026 · 3 et 4 octobre
     texte: "Copie de ton second événement Facebook, la tombola : samedi 3 octobre 10h au dimanche 4 octobre 17h. Ne s'édite pas."
 
-  - page: stayhappening.com · la tombola
+  - page: StayHappening, la tombola
     url: https://stayhappening.com/e/%F0%9F%8E%81-tombola-engag%C3%A9e-r%C3%A9volution-douce-salon-construire-andamp-habiter-autrement-E2ISYSLKEE0
     favicon: /livrable/revolutions-douces/favicons/stayhappening.png
     groupe: Édition 2026 · 3 et 4 octobre
     texte: "La tombola encore, sur un troisième site du même réseau. Ne s'édite pas."
 
-  - page: linkedin.com · ton post
+  - page: Ton post LinkedIn
     url: https://fr.linkedin.com/posts/samantha-klingelschmitt-658003227_construireautrement-habiterautrement-%C3%A9coconstruction-activity-7487457532630884352-dR1m
     favicon: /livrable/revolutions-douces/favicons/linkedin.ico
     groupe: Édition 2026 · 3 et 4 octobre
     statut: a-jour
     texte: "Ton annonce de la 2ᵉ édition : « Les 3 & 4 octobre 2026, j'organise la 2ᵉ édition du salon ». La seule page où le salon parle à la première personne."
 
-  - page: ville-agde.fr · fiche 2025
+  - page: Ville d'Agde, fiche 2025
     url: https://www.ville-agde.fr/agenda/economie/agenda/salon-construire-et-habiter-autrement
     favicon: /livrable/revolutions-douces/favicons/ville-agde.png
     groupe: Édition 2025 · 4 et 5 octobre
     statut: a-corriger
     texte: "**L'ancienne fiche est toujours en ligne**, à côté de celle de 2026 : « les 4 et 5 octobre 2025 ». Deux pages presque identiques, dont une périmée. À faire dépublier en même temps que tu demandes la correction de l'autre."
 
-  - page: habitatdescommuns.org
+  - page: Habitat des communs
     url: https://www.habitatdescommuns.org/articles/h/salon-construire-et-habiter-autrement.html
     favicon: /livrable/revolutions-douces/favicons/habitatdescommuns.webp
     groupe: Édition 2025 · 4 et 5 octobre
     statut: a-corriger
     texte: "Fiche de l'édition 2025, modifiée le 10 septembre 2025 et jamais reprise depuis : « Samedi 4 & Dimanche 5 octobre 2025 ». Elle renvoie vers l'événement Facebook de 2025. Le site est une ressource sur l'habitat des communs, donc un bon relais à réactiver pour 2026."
 
-  - page: arenesducap.fr
+  - page: Arènes du Cap d'Agde
     url: http://web.archive.org/web/20250914153521/https://www.arenesducap.fr/billetterie/salon-construire-et-habiter-autrement/
     groupe: Édition 2025 · 4 et 5 octobre
     statut: hors-ligne
