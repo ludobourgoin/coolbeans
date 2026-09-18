@@ -1,13 +1,22 @@
 ---
 /* Le parcours page par page : chaque entrée ouvre la page livrée dans un
    nouvel onglet et dit en une ligne ce qu'on y regarde. C'est la table des
-   matières du site, pas un résumé de plus. */
+   matières du site, pas un résumé de plus.
+
+   La même liste sert aux relevés de liens externes : `groupe` la coupe en
+   sous-ensembles (une édition, une catégorie), `favicon` pose la vignette du
+   site pour le reconnaître sans lire l'URL, `statut` affiche l'état quand la
+   liste se lit comme une checklist. Les trois restent optionnels, un parcours
+   classique ne les déclare pas. */
 import { riche, ancreSection } from "../../lib/devis";
 
 interface Etape {
   page: string;
   url: string;
   texte?: string;
+  groupe?: string;
+  favicon?: string;
+  statut?: "a-jour" | "a-corriger" | "hors-ligne";
 }
 
 interface Props {
@@ -15,6 +24,35 @@ interface Props {
   etapes: Etape[];
 }
 const { titre, etapes } = Astro.props;
+
+const STATUT: Record<NonNullable<Etape["statut"]>, { texte: string; couleur: string }> = {
+  "a-jour": { texte: "À jour", couleur: "var(--success)" },
+  "a-corriger": { texte: "À corriger", couleur: "var(--warning)" },
+  "hors-ligne": { texte: "Hors ligne", couleur: "var(--error)" },
+};
+
+/* Les groupes se suivent dans l'ordre du YAML : pas de tri, l'ordre d'écriture
+   est un choix éditorial. Les entrées sans groupe forment un premier bloc sans
+   titre, ce qui laisse le parcours classique inchangé. */
+const blocs: { nom?: string; etapes: Etape[] }[] = [];
+for (const etape of etapes) {
+  const dernier = blocs.at(-1);
+  if (dernier && dernier.nom === etape.groupe) dernier.etapes.push(etape);
+  else blocs.push({ nom: etape.groupe, etapes: [etape] });
+}
+
+/* Faute de favicon récupérable, l'initiale du nom de domaine tient le même
+   rôle d'ancre visuelle et garde l'alignement de la colonne. */
+const initiale = (url: string) => {
+  try {
+    return new URL(url).hostname
+      .replace(/^www\./, "")
+      .charAt(0)
+      .toUpperCase();
+  } catch {
+    return "·";
+  }
+};
 ---
 
 <section
@@ -22,23 +60,59 @@ const { titre, etapes } = Astro.props;
   class="grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
 >
   <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">{titre}</p>
-  <ol class="flex list-none flex-col divide-y divide-line">
+  <div class="flex flex-col gap-8">
     {
-      etapes.map((etape) => (
-        <li class="grid gap-1 py-4 first:pt-0 last:pb-0 sm:grid-cols-[200px_1fr] sm:gap-6">
-          <a
-            class="link self-start justify-self-start font-semibold"
-            href={etape.url}
-            target="_blank"
-            rel="noopener"
-          >
-            {etape.page}
-          </a>
-          {etape.texte && (
-            <p class="max-w-[58ch] leading-[1.6] text-mute" set:html={riche(etape.texte)} />
+      blocs.map((bloc) => (
+        <div>
+          {bloc.nom && (
+            <p class="mb-3 font-mono text-[13px] font-bold tracking-wide text-mute uppercase">
+              {bloc.nom}
+            </p>
           )}
-        </li>
+          <ol class="flex list-none flex-col divide-y divide-line">
+            {bloc.etapes.map((etape) => (
+              <li class="grid gap-1 py-4 first:pt-0 last:pb-0 sm:grid-cols-[240px_1fr] sm:gap-6">
+                <div class="flex items-start gap-2.5 self-start">
+                  {etape.favicon ? (
+                    <img
+                      src={etape.favicon}
+                      alt=""
+                      width="20"
+                      height="20"
+                      loading="lazy"
+                      class="mt-0.5 size-5 shrink-0 rounded-[4px] object-contain"
+                    />
+                  ) : (
+                    <span
+                      aria-hidden="true"
+                      class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-[4px] bg-surface-subtle font-mono text-[11px] font-bold text-mute"
+                    >
+                      {initiale(etape.url)}
+                    </span>
+                  )}
+                  <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <a class="link font-semibold" href={etape.url} target="_blank" rel="noopener">
+                      {etape.page}
+                    </a>
+                    {etape.statut && (
+                      <span class="inline-flex items-center gap-1.5 rounded-full border border-line px-2 py-0.5 font-mono text-[11px] tracking-wide text-mute uppercase">
+                        <span
+                          class="size-1.5 rounded-full"
+                          style={`background:${STATUT[etape.statut].couleur}`}
+                        />
+                        {STATUT[etape.statut].texte}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                {etape.texte && (
+                  <p class="max-w-[58ch] leading-[1.6] text-mute" set:html={riche(etape.texte)} />
+                )}
+              </li>
+            ))}
+          </ol>
+        </div>
       ))
     }
-  </ol>
+  </div>
 </section>

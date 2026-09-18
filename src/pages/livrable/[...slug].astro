@@ -8,6 +8,7 @@ import CadrageIntro from "../../components/cadrage/CadrageIntro.astro";
 import LivrableApercu from "../../components/livrable/LivrableApercu.astro";
 import LivrableVideo from "../../components/livrable/LivrableVideo.astro";
 import LivrableParcours from "../../components/livrable/LivrableParcours.astro";
+import LivrableMessage from "../../components/livrable/LivrableMessage.astro";
 import LivrableSuite from "../../components/livrable/LivrableSuite.astro";
 import LivrableReponse from "../../components/livrable/LivrableReponse.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
@@ -126,6 +127,15 @@ const dateCourte = (d: Date) =>
 
           {v.data.parcours.length > 0 && (
             <LivrableParcours titre={v.data.parcoursTitre} etapes={v.data.parcours} />
+          )}
+
+          {v.data.message && (
+            <LivrableMessage
+              titre={v.data.message.titre}
+              objet={v.data.message.objet}
+              corps={v.data.message.corps}
+              note={v.data.message.note}
+            />
           )}
 
           <LivrableSuite
