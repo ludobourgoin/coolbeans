@@ -1,0 +1,455 @@
+# Relecture du manuscrit « Brigitte Bardot, une rencontre inattendue » (V5) de
+# Véronique Berthet, 29 456 mots, 27 chapitres. Source : Google Doc partagé le
+# 2026-09-20.
+#
+# Véronique est la mère de Ludo. Rien n'est facturé, il n'y a ni affaire CRM
+# ni chiffrage derrière ce document : il sert à poser les questions par écrit
+# plutôt que d'écrire un mail de trois pages, et à ce qu'elle réponde depuis
+# son téléphone.
+#
+# Ce qu'elle a demandé est étroit : reprendre la titrisation et refaire la
+# table des matières. Le reste de l'audit vient en plus et se décline question
+# par question, d'où l'ordre : ce qu'elle a demandé d'abord, observations
+# ensuite.
+#
+# Chaque relevé est présenté comme un constat, jamais comme une faute : sur un
+# texte littéraire, une répétition ou une casse inhabituelle peut être un
+# parti pris. Les options de réponse contiennent donc toutes une sortie
+# « c'est voulu ».
+#
+# Tutoiement.
+titre: La titrisation de ton manuscrit
+objet: Ce que j'ai relevé en le lisant, et ce que je te propose de corriger
+date: 2026-09-20
+contact: Véronique
+tutoiement: true
+
+intro:
+  - titre: Ce que j'ai fait
+    texte: >-
+      J'ai lu la V5 en entier avant d'y toucher. Tu m'as demandé de reprendre
+      les titres et de refaire la table des matières, et c'est bien par là que
+      commence cette page. Mais une lecture attentive voit d'autres choses, et
+      j'aime autant te les dire que les garder pour moi.
+    note: >-
+      **Je n'ai rien modifié.** Ton document est intact. Tout ce qui suit est une
+      lecture, et chaque point se répond plus bas par oui ou par non.
+
+  - titre: Un avertissement
+    texte: >-
+      Une partie de ce que je relève est peut-être voulu. Une répétition peut
+      être un refrain, une minuscule peut être un choix, un chapitre-fleuve
+      peut être assumé. Je ne sais pas faire la différence depuis l'extérieur
+      du livre. C'est toi qui tranches, point par point, et « n'y touche pas »
+      est une réponse aussi bonne qu'une autre.
+
+  - titre: Les titres
+    texte: >-
+      C'est ce que tu m'as demandé, et c'est là qu'il y a le plus à
+      faire. Les titres de chapitre ne portent pas tous le même style dans
+      Google Docs, et c'est précisément ce qui empêche une table des matières
+      de se construire toute seule.
+    liste:
+      - >-
+        Le prologue et le chapitre 2 sont en **Titre 3**. Tous les autres
+        chapitres sont en **Titre 1**.
+      - >-
+        Les chapitres 11 et 13 n'ont **aucun style de titre** : ce sont des
+        paragraphes ordinaires. Ils n'apparaissent donc dans aucune table
+        automatique.
+      - >-
+        Le titre du chapitre 12 est un **lien hypertexte** qui pointe vers
+        lui-même, reste probablement d'un copier-coller depuis la table.
+      - >-
+        La page de titre (« BRIGITTE BARDOT », « Récit ») est au même niveau que
+        les chapitres, et « Onglet 1 » en tout début de document est un résidu
+        d'export.
+      - >-
+        Au chapitre 7, « Missions sauvetage » fonctionne comme un sous-titre
+        mais reste du texte courant.
+
+  - titre: Leurs libellés
+    texte: >-
+      Sur les libellés eux-mêmes, les conventions changent d'un chapitre à
+      l'autre. Rien de grave isolément, mais la table des matières les aligne
+      les uns sous les autres et les écarts deviennent visibles.
+    liste:
+      - "« Meditation » (chapitre 19) et « Noel » (chapitre 26) sont sans accent."
+      - >-
+        Deux titres se terminent par un point (chapitres 5 et 18), les
+        vingt-cinq autres non. Le chapitre 27 se termine par une virgule :
+        « Bernard D'Ormale, ».
+      - >-
+        « les chevrettes déménagent » (chapitre 15) commence par une minuscule,
+        les autres par une majuscule.
+      - >-
+        Le mot garrigue prend tantôt la majuscule, tantôt non, y compris entre
+        deux titres voisins.
+      - >-
+        Des doubles espaces se sont glissés dans les chapitres 9 et 27, autour
+        du tiret.
+      - >-
+        Trois façons de nommer un chapitre cohabitent : le thème (« La danse »),
+        le prénom seul (« Jean-Lou »), le possessif (« Son ami Alain Delon »).
+
+  - titre: La table
+    texte: >-
+      La table actuelle a été écrite à la main. Elle tient tant que le texte ne
+      bouge pas, et elle se périme à la première page ajoutée. Deux de ses
+      entrées ne correspondent d'ailleurs déjà plus au corps du livre.
+    liste:
+      - >-
+        Chapitre 2 : le corps dit « Première rencontre avec Brigitte », la table
+        dit « La Garrigue Ma première rencontre avec Brigitte Bardot ».
+      - >-
+        Chapitre 8 : le corps dit « Une éducation stricte », la table dit
+        « Premières Confidences - Une éducation stricte ».
+    note: >-
+      Une table automatique se régénère d'un clic et ne se trompe jamais de
+      numéro de page. C'est la raison pour laquelle je commence par les styles
+      de titre : sans eux, elle ne peut pas exister.
+
+  - titre: Le découpage
+    texte: >-
+      Le chapitre 18 fait une dizaine de pages, là où les autres en font trois
+      ou quatre. Il traverse Samy Frey, Gunter Sachs, Serge Gainsbourg, Allain
+      Bougrain-Dubourg, Françoise Sagan et Marguerite Yourcenar. Son titre,
+      « Ses amis, ses amours, ses tempêtes », annonce ce fourre-tout avec
+      honnêteté, mais le lecteur qui cherche le passage sur Gainsbourg ne le
+      trouve pas dans la table.
+    note: >-
+      Trois ou quatre chapitres plus courts donneraient autant d'entrées dans la
+      table, et autant de portes d'entrée dans le livre.
+
+  - titre: Ce qui se répète
+    texte: >-
+      Trois passages reviennent deux fois. Les deux premiers sont identiques au
+      mot près, ce qui ressemble à un accident de copier-coller plutôt qu'à un
+      effet.
+    liste:
+      - >-
+        Chapitre 18 : le paragraphe « Je l'aimais lorsqu'il n'était pas en
+        représentation… on a fini par divorcer le 1er octobre 1969 » apparaît
+        deux fois, à quelques pages d'écart.
+      - >-
+        Le paragraphe « Le mistral a bu l'humidité de la terre… » se retrouve au
+        chapitre 14 et au chapitre 24. Au chapitre 24, il se redouble même sur
+        place : « assise sur un banc du jardin » est immédiatement suivi de
+        « Je m'assois un moment sur le banc du jardin ».
+      - >-
+        Deux méditations très proches sur les ruptures et la tendresse qui
+        survit se répondent au chapitre 18 et au chapitre 27. Celles-là ne sont
+        pas identiques, et l'écho peut être voulu.
+
+  - titre: Le temps
+    texte: >-
+      Le livre annonce un remplacement de quelques semaines, un été. Les
+      repères semés dans le texte racontent autre chose.
+    liste:
+      - >-
+        Chapitre 21 : le journal télévisé parle d'une messe à Notre-Dame « deux
+        mois après l'incendie », ce qui situe la soirée en juin 2019.
+      - "Chapitre 25 : une soirée à La Madrague est datée du 19 septembre 2020."
+      - >-
+        Chapitre 16 : la mort d'Alain Delon, le 18 août 2024, est évoquée au
+        passé.
+      - >-
+        Chapitre 26 : un repas de Noël, qui ne peut pas tomber pendant un
+        remplacement estival.
+      - >-
+        Chapitre 1, à plus petite échelle : la régate a lieu « ce samedi de
+        juin », tu annonces arriver « dans 2 jours », puis tu es attendue
+        « ce dimanche », soit le lendemain.
+    note: >-
+      Un lecteur attentif bute là-dessus. Une phrase au prologue suffirait à le
+      prévenir que le récit rassemble plusieurs séjours étalés sur des années.
+
+  - titre: La fin
+    texte: >-
+      L'épilogue annonce la disparition de Brigitte Bardot « le 28 décembre »,
+      sans l'année. C'est la seule date du livre qui l'engage vraiment, et c'est
+      aussi la seule à laquelle il manque quelque chose.
+
+  - titre: Des faits
+    texte: >-
+      Quelques points m'ont arrêté à la lecture. Je les donne pour ce qu'ils
+      sont : des écarts entre le texte et ce que j'ai pu recouper. Sur un récit
+      où Brigitte Bardot parle à la première personne, ils se remarquent.
+    liste:
+      - >-
+        Cinq noms propres à corriger : Mylène **Demongeot**, Marcel **Carné**,
+        **Marc-Olivier** Fogiel, **Marilyn**, et « **Babette** s'en va-t-en
+        guerre ».
+      - >-
+        Le nombre de films change : « plus de 50 » au chapitre 6, « 48 » au
+        chapitre 7.
+      - >-
+        Chapitre 14 : le duo « Le soleil de ma vie » avec Sacha Distel date de
+        1973, alors que l'épisode est raconté à la fin des années cinquante.
+      - >-
+        Chapitre 16 : la scène du Mépris rejouée avec Delon pose deux fois la
+        question des fesses. La réplique intermédiaire, celle sur les seins, a
+        sauté.
+      - >-
+        Chapitre 18 : le mariage avec Gunter Sachs est situé à Los Angeles,
+        quand la plupart des sources disent Las Vegas.
+      - >-
+        Chapitre 13 : la rencontre avec Trintignant pour « Et Dieu… créa la
+        femme » est datée de 1955, alors que le film se tourne et sort en 1956.
+      - >-
+        Chapitre 7 : l'invitation au Canada de 1977 est attribuée à Paul Watson,
+        là où les récits de l'époque citent Franz Weber. Et « les 3 millions
+        nécessaires » gagneraient à porter leur unité.
+      - >-
+        L'âne s'appelle **Diego** au chapitre 5 et **Bonhomme** au chapitre 20.
+      - >-
+        Chapitre 20 : Fabien est appelé « son gardien », alors que le poste de
+        gardien de la Garrigue est justement vacant, c'est tout le moteur du
+        livre.
+      - >-
+        Chapitre 1 : « Nika me dit qu'elle peut se rendre à la garrigue dans 2
+        jours » : la narratrice y parle d'elle-même à la troisième personne. Et
+        trois lignes plus haut, une coquille : « c'est Brigitte, j'ai f besoin
+        de vous ».
+
+  - titre: La langue
+    texte: >-
+      Il reste des fautes à chaque page : accords, accents, apostrophes,
+      guillemets ouverts jamais fermés. C'est le poste le plus long, et le plus
+      mécanique.
+    liste:
+      - "« Dès le endemain » (chapitre 6)"
+      - "« les fleurs qui ont fanées » (chapitre 4)"
+      - "« un dîner emprunt de simplicité », pour empreint (chapitre 26)"
+      - "« la seule fragrance dont je ne ma lasse pas » (chapitre 9)"
+      - "« Je maudit ce Jean-Michel » (chapitre 12)"
+      - "« tout ce que vous m'avez apportée » (épilogue)"
+    note: >-
+      Ce sont six exemples pris au hasard, pas une liste exhaustive. Si tu veux
+      que je m'en occupe, je le fais d'un bloc et je te rends le texte relu.
+
+  - titre: Ce que je ferais
+    texte: >-
+      Dans l'ordre, et si tu me suis : d'abord les styles de titre, parce que
+      rien ne se construit sans eux. Ensuite la table automatique, qui devient
+      alors l'affaire d'un clic. Ensuite les deux paragraphes dupliqués et les
+      noms propres, qui se corrigent vite et se voient beaucoup. Le reste
+      dépend de toi.
+    note: >-
+      Le découpage du chapitre 18 et le cadre temporel du récit sont d'un autre
+      ordre : ce sont des décisions d'écriture, pas des corrections. Je ne les
+      prends pas sans toi.
+
+questions:
+  - id: styles-de-titre
+    label: Je remets tous les titres de chapitre au même style ?
+    aide: >-
+      Titre 1 pour les vingt-sept chapitres, le prologue et l'épilogue. C'est ce
+      qui rattrape le prologue et le chapitre 2 laissés en Titre 3, les
+      chapitres 11 et 13 restés en texte courant, et le chapitre 12 resté en
+      lien hypertexte.
+    type: choix
+    decisif: true
+    requis: true
+    options:
+      - valeur: oui
+        label: Oui, uniformise tout
+      - valeur: oui-sans-toucher-aux-mots
+        label: Oui, mais sans changer un seul mot des titres
+        aide: Je ne touche alors qu'aux styles, pas aux libellés.
+      - valeur: on-en-parle
+        label: J'aimerais qu'on en parle avant
+
+  - id: libelles-de-titre
+    label: Et j'harmonise les libellés ?
+    aide: >-
+      Les accents manquants à « Meditation » et « Noel », les doubles espaces
+      des chapitres 9 et 27, la virgule finale du chapitre 27, les deux points
+      finaux, la minuscule du chapitre 15, et la majuscule flottante de
+      garrigue.
+    type: choix
+    requis: true
+    options:
+      - valeur: tout
+        label: Oui, tout
+      - valeur: fautes-seulement
+        label: Seulement les fautes, laisse la casse et la ponctuation
+        aide: Accents et doubles espaces, rien d'autre.
+      - valeur: non
+        label: Non, mes titres sont comme je les veux
+
+  - id: table-des-matieres
+    label: Je remplace ta table des matières par une table automatique ?
+    aide: >-
+      Elle se régénère d'un clic, et les numéros de page ne se périment plus.
+      Deux de tes entrées actuelles ne correspondent déjà plus au corps du
+      livre, chapitres 2 et 8.
+    type: choix
+    decisif: true
+    requis: true
+    options:
+      - valeur: oui
+        label: Oui
+      - valeur: oui-libelles-de-la-table
+        label: Oui, et aligne le corps sur les libellés de la table
+        aide: >-
+          C'est alors le chapitre 2 qui s'appelle « La Garrigue, ma première
+          rencontre avec Brigitte Bardot », et le chapitre 8 « Premières
+          confidences ».
+      - valeur: non
+        label: Non, je préfère la garder à la main
+
+  - id: chapitre-18
+    label: Le chapitre 18 fait une dizaine de pages et traverse six personnes. Je le coupe ?
+    aide: >-
+      En trois ou quatre chapitres qui donneraient chacun leur entrée dans la
+      table : Samy Frey, Gunter Sachs, Serge Gainsbourg, puis les amitiés.
+    type: choix
+    options:
+      - valeur: propose
+        label: Propose-moi un découpage, je validerai
+      - valeur: oui
+        label: Oui, coupe-le
+      - valeur: non
+        label: Non, ce chapitre est long exprès
+
+  - id: doublons
+    label: Deux paragraphes apparaissent deux fois dans le livre. Je supprime la répétition ?
+    aide: >-
+      Celui sur Gunter qui revient au chapitre 18, et celui du mistral qui
+      revient au chapitre 24. Je garderais la première occurrence dans les deux
+      cas.
+    type: choix
+    options:
+      - valeur: oui
+        label: Oui, supprime
+      - valeur: montre-moi
+        label: Montre-les moi d'abord, je choisirai laquelle garder
+      - valeur: non
+        label: Non, c'est un écho voulu
+
+  - id: temps-du-recit
+    label: Le récit annonce quelques semaines d'été, mais les scènes s'étalent de 2019 à 2024.
+    aide: >-
+      Notre-Dame en juin 2019, une soirée datée de septembre 2020, la mort de
+      Delon en août 2024, un repas de Noël. Rien ne prévient le lecteur.
+    type: choix
+    options:
+      - valeur: phrase-au-prologue
+        label: Ajoute une phrase au prologue qui dit que le livre couvre plusieurs séjours
+      - valeur: gommer-les-dates
+        label: Enlève plutôt les repères datés du texte
+      - valeur: voulu
+        label: C'est voulu, n'y touche pas
+      - valeur: on-en-parle
+        label: On en parle, c'est trop important pour un formulaire
+
+  - id: epilogue
+    label: L'épilogue annonce la disparition de Brigitte Bardot « le 28 décembre », sans l'année.
+    type: choix
+    options:
+      - valeur: ajoute-annee
+        label: Ajoute l'année, je te la donne
+      - valeur: laisse
+        label: Laisse sans année, c'est délibéré
+      - valeur: on-en-parle
+        label: On en parle
+
+  - id: nom-de-lane
+    label: "L'âne s'appelle Diego au chapitre 5 et Bonhomme au chapitre 20. Lequel je garde ?"
+    type: choix
+    options:
+      - valeur: diego
+        label: Diego
+      - valeur: bonhomme
+        label: Bonhomme
+      - valeur: deux-anes
+        label: Ce sont deux ânes différents
+      - valeur: je-verifie
+        label: Je vérifie et je te dis
+
+  - id: noms-propres
+    label: Je corrige les cinq noms propres mal orthographiés ?
+    aide: >-
+      Mylène Demongeot, Marcel Carné, Marc-Olivier Fogiel, Marilyn, et
+      « Babette s'en va-t-en guerre ».
+    type: choix
+    options:
+      - valeur: oui
+        label: Oui
+      - valeur: non
+        label: Non, je m'en occupe
+
+  - id: faits-a-verifier
+    label: Et les dates et faits qui ne se recoupent pas ?
+    aide: >-
+      Le nombre de films, le duo avec Distel, la réplique manquante du Mépris,
+      le lieu du mariage avec Sachs, l'année d'« Et Dieu… créa la femme »,
+      l'invitation au Canada, le rôle de Fabien.
+    type: choix
+    options:
+      - valeur: corrige-et-signale
+        label: Corrige ce dont tu es sûr et signale-moi le reste
+      - valeur: signale-tout
+        label: Signale-moi tout, je vérifierai moi-même
+      - valeur: laisse
+        label: Laisse tel quel
+
+  - id: relecture-langue
+    label: Je passe une relecture orthographique sur l'ensemble du manuscrit ?
+    aide: >-
+      Accords, accents, apostrophes, guillemets. C'est le poste le plus long, et
+      celui qui change le plus l'impression que laisse le texte à un éditeur.
+    type: choix
+    options:
+      - valeur: tout
+        label: Oui, tout le manuscrit
+      - valeur: fautes-manifestes
+        label: Seulement les fautes manifestes
+      - valeur: non-editeur
+        label: Non, c'est le travail de mon éditeur
+      - valeur: non
+        label: Non, le texte est déjà relu
+
+  - id: methode
+    label: Je travaille sur une copie ou dans ton document ?
+    aide: >-
+      La copie te laisse l'original intact. Le suivi des modifications te montre
+      chaque changement et te laisse refuser ligne par ligne.
+    type: choix
+    requis: true
+    options:
+      - valeur: copie
+        label: Sur une copie
+      - valeur: suivi
+        label: Dans mon document, en suivi des modifications
+      - valeur: direct
+        label: Dans mon document, directement
+
+  - id: autre-chose
+    label: Autre chose que tu veux me confier sur ce manuscrit ?
+    aide: >-
+      Ce que tu attends de la suite, une échéance, un éditeur à qui tu l'envoies,
+      un passage dont tu n'es pas sûre.
+    type: texte
+    long: true
+    placeholder: Ce que tu as en tête...
+
+notes:
+  - tone: info
+    texte: >-
+      Tes réponses arrivent dans ma boîte mail, et tu en reçois une copie. Tu
+      peux aussi m'appeler et tout me dire de vive voix : cette page existe
+      surtout pour que rien ne se perde entre deux conversations.
+  - tone: neutral
+    texte: >-
+      Tant que tu n'as pas répondu, ton document reste tel quel. Je n'y ai pas
+      touché.
+  - tone: warning
+    texte: >-
+      Un point qui n'a rien à voir avec les titres, mais que je préfère te dire
+      quand même : le livre
+      fait parler Brigitte Bardot à la première personne sur son enfance, son
+      fils et ses procès. Un éditeur te demandera sur quoi reposent ces paroles,
+      et si tu as une autorisation. Mieux vaut préparer la réponse maintenant
+      qu'au moment de signer.

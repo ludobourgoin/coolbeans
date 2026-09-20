@@ -1,0 +1,197 @@
+# Recensement des sites qui annoncent le salon, composé le 2026-09-18 à la
+# demande de Sam, pour qu'elle fasse le tour des relais et leur transmette
+# l'adresse du site. Même référence 5336 que la proposition du site du salon.
+# Constat central : aucun relais ne pointe vers le site, tous renvoient vers
+# l'événement Facebook.
+titre: Qui parle du salon, et ce qu'il faut leur faire corriger
+objet: J'ai cherché toutes les pages qui annoncent le salon, édition 2026 et édition 2025. Voici où elles sont, ce qu'elles disent, et lesquelles relancer.
+date: 2026-09-18
+contact: Sam
+tutoiement: true
+
+linear:
+  projet: https://linear.app/coolbeans-hq/project/site-du-salon-edition-2026-e6c1e495a56f
+  affaire: https://linear.app/coolbeans-hq/issue/CRM-46
+
+site:
+  url: https://construire-habiter-autrement.org
+  label: Ouvrir le site du salon
+
+sections:
+  - titre: Ce que j'ai trouvé
+    texte: >-
+      Treize pages parlent du salon : dix pour l'édition 2026, trois pour celle
+      de 2025. J'ai ouvert chacune et relevé ce qu'elle annonce, parce que
+      plusieurs donnent la date sans l'année et se confondent d'une édition à
+      l'autre.
+    liste:
+      - texte: "**Deux relais institutionnels** : la Région Occitanie et la Ville d'Agde. Ce sont les deux plus utiles, et les deux plus faciles à faire corriger."
+      - texte: "**Un média spécialisé** : La Maison Écologique, qui a repris ton texte de présentation."
+      - texte: "**Cinq pages automatiques** qui recopient ton événement Facebook, sans intervention humaine."
+      - texte: "**Ton post LinkedIn**, seule page où le salon est annoncé à la première personne."
+
+  - titre: Le point qui compte
+    texte: >-
+      Aucune de ces pages ne renvoie vers le site du salon. Celles qui donnent
+      un lien donnent celui de l'événement Facebook. Pour quelqu'un qui n'est
+      pas sur Facebook, le salon n'a donc pas d'adresse.
+    liste:
+      - texte: "**La Région, la Ville d'Agde et La Maison Écologique se corrigent en écrivant à chacune.** C'est là que le gain est réel : ce sont des sites que Google met en avant."
+      - texte: "**Les cinq pages automatiques ne s'éditent pas.** Elles recopient l'événement Facebook. Ajouter l'adresse du site dans la description de l'événement est le seul levier, et rien ne garantit qu'elles se resynchronisent."
+    note: >-
+      Le message à leur envoyer est plus bas dans cette page, prêt à copier.
+
+  - titre: Deux choses à corriger de notre côté
+    texte: >-
+      Elles ne dépendent pas des relais, elles dépendent de nous.
+    liste:
+      - texte: "**Le site est invisible sur les moteurs de recherche.** La page d'attente porte une instruction qui interdit son indexation. C'est volontaire le temps de l'attente, et je la retire à la mise en ligne du vrai site. Tant qu'elle est là, aucune recherche ne mène au salon."
+      - texte: "**Le site n'a pas de favicon**, la petite vignette qui l'identifie dans un onglet. C'est le seul site de cette liste à ne pas en avoir."
+
+  - titre: Les limites de ma recherche
+    texte: >-
+      Je le dis pour que tu saches ce que vaut cette liste.
+    liste:
+      - texte: "Les moteurs de recherche m'ont bloqué une partie du temps. La page de la Région, je ne l'ai trouvée que parce que tu me l'as signalée."
+      - texte: "Plusieurs sites d'agendas locaux affichent leurs résultats d'une façon que je ne peux pas lire automatiquement. Je n'ai donc pas la preuve qu'ils ne parlent pas du salon."
+      - texte: "Je n'ai pas exploré Instagram ni les publications Facebook, seulement l'événement."
+
+parcoursTitre: Les pages
+parcours:
+  - page: Le site du salon
+    url: https://construire-habiter-autrement.org/
+    groupe: Édition 2026 · 3 et 4 octobre
+    statut: a-corriger
+    texte: "**Le site du salon.** Page d'attente : les dates, le lieu, l'entrée libre, un lien Instagram et un formulaire pour être prévenu. Elle interdit son propre référencement, donc aucune recherche ne la trouve."
+
+  - page: Région Occitanie
+    url: https://www.laregion.fr/Salon-Construire-Et-Habiter-Autrement
+    favicon: /livrable/revolutions-douces/favicons/laregion.png
+    groupe: Édition 2026 · 3 et 4 octobre
+    statut: a-corriger
+    texte: "**Agenda de la Région Occitanie**, mis à jour le 24 août 2026. Fiche complète : « Du 3 au 4 octobre », 10h-18h, l'adresse des Arènes, ton numéro de téléphone, gratuit. Le champ « Site web » donne l'événement Facebook. L'année n'est écrite nulle part."
+
+  - page: Ville d'Agde
+    url: https://www.ville-agde.fr/agenda/economie/agenda/salon-construire-et-habiter-autrement-1
+    favicon: /livrable/revolutions-douces/favicons/ville-agde.png
+    groupe: Édition 2026 · 3 et 4 octobre
+    statut: a-corriger
+    texte: "**Agenda de la Ville d'Agde.** « les 3 et 4 octobre 2026 aux Arènes du Cap d'Agde », 10h-18h, gratuit, avec la liste des exposants et des animations. Aucun lien vers le site."
+
+  - page: La Maison Écologique
+    url: https://lamaisonecologique.com/evenements/salon-construire-et-habiter-autrement-1
+    favicon: /livrable/revolutions-douces/favicons/lamaisonecologique.png
+    groupe: Édition 2026 · 3 et 4 octobre
+    statut: a-corriger
+    texte: "**Média spécialisé, fiche événement.** Rév'olutions Douces est nommée comme organisatrice, avec l'adresse et les dates du 3 au 4 octobre 2026, année comprise. Le texte de présentation est le tien. Le seul lien sortant est l'événement Facebook."
+
+  - page: L'événement Facebook
+    url: https://www.facebook.com/events/1428925115147672
+    favicon: /livrable/revolutions-douces/favicons/facebook.ico
+    groupe: Édition 2026 · 3 et 4 octobre
+    statut: a-corriger
+    texte: "**La source de tout le reste.** C'est cette page que les relais citent et que les sites d'agendas recopient. Y ajouter l'adresse du site est le geste le plus rentable de la liste."
+
+  - page: AllEvents
+    url: https://allevents.in/agde/salon-construire-and-habiter-autrement-%C3%89dition-2/200029990037115
+    favicon: /livrable/revolutions-douces/favicons/allevents.png
+    groupe: Édition 2026 · 3 et 4 octobre
+    texte: "Copie automatique de l'événement Facebook, annoncée comme l'édition 2 : samedi 3 octobre 10h au dimanche 4 octobre 18h, 85 personnes intéressées. Ne s'édite pas."
+
+  - page: HappeningNext, le salon
+    url: https://happeningnext.com/event/salon-%E2%80%93-construire-andamp-habiter-autrement-%C3%89dition-2-eid3a0dlr05hl
+    favicon: /livrable/revolutions-douces/favicons/happeningnext.png
+    groupe: Édition 2026 · 3 et 4 octobre
+    texte: "Même copie automatique, sur un autre site du même réseau. Mêmes dates, mêmes horaires. Ne s'édite pas."
+
+  - page: HappeningNext, la tombola
+    url: https://happeningnext.com/event/%F0%9F%8E%81-tombola-engag%C3%A9e-r%C3%A9volution-douce-salon-construire-andamp-habiter-autrement-eid3a0dxtk499
+    favicon: /livrable/revolutions-douces/favicons/happeningnext.png
+    groupe: Édition 2026 · 3 et 4 octobre
+    texte: "Copie de ton second événement Facebook, la tombola : samedi 3 octobre 10h au dimanche 4 octobre 17h. Ne s'édite pas."
+
+  - page: StayHappening, la tombola
+    url: https://stayhappening.com/e/%F0%9F%8E%81-tombola-engag%C3%A9e-r%C3%A9volution-douce-salon-construire-andamp-habiter-autrement-E2ISYSLKEE0
+    favicon: /livrable/revolutions-douces/favicons/stayhappening.png
+    groupe: Édition 2026 · 3 et 4 octobre
+    texte: "La tombola encore, sur un troisième site du même réseau. Ne s'édite pas."
+
+  - page: Ton post LinkedIn
+    url: https://fr.linkedin.com/posts/samantha-klingelschmitt-658003227_construireautrement-habiterautrement-%C3%A9coconstruction-activity-7487457532630884352-dR1m
+    favicon: /livrable/revolutions-douces/favicons/linkedin.ico
+    groupe: Édition 2026 · 3 et 4 octobre
+    statut: a-jour
+    texte: "Ton annonce de la 2ᵉ édition : « Les 3 & 4 octobre 2026, j'organise la 2ᵉ édition du salon ». La seule page où le salon parle à la première personne."
+
+  - page: Ville d'Agde, fiche 2025
+    url: https://www.ville-agde.fr/agenda/economie/agenda/salon-construire-et-habiter-autrement
+    favicon: /livrable/revolutions-douces/favicons/ville-agde.png
+    groupe: Édition 2025 · 4 et 5 octobre
+    statut: a-corriger
+    texte: "**L'ancienne fiche est toujours en ligne**, à côté de celle de 2026 : « les 4 et 5 octobre 2025 ». Deux pages presque identiques, dont une périmée. À faire dépublier en même temps que tu demandes la correction de l'autre."
+
+  - page: Habitat des communs
+    url: https://www.habitatdescommuns.org/articles/h/salon-construire-et-habiter-autrement.html
+    favicon: /livrable/revolutions-douces/favicons/habitatdescommuns.webp
+    groupe: Édition 2025 · 4 et 5 octobre
+    statut: a-corriger
+    texte: "Fiche de l'édition 2025, modifiée le 10 septembre 2025 et jamais reprise depuis : « Samedi 4 & Dimanche 5 octobre 2025 ». Elle renvoie vers l'événement Facebook de 2025. Le site est une ressource sur l'habitat des communs, donc un bon relais à réactiver pour 2026."
+
+  - page: Arènes du Cap d'Agde
+    url: http://web.archive.org/web/20250914153521/https://www.arenesducap.fr/billetterie/salon-construire-et-habiter-autrement/
+    groupe: Édition 2025 · 4 et 5 octobre
+    statut: hors-ligne
+    texte: "**La page a été supprimée**, l'adresse d'origine répond une erreur. Le lien ci-dessus ouvre la copie archivée du 14 septembre 2025. Les Arènes t'avaient donc fait une page l'an dernier : c'est un relais à redemander pour 2026."
+
+# Message volontairement court : quatre lignes, une demande unique, les dates
+# rappelées pour que le correspondant n'ait rien à rechercher.
+message:
+  titre: Le message à envoyer
+  objet: "Salon Construire & Habiter Autrement, 3 et 4 octobre 2026 : l'adresse du site"
+  corps: |-
+    Bonjour,
+
+    Vous relayez le salon Construire & Habiter Autrement sur votre site, et je vous en remercie.
+
+    Le salon a désormais sa propre adresse : https://construire-habiter-autrement.org
+    Pourriez-vous l'ajouter à votre page, en remplacement du lien Facebook ?
+
+    Pour mémoire, la deuxième édition se tient les 3 et 4 octobre 2026, aux Arènes du Cap d'Agde, entrée libre.
+
+    Bien à vous,
+
+    Samantha Klingelschmitt
+    Association Rév'olutions Douces
+    06 14 90 05 27
+  note: >-
+    Deux relais demandent une phrase différente. Les Arènes du Cap d'Agde ont
+    supprimé leur page : demande-leur d'en refaire une, plutôt que de corriger
+    un lien. habitatdescommuns.org en est resté à l'édition 2025 : demande une
+    fiche pour la nouvelle édition.
+
+aVerifierTitre: Ce que je n'ai pas pu vérifier
+aVerifier:
+  - L'office de tourisme du Cap d'Agde, Hérault Tourisme et Hérault Tribune refusent les consultations automatiques. Je n'ai pas la preuve qu'ils n'annoncent pas le salon, ni la preuve du contraire.
+  - Midi Libre et le Journal L'Agathois n'ont rien publié que j'aie pu trouver. Ce sont deux relais presse à solliciter directement.
+  - "Je n'ai pas fait le tour des exposants : certains annoncent peut-être le salon sur leur propre site."
+
+suiteTitre: Ce qu'il reste à faire
+suite:
+  - texte: Écrire à la Région Occitanie, à la Ville d'Agde et à La Maison Écologique pour leur donner l'adresse du site et leur demander de remplacer le lien Facebook.
+    owner: client
+  - texte: Demander à la Ville d'Agde de dépublier la fiche de l'édition 2025, qui coexiste avec celle de 2026.
+    owner: client
+  - texte: Ajouter l'adresse du site dans la description de l'événement Facebook, celui du salon et celui de la tombola.
+    owner: client
+  - texte: Redemander une page aux Arènes du Cap d'Agde, qui en avaient fait une en 2025.
+    owner: client
+  - texte: Relancer habitatdescommuns.org, qui a relayé l'édition 2025 et n'a pas été informé de la seconde.
+    owner: client
+  - texte: Retirer l'instruction qui empêche le référencement, à la mise en ligne du site, et lui donner un favicon.
+    owner: coolbeans
+
+notes:
+  - texte: "Les dates sur laregion.fr sont écrites sans l'année. Si tu leur écris, demande-leur de l'ajouter : « 3 et 4 octobre 2026 ». Sans elle, la page se confondra avec l'édition suivante."
+    tone: warning
+  - texte: Cette liste est un état des lieux au 18 septembre 2026. De nouvelles pages apparaîtront à l'approche du salon, surtout après une publication presse.
+    tone: info
