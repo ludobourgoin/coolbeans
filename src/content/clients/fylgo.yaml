@@ -15,6 +15,6 @@ emoji: 🍹
 depuis: "2026-03-18"
 # Team « Fylgo » (FYL) du workspace Linear coolbeans-hq.
 linearTeamId: af975ced-7d31-4c67-abbe-8715e2071f7d
-# Pas de clé `doc` : aucune page n'existe sous src/content/docs/. La boutique
-# est en production et transférée au client, donc c'est la doc qui manque le
-# plus ici — à produire avec la skill doc-client.
+# Doc de passation sous src/content/docs/fylgo/ : vue d'ensemble, édition de la
+# boutique, intégrations, sécurité, référence.
+doc: fylgo

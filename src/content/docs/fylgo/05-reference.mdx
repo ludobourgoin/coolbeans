@@ -1,0 +1,98 @@
+---
+client: "fylgo"
+title: "Référence et support"
+order: 5
+status: "draft"
+updated: 2026-09-20
+description: "Le plan du site, l'annuaire des services, les détails techniques du thème et la marche à suivre pour demander une intervention."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+La page où l'on cherche une adresse, un identifiant ou un interlocuteur. Utile
+à Fabien, Paul et Laetitia pour savoir où aller, et au développeur qui
+reprendrait le projet pour s'orienter en une lecture.
+
+## Le plan du site
+
+| Rubrique | Adresses |
+| --- | --- |
+| Accueil | `/` |
+| Collections | `/collections/mocktail-signature`, `/collections/mocktails-signature-25cl`, `/collections/mocktails-signatures-33cl`, `/collections/packs-decouverte` |
+| Fiches produit | `/products/<nom-du-produit>`, huit au total |
+| Contenu | `/pages/apropos`, `/pages/procede-de-fabrication`, `/pages/nos-plantes`, `/pages/pro`, `/pages/contact` |
+| Blog | `/blogs/news`, sans article à ce jour |
+| Politiques | `/policies/*`, cinq pages liées depuis le pied de page |
+
+## L'annuaire
+
+| Service | À quoi il sert | Où |
+| --- | --- | --- |
+| Shopify | La boutique, le catalogue, les commandes, le thème | `admin.shopify.com/store/fylgo` |
+| Payplug | L'encaissement et les remboursements | Interface Payplug |
+| Brevo | Les emails marketing, via son application sur la boutique | Interface Brevo |
+| Search & Discovery | Les produits complémentaires en bas de fiche | Application dans l'admin Shopify |
+| Faire, Ankorstore | La vente aux professionnels, branchées sans conditions commerciales | Interfaces respectives |
+| Google Search Console | L'indexation et la présence dans Google | `search.google.com/search-console` |
+
+## Le thème
+
+| Élément | Valeur |
+| --- | --- |
+| Thème publié | *Fylgo Production*, identifiant `182938435920` |
+| Base | Flow, thème premium du magasin Shopify, acheté par Fylgo |
+| Thèmes non publiés | *Flow* et *Horizon*, conservés comme points de retour |
+| Dépôt de sauvegarde | `ludobourgoin/fylgo-theme`, dépôt privé tenu par Coolbeans |
+
+Deux polices de la marque sont chargées depuis le code du thème, et non depuis
+les réglages de Shopify : Stylebender Retro pour tous les titres, Stylebender
+Ornate pour la bannière défilante. C'est pourquoi les réglages typographiques
+de l'admin restent sans effet sur ces éléments.
+
+Le logo Agriculture biologique affiché en bas du diaporama d'accueil est posé
+par le code, et non par la section Diaporama. Il dépend de la hauteur « plein
+écran » de ce diaporama.
+
+## Le mode d'emploi de Shopify
+
+La plupart des questions du quotidien trouvent leur réponse dans le centre
+d'aide de Shopify, en français.
+
+| Sujet | Page |
+| --- | --- |
+| Tout le centre d'aide | [help.shopify.com/fr](https://help.shopify.com/fr) |
+| Personnaliser un thème | [Personnalisation des thèmes](https://help.shopify.com/fr/manual/online-store/themes/customizing-themes) |
+| Gérer les produits | [Produits](https://help.shopify.com/fr/manual/products) |
+| Les champs méta | [Champs méta](https://help.shopify.com/fr/manual/custom-data/metafields) |
+| Tenir un blog | [Blogs](https://help.shopify.com/fr/manual/online-store/os/blogs) |
+| Les comptes utilisateurs | [Comptes du personnel](https://help.shopify.com/fr/manual/your-account/staff-accounts) |
+
+## Qui contacter, et pour quoi
+
+**Shopify** pour tout ce qui relève de la plateforme : une commande bloquée, un
+paiement qui ne remonte pas, un réglage de livraison, une facturation
+d'abonnement, un souci de compte. L'assistance est jointe depuis le centre
+d'aide, par le bouton de contact en bas de page. Elle répond en français et
+vingt-quatre heures sur vingt-quatre.
+
+Avant de signaler une panne générale, vérifiez [l'état des services
+Shopify](https://www.shopifystatus.com) : quand la plateforme est en
+difficulté, le site n'y est pour rien et rien ne se répare de votre côté.
+
+**Coolbeans** pour tout ce qui touche au code du thème : une nouvelle section,
+un comportement qui n'existe pas dans le thème, un affichage cassé, une page
+blanche.
+
+<Callout type="note">
+  Avant de nous écrire, notez l'**adresse exacte** de la page concernée, ce que
+  vous attendiez, ce que vous avez vu, et sur quel appareil. Ces quatre
+  informations font gagner un aller-retour à chaque fois.
+</Callout>
+
+En cas d'urgence, si le site devient inaccessible ou si le paiement ne
+fonctionne plus, republier un thème de secours depuis Boutique en ligne puis
+Thèmes remet le site dans un état connu, sans attendre notre intervention.
+
+La procédure interne suivie par Coolbeans pour modifier le code du thème est
+décrite dans [Workflow du thème](/docs/fylgo/workflow-theme). Elle ne demande
+aucune action de votre part.

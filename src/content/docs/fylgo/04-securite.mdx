@@ -1,0 +1,91 @@
+---
+client: "fylgo"
+title: "Sécurité et conformité"
+order: 4
+status: "draft"
+updated: 2026-09-20
+description: "Qui a accès à quoi, les mentions obligatoires en ligne, la protection des données clients et la façon de revenir en arrière."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+Pour Fabien, Paul et Laetitia. Ce qui protège la boutique, ce qui vous engage
+juridiquement, et le geste qui répare une fausse manœuvre.
+
+## Les accès
+
+La boutique appartient à Fylgo. Fabien, Paul et Laetitia en sont propriétaires
+et administrateurs, avec tous les droits, y compris celui de retirer un accès.
+
+Coolbeans intervient comme collaborateur sur le code du thème. Cet accès se
+révoque depuis l'admin, dans Paramètres puis Utilisateurs, sans conséquence sur
+la boutique.
+
+<Callout type="warn">
+  Activez la **double authentification** sur tous vos comptes. Un accès
+  administrateur Shopify permet de modifier les prix, d'exporter le fichier
+  clients et de changer le compte bancaire de versement. C'est la porte la plus
+  sensible de toute l'activité.
+</Callout>
+
+La gestion des comptes est documentée chez Shopify :
+[comptes du personnel et autorisations](https://help.shopify.com/fr/manual/your-account/staff-accounts).
+
+## Les mentions obligatoires
+
+Cinq pages de politiques sont en ligne et liées depuis le pied de page.
+
+| Page | Adresse |
+| --- | --- |
+| Mentions légales | `/policies/legal-notice` |
+| Politique de confidentialité | `/policies/privacy-policy` |
+| Conditions générales de vente | `/policies/terms-of-service` |
+| Politique de remboursement | `/policies/refund-policy` |
+| Politique d'expédition | `/policies/shipping-policy` |
+
+Ces textes se modifient dans **Paramètres → Politiques**, et non dans Contenu →
+Pages. Ils engagent la société : toute évolution de l'activité, un nouveau pays
+livré ou un changement de délai de rétractation, doit s'y refléter.
+
+## Les données clients
+
+Les commandes, les adresses et les adresses électroniques sont hébergées par
+Shopify.
+
+Deux obligations concrètes découlent du règlement européen. Un client qui
+demande la suppression de ses données doit être servi : la fonction existe dans
+sa fiche client, section des données personnelles. Et un client qui demande une
+copie de ses données doit la recevoir : l'export se lance depuis la même fiche.
+
+## Le paiement
+
+Aucune donnée bancaire ne transite par la boutique ni n'y est stockée. Payplug
+prend en charge la saisie de la carte et la conformité associée. Même en cas
+d'accès frauduleux à l'admin Shopify, les numéros de carte des clients ne sont
+pas exposés.
+
+Le certificat de sécurité du site, celui qui affiche le cadenas dans le
+navigateur, est fourni et renouvelé par Shopify, sans intervention.
+
+## Revenir en arrière
+
+Chaque thème de la bibliothèque est une version complète du site, conservée
+telle qu'elle était. Republier l'un d'eux remet le site dans cet état en un
+clic, depuis Boutique en ligne puis Thèmes.
+
+| Thème | Rôle | État |
+| --- | --- | --- |
+| *Fylgo Production* | Le site en ligne | Publié |
+| *Flow* | Point de retour | Non publié, figé au 2026-06-19 |
+| *Horizon* | Vestige de l'installation initiale | Non publié, jamais utilisé |
+
+<Callout type="piege">
+  Les deux thèmes non publiés sont **antérieurs à l'été** : les republier ferait
+  perdre tout ce qui a été composé depuis. Ce sont des filets de dernier
+  recours, pas des points de retour courants. Le vrai réflexe est de dupliquer
+  le thème publié **avant** une modification importante.
+</Callout>
+
+Une copie coûte dix secondes, une restauration sans copie coûte une journée.
+Le code du thème est par ailleurs archivé dans un dépôt privé tenu par
+Coolbeans.

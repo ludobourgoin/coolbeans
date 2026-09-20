@@ -1,0 +1,282 @@
+# Livrable de clôture de la boutique Fylgo, composé le 2026-09-20 (FYL-7).
+# Même référence 3907 que la proposition du 24 mars : le client retrouve le
+# même numéro d'un document à l'autre.
+#
+# Ce livrable n'est pas une validation de maquette comme celui de CAFA : la
+# boutique est en production et transférée depuis mai. C'est une passation.
+# D'où les trois sections qui n'existent pas chez CAFA : ce qui reste ouvert
+# et chez qui, ce qui appartient désormais à Fylgo, et l'état de santé.
+#
+# À COMPLÉTER AVANT ENVOI (facultatif) : déposer les deux captures sous
+# public/livrable/fylgo/ puis décommenter le bloc `apercu`. La page s'affiche
+# correctement sans.
+#
+# L'audit performance et SEO (FYL-5) est reporté par Ludo à la fin du chantier,
+# une fois les défauts en ligne corrigés. Il fera l'objet d'une V2 de ce
+# livrable, déclarée par `versionDe` dans un autre fichier.
+titre: La boutique, et les clés qui vont avec
+objet: Le détail de ce qui a été fait, ce qui reste ouvert et pourquoi, et ce que vous pouvez faire sans moi.
+date: 2026-09-20
+contact: Fabien
+linear:
+  projet: Boutique Shopify
+  affaire: https://linear.app/coolbeans-hq/issue/CRM-28
+# Le document part à Fabien et à Paul, tous deux sous fylgodrinks.com.
+envoi:
+  date: 2026-09-20
+  destinataire: fabien.vp@fylgodrinks.com
+
+site:
+  url: https://fylgodrinks.com
+  label: Ouvrir la boutique
+
+# Captures de l'accueil à prendre sur fylgodrinks.com, 1440 × 900 en x2 et
+# 402 × 874 en x3, puis à déposer sous public/livrable/fylgo/.
+# apercu:
+#   bureau: /livrable/fylgo/accueil-macbook.png
+#   mobile: /livrable/fylgo/accueil-iphone.png
+#   titre: Fylgo · Mocktails premium sans alcool
+#   legende: La page d'accueil, telle qu'elle s'affiche aujourd'hui sur ordinateur et sur téléphone.
+
+sections:
+  - titre: Ce qui est en ligne
+    texte: >-
+      La boutique tourne sur votre domaine depuis mai, sur un abonnement
+      Shopify Basic et le thème premium Flow. Elle encaisse, elle expédie,
+      elle est référencée.
+    liste:
+      - texte: "**Huit références en vente, par carton de douze** : les quatre mocktails signature, chacun en canette 25 cl à 42 € et en bouteille 33 cl à 48 €."
+        tooltip: >-
+          Chaque format est un produit à part entière, pas une variante. Voir
+          « Les choix qui tiennent la boutique » plus bas : cette décision
+          conditionne la revente.
+      - texte: "**Trois collections alimentées** : la gamme complète, le format 25 cl et le format 33 cl. La livraison est offerte à partir de 150 €, par une remise automatique."
+      - texte: "**Cinq pages de contenu** : Notre histoire, Savoir-faire, Suggestions cocktails, Professionnels et Contact, plus les pages légales."
+      - texte: "**Le paiement passe par Payplug**, en paiement intégré : le client saisit sa carte sans quitter la boutique. Les deux commandes encaissées à ce jour sont passées par ce canal."
+      - texte: "**Le site est déclaré dans la Google Search Console** et lui envoie son plan de site automatiquement, à chaque ajout de produit ou de page."
+      - texte: "**La direction artistique est portée par le code**, pas par les réglages de l'admin : les polices Stylebender sont chargées dans la feuille de style du thème."
+        tooltip: >-
+          Conséquence pratique : modifier les paramètres typographiques dans
+          Customize ne change rien à l'affichage des titres. C'est voulu, et
+          c'est documenté dans la doc de passation.
+
+  - titre: Tout ce qui a été fait
+    texte: >-
+      Le détail du travail, dans l'ordre où il a été mené, entre le kick-off
+      du 30 mars et aujourd'hui. Il recoupe les quatre lignes du devis du
+      24 mars.
+    liste:
+      - texte: "**Choix du thème** : installation et test de plusieurs thèmes premium en conditions réelles, avec vos packshots, puis tableau comparatif et recommandation argumentée."
+        tooltip: Avril. Ligne « Cadrage et setup technique » du devis.
+      - texte: "**Configuration de fond de la boutique** : domaine et DNS chez OVH, taxes, zones et modes de livraison, adresse d'expédition, paiement express, emails de commande."
+      - texte: "**Mise en place du paiement** : Payplug installé par interface de programmation et activé en paiement intégré, pour que le client ne quitte jamais la boutique."
+      - texte: "**Catalogue** : huit références distinctes, chacune avec sa description, son code article, ses metafields et ses visuels."
+      - texte: "**Intégration de la direction artistique** : couleurs, styles de boutons, et les deux polices Stylebender, Retro et Italic Ornate, chargées dans la feuille de style du thème et appliquées aux titres."
+        tooltip: >-
+          Ce point ne se règle pas depuis l'admin. C'est une surcharge écrite
+          dans le code du thème, la seule façon d'imposer vos polices par
+          dessus celles de Flow.
+      - texte: "**Page d'accueil, page À propos, page Contact et gabarit produit** : assemblage des sections, hiérarchie visuelle, metafield « plantes utilisées » en sous-titre de chaque fiche, et produits complémentaires activés."
+        tooltip: Ligne « Intégration design » du devis.
+      - texte: "**Pages légales, et mentions légales retravaillées puis ajoutées au pied de page.**"
+      - texte: "**Navigation** : menu Mocktails signature et ses deux sous-menus, en-tête, pied de page, panier latéral."
+      - texte: "**Traitement technique des visuels** : intégration des packshots haute définition sur fond transparent, pictogrammes « Enrichi en plantes » et « Agriculture Biologique », favicon."
+      - texte: "**Référencement et mesure** : déclaration dans la Google Search Console, envoi automatique du plan de site, et affichage de la devise selon la convention française."
+      - texte: "**Plateformes de revente** : applications Faire, Ankorstore et Amazon installées sur la boutique, catalogue et stocks prêts à remonter automatiquement. Il ne manque que vos conditions commerciales pour publier."
+        tooltip: >-
+          Ligne « Connectivité marketplaces » du devis. Le travail technique
+          est fait ; ce qui reste est une mise en vente, pas un branchement.
+      - texte: "**Email marketing** : Brevo activé et relié à la boutique."
+      - texte: "**Transfert de propriété de la boutique à Fylgo**, et accompagnement sur l'achat du thème."
+      - texte: "**Gestion de projet** : point hebdomadaire du lundi pendant toute la durée du projet, guide de setup rédigé et tenu à jour, recommandations de rédaction pour les pages À propos et Professionnels."
+        tooltip: Ligne « Gestion de projet et support » du devis.
+      - texte: "**Documentation de passation**, six pages, rédigée en septembre et accessible depuis votre espace."
+    note: >-
+      S'y ajoute ce qui n'était pas au devis : la vérification de votre
+      boutique et de votre administration pendant la panne Shopify des 3 et
+      4 juin, et la correction des défauts relevés depuis la mise en ligne.
+
+  - titre: Les choix qui tiennent la boutique
+    texte: >-
+      Quatre décisions expliquent la boutique telle qu'elle est. Elles ont
+      toutes été prises pour la même raison : mettre le budget dans la marque
+      plutôt que dans la technique.
+    liste:
+      - texte: "**Un thème premium plutôt qu'un développement sur mesure.** La structure de Flow est éprouvée et tenue à jour par son éditeur. Nous l'avons mise aux couleurs de Fylgo au lieu de repartir d'une page blanche : c'est ce qui a permis de tenir le budget annoncé en mars."
+      - texte: "**Huit produits distincts plutôt que quatre produits à variantes.** Chaque format a son visuel, son prix et sa fiche. Surtout, c'est la seule façon de les vendre séparément sur les plateformes de revente, où un caviste commande à la référence."
+      - texte: "**Payplug plutôt qu'une solution de paiement externe.** Le client reste sur la boutique du début à la fin. Le mouvement d'argent se suit dans Payplug, l'état de la commande dans Shopify."
+      - texte: "**Aucun outil de mesure en plus de Shopify.** Les statistiques natives couvrent les visites, les sources de trafic, la conversion et le chiffre d'affaires. Tant que la boutique ne fait pas de publicité payante, elles suffisent, et il n'y a pas un réglage de plus à maintenir."
+
+  - titre: Ce qui reste ouvert, et chez qui
+    texte: >-
+      Le devis du 24 mars comptait quatre lignes. Trois sont livrées. La
+      quatrième attend des décisions qui ne m'appartiennent pas, et je préfère
+      le dire noir sur blanc plutôt que de le laisser dans un fil de mails.
+    liste:
+      - texte: "**Faire et Ankorstore : les applications sont installées, le branchement attend votre feu vert.** Le catalogue et les stocks remonteraient automatiquement depuis Shopify. Il manque trois décisions commerciales : le prix de gros hors taxes par référence, le montant minimum de commande, et le seuil au-delà duquel le port est offert."
+        tooltip: >-
+          Repère du marché : le prix de gros se situe autour de la moitié du
+          prix public, et une commission de quinze à vingt-cinq pour cent
+          s'ajoute par-dessus. Demandé le 16 juillet, relancé le 29.
+      - texte: "**Amazon n'a jamais été branché.** Il me faut un accès utilisateur sur Seller Central, et les identifiants ASIN de vos huit fiches si elles existent déjà, ou les codes EAN si elles restent à créer."
+      - texte: "**Le stock est commun à tous les canaux.** Le jour où les plateformes s'ouvrent, une commande de gros entame le stock disponible sur le site. On peut soit laisser tout le monde puiser au même endroit, premier arrivé premier servi, soit réserver des quantités par canal. C'est une décision à prendre avant l'ouverture, pas après."
+      - texte: "**La collecte d'adresses email est plafonnée.** Brevo est actif, mais une adresse n'entre dans la liste qu'au moment d'une commande ou de la création d'un compte. La fenêtre d'inscription du thème est désactivée. C'est un choix qui se défend, à condition de savoir qu'il limite mécaniquement la croissance de la liste."
+    note: >-
+      Le travail technique de cette ligne est fait : les applications sont
+      installées, le catalogue et les stocks sont prêts à remonter. Ce qui
+      reste n'est pas un branchement, c'est une mise en vente, et elle dépend
+      de décisions qui vous appartiennent. Elle est comprise dans le devis et
+      rien ne s'y ajoutera.
+
+  - titre: Les questions restées sans réponse
+    texte: >-
+      Ces questions vous ont été posées par mail, plusieurs à trois reprises.
+      Elles sont toutes encore ouvertes aujourd'hui. Je les rassemble ici
+      parce qu'elles expliquent à elles seules pourquoi la quatrième ligne du
+      devis n'est pas en vente, et parce qu'un fil de mails de six mois n'est
+      pas un endroit où retrouver une question.
+    liste:
+      - texte: "**Le prix de gros hors taxes, par référence, pour les plateformes de revente.** Posée le 16 juillet, reposée le 29 juillet avec un repère de marché et l'unité attendue, le carton de douze."
+      - texte: "**Le montant minimum de commande sur ces plateformes.** Posée le 29 juillet, avec une valeur proposée par défaut, 150 € hors taxes, à confirmer ou à corriger."
+      - texte: "**Le seuil au-delà duquel le port est offert au revendeur.** Posée le 29 juillet, avec une valeur proposée par défaut, 250 € hors taxes."
+      - texte: "**Un accès utilisateur sur Ankorstore, Faire et Seller Central.** Demandé le 16 juillet. Les applications se connectent en direct : sans cet accès, la mise en vente ne peut pas se faire."
+      - texte: "**Les identifiants ASIN de vos huit fiches Amazon, ou à défaut les codes EAN.** Demandés le 16 juillet, selon que les fiches existent déjà ou restent à créer."
+      - texte: "**Le mode de gestion du stock entre les quatre canaux**, commun ou réservé par canal. Posée le 16 juillet, avec l'exemple chiffré des conséquences de chaque option."
+      - texte: "**La validation des paramètres de vente dans l'admin Shopify**, page par page. Demandée le 16 juillet : taux de TVA, frais de port et seuil de livraison offerte, adresse d'expédition, moyens de paiement, emails de commande, adresse de contact."
+      - texte: "**L'adresse de contact définitive de la boutique.** Posée le 18 mai, reposée le 3 juin. L'adresse `paul.levy@fylgodrinks.com` est en place faute de réponse."
+      - texte: "**Les comptes Google Tag Manager et Google Analytics, et un accès administrateur.** Demandés le 18 mai, redemandés le 3 juin et le 16 juillet. Sans eux, aucune mesure fine n'est possible le jour où une campagne payante démarre."
+      - texte: "**La clé de l'interface de programmation Google Maps.** Demandée le 18 mai, redemandée le 3 juin."
+      - texte: "**Les visuels d'ambiance**, c'est-à-dire les photographies hors produit. Demandés le 3 juin."
+      - texte: "**Le contenu de la fenêtre d'offre commerciale.** Demandé le 16 juillet, capture d'écran à l'appui."
+      - texte: "**Le développement des plantes sur les sections de collection**, chiffré à 250 € hors taxes le 16 juillet, hors forfait, et déconseillé de ma part. Sans réponse, il n'a pas été fait."
+    note: >-
+      Aucune de ces questions ne bloque la boutique telle qu'elle tourne
+      aujourd'hui. Toutes bloquent ce qui viendrait après.
+
+  - titre: Ce qui vous appartient
+    texte: >-
+      La boutique vous a été transférée en mai. Ce document en est la
+      contrepartie écrite : tout ce qui la fait tourner est à vous, et rien
+      ne dépend d'un abonnement chez moi.
+    liste:
+      - texte: "**La boutique et ses comptes.** Vous en êtes propriétaires et administrateurs. Payplug, Brevo, la Search Console et le nom de domaine chez OVH sont vos comptes, à vos noms."
+      - texte: "**Le code du thème est sauvegardé dans un dépôt privé à votre nom**, polices et surcharges comprises. Un thème de secours non publié dort par ailleurs sur la boutique."
+      - texte: "**Une documentation de six pages**, tenue à jour, accessible depuis votre espace : ce que contient la boutique, ce que vous pouvez modifier vous-même, ce qu'il ne faut jamais toucher, qui a accès à quoi, et comment demander une intervention."
+      - texte: "**Une heure de formation en visio et cinq heures de support technique** sont comprises dans le devis et n'ont pas encore été utilisées. Dites-moi quand vous voulez les poser."
+
+parcoursTitre: Le parcours de la boutique
+parcours:
+  - page: Accueil
+    url: https://fylgodrinks.com/
+    groupe: La boutique
+    texte: La gamme, les packs, et l'entrée vers les quatre recettes.
+  - page: Mocktails signature
+    url: https://fylgodrinks.com/collections/mocktail-signature
+    groupe: La boutique
+    texte: Les huit références réunies, tous formats confondus.
+  - page: Format 25 cl
+    url: https://fylgodrinks.com/collections/mocktails-signature-25cl
+    groupe: La boutique
+    texte: Les quatre canettes.
+  - page: Format 33 cl
+    url: https://fylgodrinks.com/collections/mocktails-signatures-33cl
+    groupe: La boutique
+    texte: Les quatre bouteilles.
+
+  - page: CHÉRI Negroni
+    url: https://fylgodrinks.com/products/cheri-negroni
+    groupe: Les huit fiches produit
+    texte: "Carton de 12 canettes 25 cl, 42 €. La fiche type : visuel, plantes utilisées en sous-titre, produits complémentaires."
+  - page: HAVANA Mule
+    url: https://fylgodrinks.com/products/havana-mule
+    groupe: Les huit fiches produit
+    texte: Carton de 12 canettes 25 cl, 42 €.
+  - page: HUGO Twist
+    url: https://fylgodrinks.com/products/hugo-twist
+    groupe: Les huit fiches produit
+    texte: Carton de 12 canettes 25 cl, 42 €.
+  - page: ICONIC Spritz
+    url: https://fylgodrinks.com/products/iconic-spritz
+    groupe: Les huit fiches produit
+    texte: Carton de 12 canettes 25 cl, 42 €.
+  - page: CHÉRI Negroni 33 cl
+    url: https://fylgodrinks.com/products/cheri-negroni-33cl
+    groupe: Les huit fiches produit
+    texte: Carton de 12 bouteilles 33 cl, 48 €.
+  - page: HAVANA Mule 33 cl
+    url: https://fylgodrinks.com/products/havana-mule-33cl
+    groupe: Les huit fiches produit
+    texte: Carton de 12 bouteilles 33 cl, 48 €.
+  - page: HUGO Twist 33 cl
+    url: https://fylgodrinks.com/products/hugo-twist-33cl
+    groupe: Les huit fiches produit
+    texte: Carton de 12 bouteilles 33 cl, 48 €.
+  - page: ICONIC Spritz 33 cl
+    url: https://fylgodrinks.com/products/iconic-spritz-33cl
+    groupe: Les huit fiches produit
+    texte: Carton de 12 bouteilles 33 cl, 48 €.
+
+  - page: Notre histoire
+    url: https://fylgodrinks.com/pages/apropos
+    groupe: Les pages de contenu
+    texte: "Le récit de la marque, monté à partir de votre document de textes. Son adresse reste `/pages/apropos` : le titre affiché et l'adresse diffèrent, c'est normal et sans effet."
+  - page: Savoir-faire
+    url: https://fylgodrinks.com/pages/procede-de-fabrication
+    groupe: Les pages de contenu
+    texte: Le procédé de fabrication.
+  - page: Suggestions cocktails
+    url: https://fylgodrinks.com/pages/nos-plantes
+    groupe: Les pages de contenu
+    texte: Les suggestions de la gamme, en écho au metafield « plantes utilisées » affiché sur chaque fiche produit.
+  - page: Professionnels
+    url: https://fylgodrinks.com/pages/pro
+    groupe: Les pages de contenu
+    texte: L'entrée pour les revendeurs et les cavistes.
+  - page: Contact
+    url: https://fylgodrinks.com/pages/contact
+    groupe: Les pages de contenu
+    texte: Le formulaire, qui arrive sur l'adresse de contact de la boutique.
+  - page: Mentions légales
+    url: https://fylgodrinks.com/policies/legal-notice
+    groupe: Les pages de contenu
+    texte: À relire, voir plus bas.
+
+  - page: Documentation de la boutique
+    url: https://my.coolbeans.cc/docs/fylgo
+    groupe: Votre espace
+    texte: Les six pages de passation, dans votre espace client. C'est la seule source de vérité, et elle est tenue à jour.
+
+aVerifierTitre: Ce que je vous demande de vérifier
+aVerifier:
+  - "**Les paramètres de vente, page par page dans l'admin Shopify.** Taux de TVA appliqués, frais de port et seuil de livraison offerte, adresse d'expédition, moyens de paiement activés, emails de confirmation de commande. Une erreur à cet endroit ne se voit qu'à la première commande réelle, et le petit nombre de commandes encaissées à ce jour n'a pas encore fait office de test grandeur nature."
+  - "**L'adresse de contact de la boutique**, aujourd'hui `paul.levy@fylgodrinks.com`. C'est elle qui reçoit les formulaires et qui apparaît dans les emails envoyés aux clients. Est-ce celle que vous gardez ?"
+  - "**Les mentions légales** : la raison sociale ABEAM DRINKS, le SIRET, l'adresse de Neuilly, et le nom du responsable de la publication."
+  - "**Les textes des pages Notre histoire, Savoir-faire et Suggestions cocktails**, montés à partir de vos documents. Ils se corrigent sans passer par moi, mais depuis Customize et non depuis l'éditeur de Pages, où la zone de texte est vide : tout le contenu de ces trois pages vit dans les sections du thème. La marche à suivre est dans votre documentation."
+  - "**Les prix affichés**, toutes taxes comprises, sur les huit références et les deux packs."
+
+suiteTitre: La suite
+suite:
+  - texte: "Confirmer les paramètres de vente, ou me dire ce qui cloche."
+    owner: client
+  - texte: "Trancher les trois décisions commerciales pour Faire et Ankorstore : prix de gros par référence, minimum de commande, seuil de port offert."
+    owner: client
+  - texte: "M'ajouter comme utilisateur sur Seller Central, et me transmettre les ASIN ou les EAN des huit références."
+    owner: client
+  - texte: "Choisir le mode de gestion du stock entre les canaux : commun, ou réservé par canal."
+    owner: client
+  - texte: "Brancher Faire et Ankorstore, puis Amazon. Environ une journée à réception des décisions et des accès."
+    owner: coolbeans
+  - texte: "Poser l'heure de formation et ouvrir les cinq heures de support, quand vous voulez."
+    owner: coolbeans
+
+notes:
+  - tone: info
+    texte: >-
+      Ce document se met à jour. Après vos retours, la nouvelle version
+      apparaît ici, au même lien, et la précédente reste consultable.
+  - tone: neutral
+    texte: >-
+      La facture de solde de 3 528 € TTC a été émise le 24 août. Elle couvre
+      l'intégralité du devis du 24 mars, branchement des plateformes de
+      revente compris : celui-ci reste dû de ma part et s'exécute dès que les
+      décisions ci-dessus sont prises.
