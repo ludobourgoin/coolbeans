@@ -31,6 +31,9 @@
 titre: La boutique Fylgo
 objet: Le détail de ce qui a été fait, ce qui reste ouvert et pourquoi, et ce que vous pouvez faire sans moi.
 date: 2026-09-21
+# Pas de formulaire de réponse : ce document ne demande pas une validation,
+# il acte une livraison. Le client répond par mail ou sur WhatsApp.
+formulaire: false
 contact: Fabien
 linear:
   projet: Boutique Shopify
@@ -128,7 +131,7 @@ sections:
           personne n'a ajusté à votre mise en page. Le catalogue d'images et
           leur format, eux, sont corrects : Shopify les convertit déjà tout
           seul au format le plus léger que le navigateur sait lire.
-      - texte: "**Corriger ce reste est un travail à part**, section par section, avec un relevé des largeurs réelles d'affichage. Je vous le chiffrerai séparément plutôt que de le bricoler à moitié."
+      - texte: "**Corriger ce reste est un travail à part**, section par section, avec un relevé des largeurs réelles d'affichage. Je le prends sur les heures de support comprises dans votre devis."
       - texte: "**Neuf pages n'avaient pas de description pour les moteurs de recherche. C'est corrigé.** Vos quatre collections et vos cinq pages de contenu n'en avaient aucune, et Google composait donc lui-même l'extrait affiché sous le titre, en piochant une phrase au hasard. Les huit textes sont écrits et en ligne, et le score de référencement des collections est passé de 92 à 100 sur 100."
     note: >-
       Vous pouvez mesurer vous-même :
@@ -294,7 +297,7 @@ suite:
     owner: client
   - texte: "M'envoyer deux créneaux pour l'heure de formation comprise au devis."
     owner: client
-  - texte: "Corriger la taille des images de fond servies aux téléphones, et rédiger les descriptions manquantes pour les moteurs. Compris dans les cinq heures de support du devis."
+  - texte: "Alléger les 494 Ko d'images encore servies trop grandes, section par section. Sur les heures de support comprises dans le devis."
     owner: coolbeans
   - texte: "Animer la formation, et rester joignable sur les cinq heures de support."
     owner: coolbeans
