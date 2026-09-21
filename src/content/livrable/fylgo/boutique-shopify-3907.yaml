@@ -128,7 +128,7 @@ sections:
           cause : Shopify convertit déjà tout seul vos images au format le plus
           léger que le navigateur sait lire.
       - texte: "**Le reste de la structure est sain.** Aucun décalage de mise en page pendant le chargement, rien qui bloque l'interaction, et 100 sur 100 au référencement technique de l'accueil. Le site n'est pas mal construit, il est trop lourd à un endroit précis."
-      - texte: "**Deux corrections de référencement faciles.** Les collections et deux pages de contenu n'ont pas de description pour les moteurs, ce texte gris affiché sous le titre dans Google. Et le titre principal de l'accueil est votre logo, ce qui fait lire « Fylgo » comme sujet de la page au lieu de votre promesse."
+      - texte: "**Neuf pages n'ont pas de description pour les moteurs de recherche** : vos quatre collections et vos cinq pages de contenu. C'est le texte gris affiché sous le titre dans les résultats de Google. Quand il manque, Google va chercher une phrase au hasard dans la page. Les fiches produit et l'accueil, eux, en ont une."
     note: >-
       Vous pouvez tout revérifier vous-même :
       [mesurer la boutique avec l'outil de Google](https://pagespeed.web.dev/analysis?url=https%3A%2F%2Ffylgodrinks.com%2F).
@@ -141,7 +141,15 @@ sections:
       tourne aujourd'hui. Toutes bloquent ce qui viendrait après.
     liste:
       - texte: "**La repasse sur les paramètres de vente, page par page dans l'admin Shopify.** Demandée le 16 juillet, redemandée le 29 juillet : taux de TVA, frais de port et seuil de livraison offerte, adresse d'expédition, moyens de paiement, emails de commande, adresse de contact retenue."
-      - texte: "**La relecture des conditions affichées sur Ankorstore et sur Faire**, dans le même esprit. Demandée le 29 juillet, à la livraison du setup."
+      - texte: "**La relecture de vos deux fiches Ankorstore et Faire**, demandée le 29 juillet à la livraison du paramétrage. Quatre choses à valider : les prix de gros, le minimum de commande, le seuil de port offert, et le texte de présentation de la marque que voient les revendeurs."
+        tooltip: >-
+          Les prix de gros découlent des coefficients que vous m'avez donnés
+          le 29 juillet, 2,2 sur les canettes et 2,5 sur les bouteilles. Le
+          minimum de commande et le seuil de port offert sont, eux, les
+          valeurs que je vous avais proposées par défaut le même jour, 150 €
+          et 250 € hors taxes, faute de réponse de votre côté. Tout cela se
+          modifie directement dans les interfaces d'Ankorstore et de Faire,
+          pas dans Shopify.
       - texte: "**Le mode de gestion du stock entre vos canaux**, commun ou réservé. Posée le 16 juillet. C'est le seul point réellement technique de ce document, et il est détaillé juste en dessous."
       - texte: "**L'identifiant de mesure GA4 et un accès administrateur**, si et seulement si vous voulez une mesure plus fine que celle de Shopify. Demandés le 18 mai, redemandés le 3 juin. À ce stade, rien n'a besoin d'être branché."
         tooltip: >-
