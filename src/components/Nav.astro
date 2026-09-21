@@ -154,7 +154,14 @@ const audience = [
 
     <div class="flex items-center gap-3.5 justify-self-end">
       <ThemeSwitch />
-      <a class="btn btn-sm" href="/connexion">Me connecter</a>
+      {/* Le bouton s'inverse au point de rupture de la nav centrale (980px).
+          Au-dessus, Contact est dans la nav, le bouton sert au portail. En
+          dessous, la nav est masquée : le bouton redevient le seul chemin
+          vers le contact, qui est l'action attendue d'un prospect sur
+          téléphone. Deux ancres plutôt qu'une, parce qu'un href ne se change
+          pas au média. */}
+      <a class="btn btn-sm max-[980px]:hidden" href="/connexion">Se connecter</a>
+      <a class="btn btn-sm min-[981px]:hidden" href="/contact">Contact</a>
     </div>
   </div>
 </header>

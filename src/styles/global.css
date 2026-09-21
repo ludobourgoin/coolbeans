@@ -423,9 +423,13 @@
     --btn-ring: var(--ds-gray-alpha-200);
   }
 
+  /* 12px, pas 6 : à 6px un libellé de deux mots touchait les bords, et le
+     bouton du footer portait déjà un `px-4` manuel pour compenser. Reste
+     proportionné aux 14px de `.btn-lg`. Sans effet sur les boutons icône :
+     ThemeSwitch a ses propres classes et n'utilise pas `.btn-sm`. */
   .btn-sm {
     height: 32px;
-    padding-inline: 6px;
+    padding-inline: 12px;
     font-size: 14px;
     border-radius: 6px;
   }
