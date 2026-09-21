@@ -159,11 +159,6 @@ sections:
           l'identifiant de mesure, qui commence par G-. Ajoutez-moi ensuite
           comme administrateur de la propriété. Je m'occupe du reste.
       - texte: "**Une heure de formation en visio et cinq heures de support technique** sont comprises dans le devis et n'ont pas encore été utilisées. Répondez-moi avec deux créneaux et je vous envoie l'invitation."
-    note: >-
-      La collecte d'adresses email, elle, est plafonnée : une adresse n'entre
-      dans votre liste qu'au moment d'une commande ou de la création d'un
-      compte, parce que la fenêtre d'inscription du thème est désactivée. C'est
-      le principal levier de croissance de votre liste, et il est à l'arrêt.
 
   - titre: Le stock entre vos canaux
     texte: >-
