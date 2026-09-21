@@ -1,0 +1,259 @@
+---
+/* Les visuels de la section « Vous êtes… ».
+ *
+ * Un picto générique ne distingue pas une agence d'une association : les cinq
+ * dessins montrent chacun un objet que le métier manipule vraiment. Le badge
+ * vierge dit la marque blanche, les cotations disent ce qu'un DA livre, et
+ * ainsi de suite. Tout est au trait et en currentColor, donc lisible aussi
+ * bien sur la carte encre que sur les cartes claires, en thème clair comme en
+ * thème sombre.
+ *
+ * L'animation se déclenche au survol de la carte parente, qui doit porter la
+ * classe `carte-segment`. Elle montre l'objet fonctionner : le tampon
+ * s'appose, l'entonnoir se débloque, la jauge monte. Rien ne bouge tout seul.
+ */
+interface Props {
+  type: "agence" | "da" | "pme" | "tpe" | "ess";
+  class?: string;
+}
+const { type, class: classe = "" } = Astro.props;
+
+const TRAITS = "fill-none stroke-current";
+---
+
+{
+  type === "agence" && (
+    <svg
+      class:list={["artefact", TRAITS, classe]}
+      viewBox="0 0 120 152"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      {/* le cordon */}
+      <path d="M32 2 L53 40" />
+      <path d="M88 2 L67 40" />
+      <rect x="52" y="38" width="16" height="11" rx="2.5" />
+      {/* le badge */}
+      <rect x="16" y="50" width="88" height="98" rx="7" />
+      {/* l'emplacement de la marque, vide */}
+      <rect
+        class="badge-marque"
+        x="31"
+        y="64"
+        width="58"
+        height="26"
+        rx="3"
+        stroke-dasharray="5 4"
+      />
+      <line x1="31" y1="106" x2="89" y2="106" />
+      <line x1="31" y1="117" x2="71" y2="117" />
+      <rect x="31" y="129" width="58" height="7" rx="3.5" opacity="0.45" />
+    </svg>
+  )
+}
+
+{
+  type === "da" && (
+    <svg
+      class:list={["artefact", TRAITS, classe]}
+      viewBox="0 0 196 132"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      {/* l'artboard et ses blocs */}
+      <rect x="8" y="10" width="122" height="112" rx="5" />
+      <rect x="22" y="26" width="94" height="30" rx="2.5" />
+      <rect x="22" y="68" width="44" height="38" rx="2.5" />
+      <rect x="72" y="68" width="44" height="38" rx="2.5" />
+      {/* les cotations, ce que le DA livre et que personne ne respecte */}
+      <g class="cotes">
+        <path d="M142 26 V56" />
+        <path d="M137 26 H147" />
+        <path d="M137 56 H147" />
+        <text class="cote-valeur" x="153" y="45">
+          30
+        </text>
+        <path d="M22 116 H66" />
+        <path d="M22 111 V121" />
+        <path d="M66 111 V121" />
+        <text class="cote-valeur" x="38" y="132">
+          44
+        </text>
+      </g>
+    </svg>
+  )
+}
+
+{
+  type === "pme" && (
+    <svg
+      class:list={["artefact", TRAITS, classe]}
+      viewBox="0 0 176 124"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      {/* l'entonnoir : ce qui entre, ce qui reste */}
+      <rect x="10" y="10" width="152" height="18" rx="4" />
+      <rect x="10" y="38" width="108" height="18" rx="4" />
+      <rect x="10" y="66" width="64" height="18" rx="4" />
+      <rect
+        class="entonnoir-sortie"
+        x="10"
+        y="94"
+        width="28"
+        height="18"
+        rx="4"
+        fill="currentColor"
+        fill-opacity="0.16"
+      />
+    </svg>
+  )
+}
+
+{
+  type === "tpe" && (
+    <svg
+      class:list={["artefact", TRAITS, classe]}
+      viewBox="0 0 156 124"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      {/* le tampon, posé de travers comme un vrai */}
+      <g class="tampon">
+        <rect x="26" y="24" width="104" height="62" rx="9" />
+        <rect x="34" y="32" width="88" height="46" rx="6" opacity="0.5" />
+        <path d="M60 56 l13 13 l25 -27" stroke-width="3" />
+      </g>
+      <path d="M16 104 H140" opacity="0.5" />
+    </svg>
+  )
+}
+
+{
+  type === "ess" && (
+    <svg
+      class:list={["artefact", TRAITS, classe]}
+      viewBox="0 0 248 74"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      {/* la jauge de collecte et son objectif */}
+      <rect x="8" y="24" width="232" height="16" rx="8" />
+      <rect
+        class="jauge-remplissage"
+        x="8"
+        y="24"
+        width="128"
+        height="16"
+        rx="8"
+        fill="currentColor"
+        fill-opacity="0.18"
+      />
+      <g opacity="0.45">
+        <path d="M62 46 V52" />
+        <path d="M120 46 V52" />
+        <path d="M178 46 V52" />
+      </g>
+      {/* le repère de l'objectif */}
+      <path d="M206 14 V52" stroke-width="2" />
+    </svg>
+  )
+}
+
+<style>
+  /* Pas de `width` ici : un style scopé Astro porte un attribut en plus, donc
+     il bat les utilitaires Tailwind posés par l'appelant. C'est la taille de
+     rendu qui est laissée à la carte, elle seule sait la place dont elle
+     dispose. */
+  .artefact {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .cote-valeur {
+    fill: currentColor;
+    stroke: none;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* Chaque objet se met à fonctionner quand on survole sa carte. */
+  .badge-marque,
+  .cotes,
+  .entonnoir-sortie,
+  .tampon,
+  .jauge-remplissage {
+    transition:
+      stroke-dasharray 0.35s var(--ease),
+      fill-opacity 0.35s var(--ease),
+      opacity 0.35s var(--ease),
+      transform 0.45s var(--ease);
+    transform-box: fill-box;
+  }
+
+  /* L'emplacement de marque se referme : votre logo vient s'y poser. */
+  .badge-marque {
+    fill: currentColor;
+    fill-opacity: 0;
+  }
+  :global(.carte-segment:hover) .badge-marque {
+    stroke-dasharray: 400;
+    fill-opacity: 0.12;
+  }
+
+  /* Les cotations ne s'affirment qu'au survol : on les regarde de près. */
+  .cotes {
+    opacity: 0.5;
+  }
+  :global(.carte-segment:hover) .cotes {
+    opacity: 1;
+  }
+
+  /* Ce qui sort de l'entonnoir s'élargit : on a débloqué ce qui bloquait. */
+  .entonnoir-sortie {
+    transform-origin: left center;
+  }
+  :global(.carte-segment:hover) .entonnoir-sortie {
+    transform: scaleX(1.75);
+    fill-opacity: 0.28;
+  }
+
+  /* Le tampon s'appose. */
+  .tampon {
+    transform-origin: center;
+    transform: rotate(-7deg) scale(1.05);
+  }
+  :global(.carte-segment:hover) .tampon {
+    transform: rotate(-2deg) scale(1);
+  }
+
+  /* La jauge atteint son objectif. */
+  .jauge-remplissage {
+    transform-origin: left center;
+  }
+  :global(.carte-segment:hover) .jauge-remplissage {
+    transform: scaleX(1.61);
+    fill-opacity: 0.3;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .badge-marque,
+    .cotes,
+    .entonnoir-sortie,
+    .tampon,
+    .jauge-remplissage {
+      transition: none;
+    }
+  }
+</style>
