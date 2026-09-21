@@ -3,14 +3,18 @@
  *
  * Deux exigences qui tirent en sens inverse : chaque carte doit avoir sa
  * propre écriture graphique, et les cinq doivent rester de la même famille.
- * L'unité tient à la palette (currentColor seul), à la graisse de trait et
- * aux rayons, repris de Geist. La différence tient au registre de rendu :
+ * L'unité tient à la graisse de trait et aux rayons, repris de Geist. La
+ * différence tient au registre de rendu :
  *
  *   agence  gravure au trait fin sur fond encre, trame de sécurité derrière
- *   da      plan coté, grille de construction et cotations hors cadre
+ *   da      les deux logos, Figma puis les accolades : le binôme sans phrase
  *   pme     données en aplats, histogramme et ligne de seuil
- *   tpe     impression, encre texturée aux bords irréguliers
- *   ess     instrument de mesure, règle graduée et curseur
+ *   tpe     impression, deux passes d'encre légèrement décalées
+ *   ess     jauge de collecte en pilule verte, code des pages de financement
+ *
+ * Deux visuels sortent du monochrome, et seulement eux : le logo Figma, qui
+ * cesse d'être reconnaissable en niveaux de gris, et la jauge, dont le vert
+ * vient du jeton `--success` et non d'une teinte inventée.
  *
  * Le mouvement ne déforme jamais une forme à rayon : pas de `scaleX` sur un
  * rectangle arrondi, dont les coins s'écrasent et trahissent le procédé. On
@@ -63,34 +67,36 @@ const TRAITS = "fill-none stroke-current";
       <path d="M94 3 L72 42" />
       <rect x="59" y="40" width="14" height="10" rx="2.5" />
 
-      {/* le badge */}
-      <rect x="24" y="54" width="84" height="96" rx="8" />
+      {/* le badge, qui se redresse quand la marque s'y pose */}
+      <g class="badge-pose">
+        <rect x="24" y="54" width="84" height="96" rx="8" />
 
-      {/* l'emplacement de la marque : vide, il attend la vôtre */}
-      <rect
-        class="badge-cadre"
-        x="38"
-        y="68"
-        width="56"
-        height="26"
-        rx="3"
-        pathLength="100"
-        stroke-dasharray="100"
-      />
-      <rect
-        class="badge-plein"
-        x="38"
-        y="68"
-        width="56"
-        height="26"
-        rx="3"
-        fill="currentColor"
-        stroke="none"
-      />
+        {/* l'emplacement de la marque : vide, il attend la vôtre */}
+        <rect
+          class="badge-cadre"
+          x="38"
+          y="68"
+          width="56"
+          height="26"
+          rx="3"
+          pathLength="100"
+          stroke-dasharray="100"
+        />
+        <rect
+          class="badge-plein"
+          x="38"
+          y="68"
+          width="56"
+          height="26"
+          rx="3"
+          fill="currentColor"
+          stroke="none"
+        />
 
-      <line x1="38" y1="110" x2="94" y2="110" />
-      <line x1="38" y1="120" x2="76" y2="120" />
-      <rect x="38" y="131" width="56" height="7" rx="3.5" opacity="0.4" />
+        <line x1="38" y1="110" x2="94" y2="110" />
+        <line x1="38" y1="120" x2="76" y2="120" />
+        <rect x="38" y="131" width="56" height="7" rx="3.5" opacity="0.4" />
+      </g>
     </svg>
   )
 }
@@ -99,45 +105,39 @@ const TRAITS = "fill-none stroke-current";
   type === "da" && (
     <svg
       class:list={["artefact", TRAITS, classe]}
-      viewBox="0 0 206 156"
+      viewBox="0 0 216 92"
       stroke-width="1.3"
       stroke-linecap="round"
       stroke-linejoin="round"
       aria-hidden="true"
     >
-      {/* la grille de construction, sous tout le reste */}
-      <g class="grille" stroke-dasharray="2 4" stroke-width="0.9">
-        <path d="M24 6 V124" />
-        <path d="M56 6 V124" />
-        <path d="M88 6 V124" />
-        <path d="M120 6 V124" />
-        <path d="M8 30 H136" />
-        <path d="M8 62 H136" />
-        <path d="M8 94 H136" />
+      {/* Figma d'un côté, mes accolades de l'autre : le binôme dit en deux
+          signes que tout le monde reconnaît. C'est le seul visuel en couleur
+          de la section, parce que le logo Figma en niveaux de gris cesse
+          d'être le logo Figma. */}
+      <g transform="translate(14 18) scale(0.72)">
+        <path fill="#1ABCFE" stroke="none" d="M24 36a12 12 0 1 1 24 0 12 12 0 0 1-24 0z" />
+        <path fill="#0ACF83" stroke="none" d="M0 60a12 12 0 0 1 12-12h12v12a12 12 0 1 1-24 0z" />
+        <path fill="#FF7262" stroke="none" d="M24 0h12a12 12 0 0 1 0 24H24V0z" />
+        <path fill="#F24E1E" stroke="none" d="M0 12A12 12 0 0 1 12 0h12v24H12A12 12 0 0 1 0 12z" />
+        <path fill="#A259FF" stroke="none" d="M0 36a12 12 0 0 1 12-12h12v24H12A12 12 0 0 1 0 36z" />
       </g>
 
-      {/* l'artboard et ses blocs */}
-      <rect x="8" y="10" width="128" height="110" rx="4" />
-      <rect x="24" y="26" width="96" height="30" rx="2.5" />
-      <rect x="24" y="68" width="44" height="36" rx="2.5" />
-      <rect x="76" y="68" width="44" height="36" rx="2.5" />
-
-      {/* les cotations, hors du cadre pour ne rien recouvrir */}
-      <g class="cotes" stroke-width="1.1">
-        <path class="cote-trait" d="M150 26 V56" pathLength="100" stroke-dasharray="100" />
-        <path d="M145 26 H155" />
-        <path d="M145 56 H155" />
-        <text class="cote-valeur" x="161" y="45">
-          30
-        </text>
-
-        <path class="cote-trait" d="M24 138 H68" pathLength="100" stroke-dasharray="100" />
-        <path d="M24 133 V143" />
-        <path d="M68 133 V143" />
-        <text class="cote-valeur" x="76" y="142">
-          44
-        </text>
+      {/* le passage de l'un à l'autre */}
+      <g class="passage">
+        <path
+          class="passage-trait"
+          d="M72 46 H128"
+          stroke-dasharray="4 5"
+          stroke-width="1.6"
+          pathLength="100"
+        />
+        <path class="passage-pointe" d="M124 40 l7 6 l-7 6" stroke-width="1.6" fill="none" />
       </g>
+
+      <text class="accolades" x="148" y="62">
+        {"{ }"}
+      </text>
     </svg>
   )
 }
@@ -193,23 +193,18 @@ const TRAITS = "fill-none stroke-current";
       stroke-linejoin="round"
       aria-hidden="true"
     >
-      <defs>
-        {/* le grain : un tampon ne dépose jamais une encre nette */}
-        <filter id={`encre-${uid}`} x="-15%" y="-15%" width="130%" height="130%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7" />
-          <feDisplacementMap
-            in="SourceGraphic"
-            scale="2.4"
-            xChannelSelector="R"
-            yChannelSelector="G"
-          />
-        </filter>
-      </defs>
+      {/* La première passe d'encre, décalée sous la seconde. Un tampon imprime
+          rarement du premier coup bien droit, et ce léger dédoublement le dit
+          sans filtre de bruit, qui pixellisait le trait. */}
+      <g class="tampon">
+        <g class="tampon-fantome" opacity="0.22">
+          <rect x="30" y="24" width="108" height="64" rx="11" stroke-width="2.8" />
+          <path d="M66 57 l13 13 l26 -28" stroke-width="3.6" />
+        </g>
 
-      <g class="tampon" filter={`url(#encre-${uid})`}>
-        <rect x="28" y="22" width="108" height="64" rx="10" stroke-width="2.6" />
-        <rect x="37" y="31" width="90" height="46" rx="6" stroke-width="1.1" opacity="0.55" />
-        <path d="M64 55 l13 13 l26 -28" stroke-width="3.4" />
+        <rect x="28" y="22" width="108" height="64" rx="11" stroke-width="2.8" />
+        <rect x="37" y="31" width="90" height="46" rx="6.5" stroke-width="1.1" opacity="0.5" />
+        <path d="M64 55 l13 13 l26 -28" stroke-width="3.6" />
       </g>
 
       {/* le papier */}
@@ -226,21 +221,31 @@ const TRAITS = "fill-none stroke-current";
       stroke-linecap="round"
       aria-hidden="true"
     >
-      {/* ce qui est déjà réuni : un aplat franc, sans rayon, pour que le
-          `scaleX` du survol n'écrase aucun coin */}
+      {/* Le rail et sa collecte, en pilule et en vert : le code visuel des
+          pages de financement participatif, que les associations ont déjà en
+          tête. Le vert vient de `--success`, pas d'une teinte inventée. La
+          largeur s'anime en propriété CSS et non en `scaleX`, ce qui garde
+          les extrémités rondes. */}
+      <rect
+        x="12"
+        y="30"
+        width="228"
+        height="20"
+        rx="10"
+        fill="var(--surface-raise)"
+        stroke="none"
+      />
       <rect
         class="jauge-acquis"
         x="12"
-        y="32"
+        y="30"
         width="120"
-        height="16"
-        fill="currentColor"
+        height="20"
+        rx="10"
+        fill="var(--success)"
         stroke="none"
-        fill-opacity="0.88"
       />
-
-      {/* le rail */}
-      <rect x="12" y="32" width="228" height="16" stroke-width="1.4" />
+      <rect x="12" y="30" width="228" height="20" rx="10" stroke-width="1.4" opacity="0.35" />
 
       {/* la règle sous le rail */}
       <g class="graduations" stroke-width="1.3" opacity="0.55">
@@ -284,48 +289,83 @@ const TRAITS = "fill-none stroke-current";
     font-weight: 600;
   }
 
-  /* --- agence : la marque se pose dans son emplacement ------------------- */
+  /* --- agence : la marque se pose vraiment dans son emplacement ---------- */
   .trame {
-    opacity: 0.16;
+    opacity: 0.14;
     transition: opacity 0.5s var(--ease);
   }
   .badge-cadre {
     stroke-dashoffset: 0;
-    transition: stroke-dashoffset 0.55s var(--ease);
+    opacity: 1;
+    transition:
+      opacity 0.3s var(--ease) 0.2s,
+      stroke-dashoffset 0.55s var(--ease);
   }
   .badge-plein {
     fill-opacity: 0;
-    transition: fill-opacity 0.45s var(--ease) 0.15s;
+    transition: fill-opacity 0.4s var(--ease) 0.12s;
   }
+  .badge-pose {
+    transform-box: view-box;
+    transform-origin: center;
+    transition: transform 0.5s cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+  /* le cadre en pointillés s'efface pendant que l'aplat le remplace : la
+     place réservée cesse d'être vide */
   :global(.carte-segment:hover) .trame {
-    opacity: 0.28;
+    opacity: 0.34;
+  }
+  :global(.carte-segment:hover) .badge-cadre {
+    opacity: 0;
   }
   :global(.carte-segment:hover) .badge-plein {
-    fill-opacity: 0.14;
+    fill-opacity: 0.92;
+  }
+  :global(.carte-segment:hover) .badge-pose {
+    transform: translateY(-5px) rotate(-1.5deg);
   }
 
-  /* --- da : la grille s'efface, les cotes se tracent --------------------- */
-  .grille {
-    opacity: 0.3;
-    transition: opacity 0.4s var(--ease);
+  /* --- da : le passage de Figma au code se trace ------------------------- */
+  .passage-trait {
+    stroke-dasharray: 4 5;
+    stroke-dashoffset: 36;
+    opacity: 0.45;
+    transition:
+      stroke-dashoffset 0.65s var(--ease),
+      opacity 0.3s var(--ease);
   }
-  .cotes {
+  .passage-pointe {
+    opacity: 0.45;
+    transform-box: view-box;
+    transition:
+      opacity 0.3s var(--ease),
+      transform 0.45s var(--ease) 0.1s;
+  }
+  .accolades {
+    fill: currentColor;
+    stroke: none;
+    font-family: var(--font-logo);
+    font-size: 46px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
     opacity: 0.55;
-    transition: opacity 0.4s var(--ease);
+    transform-box: view-box;
+    transform-origin: center;
+    transition:
+      opacity 0.35s var(--ease) 0.15s,
+      transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1) 0.15s;
   }
-  .cote-trait {
+  :global(.carte-segment:hover) .passage-trait {
     stroke-dashoffset: 0;
-    transition: stroke-dashoffset 0.5s var(--ease);
-  }
-  .cote-valeur {
     opacity: 1;
-    transition: opacity 0.35s var(--ease) 0.25s;
   }
-  :global(.carte-segment:hover) .grille {
-    opacity: 0.6;
-  }
-  :global(.carte-segment:hover) .cotes {
+  :global(.carte-segment:hover) .passage-pointe {
     opacity: 1;
+    transform: translateX(6px);
+  }
+  :global(.carte-segment:hover) .accolades {
+    opacity: 1;
+    transform: scale(1.1);
   }
 
   /* --- pme : les barres se remplissent en cascade ------------------------ */
@@ -350,20 +390,22 @@ const TRAITS = "fill-none stroke-current";
     transform: rotate(-1.5deg) scale(1);
   }
 
-  /* --- ess : le curseur rejoint l'objectif ------------------------------- */
-  .curseur,
-  .jauge-acquis {
+  /* --- ess : la collecte atteint son objectif ---------------------------- */
+  .curseur {
     transform-box: view-box;
-    transition: transform 0.6s var(--ease);
+    transition: transform 0.65s var(--ease);
   }
+  /* `width` s'anime comme une propriété CSS sur un rect SVG, contrairement à
+     `scaleX` qui aplatirait les deux bouts de la pilule. */
   .jauge-acquis {
-    transform-origin: left center;
+    width: 120px;
+    transition: width 0.65s var(--ease);
   }
   :global(.carte-segment:hover) .curseur {
     transform: translateX(78px);
   }
   :global(.carte-segment:hover) .jauge-acquis {
-    transform: scaleX(1.65);
+    width: 198px;
   }
   .graduations {
     transition: opacity 0.4s var(--ease);
@@ -376,10 +418,11 @@ const TRAITS = "fill-none stroke-current";
     .trame,
     .badge-cadre,
     .badge-plein,
-    .grille,
-    .cotes,
-    .cote-trait,
-    .cote-valeur,
+    .badge-pose,
+    .passage-trait,
+    .passage-pointe,
+    .accolades,
+    .tampon-fantome,
     .barre-plein,
     .tampon,
     .curseur,
