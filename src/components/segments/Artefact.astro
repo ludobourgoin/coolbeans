@@ -1,16 +1,21 @@
 ---
 /* Les visuels de la section « Vous êtes… ».
  *
- * Un picto générique ne distingue pas une agence d'une association : les cinq
- * dessins montrent chacun un objet que le métier manipule vraiment. Le badge
- * vierge dit la marque blanche, les cotations disent ce qu'un DA livre, et
- * ainsi de suite. Tout est au trait et en currentColor, donc lisible aussi
- * bien sur la carte encre que sur les cartes claires, en thème clair comme en
- * thème sombre.
+ * Deux exigences qui tirent en sens inverse : chaque carte doit avoir sa
+ * propre écriture graphique, et les cinq doivent rester de la même famille.
+ * L'unité tient à la palette (currentColor seul), à la graisse de trait et
+ * aux rayons, repris de Geist. La différence tient au registre de rendu :
  *
- * L'animation se déclenche au survol de la carte parente, qui doit porter la
- * classe `carte-segment`. Elle montre l'objet fonctionner : le tampon
- * s'appose, l'entonnoir se débloque, la jauge monte. Rien ne bouge tout seul.
+ *   agence  gravure au trait fin sur fond encre, trame de sécurité derrière
+ *   da      plan coté, grille de construction et cotations hors cadre
+ *   pme     données en aplats, histogramme et ligne de seuil
+ *   tpe     impression, encre texturée aux bords irréguliers
+ *   ess     instrument de mesure, règle graduée et curseur
+ *
+ * Le mouvement ne déforme jamais une forme à rayon : pas de `scaleX` sur un
+ * rectangle arrondi, dont les coins s'écrasent et trahissent le procédé. On
+ * trace (stroke-dashoffset), on remplit en cascade (fill-opacity et délais),
+ * on déplace (translate). La carte parente porte `carte-segment`.
  */
 interface Props {
   type: "agence" | "da" | "pme" | "tpe" | "ess";
@@ -18,6 +23,10 @@ interface Props {
 }
 const { type, class: classe = "" } = Astro.props;
 
+// Les patterns et filtres SVG s'adressent par id : un même artefact rendu
+// deux fois sur une page réutiliserait le premier. D'où un suffixe par
+// instance.
+const uid = Math.random().toString(36).slice(2, 8);
 const TRAITS = "fill-none stroke-current";
 ---
 
@@ -25,31 +34,63 @@ const TRAITS = "fill-none stroke-current";
   type === "agence" && (
     <svg
       class:list={["artefact", TRAITS, classe]}
-      viewBox="0 0 120 152"
-      stroke-width="1.6"
+      viewBox="0 0 132 158"
+      stroke-width="1.3"
       stroke-linecap="round"
       stroke-linejoin="round"
       aria-hidden="true"
     >
-      {/* le cordon */}
-      <path d="M32 2 L53 40" />
-      <path d="M88 2 L67 40" />
-      <rect x="52" y="38" width="16" height="11" rx="2.5" />
-      {/* le badge */}
-      <rect x="16" y="50" width="88" height="98" rx="7" />
-      {/* l'emplacement de la marque, vide */}
+      <defs>
+        {/* la trame d'un document officiel, qui donne de la matière au noir */}
+        <pattern id={`trame-${uid}`} width="7" height="7" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="0.6" fill="currentColor" stroke="none" />
+        </pattern>
+      </defs>
+
       <rect
-        class="badge-marque"
-        x="31"
-        y="64"
-        width="58"
+        class="trame"
+        x="24"
+        y="54"
+        width="84"
+        height="96"
+        rx="8"
+        fill={`url(#trame-${uid})`}
+        stroke="none"
+      />
+
+      {/* le cordon */}
+      <path d="M38 3 L60 42" />
+      <path d="M94 3 L72 42" />
+      <rect x="59" y="40" width="14" height="10" rx="2.5" />
+
+      {/* le badge */}
+      <rect x="24" y="54" width="84" height="96" rx="8" />
+
+      {/* l'emplacement de la marque : vide, il attend la vôtre */}
+      <rect
+        class="badge-cadre"
+        x="38"
+        y="68"
+        width="56"
         height="26"
         rx="3"
-        stroke-dasharray="5 4"
+        pathLength="100"
+        stroke-dasharray="100"
       />
-      <line x1="31" y1="106" x2="89" y2="106" />
-      <line x1="31" y1="117" x2="71" y2="117" />
-      <rect x="31" y="129" width="58" height="7" rx="3.5" opacity="0.45" />
+      <rect
+        class="badge-plein"
+        x="38"
+        y="68"
+        width="56"
+        height="26"
+        rx="3"
+        fill="currentColor"
+        stroke="none"
+      />
+
+      <line x1="38" y1="110" x2="94" y2="110" />
+      <line x1="38" y1="120" x2="76" y2="120" />
+      <rect x="38" y="131" width="56" height="7" rx="3.5" opacity="0.4" />
     </svg>
   )
 }
@@ -58,29 +99,42 @@ const TRAITS = "fill-none stroke-current";
   type === "da" && (
     <svg
       class:list={["artefact", TRAITS, classe]}
-      viewBox="0 0 196 132"
-      stroke-width="1.6"
+      viewBox="0 0 206 156"
+      stroke-width="1.3"
       stroke-linecap="round"
       stroke-linejoin="round"
       aria-hidden="true"
     >
+      {/* la grille de construction, sous tout le reste */}
+      <g class="grille" stroke-dasharray="2 4" stroke-width="0.9">
+        <path d="M24 6 V124" />
+        <path d="M56 6 V124" />
+        <path d="M88 6 V124" />
+        <path d="M120 6 V124" />
+        <path d="M8 30 H136" />
+        <path d="M8 62 H136" />
+        <path d="M8 94 H136" />
+      </g>
+
       {/* l'artboard et ses blocs */}
-      <rect x="8" y="10" width="122" height="112" rx="5" />
-      <rect x="22" y="26" width="94" height="30" rx="2.5" />
-      <rect x="22" y="68" width="44" height="38" rx="2.5" />
-      <rect x="72" y="68" width="44" height="38" rx="2.5" />
-      {/* les cotations, ce que le DA livre et que personne ne respecte */}
-      <g class="cotes">
-        <path d="M142 26 V56" />
-        <path d="M137 26 H147" />
-        <path d="M137 56 H147" />
-        <text class="cote-valeur" x="153" y="45">
+      <rect x="8" y="10" width="128" height="110" rx="4" />
+      <rect x="24" y="26" width="96" height="30" rx="2.5" />
+      <rect x="24" y="68" width="44" height="36" rx="2.5" />
+      <rect x="76" y="68" width="44" height="36" rx="2.5" />
+
+      {/* les cotations, hors du cadre pour ne rien recouvrir */}
+      <g class="cotes" stroke-width="1.1">
+        <path class="cote-trait" d="M150 26 V56" pathLength="100" stroke-dasharray="100" />
+        <path d="M145 26 H155" />
+        <path d="M145 56 H155" />
+        <text class="cote-valeur" x="161" y="45">
           30
         </text>
-        <path d="M22 116 H66" />
-        <path d="M22 111 V121" />
-        <path d="M66 111 V121" />
-        <text class="cote-valeur" x="38" y="132">
+
+        <path class="cote-trait" d="M24 138 H68" pathLength="100" stroke-dasharray="100" />
+        <path d="M24 133 V143" />
+        <path d="M68 133 V143" />
+        <text class="cote-valeur" x="76" y="142">
           44
         </text>
       </g>
@@ -91,27 +145,41 @@ const TRAITS = "fill-none stroke-current";
 {
   type === "pme" && (
     <svg
-      class:list={["artefact", TRAITS, classe]}
-      viewBox="0 0 176 124"
-      stroke-width="1.6"
-      stroke-linecap="round"
+      class:list={["artefact", "fill-none stroke-current", classe]}
+      viewBox="0 0 182 128"
+      stroke-width="1.3"
       stroke-linejoin="round"
       aria-hidden="true"
     >
-      {/* l'entonnoir : ce qui entre, ce qui reste */}
-      <rect x="10" y="10" width="152" height="18" rx="4" />
-      <rect x="10" y="38" width="108" height="18" rx="4" />
-      <rect x="10" y="66" width="64" height="18" rx="4" />
-      <rect
-        class="entonnoir-sortie"
-        x="10"
-        y="94"
-        width="28"
-        height="18"
-        rx="4"
-        fill="currentColor"
-        fill-opacity="0.16"
-      />
+      {/* la ligne de seuil : ce qu'il faut franchir */}
+      <path d="M6 52 H176" stroke-dasharray="3 5" stroke-width="1" opacity="0.5" />
+
+      {/* l'histogramme, en aplats et non en contours : le registre change */}
+      <g class="barres">
+        <g class="barre" style="--rang:0">
+          <rect x="10" y="78" width="24" height="36" />
+          <rect class="barre-plein" x="10" y="78" width="24" height="36" stroke="none" />
+        </g>
+        <g class="barre" style="--rang:1">
+          <rect x="44" y="62" width="24" height="52" />
+          <rect class="barre-plein" x="44" y="62" width="24" height="52" stroke="none" />
+        </g>
+        <g class="barre" style="--rang:2">
+          <rect x="78" y="70" width="24" height="44" />
+          <rect class="barre-plein" x="78" y="70" width="24" height="44" stroke="none" />
+        </g>
+        <g class="barre" style="--rang:3">
+          <rect x="112" y="40" width="24" height="74" />
+          <rect class="barre-plein" x="112" y="40" width="24" height="74" stroke="none" />
+        </g>
+        <g class="barre" style="--rang:4">
+          <rect x="146" y="18" width="24" height="96" />
+          <rect class="barre-plein" x="146" y="18" width="24" height="96" stroke="none" />
+        </g>
+      </g>
+
+      {/* le sol */}
+      <path d="M6 114 H176" stroke-width="1.3" />
     </svg>
   )
 }
@@ -120,19 +188,32 @@ const TRAITS = "fill-none stroke-current";
   type === "tpe" && (
     <svg
       class:list={["artefact", TRAITS, classe]}
-      viewBox="0 0 156 124"
-      stroke-width="1.6"
+      viewBox="0 0 164 130"
       stroke-linecap="round"
       stroke-linejoin="round"
       aria-hidden="true"
     >
-      {/* le tampon, posé de travers comme un vrai */}
-      <g class="tampon">
-        <rect x="26" y="24" width="104" height="62" rx="9" />
-        <rect x="34" y="32" width="88" height="46" rx="6" opacity="0.5" />
-        <path d="M60 56 l13 13 l25 -27" stroke-width="3" />
+      <defs>
+        {/* le grain : un tampon ne dépose jamais une encre nette */}
+        <filter id={`encre-${uid}`} x="-15%" y="-15%" width="130%" height="130%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7" />
+          <feDisplacementMap
+            in="SourceGraphic"
+            scale="2.4"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </defs>
+
+      <g class="tampon" filter={`url(#encre-${uid})`}>
+        <rect x="28" y="22" width="108" height="64" rx="10" stroke-width="2.6" />
+        <rect x="37" y="31" width="90" height="46" rx="6" stroke-width="1.1" opacity="0.55" />
+        <path d="M64 55 l13 13 l26 -28" stroke-width="3.4" />
       </g>
-      <path d="M16 104 H140" opacity="0.5" />
+
+      {/* le papier */}
+      <path d="M16 108 H148" stroke-width="1.2" opacity="0.45" />
     </svg>
   )
 }
@@ -141,40 +222,55 @@ const TRAITS = "fill-none stroke-current";
   type === "ess" && (
     <svg
       class:list={["artefact", TRAITS, classe]}
-      viewBox="0 0 248 74"
-      stroke-width="1.6"
+      viewBox="0 0 252 86"
       stroke-linecap="round"
-      stroke-linejoin="round"
       aria-hidden="true"
     >
-      {/* la jauge de collecte et son objectif */}
-      <rect x="8" y="24" width="232" height="16" rx="8" />
+      {/* ce qui est déjà réuni : un aplat franc, sans rayon, pour que le
+          `scaleX` du survol n'écrase aucun coin */}
       <rect
-        class="jauge-remplissage"
-        x="8"
-        y="24"
-        width="128"
+        class="jauge-acquis"
+        x="12"
+        y="32"
+        width="120"
         height="16"
-        rx="8"
         fill="currentColor"
-        fill-opacity="0.18"
+        stroke="none"
+        fill-opacity="0.88"
       />
-      <g opacity="0.45">
-        <path d="M62 46 V52" />
-        <path d="M120 46 V52" />
-        <path d="M178 46 V52" />
+
+      {/* le rail */}
+      <rect x="12" y="32" width="228" height="16" stroke-width="1.4" />
+
+      {/* la règle sous le rail */}
+      <g class="graduations" stroke-width="1.3" opacity="0.55">
+        <path d="M12 54 V64" />
+        <path d="M34 54 V60" />
+        <path d="M56 54 V60" />
+        <path d="M78 54 V64" />
+        <path d="M100 54 V60" />
+        <path d="M122 54 V60" />
+        <path d="M144 54 V64" />
+        <path d="M166 54 V60" />
+        <path d="M188 54 V60" />
+        <path d="M210 54 V64" />
       </g>
-      {/* le repère de l'objectif */}
-      <path d="M206 14 V52" stroke-width="2" />
+
+      {/* le curseur, qui se déplace sans rien déformer */}
+      <g class="curseur">
+        <path d="M132 6 V18" stroke-width="2" />
+        <path d="M132 27 l-8 -11 h16 z" fill="currentColor" stroke="none" />
+      </g>
+
+      {/* l'objectif */}
+      <path d="M210 20 V72" stroke-width="2.2" />
     </svg>
   )
 }
 
 <style>
   /* Pas de `width` ici : un style scopé Astro porte un attribut en plus, donc
-     il bat les utilitaires Tailwind posés par l'appelant. C'est la taille de
-     rendu qui est laissée à la carte, elle seule sait la place dont elle
-     dispose. */
+     il bat les utilitaires Tailwind posés par l'appelant. */
   .artefact {
     display: block;
     max-width: 100%;
@@ -188,71 +284,107 @@ const TRAITS = "fill-none stroke-current";
     font-weight: 600;
   }
 
-  /* Chaque objet se met à fonctionner quand on survole sa carte. */
-  .badge-marque,
-  .cotes,
-  .entonnoir-sortie,
-  .tampon,
-  .jauge-remplissage {
-    transition:
-      stroke-dasharray 0.35s var(--ease),
-      fill-opacity 0.35s var(--ease),
-      opacity 0.35s var(--ease),
-      transform 0.45s var(--ease);
-    transform-box: fill-box;
+  /* --- agence : la marque se pose dans son emplacement ------------------- */
+  .trame {
+    opacity: 0.16;
+    transition: opacity 0.5s var(--ease);
   }
-
-  /* L'emplacement de marque se referme : votre logo vient s'y poser. */
-  .badge-marque {
-    fill: currentColor;
+  .badge-cadre {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.55s var(--ease);
+  }
+  .badge-plein {
     fill-opacity: 0;
+    transition: fill-opacity 0.45s var(--ease) 0.15s;
   }
-  :global(.carte-segment:hover) .badge-marque {
-    stroke-dasharray: 400;
-    fill-opacity: 0.12;
+  :global(.carte-segment:hover) .trame {
+    opacity: 0.28;
+  }
+  :global(.carte-segment:hover) .badge-plein {
+    fill-opacity: 0.14;
   }
 
-  /* Les cotations ne s'affirment qu'au survol : on les regarde de près. */
+  /* --- da : la grille s'efface, les cotes se tracent --------------------- */
+  .grille {
+    opacity: 0.3;
+    transition: opacity 0.4s var(--ease);
+  }
   .cotes {
-    opacity: 0.5;
+    opacity: 0.55;
+    transition: opacity 0.4s var(--ease);
+  }
+  .cote-trait {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.5s var(--ease);
+  }
+  .cote-valeur {
+    opacity: 1;
+    transition: opacity 0.35s var(--ease) 0.25s;
+  }
+  :global(.carte-segment:hover) .grille {
+    opacity: 0.6;
   }
   :global(.carte-segment:hover) .cotes {
     opacity: 1;
   }
 
-  /* Ce qui sort de l'entonnoir s'élargit : on a débloqué ce qui bloquait. */
-  .entonnoir-sortie {
-    transform-origin: left center;
+  /* --- pme : les barres se remplissent en cascade ------------------------ */
+  .barre-plein {
+    fill: currentColor;
+    fill-opacity: 0.1;
+    transition: fill-opacity 0.32s var(--ease);
+    transition-delay: calc(var(--rang) * 70ms);
   }
-  :global(.carte-segment:hover) .entonnoir-sortie {
-    transform: scaleX(1.75);
-    fill-opacity: 0.28;
+  :global(.carte-segment:hover) .barre-plein {
+    fill-opacity: 0.85;
   }
 
-  /* Le tampon s'appose. */
+  /* --- tpe : le tampon s'abat ------------------------------------------- */
   .tampon {
+    transform-box: fill-box;
     transform-origin: center;
-    transform: rotate(-7deg) scale(1.05);
+    transform: rotate(-6deg) scale(1.06);
+    transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   :global(.carte-segment:hover) .tampon {
-    transform: rotate(-2deg) scale(1);
+    transform: rotate(-1.5deg) scale(1);
   }
 
-  /* La jauge atteint son objectif. */
-  .jauge-remplissage {
+  /* --- ess : le curseur rejoint l'objectif ------------------------------- */
+  .curseur,
+  .jauge-acquis {
+    transform-box: view-box;
+    transition: transform 0.6s var(--ease);
+  }
+  .jauge-acquis {
     transform-origin: left center;
   }
-  :global(.carte-segment:hover) .jauge-remplissage {
-    transform: scaleX(1.61);
-    fill-opacity: 0.3;
+  :global(.carte-segment:hover) .curseur {
+    transform: translateX(78px);
+  }
+  :global(.carte-segment:hover) .jauge-acquis {
+    transform: scaleX(1.65);
+  }
+  .graduations {
+    transition: opacity 0.4s var(--ease);
+  }
+  :global(.carte-segment:hover) .graduations {
+    opacity: 0.85;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .badge-marque,
+    .trame,
+    .badge-cadre,
+    .badge-plein,
+    .grille,
     .cotes,
-    .entonnoir-sortie,
+    .cote-trait,
+    .cote-valeur,
+    .barre-plein,
     .tampon,
-    .jauge-remplissage {
+    .curseur,
+    .jauge-acquis,
+    .graduations {
       transition: none;
     }
   }
