@@ -128,12 +128,32 @@ sections:
           cause : Shopify convertit déjà tout seul vos images au format le plus
           léger que le navigateur sait lire.
       - texte: "**Le reste de la structure est sain.** Aucun décalage de mise en page pendant le chargement, rien qui bloque l'interaction, et 100 sur 100 au référencement technique de l'accueil. Le site n'est pas mal construit, il est trop lourd à un endroit précis."
-      - texte: "**Neuf pages n'ont pas de description pour les moteurs de recherche** : vos quatre collections et vos cinq pages de contenu. C'est le texte gris affiché sous le titre dans les résultats de Google. Quand il manque, Google va chercher une phrase au hasard dans la page. Les fiches produit et l'accueil, eux, en ont une."
+      - texte: "**Neuf pages n'avaient pas de description pour les moteurs de recherche. C'est corrigé.** Vos quatre collections et vos cinq pages de contenu n'en avaient aucune, et Google composait donc lui-même l'extrait affiché sous le titre, en piochant une phrase au hasard. Les huit textes sont écrits et en ligne, et le score de référencement des collections est passé de 92 à 100 sur 100."
     note: >-
       Vous pouvez tout revérifier vous-même :
       [mesurer la boutique avec l'outil de Google](https://pagespeed.web.dev/analysis?url=https%3A%2F%2Ffylgodrinks.com%2F).
       Ces chiffres sont mesurés en laboratoire, sur une connexion simulée.
 
+  - titre: Les textes écrits pour Google
+    texte: >-
+      Voici les huit descriptions rédigées et mises en ligne aujourd'hui, une
+      par page. Ce sont elles que Google affichera sous le titre de chaque
+      page dans ses résultats. Elles se modifient dans l'admin, section
+      Référencement, sans passer par moi.
+    replie: Voir les huit textes
+    liste:
+      - texte: "**Mocktails Signature** · Les quatre mocktails signature Fylgø, bio et enrichis en plantes, en canette 25 cl et en bouteille 33 cl. Sans alcool, produits en France."
+      - texte: "**Mocktails Signature 25cl** · Les quatre recettes Fylgø en canette 25 cl, par carton de douze. Mocktails bio sans alcool, enrichis en plantes et produits en France."
+      - texte: "**Mocktails Signature 33cl** · Les quatre recettes Fylgø en bouteille 33 cl, par carton de douze. Mocktails bio sans alcool, enrichis en plantes et produits en France."
+      - texte: "**Notre histoire** · Deux amis d'école de commerce réunis vingt ans plus tard autour d'une idée : réécrire le goût sans alcool. Les fondateurs et les valeurs de Fylgø."
+      - texte: "**Savoir-faire** · Comment naissent les mocktails Fylgø : un savoir-faire français, des créations saines enrichies en plantes, à déguster seules ou à mixer."
+      - texte: "**Suggestions cocktails** · Caribbean Mule, Veneziano Spritz, French 75, Negroni Royal : nos suggestions pour composer vos cocktails avec ou sans alcool à partir des recettes Fylgø."
+      - texte: "**Professionnels** · Bars, restaurants, cavistes : sublimez votre carte sans alcool avec Fylgø, le mocktail signature bio enrichi en plantes et produit en France."
+      - texte: "**Contact** · Une question sur nos mocktails, une commande ou une demande de partenariat ? Écrivez à l'équipe Fylgø, nous vous répondons directement."
+    note: >-
+      Chacune fait entre 134 et 153 caractères, sous la limite de 160 au-delà
+      de laquelle Google coupe la phrase. La neuvième page, la collection Packs
+      découverte, n'en a pas reçu : elle était vide, elle a été dépubliée.
   - titre: Ce qu'il reste, et chez qui
     texte: >-
       Quatre questions vous ont été posées par mail, plusieurs à trois reprises,
