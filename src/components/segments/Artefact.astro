@@ -1,16 +1,25 @@
 ---
 /* Les visuels de la section « Vous êtes… ».
  *
- * Un picto générique ne distingue pas une agence d'une association : les cinq
- * dessins montrent chacun un objet que le métier manipule vraiment. Le badge
- * vierge dit la marque blanche, les cotations disent ce qu'un DA livre, et
- * ainsi de suite. Tout est au trait et en currentColor, donc lisible aussi
- * bien sur la carte encre que sur les cartes claires, en thème clair comme en
- * thème sombre.
+ * Deux exigences qui tirent en sens inverse : chaque carte doit avoir sa
+ * propre écriture graphique, et les cinq doivent rester de la même famille.
+ * L'unité tient à la graisse de trait et aux rayons, repris de Geist. La
+ * différence tient au registre de rendu :
  *
- * L'animation se déclenche au survol de la carte parente, qui doit porter la
- * classe `carte-segment`. Elle montre l'objet fonctionner : le tampon
- * s'appose, l'entonnoir se débloque, la jauge monte. Rien ne bouge tout seul.
+ *   agence  gravure au trait fin sur fond encre, trame de sécurité derrière
+ *   da      les deux logos, Figma puis les accolades : le binôme sans phrase
+ *   pme     données en aplats, histogramme et ligne de seuil
+ *   tpe     impression, deux passes d'encre légèrement décalées
+ *   ess     jauge de collecte en pilule verte, code des pages de financement
+ *
+ * Deux visuels sortent du monochrome, et seulement eux : le logo Figma, qui
+ * cesse d'être reconnaissable en niveaux de gris, et la jauge, dont le vert
+ * vient du jeton `--success` et non d'une teinte inventée.
+ *
+ * Le mouvement ne déforme jamais une forme à rayon : pas de `scaleX` sur un
+ * rectangle arrondi, dont les coins s'écrasent et trahissent le procédé. On
+ * trace (stroke-dashoffset), on remplit en cascade (fill-opacity et délais),
+ * on déplace (translate). La carte parente porte `carte-segment`.
  */
 interface Props {
   type: "agence" | "da" | "pme" | "tpe" | "ess";
@@ -18,6 +27,10 @@ interface Props {
 }
 const { type, class: classe = "" } = Astro.props;
 
+// Les patterns et filtres SVG s'adressent par id : un même artefact rendu
+// deux fois sur une page réutiliserait le premier. D'où un suffixe par
+// instance.
+const uid = Math.random().toString(36).slice(2, 8);
 const TRAITS = "fill-none stroke-current";
 ---
 
@@ -25,31 +38,65 @@ const TRAITS = "fill-none stroke-current";
   type === "agence" && (
     <svg
       class:list={["artefact", TRAITS, classe]}
-      viewBox="0 0 120 152"
-      stroke-width="1.6"
+      viewBox="0 0 132 158"
+      stroke-width="1.3"
       stroke-linecap="round"
       stroke-linejoin="round"
       aria-hidden="true"
     >
-      {/* le cordon */}
-      <path d="M32 2 L53 40" />
-      <path d="M88 2 L67 40" />
-      <rect x="52" y="38" width="16" height="11" rx="2.5" />
-      {/* le badge */}
-      <rect x="16" y="50" width="88" height="98" rx="7" />
-      {/* l'emplacement de la marque, vide */}
+      <defs>
+        {/* la trame d'un document officiel, qui donne de la matière au noir */}
+        <pattern id={`trame-${uid}`} width="7" height="7" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="0.6" fill="currentColor" stroke="none" />
+        </pattern>
+      </defs>
+
       <rect
-        class="badge-marque"
-        x="31"
-        y="64"
-        width="58"
-        height="26"
-        rx="3"
-        stroke-dasharray="5 4"
+        class="trame"
+        x="24"
+        y="54"
+        width="84"
+        height="96"
+        rx="8"
+        fill={`url(#trame-${uid})`}
+        stroke="none"
       />
-      <line x1="31" y1="106" x2="89" y2="106" />
-      <line x1="31" y1="117" x2="71" y2="117" />
-      <rect x="31" y="129" width="58" height="7" rx="3.5" opacity="0.45" />
+
+      {/* le cordon */}
+      <path d="M38 3 L60 42" />
+      <path d="M94 3 L72 42" />
+      <rect x="59" y="40" width="14" height="10" rx="2.5" />
+
+      {/* le badge, qui se redresse quand la marque s'y pose */}
+      <g class="badge-pose">
+        <rect x="24" y="54" width="84" height="96" rx="8" />
+
+        {/* l'emplacement de la marque : vide, il attend la vôtre */}
+        <rect
+          class="badge-cadre"
+          x="38"
+          y="68"
+          width="56"
+          height="26"
+          rx="3"
+          pathLength="100"
+          stroke-dasharray="100"
+        />
+        <rect
+          class="badge-plein"
+          x="38"
+          y="68"
+          width="56"
+          height="26"
+          rx="3"
+          fill="currentColor"
+          stroke="none"
+        />
+
+        <line x1="38" y1="110" x2="94" y2="110" />
+        <line x1="38" y1="120" x2="76" y2="120" />
+        <rect x="38" y="131" width="56" height="7" rx="3.5" opacity="0.4" />
+      </g>
     </svg>
   )
 }
@@ -58,32 +105,39 @@ const TRAITS = "fill-none stroke-current";
   type === "da" && (
     <svg
       class:list={["artefact", TRAITS, classe]}
-      viewBox="0 0 196 132"
-      stroke-width="1.6"
+      viewBox="0 0 216 92"
+      stroke-width="1.3"
       stroke-linecap="round"
       stroke-linejoin="round"
       aria-hidden="true"
     >
-      {/* l'artboard et ses blocs */}
-      <rect x="8" y="10" width="122" height="112" rx="5" />
-      <rect x="22" y="26" width="94" height="30" rx="2.5" />
-      <rect x="22" y="68" width="44" height="38" rx="2.5" />
-      <rect x="72" y="68" width="44" height="38" rx="2.5" />
-      {/* les cotations, ce que le DA livre et que personne ne respecte */}
-      <g class="cotes">
-        <path d="M142 26 V56" />
-        <path d="M137 26 H147" />
-        <path d="M137 56 H147" />
-        <text class="cote-valeur" x="153" y="45">
-          30
-        </text>
-        <path d="M22 116 H66" />
-        <path d="M22 111 V121" />
-        <path d="M66 111 V121" />
-        <text class="cote-valeur" x="38" y="132">
-          44
-        </text>
+      {/* Figma d'un côté, mes accolades de l'autre : le binôme dit en deux
+          signes que tout le monde reconnaît. C'est le seul visuel en couleur
+          de la section, parce que le logo Figma en niveaux de gris cesse
+          d'être le logo Figma. */}
+      <g transform="translate(14 18) scale(0.72)">
+        <path fill="#1ABCFE" stroke="none" d="M24 36a12 12 0 1 1 24 0 12 12 0 0 1-24 0z" />
+        <path fill="#0ACF83" stroke="none" d="M0 60a12 12 0 0 1 12-12h12v12a12 12 0 1 1-24 0z" />
+        <path fill="#FF7262" stroke="none" d="M24 0h12a12 12 0 0 1 0 24H24V0z" />
+        <path fill="#F24E1E" stroke="none" d="M0 12A12 12 0 0 1 12 0h12v24H12A12 12 0 0 1 0 12z" />
+        <path fill="#A259FF" stroke="none" d="M0 36a12 12 0 0 1 12-12h12v24H12A12 12 0 0 1 0 36z" />
       </g>
+
+      {/* le passage de l'un à l'autre */}
+      <g class="passage">
+        <path
+          class="passage-trait"
+          d="M72 46 H128"
+          stroke-dasharray="4 5"
+          stroke-width="1.6"
+          pathLength="100"
+        />
+        <path class="passage-pointe" d="M124 40 l7 6 l-7 6" stroke-width="1.6" fill="none" />
+      </g>
+
+      <text class="accolades" x="148" y="62">
+        {"{ }"}
+      </text>
     </svg>
   )
 }
@@ -91,27 +145,41 @@ const TRAITS = "fill-none stroke-current";
 {
   type === "pme" && (
     <svg
-      class:list={["artefact", TRAITS, classe]}
-      viewBox="0 0 176 124"
-      stroke-width="1.6"
-      stroke-linecap="round"
+      class:list={["artefact", "fill-none stroke-current", classe]}
+      viewBox="0 0 182 128"
+      stroke-width="1.3"
       stroke-linejoin="round"
       aria-hidden="true"
     >
-      {/* l'entonnoir : ce qui entre, ce qui reste */}
-      <rect x="10" y="10" width="152" height="18" rx="4" />
-      <rect x="10" y="38" width="108" height="18" rx="4" />
-      <rect x="10" y="66" width="64" height="18" rx="4" />
-      <rect
-        class="entonnoir-sortie"
-        x="10"
-        y="94"
-        width="28"
-        height="18"
-        rx="4"
-        fill="currentColor"
-        fill-opacity="0.16"
-      />
+      {/* la ligne de seuil : ce qu'il faut franchir */}
+      <path d="M6 52 H176" stroke-dasharray="3 5" stroke-width="1" opacity="0.5" />
+
+      {/* l'histogramme, en aplats et non en contours : le registre change */}
+      <g class="barres">
+        <g class="barre" style="--rang:0">
+          <rect x="10" y="78" width="24" height="36" />
+          <rect class="barre-plein" x="10" y="78" width="24" height="36" stroke="none" />
+        </g>
+        <g class="barre" style="--rang:1">
+          <rect x="44" y="62" width="24" height="52" />
+          <rect class="barre-plein" x="44" y="62" width="24" height="52" stroke="none" />
+        </g>
+        <g class="barre" style="--rang:2">
+          <rect x="78" y="70" width="24" height="44" />
+          <rect class="barre-plein" x="78" y="70" width="24" height="44" stroke="none" />
+        </g>
+        <g class="barre" style="--rang:3">
+          <rect x="112" y="40" width="24" height="74" />
+          <rect class="barre-plein" x="112" y="40" width="24" height="74" stroke="none" />
+        </g>
+        <g class="barre" style="--rang:4">
+          <rect x="146" y="18" width="24" height="96" />
+          <rect class="barre-plein" x="146" y="18" width="24" height="96" stroke="none" />
+        </g>
+      </g>
+
+      {/* le sol */}
+      <path d="M6 114 H176" stroke-width="1.3" />
     </svg>
   )
 }
@@ -120,19 +188,27 @@ const TRAITS = "fill-none stroke-current";
   type === "tpe" && (
     <svg
       class:list={["artefact", TRAITS, classe]}
-      viewBox="0 0 156 124"
-      stroke-width="1.6"
+      viewBox="0 0 164 130"
       stroke-linecap="round"
       stroke-linejoin="round"
       aria-hidden="true"
     >
-      {/* le tampon, posé de travers comme un vrai */}
+      {/* La première passe d'encre, décalée sous la seconde. Un tampon imprime
+          rarement du premier coup bien droit, et ce léger dédoublement le dit
+          sans filtre de bruit, qui pixellisait le trait. */}
       <g class="tampon">
-        <rect x="26" y="24" width="104" height="62" rx="9" />
-        <rect x="34" y="32" width="88" height="46" rx="6" opacity="0.5" />
-        <path d="M60 56 l13 13 l25 -27" stroke-width="3" />
+        <g class="tampon-fantome" opacity="0.22">
+          <rect x="30" y="24" width="108" height="64" rx="11" stroke-width="2.8" />
+          <path d="M66 57 l13 13 l26 -28" stroke-width="3.6" />
+        </g>
+
+        <rect x="28" y="22" width="108" height="64" rx="11" stroke-width="2.8" />
+        <rect x="37" y="31" width="90" height="46" rx="6.5" stroke-width="1.1" opacity="0.5" />
+        <path d="M64 55 l13 13 l26 -28" stroke-width="3.6" />
       </g>
-      <path d="M16 104 H140" opacity="0.5" />
+
+      {/* le papier */}
+      <path d="M16 108 H148" stroke-width="1.2" opacity="0.45" />
     </svg>
   )
 }
@@ -141,40 +217,65 @@ const TRAITS = "fill-none stroke-current";
   type === "ess" && (
     <svg
       class:list={["artefact", TRAITS, classe]}
-      viewBox="0 0 248 74"
-      stroke-width="1.6"
+      viewBox="0 0 252 86"
       stroke-linecap="round"
-      stroke-linejoin="round"
       aria-hidden="true"
     >
-      {/* la jauge de collecte et son objectif */}
-      <rect x="8" y="24" width="232" height="16" rx="8" />
+      {/* Le rail et sa collecte, en pilule et en vert : le code visuel des
+          pages de financement participatif, que les associations ont déjà en
+          tête. Le vert vient de `--success`, pas d'une teinte inventée. La
+          largeur s'anime en propriété CSS et non en `scaleX`, ce qui garde
+          les extrémités rondes. */}
       <rect
-        class="jauge-remplissage"
-        x="8"
-        y="24"
-        width="128"
-        height="16"
-        rx="8"
-        fill="currentColor"
-        fill-opacity="0.18"
+        x="12"
+        y="30"
+        width="228"
+        height="20"
+        rx="10"
+        fill="var(--surface-raise)"
+        stroke="none"
       />
-      <g opacity="0.45">
-        <path d="M62 46 V52" />
-        <path d="M120 46 V52" />
-        <path d="M178 46 V52" />
+      <rect
+        class="jauge-acquis"
+        x="12"
+        y="30"
+        width="120"
+        height="20"
+        rx="10"
+        fill="var(--success)"
+        stroke="none"
+      />
+      <rect x="12" y="30" width="228" height="20" rx="10" stroke-width="1.4" opacity="0.35" />
+
+      {/* la règle sous le rail */}
+      <g class="graduations" stroke-width="1.3" opacity="0.55">
+        <path d="M12 54 V64" />
+        <path d="M34 54 V60" />
+        <path d="M56 54 V60" />
+        <path d="M78 54 V64" />
+        <path d="M100 54 V60" />
+        <path d="M122 54 V60" />
+        <path d="M144 54 V64" />
+        <path d="M166 54 V60" />
+        <path d="M188 54 V60" />
+        <path d="M210 54 V64" />
       </g>
-      {/* le repère de l'objectif */}
-      <path d="M206 14 V52" stroke-width="2" />
+
+      {/* le curseur, qui se déplace sans rien déformer */}
+      <g class="curseur">
+        <path d="M132 6 V18" stroke-width="2" />
+        <path d="M132 27 l-8 -11 h16 z" fill="currentColor" stroke="none" />
+      </g>
+
+      {/* l'objectif */}
+      <path d="M210 20 V72" stroke-width="2.2" />
     </svg>
   )
 }
 
 <style>
   /* Pas de `width` ici : un style scopé Astro porte un attribut en plus, donc
-     il bat les utilitaires Tailwind posés par l'appelant. C'est la taille de
-     rendu qui est laissée à la carte, elle seule sait la place dont elle
-     dispose. */
+     il bat les utilitaires Tailwind posés par l'appelant. */
   .artefact {
     display: block;
     max-width: 100%;
@@ -188,71 +289,145 @@ const TRAITS = "fill-none stroke-current";
     font-weight: 600;
   }
 
-  /* Chaque objet se met à fonctionner quand on survole sa carte. */
-  .badge-marque,
-  .cotes,
-  .entonnoir-sortie,
-  .tampon,
-  .jauge-remplissage {
+  /* --- agence : la marque se pose vraiment dans son emplacement ---------- */
+  .trame {
+    opacity: 0.14;
+    transition: opacity 0.5s var(--ease);
+  }
+  .badge-cadre {
+    stroke-dashoffset: 0;
+    opacity: 1;
     transition:
-      stroke-dasharray 0.35s var(--ease),
-      fill-opacity 0.35s var(--ease),
-      opacity 0.35s var(--ease),
-      transform 0.45s var(--ease);
-    transform-box: fill-box;
+      opacity 0.3s var(--ease) 0.2s,
+      stroke-dashoffset 0.55s var(--ease);
   }
-
-  /* L'emplacement de marque se referme : votre logo vient s'y poser. */
-  .badge-marque {
-    fill: currentColor;
+  .badge-plein {
     fill-opacity: 0;
+    transition: fill-opacity 0.4s var(--ease) 0.12s;
   }
-  :global(.carte-segment:hover) .badge-marque {
-    stroke-dasharray: 400;
-    fill-opacity: 0.12;
+  .badge-pose {
+    transform-box: view-box;
+    transform-origin: center;
+    transition: transform 0.5s cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+  /* le cadre en pointillés s'efface pendant que l'aplat le remplace : la
+     place réservée cesse d'être vide */
+  :global(.carte-segment:hover) .trame {
+    opacity: 0.34;
+  }
+  :global(.carte-segment:hover) .badge-cadre {
+    opacity: 0;
+  }
+  :global(.carte-segment:hover) .badge-plein {
+    fill-opacity: 0.92;
+  }
+  :global(.carte-segment:hover) .badge-pose {
+    transform: translateY(-5px) rotate(-1.5deg);
   }
 
-  /* Les cotations ne s'affirment qu'au survol : on les regarde de près. */
-  .cotes {
-    opacity: 0.5;
+  /* --- da : le passage de Figma au code se trace ------------------------- */
+  .passage-trait {
+    stroke-dasharray: 4 5;
+    stroke-dashoffset: 36;
+    opacity: 0.45;
+    transition:
+      stroke-dashoffset 0.65s var(--ease),
+      opacity 0.3s var(--ease);
   }
-  :global(.carte-segment:hover) .cotes {
+  .passage-pointe {
+    opacity: 0.45;
+    transform-box: view-box;
+    transition:
+      opacity 0.3s var(--ease),
+      transform 0.45s var(--ease) 0.1s;
+  }
+  .accolades {
+    fill: currentColor;
+    stroke: none;
+    font-family: var(--font-logo);
+    font-size: 46px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    opacity: 0.55;
+    transform-box: view-box;
+    transform-origin: center;
+    transition:
+      opacity 0.35s var(--ease) 0.15s,
+      transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1) 0.15s;
+  }
+  :global(.carte-segment:hover) .passage-trait {
+    stroke-dashoffset: 0;
     opacity: 1;
   }
-
-  /* Ce qui sort de l'entonnoir s'élargit : on a débloqué ce qui bloquait. */
-  .entonnoir-sortie {
-    transform-origin: left center;
+  :global(.carte-segment:hover) .passage-pointe {
+    opacity: 1;
+    transform: translateX(6px);
   }
-  :global(.carte-segment:hover) .entonnoir-sortie {
-    transform: scaleX(1.75);
-    fill-opacity: 0.28;
+  :global(.carte-segment:hover) .accolades {
+    opacity: 1;
+    transform: scale(1.1);
   }
 
-  /* Le tampon s'appose. */
+  /* --- pme : les barres se remplissent en cascade ------------------------ */
+  .barre-plein {
+    fill: currentColor;
+    fill-opacity: 0.1;
+    transition: fill-opacity 0.32s var(--ease);
+    transition-delay: calc(var(--rang) * 70ms);
+  }
+  :global(.carte-segment:hover) .barre-plein {
+    fill-opacity: 0.85;
+  }
+
+  /* --- tpe : le tampon s'abat ------------------------------------------- */
   .tampon {
+    transform-box: fill-box;
     transform-origin: center;
-    transform: rotate(-7deg) scale(1.05);
+    transform: rotate(-6deg) scale(1.06);
+    transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   :global(.carte-segment:hover) .tampon {
-    transform: rotate(-2deg) scale(1);
+    transform: rotate(-1.5deg) scale(1);
   }
 
-  /* La jauge atteint son objectif. */
-  .jauge-remplissage {
-    transform-origin: left center;
+  /* --- ess : la collecte atteint son objectif ---------------------------- */
+  .curseur {
+    transform-box: view-box;
+    transition: transform 0.65s var(--ease);
   }
-  :global(.carte-segment:hover) .jauge-remplissage {
-    transform: scaleX(1.61);
-    fill-opacity: 0.3;
+  /* `width` s'anime comme une propriété CSS sur un rect SVG, contrairement à
+     `scaleX` qui aplatirait les deux bouts de la pilule. */
+  .jauge-acquis {
+    width: 120px;
+    transition: width 0.65s var(--ease);
+  }
+  :global(.carte-segment:hover) .curseur {
+    transform: translateX(78px);
+  }
+  :global(.carte-segment:hover) .jauge-acquis {
+    width: 198px;
+  }
+  .graduations {
+    transition: opacity 0.4s var(--ease);
+  }
+  :global(.carte-segment:hover) .graduations {
+    opacity: 0.85;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .badge-marque,
-    .cotes,
-    .entonnoir-sortie,
+    .trame,
+    .badge-cadre,
+    .badge-plein,
+    .badge-pose,
+    .passage-trait,
+    .passage-pointe,
+    .accolades,
+    .tampon-fantome,
+    .barre-plein,
     .tampon,
-    .jauge-remplissage {
+    .curseur,
+    .jauge-acquis,
+    .graduations {
       transition: none;
     }
   }
