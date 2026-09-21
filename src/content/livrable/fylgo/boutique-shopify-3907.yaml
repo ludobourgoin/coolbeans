@@ -117,22 +117,27 @@ sections:
       téléphone, puis j'ai passé en revue ce que les moteurs de recherche y
       lisent.
     liste:
-      - texte: "**Sur ordinateur, la boutique est rapide.** 84 sur 100 pour l'accueil, 86 pour une collection, 96 pour une fiche produit. L'accueil affiche son image principale en 2,4 secondes, juste sous le seuil de 2,5 secondes que Google considère comme bon."
-      - texte: "**Sur téléphone, elle ne l'est pas.** 64, 68 et 62. L'accueil met 11 secondes à afficher son image principale, la fiche produit 9. C'est le point qui compte le plus, parce que Google classe les sites d'après leur version mobile et non leur version ordinateur."
-      - texte: "**La cause est identifiée et elle est à ma main.** Trois images de fond sont servies aux téléphones à la taille prévue pour les grands écrans, 2000 pixels de large, soit 799 Ko à elles seules. Demandées à une taille adaptée, elles en pèseraient 474. C'est un réglage du thème, il ne demande rien de votre côté."
+      - texte: "**Sur ordinateur, la boutique est rapide.** Rien à signaler de ce côté."
+      - texte: "**Sur téléphone, elle est lente**, et c'est ce qui compte le plus, parce que Google classe les sites d'après leur version mobile. L'accueil pèse 2,3 Mo, là où une page confortable sur un réseau mobile en fait moins d'un."
+      - texte: "**J'ai retiré 386 Ko aujourd'hui.** Trois images de fond étaient servies aux téléphones à la dimension prévue pour les grands écrans, et la grande image d'accueil se chargeait en dernier au lieu d'être prioritaire. Les deux sont corrigés."
+      - texte: "**Il reste 494 Ko de gaspillage, et j'en connais la cause exacte.** Vingt-huit images de l'accueil déclarent au navigateur qu'elles occupent toute la largeur de l'écran, alors qu'elles s'affichent en vignettes. Il leur sert donc une version bien plus grande que nécessaire."
         tooltip: >-
-          Le détail, sur la première des trois. Servie en 2000 pixels de large,
-          elle pèse 346 Ko. En 1200 pixels, 256 Ko. En 900 pixels, 168 Ko. En
-          600 pixels, 90 Ko. C'est la même image, et sur un téléphone de 402
-          pixels de large la différence ne se voit pas. Le format n'est pas en
-          cause : Shopify convertit déjà tout seul vos images au format le plus
-          léger que le navigateur sait lire.
-      - texte: "**Le reste de la structure est sain.** Aucun décalage de mise en page pendant le chargement, rien qui bloque l'interaction, et 100 sur 100 au référencement technique de l'accueil. Le site n'est pas mal construit, il est trop lourd à un endroit précis."
+          Le cas le plus parlant : un picto affiché à cent pixels de large est
+          livré en 1445 pixels, soit 37 Ko au lieu de 3. Ce n'est pas un
+          réglage cassé, c'est le comportement par défaut du thème Flow, que
+          personne n'a ajusté à votre mise en page. Le catalogue d'images et
+          leur format, eux, sont corrects : Shopify les convertit déjà tout
+          seul au format le plus léger que le navigateur sait lire.
+      - texte: "**Corriger ce reste est un travail à part**, section par section, avec un relevé des largeurs réelles d'affichage. Je vous le chiffrerai séparément plutôt que de le bricoler à moitié."
       - texte: "**Neuf pages n'avaient pas de description pour les moteurs de recherche. C'est corrigé.** Vos quatre collections et vos cinq pages de contenu n'en avaient aucune, et Google composait donc lui-même l'extrait affiché sous le titre, en piochant une phrase au hasard. Les huit textes sont écrits et en ligne, et le score de référencement des collections est passé de 92 à 100 sur 100."
     note: >-
-      Vous pouvez tout revérifier vous-même :
-      [mesurer la boutique avec l'outil de Google](https://pagespeed.web.dev/analysis?url=https%3A%2F%2Ffylgodrinks.com%2F).
-      Ces chiffres sont mesurés en laboratoire, sur une connexion simulée.
+      Vous pouvez mesurer vous-même :
+      [l'outil de Google](https://pagespeed.web.dev/analysis?url=https%3A%2F%2Ffylgodrinks.com%2F).
+      Un mot sur la méthode, parce qu'il évite un malentendu : sur un réseau
+      simulé, ces mesures varient beaucoup d'une passe à l'autre. J'ai relevé
+      jusqu'à trois secondes d'écart entre deux mesures du même code. C'est
+      pourquoi je raisonne en poids de page, qui est stable à trois pour cent
+      près, plutôt qu'en note sur cent.
 
   - titre: Les textes écrits pour Google
     texte: >-
