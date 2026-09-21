@@ -1,11 +1,15 @@
 ---
 const year = 2026;
 
-// contenu conservé du footer précédent, réorganisé en colonnes
+// contenu conservé du footer précédent, réorganisé en colonnes.
+// Les libellés reprennent ceux de Nav.astro : « Boîte à outils » et « Se
+// connecter », pas « Tools » ni « Espace client ». Deux noms pour la même page
+// font douter qu'il s'agisse de la même page.
 const exploreLinks = [
   { href: "/", label: "Accueil" },
   { href: "/about", label: "À propos" },
-  { href: "/tools", label: "Tools" },
+  { href: "/tools", label: "Boîte à outils" },
+  { href: "/connexion", label: "Se connecter" },
 ];
 ---
 
