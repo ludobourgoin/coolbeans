@@ -130,13 +130,9 @@ sections:
       - texte: "**Le reste de la structure est sain.** Aucun décalage de mise en page pendant le chargement, rien qui bloque l'interaction, et 100 sur 100 au référencement technique de l'accueil. Le site n'est pas mal construit, il est trop lourd à un endroit précis."
       - texte: "**Deux corrections de référencement faciles.** Les collections et deux pages de contenu n'ont pas de description pour les moteurs, ce texte gris affiché sous le titre dans Google. Et le titre principal de l'accueil est votre logo, ce qui fait lire « Fylgo » comme sujet de la page au lieu de votre promesse."
     note: >-
-      Vous pouvez tout revérifier vous-même, sans me croire sur parole :
+      Vous pouvez tout revérifier vous-même :
       [mesurer la boutique avec l'outil de Google](https://pagespeed.web.dev/analysis?url=https%3A%2F%2Ffylgodrinks.com%2F).
-      Une réserve de méthode au passage. Ces chiffres sont mesurés en
-      laboratoire, sur une connexion simulée. Google dispose aussi de mesures
-      relevées chez de vrais visiteurs, mais il ne les publie qu'au-delà d'un
-      volume de trafic que la boutique n'atteint pas encore, et la page ci-dessus
-      vous le dira elle-même.
+      Ces chiffres sont mesurés en laboratoire, sur une connexion simulée.
 
   - titre: Ce qu'il reste, et chez qui
     texte: >-
