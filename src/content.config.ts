@@ -224,9 +224,23 @@ const livrable = defineCollection({
           )
           .optional(),
         note: z.string().optional(),
+        /* Replie la liste derrière un dépliant portant ce libellé. Le `texte`
+           de la section reste visible au-dessus et fait le résumé ; la liste
+           devient la pièce justificative, consultable en un clic.
+
+           Sert aux sections de preuve, longues et rarement lues en entier :
+           sur le livrable Fylgo, l'inventaire du travail livré pesait quinze
+           puces qui écrasaient tout le reste du document. Le libellé porte
+           toujours le décompte, sans quoi personne ne déplie. */
+        replie: z.string().optional(),
       }),
     ),
     parcoursTitre: z.string().default("Le parcours"),
+    /* Replie chaque groupe du parcours derrière un dépliant. Opt-in : un
+       relevé de liens à corriger se lit comme une checklist et reste ouvert,
+       tandis que la table des matières d'un site livré gagne à se refermer,
+       sans quoi elle pèse plus lourd que les sections qu'elle suit. */
+    parcoursReplie: z.boolean().default(false),
     /* Le parcours sert aussi de liste de liens externes à suivre (relais à
        relancer, pages à faire corriger). D'où `groupe`, qui coupe la liste en
        sous-ensembles, `favicon`, chemin sous public/ affiché en vignette pour

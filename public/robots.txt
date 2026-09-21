@@ -2,10 +2,17 @@
 # aussi une balise noindex : les deux se cumulent au lieu de se remplacer,
 # parce qu'un Disallow seul empêche le robot de lire le noindex, et qu'un
 # noindex seul laisse l'URL crawlable.
+#
+# /livrable et /temoignage ont été ajoutés le 2026-09-21 : ils manquaient
+# depuis la création de ces deux collections, alors qu'ils portent le même
+# genre de contenu nominatif que /devis et /cadrage, montants compris.
+# /projets reste indexable, ce sont les cas clients publics.
 User-agent: *
 Allow: /
 Disallow: /devis
 Disallow: /cadrage
+Disallow: /livrable
+Disallow: /temoignage
 Disallow: /design-system
 
 Sitemap: https://coolbeans.cc/sitemap-index.xml

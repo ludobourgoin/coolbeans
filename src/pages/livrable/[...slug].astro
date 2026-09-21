@@ -126,7 +126,11 @@ const dateCourte = (d: Date) =>
           </div>
 
           {v.data.parcours.length > 0 && (
-            <LivrableParcours titre={v.data.parcoursTitre} etapes={v.data.parcours} />
+            <LivrableParcours
+              titre={v.data.parcoursTitre}
+              etapes={v.data.parcours}
+              replie={v.data.parcoursReplie}
+            />
           )}
 
           {v.data.message && (

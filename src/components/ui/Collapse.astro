@@ -6,13 +6,17 @@ interface Props {
 const { question, open = false } = Astro.props;
 ---
 
-<details class="group border-t border-line last-of-type:border-b" open={open}>
+{/* Groupe nommé : `group-hover:` de Tooltip génère `.group:hover &`, qui
+    remonte à tout ancêtre portant `.group` et non au plus proche. Un groupe
+    anonyme ici ouvrirait toutes les infobulles contenues dans le dépliant dès
+    qu'on le survole. Constaté sur le livrable Fylgo le 2026-09-21. */}
+<details class="group/collapse border-t border-line last-of-type:border-b" open={open}>
   <summary
     class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-base font-medium text-ink [&::-webkit-details-marker]:hidden"
   >
     {question}
     <span
-      class="font-mono text-mute after:content-['+'] group-open:after:content-['−']"
+      class="font-mono text-mute after:content-['+'] group-open/collapse:after:content-['−']"
       aria-hidden="true"></span>
   </summary>
   <div class="max-w-[68ch] pb-5 text-[15px] text-mute"><slot /></div>

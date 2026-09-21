@@ -3,7 +3,7 @@ client: "fylgo"
 title: "Référence et support"
 order: 5
 status: "draft"
-updated: 2026-09-20
+updated: 2026-09-21
 description: "Le plan du site, l'annuaire des services, les détails techniques du thème et la marche à suivre pour demander une intervention."
 ---
 
@@ -32,7 +32,7 @@ reprendrait le projet pour s'orienter en une lecture.
 | Payplug | L'encaissement et les remboursements | Interface Payplug |
 | Brevo | Les emails marketing, via son application sur la boutique | Interface Brevo |
 | Search & Discovery | Les produits complémentaires en bas de fiche | Application dans l'admin Shopify |
-| Faire, Ankorstore | La vente aux professionnels, branchées sans conditions commerciales | Interfaces respectives |
+| Faire, Ankorstore | La vente aux professionnels, catalogue et stocks synchronisés depuis Shopify | Interfaces respectives |
 | Google Search Console | L'indexation et la présence dans Google | `search.google.com/search-console` |
 
 ## Le thème
@@ -48,6 +48,60 @@ Deux polices de la marque sont chargées depuis le code du thème, et non depuis
 les réglages de Shopify : Stylebender Retro pour tous les titres, Stylebender
 Ornate pour la bannière défilante. C'est pourquoi les réglages typographiques
 de l'admin restent sans effet sur ces éléments.
+
+### Changer ou ajouter une police
+
+C'est la seule manipulation de cette documentation qui passe par l'éditeur de
+code. Elle est sans danger : elle n'ajoute qu'un fichier et quelques lignes, et
+tout se défait en les retirant.
+
+Travaillez toujours sur une copie. Dans **Boutique en ligne** puis **Thèmes**,
+ouvrez le menu `···` du thème publié et choisissez **Dupliquer**. C'est sur
+cette copie que vous modifiez, et vous ne la publiez qu'une fois le rendu
+validé.
+
+1. Sur la copie, menu `···` puis **Modifier le code**.
+2. Dans le dossier **Assets**, cliquez sur **Ajouter un fichier** et déposez
+   votre police au format `.woff2`. C'est le format le plus léger, et le seul
+   à utiliser.
+3. Toujours dans **Assets**, ouvrez `custom.css`. C'est le fichier qui porte
+   toutes les surcharges de Fylgo, et le seul que vous ayez à modifier.
+4. Déclarez la police en haut du fichier, en reprenant exactement le nom du
+   fichier déposé :
+
+```css
+@font-face {
+  font-family: 'Ma Nouvelle Police';
+  src: url('ma-nouvelle-police.woff2') format('woff2');
+  font-display: swap;
+}
+```
+
+5. Appliquez-la aux éléments voulus, plus bas dans le même fichier :
+
+```css
+h1, h2, h3, h4, h5, h6,
+.h0, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: 'Ma Nouvelle Police', sans-serif !important;
+}
+```
+
+<Callout type="piege">
+  Le `!important` n'est pas une coquetterie. Le thème Flow injecte ses propres
+  styles directement dans les balises, et sans lui votre police est ignorée
+  sans le moindre message d'erreur.
+</Callout>
+
+Pour **remplacer** une police existante plutôt qu'en ajouter une, gardez le
+nom de famille en place, `Stylebender Retro` par exemple, et changez seulement
+le nom de fichier dans la ligne `src`. Rien d'autre à toucher : tous les
+éléments qui l'utilisent suivent.
+
+Le chemin dans `url()` ne porte jamais de dossier. Shopify sert tout le contenu
+d'**Assets** à plat, donc `url('ma-police.woff2')` et rien de plus.
+
+Vérifiez le rendu sur l'aperçu de la copie, sur ordinateur et sur téléphone,
+avant de la publier.
 
 Le logo Agriculture biologique affiché en bas du diaporama d'accueil est posé
 par le code, et non par la section Diaporama. Il dépend de la hauteur « plein
@@ -93,6 +147,6 @@ En cas d'urgence, si le site devient inaccessible ou si le paiement ne
 fonctionne plus, republier un thème de secours depuis Boutique en ligne puis
 Thèmes remet le site dans un état connu, sans attendre notre intervention.
 
-La procédure interne suivie par Coolbeans pour modifier le code du thème est
-décrite dans [Workflow du thème](/docs/fylgo/workflow-theme). Elle ne demande
+Coolbeans suit une procédure interne pour toute modification du code du thème :
+travail sur une copie, relecture, puis publication manuelle. Elle ne demande
 aucune action de votre part.

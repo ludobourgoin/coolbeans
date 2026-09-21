@@ -154,14 +154,85 @@ const audience = [
 
     <div class="flex items-center gap-3.5 justify-self-end">
       <ThemeSwitch />
-      {/* Le bouton s'inverse au point de rupture de la nav centrale (980px).
-          Au-dessus, Contact est dans la nav, le bouton sert au portail. En
-          dessous, la nav est masquée : le bouton redevient le seul chemin
-          vers le contact, qui est l'action attendue d'un prospect sur
-          téléphone. Deux ancres plutôt qu'une, parce qu'un href ne se change
-          pas au média. */}
+      {/* Au-dessus de 980px la nav centrale porte les liens, et le bouton mène
+          au portail. En dessous, la nav est masquée : le burger ouvre le même
+          menu, liens et portail compris. Avant le 2026-09-21 le bouton devenait
+          un raccourci Contact, qui coupait l'accès à toutes les autres pages
+          depuis un téléphone. */}
       <a class="btn btn-sm max-[980px]:hidden" href="/connexion">Se connecter</a>
-      <a class="btn btn-sm min-[981px]:hidden" href="/contact">Contact</a>
+      <button
+        type="button"
+        id="nav-burger"
+        class="group grid size-8 cursor-pointer place-items-center rounded-full border border-[var(--line)] bg-[var(--surface-subtle)] text-ink transition-colors duration-150 ease-in-out min-[981px]:hidden"
+        aria-controls="nav-mobile"
+        aria-expanded="false"
+        aria-label="Ouvrir le menu"
+      >
+        <svg
+          class="size-4.5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <line
+            class="origin-center -translate-y-[5px] transition-[translate,rotate] duration-200 ease-brand group-aria-expanded:translate-y-0 group-aria-expanded:rotate-45"
+            x1="4"
+            y1="12"
+            x2="20"
+            y2="12"></line>
+          <line
+            class="transition-opacity duration-150 ease-brand group-aria-expanded:opacity-0"
+            x1="4"
+            y1="12"
+            x2="20"
+            y2="12"></line>
+          <line
+            class="origin-center translate-y-[5px] transition-[translate,rotate] duration-200 ease-brand group-aria-expanded:translate-y-0 group-aria-expanded:-rotate-45"
+            x1="4"
+            y1="12"
+            x2="20"
+            y2="12"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  {/* Menu mobile. Reprend les mêmes liens que la nav centrale, plus l'accès au
+      portail : sous 980px c'est le seul chemin vers le reste du site. Fermé, il
+      est `invisible`, donc hors de l'arbre d'accessibilité — c'est ce qui évite
+      deux navigations exposées en même temps. */}
+  <div
+    id="nav-mobile"
+    data-open="false"
+    class="invisible absolute inset-x-0 top-full -translate-y-1.5 opacity-0 transition-[opacity,transform,visibility] duration-200 ease-brand data-[open=true]:visible data-[open=true]:translate-y-0 data-[open=true]:opacity-100 min-[981px]:hidden"
+  >
+    <div class="container-site pt-1 pb-4">
+      <nav
+        class="flex flex-col rounded-control border-[1.5px] border-ink bg-surface p-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.12)]"
+        aria-label="navigation mobile"
+      >
+        {
+          links
+            .filter((l) => l.ready)
+            .map((l) => (
+              <a
+                href={l.href}
+                aria-current={isActive(l.href) ? "page" : undefined}
+                class:list={[
+                  "rounded-sm px-3 py-2.75 text-[15px] leading-tight font-medium text-ink transition-[background-color,color] duration-120 ease-in-out hover:bg-accent hover:text-accent-ink",
+                  { "bg-[var(--surface-subtle)] font-semibold": isActive(l.href) },
+                ]}
+              >
+                {l.label}
+              </a>
+            ))
+        }
+        <div class="mx-1 my-1.5 h-px bg-line" role="separator"></div>
+        <a class="btn btn-sm" href="/connexion">Se connecter</a>
+      </nav>
     </div>
   </div>
 </header>
@@ -189,6 +260,32 @@ const audience = [
         { passive: true },
       );
       update();
+    }
+
+    const burger = document.getElementById("nav-burger");
+    const panneau = document.getElementById("nav-mobile");
+    if (burger && panneau) {
+      const setOpen = (open) => {
+        panneau.setAttribute("data-open", String(open));
+        burger.setAttribute("aria-expanded", String(open));
+        burger.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
+      };
+      burger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        setOpen(burger.getAttribute("aria-expanded") !== "true");
+      });
+      document.addEventListener("click", (e) => {
+        if (!panneau.contains(e.target) && !burger.contains(e.target)) setOpen(false);
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") setOpen(false);
+      });
+      // Au-dessus du point de rupture la nav centrale reprend la main. Sans ce
+      // rappel, le panneau reste ouvert derriere le media query et reapparait
+      // tel quel au retour en largeur mobile.
+      window.matchMedia("(min-width: 981px)").addEventListener("change", (e) => {
+        if (e.matches) setOpen(false);
+      });
     }
 
     const drop = document.querySelector(".drop");

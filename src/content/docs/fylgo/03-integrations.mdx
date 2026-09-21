@@ -3,7 +3,7 @@ client: "fylgo"
 title: "Intégrations et mesure"
 order: 3
 status: "draft"
-updated: 2026-09-20
+updated: 2026-09-21
 description: "Le paiement, les emails, la mesure d'audience et les plateformes de revente : ce qui tourne, ce qui attend une décision, et ce qui n'existe pas."
 ---
 
@@ -71,17 +71,41 @@ attendu : ces adresses n'ont rien à faire dans les résultats de recherche.
 références y sont publiées depuis Shopify. Le catalogue et les stocks remontent
 donc automatiquement.
 
-Ce qui manque pour vendre, ce sont les conditions commerciales : le prix de
-gros par référence, le montant minimum de commande et le seuil de livraison
-offerte. Sur ces plateformes, le prix de gros se situe habituellement autour de
-la moitié du prix public, et une commission de quinze à vingt-cinq pour cent
-s'ajoute par-dessus.
+Le paramétrage a été finalisé fin juillet, avec les coefficients de marge
+transmis par Fylgo : 2,2 sur les canettes et 2,5 sur les bouteilles. Ankorstore
+raisonne en coefficient et non en prix de vente, contrairement à Faire.
 
-Ces trois décisions appartiennent à Fylgo et conditionnent la mise en vente.
-Tant qu'elles ne sont pas prises, les canaux restent branchés sans produire de
-commandes.
+Ce qui relève désormais de Fylgo, c'est la vie commerciale de ces deux
+boutiques : relire les conditions affichées aux revendeurs, fixer ou confirmer
+le minimum de commande et le seuil de livraison offerte, accepter les
+revendeurs, suivre les commandes. Ces réglages se modifient dans les interfaces
+de Faire et d'Ankorstore, pas dans Shopify.
 
-La connexion vers Amazon n'a pas été mise en place.
+<Callout type="piege">
+  Le stock est **commun à tous les canaux**. Une commande de gros passée sur
+  Ankorstore diminue immédiatement le stock affiché sur la boutique et sur
+  Faire. Ce n'est pas un défaut : Shopify tient un seul compteur par référence,
+  et les trois vitrines affichent le même nombre.
+</Callout>
+
+Deux façons de vivre avec ce compteur unique.
+
+**Le stock commun**, en place aujourd'hui. Tous les canaux puisent au même
+endroit, premier arrivé premier servi. Rien à entretenir, et aucun risque de
+vendre un carton qui n'existe pas. En contrepartie, une grosse commande de
+revendeur peut vider la vitrine grand public dans la minute.
+
+**Le stock réservé par canal.** Les quantités se répartissent à l'avance, par
+exemple huit cartons pour la boutique et cinq pour le B2B, et chaque canal a sa
+réserve. La boutique ne tombe plus en rupture à cause d'un caviste. En
+contrepartie, il faut rééquilibrer de temps en temps, et un canal peut afficher
+« épuisé » alors qu'il reste des cartons dans l'autre réserve.
+
+La bascule d'un mode à l'autre prend quelques minutes et se défait aussi vite.
+
+**Amazon n'est pas branché**, d'un commun accord et sur décision de Fylgo du
+18 juillet 2026, l'expérience précédente de la marque sur Seller Central ayant
+conduit à reporter ce canal.
 
 ## Les produits complémentaires
 
