@@ -1,0 +1,100 @@
+---
+client: "fylgo"
+title: "Vue d'ensemble"
+order: 1
+status: "draft"
+updated: 2026-09-20
+description: "La porte d'entrée : ce que contient la boutique, comment elle est bâtie, et les liens du quotidien."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+Le manuel de la boutique Fylgo, pour la faire vivre sans dépendre de quelqu'un
+d'autre. Il s'adresse à Fabien, Paul et Laetitia pour l'usage quotidien, et à
+tout développeur qui reprendrait le projet.
+
+<div class="liens">
+  <a href="https://fylgodrinks.com" target="_blank" rel="noopener">🌐 Boutique <span class="ext">fylgodrinks.com</span></a>
+  <a href="https://admin.shopify.com/store/fylgo" target="_blank" rel="noopener">✏️ Admin Shopify <span class="ext">admin.shopify.com</span></a>
+  <a href="https://help.shopify.com/fr" target="_blank" rel="noopener">📘 Aide Shopify <span class="ext">help.shopify.com</span></a>
+</div>
+
+## En bref
+
+Boutique **Shopify**, plan Basic, sur le thème premium **Flow**. Huit produits,
+cinq pages de contenu, quatre collections et un blog encore vide. Paiement par
+**Payplug**, emails marketing par **Brevo**. Prix affichés toutes taxes
+comprises, en euros, livraison vers la France.
+
+## Le catalogue
+
+Quatre recettes, chacune déclinée en deux formats, soit huit références
+distinctes. **Chaque référence est un carton de douze unités**, et le prix
+affiché est celui du carton.
+
+| Recette | Canette 25 cl | Bouteille 33 cl |
+| --- | --- | --- |
+| CHÉRI Negroni | `CN-CAN-25`, 42 € | `CN-BOU-33`, 48 € |
+| HAVANA Mule | `HM-CAN-25`, 42 € | `HM-BOU-33`, 48 € |
+| HUGO Twist | `HT-CAN-25`, 42 € | `HT-BOU-33`, 48 € |
+| ICONIC Spritz | `IS-CAN-25`, 42 € | `IS-BOU-33`, 48 € |
+
+<Callout type="piege">
+  Chaque format est un **produit à part entière**, pas une variante. Modifier le
+  prix ou le stock de la canette 25 cl d'une recette ne change rien à sa
+  bouteille 33 cl : il faut passer sur les huit fiches.
+</Callout>
+
+Ce choix donne à chaque format son visuel, son prix et sa fiche propre, et
+permet de les vendre séparément sur les plateformes de revente.
+
+## Les collections
+
+| Collection | Adresse | Contenu |
+| --- | --- | --- |
+| Mocktails Signature | `/collections/mocktail-signature` | Les huit références |
+| Mocktails Signature 25 cl | `/collections/mocktails-signature-25cl` | Les quatre canettes |
+| Mocktails Signature 33 cl | `/collections/mocktails-signatures-33cl` | Les quatre bouteilles |
+| Packs découverte | `/collections/packs-decouverte` | Aucun produit à ce jour |
+
+## Les pages
+
+Le titre affiché sur le site et l'adresse de la page ne se ressemblent pas
+toujours. C'est l'adresse qui compte pour Google, le titre pour le visiteur.
+
+| Adresse | Titre affiché |
+| --- | --- |
+| `/pages/apropos` | Notre histoire |
+| `/pages/procede-de-fabrication` | Savoir-faire |
+| `/pages/nos-plantes` | Suggestions cocktails |
+| `/pages/pro` | Professionnels |
+| `/pages/contact` | Contact |
+
+S'y ajoutent les pages produites par Shopify lui-même : les fiches produit, les
+collections, le panier, le compte client et les cinq pages de politiques.
+
+Le blog existe, sous le nom **News**, à l'adresse `/blogs/news`. Il ne contient
+aucun article et n'est relié à aucun menu.
+
+## Réglages de vente
+
+| Réglage | Valeur |
+| --- | --- |
+| Devise | Euro, prix affichés toutes taxes comprises |
+| Livraison | France, mode Standard à 10 € |
+| Livraison offerte | À partir de 150 € de commande, remise automatique |
+| Paiement | Payplug, en paiement intégré |
+| Adresse d'expédition | 183 avenue Charles de Gaulle, 92200 Neuilly-sur-Seine |
+| Adresse de contact de la boutique | `paul.levy@fylgodrinks.com` |
+
+## Qui fait quoi
+
+La boutique appartient à Fylgo et lui a été transférée. Fabien porte le projet,
+Paul et Laetitia y sont associés. Coolbeans a construit la boutique et
+intervient sur le code à la demande.
+
+Le thème Flow a été acheté par Fylgo, et non loué sur un compte prestataire.
+C'est ce qui rend la boutique et son code réellement indépendants de Coolbeans.
+
+La facturation de la prestation passe par l'entité juridique ABEAM DRINKS,
+SIRET 98980485100016.

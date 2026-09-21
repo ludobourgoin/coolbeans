@@ -1,0 +1,102 @@
+---
+client: "coolbeans"
+title: "Thèmes Shopify"
+order: 11
+status: "draft"
+updated: 2026-09-20
+description: "Comment travailler sur une boutique Shopify déjà en production : la duplication comme filet, la commande qui détruit tout, et le rôle exact de git."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+Pour moi, sur toute boutique Shopify livrée à un client. Ce qui suit vaut dès
+que la boutique encaisse des commandes, c'est-à-dire dès qu'une erreur coûte de
+l'argent à quelqu'un d'autre.
+
+## Le problème propre à Shopify
+
+Une boutique Shopify n'a pas d'environnement de préproduction. Le thème publié
+est le site. Il n'existe pas de branche de recette qu'on valide avant de
+basculer, et le client édite le contenu en même temps que je touche au code,
+sur le même thème.
+
+La sécurité ne vient donc pas d'un environnement séparé. Elle vient de la
+bibliothèque de thèmes, qui sert de machine à remonter le temps.
+
+## La duplication est le filet
+
+Publier un thème est atomique et réversible. Le thème choisi devient le site
+instantanément, et celui qu'il remplace reste dans la bibliothèque, republiable
+en un clic. C'est ce mécanisme qui remplace la préproduction.
+
+D'où le geste d'ouverture de toute session de travail, dans l'admin, Online
+Store puis Themes puis Actions puis Duplicate : dupliquer le thème publié et
+nommer la copie avec la date du jour. Elle ne sert pas à travailler, c'est une
+photo de l'état qui fonctionne. Dix secondes, et le retour arrière devient un
+clic au lieu d'une soirée.
+
+## La commande à ne jamais taper
+
+<Callout type="piege">
+  `shopify theme push` remplace le thème en ligne par le contenu du dossier
+  local. Tout ce que le client a composé dans Customize depuis la dernière
+  récupération disparaît, sans avertissement et sans confirmation.
+</Callout>
+
+Sur une boutique livrée, le dossier local n'est jamais à jour : le client
+compose ses pages pendant que le dossier dort. Pousser revient donc à publier
+une version périmée du site par-dessus la bonne.
+
+La conséquence tient en une ligne : sur une boutique en production, on ne pousse
+pas. Les modifications de code se font dans l'admin, avec Edit code.
+
+## Le rôle de git
+
+Git est une sauvegarde et un historique, jamais une source de déploiement. Le
+sens de circulation est unique : la boutique descend vers le dossier, le dossier
+ne remonte jamais vers la boutique.
+
+En fin de session, `shopify theme pull` récupère l'état réel, puis un commit le
+fige. Un dossier qui n'a pas été récupéré depuis des semaines n'est pas un point
+de restauration, c'est une archive.
+
+## Ce que git ne porte pas
+
+Trois familles de fichiers sont composées par le client dans Customize. Les
+versionner produirait un conflit à chaque récupération, pour une valeur nulle :
+la boutique fait foi.
+
+| Fichier | Contient |
+| --- | --- |
+| `config/settings_data.json` | Réglages globaux du thème |
+| `templates/**/*.json` | Composition des pages |
+| `sections/*-group.json` | Composition de l'en-tête et du pied de page |
+
+Ces fichiers existent bien en local après une récupération, mais restent hors
+du suivi. Ils figurent dans le `.gitignore` de chaque repo de thème.
+
+## Référence technique
+
+Les deux seules commandes utilisées sur une boutique en production :
+
+```bash
+# Récupérer le thème publié. Lecture seule côté boutique, aucun risque.
+shopify theme pull --store=<boutique>.myshopify.com --theme=<id>
+
+# Lister les thèmes et vérifier lequel porte le rôle MAIN.
+shopify theme list --store=<boutique>.myshopify.com
+```
+
+`shopify theme dev` sert à prévisualiser des fichiers locaux dans un thème
+temporaire. Sur une boutique livrée, ces fichiers ne font plus foi, la commande
+n'a donc plus d'objet.
+
+Le CLI demande une authentification par code à usage unique, dans le navigateur,
+avant la première commande sur une machine :
+
+```bash
+shopify auth login --store=<boutique>.myshopify.com
+```
+
+Installation par Homebrew, `brew install shopify-cli`. L'installation par npm
+en global échoue en `EACCES` sur `/usr/local` sur cette machine.

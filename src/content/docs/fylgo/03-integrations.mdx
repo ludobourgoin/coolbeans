@@ -1,0 +1,90 @@
+---
+client: "fylgo"
+title: "Intégrations et mesure"
+order: 3
+status: "draft"
+updated: 2026-09-20
+description: "Le paiement, les emails, la mesure d'audience et les plateformes de revente : ce qui tourne, ce qui attend une décision, et ce qui n'existe pas."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+Pour Fabien, Paul et Laetitia, et pour tout développeur reprenant le projet. La
+page dit ce qui est branché, ce qui attend une décision, et ce qui n'a jamais
+été installé, afin que personne ne cherche un outil qui n'est pas là.
+
+## Le paiement
+
+Les paiements passent par **Payplug**, en mode paiement intégré : le client
+saisit sa carte sans quitter la boutique. Les deux commandes encaissées à ce
+jour sont passées par ce canal.
+
+Le suivi des transactions, les remboursements et les relevés se consultent dans
+l'interface Payplug, pas dans Shopify. Shopify affiche l'état de la commande,
+Payplug détient le mouvement d'argent.
+
+## Les emails
+
+Deux flux distincts, qu'il ne faut pas confondre.
+
+Les **emails de commande**, confirmation, expédition, réinitialisation de mot
+de passe, sont envoyés par Shopify. Ils se règlent dans Paramètres puis
+Notifications, et partent automatiquement.
+
+Les **emails marketing** passent par **Brevo**, dont l'application est active
+sur la boutique. La collecte est indirecte : l'inscription se fait au moment de
+la création du compte client ou de la commande, côté Shopify, et le contact
+remonte ensuite dans Brevo. Il n'y a qu'une seule liste.
+
+<Callout type="piege">
+  La fenêtre d'inscription à la newsletter du thème est **désactivée**. Aucune
+  adresse n'est donc collectée en dehors d'une commande ou d'une création de
+  compte. C'est un choix, mais il plafonne mécaniquement la croissance de la
+  liste.
+</Callout>
+
+## La mesure d'audience
+
+La boutique s'appuie sur les **statistiques natives de Shopify**, accessibles
+dans le menu Analyses de l'admin. Elles couvrent les visites, les sources de
+trafic, le taux de conversion et le chiffre d'affaires.
+
+Ni Google Analytics ni Google Tag Manager ne sont installés. Tant que la
+boutique ne fait pas de publicité payante, les statistiques de Shopify
+suffisent largement. Le jour où une campagne Google ou Meta démarre, un suivi
+plus fin devient nécessaire, et il faudra créer les comptes correspondants pour
+les brancher.
+
+## Le référencement
+
+Le site est déclaré dans la **Google Search Console** et lui envoie
+automatiquement son plan du site, à l'adresse `fylgodrinks.com/sitemap.xml`. Ce
+plan se met à jour tout seul à chaque ajout de produit, de page ou d'article.
+
+Le fichier `robots.txt` est celui fourni par Shopify. Il empêche l'indexation du
+panier, du tunnel de commande et des pages de tri, ce qui est le comportement
+attendu : ces adresses n'ont rien à faire dans les résultats de recherche.
+
+## Les plateformes de revente
+
+**Faire** et **Ankorstore** sont installées comme canaux de vente, et les huit
+références y sont publiées depuis Shopify. Le catalogue et les stocks remontent
+donc automatiquement.
+
+Ce qui manque pour vendre, ce sont les conditions commerciales : le prix de
+gros par référence, le montant minimum de commande et le seuil de livraison
+offerte. Sur ces plateformes, le prix de gros se situe habituellement autour de
+la moitié du prix public, et une commission de quinze à vingt-cinq pour cent
+s'ajoute par-dessus.
+
+Ces trois décisions appartiennent à Fylgo et conditionnent la mise en vente.
+Tant qu'elles ne sont pas prises, les canaux restent branchés sans produire de
+commandes.
+
+La connexion vers Amazon n'a pas été mise en place.
+
+## Les produits complémentaires
+
+Les suggestions affichées en bas de fiche produit viennent de **Search &
+Discovery**, l'outil gratuit de Shopify. Les associations se règlent produit par
+produit dans cette application, et non dans le thème.

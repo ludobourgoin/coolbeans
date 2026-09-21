@@ -9,16 +9,16 @@ export interface Testimonial {
 /** Mur de témoignages (home). Photos rapatriées en local ; sinon initiales. */
 export const testimonials: Testimonial[] = [
   {
-    // version validée par la cliente avant la passe de diversification du 2026-08-04 :
-    // "Ludovic allie vision stratégique et rigueur opérationnelle. Notre collaboration
-    // m'a permis de trouver les mots justes et un design efficace. J'avais besoin d'un
-    // regard neutre et franc pour présenter au mieux mon activité. Je suis ravie du
-    // résultat et je le recommande chaudement."
+    // version validée avant la passe de diversification du 2026-08-04 :
+    // "Ludo développe des landing pages pour l'agence Trigger avec une vraie
+    // excellence d'intégration. Il combine vision stratégique et rigueur
+    // opérationnelle, tout en étant fiable, impliqué et à l'écoute. Nos clients se
+    // sentent en confiance du début à la fin."
     quote:
-      "J'avais besoin d'un regard neutre et franc pour présenter mon activité. Avec Ludovic, j'ai trouvé les mots justes et un design qui me ressemble vraiment. Résultat : je suis ravie, et je le recommande sans hésiter.",
-    name: "Mathilde Chevalier",
-    role: "Consultante en Gestion de Conflits · Montpellier",
-    photo: "/img/testimonials/mathilde-chevalier.avif",
+      "Nos landing pages sont intégrées avec une précision qu'on ne trouve pas partout. Impliqué, fiable, et nos clients le sentent : ils sont en confiance du premier brief à la mise en ligne.",
+    name: "Baptiste Garnot",
+    role: "Fondateur de l'agence Trigger · Toulouse",
+    photo: "/img/testimonials/baptiste-garnot.avif",
   },
   {
     // version validée avant la passe de diversification du 2026-08-04 :
@@ -66,18 +66,6 @@ export const testimonials: Testimonial[] = [
   },
   {
     // version validée avant la passe de diversification du 2026-08-04 :
-    // "Ludo développe des landing pages pour l'agence Trigger avec une vraie
-    // excellence d'intégration. Il combine vision stratégique et rigueur
-    // opérationnelle, tout en étant fiable, impliqué et à l'écoute. Nos clients se
-    // sentent en confiance du début à la fin."
-    quote:
-      "Nos landing pages sont intégrées avec une précision qu'on ne trouve pas partout. Impliqué, fiable, et nos clients le sentent : ils sont en confiance du premier brief à la mise en ligne.",
-    name: "Baptiste Garnot",
-    role: "Fondateur de l'agence Trigger · Toulouse",
-    photo: "/img/testimonials/baptiste-garnot.avif",
-  },
-  {
-    // version validée avant la passe de diversification du 2026-08-04 :
     // "Ludo a refondu notre site Webflow avec clarté et précision : structuration
     // des idées, message clarifié, résultat fluide et aligné avec notre image.
     // Impliqué et à l'écoute, il a transformé un projet complexe en une
@@ -101,6 +89,18 @@ export const testimonials: Testimonial[] = [
     photo: "/img/testimonials/kateline-lemeliner.avif",
   },
   {
+    // version validée par la cliente avant la passe de diversification du 2026-08-04 :
+    // "Ludovic allie vision stratégique et rigueur opérationnelle. Notre collaboration
+    // m'a permis de trouver les mots justes et un design efficace. J'avais besoin d'un
+    // regard neutre et franc pour présenter au mieux mon activité. Je suis ravie du
+    // résultat et je le recommande chaudement."
+    quote:
+      "J'avais besoin d'un regard neutre et franc pour présenter mon activité. Avec Ludovic, j'ai trouvé les mots justes et un design qui me ressemble vraiment. Résultat : je suis ravie, et je le recommande sans hésiter.",
+    name: "Mathilde Chevalier",
+    role: "Consultante en Gestion de Conflits · Montpellier",
+    photo: "/img/testimonials/mathilde-chevalier.avif",
+  },
+  {
     // version validée avant la passe de diversification du 2026-08-04 :
     // "Travailler avec Ludovic, c'est avoir un partenaire qui se met réellement à
     // la place du client. Il comprend vite les enjeux, propose toujours des pistes
@@ -113,16 +113,6 @@ export const testimonials: Testimonial[] = [
   },
   {
     // version validée avant la passe de diversification du 2026-08-04 :
-    // "Ludo a repris notre site de zéro et le résultat dépasse nos attentes. Clair,
-    // rapide, et pensé pour convertir. On a gagné en crédibilité dès la mise en
-    // ligne, et le suivi post-lancement a été impeccable."
-    quote:
-      "Site refait de zéro, et le résultat dépasse ce qu'on espérait : clair, rapide, pensé pour convertir. On a gagné en crédibilité dès le lancement, avec un suivi impeccable derrière.",
-    name: "Julien Reboul",
-    role: "Cofondateur @ Maison Vela · Bordeaux",
-  },
-  {
-    // version validée avant la passe de diversification du 2026-08-04 :
     // "Ludovic s'est montré particulièrement efficace dans un projet complexe, où
     // sa capacité d'analyse, sa force de proposition et son sens de la
     // collaboration ont fait la différence. Il sait écouter, s'adapter, et faire
@@ -132,17 +122,6 @@ export const testimonials: Testimonial[] = [
     name: "Marie-Fabienne Mas",
     role: "Directrice @ ISTH, IONIS Education Group · Paris",
     photo: "/img/testimonials/marie-fabienne-mas.avif",
-  },
-  {
-    // version validée avant la passe de diversification du 2026-08-04 :
-    // "Travailler avec Ludo, c'est gagner en clarté et en sérénité. Il structure,
-    // challenge avec bienveillance et livre un travail impeccable. Je le
-    // recommande sans la moindre hésitation à quiconque cherche un vrai
-    // partenaire."
-    quote:
-      "Il structure, challenge avec bienveillance, et livre un travail impeccable. On gagne en clarté, en sérénité, et ça se sent tout de suite. Je le recommande sans hésiter.",
-    name: "Romain Bernard",
-    role: "CEO @ GroupeVela · Lyon",
   },
   {
     // version validée avant la passe de diversification du 2026-08-04 :

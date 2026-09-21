@@ -1,0 +1,168 @@
+---
+client: "fylgo"
+title: "Éditer la boutique"
+order: 2
+status: "draft"
+updated: 2026-09-20
+description: "L'usage quotidien : où se modifie chaque zone du site, ce que vous pouvez changer sans risque, et ce qu'il ne faut jamais toucher."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+Pour Fabien, Paul et Laetitia. Tout ce qui suit se fait depuis l'admin Shopify,
+sans développeur et sans risque, à condition de respecter la liste d'interdits
+qui ouvre la page.
+
+## Les interdits
+
+<div class="interdits">
+  <div class="t">🚫 À ne jamais faire</div>
+  <ul>
+    <li>Ouvrir <strong>Modifier le code</strong> dans le menu des thèmes. C'est le moteur de la boutique, une ligne effacée peut rendre le site blanc.</li>
+    <li>Changer l'adresse d'une page ou d'un produit déjà en ligne. Les liens partagés et le référencement Google pointent sur l'ancienne adresse et tombent dans le vide.</li>
+    <li>Modifier les polices depuis les paramètres du thème. Les deux polices de la marque sont posées dans le code, un réglage fait ici reste sans effet visible et rend le diagnostic confus.</li>
+    <li>Changer la hauteur du diaporama de la page d'accueil. Le logo Agriculture biologique y est accroché : passer le diaporama en hauteur autre que « plein écran » le fait disparaître sans avertissement.</li>
+    <li>Publier ou supprimer un thème de la bibliothèque. Ces thèmes sont les points de retour en arrière en cas de problème.</li>
+  </ul>
+</div>
+
+## Où modifier quoi
+
+Shopify sépare trois endroits, et c'est la source de presque toute la
+confusion. Le tableau dit lequel ouvrir selon ce que vous voulez changer.
+
+| Je veux changer | J'ouvre |
+| --- | --- |
+| Le bandeau noir en haut du site | Boutique en ligne → Thèmes → Personnaliser → En-tête |
+| Le logo, le menu principal, le méga-menu | Personnaliser → En-tête |
+| Les blocs de la page d'accueil | Personnaliser → page d'accueil |
+| Le texte d'une page de contenu | Personnaliser → choisir la page en haut de l'écran |
+| Le titre, l'adresse et le référencement d'une page | Contenu → Pages |
+| Le titre, les photos, le prix, le stock d'un produit | Produits |
+| Les ingrédients et valeurs nutritionnelles d'un produit | Produits → la fiche → bloc Métachamps, en bas |
+| Le texte d'une collection | Produits → Collections |
+| Les entrées de menu | Contenu → Menus |
+| Les mentions légales, CGV, retours | Paramètres → Politiques |
+| Les articles de blog | Contenu → Articles de blog |
+| Les textes des emails de commande | Paramètres → Notifications |
+
+<Callout type="piege">
+  Pour les pages **Notre histoire**, **Savoir-faire**, **Suggestions cocktails**
+  et **Professionnels**, la zone de texte visible dans Contenu → Pages est vide
+  ou désactivée. C'est normal : tout leur contenu vit dans Personnaliser. Seule
+  la page **Contact** se modifie en partie depuis Contenu → Pages.
+</Callout>
+
+<details>
+<summary>Le détail des sections, pour un développeur</summary>
+
+Page d'accueil, dans l'ordre : diaporama, liste de collections (désactivée),
+deux collections en vedette (33 cl puis 25 cl), bannière défilante, image avec
+texte en superposition, colonnes d'information, parallaxe, colonnes
+d'information, image avec texte en superposition, accordéon de questions
+fréquentes.
+
+Les pages de contenu utilisent des modèles dédiés : `histoire` pour
+`/pages/apropos`, `savoir-faire` pour `/pages/procede-de-fabrication`,
+`suggestions-cocktails` pour `/pages/nos-plantes`, `pros` pour `/pages/pro`.
+La page Contact utilise le modèle standard.
+
+Quatre modèles supplémentaires existent sans être utilisés par aucune page.
+Ils apparaissent dans le menu déroulant « Modèle » de l'admin et ne servent à
+rien : ne pas les sélectionner.
+
+La fiche produit est rendue par une seule section, composée de dix-neuf blocs
+déplaçables dans Personnaliser. Le popup d'inscription est un réglage global,
+dans Personnaliser → Paramètres du thème.
+
+</details>
+
+## Modifier une page
+
+<ol class="steps">
+  <li>Dans l'admin, aller dans <strong>Boutique en ligne</strong> puis <strong>Thèmes</strong>.</li>
+  <li>Cliquer sur <strong>Personnaliser</strong> sur le thème nommé <em>Fylgo Production</em>.</li>
+  <li>Choisir la page à modifier dans le menu déroulant en haut de l'écran, puis cliquer sur la section à changer.</li>
+  <li>Cliquer sur <strong>Enregistrer</strong>.</li>
+</ol>
+
+Il n'y a pas d'étape de validation : enregistrer met en ligne, et le changement
+est visible par vos clients à la seconde. Pour essayer sans risque, dupliquez
+le thème avant de commencer, depuis Boutique en ligne puis Thèmes, par le menu
+d'actions et l'option de duplication.
+
+Le mode d'emploi complet de cet éditeur est chez Shopify :
+[personnaliser un thème](https://help.shopify.com/fr/manual/online-store/themes/customizing-themes).
+
+## Ajouter ou modifier un produit
+
+Les produits se gèrent dans **Produits**, indépendamment du thème. Un produit
+porte son titre, sa description, ses photos, son prix et son stock. Rappel :
+chaque format est un produit distinct, et le prix affiché est celui du carton
+de douze.
+
+Six champs supplémentaires, propres à cette boutique, se remplissent dans le
+bloc **Métachamps** en bas de la fiche produit.
+
+| Champ | Ce qu'il alimente |
+| --- | --- |
+| Sous-titre | La ligne affichée juste sous le nom du produit |
+| Ingrédients | L'onglet dépliant de la fiche |
+| Conseils de dégustation | L'onglet dépliant de la fiche |
+| Informations nutritionnelles | L'onglet dépliant de la fiche |
+| Valeur ajoutée Fylgo | L'argument mis en avant sur la fiche |
+| Points forts | Les mentions courtes de la fiche |
+
+Deux autres champs, la TVA et le conditionnement, sont ajoutés et lus par
+Ankorstore. Ils ne s'affichent pas sur le site.
+
+Documentation Shopify : [gérer ses produits](https://help.shopify.com/fr/manual/products)
+et [les champs méta](https://help.shopify.com/fr/manual/custom-data/metafields).
+
+## Le stock
+
+La boutique tient un seul compteur de stock par produit, et les plateformes de
+revente puisent dans le même compteur. S'il reste quinze cartons de HAVANA Mule
+et qu'un caviste en commande dix sur Ankorstore, il n'en reste plus que cinq
+pour le site.
+
+Deux façons de faire, et c'est une décision qui vous appartient. Soit tout le
+monde puise dans le même stock, premier arrivé premier servi, et c'est le plus
+simple. Soit vous réservez des quantités par canal, ce qui est plus sûr mais
+demande de rééquilibrer régulièrement.
+
+## Le blog
+
+Les articles se créent dans **Contenu** puis **Articles de blog**. Le blog
+existe sous le nom *News* mais ne contient aucun article, et aucune entrée de
+menu ne pointe vers lui.
+
+Renseigner l'extrait et l'image mise en avant : ce sont eux qui s'affichent
+dans la liste des articles et dans les partages sur les réseaux sociaux.
+Documentation Shopify : [tenir un blog](https://help.shopify.com/fr/manual/online-store/os/blogs).
+
+## Le référencement des pages
+
+Chaque page, produit et article porte trois champs de référencement, en bas de
+l'écran d'édition, dans la section de l'aperçu sur les moteurs de recherche.
+
+| Champ | Règle | Effet |
+| --- | --- | --- |
+| Titre de la page | 50 à 60 caractères, avec le mot recherché | Ce que Google affiche en bleu |
+| Description | environ 155 caractères | Le texte gris sous le titre, qui donne envie de cliquer |
+| Adresse de la page | à fixer une fois pour toutes | Modifier l'adresse d'une page en ligne casse les liens existants |
+
+## Les images
+
+| Type | Règle |
+| --- | --- |
+| Photo produit | Format carré, fond transparent ou uni, 2000 pixels de côté au maximum |
+| Image de partage | 1200 pixels sur 630, sinon les réseaux sociaux la recadrent n'importe comment |
+| Poids | Viser moins de 300 kilooctets par image, au delà les pages ralentissent |
+
+Shopify compresse et redimensionne automatiquement les images à l'affichage,
+mais il ne peut rien pour une photo envoyée en dix mégaoctets : le
+téléchargement initial reste lent.
+
+Les packshots sur fond transparent donnent le meilleur rendu sur ce thème.
+C'est la consigne à passer pour toute nouvelle prise de vue.
