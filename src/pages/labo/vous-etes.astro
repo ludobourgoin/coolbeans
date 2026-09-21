@@ -1,0 +1,402 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+
+// Page de comparaison, pas une page du site. Elle sert à trancher le
+// traitement visuel de la section « Vous êtes… » de l'accueil, puis elle se
+// supprime : elle ne doit jamais partir en prod par un merge staging → main.
+
+type Segment = {
+  id: string;
+  titre: string;
+  texte: string;
+  icone: string;
+};
+
+// Les textes sont ceux de l'accueil. Seul celui de l'ESS est retouché : le
+// titre et la première clause du paragraphe disaient deux fois la même chose.
+const segments: Segment[] = [
+  {
+    id: "agence",
+    titre: "Agence créative",
+    texte:
+      "Je me cale sur votre façon de travailler. En marque blanche, ou présent à vos réunions client comme un membre de votre équipe : vous choisissez. Je m'occupe de la partie technique à partir des maquettes.",
+    icone: `<rect x="4" y="3" width="10" height="18"></rect><rect x="14" y="9" width="6" height="12"></rect><line x1="7" y1="7" x2="11" y2="7"></line><line x1="7" y1="11" x2="11" y2="11"></line><line x1="7" y1="15" x2="11" y2="15"></line>`,
+  },
+  {
+    id: "da",
+    titre: "DA ou designer freelance",
+    texte:
+      "On travaille en binôme : vous la créa, moi la technique. Ni code, ni intégration, ni hébergement, ni web perfs, ni mises à jour à gérer de votre côté.",
+    icone: `<path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>`,
+  },
+  {
+    id: "pme",
+    titre: "PME ou scale up",
+    texte:
+      "Votre site est un canal d'acquisition. On regarde ce qui bloque avant de redessiner quoi que ce soit.",
+    icone: `<polyline points="3 17 9 11 13 15 21 7"></polyline><polyline points="21 12 21 7 16 7"></polyline>`,
+  },
+  {
+    id: "tpe",
+    titre: "TPE ou solopreneur",
+    texte:
+      "Un site propre, en ligne en quelques jours. Vous me présentez votre activité, je m'occupe du reste.",
+    icone: `<path d="M3 9h18l-1.4-5H4.4L3 9z"></path><path d="M5 9v11h14V9"></path><path d="M9 20v-6h6v6"></path>`,
+  },
+  {
+    id: "ess",
+    titre: "Coopérative, association, intérêt général",
+    texte:
+      "Dites-le-moi au premier échange, j'adapte mes offres et mes tarifs à vos moyens. Le travail, lui, se passe comme avec n'importe quel autre client : même exigence, même suivi.",
+    icone: `<path d="M12 20s-7-4.5-9-9a4 4 0 0 1 9-2 4 4 0 0 1 9 2c-2 4.5-9 9-9 9z"></path>`,
+  },
+];
+
+const parId = (id: string) => segments.find((s) => s.id === id)!;
+
+// Le diptyque regroupe autrement : ceux qui arrivent avec un design, et ceux
+// qui attendent le design de moi.
+const avecDesign = [parId("agence"), parId("da")];
+const sansDesign = [parId("pme"), parId("tpe"), parId("ess")];
+
+const propositions = [
+  {
+    lettre: "A",
+    nom: "Répertoire",
+    argument:
+      "Plus de cartes du tout. Cinq lignes pleine largeur, un gros titre à gauche, la phrase à droite. La ligne s'inverse au survol et mène au contact. Le punch vient de l'échelle typographique.",
+  },
+  {
+    lettre: "B",
+    nom: "Sélecteur",
+    argument:
+      "Le visiteur se désigne lui-même et le panneau change. Un seul message à l'écran au lieu de cinq, et un bouton par profil. Fonctionne sans JavaScript.",
+  },
+  {
+    lettre: "C",
+    nom: "Bento contrasté",
+    argument:
+      "La grille actuelle, musclée. La carte agence passe en encre pleine, les autres perdent leur fond gris au profit d'un filet net. Hiérarchie de tailles beaucoup plus franche.",
+  },
+  {
+    lettre: "D",
+    nom: "Diptyque",
+    argument:
+      "Deux façons de travailler face à face : vous arrivez avec le design, ou vous venez le chercher. Le regroupement est plus parlant que cinq cases de même poids.",
+  },
+];
+---
+
+<BaseLayout
+  title="Labo : section « Vous êtes… »"
+  description="Quatre traitements visuels de la section Vous êtes de l'accueil, à comparer."
+  noindex={true}
+>
+  <Nav />
+
+  <header class="border-b border-line bg-surface-subtle py-14">
+    <div class="container-site">
+      <h1 class="max-w-[24ch] text-[clamp(32px,4vw,52px)] leading-[1.02] tracking-[-0.03em]">
+        Section « Vous êtes… »
+      </h1>
+      <p class="mt-5 max-w-[62ch] text-[17px] leading-[1.5] font-medium text-mute">
+        Quatre traitements de la même section, avec les mêmes textes. Page de travail : elle porte
+        un noindex et se supprime une fois la direction choisie.
+      </p>
+      <ol class="mt-8 grid max-w-[900px] grid-cols-4 gap-4 max-[760px]:grid-cols-2">
+        {
+          propositions.map((p) => (
+            <li class="border-l border-line-strong pl-4">
+              <a class="text-[15px] font-semibold" href={`#proposition-${p.lettre}`}>
+                {p.lettre}. {p.nom}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </header>
+
+  {/* ------------------------------------------------------------------ A */}
+  <section class="border-b border-line py-16x" id="proposition-A">
+    <div class="container-site">
+      <div class="mb-10x max-w-[70ch]">
+        <h2 class="text-[26px] tracking-[-0.02em]">A. Répertoire</h2>
+        <p class="mt-3 text-[15px] leading-[1.5] font-medium text-mute">
+          {propositions[0].argument}
+        </p>
+      </div>
+
+      <h3 class="mb-8 text-[clamp(28px,3vw,40px)] tracking-[-0.03em]">Vous êtes…</h3>
+      <div class="border-t border-line-strong">
+        {
+          segments.map((s) => (
+            <a
+              class="group grid grid-cols-[1fr_minmax(0,40ch)] items-baseline gap-12 border-b border-line-strong py-8 transition-colors duration-200 ease-brand hover:bg-ink focus-visible:bg-ink focus-visible:outline-none max-[820px]:grid-cols-1 max-[820px]:gap-3"
+              href="/contact"
+            >
+              <h4 class="px-4 text-[clamp(26px,3.6vw,46px)] leading-[0.98] tracking-[-0.03em] transition-colors duration-200 ease-brand group-hover:text-surface group-focus-visible:text-surface">
+                {s.titre}
+              </h4>
+              <p class="px-4 text-[15px] leading-[1.5] font-medium text-mute transition-colors duration-200 ease-brand group-hover:text-surface group-focus-visible:text-surface">
+                {s.texte}
+              </p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ------------------------------------------------------------------ B */}
+  <section class="border-b border-line bg-surface-subtle py-16x" id="proposition-B">
+    <div class="container-site">
+      <div class="mb-10x max-w-[70ch]">
+        <h2 class="text-[26px] tracking-[-0.02em]">B. Sélecteur</h2>
+        <p class="mt-3 text-[15px] leading-[1.5] font-medium text-mute">
+          {propositions[1].argument}
+        </p>
+      </div>
+
+      <h3 class="mb-8 text-[clamp(28px,3vw,40px)] tracking-[-0.03em]">Vous êtes…</h3>
+      <div class="picker">
+        <div class="flex flex-wrap gap-2.5" role="radiogroup" aria-label="Votre profil">
+          {
+            segments.map((s, i) => (
+              <>
+                <input
+                  class="picker-input"
+                  type="radio"
+                  name="profil"
+                  id={`profil-${s.id}`}
+                  checked={i === 0}
+                />
+                <label
+                  class="cursor-pointer rounded-control border border-line-strong bg-surface px-4.5 py-2.5 text-[15px] font-semibold transition-colors duration-200 ease-brand"
+                  for={`profil-${s.id}`}
+                >
+                  {s.titre}
+                </label>
+              </>
+            ))
+          }
+        </div>
+
+        <div class="mt-6">
+          {
+            segments.map((s) => (
+              <div
+                class="picker-panel grid grid-cols-[auto_1fr] items-start gap-8 rounded-card bg-ink p-10 text-surface max-[760px]:grid-cols-1 max-[760px]:gap-5 max-[760px]:p-7"
+                data-panel={s.id}
+              >
+                <div class="flex size-12 flex-none items-center justify-center rounded-md border border-surface/25">
+                  <svg
+                    class="size-6 fill-none stroke-current stroke-[1.6]"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    set:html={s.icone}
+                  />
+                </div>
+                <div>
+                  <p class="max-w-[52ch] text-[clamp(20px,2.2vw,28px)] leading-[1.28] font-medium text-pretty">
+                    {s.texte}
+                  </p>
+                  <a class="btn mt-7 bg-surface text-ink" href="/contact">
+                    Discuter de votre projet
+                  </a>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ------------------------------------------------------------------ C */}
+  <section class="border-b border-line py-16x" id="proposition-C">
+    <div class="container-site">
+      <div class="mb-10x max-w-[70ch]">
+        <h2 class="text-[26px] tracking-[-0.02em]">C. Bento contrasté</h2>
+        <p class="mt-3 text-[15px] leading-[1.5] font-medium text-mute">
+          {propositions[2].argument}
+        </p>
+      </div>
+
+      <h3 class="mb-8 text-[clamp(28px,3vw,40px)] tracking-[-0.03em]">Vous êtes…</h3>
+      <div
+        class="grid auto-rows-[minmax(190px,auto)] grid-cols-4 gap-3 max-[900px]:grid-cols-2 max-[680px]:grid-cols-1"
+      >
+        <article
+          class="col-span-2 row-span-2 flex flex-col rounded-card bg-ink p-9 text-surface max-[900px]:row-span-1 max-[680px]:col-span-1"
+        >
+          <svg
+            class="size-8 flex-none fill-none stroke-current stroke-[1.5]"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            set:html={parId("agence").icone}
+          />
+          <div class="mt-auto pt-10">
+            <h4 class="text-[clamp(32px,3.4vw,44px)] leading-[0.98] tracking-[-0.03em]">
+              {parId("agence").titre}
+            </h4>
+            <p class="mt-4 max-w-[36ch] text-[16px] leading-[1.5] font-medium text-pretty">
+              {parId("agence").texte}
+            </p>
+          </div>
+        </article>
+
+        <article
+          class="col-span-2 flex flex-col rounded-card border border-line-strong p-8 max-[900px]:col-span-1"
+        >
+          <svg
+            class="size-7 flex-none fill-none stroke-current stroke-[1.6] text-mute"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            set:html={parId("da").icone}
+          />
+          <div class="mt-auto pt-8">
+            <h4 class="text-[24px] leading-[1.04] tracking-[-0.02em]">{parId("da").titre}</h4>
+            <p class="mt-3 text-[15px] leading-[1.5] font-medium text-pretty text-mute">
+              {parId("da").texte}
+            </p>
+          </div>
+        </article>
+
+        {
+          [parId("pme"), parId("tpe")].map((s) => (
+            <article class="flex flex-col rounded-card border border-line-strong p-8">
+              <svg
+                class="size-7 flex-none fill-none stroke-current stroke-[1.6] text-mute"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                set:html={s.icone}
+              />
+              <div class="mt-auto pt-8">
+                <h4 class="text-[20px] leading-[1.06] tracking-[-0.02em]">{s.titre}</h4>
+                <p class="mt-3 text-[15px] leading-[1.5] font-medium text-pretty text-mute">
+                  {s.texte}
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <article
+        class="mt-3 flex flex-row flex-wrap items-center gap-8 rounded-card bg-surface-subtle p-8 max-[900px]:flex-col max-[900px]:items-start"
+      >
+        <svg
+          class="size-7 flex-none fill-none stroke-current stroke-[1.6] text-mute"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          set:html={parId("ess").icone}
+        />
+        <div class="min-w-0 flex-[1_1_340px]">
+          <h4 class="text-[20px] leading-[1.06] tracking-[-0.02em]">{parId("ess").titre}</h4>
+          <p class="mt-2 max-w-[80ch] text-[15px] leading-[1.5] font-medium text-pretty text-mute">
+            {parId("ess").texte}
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  {/* ---------------------------------------------------------------- D */}
+  <section class="border-b border-line bg-surface-subtle py-16x" id="proposition-D">
+    <div class="container-site">
+      <div class="mb-10x max-w-[70ch]">
+        <h2 class="text-[26px] tracking-[-0.02em]">D. Diptyque</h2>
+        <p class="mt-3 text-[15px] leading-[1.5] font-medium text-mute">
+          {propositions[3].argument}
+        </p>
+      </div>
+
+      <h3 class="mb-8 text-[clamp(28px,3vw,40px)] tracking-[-0.03em]">Vous êtes…</h3>
+      <div class="grid grid-cols-2 gap-3 max-[820px]:grid-cols-1">
+        <div class="rounded-card bg-ink p-10 text-surface max-[680px]:p-7">
+          <h4 class="text-[clamp(24px,2.6vw,32px)] leading-[1.04] tracking-[-0.03em]">
+            Vous arrivez avec le design
+          </h4>
+          <div class="mt-9 flex flex-col gap-8">
+            {
+              avecDesign.map((s) => (
+                <div class="border-t border-surface/25 pt-6">
+                  <h5 class="text-[19px] leading-[1.1] font-semibold">{s.titre}</h5>
+                  <p class="mt-2.5 max-w-[44ch] text-[15px] leading-[1.5] font-medium text-pretty">
+                    {s.texte}
+                  </p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="rounded-card border border-line-strong bg-surface p-10 max-[680px]:p-7">
+          <h4 class="text-[clamp(24px,2.6vw,32px)] leading-[1.04] tracking-[-0.03em]">
+            Vous venez le chercher
+          </h4>
+          <div class="mt-9 flex flex-col gap-8">
+            {
+              sansDesign.map((s) => (
+                <div class="border-t border-line-strong pt-6">
+                  <h5 class="text-[19px] leading-[1.1] font-semibold">{s.titre}</h5>
+                  <p class="mt-2.5 max-w-[44ch] text-[15px] leading-[1.5] font-medium text-pretty text-mute">
+                    {s.texte}
+                  </p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* Sélecteur sans JavaScript : les radios pilotent l'onglet actif et le
+     panneau visible. Les radios restent focusables au clavier (flèches),
+     elles sont seulement retirées du flux visuel. */
+  .picker-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .picker-panel {
+    display: none;
+  }
+
+  .picker:has(#profil-agence:checked) .picker-panel[data-panel="agence"],
+  .picker:has(#profil-da:checked) .picker-panel[data-panel="da"],
+  .picker:has(#profil-pme:checked) .picker-panel[data-panel="pme"],
+  .picker:has(#profil-tpe:checked) .picker-panel[data-panel="tpe"],
+  .picker:has(#profil-ess:checked) .picker-panel[data-panel="ess"] {
+    display: grid;
+  }
+
+  .picker-input:checked + label {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--surface);
+  }
+
+  .picker-input:focus-visible + label {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .picker label {
+      transition: none;
+    }
+  }
+</style>
