@@ -18,8 +18,10 @@
 # public/livrable/fylgo/ puis décommenter le bloc `apercu`. La page s'affiche
 # correctement sans.
 #
-# L'audit performance et SEO (FYL-5) est reporté à la fin du chantier. Il fera
-# l'objet d'une V2, déclarée par `versionDe` dans un autre fichier.
+# L'audit performance et SEO (FYL-5) est fait et intégré, section « L'état de
+# santé » : Lighthouse 13.5 en local sur trois pages, en mobile et en bureau,
+# plus les contrôles on-page. Ahrefs était inaccessible (forfait insuffisant),
+# et les données terrain CrUX n'existent pas, faute de trafic.
 titre: La boutique, et les clés qui vont avec
 objet: Le détail de ce qui a été fait, ce qui reste ouvert et pourquoi, et ce que vous pouvez faire sans moi.
 date: 2026-09-21
@@ -36,13 +38,15 @@ site:
   url: https://fylgodrinks.com
   label: Ouvrir la boutique
 
-# Captures de l'accueil à prendre sur fylgodrinks.com, 1440 × 900 en x2 et
-# 402 × 874 en x3, puis à déposer sous public/livrable/fylgo/.
-# apercu:
-#   bureau: /livrable/fylgo/accueil-macbook.png
-#   mobile: /livrable/fylgo/accueil-iphone.png
-#   titre: Fylgo · Mocktails premium sans alcool
-#   legende: La page d'accueil, telle qu'elle s'affiche aujourd'hui sur ordinateur et sur téléphone.
+# Captures prises le 2026-09-21 sur fylgodrinks.com, bannière de consentement
+# neutralisée par un cookie de consentement posé avant navigation. 1440 × 900
+# en x2 et 402 × 874 en x3 (iPhone 15 Pro). Converties en WebP qualité 82 :
+# 172 Ko et 121 Ko, contre 2,3 Mo et 1,3 Mo en PNG.
+apercu:
+  bureau: /livrable/fylgo/accueil-macbook.webp
+  mobile: /livrable/fylgo/accueil-iphone.webp
+  titre: Fylgo · Mocktails signature sans alcool
+  legende: La page d'accueil, telle qu'elle s'affiche aujourd'hui sur ordinateur et sur téléphone.
 
 sections:
   - titre: Ce qui est en ligne
@@ -115,6 +119,32 @@ sections:
           l'identifiant de mesure GA4 et un accès administrateur, demandés
           le 18 mai puis le 3 juin.
 
+  - titre: L'état de santé
+    texte: >-
+      Promis fin août, le voici. J'ai mesuré la boutique avec Lighthouse,
+      l'outil de Google, sur trois pages, en version ordinateur et en version
+      téléphone, puis j'ai passé en revue ce que les moteurs de recherche y
+      lisent.
+    liste:
+      - texte: "**Sur ordinateur, la boutique est rapide.** 84 sur 100 pour l'accueil, 86 pour une collection, 96 pour une fiche produit. L'accueil affiche son image principale en 2,4 secondes, juste sous le seuil de 2,5 secondes que Google considère comme bon."
+      - texte: "**Sur téléphone, elle ne l'est pas.** 64, 68 et 62. L'accueil met 11 secondes, la fiche produit 9. C'est le point qui compte le plus, parce que Google classe les sites d'après leur version mobile et non leur version ordinateur."
+      - texte: "**La cause est unique, et elle se corrige.** Trois photos de la gamme sont enregistrées au format PNG et pèsent 800 Ko à elles seules sur l'accueil. Le PNG est fait pour les logos et les captures d'écran, pas pour la photographie."
+        tooltip: >-
+          Démonstration sur ce document même : les deux captures de votre
+          accueil, en haut de cette page, pesaient 3,6 Mo en PNG. Converties au
+          format WebP, elles en pèsent 293 Ko, soit 92 % de moins, sans
+          différence visible à l'écran. Le même geste sur vos trois photos
+          ramènerait l'accueil mobile sous la barre des trois secondes.
+      - texte: "**Le reste de la structure est sain.** Aucun décalage de mise en page pendant le chargement, rien qui bloque l'interaction, et 100 sur 100 au référencement technique de l'accueil. Ce n'est pas le site qui est mal construit, ce sont trois fichiers qui sont trop lourds."
+      - texte: "**Trois familles de pages n'ont pas de description pour les moteurs** : les collections, Notre histoire et Professionnels. C'est le texte gris affiché sous le titre dans les résultats de Google. Quand il manque, Google va chercher une phrase au hasard dans la page."
+      - texte: "**Le titre principal de l'accueil est votre logo.** La balise qui annonce le sujet de la page porte l'image du logo, et votre accroche, « L'art de vivre sans compromis », est rangée un cran en dessous. Google lit donc « Fylgo » comme sujet de la page, au lieu de votre promesse."
+    note: >-
+      Une réserve de méthode, pour que vous sachiez ce que valent ces chiffres.
+      Ils sont mesurés en laboratoire, sur une connexion simulée. Google dispose
+      aussi de mesures réelles, relevées chez les visiteurs, mais il ne les
+      publie qu'au-delà d'un volume de trafic que la boutique n'atteint pas
+      encore. Ces chiffres disent donc quoi corriger, pas ce que vivent vos
+      visiteurs aujourd'hui.
   - titre: Ce qui reste ouvert, et chez qui
     texte: >-
       Trois sujets, dont deux qui vous appartiennent. Je les écris noir sur
@@ -276,6 +306,8 @@ suite:
   - texte: "M'envoyer deux créneaux pour l'heure de formation en visio, comprise dans le devis."
     owner: client
   - texte: "Animer la formation, et rester joignable sur les cinq heures de support."
+    owner: coolbeans
+  - texte: "Convertir les trois photos de l'accueil au format WebP, et rédiger les descriptions manquantes. Compris dans les cinq heures de support du devis."
     owner: coolbeans
   - texte: "Rebrancher la fenêtre d'inscription à la newsletter, le jour où vous voulez faire grandir votre liste."
     owner: coolbeans
