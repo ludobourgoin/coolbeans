@@ -1,29 +1,35 @@
-# Livrable de clôture de la boutique Fylgo, composé le 2026-09-20 (FYL-7).
-# Même référence 3907 que la proposition du 24 mars : le client retrouve le
-# même numéro d'un document à l'autre.
+# Livrable de clôture de la boutique Fylgo (FYL-7). Même référence 3907 que la
+# proposition du 24 mars : le client retrouve le même numéro d'un document à
+# l'autre.
 #
 # Ce livrable n'est pas une validation de maquette comme celui de CAFA : la
 # boutique est en production et transférée depuis mai. C'est une passation.
-# D'où les trois sections qui n'existent pas chez CAFA : ce qui reste ouvert
-# et chez qui, ce qui appartient désormais à Fylgo, et l'état de santé.
+#
+# Réécrit le 2026-09-21 après dépouillement de l'export WhatsApp
+# (docs/WhatsApp Chat - Fylgø Web/_chat.txt). Il corrige une erreur de la
+# première version, qui présentait la ligne « Connectivité marketplaces »
+# comme non livrée et listait treize questions sans réponse. WhatsApp montre
+# que les accès Ankorstore et Faire ont été donnés les 12/05 et 18/07, que
+# Paul a répondu sur les coefficients de marge le 29/07 à 17h12, qu'Amazon a
+# été écarté par le client le 18/07, et que le setup a été déclaré finalisé le
+# 29/07 à 18h11. Il reste quatre questions ouvertes, toutes vérifiées.
 #
 # À COMPLÉTER AVANT ENVOI (facultatif) : déposer les deux captures sous
 # public/livrable/fylgo/ puis décommenter le bloc `apercu`. La page s'affiche
 # correctement sans.
 #
-# L'audit performance et SEO (FYL-5) est reporté par Ludo à la fin du chantier,
-# une fois les défauts en ligne corrigés. Il fera l'objet d'une V2 de ce
-# livrable, déclarée par `versionDe` dans un autre fichier.
+# L'audit performance et SEO (FYL-5) est reporté à la fin du chantier. Il fera
+# l'objet d'une V2, déclarée par `versionDe` dans un autre fichier.
 titre: La boutique, et les clés qui vont avec
 objet: Le détail de ce qui a été fait, ce qui reste ouvert et pourquoi, et ce que vous pouvez faire sans moi.
-date: 2026-09-20
+date: 2026-09-21
 contact: Fabien
 linear:
   projet: Boutique Shopify
   affaire: https://linear.app/coolbeans-hq/issue/CRM-28
-# Le document part à Fabien et à Paul, tous deux sous fylgodrinks.com.
+# Le document part à Fabien, Paul et Laetitia, tous sous fylgodrinks.com.
 envoi:
-  date: 2026-09-20
+  date: 2026-09-21
   destinataire: fabien.vp@fylgodrinks.com
 
 site:
@@ -46,19 +52,17 @@ sections:
       elle est référencée.
     liste:
       - texte: "**Huit références en vente, par carton de douze** : les quatre mocktails signature, chacun en canette 25 cl à 42 € et en bouteille 33 cl à 48 €."
-        tooltip: >-
-          Chaque format est un produit à part entière, pas une variante. Voir
-          « Les choix qui tiennent la boutique » plus bas : cette décision
-          conditionne la revente.
       - texte: "**Trois collections alimentées** : la gamme complète, le format 25 cl et le format 33 cl. La livraison est offerte à partir de 150 €, par une remise automatique."
       - texte: "**Cinq pages de contenu** : Notre histoire, Savoir-faire, Suggestions cocktails, Professionnels et Contact, plus les pages légales."
-      - texte: "**Le paiement passe par Payplug**, en paiement intégré : le client saisit sa carte sans quitter la boutique. Les deux commandes encaissées à ce jour sont passées par ce canal."
+      - texte: "**Le paiement passe par Payplug**, en paiement intégré : le client saisit sa carte sans quitter la boutique."
       - texte: "**Le site est déclaré dans la Google Search Console** et lui envoie son plan de site automatiquement, à chaque ajout de produit ou de page."
+      - texte: "**Ankorstore et Faire sont branchées.** Le catalogue et les stocks remontent automatiquement depuis Shopify. La gestion commerciale de ces deux boutiques vous appartient désormais."
       - texte: "**La direction artistique est portée par le code**, pas par les réglages de l'admin : les polices Stylebender sont chargées dans la feuille de style du thème."
         tooltip: >-
           Conséquence pratique : modifier les paramètres typographiques dans
-          Customize ne change rien à l'affichage des titres. C'est voulu, et
-          c'est documenté dans la doc de passation.
+          Customize ne change rien à l'affichage des titres. C'est voulu. La
+          marche à suivre pour changer une police est détaillée dans votre
+          documentation, page « Référence et support ».
 
   - titre: Tout ce qui a été fait
     texte: >-
@@ -68,7 +72,7 @@ sections:
     liste:
       - texte: "**Choix du thème** : installation et test de plusieurs thèmes premium en conditions réelles, avec vos packshots, puis tableau comparatif et recommandation argumentée."
         tooltip: Avril. Ligne « Cadrage et setup technique » du devis.
-      - texte: "**Configuration de fond de la boutique** : domaine et DNS chez OVH, taxes, zones et modes de livraison, adresse d'expédition, paiement express, emails de commande."
+      - texte: "**Configuration de fond de la boutique** : domaine et DNS chez OVH, taux de taxe, zones et modes de livraison, adresse d'expédition, paiement express, emails de commande. Ces réglages ont été posés puis soumis à votre validation, qui reste attendue (voir plus bas)."
       - texte: "**Mise en place du paiement** : Payplug installé par interface de programmation et activé en paiement intégré, pour que le client ne quitte jamais la boutique."
       - texte: "**Catalogue** : huit références distinctes, chacune avec sa description, son code article, ses metafields et ses visuels."
       - texte: "**Intégration de la direction artistique** : couleurs, styles de boutons, et les deux polices Stylebender, Retro et Italic Ornate, chargées dans la feuille de style du thème et appliquées aux titres."
@@ -76,21 +80,22 @@ sections:
           Ce point ne se règle pas depuis l'admin. C'est une surcharge écrite
           dans le code du thème, la seule façon d'imposer vos polices par
           dessus celles de Flow.
-      - texte: "**Page d'accueil, page À propos, page Contact et gabarit produit** : assemblage des sections, hiérarchie visuelle, metafield « plantes utilisées » en sous-titre de chaque fiche, et produits complémentaires activés."
+      - texte: "**Page d'accueil, page Notre histoire, page Contact et gabarit produit** : assemblage des sections, hiérarchie visuelle, metafield « plantes utilisées » en sous-titre de chaque fiche, et produits complémentaires activés."
         tooltip: Ligne « Intégration design » du devis.
       - texte: "**Pages légales, et mentions légales retravaillées puis ajoutées au pied de page.**"
       - texte: "**Navigation** : menu Mocktails signature et ses deux sous-menus, en-tête, pied de page, panier latéral."
       - texte: "**Traitement technique des visuels** : intégration des packshots haute définition sur fond transparent, pictogrammes « Enrichi en plantes » et « Agriculture Biologique », favicon."
-      - texte: "**Référencement et mesure** : déclaration dans la Google Search Console, envoi automatique du plan de site, et affichage de la devise selon la convention française."
-      - texte: "**Plateformes de revente** : applications Faire, Ankorstore et Amazon installées sur la boutique, catalogue et stocks prêts à remonter automatiquement. Il ne manque que vos conditions commerciales pour publier."
+      - texte: "**Référencement** : déclaration dans la Google Search Console, envoi automatique du plan de site, et affichage de la devise selon la convention française."
+      - texte: "**Plateformes de revente** : applications Ankorstore et Faire installées, connectées et paramétrées, catalogue et stocks synchronisés depuis Shopify. Setup finalisé le 29 juillet."
         tooltip: >-
-          Ligne « Connectivité marketplaces » du devis. Le travail technique
-          est fait ; ce qui reste est une mise en vente, pas un branchement.
-      - texte: "**Email marketing** : Brevo activé et relié à la boutique."
-      - texte: "**Transfert de propriété de la boutique à Fylgo**, et accompagnement sur l'achat du thème."
-      - texte: "**Gestion de projet** : point hebdomadaire du lundi pendant toute la durée du projet, guide de setup rédigé et tenu à jour, recommandations de rédaction pour les pages À propos et Professionnels."
+          Ligne « Connectivité marketplaces » du devis. Amazon a été écarté
+          d'un commun accord le 18 juillet, l'expérience précédente de Fylgo
+          sur Seller Central ayant conduit à reporter ce canal.
+      - texte: "**Email marketing** : Brevo relié à la boutique, et fenêtre d'inscription du thème désactivée selon votre choix."
+      - texte: "**Transfert de propriété de la boutique à Fylgo.**"
+      - texte: "**Gestion de projet** : point hebdomadaire du lundi animé jusqu'à la mise en ligne, guide de setup rédigé et tenu à jour, recommandations de rédaction pour les pages Notre histoire et Professionnels."
         tooltip: Ligne « Gestion de projet et support » du devis.
-      - texte: "**Documentation de passation**, six pages, rédigée en septembre et accessible depuis votre espace."
+      - texte: "**Documentation de passation**, cinq pages, accessible depuis votre espace client."
     note: >-
       S'y ajoute ce qui n'était pas au devis : la vérification de votre
       boutique et de votre administration pendant la panne Shopify des 3 et
@@ -98,57 +103,62 @@ sections:
 
   - titre: Les choix qui tiennent la boutique
     texte: >-
-      Quatre décisions expliquent la boutique telle qu'elle est. Elles ont
-      toutes été prises pour la même raison : mettre le budget dans la marque
-      plutôt que dans la technique.
+      Trois décisions expliquent la boutique telle qu'elle est aujourd'hui.
     liste:
       - texte: "**Un thème premium plutôt qu'un développement sur mesure.** La structure de Flow est éprouvée et tenue à jour par son éditeur. Nous l'avons mise aux couleurs de Fylgo au lieu de repartir d'une page blanche : c'est ce qui a permis de tenir le budget annoncé en mars."
-      - texte: "**Huit produits distincts plutôt que quatre produits à variantes.** Chaque format a son visuel, son prix et sa fiche. Surtout, c'est la seule façon de les vendre séparément sur les plateformes de revente, où un caviste commande à la référence."
-      - texte: "**Payplug plutôt qu'une solution de paiement externe.** Le client reste sur la boutique du début à la fin. Le mouvement d'argent se suit dans Payplug, l'état de la commande dans Shopify."
-      - texte: "**Aucun outil de mesure en plus de Shopify.** Les statistiques natives couvrent les visites, les sources de trafic, la conversion et le chiffre d'affaires. Tant que la boutique ne fait pas de publicité payante, elles suffisent, et il n'y a pas un réglage de plus à maintenir."
+      - texte: "**Huit produits distincts plutôt que quatre produits à variantes**, comme vous l'avez demandé en avril. Chaque format a ainsi son visuel, son prix et sa fiche, et se vend séparément sur les plateformes de revente, où un caviste commande à la référence."
+      - texte: "**Aucun outil de mesure en plus de Shopify.** Les statistiques natives couvrent les visites, les sources de trafic, la conversion et le chiffre d'affaires. À ce stade elles suffisent, et il n'y a pas un réglage de plus à maintenir."
+        tooltip: >-
+          Google Analytics ne devient utile que le jour où vous lancez une
+          campagne payante, Google ou Meta, et où il faut attribuer chaque
+          euro dépensé. Si vous le souhaitez, je le branche : il me faut
+          l'identifiant de mesure GA4 et un accès administrateur, demandés
+          le 18 mai puis le 3 juin.
 
   - titre: Ce qui reste ouvert, et chez qui
     texte: >-
-      Le devis du 24 mars comptait quatre lignes. Trois sont livrées. La
-      quatrième attend des décisions qui ne m'appartiennent pas, et je préfère
-      le dire noir sur blanc plutôt que de le laisser dans un fil de mails.
+      Trois sujets, dont deux qui vous appartiennent. Je les écris noir sur
+      blanc plutôt que de les laisser dans un fil de mails.
     liste:
-      - texte: "**Faire et Ankorstore : les applications sont installées, le branchement attend votre feu vert.** Le catalogue et les stocks remonteraient automatiquement depuis Shopify. Il manque trois décisions commerciales : le prix de gros hors taxes par référence, le montant minimum de commande, et le seuil au-delà duquel le port est offert."
+      - texte: "**La relecture des paramètres de vente, dans Shopify et sur les deux plateformes.** Les réglages sont posés et fonctionnels. Ce qui manque est votre passage page par page pour confirmer qu'ils disent bien ce que vous voulez vendre : taux de taxe, frais de port, seuil de livraison offerte, minimum de commande en gros, conditions affichées aux revendeurs."
+      - texte: "**L'ouverture commerciale d'Ankorstore et de Faire.** La plomberie est en place et le catalogue remonte. Les animer, accepter les revendeurs, suivre les commandes, ajuster les conditions : tout cela relève de votre activité commerciale, pas du site."
+      - texte: "**La collecte d'adresses email est plafonnée.** Une adresse n'entre aujourd'hui dans la liste qu'au moment d'une commande ou de la création d'un compte, parce que la fenêtre d'inscription du thème est désactivée. C'est le principal levier de croissance de votre liste, et il est à l'arrêt : le jour où vous voulez des abonnés, c'est par là qu'il faut passer. Le réglage est dans votre documentation."
+
+  - titre: Le stock, et pourquoi il faut trancher avant d'ouvrir les vannes
+    texte: >-
+      C'est le seul point réellement technique de ce document, et le seul qui
+      puisse vous coûter de l'argent si personne ne le tranche. Il tient en
+      trois paragraphes.
+    liste:
+      - texte: "**Shopify tient un seul compteur de stock par référence, et tous les canaux y puisent.** Il n'y a pas un stock « site » et un stock « Ankorstore » : il y a votre stock, et trois vitrines qui affichent le même nombre."
+      - texte: "**L'exemple.** Vous avez aujourd'hui 13 cartons de HAVANA Mule 25 cl. Un caviste en commande 8 sur Ankorstore. Dans la minute, votre site n'en affiche plus que 5, et Faire non plus. Si un particulier en voulait 6 le même soir, il voit « victime de son succès » alors que la commande du caviste n'est peut-être même pas encore expédiée."
+      - texte: "**Option A, le stock commun. C'est ce qui tourne aujourd'hui.** Tout le monde puise au même endroit, premier arrivé premier servi. Zéro entretien, zéro réglage, et vous ne vendez jamais un carton que vous n'avez pas. Le revers est celui de l'exemple ci-dessus : une grosse commande de gros peut vider la vitrine grand public du jour au lendemain."
         tooltip: >-
-          Repère du marché : le prix de gros se situe autour de la moitié du
-          prix public, et une commission de quinze à vingt-cinq pour cent
-          s'ajoute par-dessus. Demandé le 16 juillet, relancé le 29.
-      - texte: "**Amazon n'a jamais été branché.** Il me faut un accès utilisateur sur Seller Central, et les identifiants ASIN de vos huit fiches si elles existent déjà, ou les codes EAN si elles restent à créer."
-      - texte: "**Le stock est commun à tous les canaux.** Le jour où les plateformes s'ouvrent, une commande de gros entame le stock disponible sur le site. On peut soit laisser tout le monde puiser au même endroit, premier arrivé premier servi, soit réserver des quantités par canal. C'est une décision à prendre avant l'ouverture, pas après."
-      - texte: "**La collecte d'adresses email est plafonnée.** Brevo est actif, mais une adresse n'entre dans la liste qu'au moment d'une commande ou de la création d'un compte. La fenêtre d'inscription du thème est désactivée. C'est un choix qui se défend, à condition de savoir qu'il limite mécaniquement la croissance de la liste."
+          À retenir : le stock commun ne fait courir aucun risque de survente.
+          Il fait courir un risque de rupture visible côté site, au profit du
+          B2B, qui commande par gros volumes.
+      - texte: "**Option B, le stock réservé par canal.** Vous coupez la poire : par exemple 8 cartons au site et 5 au B2B. Chaque vitrine a sa réserve, et personne ne mange celle de l'autre. Votre site ne tombe plus en rupture à cause d'un caviste. Le revers : il faut rééquilibrer à la main de temps en temps, et une vitrine peut afficher « épuisé » alors qu'il reste des cartons dans l'autre réserve."
+      - texte: "**Ce que je vous recommande.** Rester en option A tant que le volume de gros est faible, et basculer en option B le jour où une commande de revendeur vous fait perdre une vente grand public. La bascule se fait en quelques minutes et se défait aussi vite : ce n'est pas une décision irréversible, c'est une décision à prendre en connaissance de cause."
     note: >-
-      Le travail technique de cette ligne est fait : les applications sont
-      installées, le catalogue et les stocks sont prêts à remonter. Ce qui
-      reste n'est pas un branchement, c'est une mise en vente, et elle dépend
-      de décisions qui vous appartiennent. Elle est comprise dans le devis et
-      rien ne s'y ajoutera.
+      Si un point de cette page vous paraît obscur, dites-moi lequel et je le
+      réécris ici : c'est plus utile pour vous qu'une explication de vive voix
+      qu'il faudrait redemander dans six mois.
 
   - titre: Les questions restées sans réponse
     texte: >-
       Ces questions vous ont été posées par mail, plusieurs à trois reprises.
-      Elles sont toutes encore ouvertes aujourd'hui. Je les rassemble ici
-      parce qu'elles expliquent à elles seules pourquoi la quatrième ligne du
-      devis n'est pas en vente, et parce qu'un fil de mails de six mois n'est
-      pas un endroit où retrouver une question.
+      Elles sont toutes encore ouvertes aujourd'hui. Je les rassemble ici :)
     liste:
-      - texte: "**Le prix de gros hors taxes, par référence, pour les plateformes de revente.** Posée le 16 juillet, reposée le 29 juillet avec un repère de marché et l'unité attendue, le carton de douze."
-      - texte: "**Le montant minimum de commande sur ces plateformes.** Posée le 29 juillet, avec une valeur proposée par défaut, 150 € hors taxes, à confirmer ou à corriger."
-      - texte: "**Le seuil au-delà duquel le port est offert au revendeur.** Posée le 29 juillet, avec une valeur proposée par défaut, 250 € hors taxes."
-      - texte: "**Un accès utilisateur sur Ankorstore, Faire et Seller Central.** Demandé le 16 juillet. Les applications se connectent en direct : sans cet accès, la mise en vente ne peut pas se faire."
-      - texte: "**Les identifiants ASIN de vos huit fiches Amazon, ou à défaut les codes EAN.** Demandés le 16 juillet, selon que les fiches existent déjà ou restent à créer."
-      - texte: "**Le mode de gestion du stock entre les quatre canaux**, commun ou réservé par canal. Posée le 16 juillet, avec l'exemple chiffré des conséquences de chaque option."
-      - texte: "**La validation des paramètres de vente dans l'admin Shopify**, page par page. Demandée le 16 juillet : taux de TVA, frais de port et seuil de livraison offerte, adresse d'expédition, moyens de paiement, emails de commande, adresse de contact."
-      - texte: "**L'adresse de contact définitive de la boutique.** Posée le 18 mai, reposée le 3 juin. L'adresse `paul.levy@fylgodrinks.com` est en place faute de réponse."
-      - texte: "**Les comptes Google Tag Manager et Google Analytics, et un accès administrateur.** Demandés le 18 mai, redemandés le 3 juin et le 16 juillet. Sans eux, aucune mesure fine n'est possible le jour où une campagne payante démarre."
-      - texte: "**La clé de l'interface de programmation Google Maps.** Demandée le 18 mai, redemandée le 3 juin."
-      - texte: "**Les visuels d'ambiance**, c'est-à-dire les photographies hors produit. Demandés le 3 juin."
-      - texte: "**Le contenu de la fenêtre d'offre commerciale.** Demandé le 16 juillet, capture d'écran à l'appui."
-      - texte: "**Le développement des plantes sur les sections de collection**, chiffré à 250 € hors taxes le 16 juillet, hors forfait, et déconseillé de ma part. Sans réponse, il n'a pas été fait."
+      - texte: "**La repasse sur les paramètres de la boutique, page par page dans l'admin Shopify.** Demandée le 16 juillet, redemandée le 29 juillet : taux de TVA, frais de port et seuil de livraison offerte, adresse d'expédition, moyens de paiement activés, emails de commande, adresse de contact retenue."
+      - texte: "**La relecture des paramètres d'Ankorstore et de Faire**, dans le même esprit. Demandée le 29 juillet, à la livraison du setup."
+      - texte: "**Le mode de gestion du stock entre les canaux**, commun ou réservé. Posée le 16 juillet. La section précédente la reprend en détail, avec l'exemple chiffré."
+      - texte: "**L'identifiant de mesure GA4 et un accès administrateur**, si et seulement si vous voulez une mesure plus fine que celle de Shopify. Demandés le 18 mai, redemandés le 3 juin. Sans eux rien ne se branche, et à ce stade rien n'a besoin de l'être."
+        tooltip: >-
+          Le jour où vous le voudrez : créez une propriété GA4 sur
+          analytics.google.com, ouvrez Administration puis Flux de données,
+          créez un flux Web pointant sur fylgodrinks.com, et transmettez-moi
+          l'identifiant de mesure, qui commence par G-. Ajoutez-moi ensuite
+          comme administrateur de la propriété. Je m'occupe du reste.
     note: >-
       Aucune de ces questions ne bloque la boutique telle qu'elle tourne
       aujourd'hui. Toutes bloquent ce qui viendrait après.
@@ -159,10 +169,10 @@ sections:
       contrepartie écrite : tout ce qui la fait tourner est à vous, et rien
       ne dépend d'un abonnement chez moi.
     liste:
-      - texte: "**La boutique et ses comptes.** Vous en êtes propriétaires et administrateurs. Payplug, Brevo, la Search Console et le nom de domaine chez OVH sont vos comptes, à vos noms."
+      - texte: "**La boutique et ses comptes.** Vous en êtes propriétaires et administrateurs. Payplug, Brevo, la Search Console, Ankorstore, Faire et le nom de domaine chez OVH sont vos comptes, à vos noms."
       - texte: "**Le code du thème est sauvegardé dans un dépôt privé à votre nom**, polices et surcharges comprises. Un thème de secours non publié dort par ailleurs sur la boutique."
-      - texte: "**Une documentation de six pages**, tenue à jour, accessible depuis votre espace : ce que contient la boutique, ce que vous pouvez modifier vous-même, ce qu'il ne faut jamais toucher, qui a accès à quoi, et comment demander une intervention."
-      - texte: "**Une heure de formation en visio et cinq heures de support technique** sont comprises dans le devis et n'ont pas encore été utilisées. Dites-moi quand vous voulez les poser."
+      - texte: "**Une documentation de cinq pages**, tenue à jour, accessible depuis votre espace client : ce que contient la boutique, ce que vous pouvez modifier vous-même, ce qu'il ne faut jamais toucher, qui a accès à quoi, et comment demander une intervention."
+      - texte: "**Une heure de formation en visio et cinq heures de support technique** sont comprises dans le devis et n'ont pas encore été utilisées. Prenons la formation maintenant : répondez-moi avec deux créneaux qui vous arrangent et je vous envoie l'invitation."
 
 parcoursTitre: Le parcours de la boutique
 parcours:
@@ -244,29 +254,30 @@ parcours:
   - page: Documentation de la boutique
     url: https://my.coolbeans.cc/docs/fylgo
     groupe: Votre espace
-    texte: Les six pages de passation, dans votre espace client. C'est la seule source de vérité, et elle est tenue à jour.
+    texte: Les cinq pages de passation, dans votre espace client. C'est la seule source de vérité, et elle est tenue à jour.
 
 aVerifierTitre: Ce que je vous demande de vérifier
 aVerifier:
-  - "**Les paramètres de vente, page par page dans l'admin Shopify.** Taux de TVA appliqués, frais de port et seuil de livraison offerte, adresse d'expédition, moyens de paiement activés, emails de confirmation de commande. Une erreur à cet endroit ne se voit qu'à la première commande réelle, et le petit nombre de commandes encaissées à ce jour n'a pas encore fait office de test grandeur nature."
+  - "**Les paramètres de vente, page par page dans l'admin Shopify.** Taux de TVA appliqués, frais de port et seuil de livraison offerte, adresse d'expédition, moyens de paiement activés, emails de confirmation de commande."
+  - "**Les paramètres d'Ankorstore et de Faire** : conditions affichées aux revendeurs, minimum de commande, seuil de port offert, coefficients appliqués."
   - "**L'adresse de contact de la boutique**, aujourd'hui `paul.levy@fylgodrinks.com`. C'est elle qui reçoit les formulaires et qui apparaît dans les emails envoyés aux clients. Est-ce celle que vous gardez ?"
   - "**Les mentions légales** : la raison sociale ABEAM DRINKS, le SIRET, l'adresse de Neuilly, et le nom du responsable de la publication."
   - "**Les textes des pages Notre histoire, Savoir-faire et Suggestions cocktails**, montés à partir de vos documents. Ils se corrigent sans passer par moi, mais depuis Customize et non depuis l'éditeur de Pages, où la zone de texte est vide : tout le contenu de ces trois pages vit dans les sections du thème. La marche à suivre est dans votre documentation."
-  - "**Les prix affichés**, toutes taxes comprises, sur les huit références et les deux packs."
+  - "**Les prix affichés**, toutes taxes comprises, sur les huit références."
 
 suiteTitre: La suite
 suite:
-  - texte: "Confirmer les paramètres de vente, ou me dire ce qui cloche."
+  - texte: "Confirmer les paramètres de vente dans Shopify, ou me dire ce qui cloche."
     owner: client
-  - texte: "Trancher les trois décisions commerciales pour Faire et Ankorstore : prix de gros par référence, minimum de commande, seuil de port offert."
+  - texte: "Relire les conditions affichées sur Ankorstore et sur Faire."
     owner: client
-  - texte: "M'ajouter comme utilisateur sur Seller Central, et me transmettre les ASIN ou les EAN des huit références."
+  - texte: "Trancher le mode de gestion du stock entre les canaux : commun, ou réservé par canal."
     owner: client
-  - texte: "Choisir le mode de gestion du stock entre les canaux : commun, ou réservé par canal."
+  - texte: "M'envoyer deux créneaux pour l'heure de formation en visio, comprise dans le devis."
     owner: client
-  - texte: "Brancher Faire et Ankorstore, puis Amazon. Environ une journée à réception des décisions et des accès."
+  - texte: "Animer la formation, et rester joignable sur les cinq heures de support."
     owner: coolbeans
-  - texte: "Poser l'heure de formation et ouvrir les cinq heures de support, quand vous voulez."
+  - texte: "Rebrancher la fenêtre d'inscription à la newsletter, le jour où vous voulez faire grandir votre liste."
     owner: coolbeans
 
 notes:
@@ -276,7 +287,6 @@ notes:
       apparaît ici, au même lien, et la précédente reste consultable.
   - tone: neutral
     texte: >-
-      La facture de solde de 3 528 € TTC a été émise le 24 août. Elle couvre
-      l'intégralité du devis du 24 mars, branchement des plateformes de
-      revente compris : celui-ci reste dû de ma part et s'exécute dès que les
-      décisions ci-dessus sont prises.
+      La facture de solde jointe à ce document annule et remplace celle du
+      24 août, dont le montant était erroné. Elle solde l'intégralité du devis
+      du 24 mars et je vous remercie de la régler à réception.
