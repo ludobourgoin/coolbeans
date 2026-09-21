@@ -109,10 +109,6 @@ sections:
       - texte: "**Gestion de projet** : point hebdomadaire du lundi animé jusqu'à la mise en ligne, guide de setup rédigé et tenu à jour, recommandations de rédaction pour les pages Notre histoire et Professionnels."
         tooltip: Ligne « Gestion de projet et support » du devis.
       - texte: "**Quatre correctifs posés le 21 septembre** : le libellé du bouton d'ajout au panier, le code promo Fylgo10 qui était annoncé sans exister, le bandeau de consentement aux cookies, et la carte cadeau du menu qui menait à une page introuvable."
-    note: >-
-      S'y ajoute ce qui n'était pas au devis : la vérification de votre boutique
-      et de votre administration pendant la panne Shopify des 3 et 4 juin, et
-      une documentation de cinq pages accessible depuis votre espace client.
 
   - titre: L'état de santé
     texte: >-

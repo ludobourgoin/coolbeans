@@ -30,7 +30,15 @@ interface Section {
      Le libellé porte le décompte (« Voir les quinze points »), parce qu'un
      dépliant anonyme ne dit pas ce qu'il cache et ne se clique donc pas. Le
      `texte` de la section reste visible au-dessus : c'est lui qui résume, le
-     dépliant ne porte que la pièce justificative. */
+     dépliant ne porte que la pièce justificative.
+
+     Le `<details>` porte un groupe NOMMÉ, `group/replie`, et surtout pas
+     `group` tout court. Tooltip s'affiche via `group-hover:`, que Tailwind
+     compile en `.group:hover &` : ce sélecteur remonte à n'importe quel
+     ancêtre portant `.group`, pas au plus proche. Un groupe anonyme ici
+     ouvrait donc toutes les infobulles du dépliant dès qu'on survolait
+     n'importe quel point de la section. Constaté sur le livrable Fylgo le
+     2026-09-21. */
   replie?: string;
 }
 
@@ -80,11 +88,11 @@ const { sections } = Astro.props;
 
         {section.liste &&
           (section.replie ? (
-            <details class="group max-w-[58ch] border-t border-line">
+            <details class="group/replie max-w-[58ch] border-t border-line">
               <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-[15px] font-medium text-ink [&::-webkit-details-marker]:hidden">
                 {section.replie}
                 <span
-                  class="font-mono text-mute after:content-['+'] group-open:after:content-['−']"
+                  class="font-mono text-mute after:content-['+'] group-open/replie:after:content-['−']"
                   aria-hidden="true"
                 />
               </summary>
