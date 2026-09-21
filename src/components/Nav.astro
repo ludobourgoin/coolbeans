@@ -13,6 +13,7 @@ const links = [
   { href: "#", label: "Ressources", ready: false },
   { href: "/tools", label: "Boîte à outils", ready: true },
   { href: "/about", label: "À propos", ready: true },
+  { href: "/contact", label: "Contact", ready: true },
 ];
 const isActive = (href: string) => href !== "#" && path.startsWith(href);
 
@@ -153,7 +154,7 @@ const audience = [
 
     <div class="flex items-center gap-3.5 justify-self-end">
       <ThemeSwitch />
-      <a class="btn btn-sm" href="/contact">Contact</a>
+      <a class="btn btn-sm" href="/connexion">Me connecter</a>
     </div>
   </div>
 </header>
