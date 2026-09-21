@@ -23,6 +23,15 @@ interface Section {
   liste?: (string | { texte: string; tooltip?: string })[];
   note?: string;
   video?: { id: string; titre?: string };
+  /* Replie la liste derrière un dépliant, dont le libellé est cette chaîne.
+     Opt-in : sans elle, la liste s'affiche comme avant, et les documents de
+     cadrage ne changent pas d'un pixel.
+
+     Le libellé porte le décompte (« Voir les quinze points »), parce qu'un
+     dépliant anonyme ne dit pas ce qu'il cache et ne se clique donc pas. Le
+     `texte` de la section reste visible au-dessus : c'est lui qui résume, le
+     dépliant ne porte que la pièce justificative. */
+  replie?: string;
 }
 
 interface Props {
@@ -32,7 +41,25 @@ const { sections } = Astro.props;
 ---
 
 {
-  sections.map((section, index) => (
+  sections.map((section, index) => {
+    const puces = section.liste && (
+      <ul class:list={["flex list-none flex-col gap-3", section.replie && "pt-1 pb-5"]}>
+        {section.liste.map((brut) => {
+          const item = listeItem(brut);
+          return (
+            <li class="flex items-start gap-3.5">
+              <span class="mt-[0.55em] block size-1.5 flex-none bg-ink" aria-hidden="true" />
+              <span class="max-w-[58ch]">
+                <Fragment set:html={riche(item.texte)} />
+                {item.tooltip && <Tooltip texte={item.tooltip} />}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    );
+
+    return (
     <section
       id={ancreSection(section.titre)}
       class:list={[
@@ -51,22 +78,21 @@ const { sections } = Astro.props;
           />
         )}
 
-        {section.liste && (
-          <ul class="flex list-none flex-col gap-3">
-            {section.liste.map((brut) => {
-              const item = listeItem(brut);
-              return (
-                <li class="flex items-start gap-3.5">
-                  <span class="mt-[0.55em] block size-1.5 flex-none bg-ink" aria-hidden="true" />
-                  <span class="max-w-[58ch]">
-                    <Fragment set:html={riche(item.texte)} />
-                    {item.tooltip && <Tooltip texte={item.tooltip} />}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        {section.liste &&
+          (section.replie ? (
+            <details class="group max-w-[58ch] border-t border-line">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-[15px] font-medium text-ink [&::-webkit-details-marker]:hidden">
+                {section.replie}
+                <span
+                  class="font-mono text-mute after:content-['+'] group-open:after:content-['−']"
+                  aria-hidden="true"
+                />
+              </summary>
+              {puces}
+            </details>
+          ) : (
+            puces
+          ))}
 
         {section.video && (
           <div class="mt-6 max-w-full overflow-hidden rounded-lg border border-line">
@@ -91,5 +117,6 @@ const { sections } = Astro.props;
         )}
       </div>
     </section>
-  ))
+    );
+  })
 }

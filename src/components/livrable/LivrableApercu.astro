@@ -36,7 +36,20 @@ const adresse = url.replace(/^https?:\/\//, "").replace(/\/$/, "");
             {adresse}
           </span>
         </div>
-        <img src={bureau} alt={`Page d'accueil du site, vue sur un écran d'ordinateur (${adresse})`} loading="lazy" />
+        {/* width et height portent le rapport de la capture, pas sa densité :
+            le navigateur réserve la place avant le chargement et la page ne
+            saute plus. Sans eux, le CLS de cette page montait à 0,269 sur
+            mobile. Et la capture de bureau se charge en priorité, pas en
+            différé : elle est le premier élément visible, donc celle qui
+            définit le LCP. */}
+        <img
+          src={bureau}
+          alt={`Page d'accueil du site, vue sur un écran d'ordinateur (${adresse})`}
+          width="1440"
+          height="900"
+          loading="eager"
+          fetchpriority="high"
+        />
       </figure>
       {
         mobile && (
@@ -47,7 +60,13 @@ const adresse = url.replace(/^https?:\/\//, "").replace(/\/$/, "");
                 <span class="apercu-ilot" />
                 <span class="apercu-batterie" />
               </div>
-              <img src={mobile} alt="La même page d'accueil sur un iPhone" loading="lazy" />
+              <img
+                src={mobile}
+                alt="La même page d'accueil sur un iPhone"
+                width="402"
+                height="874"
+                loading="lazy"
+              />
             </div>
           </figure>
         )

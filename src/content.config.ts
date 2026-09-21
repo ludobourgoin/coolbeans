@@ -224,6 +224,15 @@ const livrable = defineCollection({
           )
           .optional(),
         note: z.string().optional(),
+        /* Replie la liste derrière un dépliant portant ce libellé. Le `texte`
+           de la section reste visible au-dessus et fait le résumé ; la liste
+           devient la pièce justificative, consultable en un clic.
+
+           Sert aux sections de preuve, longues et rarement lues en entier :
+           sur le livrable Fylgo, l'inventaire du travail livré pesait quinze
+           puces qui écrasaient tout le reste du document. Le libellé porte
+           toujours le décompte, sans quoi personne ne déplie. */
+        replie: z.string().optional(),
       }),
     ),
     parcoursTitre: z.string().default("Le parcours"),
