@@ -28,7 +28,7 @@
 # déjà en WebP selon l'en-tête Accept du navigateur (720 Ko en PNG deviennent
 # 260 Ko en WebP sur la même URL). La vraie cause est la règle CSS des sections
 # parallax, qui demande width=2000 y compris dans sa variante mobile.
-titre: La boutique, et les clés qui vont avec
+titre: La boutique Fylgo
 objet: Le détail de ce qui a été fait, ce qui reste ouvert et pourquoi, et ce que vous pouvez faire sans moi.
 date: 2026-09-21
 contact: Fabien
@@ -179,6 +179,7 @@ sections:
       qu'il faudrait redemander dans six mois.
 
 parcoursTitre: Le parcours de la boutique
+parcoursReplie: true
 parcours:
   - page: Accueil
     url: https://fylgodrinks.com/

@@ -22,8 +22,18 @@ interface Etape {
 interface Props {
   titre: string;
   etapes: Etape[];
+  /* Replie chaque groupe derrière un dépliant. Opt-in, parce que tous les
+     parcours ne s'y prêtent pas : un relevé de liens à corriger se lit comme
+     une checklist et doit rester ouvert, tandis qu'une table des matières de
+     site livré gagne à se refermer.
+
+     Le `<details>` porte un groupe NOMMÉ. Tooltip s'affiche via `group-hover:`,
+     que Tailwind compile en `.group:hover &` : ce sélecteur remonte à tout
+     ancêtre portant `.group`, pas au plus proche. Un groupe anonyme ouvrirait
+     toutes les infobulles contenues dès le survol. */
+  replie?: boolean;
 }
-const { titre, etapes } = Astro.props;
+const { titre, etapes, replie = false } = Astro.props;
 
 const STATUT: Record<NonNullable<Etape["statut"]>, { texte: string; couleur: string }> = {
   "a-jour": { texte: "À jour", couleur: "var(--success)" },
@@ -60,15 +70,10 @@ const initiale = (url: string) => {
   class="grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4"
 >
   <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">{titre}</p>
-  <div class="flex flex-col gap-8">
+  <div class:list={["flex flex-col", replie ? "gap-0" : "gap-8"]}>
     {
-      blocs.map((bloc) => (
-        <div>
-          {bloc.nom && (
-            <p class="mb-3 font-mono text-[13px] font-bold tracking-wide text-mute uppercase">
-              {bloc.nom}
-            </p>
-          )}
+      blocs.map((bloc) => {
+        const liste = (
           <ol class="flex list-none flex-col divide-y divide-line">
             {bloc.etapes.map((etape) => (
               <li class="grid gap-1 py-4 first:pt-0 last:pb-0 sm:grid-cols-[240px_1fr] sm:gap-6">
@@ -111,8 +116,37 @@ const initiale = (url: string) => {
               </li>
             ))}
           </ol>
-        </div>
-      ))
+        );
+
+        if (!bloc.nom) return <div>{liste}</div>;
+
+        if (replie)
+          return (
+            <details class="group/parcours border-t border-line">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-[17px] font-semibold text-ink [&::-webkit-details-marker]:hidden">
+                <span>
+                  {bloc.nom}
+                  <span class="ml-2 text-[15px] font-normal text-mute">{bloc.etapes.length}</span>
+                </span>
+                <span
+                  class="font-mono text-[15px] font-normal text-mute after:content-['+'] group-open/parcours:after:content-['−']"
+                  aria-hidden="true"
+                />
+              </summary>
+              <div class="pb-5">{liste}</div>
+            </details>
+          );
+
+        return (
+          <div>
+            <p class="mb-3 text-[17px] font-semibold text-ink">
+              {bloc.nom}
+              <span class="ml-2 text-[15px] font-normal text-mute">{bloc.etapes.length}</span>
+            </p>
+            {liste}
+          </div>
+        );
+      })
     }
   </div>
 </section>

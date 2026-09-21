@@ -236,6 +236,11 @@ const livrable = defineCollection({
       }),
     ),
     parcoursTitre: z.string().default("Le parcours"),
+    /* Replie chaque groupe du parcours derrière un dépliant. Opt-in : un
+       relevé de liens à corriger se lit comme une checklist et reste ouvert,
+       tandis que la table des matières d'un site livré gagne à se refermer,
+       sans quoi elle pèse plus lourd que les sections qu'elle suit. */
+    parcoursReplie: z.boolean().default(false),
     /* Le parcours sert aussi de liste de liens externes à suivre (relais à
        relancer, pages à faire corriger). D'où `groupe`, qui coupe la liste en
        sous-ensembles, `favicon`, chemin sous public/ affiché en vignette pour
