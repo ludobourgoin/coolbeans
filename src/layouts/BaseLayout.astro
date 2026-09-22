@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { isPortalHost } from "../lib/portail/nav";
+import EnvBanner from "../components/ui/EnvBanner.astro";
 
 interface Props {
   title: string;
@@ -95,6 +96,7 @@ const organizationSchema = {
     </script>
   </head>
   <body>
+    <EnvBanner />
     <slot />
   </body>
 </html>

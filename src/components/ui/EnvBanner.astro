@@ -1,0 +1,40 @@
+---
+/* Bandeau d'environnement. Ne s'affiche que hors production : staging et
+   machine locale. En production, le composant ne rend rien du tout.
+
+   Raison d'être, posée le 2026-09-22 : deux onglets ouverts côte à côte, l'un
+   sur staging l'autre sur coolbeans.cc, rendent exactement la même page. Rien
+   ne distingue celle que le client voit de celle qu'on est en train d'écrire,
+   et l'URL dans la barre ne se lit pas quand on relit un texte.
+
+   Couleurs EN DUR, jamais des tokens. Un bandeau d'alerte qui suivrait le
+   thème du site finirait par se fondre dedans, et c'est précisément ce qu'il
+   ne doit pas faire. Même raison pour le `print:hidden` : un tirage PDF de
+   staging n'a pas à circuler, mais s'il circule il porte la mention.
+
+   DANS LE FLUX, pas en `sticky` : DevisCorps pose déjà un sommaire en
+   `sticky top-0 z-40`, et la Nav du site en `sticky top-0 z-50`. Un bandeau
+   collant passerait devant l'un ou l'autre. Il est visible au chargement,
+   c'est le moment où la confusion se produit. */
+const hote = Astro.url.hostname;
+
+const LOCAL = ["localhost", "127.0.0.1", "0.0.0.0", "::1"];
+const local = LOCAL.includes(hote) || hote.endsWith(".local");
+const staging = hote.includes("staging");
+
+const env = staging ? "STAGING" : local ? "LOCAL" : null;
+---
+
+{
+  env && (
+    <div
+      role="status"
+      class="flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 px-4 py-1.5 text-center font-mono text-[12px] leading-tight font-bold tracking-wide uppercase print:hidden"
+      style="background:#f97316;color:#1a1a1a"
+    >
+      <span>{env}</span>
+      <span style="opacity:.75">Ce n'est pas la page que voit le client</span>
+      <span style="opacity:.55">{hote}</span>
+    </div>
+  )
+}
