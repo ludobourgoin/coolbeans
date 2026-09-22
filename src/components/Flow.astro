@@ -319,6 +319,43 @@ const deliverables = [
     stroke-linejoin: round;
   }
 
+  /* Sous 1100 px, le facteur d'échelle du canvas (largeur / 1280) descend assez
+     bas pour rendre tous les libellés illisibles : un texte de 13 px tombe à
+     3,6 px sur un téléphone de 390 px. Le schéma est alors abandonné et seuls
+     les livrables restent, à leur taille réelle. Le script fit() se désactive
+     au même seuil : ses styles inline réimposeraient le scale par-dessus. */
+  @media (max-width: 1100px) {
+    .flow-wrap {
+      height: auto;
+    }
+    .flow-canvas {
+      position: static;
+      width: auto;
+      height: auto;
+      transform: none;
+    }
+    .wires,
+    .fbox,
+    .fcore {
+      display: none;
+    }
+    .fdeliv {
+      position: static;
+      width: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    /* les libellés longs passent sur deux lignes plutôt que de déborder
+       d'une colonne de ~165 px */
+    .fpill {
+      height: auto;
+      min-height: 44px;
+      padding: 10px 14px;
+      white-space: normal;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .fcore .mark::before {
       animation: none;
@@ -337,7 +374,16 @@ const deliverables = [
     const wrap = document.querySelector(".flow-wrap");
     const canvas = document.getElementById("flow-canvas");
     if (!wrap || !canvas) return;
+    const SEUIL_SCHEMA = 1100;
     function fit() {
+      // au-dessous du seuil, la feuille de style remet le canvas en flux
+      // normal : tout style inline laissé ici le remettrait à l'échelle.
+      if (window.innerWidth <= SEUIL_SCHEMA) {
+        canvas.style.transform = "";
+        canvas.style.left = "";
+        wrap.style.height = "";
+        return;
+      }
       const w = wrap.clientWidth;
       const s = Math.min(1, w / 1280);
       canvas.style.transform = "scale(" + s + ")";
