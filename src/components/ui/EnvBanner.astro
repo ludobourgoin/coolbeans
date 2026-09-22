@@ -12,7 +12,16 @@
       c'est celle qui a coûté cher le 2026-09-22 : un lien envoyé à Fylgo
       pendant que cinq commits dormaient sur `staging`. La bande n'aurait rien
       changé, puisque Ludo était bien sur la bonne URL. Réponse : la bande
-      interroge `/version.json` en production et compare l'empreinte git.
+      interroge `/version.json` en production et compare les historiques.
+
+   SENS DE LA COMPARAISON. La publication se fait par `git merge --no-ff
+   staging` sur `main` : le commit de fusion naît sur `main` et n'est donc
+   jamais un ancêtre de `staging`. Une première version cherchait l'empreinte
+   de production dans l'historique de staging, et ne la trouvait jamais, même
+   en phase. C'est l'inverse qu'il faut faire : `main` contient tous les
+   commits de `staging`, donc staging cherche SES empreintes dans
+   l'historique de la production. Le rang de la première trouvée est le
+   nombre de commits d'avance ; le rang zéro veut dire en phase.
 
    AUCUN TEXTE, ni pour l'une ni pour l'autre. Ludo partage parfois un lien de
    staging à un client pour faire relire une proposition avant publication :
@@ -88,15 +97,24 @@ const historique = __GIT_HISTORIQUE__;
         return r.ok ? r.json() : null;
       })
       .then(function (d) {
-        if (!d || !d.sha || d.sha === sha) return;
+        if (!d || !d.historique || !d.historique.length) return;
 
-        /* L'empreinte de production se cherche dans l'historique local : sa
-           position EST le nombre de commits d'avance. Introuvable, c'est que
-           l'écart dépasse quarante commits ou que les branches ont divergé.
-           Les deux méritent la même alerte. */
-        var i = historique.indexOf(d.sha);
-        el.setAttribute("data-ahead", i > 0 ? String(i) : "?");
-        el.setAttribute("data-prod-sha", d.sha);
+        /* On descend l'historique local depuis la tête, en comptant ce que la
+           production ne connaît pas encore. La première empreinte qu'elle
+           connaît arrête le décompte, et son rang EST le nombre de commits
+           d'avance. Aucune connue : l'écart dépasse quarante commits ou les
+           branches ont divergé, deux cas qui méritent la même alerte. */
+        var avance = -1;
+        for (var i = 0; i < historique.length; i++) {
+          if (d.historique.indexOf(historique[i]) !== -1) {
+            avance = i;
+            break;
+          }
+        }
+        if (avance === 0) return; // en phase avec la production
+
+        el.setAttribute("data-ahead", avance > 0 ? String(avance) : "?");
+        el.setAttribute("data-prod-sha", d.sha || "");
         el.style.height = "12px";
         el.style.background =
           "repeating-linear-gradient(45deg,#f97316 0 10px,#7c2d12 10px 20px)";
