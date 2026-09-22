@@ -18,6 +18,40 @@ import {
 } from "../../emails/auth";
 
 /**
+ * Cookies partages entre le site et le portail.
+ *
+ * Le portail vit sur my.coolbeans.cc, le site vitrine sur coolbeans.cc. Sans
+ * attribut `domain`, le cookie de session est host-only : une session ouverte
+ * sur le portail est invisible depuis le site, et une connexion partie du site
+ * pose un cookie que my.* ne verra jamais — c'est la boucle de reconnexion
+ * constatee le 2026-09-22.
+ *
+ * Le PREFIXE separe staging de la production. Les quatre hotes deployes
+ * partagent le meme parent .coolbeans.cc, donc forcement le meme domaine de
+ * cookie, mais PAS la meme base D1 : sans prefixe distinct les deux cookies
+ * porteraient le meme nom, le navigateur enverrait les deux, et lequel gagne
+ * n'est pas defini. Un jeton staging masquerait alors la session de prod.
+ *
+ * En local (localhost, 127.0.0.1), il n'y a qu'un hote : on ne pose rien et
+ * Better Auth garde son cookie host-only. Forcer un domaine la casserait la
+ * connexion en dev sans rien apporter.
+ */
+export function cookiesPartages(baseURL: string) {
+  let hostname: string;
+  try {
+    hostname = new URL(baseURL).hostname;
+  } catch {
+    return {};
+  }
+  if (hostname !== "coolbeans.cc" && !hostname.endsWith(".coolbeans.cc")) return {};
+  const staging = hostname === "staging.coolbeans.cc" || hostname === "my-staging.coolbeans.cc";
+  return {
+    cookiePrefix: staging ? "coolbeans-staging" : "coolbeans",
+    crossSubDomainCookies: { enabled: true, domain: ".coolbeans.cc" },
+  };
+}
+
+/**
  * @param env absent en generation de schema : les envois de mail ne sont
  *   jamais appeles dans ce mode, seule la FORME de la configuration compte.
  * @param baseURL origine REELLE de la requete, pour les liens des mails
@@ -25,6 +59,7 @@ import {
  */
 export function optionsAuth(env?: Env, baseURL = "https://my.coolbeans.cc") {
   return {
+    advanced: cookiesPartages(baseURL),
     emailAndPassword: {
       enabled: true,
       // AUCUNE INSCRIPTION PUBLIQUE (spec §2). Le verrou est porte ici, pas

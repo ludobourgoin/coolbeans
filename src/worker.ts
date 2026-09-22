@@ -14,6 +14,8 @@
 //   routes propres) et les chemins internes d'Astro (/_actions, /_image…)
 // - my.*/espace/<x>  → 301 vers my.*/<x> (URL canonique sans préfixe)
 // - coolbeans.cc/espace/<x> → 301 vers my.coolbeans.cc/<x>
+// - coolbeans.cc/connexion  → 302 vers my.coolbeans.cc/connexion (une seule
+//   page de connexion, celle du portail)
 import { handle } from "@astrojs/cloudflare/handler";
 import { ouvrirLesDues } from "./lib/portail/messagerie/ouvrir";
 import { publierLesDues } from "./lib/portail/messagerie/publier";
@@ -55,18 +57,53 @@ export default {
         pathname.startsWith("/_") ||
         pathname.startsWith("/api/") ||
         pathname === "/connexion" ||
-      pathname === "/connexion/" ||
+        pathname === "/connexion/" ||
         pathname === "/docs" ||
         pathname.startsWith("/docs/");
       if (!passthrough) {
         url.pathname = pathname === "/" ? "/espace" : `/espace${pathname}`;
         request = new Request(url, request);
       }
-    } else if (PORTAL_OF[hostname] && inEspace(pathname)) {
+    } else if (PORTAL_OF[hostname]) {
       // Hôte principal : l'espace a déménagé sur le sous-domaine.
-      url.hostname = PORTAL_OF[hostname];
-      url.pathname = stripEspace(pathname);
-      return Response.redirect(url.href, 301);
+      if (inEspace(pathname)) {
+        url.hostname = PORTAL_OF[hostname];
+        url.pathname = stripEspace(pathname);
+        return Response.redirect(url.href, 301);
+      }
+      // Une seule page de connexion, et elle est sur le portail. Servir
+      // /connexion ici aussi donnait deux formulaires pour un même compte :
+      // celui du site posait le cookie sur coolbeans.cc puis renvoyait vers
+      // /espace, donc sur my.*, qui ne le voyait pas — la connexion semblait
+      // échouer sans jamais dire pourquoi. Le cookie est désormais partagé
+      // (lib/auth/options.ts), ce qui suffirait ; cette redirection ne laisse
+      // en plus qu'une seule adresse à retenir et à mettre en favori.
+      //
+      // 302 et non 301 : un 301 se grave dans le navigateur, et on ne veut pas
+      // rendre irréversible le choix d'héberger la connexion sur my.*.
+      if (pathname === "/connexion" || pathname === "/connexion/") {
+        url.hostname = PORTAL_OF[hostname];
+        // Le middleware a posé `redirect_url` en URL ABSOLUE sur l'hôte
+        // principal (cas de /docs/<projet>, protégé et servi ici aussi). La
+        // page de connexion refuse une destination d'une autre origine que la
+        // sienne — à raison, c'est ce qui la protège d'une redirection
+        // ouverte. Sans ce report d'hôte, la destination serait simplement
+        // perdue et le client atterrirait sur l'accueil du portail.
+        const suite = url.searchParams.get("redirect_url");
+        if (suite) {
+          try {
+            const cible = new URL(suite);
+            if (PORTAL_OF[cible.hostname]) {
+              cible.hostname = PORTAL_OF[cible.hostname];
+              url.searchParams.set("redirect_url", cible.href);
+            }
+          } catch {
+            // Paramètre illisible : on le laisse tel quel, la page de
+            // connexion le rejettera et repartira sur /espace.
+          }
+        }
+        return Response.redirect(url.href, 302);
+      }
     }
 
     return handle(request, env, ctx);
