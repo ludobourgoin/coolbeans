@@ -1,9 +1,9 @@
 # Ronde de relecture 1 du site CAFA-TO, composée le 2026-09-22 après les
 # retours de Susanne et d'Anja du 18/09. Se déclare par `versionDe` et partage
-# l'URL de la V1 : la cliente retrouve les deux versions en onglets au même
-# lien, et peut comparer.
+# l'URL de la V1, pour que la cliente n'ait qu'un lien à garder. On ne lui
+# demande pas de comparer : elle relit la version d'aujourd'hui.
 titre: Vos retours sont intégrés
-objet: Ce que vous avez demandé le 18 septembre, et ce que j'en ai fait. Les deux versions restent côte à côte, pour comparer.
+objet: Ce que vous avez demandé le 18 septembre, et ce que j'en ai fait.
 date: 2026-09-22
 contact: Susanne
 version: 2
@@ -23,19 +23,6 @@ apercu:
   legende: La page d'accueil après vos retours, sur ordinateur et sur téléphone.
 
 sections:
-  - titre: Comparer les deux versions
-    texte: >-
-      Chaque relecture a désormais sa propre adresse. Ces adresses ne bougent
-      plus, vous pouvez y revenir quand vous voulez et nous dire si vous
-      préférez l'état précédent.
-    liste:
-      - texte: "**La version du 17 septembre** reste consultable, figée, sur [livraison-cafa.ludo-c97.workers.dev](https://livraison-cafa.ludo-c97.workers.dev). Ce que vous publierez désormais ne la modifiera plus."
-      - texte: "**La version d'aujourd'hui** est sur [revision-1-cafa.ludo-c97.workers.dev](https://revision-1-cafa.ludo-c97.workers.dev). C'est celle que je vous demande de relire."
-      - texte: "**Revenir en arrière est possible à tout moment**, sur n'importe lequel des points ci-dessous. Dites-le simplement."
-    note: >-
-      L'espace d'administration n'existe que sur la version courante. Depuis la
-      version figée, il n'apparaît pas : une publication y serait invisible.
-
   - titre: L'écriture, comme Anja l'a proposée
     texte: >-
       Sa planche est adoptée telle quelle. Deux caractères, et une hiérarchie
@@ -127,5 +114,5 @@ notes:
       Si vous les testez, vous verrez un message d'erreur, c'est attendu.
   - tone: info
     texte: >-
-      Ce document se met à jour. Chaque relecture ajoute un onglet ici, au même
-      lien, et les précédentes restent consultables.
+      Ce document se met à jour. Chaque relecture s'ajoute ici, au même lien.
+      Vous n'avez qu'une adresse à garder.
