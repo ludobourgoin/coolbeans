@@ -90,6 +90,20 @@ qui ouvre la doc d'un client alors que son sélecteur est ailleurs bascule
 automatiquement sur ce client, pour que l'écran et le sélecteur racontent la
 même chose.
 
+**Les documents.** La page Documents d'un workspace rassemble trois natures
+de documents : les fichiers déposés depuis la vue admin (devis, factures,
+contrats, logos), les pages produites par le repo (cadrages et propositions
+commerciales), et les liens externes (Google Docs, comptes rendus Granola).
+La base ne stocke jamais le contenu, seulement la décision de le montrer.
+
+Tout document arrive **masqué**. Le client ne voit que ce qui a été rendu
+visible, ligne par ligne, d'un clic depuis la vue admin. Une ligne masquée
+n'apparaît ni dans la page ni dans le HTML servi, parce que le filtre vit
+dans la requête SQL, et sa route de téléchargement répond 404. Les cadrages
+et les propositions du client s'enregistrent tout seuls, à chaque ouverture
+de la page en vue admin ; une page retirée du repo garde sa ligne, signalée
+plutôt que supprimée en silence.
+
 **Le module Projets** est une page-souche avec état vide : l'outil de
 gestion de projet est Linear, et le branchement du module sur Linear est un
 chantier à part entière (voir la spec de migration dans
