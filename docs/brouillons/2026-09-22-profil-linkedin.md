@@ -69,33 +69,64 @@ Je travaille avec des indépendants, des PME, des associations, des agences et d
 
 ## 4. Page entreprise Coolbeans
 
-Son slogan est resté sur l'ancien positionnement, mot pour mot : «  Développement
+Admin : linkedin.com/company/40755388/admin/edit/
+
+Le slogan en place est resté mot pour mot sur l'ancien discours : « Développement
 Webflow sur-mesure, Figma to Webflow, migration Webflow, optimisations et
-maintenance.  »
+maintenance. »
 
-**Slogan** (104 caractères sur 120)
-
-```
-Stratégie, design et code. Sites vitrines, e-commerce, applications web, automatisation, maintenance.
-```
-
-**Description de la page**
+**Slogan** (108 caractères sur 120)
 
 ```
-Coolbeans est un studio web d'une personne : Ludovic Bourgoin.
+Stratégie, design et développement web. Sites vitrines, boutiques, applis, automatisations, maintenance.
+```
 
-Stratégie, design et développement réunis sur le même projet. Le site est pensé pour ce qu'il doit produire avant d'être dessiné, et dessiné avant d'être codé.
+**Description**
 
-Sites vitrines, boutiques e-commerce, refontes, applications web et espaces client, intégration de maquettes Figma, automatisation, maintenance.
+```
+Coolbeans, c'est le studio de Ludovic Bourgoin. Une personne, du design et du code.
 
-Plus de 40 projets livrés depuis 2018. Neuf sur dix arrivent par recommandation.
+Vous arrivez avec un projet, je vous le rends en ligne : sites vitrines, boutiques, refontes, applis web et espaces client, intégration de maquettes Figma, automatisations, maintenance.
+
+On s'appelle 30 à 60 minutes pour poser le besoin, le budget et la date. Je vous envoie un devis chiffré sous 48 heures, week-end compris si c'est urgent. Ensuite je développe, je mets en ligne, je documente et je vous forme. Vous avez 30 jours de support après la livraison.
+
+Depuis 2018, une quarantaine de projets. Neuf sur dix arrivent par recommandation.
 
 coolbeans.cc
 ```
 
-**Bannière.** La page n'en a pas. Une frame `Bannière page entreprise` est prête
-dans le fichier Figma, au format 1128 × 191. Elle ne porte que le titre : à
-cette hauteur, tout ajout devient illisible.
+**Onglet Détails**
+
+| Champ | Valeur |
+| --- | --- |
+| Site web | https://coolbeans.cc |
+| Secteur | Services et conseil en informatique |
+| Taille | 1 employé |
+| Type | Travailleur indépendant |
+| Année de création | 2018 |
+| Lieu | celui que tu retiens pour ton profil, Montpellier ou Sète, mais le même des deux côtés |
+
+Le secteur se choisit dans une liste fermée. Si le libellé exact diffère chez
+toi, « Conception et développement de logiciels » est le plus proche ensuite.
+
+**Spécialités** (champ mots-clés, c'est lui qui te fait sortir dans les
+recherches)
+
+```
+Développement web, Design web, Sites vitrines, E-commerce, Refonte de site,
+Applications web, Intégration Figma, SEO technique, Accessibilité web,
+Automatisation, Maintenance de site, Astro, Webflow, Shopify, Sanity,
+TypeScript, Cloudflare
+```
+
+**Onglet Boutons.** Choisis « Visiter le site web » vers https://coolbeans.cc,
+ou « Nous contacter » vers https://coolbeans.cc/contact.
+
+**Logo et bannière.** Le logo est posé. Deux bannières attendent dans le fichier
+Figma, une avec la grille adoucie, une sans grille du tout.
+
+**URL publique.** Elle est sur `cool-beans-studio`. Avec 8 abonnés, la basculer
+sur `coolbeans` ne casse rien et colle au nom. À vérifier disponible.
 
 ---
 
