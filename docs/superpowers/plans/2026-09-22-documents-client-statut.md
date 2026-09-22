@@ -23,7 +23,7 @@
 
 ## Ce que ce lot ne fait pas
 
-`etape`, `projet`, la frise, les nouvelles URLs et l'ouverture depuis le portail sont les lots 2 à 4. Ce lot ne touche à aucun des 35 fichiers de contenu, sauf le seul qui porte déjà `brouillon`.
+`etape`, `projet`, la frise, les nouvelles URLs et l'ouverture depuis le portail sont les lots 2 à 4. Ce lot ne touche à aucun des 35 fichiers de contenu.
 
 ## Structure des fichiers
 
@@ -36,7 +36,6 @@
 | `src/pages/devis/[...slug].astro` | modifié, filtre avant le calcul des racines |
 | `src/pages/livrable/[...slug].astro` | modifié, le filtre `brouillon` cède la place |
 | `src/pages/temoignage/[...slug].astro` | modifié, filtre dans `getStaticPaths` |
-| `src/content/livrable/cafa/site-web-v2-6317.yaml` | modifié, `brouillon: true` devient `statut: brouillon` |
 
 ---
 
@@ -305,10 +304,9 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 
 ---
 
-### Tâche 3 : le brouillon du livrable rejoint le statut
+### Tâche 3 : le champ `brouillon` du livrable cède la place
 
 **Fichiers :**
-- Modifier : `src/content/livrable/cafa/site-web-v2-6317.yaml`
 - Modifier : `src/content.config.ts` (retrait de `brouillon` sur `livrable`)
 - Modifier : `docs/superpowers/specs/2026-09-22-documents-client-entete-design.md` (section 10)
 
@@ -318,13 +316,15 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 
 Le champ `brouillon` de la collection `livrable` a été posé le 2026-09-22 en réponse à un incident : la V2 du livrable CAFA est partie en production sans avoir été relue, lisible par la cliente à l'URL qu'elle avait déjà. `statut` le remplace terme à terme, avec une valeur de plus.
 
-- [ ] **Étape 1 : basculer le document**
+**Mis à jour le 2026-09-23.** Le document est ressorti du brouillon entre-temps (commit e3d3393) : il est relu, il est parti chez la cliente. Aucun fichier de contenu n'est donc à convertir, et plus aucun document ne porte `brouillon`. Ne reste que le champ mort à retirer du schéma.
 
-Dans `src/content/livrable/cafa/site-web-v2-6317.yaml`, remplacer la ligne `brouillon: true` par :
+- [ ] **Étape 1 : vérifier qu'aucun document ne porte plus `brouillon`**
 
-```yaml
-statut: brouillon
+```bash
+grep -rn "^brouillon:" src/content/livrable src/content/devis src/content/cadrage src/content/temoignage
 ```
+
+Attendu : aucune sortie. Si une ligne remonte, c'est qu'une autre session a reposé un brouillon pendant ce lot : la convertir en `statut: brouillon` avant de continuer, et le dire à Ludo.
 
 - [ ] **Étape 2 : retirer le champ du schéma**
 
@@ -347,21 +347,23 @@ find dist/client/livrable -name index.html | wc -l
 grep -rl "site-web" dist/client/livrable --include=index.html | head
 ```
 
-Attendu : **3** pages de livrable, comme avant le lot. La V2 est une version et non une racine : ce qui disparaît est son onglet, pas une page. Ouvrir `dist/client/livrable/cafa/site-web-8791/index.html` et vérifier qu'il ne porte plus d'onglet V2 :
+Attendu : **3** pages de livrable, comme avant le lot. La V2 est publiée depuis le 2026-09-23 : son onglet doit être là, et le retrait du champ mort ne doit rien y changer.
 
 ```bash
 grep -c "V2" dist/client/livrable/cafa/site-web-8791/index.html
 ```
 
-Attendu : **0**.
+Attendu : un compte supérieur à **0**.
 
-- [ ] **Étape 4 : vérifier qu'elle reste lisible en local**
+- [ ] **Étape 4 : vérifier qu'un brouillon reste lisible en local**
+
+Poser temporairement `statut: brouillon` en tête de `src/content/livrable/cafa/site-web-v2-6317.yaml`, puis :
 
 ```bash
 npx astro dev stop 2>/dev/null; npm run dev
 ```
 
-Ouvrir `http://localhost:4321/livrable/cafa/site-web-8791` et vérifier que l'onglet V2 est là. Si la page se sert sans aucune feuille de style, c'est le HMR d'Astro qui a décroché après des écritures répétées hors de l'éditeur : relancer le serveur. Arrêter le serveur avant de continuer.
+Ouvrir `http://localhost:4321/livrable/cafa/site-web-8791` et vérifier que l'onglet V2 est **là malgré le brouillon** : c'est toute la règle, masquer un document ne doit pas revenir à le perdre. Si la page se sert sans aucune feuille de style, c'est le HMR d'Astro qui a décroché après des écritures répétées hors de l'éditeur : relancer le serveur. Arrêter le serveur, puis **retirer la ligne** : ce document est publié, il ne doit pas repartir en brouillon.
 
 - [ ] **Étape 5 : corriger la section 10 de la spec**
 
@@ -387,12 +389,13 @@ Attendu : tous les tests au vert. `verify` sort 2 échecs sur 91, sur `EnvBanne
 - [ ] **Étape 7 : commit**
 
 ```bash
-git add src/content/livrable/cafa/site-web-v2-6317.yaml src/content.config.ts docs/superpowers/specs/2026-09-22-documents-client-entete-design.md
-git commit -m "Le brouillon du livrable rejoint le statut à trois valeurs
+git add src/content.config.ts docs/superpowers/specs/2026-09-22-documents-client-entete-design.md
+git commit -m "Le champ brouillon du livrable cède la place au statut
 
-Le champ \`brouillon\` posé en urgence après l'incident du livrable CAFA cède
-la place. La spec est corrigée sur un point : la relecture se fait en local,
-pas en préproduction, parce que ces pages sont générées à la compilation.
+Posé en urgence après l'incident du livrable CAFA, il n'a plus d'usage : le
+document est relu et publié, et \`statut\` couvre le besoin avec une valeur de
+plus. La spec est corrigée sur un point : la relecture se fait en local, pas
+en préproduction, parce que ces pages sont générées à la compilation.
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
