@@ -1,58 +1,106 @@
 ---
 /* Bande d'environnement. Visible partout SAUF en production.
 
-   Raison d'être, posée le 2026-09-22 : deux onglets côte à côte, l'un sur
-   staging l'autre sur coolbeans.cc, rendent exactement la même page. Rien ne
-   distingue celle que le client voit de celle qu'on est en train d'écrire, et
-   l'URL dans la barre ne se lit pas quand on relit un texte.
+   Elle répond à deux questions distinctes, et c'est le point à retenir avant
+   de la modifier.
 
-   AUCUN TEXTE, volontairement. Une première version annonçait « Staging, ce
-   n'est pas la page que voit le client ». Or Ludo partage parfois un lien de
-   staging à un client, pour faire relire une proposition ou un cadrage avant
-   publication : la mention lui serait passée sous les yeux. Une bande de
-   couleur, elle, se lit comme un filet graphique si on ne sait pas ce qu'elle
-   signifie, et saute aux yeux si on le sait. L'environnement reste lisible
-   dans le DOM par l'attribut `data-env`, que personne ne consulte par hasard.
+   1. « Suis-je sur staging ou en production ? » Deux onglets côte à côte
+      rendent exactement la même page, et l'URL ne se lit pas quand on relit
+      un texte. Réponse : la bande est là, ou elle n'y est pas.
+
+   2. « Ce que je lis est-il ce que le client voit ? » Question différente, et
+      c'est celle qui a coûté cher le 2026-09-22 : un lien envoyé à Fylgo
+      pendant que cinq commits dormaient sur `staging`. La bande n'aurait rien
+      changé, puisque Ludo était bien sur la bonne URL. Réponse : la bande
+      interroge `/version.json` en production et compare l'empreinte git.
+
+   AUCUN TEXTE, ni pour l'une ni pour l'autre. Ludo partage parfois un lien de
+   staging à un client pour faire relire une proposition avant publication :
+   toute phrase, et même un simple compteur, serait passée sous ses yeux et
+   aurait appelé une question. L'écart se dit donc en rayures, qui ne se lisent
+   comme rien du tout quand on ignore leur sens. Le décompte exact vit dans
+   `data-ahead`, lisible dans les outils de développement.
 
    DÉTECTION DANS LE NAVIGATEUR, pas au rendu. Seuls `/espace` et `/docs`
-   déclarent `prerender = false` ; tout le reste du site, les quatre documents
-   client compris, est généré à la compilation. `Astro.url.hostname` y vaut
-   donc la valeur de `site`, soit coolbeans.cc, quel que soit l'hôte qui sert
-   la page. Une première version testait côté serveur : la bande ne sortait
-   jamais sur staging, et c'était indétectable puisque son absence est
-   justement le comportement attendu en production.
+   déclarent `prerender = false` ; tout le reste, les quatre documents client
+   compris, est généré à la compilation, où `Astro.url.hostname` vaut la
+   valeur de `site`. Une première version testait côté serveur : la bande ne
+   sortait jamais, et c'était indétectable puisque son absence est justement
+   le comportement attendu en production.
 
    LISTE BLANCHE des hôtes de production, et non liste noire des hôtes de
-   test. Un aperçu inconnu, un `*.workers.dev` ou une branche de préversion,
-   doit porter la bande par défaut. Se tromper dans ce sens fait perdre une
-   seconde ; se tromper dans l'autre fait envoyer un lien au client.
+   test. Un aperçu inconnu doit porter la bande par défaut : se tromper dans
+   ce sens fait perdre une seconde, se tromper dans l'autre fait envoyer un
+   lien au client.
 
-   Couleur EN DUR, jamais un token : une alerte qui suivrait le thème du site
-   finirait par s'y fondre. Décorative pour les lecteurs d'écran, il n'y a
-   rien à annoncer. Masquée à l'impression : un tirage PDF de staging peut
-   partir en pièce jointe, la bande n'a rien à y faire.
+   Couleurs EN DUR et styles posés en JavaScript, jamais des classes Tailwind
+   ajoutées dynamiquement : une classe qui n'apparaît pas en toutes lettres
+   dans le source est purgée à la compilation. Décorative pour les lecteurs
+   d'écran, masquée à l'impression.
 
-   DANS LE FLUX, pas en `sticky` : la Nav du site occupe `top-0 z-50` et le
-   sommaire du devis `top-0 z-40`. Elle est vue au chargement, c'est le moment
-   où la confusion se produit. */
+   DANS LE FLUX, pas en `sticky` : la Nav occupe `top-0 z-50` et le sommaire
+   du devis `top-0 z-40`. */
+declare const __GIT_SHA__: string;
+declare const __GIT_HISTORIQUE__: string[];
+
+/* Vite remplace ces deux identifiants par des littérales à la compilation.
+   Le frontmatter est le seul endroit où on peut les lire : un `is:inline`
+   n'est pas transformé, d'où le passage par des attributs. */
+const sha = __GIT_SHA__;
+const historique = __GIT_HISTORIQUE__;
 ---
 
-<div id="env-banner" hidden aria-hidden="true" class="h-1.5 w-full print:hidden" style="background:#f97316">
+<div
+  id="env-banner"
+  hidden
+  aria-hidden="true"
+  class="w-full print:hidden"
+  style="height:6px;background:#f97316"
+  data-sha={sha}
+  data-historique={historique.join(",")}
+>
 </div>
 
 <script is:inline>
-  /* Exécuté pendant l'analyse du document, juste après la bande : elle se
-     démasque avant le premier paint, sans clignotement. */
   (function () {
     var PROD = ["coolbeans.cc", "www.coolbeans.cc", "my.coolbeans.cc"];
-    var h = location.hostname;
-    if (PROD.indexOf(h) !== -1) return;
+    var hote = location.hostname;
+    if (PROD.indexOf(hote) !== -1) return;
+
     var el = document.getElementById("env-banner");
     if (!el) return;
+
     el.setAttribute(
       "data-env",
-      h.indexOf("staging") !== -1 ? "staging" : h === "localhost" || h === "127.0.0.1" ? "local" : "apercu",
+      hote.indexOf("staging") !== -1 ? "staging" : hote === "localhost" || hote === "127.0.0.1" ? "local" : "apercu",
     );
     el.hidden = false;
+
+    /* Comparaison à la production. Tout échec est silencieux : hors ligne,
+       point de terminaison absent, réponse illisible, la bande reste unie et
+       continue de répondre à la première question. */
+    var sha = el.getAttribute("data-sha") || "";
+    var historique = (el.getAttribute("data-historique") || "").split(",").filter(Boolean);
+    if (!sha) return;
+
+    fetch("https://coolbeans.cc/version.json", { cache: "no-store" })
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (d) {
+        if (!d || !d.sha || d.sha === sha) return;
+
+        /* L'empreinte de production se cherche dans l'historique local : sa
+           position EST le nombre de commits d'avance. Introuvable, c'est que
+           l'écart dépasse quarante commits ou que les branches ont divergé.
+           Les deux méritent la même alerte. */
+        var i = historique.indexOf(d.sha);
+        el.setAttribute("data-ahead", i > 0 ? String(i) : "?");
+        el.setAttribute("data-prod-sha", d.sha);
+        el.style.height = "12px";
+        el.style.background =
+          "repeating-linear-gradient(45deg,#f97316 0 10px,#7c2d12 10px 20px)";
+      })
+      .catch(function () {});
   })();
 </script>

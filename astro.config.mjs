@@ -6,6 +6,34 @@ import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
 
 import preact from "@astrojs/preact";
+import { execSync } from "node:child_process";
+
+// Empreinte git du build, injectée comme littérale par Vite. Elle sert à la
+// bande d'environnement (components/ui/EnvBanner.astro) : une page hors
+// production compare son empreinte à celle que sert la production, et signale
+// visuellement que ce qu'on lit n'est pas encore ce que le client voit.
+//
+// Lue ici et nulle part ailleurs. `node:child_process` n'existe pas dans le
+// runtime Workers : le calcul doit rester au build, et ce qui traverse est une
+// chaîne. Un composant qui appellerait git dans son frontmatter planterait sur
+// les pages SSR (/espace et /docs).
+//
+// Tout échoue en silence : un clone superficiel ne porte pas l'historique, et
+// une bande dégradée vaut mieux qu'un build cassé.
+const git = (commande, secours) => {
+  try {
+    return execSync(commande, { stdio: ["ignore", "pipe", "ignore"] })
+      .toString()
+      .trim();
+  } catch {
+    return secours;
+  }
+};
+
+const GIT_SHA = git("git rev-parse --short HEAD", "");
+// Quarante empreintes suffisent : au-delà, l'écart entre staging et la
+// production n'est plus un oubli de publication mais une branche oubliée.
+const GIT_HISTORIQUE = git("git log -n 40 --format=%h", "").split("\n").filter(Boolean);
 
 // Hébergement : Cloudflare WORKERS (décision 2026-07-31, pour l'espace client
 // qui exige du rendu serveur — cf. _doc-standard/SPEC.md). L'auth était alors
@@ -58,5 +86,9 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    define: {
+      __GIT_SHA__: JSON.stringify(GIT_SHA),
+      __GIT_HISTORIQUE__: JSON.stringify(GIT_HISTORIQUE),
+    },
   },
 });
