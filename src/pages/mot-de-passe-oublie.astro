@@ -1,0 +1,125 @@
+---
+// Demande d'un lien de réinitialisation.
+//
+// Page à part, et non un bouton sur /connexion : là-bas, cliquer sans avoir
+// rempli le champ e-mail produisait un message rouge qui reprochait à la
+// personne un oubli qu'elle n'avait pas commis. On s'attend à changer
+// d'écran après ce clic, et à y trouver un champ vide.
+//
+// Page publique, hors du middleware : qui a perdu son mot de passe n'a pas
+// de session.
+export const prerender = false;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<BaseLayout
+  title="Mot de passe oublié · Coolbeans"
+  description="Recevoir un lien pour choisir un nouveau mot de passe"
+  noindex
+>
+  <main class="flex min-h-screen flex-col justify-between gap-12 px-6 py-8 sm:px-10">
+    <a class="inline-flex self-start leading-0" href="/" aria-label="coolbeans, accueil">
+      <img
+        class="block h-5.25 w-auto dark:hidden"
+        src="/img/coolbeans-wordmark.svg"
+        alt="coolbeans"
+        height="21"
+      />
+      <img
+        class="hidden h-5.25 w-auto dark:block"
+        src="/img/coolbeans-wordmark-white.svg"
+        alt="coolbeans"
+        height="21"
+      />
+    </a>
+
+    <div class="mx-auto w-full max-w-100">
+      <h1 class="text-[28px] leading-tight font-bold">Mot de passe oublié</h1>
+      <p class="sub mt-2 text-[13px]">
+        Indiquez votre adresse, et vous recevrez un lien pour en choisir un nouveau.
+      </p>
+
+      <form id="oubli-form" class="mt-6 grid gap-4" novalidate>
+        <div class="grid gap-1.5">
+          <label class="label field-label" for="oubli-email">Adresse e-mail</label>
+          <input
+            class="field"
+            id="oubli-email"
+            name="email"
+            type="email"
+            autocomplete="username"
+            required
+            placeholder="vous@exemple.fr"
+          />
+        </div>
+
+        <button class="btn btn-lg mt-1" type="submit">Recevoir le lien</button>
+
+        <p data-oubli-status role="status" class="hidden text-[13px] font-medium"></p>
+
+        <p class="text-[13px] text-mute">
+          <a class="link" href="/connexion">Retour à la connexion</a>
+        </p>
+      </form>
+    </div>
+
+    <p class="text-[13px] text-mute">© 2026 Coolbeans</p>
+  </main>
+</BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#oubli-form");
+  const status = document.querySelector<HTMLParagraphElement>("[data-oubli-status]");
+  const submitBtn = form?.querySelector<HTMLButtonElement>("button[type=submit]");
+
+  if (form && status && submitBtn) {
+    /* Classes écrites en toutes lettres : Tailwind scanne des littéraux, un
+       `text-${ton}` interpolé ne générerait aucune règle. */
+    const TON = {
+      mute: "text-[13px] font-medium text-mute",
+      error: "text-[13px] font-medium text-error",
+    } as const;
+    const dire = (texte: string, ton: keyof typeof TON) => {
+      status.hidden = false;
+      status.textContent = texte;
+      status.className = TON[ton];
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = String(new FormData(form).get("email") ?? "").trim();
+      if (!email) {
+        dire("Indiquez l'adresse de votre espace.", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      dire("Envoi…", "mute");
+      try {
+        const res = await fetch("/api/auth/request-password-reset", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ email, redirectTo: "/reinitialiser" }),
+        });
+        /* Réponse volontairement identique que l'adresse existe ou non : la
+           distinguer dirait à un inconnu quelles adresses ont un compte. */
+        if (res.ok) {
+          dire(
+            "Si un compte existe pour cette adresse, un lien vient de partir. Vérifiez vos mails.",
+            "mute",
+          );
+          submitBtn.textContent = "Renvoyer le lien";
+        } else {
+          dire("Envoi impossible pour le moment. Réessayez dans un instant.", "error");
+        }
+      } catch {
+        dire("Envoi impossible : vérifiez votre réseau, puis réessayez.", "error");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  }
+</script>
