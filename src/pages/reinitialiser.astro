@@ -1,0 +1,174 @@
+---
+// Page d'arrivée du lien « mot de passe oublié ».
+//
+// Le serveur savait déjà envoyer le mail (`sendResetPassword`, lib/auth/
+// options.ts), mais aucune page ne recevait le clic : le lien tombait sur un
+// 404, et la fonctionnalité n'existait donc pas, quoi qu'en dise la config.
+//
+// Le chemin complet : /connexion demande le mail à
+// /api/auth/request-password-reset avec `redirectTo: "/reinitialiser"` ;
+// Better Auth envoie un lien vers /api/auth/reset-password/<jeton> ; cette
+// route valide le jeton puis redirige ICI avec `?token=<jeton>` ; la page
+// poste le nouveau mot de passe sur /api/auth/reset-password.
+//
+// Page publique, hors du middleware : quelqu'un qui a perdu son mot de passe
+// n'a par définition pas de session.
+export const prerender = false;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { LONGUEUR_MIN } from "../lib/auth/mot-de-passe";
+
+/* Le jeton ne sert qu'à être reposté tel quel. Il n'est ni journalisé ni
+   affiché : c'est un secret à usage unique, et un mot de passe oublié se
+   récupère souvent depuis un écran que d'autres voient. */
+const jeton = Astro.url.searchParams.get("token") ?? "";
+
+/* Better Auth redirige ici avec `?error=INVALID_TOKEN` quand le lien a
+   expiré ou déjà servi. Le distinguer du cas « pas de jeton du tout » évite
+   d'envoyer quelqu'un recommencer alors qu'il vient de cliquer. */
+const erreurLien = Astro.url.searchParams.get("error");
+
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<BaseLayout
+  title="Nouveau mot de passe · Coolbeans"
+  description="Choisir un nouveau mot de passe pour l'espace client Coolbeans"
+  noindex
+>
+  <main class="flex min-h-screen flex-col justify-between gap-12 px-6 py-8 sm:px-10">
+    <a class="inline-flex self-start leading-0" href="/" aria-label="coolbeans, accueil">
+      <img
+        class="block h-5.25 w-auto dark:hidden"
+        src="/img/coolbeans-wordmark.svg"
+        alt="coolbeans"
+        height="21"
+      />
+      <img
+        class="hidden h-5.25 w-auto dark:block"
+        src="/img/coolbeans-wordmark-white.svg"
+        alt="coolbeans"
+        height="21"
+      />
+    </a>
+
+    <div class="mx-auto w-full max-w-100">
+      <h1 class="text-[28px] leading-tight font-bold">Nouveau mot de passe</h1>
+
+      {
+        jeton && !erreurLien ? (
+          <>
+            <p class="sub mt-2 text-[13px]">
+              Choisissez votre mot de passe, au moins {LONGUEUR_MIN} caractères.
+            </p>
+
+            <form id="reinit-form" class="mt-6 grid gap-4" data-jeton={jeton} novalidate>
+              <div class="grid gap-1.5">
+                <label class="label field-label" for="reinit-motdepasse">Nouveau mot de passe</label>
+                <input
+                  class="field"
+                  id="reinit-motdepasse"
+                  name="motDePasse"
+                  type="password"
+                  autocomplete="new-password"
+                  required
+                />
+              </div>
+
+              <div class="grid gap-1.5">
+                <label class="label field-label" for="reinit-confirmation">Confirmation</label>
+                <input
+                  class="field"
+                  id="reinit-confirmation"
+                  name="confirmation"
+                  type="password"
+                  autocomplete="new-password"
+                  required
+                />
+              </div>
+
+              <button class="btn btn-lg mt-1" type="submit">Enregistrer</button>
+
+              <p data-reinit-status role="status" class="hidden text-[13px] font-medium"></p>
+            </form>
+          </>
+        ) : (
+          <>
+            <p class="sub mt-2 text-[13px]">
+              {erreurLien
+                ? "Ce lien a expiré ou a déjà servi. Demandez-en un nouveau depuis la page de connexion."
+                : "Ce lien est incomplet. Demandez-en un nouveau depuis la page de connexion."}
+            </p>
+            <a class="btn btn-lg mt-6 inline-flex" href="/connexion">Retour à la connexion</a>
+          </>
+        )
+      }
+    </div>
+
+    <p class="text-[13px] text-mute">© 2026 Coolbeans</p>
+  </main>
+</BaseLayout>
+
+<script>
+  import { validerNouveauMotDePasse } from "../lib/auth/mot-de-passe";
+
+  const form = document.querySelector<HTMLFormElement>("#reinit-form");
+  const status = document.querySelector<HTMLParagraphElement>("[data-reinit-status]");
+  const submitBtn = form?.querySelector<HTMLButtonElement>("button[type=submit]");
+
+  if (form && status && submitBtn) {
+    /* Classes écrites en toutes lettres : Tailwind scanne des littéraux, un
+       `text-${ton}` interpolé ne générerait aucune règle. Même contrainte
+       qu'en page de connexion. */
+    const TON = {
+      mute: "text-[13px] font-medium text-mute",
+      error: "text-[13px] font-medium text-error",
+    } as const;
+    const dire = (texte: string, ton: keyof typeof TON) => {
+      status.hidden = false;
+      status.textContent = texte;
+      status.className = TON[ton];
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      const motDePasse = String(fd.get("motDePasse") ?? "");
+      const confirmation = String(fd.get("confirmation") ?? "");
+
+      const erreur = validerNouveauMotDePasse(motDePasse, confirmation);
+      if (erreur) {
+        dire(erreur, "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      dire("Enregistrement…", "mute");
+      try {
+        const res = await fetch("/api/auth/reset-password", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ newPassword: motDePasse, token: form.dataset.jeton }),
+        });
+        if (res.ok) {
+          // Better Auth ne pose pas de session ici : le mot de passe est
+          // changé, il reste à s'en servir. On renvoie vers la connexion
+          // plutôt que de laisser la personne sur un formulaire vide.
+          dire("Mot de passe enregistré. Redirection…", "mute");
+          window.location.assign("/connexion");
+          return;
+        }
+        dire(
+          res.status === 400
+            ? "Ce lien a expiré ou a déjà servi. Demandez-en un nouveau depuis la page de connexion."
+            : "Enregistrement impossible pour le moment. Réessayez dans un instant.",
+          "error",
+        );
+      } catch {
+        dire("Enregistrement impossible : vérifiez votre réseau, puis réessayez.", "error");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  }
+</script>

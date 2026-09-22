@@ -122,7 +122,8 @@ const suite = destination(Astro.url.searchParams.get("redirect_url"));
         <p data-connexion-status role="status" class="hidden text-[13px] font-medium"></p>
 
         <p class="text-[13px] text-mute">
-          Mot de passe oublié ou premier accès ? Écrivez-moi à
+          <button class="link" type="button" data-oubli>Mot de passe oublié&#8239;?</button>
+          Premier accès&#8239;? Écrivez-moi à
           <a class="link" href="mailto:ludo@coolbeans.cc">ludo@coolbeans.cc</a>.
         </p>
         </form>
@@ -225,6 +226,43 @@ const suite = destination(Astro.url.searchParams.get("redirect_url"));
         dire("Connexion impossible : vérifiez votre réseau, puis réessayez.", "error");
       } finally {
         submitBtn.disabled = false;
+      }
+    });
+
+    /* Mot de passe oublié : on réutilise l'adresse déjà saisie au-dessus
+       plutôt que d'ouvrir un second champ. Quelqu'un qui clique ici vient de
+       taper son adresse, et lui redemander la même chose en dessous donne
+       l'impression que le premier champ n'a pas compté. */
+    const oubli = document.querySelector<HTMLButtonElement>("[data-oubli]");
+    oubli?.addEventListener("click", async () => {
+      const email = String(new FormData(form).get("email") ?? "").trim();
+      if (!email) {
+        dire("Saisissez votre adresse e-mail ci-dessus, puis recliquez.", "error");
+        form.querySelector<HTMLInputElement>("#connexion-email")?.focus();
+        return;
+      }
+
+      oubli.disabled = true;
+      dire("Envoi du lien…", "mute");
+      try {
+        const res = await fetch("/api/auth/request-password-reset", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ email, redirectTo: "/reinitialiser" }),
+        });
+        /* Réponse volontairement identique que l'adresse existe ou non : la
+           distinguer dirait à un inconnu quelles adresses ont un compte. La
+           lib répond déjà ainsi, le message le reprend. */
+        dire(
+          res.ok
+            ? "Si un compte existe pour cette adresse, un lien vient de partir. Vérifiez vos mails."
+            : "Envoi impossible pour le moment. Réessayez dans un instant.",
+          res.ok ? "mute" : "error",
+        );
+      } catch {
+        dire("Envoi impossible : vérifiez votre réseau, puis réessayez.", "error");
+      } finally {
+        oubli.disabled = false;
       }
     });
   }
