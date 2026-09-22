@@ -1,0 +1,10 @@
+nom: DupontDupont
+# Client direct, pas de revendeur (spec 2026-08-19 §3.1).
+organisation: coolbeans
+prenom: Kateline
+# Emoji du sélecteur et début de la relation, daté du premier règlement
+# retrouvé au relevé (facture 24613, 270 €).
+emoji: 🧭
+depuis: "2026-02-09"
+# Pas de team Linear : le module Support reste en empty state (COO-30).
+messagerie: false

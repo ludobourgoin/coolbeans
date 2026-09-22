@@ -1,0 +1,10 @@
+nom: LittleBox
+# Client direct, pas de revendeur (spec 2026-08-19 §3.1).
+organisation: coolbeans
+prenom: Philippe
+# Emoji du sélecteur (repris de l'icône de la team Linear) et début de la
+# relation, daté du premier devis.
+emoji: 🏠
+depuis: "2026-03-02"
+# Team « Little Box » du workspace Linear coolbeans-hq.
+linearTeamId: 79b83703-2f72-49d8-b57b-dbde6c2f885d

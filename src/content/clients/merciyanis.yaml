@@ -1,0 +1,10 @@
+nom: MerciYanis
+# Client direct, pas de revendeur (spec 2026-08-19 §3.1).
+organisation: coolbeans
+# Deux contacts, Gaëlle et Laura. La topbar n'en salue qu'un.
+prenom: Gaëlle
+# Emoji du sélecteur et début de la relation, daté du devis 341.
+emoji: 🛎️
+depuis: "2025-11-06"
+# Pas de team Linear : le module Support reste en empty state (COO-30).
+messagerie: false

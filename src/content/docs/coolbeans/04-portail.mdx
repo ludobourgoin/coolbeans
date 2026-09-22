@@ -3,7 +3,7 @@ client: "coolbeans"
 title: "Portail myCoolbeans"
 order: 4
 status: "final"
-updated: 2026-08-14
+updated: 2026-09-15
 description: "L'espace client my.coolbeans.cc : adresses, authentification, registre des clients et modules."
 ---
 
@@ -67,11 +67,42 @@ client), dont le slug pointe vers le registre YAML ci-dessus, qui reste la
 source de vérité. Connexion par e-mail et mot de passe sur `/connexion` ;
 **aucune inscription publique** : les comptes sont créés à la main.
 
+**Ouvrir un compte.** Sur `/espace/utilisateurs`, un admin crée le compte
+(nom, e-mail, type, organisation, workspace) et coche « envoyer le mail » ou
+non. Rien ne part sans cette case : un compte peut exister sans que personne
+ne le sache, ce qui sert pendant une phase de test. Le compte ouvert n'a pas
+de mot de passe : sa seule porte d'entrée est un lien magique, jusqu'à ce
+qu'il s'en pose un.
+
+Ce même lien magique sert à deux moments qui doivent lire différemment :
+l'ouverture d'un accès qui n'a jamais existé, et le retour d'un compte qui
+en redemande un depuis `/connexion`. L'action d'invitation pose une
+métadonnée (`invitation`, `organisation`, `inviteur`) sur l'appel ; le
+gabarit de mail choisi en dépend — « X vous ouvre un accès à Y » pour une
+première invitation, « Votre lien de connexion » pour un retour. Sans cette
+métadonnée, c'est toujours le second qui part : c'est le premier point à
+vérifier si un client dit avoir reçu un mail qui ne ressemble pas à une
+invitation.
+
 **Le sélecteur admin.** Un admin choisit son « client courant » ; le choix
 est mémorisé dans un cookie. Règle d'arbitrage : **l'URL gagne** : un admin
 qui ouvre la doc d'un client alors que son sélecteur est ailleurs bascule
 automatiquement sur ce client, pour que l'écran et le sélecteur racontent la
 même chose.
+
+**Les documents.** La page Documents d'un workspace rassemble trois natures
+de documents : les fichiers déposés depuis la vue admin (devis, factures,
+contrats, logos), les pages produites par le repo (cadrages et propositions
+commerciales), et les liens externes (Google Docs, comptes rendus Granola).
+La base ne stocke jamais le contenu, seulement la décision de le montrer.
+
+Tout document arrive **masqué**. Le client ne voit que ce qui a été rendu
+visible, ligne par ligne, d'un clic depuis la vue admin. Une ligne masquée
+n'apparaît ni dans la page ni dans le HTML servi, parce que le filtre vit
+dans la requête SQL, et sa route de téléchargement répond 404. Les cadrages
+et les propositions du client s'enregistrent tout seuls, à chaque ouverture
+de la page en vue admin ; une page retirée du repo garde sa ligne, signalée
+plutôt que supprimée en silence.
 
 **Le module Projets** est une page-souche avec état vide : l'outil de
 gestion de projet est Linear, et le branchement du module sur Linear est un
@@ -85,6 +116,8 @@ chantier à part entière (voir la spec de migration dans
 | Réécriture d'hôte et redirections | `src/worker.ts`, règles `run_worker_first` dans `wrangler.jsonc` |
 | Protection des routes privées | `src/middleware.ts` |
 | Authentification (instance, options, session) | `src/lib/auth/server.ts`, `options.ts`, `session.ts` |
+| Ouverture de compte et choix du mail d'invitation | `src/actions/index.ts` (`utilisateurs.inviter`), `src/lib/portail/utilisateurs.ts` |
+| Gabarits des mails d'authentification | `src/emails/auth.ts` (`renderInvitation`, `renderLienMagique`, `renderReinitialisation`) |
 | Page de connexion et menu compte | `src/pages/connexion.astro`, `src/components/portail/PortalNav.astro` |
 | Comptes rattachés à un workspace | `src/lib/portail/comptes.ts` |
 | Registre des workspaces | `src/content/clients/*.yaml`, schéma dans `src/content.config.ts`, lecture dans `src/lib/portail/workspaces.ts` |
