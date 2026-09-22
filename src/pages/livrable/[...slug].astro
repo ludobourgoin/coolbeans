@@ -20,7 +20,10 @@ import { dateLongue, riche } from "../../lib/devis";
    envoyé au client ne bouge jamais ; les versions précédentes restent
    lisibles sous des onglets. */
 export async function getStaticPaths() {
-  const entries = await getCollection("livrable");
+  /* Les brouillons ne sortent pas du build. Ils restent lisibles en
+     développement local, le temps de la relecture. */
+  const toutes = await getCollection("livrable");
+  const entries = import.meta.env.DEV ? toutes : toutes.filter((e) => !e.data.brouillon);
   const racines = entries.filter((e) => !e.data.versionDe);
   return racines.map((racine) => {
     const versions = [racine, ...entries.filter((e) => e.data.versionDe === racine.id)].sort(
