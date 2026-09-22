@@ -179,7 +179,9 @@ Le champ `brouillon` existe déjà mais signifie « servie en noindex le temps d
 
 `trame` et `brouillon` se comportent pareil côté client. Ils se distinguent pour Ludo : l’un est une coquille vide, l’autre un texte en cours de relecture.
 
-**Un document non publié n’est pas construit dans le site de production.** Il l’est en préproduction, où Ludo le relit sur `staging.coolbeans.cc`. Filtrage dans `getStaticPaths`, rien de plus. C’est plus sûr qu’un noindex, qui laisse la page atteignable par qui tape l’adresse.
+**Un document non publié n’est pas construit dans le site de production.** Il reste lisible en développement local, le temps de la relecture : masquer un document ne doit pas revenir à le perdre. C’est plus sûr qu’un noindex, qui laisse la page atteignable par qui tape l’adresse.
+
+Pas de détection de la préproduction, corrigé le 2026-09-23. Ces pages sont générées à la compilation, où le nom d’hôte vaut toujours celui de la production, et les variables de `wrangler.jsonc` sont des variables d’exécution. Distinguer `staging` de la production demanderait une variable de build déclarée par environnement dans Workers Builds, pour un usage que la relecture en local couvre déjà.
 
 Le passage à `publie` est un geste de Ludo, jamais un effet de bord d’une autre action.
 
@@ -237,7 +239,7 @@ Sur chaque racine : vérifier `linear.projet`, poser `etape` si l'étape diffè
 - [ ] Le filet reprend la teinte de l'étape dans les deux thèmes
 - [ ] `verify-design-system.js` passe, paires `-100` comprises
 - [ ] Les 28 anciennes URLs redirigent en 301
-- [ ] Un document en `trame` ou en `brouillon` renvoie 404 en production, et s’affiche en préproduction
+- [ ] Un document en `trame` ou en `brouillon` renvoie 404 en production, et s’affiche en développement local
 - [ ] Sa pastille est visible mais estompée et non cliquable
 - [ ] Un client connecté ouvre chacun de ses documents publiés depuis sa barre latérale
 - [ ] Vérifié sur desktop, tablette et mobile, la nav des sections défilant latéralement sur petit écran
