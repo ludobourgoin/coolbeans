@@ -24,6 +24,14 @@ intro:
       L'ancien nom du Club, cafamp.org, a cessé d'exister faute de
       renouvellement. Ce document existe pour que cela ne se reproduise pas.
 
+  - titre: Pourquoi Infomaniak
+    texte: >-
+      Nous vous le conseillons pour deux raisons précises. Rien ne vous oblige
+      à nous suivre, mais peu d'hébergeurs réunissent les deux.
+    liste:
+      - texte: "**Le .fr y est possible.** Beaucoup d'hébergeurs ne l'enregistrent pas, l'Afnic posant ses conditions. Si vous retenez cette extension, vous n'aurez pas à changer de prestataire en route."
+      - texte: "**Une adresse e-mail à votre nom de domaine est comprise**, sans supplément. C'est exactement l'adresse commune dont le Club a besoin, celle qui survit aux changements de bureau."
+
   - titre: 1. Créer le compte au nom du Club
     texte: >-
       Rendez-vous sur [infomaniak.com](https://www.infomaniak.com) et créez un
@@ -40,9 +48,10 @@ intro:
       Tapez `cafa-toulouse` dans la recherche, cochez la ou les extensions
       retenues, validez le panier.
     note: >-
-      Infomaniak proposera de l'hébergement et des adresses e-mail au moment de
-      payer. Refusez tout. Le site est déjà hébergé, et nous verrons les
-      adresses e-mail ensemble ensuite. Vous n'achetez que le nom.
+      Infomaniak proposera de l'hébergement et des offres mail payantes au
+      moment de payer. Refusez : le site est déjà hébergé, et l'adresse e-mail
+      comprise avec le domaine ne coûte rien. Nous la réglerons ensemble une
+      fois le site en ligne. Vous n'achetez que le nom.
 
   - titre: 3. Renseigner le titulaire
     texte: >-
@@ -68,19 +77,19 @@ intro:
       - texte: "Gardez une carte bancaire valide sur le compte."
       - texte: "Vérifiez que les messages d'Infomaniak arrivent bien dans la boîte du Club, et non dans les indésirables."
 
-  - titre: 5. Nous prévenir, et la suite
+  - titre: 5. Nous ajouter à votre compte
     texte: >-
-      Écrivez-nous dès que la commande est passée, en indiquant le ou les noms
-      achetés. Voici ce qui se passe ensuite, pour que vous sachiez où nous
-      allons.
+      Une fois la commande passée, ajoutez-nous à votre compte Infomaniak. Nous
+      faisons pointer le domaine vers le site nous-mêmes : vous n'avez aucun
+      réglage technique à manipuler.
     liste:
-      - texte: "Nous préparons l'hébergement du site sur ce nom."
-      - texte: "Nous vous envoyons **deux adresses de serveurs de noms**, deux lignes de texte à recopier."
-      - texte: "Vous les saisissez chez Infomaniak : Manager, puis Domaines, puis le nom du domaine, puis **Serveurs DNS** dans le menu de gauche. Cochez Serveurs de noms personnalisés, collez les deux adresses, validez en bas de page."
-      - texte: "Le changement met de quelques minutes à quarante-huit heures à se répandre sur Internet. Le site apparaît ensuite sur votre adresse."
+      - texte: "Dans le Manager, ouvrez la **gestion des utilisateurs**, puis **Ajouter un utilisateur**. Indiquez **ludo@coolbeans.cc** et donnez-lui le rôle **Administrateur**."
+      - texte: "Le domaine reste au nom du Club. Un administrateur en règle les paramètres, il ne devient pas propriétaire du nom."
+      - texte: "Écrivez-nous dès que c'est fait, en indiquant le ou les noms achetés."
+      - texte: "Nous mettons à jour les enregistrements DNS. Le changement met de quelques minutes à quarante-huit heures à se répandre sur Internet, puis le site apparaît sur votre adresse."
     note: >-
-      Cette dernière étape est la seule manipulation technique du parcours.
-      Nous pouvons la faire avec vous en visio si vous préférez.
+      Vous pouvez nous retirer cet accès quand vous le voulez, une fois le site
+      en ligne.
 
 comparatif:
   titre: Quelle extension retenir
@@ -157,7 +166,7 @@ questions:
       - valeur: visio
         label: Oui, prenons trente minutes ensemble
       - valeur: dns
-        label: Je commande seule, mais accompagnez-moi sur l'étape 5
+        label: Je commande seule, mais aidez-moi à vous ajouter au compte
 
 notes:
   - tone: warning
