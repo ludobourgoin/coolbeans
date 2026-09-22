@@ -9,7 +9,7 @@
 //
 // Règles :
 // - my.*/            → /espace (accueil du portail)
-// - my.*/<x>         → /espace/<x>, sauf /connexion et /docs/* (servis tels
+// - my.*/<x>         → /espace/<x>, sauf les chemins publics et /docs/* (servis tels
 //   quels : la connexion et la doc font partie du portail mais gardent leurs
 //   routes propres) et les chemins internes d'Astro (/_actions, /_image…)
 // - my.*/espace/<x>  → 301 vers my.*/<x> (URL canonique sans préfixe)
@@ -17,6 +17,7 @@
 // - coolbeans.cc/connexion  → 302 vers my.coolbeans.cc/connexion (une seule
 //   page de connexion, celle du portail)
 import { handle } from "@astrojs/cloudflare/handler";
+import { estServiTelQuel } from "./lib/portail/routes-publiques";
 import { ouvrirLesDues } from "./lib/portail/messagerie/ouvrir";
 import { publierLesDues } from "./lib/portail/messagerie/publier";
 import { synchroniserLivraisons } from "./lib/livraisons/sync";
@@ -53,14 +54,10 @@ export default {
         url.pathname = stripEspace(pathname);
         return Response.redirect(url.href, 301);
       }
-      const passthrough =
-        pathname.startsWith("/_") ||
-        pathname.startsWith("/api/") ||
-        pathname === "/connexion" ||
-        pathname === "/connexion/" ||
-        pathname === "/docs" ||
-        pathname.startsWith("/docs/");
-      if (!passthrough) {
+      // La liste vit dans lib/portail/routes-publiques.ts, avec ses tests :
+      // une page publique oubliée ici part sous /espace, donc derrière le
+      // middleware, et devient inatteignable pour qui n'a pas de session.
+      if (!estServiTelQuel(pathname)) {
         url.pathname = pathname === "/" ? "/espace" : `/espace${pathname}`;
         request = new Request(url, request);
       }
