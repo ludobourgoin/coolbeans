@@ -14,23 +14,21 @@
 # été écarté par le client le 18/07, et que le setup a été déclaré finalisé le
 # 29/07 à 18h11. Il reste quatre questions ouvertes, toutes vérifiées.
 #
-# À COMPLÉTER AVANT ENVOI (facultatif) : déposer les deux captures sous
-# public/livrable/fylgo/ puis décommenter le bloc `apercu`. La page s'affiche
-# correctement sans.
-#
 # L'audit performance et SEO (FYL-5) est fait et intégré, section « L'état de
 # santé » : Lighthouse 13.5 en local sur trois pages, en mobile et en bureau,
 # plus les contrôles on-page. Ahrefs était inaccessible (forfait insuffisant),
 # et les données terrain CrUX n'existent pas, faute de trafic.
 #
-# Première rédaction de cette section corrigée le même jour : elle attribuait
-# la lenteur mobile au format PNG des photos. C'est faux, Shopify convertit
-# déjà en WebP selon l'en-tête Accept du navigateur (720 Ko en PNG deviennent
-# 260 Ko en WebP sur la même URL). La vraie cause est la règle CSS des sections
-# parallax, qui demande width=2000 y compris dans sa variante mobile.
+# Deux hypothèses écrites puis démenties par la mesure, gardées ici pour ne
+# pas les reformuler une troisième fois. Le format PNG n'est pas en cause :
+# Shopify convertit déjà en WebP selon l'en-tête Accept du navigateur. La
+# largeur des sections parallax n'était pas LA cause : la corriger n'a rendu
+# que 386 Ko. La cause établie est ailleurs, et elle est dans le document :
+# vingt-huit images de l'accueil héritent du `sizes` par défaut de
+# responsive-image.liquid, dont la branche mobile vaut 100vw.
 titre: La boutique Fylgo
 objet: Le détail de ce qui a été fait, ce qui reste ouvert et pourquoi, et ce que vous pouvez faire sans moi.
-date: 2026-09-21
+date: 2026-09-22
 # Pas de formulaire de réponse : ce document ne demande pas une validation,
 # il acte une livraison. Le client répond par mail ou sur WhatsApp.
 formulaire: false
@@ -40,7 +38,7 @@ linear:
   affaire: https://linear.app/coolbeans-hq/issue/CRM-28
 # Le document part à Fabien, Paul et Laetitia, tous sous fylgodrinks.com.
 envoi:
-  date: 2026-09-21
+  date: 2026-09-22
   destinataire: fabien.vp@fylgodrinks.com
 
 site:
@@ -63,7 +61,7 @@ sections:
       Si vous ne lisez qu'un paragraphe, lisez celui-ci. Le reste de la page
       est la pièce justificative, consultable quand vous en aurez besoin.
     liste:
-      - texte: "**La boutique est livrée et elle tourne.** Elle encaisse, elle expédie, elle est référencée, et elle vend aussi bien aux particuliers qu'aux revendeurs via Ankorstore et Faire. Quatre correctifs ont été posés aujourd'hui même, détaillés plus bas."
+      - texte: "**La boutique est livrée et elle tourne.** Elle encaisse, elle expédie, elle est référencée, et elle vend aussi bien aux particuliers qu'aux revendeurs via Ankorstore et Faire. Quatre correctifs ont été posés le 21 septembre, détaillés plus bas."
       - texte: "**Ce que j'attends de vous tient en trois gestes** : relire les paramètres de vente, trancher le partage du stock entre vos canaux, et me proposer deux créneaux pour l'heure de formation comprise au devis."
       - texte: "**Les quatre lignes du devis du 24 mars sont livrées.** La facture de solde, 3 528 € TTC, vous a été adressée le 24 août."
 
@@ -122,7 +120,7 @@ sections:
     liste:
       - texte: "**Sur ordinateur, la boutique est rapide.** Rien à signaler de ce côté."
       - texte: "**Sur téléphone, elle est lente**, et c'est ce qui compte le plus, parce que Google classe les sites d'après leur version mobile. L'accueil pèse 2,3 Mo, là où une page confortable sur un réseau mobile en fait moins d'un."
-      - texte: "**J'ai retiré 386 Ko aujourd'hui.** Trois images de fond étaient servies aux téléphones à la dimension prévue pour les grands écrans, et la grande image d'accueil se chargeait en dernier au lieu d'être prioritaire. Les deux sont corrigés."
+      - texte: "**J'ai retiré 386 Ko le 21 septembre.** Trois images de fond étaient servies aux téléphones à la dimension prévue pour les grands écrans, et la grande image d'accueil se chargeait en dernier au lieu d'être prioritaire. Les deux sont corrigés."
       - texte: "**Il reste 494 Ko de gaspillage, et j'en connais la cause exacte.** Vingt-huit images de l'accueil déclarent au navigateur qu'elles occupent toute la largeur de l'écran, alors qu'elles s'affichent en vignettes. Il leur sert donc une version bien plus grande que nécessaire."
         tooltip: >-
           Le cas le plus parlant : un picto affiché à cent pixels de large est
@@ -144,8 +142,8 @@ sections:
 
   - titre: Les textes écrits pour Google
     texte: >-
-      Voici les huit descriptions rédigées et mises en ligne aujourd'hui, une
-      par page. Ce sont elles que Google affichera sous le titre de chaque
+      Voici les huit descriptions rédigées et mises en ligne le 21 septembre,
+      une par page. Ce sont elles que Google affichera sous le titre de chaque
       page dans ses résultats. Elles se modifient dans l'admin, section
       Référencement, sans passer par moi.
     replie: Voir les huit textes
