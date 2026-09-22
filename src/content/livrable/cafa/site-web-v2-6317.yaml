@@ -96,7 +96,7 @@ suite:
     owner: client
   - texte: "Acheter le nom de domaine, avec le document que je vous envoie à part. L'extension, .fr ou .org, vous revient."
     owner: client
-  - texte: Créer le compte Resend, qui fera partir les formulaires, et m'y ajouter.
+  - texte: "Créer le compte Resend, gratuit, qui expédiera vers votre boîte les messages laissés dans vos formulaires, et m'y ajouter."
     owner: client
   - texte: "Me transmettre les retours de Karsten et sa photo en bonne définition."
     owner: client
@@ -110,8 +110,12 @@ suite:
 notes:
   - tone: info
     texte: >-
-      Les formulaires ne partent toujours pas : ils attendent le compte Resend.
-      Si vous les testez, vous verrez un message d'erreur, c'est attendu.
+      Vos formulaires ne partent pas encore. Quand un visiteur laisse un
+      message, un service doit l'expédier vers la boîte du Club : c'est Resend.
+      Le compte est gratuit à votre volume et s'ouvre en quelques minutes, une
+      fois le domaine acheté. Vous le créez au nom du Club, vous m'y ajoutez,
+      je fais le reste. D'ici là, un formulaire testé affiche une erreur,
+      c'est attendu.
   - tone: info
     texte: >-
       Ce document se met à jour. Chaque relecture s'ajoute ici, au même lien.
