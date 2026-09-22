@@ -1,69 +1,57 @@
 # Profil LinkedIn, refresh 2026-09-22
 
-Aligné sur le nouveau positionnement : stratégie, design, code. Plus de segment
-unique, plus de mention de Sète dans les textes.
+Aligné sur le positionnement stratégie, design, code.
 
 Limites LinkedIn : titre 220 caractères, résumé 2 600, intitulé de poste 100,
-description d'expérience 2 000.
+description d'expérience 2 000, slogan de page 120.
+
+**État au 2026-09-22, après ta première passe :** bannière en place, titre en
+place. Le résumé a été collé dans la description du poste Coolbeans, donc les
+deux textes ci-dessous se partagent à nouveau le travail sans se répéter.
 
 ---
 
-## 1. Titre (headline)
+## 1. Titre (headline), déjà en ligne
 
 ```
-Développeur web freelance · Stratégie, design et code · Des sites qui convertissent et qui durent
+Développeur web freelance | Stratégie, design et code | Des sites qui convertissent et qui durent
 ```
-
-96 caractères. Les trois premiers mots portent la recherche LinkedIn, le reste
-dit ce que ça produit.
 
 ---
 
-## 2. Résumé (À propos)
+## 2. À propos
+
+Le parcours et ce qu'il change. Pas de liste de prestations : elle est dans la
+ligne Coolbeans, juste en dessous sur le profil.
 
 ```
-Je conçois, je dessine et je développe des sites web.
+Je conçois et je développe des sites web. Avant la technique, je regarde ce que le site doit produire.
 
-J'ai un double master, marketing stratégique et communication. Je me suis reconverti au développement ensuite. Les deux ne se sont jamais séparés : avant d'ouvrir un éditeur de code, je regarde ce que le site doit produire. De la visibilité, des demandes, du temps gagné.
+Ce réflexe vient de mon parcours. J'ai un double master en marketing stratégique et communication, et je me suis reconverti au développement ensuite. Les deux ne se sont jamais séparés : je lis un projet par ses enjeux avant de l'ouvrir dans un éditeur de code.
 
-C'est ce que je fais depuis 2018, sous le nom de Coolbeans. Plus de 40 projets livrés. Neuf sur dix arrivent par recommandation.
+Ce que ça change : je challenge les choix au lieu de les exécuter. Une stack se choisit pour ce que le projet doit produire, pas pour la mode. Un site se pense pour être tenu dans le temps par celui à qui il appartient, pas pour dépendre de moi.
 
-Ce que je prends en charge :
-
-• Sites vitrines, boutiques e-commerce, refontes
-• Applications web et espaces client
-• Intégration de maquettes Figma en code
-• Automatisation de tâches répétitives
-• Maintenance, SEO technique, accessibilité
-
-Comment ça se passe :
-
-Un appel de 30 à 60 minutes pour cadrer le besoin, le budget et la date. Un devis chiffré sous 48 heures. Une première version en cinq jours, la version finale trois jours après. Mise en ligne, documentation, formation, et trente jours de support inclus.
-
-Je travaille avec des associations, des indépendants, des PME, des agences et des studios de design.
+C'est ce que je fais depuis 2018, sous le nom de Coolbeans. Plus de 40 projets livrés, neuf sur dix arrivés par recommandation.
 
 Un projet en tête ? Écrivez-moi : ludo@coolbeans.cc
 ```
-
-1 150 caractères environ, sur 2 600 possibles. Il reste de la place si tu veux
-ajouter un projet précis.
 
 ---
 
 ## 3. Expérience, ligne Coolbeans
 
-**Intitulé du poste**
+**Intitulé du poste.** C'est l'écart le plus visible du profil : il annonce
+encore Webflow.
 
 ```
 Fondateur · Développeur web
 ```
 
-**Entreprise** : Coolbeans · **Type** : Indépendant · **Depuis** : 2018
-
-**Description**
+**Description.** Version opérationnelle, sans le parcours, qui est remonté dans
+À propos.
 
 ```
-Coolbeans est un studio web d'une personne. Je prends les projets au brief et je les rends en ligne.
+Studio web d'une personne. Je prends les projets au brief et je les rends en ligne.
 
 Ce que je livre :
 
@@ -73,24 +61,57 @@ Ce que je livre :
 • Automatisation de tâches répétitives
 • Maintenance, SEO technique, accessibilité
 
-Ce que j'apporte en plus du code :
+Comment ça se passe :
 
-Je challenge les choix avant de les exécuter. Une stack se choisit pour ce que le projet doit produire, pas pour la mode. Un site se pense pour être tenu dans le temps par celui à qui il appartient, pas pour dépendre de moi.
+Un appel de 30 à 60 minutes pour cadrer le besoin, le budget et la date. Un devis chiffré sous 48 heures, week-end compris en cas d'urgence. Puis le développement, la mise en ligne, la documentation et la formation.
 
 Quelques repères :
 
 40+ projets livrés depuis 2018.
 90 % des projets viennent par recommandation.
-Devis chiffré sous 48 heures, week-end compris en cas d'urgence.
 30 jours de support inclus après la mise en ligne.
+
+Je travaille avec des indépendants, des PME, des associations, des agences et des studios de design.
 ```
 
 ---
 
-## 4. Compétences à déclarer
+## 4. Page entreprise Coolbeans
 
-À classer dans cet ordre : LinkedIn met les trois premières en avant sur le
-profil.
+Son slogan est resté sur l'ancien positionnement, mot pour mot : « Développement
+Webflow sur-mesure, Figma to Webflow, migration Webflow, optimisations et
+maintenance. »
+
+**Slogan** (104 caractères sur 120)
+
+```
+Stratégie, design et code. Sites vitrines, e-commerce, applications web, automatisation, maintenance.
+```
+
+**Description de la page**
+
+```
+Coolbeans est un studio web d'une personne : Ludovic Bourgoin.
+
+Stratégie, design et développement réunis sur le même projet. Le site est pensé pour ce qu'il doit produire avant d'être dessiné, et dessiné avant d'être codé.
+
+Sites vitrines, boutiques e-commerce, refontes, applications web et espaces client, intégration de maquettes Figma, automatisation, maintenance.
+
+Plus de 40 projets livrés depuis 2018. Neuf sur dix arrivent par recommandation.
+
+coolbeans.cc
+```
+
+**Bannière.** La page n'en a pas. Une frame `Bannière page entreprise` est prête
+dans le fichier Figma, au format 1128 × 191. Elle ne porte que le titre : à
+cette hauteur, tout ajout devient illisible.
+
+---
+
+## 5. Compétences à déclarer
+
+Les trois premières s'affichent sur le profil, les autres sont là pour la
+recherche.
 
 1. Développement web
 2. Stratégie numérique
@@ -102,24 +123,31 @@ ligne, Communication.
 
 ---
 
-## 5. Reste à ta main
+## 6. Écarts restants sur le profil
 
-Ce que je ne peux pas écrire sans inventer :
-
-- **Expériences antérieures** : intitulés, employeurs et dates avant Coolbeans.
-  Le profil affiche Trigger, à toi de décider comment cette ligne se présente
-  (agence cliente, collaboration, poste).
-- **Section « Sélection »** : elle est vide. Deux ou trois liens y gagneraient
-  leur place, par exemple coolbeans.cc, la page Projets et une étude de cas.
-- **Recommandations** : aucune n'est visible. Les clients qui te recommandent à
-  neuf projets sur dix sont exactement ceux à qui la demander.
+- **Intitulé du poste Coolbeans** : toujours « Développeur Webflow [Freelance] ».
+  C'est la ligne la plus lue après le titre, et elle annule le repositionnement.
+- **Slogan de la page entreprise** : entièrement sur l'ancien discours Webflow.
+- **En-tête du profil** : le bloc en haut à droite affiche Trigger, pas
+  Coolbeans. LinkedIn y met le poste actuel le plus récemment commencé, et
+  Trigger démarre en 2023 contre 2018 pour Coolbeans. À vérifier dans les
+  réglages d'affichage de ton profil.
+- **Localisation** : le profil dit Montpellier, la ligne Coolbeans dit Sète.
+  L'une des deux est à corriger.
+- **Sélection** : section vide. coolbeans.cc, la page Projets et une étude de
+  cas y auraient leur place.
+- **Recommandations** : aucune visible, alors que neuf projets sur dix arrivent
+  par recommandation. Ce sont les mêmes personnes.
 
 ---
 
-## Point à trancher
+## 7. Deux détails de langue dans ta version en ligne
 
-Le résumé liste les publics (associations, indépendants, PME, agences, studios).
-Sur la bannière, tu as choisi de n'en nommer aucun. L'écart est volontaire :
-une bannière se lit en une seconde, un résumé se lit quand on cherche déjà à
-savoir si on est concerné. Si tu préfères la cohérence stricte, la phrase se
-supprime sans rien casser.
+- « Je design et développe des interfaces web. » Le verbe est un anglicisme.
+  « Je conçois et je développe » dit la même chose en français.
+- « Du point de lancement à la mise en ligne. » Phrase sans verbe, coincée entre
+  deux phrases qui en ont, et « point de lancement » ne se dit pas à l'oral.
+
+Dans le bloc À propos ci-dessus, l'intitulé du diplôme est tronqué : ton
+relecteur refuse l'adjectif qui le termine. Ta version en ligne le garde, et
+c'est le bon choix, c'est son intitulé exact.
