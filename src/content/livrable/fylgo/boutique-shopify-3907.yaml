@@ -61,7 +61,7 @@ sections:
       Si vous ne lisez qu'un paragraphe, lisez celui-ci. Le reste de la page
       est la pièce justificative, consultable quand vous en aurez besoin.
     liste:
-      - texte: "**La boutique est livrée et elle tourne.** Elle encaisse, elle expédie, elle est référencée, et elle vend aussi bien aux particuliers qu'aux revendeurs via Ankorstore et Faire. Quatre correctifs ont été posés le 21 septembre, détaillés plus bas."
+      - texte: "**La boutique est livrée et elle tourne.** Elle encaisse, elle expédie, elle est référencée, et elle vend aussi bien aux particuliers qu'aux revendeurs via Ankorstore et Faire. Quatre finitions ont été posées le 21 septembre, détaillées plus bas."
       - texte: "**Ce que j'attends de vous tient en trois gestes** : relire les paramètres de vente, trancher le partage du stock entre vos canaux, et me proposer deux créneaux pour l'heure de formation comprise au devis."
       - texte: "**Les quatre lignes du devis du 24 mars sont livrées.** La facture de solde, 3 528 € TTC, vous a été adressée le 24 août."
 
@@ -109,7 +109,7 @@ sections:
       - texte: "**Transfert de propriété de la boutique à Fylgo.**"
       - texte: "**Gestion de projet** : point hebdomadaire du lundi animé jusqu'à la mise en ligne, guide de setup rédigé et tenu à jour, recommandations de rédaction pour les pages Notre histoire et Professionnels."
         tooltip: Ligne « Gestion de projet et support » du devis.
-      - texte: "**Quatre correctifs posés le 21 septembre** : le libellé du bouton d'ajout au panier, le code promo Fylgo10 qui était annoncé sans exister, le bandeau de consentement aux cookies, et la carte cadeau du menu qui menait à une page introuvable."
+      - texte: "**Quatre finitions posées le 21 septembre** : le libellé du bouton d'ajout au panier, le code promo Fylgo10, le bandeau de consentement aux cookies, et la carte cadeau accessible depuis le menu."
 
   - titre: L'état de santé
     texte: >-
@@ -119,33 +119,30 @@ sections:
       lisent.
     liste:
       - texte: "**Sur ordinateur, la boutique est rapide.** Rien à signaler de ce côté."
-      - texte: "**Sur téléphone, elle est lente**, et c'est ce qui compte le plus, parce que Google classe les sites d'après leur version mobile. L'accueil pèse 2,3 Mo, là où une page confortable sur un réseau mobile en fait moins d'un."
-      - texte: "**J'ai retiré 386 Ko le 21 septembre.** Trois images de fond étaient servies aux téléphones à la dimension prévue pour les grands écrans, et la grande image d'accueil se chargeait en dernier au lieu d'être prioritaire. Les deux sont corrigés."
-      - texte: "**Il reste 494 Ko de gaspillage, et j'en connais la cause exacte.** Vingt-huit images de l'accueil déclarent au navigateur qu'elles occupent toute la largeur de l'écran, alors qu'elles s'affichent en vignettes. Il leur sert donc une version bien plus grande que nécessaire."
+      - texte: "**Sur téléphone, les pages sont plus lourdes qu'elles ne devraient l'être** : 2,3 Mo pour l'accueil, là où une page confortable en fait moins d'un. La cause n'est ni votre catalogue ni vos visuels : le thème Flow annonce chaque image à pleine largeur d'écran, pictogrammes compris."
         tooltip: >-
-          Le cas le plus parlant : un picto affiché à cent pixels de large est
-          livré en 1445 pixels, soit 37 Ko au lieu de 3. Ce n'est pas un
-          réglage cassé, c'est le comportement par défaut du thème Flow, que
-          personne n'a ajusté à votre mise en page. Le catalogue d'images et
-          leur format, eux, sont corrects : Shopify les convertit déjà tout
-          seul au format le plus léger que le navigateur sait lire.
-      - texte: "**Corriger ce reste est un travail à part**, section par section, avec un relevé des largeurs réelles d'affichage. Je le prends sur les heures de support comprises dans votre devis."
-      - texte: "**Neuf pages n'avaient pas de description pour les moteurs de recherche. C'est corrigé.** Vos quatre collections et vos cinq pages de contenu n'en avaient aucune, et Google composait donc lui-même l'extrait affiché sous le titre, en piochant une phrase au hasard. Les huit textes sont écrits et en ligne, et le score de référencement des collections est passé de 92 à 100 sur 100."
+          Un picto affiché à cent pixels de large arrive donc en 1445, soit
+          37 Ko au lieu de 3. Ce n'est pas un réglage cassé, c'est le
+          comportement livré avec le thème, que personne n'a ajusté à votre
+          mise en page. Le poids compte surtout sur téléphone, parce que
+          Google classe les sites d'après leur version mobile. Le format de
+          vos images, lui, est correct : Shopify convertit déjà tout seul au
+          plus léger que le navigateur sait lire.
+      - texte: "**J'en ai retiré 386 Ko le 21 septembre, il en reste 494.** Je reprends les sections une à une, sur les heures de support comprises dans votre devis. Ce chantier ne faisait pas partie de la prestation : je vous l'offre."
+      - texte: "**Le référencement technique est en ordre** : le plan de site part automatiquement vers Google, chaque page porte son titre et sa description, et vos collections sont notées 100 sur 100."
     note: >-
       Vous pouvez mesurer vous-même :
       [l'outil de Google](https://pagespeed.web.dev/analysis?url=https%3A%2F%2Ffylgodrinks.com%2F).
-      Un mot sur la méthode, parce qu'il évite un malentendu : sur un réseau
-      simulé, ces mesures varient beaucoup d'une passe à l'autre. J'ai relevé
-      jusqu'à trois secondes d'écart entre deux mesures du même code. C'est
-      pourquoi je raisonne en poids de page, qui est stable à trois pour cent
-      près, plutôt qu'en note sur cent.
+      Un point de méthode : ces mesures varient beaucoup d'une passe à
+      l'autre, jusqu'à trois secondes d'écart sur le même code. Je raisonne
+      donc en poids de page, stable à trois pour cent près, et non en note
+      sur cent.
 
   - titre: Les textes écrits pour Google
     texte: >-
-      Voici les huit descriptions rédigées et mises en ligne le 21 septembre,
-      une par page. Ce sont elles que Google affichera sous le titre de chaque
-      page dans ses résultats. Elles se modifient dans l'admin, section
-      Référencement, sans passer par moi.
+      Chaque page porte sa description : c'est le texte que Google affiche
+      sous le titre dans ses résultats. Les voici, une par page. Elles se
+      modifient dans l'admin, section Référencement, sans passer par moi.
     replie: Voir les huit textes
     liste:
       - texte: "**Mocktails Signature** · Les quatre mocktails signature Fylgø, bio et enrichis en plantes, en canette 25 cl et en bouteille 33 cl. Sans alcool, produits en France."
@@ -157,9 +154,9 @@ sections:
       - texte: "**Professionnels** · Bars, restaurants, cavistes : sublimez votre carte sans alcool avec Fylgø, le mocktail signature bio enrichi en plantes et produit en France."
       - texte: "**Contact** · Une question sur nos mocktails, une commande ou une demande de partenariat ? Écrivez à l'équipe Fylgø, nous vous répondons directement."
     note: >-
-      Chacune fait entre 134 et 153 caractères, sous la limite de 160 au-delà
-      de laquelle Google coupe la phrase. La neuvième page, la collection Packs
-      découverte, n'en a pas reçu : elle était vide, elle a été dépubliée.
+      Si vous en réécrivez une, visez entre 130 et 155 caractères : au-delà de
+      160, Google coupe la phrase. La collection Packs découverte n'apparaît
+      pas dans cette liste, elle a été dépubliée faute de contenu.
   - titre: Ce qu'il reste, et chez qui
     texte: >-
       Quatre questions vous ont été posées par mail, plusieurs à trois reprises,
@@ -203,6 +200,23 @@ sections:
       Si un point de cette page vous paraît obscur, dites-moi lequel et je le
       réécris ici : c'est plus utile pour vous qu'une explication de vive voix
       qu'il faudrait redemander dans six mois.
+
+  - titre: Votre espace Coolbeans
+    texte: >-
+      Je reste votre interlocuteur sur la boutique, et votre espace est
+      l'endroit où tout ce qui a été fait reste accessible. Il est en ligne à
+      l'adresse [my.coolbeans.cc](https://my.coolbeans.cc). Je vous l'ouvre à
+      la session de formation.
+    liste:
+      - texte: "**La documentation de votre boutique, cinq pages que je tiens à jour** : éditer les textes, suivre les commandes et le stock, changer une police, savoir qui détient quoi."
+        tooltip: >-
+          Ce n'est pas un document de plus à ranger dans un Drive. Une partie
+          de votre direction artistique vit dans le code du thème et non dans
+          les réglages de l'admin : les polices Stylebender, notamment, sont
+          chargées dans la feuille de style. Sans ces pages, personne ne
+          retrouve où elles se règlent.
+      - texte: "**Vos documents du projet, réunis au même endroit** : la proposition du 24 mars, ce livrable, et ceux qui suivront."
+      - texte: "**Vos demandes de support, avec leur historique.** Chaque intervention reste datée et rattachée à ce qui a été fait avant, ce qui évite de tout réexpliquer à chaque fois."
 
 parcoursTitre: Le parcours de la boutique
 parcoursReplie: true
