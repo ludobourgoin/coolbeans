@@ -146,16 +146,6 @@ export const testimonials: Testimonial[] = [
     role: "Directrice artistique @ Studio Caperky · Paris",
     photo: "/img/testimonials/margaux-billet.avif",
   },
-  {
-    // version validée avant la passe de diversification du 2026-08-04 :
-    // "Un accompagnement carré du premier échange à la livraison. Ludovic pose les
-    // bonnes questions, propose des solutions concrètes et exécute sans accroc. Je
-    // le recommande les yeux fermés à toute équipe qui veut avancer vite et bien."
-    quote:
-      "Il pose les bonnes questions avant même de coder, et exécute ensuite sans accroc. Pour une équipe qui veut avancer vite sans sacrifier la qualité, c'est exactement ce qu'il faut.",
-    name: "Sarah Neveu",
-    role: "Head of Growth @ Pixly · Lille",
-  },
 ];
 
 export const initials = (name: string) =>
