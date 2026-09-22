@@ -202,6 +202,23 @@ sections:
       réécris ici : c'est plus utile pour vous qu'une explication de vive voix
       qu'il faudrait redemander dans six mois.
 
+  - titre: Votre espace Coolbeans
+    texte: >-
+      Je reste votre interlocuteur sur la boutique, et votre espace est
+      l'endroit où tout ce qui a été fait reste accessible. Il est en ligne à
+      l'adresse [my.coolbeans.cc](https://my.coolbeans.cc). Je vous l'ouvre à
+      la session de formation.
+    liste:
+      - texte: "**La documentation de votre boutique, cinq pages que je tiens à jour** : éditer les textes, suivre les commandes et le stock, changer une police, savoir qui détient quoi."
+        tooltip: >-
+          Ce n'est pas un document de plus à ranger dans un Drive. Une partie
+          de votre direction artistique vit dans le code du thème et non dans
+          les réglages de l'admin : les polices Stylebender, notamment, sont
+          chargées dans la feuille de style. Sans ces pages, personne ne
+          retrouve où elles se règlent.
+      - texte: "**Vos documents du projet, réunis au même endroit** : la proposition du 24 mars, ce livrable, et ceux qui suivront."
+      - texte: "**Vos demandes de support, avec leur historique.** Chaque intervention reste datée et rattachée à ce qui a été fait avant, ce qui évite de tout réexpliquer à chaque fois."
+
 parcoursTitre: Le parcours de la boutique
 parcoursReplie: true
 parcours:
