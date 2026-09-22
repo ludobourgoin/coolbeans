@@ -159,7 +159,7 @@ const audience = [
           menu, liens et portail compris. Avant le 2026-09-21 le bouton devenait
           un raccourci Contact, qui coupait l'accès à toutes les autres pages
           depuis un téléphone. */}
-      <a class="btn btn-sm max-[980px]:hidden" href="/connexion">Se connecter</a>
+      <a class="btn btn-sm max-[980px]:hidden" data-portail href="/connexion">Se connecter</a>
       <button
         type="button"
         id="nav-burger"
@@ -231,7 +231,7 @@ const audience = [
             ))
         }
         <div class="mx-1 my-1.5 h-px bg-line" role="separator"></div>
-        <a class="btn btn-sm" href="/connexion">Se connecter</a>
+        <a class="btn btn-sm" data-portail href="/connexion">Se connecter</a>
       </nav>
     </div>
   </div>
@@ -286,6 +286,58 @@ const audience = [
       window.matchMedia("(min-width: 981px)").addEventListener("change", (e) => {
         if (e.matches) setOpen(false);
       });
+    }
+
+    /* Les pages du site sont prérendues : au build, personne n'est connecté,
+       et le bouton ne peut donc qu'afficher « Se connecter ». On corrige après
+       coup, depuis le navigateur, avec le cookie de session — partagé entre
+       coolbeans.cc et my.coolbeans.cc depuis le 2026-09-22
+       (lib/auth/options.ts). Sans ce partage, cet appel répondrait toujours
+       « personne », même avec une session ouverte sur le portail.
+
+       /espace plutôt qu'une URL en dur : le Worker l'envoie sur le bon hôte de
+       portail selon l'environnement (prod, staging), et en local il est servi
+       tel quel. Une URL figée obligerait à distinguer les trois. */
+    const boutons = document.querySelectorAll("[data-portail]");
+    if (boutons.length) {
+      const MEMO = "cb:portail";
+      const appliquer = (connecte) => {
+        boutons.forEach((b) => {
+          b.href = connecte ? "/espace" : "/connexion";
+          b.textContent = connecte ? "Mon espace" : "Se connecter";
+        });
+      };
+      // Mémoire par onglet : sans elle, chaque page du site — toutes servies
+      // depuis le cache — déclenche un aller-retour réseau avant d'afficher le
+      // bon libellé, et le bouton clignote à chaque navigation.
+      let memo = null;
+      try {
+        memo = sessionStorage.getItem(MEMO);
+      } catch {
+        /* navigation privée, stockage bloqué : on s'en passe. */
+      }
+      if (memo !== null) appliquer(memo === "1");
+
+      fetch("/api/auth/get-session", {
+        credentials: "same-origin",
+        headers: { accept: "application/json" },
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          const connecte = Boolean(d && d.user);
+          try {
+            sessionStorage.setItem(MEMO, connecte ? "1" : "0");
+          } catch {
+            /* idem */
+          }
+          // Appel systématique, y compris quand il confirme le mémo : c'est ce
+          // qui remet « Se connecter » après une déconnexion faite ailleurs.
+          appliquer(connecte);
+        })
+        .catch(() => {
+          /* Hors ligne ou portail indisponible : le bouton reste sur
+             « Se connecter », qui mène au bon endroit dans les deux cas. */
+        });
     }
 
     const drop = document.querySelector(".drop");
