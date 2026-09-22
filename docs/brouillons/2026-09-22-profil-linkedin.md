@@ -21,19 +21,22 @@ Développeur web freelance | Stratégie, design et code | Des sites qui converti
 
 ## 2. À propos
 
-Le parcours et ce qu'il change. Pas de liste de prestations : elle est dans la
-ligne Coolbeans, juste en dessous sur le profil.
+Réécrit le 2026-09-22 après relecture de tes mails envoyés. La version
+précédente sonnait la plaquette : des maximes impersonnelles, des antithèses en
+rafale, aucun fait.
 
 ```
-Je conçois et je développe des sites web. Avant la technique, je regarde ce que le site doit produire.
+Je fais du design et du code.
 
-Ce réflexe vient de mon parcours. J'ai un double master en marketing stratégique et communication, et je me suis reconverti au développement ensuite. Les deux ne se sont jamais séparés : je lis un projet par ses enjeux avant de l'ouvrir dans un éditeur de code.
+J'ai commencé par le marketing et la communication, puis je me suis formé au développement. Je fais les deux sur le même projet : on regarde ensemble ce que le site doit vous apporter, je le dessine, je le développe, je le mets en ligne.
 
-Ce que ça change : je challenge les choix au lieu de les exécuter. Une stack se choisit pour ce que le projet doit produire, pas pour la mode. Un site se pense pour être tenu dans le temps par celui à qui il appartient, pas pour dépendre de moi.
+Ce que je fais le plus souvent : des sites vitrines, des boutiques, des refontes, des applis web. Parfois juste l'intégration d'une maquette Figma. Parfois une automatisation qui vous fait gagner deux heures par semaine.
 
-C'est ce que je fais depuis 2018, sous le nom de Coolbeans. Plus de 40 projets livrés, neuf sur dix arrivés par recommandation.
+Je donne mon avis même quand on ne me le demande pas. Un WordPress que personne ne met à jour finit en passoire, et je vous le dirai avant de le construire.
 
-Un projet en tête ? Écrivez-moi : ludo@coolbeans.cc
+Coolbeans, c'est mon studio, depuis 2018. Une quarantaine de projets livrés. La plupart arrivent par des clients qui m'ont recommandé.
+
+Écrivez-moi : ludo@coolbeans.cc
 ```
 
 ---
@@ -47,29 +50,17 @@ encore Webflow.
 Fondateur · Développeur web
 ```
 
-**Description.** Version opérationnelle, sans le parcours, qui est remonté dans
-À propos.
+**Description.** Le parcours est remonté dans À propos, il ne reste que
+l'opérationnel.
 
 ```
-Studio web d'une personne. Je prends les projets au brief et je les rends en ligne.
+Coolbeans, c'est mon studio. Vous m'appelez avec un projet, je vous le rends en ligne.
 
-Ce que je livre :
+Ce que je fais : sites vitrines, boutiques en ligne, refontes, applis web et espaces client, intégration de maquettes Figma, automatisations, maintenance, SEO technique.
 
-• Sites vitrines, boutiques e-commerce, refontes
-• Applications web et espaces client sur mesure
-• Intégration de maquettes Figma en code
-• Automatisation de tâches répétitives
-• Maintenance, SEO technique, accessibilité
+Comment ça se passe : on s'appelle 30 à 60 minutes pour poser le besoin, le budget et la date. Je vous envoie un devis chiffré sous 48 heures, week-end compris si c'est urgent. Ensuite je développe, je mets en ligne, je documente et je vous forme. Vous avez 30 jours de support après la livraison.
 
-Comment ça se passe :
-
-Un appel de 30 à 60 minutes pour cadrer le besoin, le budget et la date. Un devis chiffré sous 48 heures, week-end compris en cas d'urgence. Puis le développement, la mise en ligne, la documentation et la formation.
-
-Quelques repères :
-
-40+ projets livrés depuis 2018.
-90 % des projets viennent par recommandation.
-30 jours de support inclus après la mise en ligne.
+Depuis 2018, une quarantaine de projets. Neuf sur dix arrivent par recommandation.
 
 Je travaille avec des indépendants, des PME, des associations, des agences et des studios de design.
 ```
@@ -78,9 +69,9 @@ Je travaille avec des indépendants, des PME, des associations, des agences et d
 
 ## 4. Page entreprise Coolbeans
 
-Son slogan est resté sur l'ancien positionnement, mot pour mot : « Développement
+Son slogan est resté sur l'ancien positionnement, mot pour mot : «  Développement
 Webflow sur-mesure, Figma to Webflow, migration Webflow, optimisations et
-maintenance. »
+maintenance.  »
 
 **Slogan** (104 caractères sur 120)
 
@@ -125,7 +116,7 @@ ligne, Communication.
 
 ## 6. Écarts restants sur le profil
 
-- **Intitulé du poste Coolbeans** : toujours « Développeur Webflow [Freelance] ».
+- **Intitulé du poste Coolbeans** : toujours «  Développeur Webflow [Freelance]  ».
   C'est la ligne la plus lue après le titre, et elle annule le repositionnement.
 - **Slogan de la page entreprise** : entièrement sur l'ancien discours Webflow.
 - **En-tête du profil** : le bloc en haut à droite affiche Trigger, pas
@@ -143,10 +134,10 @@ ligne, Communication.
 
 ## 7. Deux détails de langue dans ta version en ligne
 
-- « Je design et développe des interfaces web. » Le verbe est un anglicisme.
-  « Je conçois et je développe » dit la même chose en français.
-- « Du point de lancement à la mise en ligne. » Phrase sans verbe, coincée entre
-  deux phrases qui en ont, et « point de lancement » ne se dit pas à l'oral.
+- «  Je design et développe des interfaces web.  » Le verbe est un anglicisme.
+  «  Je conçois et je développe  » dit la même chose en français.
+- «  Du point de lancement à la mise en ligne.  » Phrase sans verbe, coincée entre
+  deux phrases qui en ont, et «  point de lancement  » ne se dit pas à l'oral.
 
 Dans le bloc À propos ci-dessus, l'intitulé du diplôme est tronqué : ton
 relecteur refuse l'adjectif qui le termine. Ta version en ligne le garde, et
