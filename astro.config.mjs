@@ -76,6 +76,11 @@ export default defineConfig({
         !page.includes("/devis/") &&
         !page.includes("/cadrage/") &&
         !page.includes("/connexion") &&
+        // Les deux écrans de récupération de mot de passe : sans intérêt dans
+        // un index, et leur présence dirait publiquement où se trouve la
+        // porte de service du portail.
+        !page.includes("/mot-de-passe-oublie") &&
+        !page.includes("/reinitialiser") &&
         !page.includes("/design-system"),
     }),
     preact(),
