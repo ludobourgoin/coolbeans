@@ -165,7 +165,29 @@ Cette règle ne peut pas s'appliquer uniformément : la proposition commerciale
 
 Une revue des quatre gabarits, champ par champ, reste à faire avant l'implémentation.
 
-## 10. La nomenclature client / projet
+## 10. Les trois états d’un document
+
+Les cinq documents d’un projet existent dès sa création, en trames vides. Ludo les remplit au fil de l’eau et décide quand chacun devient visible du client.
+
+Le champ `brouillon` existe déjà mais signifie « servie en noindex le temps de la validation », ce qui ne répond pas au besoin : un document non prêt doit être **invisible du client**, pas seulement absent de Google. Il est remplacé par un état à trois valeurs.
+
+| `statut` | Servi en production | Dans la frise | Dans le portail |
+|---|---|---|---|
+| `trame` | non | pastille estompée | non |
+| `brouillon` | non | pastille estompée | non |
+| `publie` | oui | pastille cliquable | oui |
+
+`trame` et `brouillon` se comportent pareil côté client. Ils se distinguent pour Ludo : l’un est une coquille vide, l’autre un texte en cours de relecture.
+
+**Un document non publié n’est pas construit dans le site de production.** Il l’est en préproduction, où Ludo le relit sur `staging.coolbeans.cc`. Filtrage dans `getStaticPaths`, rien de plus. C’est plus sûr qu’un noindex, qui laisse la page atteignable par qui tape l’adresse.
+
+Le passage à `publie` est un geste de Ludo, jamais un effet de bord d’une autre action.
+
+### Créer les trames
+
+Un projet nouveau doit produire ses cinq fichiers d’un coup, avec leur `etape`, leur `linear.projet` et `statut : trame`. À outiller pendant l’implémentation, sans quoi la règle « cinq documents par projet » ne tiendra pas trois semaines.
+
+## 11. La nomenclature client / projet
 
 Tranché le 2026-09-22 :
 
@@ -215,5 +237,7 @@ Sur chaque racine : vérifier `linear.projet`, poser `etape` si l'étape diffè
 - [ ] Le filet reprend la teinte de l'étape dans les deux thèmes
 - [ ] `verify-design-system.js` passe, paires `-100` comprises
 - [ ] Les 28 anciennes URLs redirigent en 301
-- [ ] Un client connecté ouvre chacun de ses documents depuis sa barre latérale
+- [ ] Un document en `trame` ou en `brouillon` renvoie 404 en production, et s’affiche en préproduction
+- [ ] Sa pastille est visible mais estompée et non cliquable
+- [ ] Un client connecté ouvre chacun de ses documents publiés depuis sa barre latérale
 - [ ] Vérifié sur desktop, tablette et mobile, la nav des sections défilant latéralement sur petit écran
