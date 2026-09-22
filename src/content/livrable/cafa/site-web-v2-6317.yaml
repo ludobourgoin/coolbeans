@@ -26,9 +26,9 @@ apercu:
 sections:
   - titre: Comparer les deux versions
     texte: >-
-      Chaque relecture a désormais sa propre adresse. Elles ne bougent plus,
-      vous pouvez y revenir quand vous voulez et nous dire si vous préférez
-      l'état précédent.
+      Chaque relecture a désormais sa propre adresse. Ces adresses ne bougent
+      plus, vous pouvez y revenir quand vous voulez et nous dire si vous
+      préférez l'état précédent.
     liste:
       - texte: "**La version du 17 septembre** reste consultable, figée, sur [livraison-cafa.ludo-c97.workers.dev](https://livraison-cafa.ludo-c97.workers.dev). Ce que vous publierez désormais ne la modifiera plus."
       - texte: "**La version d'aujourd'hui** est sur [revision-1-cafa.ludo-c97.workers.dev](https://revision-1-cafa.ludo-c97.workers.dev). C'est celle que je vous demande de relire."
@@ -50,7 +50,7 @@ sections:
   - titre: Les photos
     liste:
       - texte: "**L'accueil prend la photo n° 2**, le Pont Neuf au crépuscule, celle que vous avez choisie toutes les deux. Son auteur est crédité sous l'image, sa licence l'exige."
-      - texte: "**Votre portrait** vient de la manifestation à TSE, comme vous le demandiez. Recadré pour tenir la même échelle que celui de Karsten."
+      - texte: "**Votre portrait** vient de la rencontre à TSE, comme vous le demandiez. Recadré pour tenir la même échelle que celui de Karsten."
       - texte: "**La photo de la mairie reste**, mais sa légende ne dit plus que c'est vous. Elle disait « Susanne Salerno, présidente, à la Mairie de Toulouse ». Elle dit maintenant « Rencontre à la Mairie de Toulouse »."
       - texte: "**La vue de TSE ouvre la galerie** de Qui sommes-nous, votre nom et votre fonction lisibles à l'écran derrière vous."
       - texte: "**Le kakemono d'Anja** entre dans cette galerie, crédité Boox Design."
@@ -60,15 +60,15 @@ sections:
     texte: >-
       Vous aviez raison, et le problème allait plus loin que vous ne le pensiez.
     liste:
-      - texte: "Vous aviez repéré huit articles au 27.07.2026. En vérifiant, **32 des 38 articles** portaient la date à laquelle vous les aviez saisis, et non celle de la manifestation."
+      - texte: "Vous aviez repéré huit articles au 27 juillet 2026. En vérifiant, **32 des 38 articles** portaient la date à laquelle vous les aviez saisis, et non celle de l'événement."
       - texte: "Les vraies dates étaient dans vos titres, et parfois dans le texte. Les 32 sont corrigées."
-      - texte: "**Trois articles résistent**, faute de date écrite nulle part. Je vous les liste plus bas."
+      - texte: "**Trois articles résistent**, faute d'une date écrite où que ce soit. Je vous les liste plus bas."
 
   - titre: Le reste
     liste:
       - texte: "**La Région Occitanie** rejoint les soutiens institutionnels, avec son logo officiel en rouge."
       - texte: "**Le lien LinkedIn** est en place sur les membres du bureau. Vous saisissez l'adresse de votre profil vous-même, et le lien apparaît sous votre fonction. Karsten aussi, s'il le souhaite."
-      - texte: "**Le nom de domaine** est retenu : cafa-toulouse. Le document qui vous permet de l'acheter vous-même vous arrive séparément."
+      - texte: "**Le nom de domaine** est retenu : cafa-toulouse. Le document pour l'acheter vous-même vous arrive séparément."
 
 parcoursTitre: Ce qui a changé, page par page
 parcoursReplie: true

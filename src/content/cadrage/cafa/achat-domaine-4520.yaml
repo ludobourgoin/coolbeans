@@ -104,7 +104,7 @@ comparatif:
     - label: Dans le réseau
       valeurs:
         - "cafa-bretagne.fr, cafaura.fr"
-        - "reseau-cafa.org, cafa-rso.eu"
+        - "reseau-cafa.org, le site de la fédération"
         - "Plusieurs clubs détiennent leurs deux formes."
     - label: Condition
       valeurs:
@@ -145,7 +145,7 @@ questions:
     label: Quelle adresse e-mail commune servira à créer le compte ?
     aide: >-
       Elle doit survivre à un changement de bureau. Si elle n'existe pas
-      encore, dites-le nous, nous verrons ensemble.
+      encore, dites-le-nous, nous verrons ensemble.
     type: texte
     placeholder: contact@… ou bureau@…
   - id: accompagnement
