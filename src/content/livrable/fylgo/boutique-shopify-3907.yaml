@@ -61,7 +61,7 @@ sections:
       Si vous ne lisez qu'un paragraphe, lisez celui-ci. Le reste de la page
       est la pièce justificative, consultable quand vous en aurez besoin.
     liste:
-      - texte: "**La boutique est livrée et elle tourne.** Elle encaisse, elle expédie, elle est référencée, et elle vend aussi bien aux particuliers qu'aux revendeurs via Ankorstore et Faire. Quatre correctifs ont été posés le 21 septembre, détaillés plus bas."
+      - texte: "**La boutique est livrée et elle tourne.** Elle encaisse, elle expédie, elle est référencée, et elle vend aussi bien aux particuliers qu'aux revendeurs via Ankorstore et Faire. Quatre finitions ont été posées le 21 septembre, détaillées plus bas."
       - texte: "**Ce que j'attends de vous tient en trois gestes** : relire les paramètres de vente, trancher le partage du stock entre vos canaux, et me proposer deux créneaux pour l'heure de formation comprise au devis."
       - texte: "**Les quatre lignes du devis du 24 mars sont livrées.** La facture de solde, 3 528 € TTC, vous a été adressée le 24 août."
 
@@ -109,7 +109,7 @@ sections:
       - texte: "**Transfert de propriété de la boutique à Fylgo.**"
       - texte: "**Gestion de projet** : point hebdomadaire du lundi animé jusqu'à la mise en ligne, guide de setup rédigé et tenu à jour, recommandations de rédaction pour les pages Notre histoire et Professionnels."
         tooltip: Ligne « Gestion de projet et support » du devis.
-      - texte: "**Quatre correctifs posés le 21 septembre** : le libellé du bouton d'ajout au panier, le code promo Fylgo10 qui était annoncé sans exister, le bandeau de consentement aux cookies, et la carte cadeau du menu qui menait à une page introuvable."
+      - texte: "**Quatre finitions posées le 21 septembre** : le libellé du bouton d'ajout au panier, le code promo Fylgo10, le bandeau de consentement aux cookies, et la carte cadeau accessible depuis le menu."
 
   - titre: L'état de santé
     texte: >-
@@ -129,7 +129,7 @@ sections:
           vos images, lui, est correct : Shopify convertit déjà tout seul au
           plus léger que le navigateur sait lire.
       - texte: "**J'en ai retiré 386 Ko le 21 septembre, il en reste 494.** Je reprends les sections une à une, sur les heures de support comprises dans votre devis. Ce chantier ne faisait pas partie de la prestation : je vous l'offre."
-      - texte: "**Neuf pages n'avaient pas de description pour les moteurs de recherche. C'est corrigé.** Vos quatre collections et vos cinq pages de contenu n'en avaient aucune, et Google composait donc lui-même l'extrait affiché sous le titre, en piochant une phrase au hasard. Les huit textes sont écrits et en ligne, et le score de référencement des collections est passé de 92 à 100 sur 100."
+      - texte: "**Le référencement technique est en ordre** : le plan de site part automatiquement vers Google, chaque page porte son titre et sa description, et vos collections sont notées 100 sur 100."
     note: >-
       Vous pouvez mesurer vous-même :
       [l'outil de Google](https://pagespeed.web.dev/analysis?url=https%3A%2F%2Ffylgodrinks.com%2F).
@@ -140,10 +140,9 @@ sections:
 
   - titre: Les textes écrits pour Google
     texte: >-
-      Voici les huit descriptions rédigées et mises en ligne le 21 septembre,
-      une par page. Ce sont elles que Google affichera sous le titre de chaque
-      page dans ses résultats. Elles se modifient dans l'admin, section
-      Référencement, sans passer par moi.
+      Chaque page porte sa description : c'est le texte que Google affiche
+      sous le titre dans ses résultats. Les voici, une par page. Elles se
+      modifient dans l'admin, section Référencement, sans passer par moi.
     replie: Voir les huit textes
     liste:
       - texte: "**Mocktails Signature** · Les quatre mocktails signature Fylgø, bio et enrichis en plantes, en canette 25 cl et en bouteille 33 cl. Sans alcool, produits en France."
@@ -155,9 +154,9 @@ sections:
       - texte: "**Professionnels** · Bars, restaurants, cavistes : sublimez votre carte sans alcool avec Fylgø, le mocktail signature bio enrichi en plantes et produit en France."
       - texte: "**Contact** · Une question sur nos mocktails, une commande ou une demande de partenariat ? Écrivez à l'équipe Fylgø, nous vous répondons directement."
     note: >-
-      Chacune fait entre 134 et 153 caractères, sous la limite de 160 au-delà
-      de laquelle Google coupe la phrase. La neuvième page, la collection Packs
-      découverte, n'en a pas reçu : elle était vide, elle a été dépubliée.
+      Si vous en réécrivez une, visez entre 130 et 155 caractères : au-delà de
+      160, Google coupe la phrase. La collection Packs découverte n'apparaît
+      pas dans cette liste, elle a été dépubliée faute de contenu.
   - titre: Ce qu'il reste, et chez qui
     texte: >-
       Quatre questions vous ont été posées par mail, plusieurs à trois reprises,
