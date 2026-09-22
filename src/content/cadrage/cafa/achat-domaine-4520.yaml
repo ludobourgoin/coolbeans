@@ -17,7 +17,7 @@ linear:
 intro:
   - titre: Pourquoi c'est vous qui l'achetez
     texte: >-
-      Le domaine est la propriété du Club, pas la nôtre. Il porte l'adresse du
+      Le domaine est la propriété du Club, pas la mienne. Il porte l'adresse du
       site et, plus tard, vos adresses e-mail. Il reste chez vous même si vous
       changez de prestataire un jour.
     note: >-
@@ -26,9 +26,10 @@ intro:
 
   - titre: Pourquoi Infomaniak
     texte: >-
-      Nous vous le conseillons pour deux raisons précises. Rien ne vous oblige
-      à nous suivre, mais peu d'hébergeurs réunissent les deux.
+      Je vous le conseille pour trois raisons. Rien ne vous oblige à me suivre,
+      mais peu d'hébergeurs les réunissent toutes les trois.
     liste:
+      - texte: "**Une plateforme simple, stable, fiable.** Elle est suisse, et elle tient dans la durée. Pour un compte que le Club gardera des années, ça pèse plus que quelques euros d'écart."
       - texte: "**Le .fr y est possible.** Beaucoup d'hébergeurs ne l'enregistrent pas, l'Afnic posant ses conditions. Si vous retenez cette extension, vous n'aurez pas à changer de prestataire en route."
       - texte: "**Une adresse e-mail à votre nom de domaine est comprise**, sans supplément. C'est exactement l'adresse commune dont le Club a besoin, celle qui survit aux changements de bureau."
 
@@ -39,7 +40,7 @@ intro:
     liste:
       - texte: "**Utilisez une adresse e-mail que le Club garde quand le bureau change.** Pas l'adresse d'un cabinet, pas une adresse personnelle."
       - texte: "Le jour où la présidence change, le nouveau bureau doit pouvoir entrer dans ce compte. Sans cela, le domaine devient inaccessible et le site avec lui."
-      - texte: "Si le Club n'a pas encore d'adresse commune, créez-la d'abord. Une adresse gratuite suffit pour l'instant, nous la remplacerons par une adresse au nom du domaine une fois le site en ligne."
+      - texte: "Si le Club n'a pas encore d'adresse commune, créez-la d'abord. Une adresse gratuite suffit pour l'instant, je la remplacerai par une adresse au nom du domaine une fois le site en ligne."
       - texte: "Activez la double authentification quand Infomaniak vous la propose. Deux minutes, et l'adresse du site est protégée."
 
   - titre: 2. Commander
@@ -77,18 +78,18 @@ intro:
       - texte: "Gardez une carte bancaire valide sur le compte."
       - texte: "Vérifiez que les messages d'Infomaniak arrivent bien dans la boîte du Club, et non dans les indésirables."
 
-  - titre: 5. Nous ajouter à votre compte
+  - titre: 5. M'ajouter à votre compte
     texte: >-
-      Une fois la commande passée, ajoutez-nous à votre compte Infomaniak. Nous
-      faisons pointer le domaine vers le site nous-mêmes : vous n'avez aucun
+      Une fois la commande passée, ajoutez-moi à votre compte Infomaniak. Je
+      fais pointer le domaine vers le site moi-même : vous n'avez aucun
       réglage technique à manipuler.
     liste:
-      - texte: "Dans le Manager, ouvrez la **gestion des utilisateurs**, puis **Ajouter un utilisateur**. Indiquez **ludo@coolbeans.cc** et donnez-lui le rôle **Administrateur**."
+      - texte: "Dans le Manager, ouvrez la **gestion des utilisateurs**, puis **Ajouter un utilisateur**. Indiquez **ludo@coolbeans.cc** et choisissez le rôle **Administrateur**."
       - texte: "Le domaine reste au nom du Club. Un administrateur en règle les paramètres, il ne devient pas propriétaire du nom."
-      - texte: "Écrivez-nous dès que c'est fait, en indiquant le ou les noms achetés."
-      - texte: "Nous mettons à jour les enregistrements DNS. Le changement met de quelques minutes à quarante-huit heures à se répandre sur Internet, puis le site apparaît sur votre adresse."
+      - texte: "Écrivez-moi dès que c'est fait, en indiquant le ou les noms achetés."
+      - texte: "Je mets à jour les enregistrements DNS. Le changement met de quelques minutes à quarante-huit heures à se répandre sur Internet, puis le site apparaît sur votre adresse."
     note: >-
-      Vous pouvez nous retirer cet accès quand vous le voulez, une fois le site
+      Vous pouvez me retirer cet accès quand vous le voulez, une fois le site
       en ligne.
 
 comparatif:
@@ -134,7 +135,7 @@ questions:
   - id: extension
     label: Quelle extension prenez-vous ?
     aide: >-
-      Vous pouvez en cocher deux. Dans ce cas, dites-nous ci-dessous laquelle
+      Vous pouvez en cocher deux. Dans ce cas, dites-moi ci-dessous laquelle
       porte le site, la seconde se contentera de rediriger.
     type: choix
     requis: true
@@ -154,7 +155,7 @@ questions:
     label: Quelle adresse e-mail commune servira à créer le compte ?
     aide: >-
       Elle doit survivre à un changement de bureau. Si elle n'existe pas
-      encore, dites-le-nous, nous verrons ensemble.
+      encore, dites-le-moi, nous verrons ensemble.
     type: texte
     placeholder: contact@… ou bureau@…
   - id: accompagnement
@@ -172,7 +173,7 @@ notes:
   - tone: warning
     texte: >-
       Le nom est déjà pris entre-temps, une extension a disparu de la liste, un
-      champ refuse votre saisie : ne forcez pas, écrivez-nous. Une erreur sur le
+      champ refuse votre saisie : ne forcez pas, écrivez-moi. Une erreur sur le
       titulaire se corrige mal une fois la commande passée.
   - tone: info
     texte: >-
