@@ -9,15 +9,16 @@
 //
 // Règles :
 // - my.*/            → /espace (accueil du portail)
-// - my.*/<x>         → /espace/<x>, sauf /connexion, /mot-de-passe-oublie,
-//   /reinitialiser et /docs/* (servis tels quels : la connexion, la reprise
-//   de mot de passe et la doc font partie du portail mais gardent leurs
+// - my.*/<x>         → /espace/<x>, sauf les chemins publics et /docs/* (servis tels
+//   quels : la connexion, la reprise de mot de passe et la doc font partie
+//   du portail mais gardent leurs
 //   routes propres) et les chemins internes d'Astro (/_actions, /_image…)
 // - my.*/espace/<x>  → 301 vers my.*/<x> (URL canonique sans préfixe)
 // - coolbeans.cc/espace/<x> → 301 vers my.coolbeans.cc/<x>
 // - coolbeans.cc/connexion  → 302 vers my.coolbeans.cc/connexion (une seule
 //   page de connexion, celle du portail)
 import { handle } from "@astrojs/cloudflare/handler";
+import { estServiTelQuel } from "./lib/portail/routes-publiques";
 import { ouvrirLesDues } from "./lib/portail/messagerie/ouvrir";
 import { publierLesDues } from "./lib/portail/messagerie/publier";
 import { synchroniserLivraisons } from "./lib/livraisons/sync";
@@ -54,28 +55,13 @@ export default {
         url.pathname = stripEspace(pathname);
         return Response.redirect(url.href, 301);
       }
-      const passthrough =
-        pathname.startsWith("/_") ||
-        pathname.startsWith("/api/") ||
-        pathname === "/connexion" ||
-        pathname === "/connexion/" ||
-        // Les deux ecrans de reprise de mot de passe. Sans eux ici, la
-        // reecriture les envoie sous /espace/, que la garde protege — donc
-        // retour a /connexion, et le lien du mail ne menait nulle part.
-        // Depuis que /connexion ne vit plus que sur cet hote, c'est forcement
-        // ici que le lien atterrit : le defaut etait certain (2026-09-22).
-        //
-        // Toute page PUBLIQUE ajoutee a src/pages/ doit etre reportee ici.
-        // Rien ne le rappelle : l'oubli ne casse rien en local, ou il n'y a
-        // qu'un hote, et se voit seulement sur my.* — ou la page part sur
-        // /connexion sans un mot.
-        pathname === "/reinitialiser" ||
-        pathname === "/reinitialiser/" ||
-        pathname === "/mot-de-passe-oublie" ||
-        pathname === "/mot-de-passe-oublie/" ||
-        pathname === "/docs" ||
-        pathname.startsWith("/docs/");
-      if (!passthrough) {
+      /* La liste vit dans lib/portail/routes-publiques.ts, avec ses tests.
+         Une page publique oubliée là-bas part sous /espace, que la garde
+         protège : retour à /connexion, et le lien du mail ne mène nulle part.
+         L'oubli ne casse rien en local, où il n'y a qu'un hôte, et ne se voit
+         que sur my.*. C'est pour ça qu'il lui faut un test et non un
+         rappel. */
+      if (!estServiTelQuel(pathname)) {
         url.pathname = pathname === "/" ? "/espace" : `/espace${pathname}`;
         request = new Request(url, request);
       }
