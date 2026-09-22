@@ -1,0 +1,10 @@
+nom: CAFA-TO
+# Client direct, pas de revendeur (spec 2026-08-19 §3.1).
+organisation: coolbeans
+prenom: Susanne
+# Emoji du sélecteur (repris de l'icône de la team Linear) et début de la
+# relation, daté du premier devis.
+emoji: 🇩🇪
+depuis: "2026-08-06"
+# Team « CAFA » du workspace Linear coolbeans-hq.
+linearTeamId: ac9a2d81-6215-4fc3-aa5a-e7ff467fc8ff
