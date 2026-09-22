@@ -1,0 +1,171 @@
+# Suite du cadrage nom-de-domaine-9042, dont Susanne a tranché la première
+# question le 18/09 : « Pour le nom de domaine, je choisirai cafa-toulouse ! ».
+# L'extension reste à elle, d'où le comparatif conservé ici et la question
+# rouverte en bas de page.
+#
+# Ce document n'est pas une V2 du précédent : la collection cadrage ne porte
+# pas `versionDe`, contrairement au devis et au livrable. C'est un second
+# document, qui répond à la question suivante : maintenant, comment l'achète-t-on.
+titre: Prendre le nom de domaine du Club
+objet: Le mode d'emploi pour l'acheter vous-mêmes, en quinze minutes
+date: 2026-09-22
+contact: Susanne
+linear:
+  projet: Site web CAFA
+  affaire: CRM-9
+
+intro:
+  - titre: Pourquoi c'est vous qui l'achetez
+    texte: >-
+      Le domaine est la propriété du Club, pas la nôtre. Il porte l'adresse du
+      site et, plus tard, vos adresses e-mail. Il reste chez vous même si vous
+      changez de prestataire un jour.
+    note: >-
+      L'ancien nom du Club, cafamp.org, a cessé d'exister faute de
+      renouvellement. Ce document existe pour que cela ne se reproduise pas.
+
+  - titre: 1. Créer le compte au nom du Club
+    texte: >-
+      Rendez-vous sur [infomaniak.com](https://www.infomaniak.com) et créez un
+      compte. Un point compte ici plus que tous les autres.
+    liste:
+      - texte: "**Utilisez une adresse e-mail que le Club garde quand le bureau change.** Pas l'adresse d'un cabinet, pas une adresse personnelle."
+      - texte: "Le jour où la présidence change, le nouveau bureau doit pouvoir entrer dans ce compte. Sans cela, le domaine devient inaccessible et le site avec lui."
+      - texte: "Si le Club n'a pas encore d'adresse commune, créez-la d'abord. Une adresse gratuite suffit pour l'instant, nous la remplacerons par une adresse au nom du domaine une fois le site en ligne."
+      - texte: "Activez la double authentification quand Infomaniak vous la propose. Deux minutes, et l'adresse du site est protégée."
+
+  - titre: 2. Commander
+    texte: >-
+      Depuis votre compte, allez dans Domaines, puis Commander un domaine.
+      Tapez `cafa-toulouse` dans la recherche, cochez la ou les extensions
+      retenues, validez le panier.
+    note: >-
+      Infomaniak proposera de l'hébergement et des adresses e-mail au moment de
+      payer. Refusez tout. Le site est déjà hébergé, et nous verrons les
+      adresses e-mail ensemble ensuite. Vous n'achetez que le nom.
+
+  - titre: 3. Renseigner le titulaire
+    texte: >-
+      C'est le passage qui demande de l'attention. Ces informations désignent
+      le propriétaire légal du domaine. Indiquez le Club, jamais une personne.
+    liste:
+      - texte: "**Titulaire** : Club d'Affaires Franco-Allemand Toulouse Occitanie"
+      - texte: "**Type** : association"
+      - texte: "**Adresse** : celle du siège du Club"
+      - texte: "**Contact** : l'adresse e-mail commune du Club"
+    note: >-
+      Sur le .fr, ces informations sont publiques. L'annuaire de l'Afnic publie
+      les coordonnées des personnes morales, et une association y figure en
+      clair. C'est le cas de tous les clubs du réseau. Raison de plus pour
+      donner l'adresse du siège plutôt que celle de quelqu'un.
+
+  - titre: 4. Activer le renouvellement automatique
+    texte: >-
+      Une fois la commande passée, ouvrez la fiche du domaine et vérifiez que
+      le renouvellement automatique est actif.
+    liste:
+      - texte: "Un domaine se loue à l'année. S'il n'est pas renouvelé, il redevient libre et n'importe qui peut le reprendre. Le site s'éteint, et les adresses e-mail avec lui."
+      - texte: "Gardez une carte bancaire valide sur le compte."
+      - texte: "Vérifiez que les messages d'Infomaniak arrivent bien dans la boîte du Club, et non dans les indésirables."
+
+  - titre: 5. Nous prévenir, et la suite
+    texte: >-
+      Écrivez-nous dès que la commande est passée, en indiquant le ou les noms
+      achetés. Voici ce qui se passe ensuite, pour que vous sachiez où nous
+      allons.
+    liste:
+      - texte: "Nous préparons l'hébergement du site sur ce nom."
+      - texte: "Nous vous envoyons **deux adresses de serveurs de noms**, deux lignes de texte à recopier."
+      - texte: "Vous les saisissez chez Infomaniak : Manager, puis Domaines, puis le nom du domaine, puis **Serveurs DNS** dans le menu de gauche. Cochez Serveurs de noms personnalisés, collez les deux adresses, validez en bas de page."
+      - texte: "Le changement met de quelques minutes à quarante-huit heures à se répandre sur Internet. Le site apparaît ensuite sur votre adresse."
+    note: >-
+      Cette dernière étape est la seule manipulation technique du parcours.
+      Nous pouvons la faire avec vous en visio si vous préférez.
+
+comparatif:
+  titre: Quelle extension retenir
+  texte: >-
+    Le nom est tranché, c'est cafa-toulouse. Reste l'extension, et elle vous
+    revient. Les deux sont libres à ce jour, et les deux conviennent.
+  solutions:
+    - nom: .fr
+      resume: L'ancrage français, l'extension la plus courante dans le pays.
+    - nom: .org
+      resume: Le registre associatif, celui du réseau des Clubs.
+      recommandee: true
+    - nom: Les deux
+      resume: L'un porte le site, l'autre y renvoie.
+  criteres:
+    - label: Ce que ça dit
+      valeurs:
+        - "Une structure française."
+        - "Une association, une organisation à but non lucratif."
+        - "Les deux à la fois, et personne d'autre ne peut prendre la variante que vous laissez."
+    - label: Dans le réseau
+      valeurs:
+        - "cafa-bretagne.fr, cafaura.fr"
+        - "reseau-cafa.org, cafa-rso.eu"
+        - "Plusieurs clubs détiennent leurs deux formes."
+    - label: Condition
+      valeurs:
+        - "Être établi dans l'Union européenne, ce qui est votre cas."
+        - "Aucune."
+        - "Celle du .fr, pour la moitié française."
+    - label: Coût annuel indicatif
+      valeurs:
+        - "10 à 15 € TTC"
+        - "15 € TTC environ"
+        - "25 à 30 € TTC"
+  mentionCout: >-
+    Disponibilités vérifiées le 16 septembre 2026, à titre indicatif : elles
+    peuvent changer d'ici votre commande. Ces montants sont ceux du
+    renouvellement annuel, à votre charge directe chez Infomaniak.
+
+questions:
+  - id: extension
+    label: Quelle extension prenez-vous ?
+    aide: >-
+      Vous pouvez en cocher deux. Dans ce cas, dites-nous ci-dessous laquelle
+      porte le site, la seconde se contentera de rediriger.
+    type: choix
+    requis: true
+    multiple: true
+    options:
+      - valeur: fr
+        label: cafa-toulouse.fr
+        aide: L'extension la plus courante pour une association française.
+      - valeur: org
+        label: cafa-toulouse.org
+        aide: Le registre associatif, celui du réseau des Clubs.
+  - id: principale
+    label: Si vous prenez les deux, laquelle porte le site ?
+    type: texte
+    placeholder: .org par exemple
+  - id: courriel-club
+    label: Quelle adresse e-mail commune servira à créer le compte ?
+    aide: >-
+      Elle doit survivre à un changement de bureau. Si elle n'existe pas
+      encore, dites-le nous, nous verrons ensemble.
+    type: texte
+    placeholder: contact@… ou bureau@…
+  - id: accompagnement
+    label: Voulez-vous que nous fassions la commande ensemble, en visio ?
+    type: choix
+    options:
+      - valeur: seule
+        label: Non, je m'en occupe avec ce document
+      - valeur: visio
+        label: Oui, prenons trente minutes ensemble
+      - valeur: dns
+        label: Je commande seule, mais accompagnez-moi sur l'étape 5
+
+notes:
+  - tone: warning
+    texte: >-
+      Le nom est déjà pris entre-temps, une extension a disparu de la liste, un
+      champ refuse votre saisie : ne forcez pas, écrivez-nous. Une erreur sur le
+      titulaire se corrige mal une fois la commande passée.
+  - tone: info
+    texte: >-
+      Le site continue d'avancer pendant ce temps. Il tourne aujourd'hui sur une
+      adresse de démonstration, et bascule sur votre domaine à la mise en ligne.

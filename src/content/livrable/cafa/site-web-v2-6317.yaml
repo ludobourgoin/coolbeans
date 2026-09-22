@@ -1,0 +1,128 @@
+# Ronde de relecture 1 du site CAFA-TO, composée le 2026-09-22 après les
+# retours de Susanne et d'Anja du 18/09. Se déclare par `versionDe` et partage
+# l'URL de la V1 : la cliente retrouve les deux versions en onglets au même
+# lien, et peut comparer.
+titre: Vos retours sont intégrés
+objet: Ce que vous avez demandé le 18 septembre, et ce que j'en ai fait. Les deux versions restent côte à côte, pour comparer.
+date: 2026-09-22
+contact: Susanne
+version: 2
+versionDe: cafa/site-web-8791
+linear:
+  projet: Site web CAFA
+  affaire: CRM-9
+
+site:
+  url: https://revision-1-cafa.ludo-c97.workers.dev
+  label: Ouvrir la nouvelle version
+
+apercu:
+  bureau: /livrable/cafa/accueil-v2-macbook.png
+  mobile: /livrable/cafa/accueil-v2-iphone.png
+  titre: Accueil · Club d'Affaires Franco-Allemand Toulouse Occitanie
+  legende: La page d'accueil après vos retours, sur ordinateur et sur téléphone.
+
+sections:
+  - titre: Comparer les deux versions
+    texte: >-
+      Chaque relecture a désormais sa propre adresse. Elles ne bougent plus,
+      vous pouvez y revenir quand vous voulez et nous dire si vous préférez
+      l'état précédent.
+    liste:
+      - texte: "**La version du 17 septembre** reste consultable, figée, sur [livraison-cafa.ludo-c97.workers.dev](https://livraison-cafa.ludo-c97.workers.dev). Ce que vous publierez désormais ne la modifiera plus."
+      - texte: "**La version d'aujourd'hui** est sur [revision-1-cafa.ludo-c97.workers.dev](https://revision-1-cafa.ludo-c97.workers.dev). C'est celle que je vous demande de relire."
+      - texte: "**Revenir en arrière est possible à tout moment**, sur n'importe lequel des points ci-dessous. Dites-le simplement."
+    note: >-
+      L'espace d'administration n'existe que sur la version courante. Depuis la
+      version figée, il n'apparaît pas : une publication y serait invisible.
+
+  - titre: L'écriture, comme Anja l'a proposée
+    texte: >-
+      Sa planche est adoptée telle quelle. Deux caractères, et une hiérarchie
+      qui se fait à la graisse plutôt qu'au mélange de familles.
+    liste:
+      - texte: "**Clash Grotesk** porte les titres et le texte. C'est le caractère de votre planche."
+      - texte: "**Tabular**, la machine à écrire, porte le nom allemand sous le nom français, les petites étiquettes comme « Prochain rendez-vous », et les liens de service."
+      - texte: "**L'italique disparaît.** Clash Grotesk n'en a pas, et Anja ne l'utilisait pas : le nom dans l'autre langue passe en Tabular, exactement comme sur sa planche."
+      - texte: "Les deux caractères sont hébergés sur le site, et non appelés chez un tiers. Un site consulté depuis l'Allemagne n'envoie l'adresse de ses visiteurs à personne."
+
+  - titre: Les photos
+    liste:
+      - texte: "**L'accueil prend la photo n° 2**, le Pont Neuf au crépuscule, celle que vous avez choisie toutes les deux. Son auteur est crédité sous l'image, sa licence l'exige."
+      - texte: "**Votre portrait** vient de la manifestation à TSE, comme vous le demandiez. Recadré pour tenir la même échelle que celui de Karsten."
+      - texte: "**La photo de la mairie reste**, mais sa légende ne dit plus que c'est vous. Elle disait « Susanne Salerno, présidente, à la Mairie de Toulouse ». Elle dit maintenant « Rencontre à la Mairie de Toulouse »."
+      - texte: "**La vue de TSE ouvre la galerie** de Qui sommes-nous, votre nom et votre fonction lisibles à l'écran derrière vous."
+      - texte: "**Le kakemono d'Anja** entre dans cette galerie, crédité Boox Design."
+      - texte: "**L'affiche du 3 juin** illustre enfin l'actualité qui lui correspond, et **la bannière du congrès** celle de Montpellier."
+
+  - titre: Les dates des anciens articles
+    texte: >-
+      Vous aviez raison, et le problème allait plus loin que vous ne le pensiez.
+    liste:
+      - texte: "Vous aviez repéré huit articles au 27.07.2026. En vérifiant, **32 des 38 articles** portaient la date à laquelle vous les aviez saisis, et non celle de la manifestation."
+      - texte: "Les vraies dates étaient dans vos titres, et parfois dans le texte. Les 32 sont corrigées."
+      - texte: "**Trois articles résistent**, faute de date écrite nulle part. Je vous les liste plus bas."
+
+  - titre: Le reste
+    liste:
+      - texte: "**La Région Occitanie** rejoint les soutiens institutionnels, avec son logo officiel en rouge."
+      - texte: "**Le lien LinkedIn** est en place sur les membres du bureau. Vous saisissez l'adresse de votre profil vous-même, et le lien apparaît sous votre fonction. Karsten aussi, s'il le souhaite."
+      - texte: "**Le nom de domaine** est retenu : cafa-toulouse. Le document qui vous permet de l'acheter vous-même vous arrive séparément."
+
+parcoursTitre: Ce qui a changé, page par page
+parcoursReplie: true
+parcours:
+  - page: Accueil
+    url: https://revision-1-cafa.ludo-c97.workers.dev/
+    texte: Nouvelle écriture, nouvelle photo, la Région dans les partenaires.
+  - page: Qui sommes-nous
+    url: https://revision-1-cafa.ludo-c97.workers.dev/qui-sommes-nous/
+    texte: Votre portrait, la galerie réordonnée, la légende de la mairie corrigée, le kakemono d'Anja.
+  - page: Actualités
+    url: https://revision-1-cafa.ludo-c97.workers.dev/actualites/
+    texte: Les 32 dates corrigées, et l'affiche du 3 juin sur son article.
+  - page: Événements à venir
+    url: https://revision-1-cafa.ludo-c97.workers.dev/evenements/
+    texte: La bannière du congrès de Montpellier.
+  - page: Partenaires
+    url: https://revision-1-cafa.ludo-c97.workers.dev/partenaires/
+    texte: La Région Occitanie, premier soutien institutionnel.
+  - page: Version allemande
+    url: https://revision-1-cafa.ludo-c97.workers.dev/de/
+    texte: Les mêmes changements, et le nom français en écho sous le nom allemand.
+
+aVerifierTitre: Ce que je vous demande de regarder
+aVerifier:
+  - "**L'écriture dans son ensemble.** C'est le changement le plus visible, et celui sur lequel un retour en arrière est le plus simple."
+  - "**Votre portrait**, qui est un recadrage d'une photo prise de loin. Si le rendu ne vous plaît pas, envoyez-m'en une autre."
+  - "**Les dates des actualités**, en parcourant la liste. Certaines viennent de vos titres, d'autres du corps de vos articles."
+  - "**Trois articles gardent une date douteuse**, faute de date écrite quelque part : « Le tournant énergétique en Allemagne », « L'Allemagne, la France et l'Europe après les élections », « Conseil d'Administration et Assemblée Générale ». Vous seule pouvez les dater."
+  - "**La galerie de Qui sommes-nous.** Elle compte cinq images aujourd'hui. Dites-moi celles que vous gardez, et celles que vous remplacez."
+  - "**Le kakemono dans cette galerie.** C'est une image de communication, pas une photo de rencontre. Si elle jure, elle sort."
+
+suiteTitre: La suite
+suite:
+  - texte: Me dire si l'écriture vous convient, ou si nous revenons à la précédente.
+    owner: client
+  - texte: "Acheter le nom de domaine, avec le document que je vous envoie à part. L'extension, .fr ou .org, vous revient."
+    owner: client
+  - texte: Créer le compte Resend, qui fera partir les formulaires, et m'y ajouter.
+    owner: client
+  - texte: "Me transmettre les retours de Karsten, sa photo en bonne définition, et son profil LinkedIn s'il le souhaite."
+    owner: client
+  - texte: Dater les trois articles qui résistent.
+    owner: client
+  - texte: Brancher les formulaires et la mesure de fréquentation, puis mettre le site en ligne sur votre domaine.
+    owner: coolbeans
+  - texte: Vous former à la mise à jour du site, et vous remettre la documentation.
+    owner: coolbeans
+
+notes:
+  - tone: info
+    texte: >-
+      Les formulaires ne partent toujours pas : ils attendent le compte Resend.
+      Si vous les testez, vous verrez un message d'erreur, c'est attendu.
+  - tone: info
+    texte: >-
+      Ce document se met à jour. Chaque relecture ajoute un onglet ici, au même
+      lien, et les précédentes restent consultables.
