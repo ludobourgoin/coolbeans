@@ -88,6 +88,18 @@ describe("hote portail", () => {
     expect(recu()).toBe("/espace/devis");
   });
 
+  it("laisse passer la page de reprise de mot de passe", async () => {
+    // Elle est publique par nature : qui a perdu son mot de passe n'a pas de
+    // session. Reecrite en /espace/reinitialiser, elle tombait sous la garde
+    // et renvoyait sur /connexion — le lien du mail ne menait nulle part.
+    await appel("https://my.coolbeans.cc/reinitialiser?token=abc");
+    expect(recu()).toBe("/reinitialiser");
+    await appel("https://my.coolbeans.cc/reinitialiser/");
+    expect(recu()).toBe("/reinitialiser/");
+    await appel("https://my.coolbeans.cc/mot-de-passe-oublie");
+    expect(recu()).toBe("/mot-de-passe-oublie");
+  });
+
   it("garde connexion et docs a leur adresse propre", async () => {
     await appel("https://my.coolbeans.cc/connexion");
     expect(recu()).toBe("/connexion");
