@@ -17,12 +17,21 @@ linear:
 intro:
   - titre: Pourquoi c'est vous qui l'achetez
     texte: >-
-      Le domaine est la propriété du Club, pas la nôtre. Il porte l'adresse du
+      Le domaine est la propriété du Club, pas la mienne. Il porte l'adresse du
       site et, plus tard, vos adresses e-mail. Il reste chez vous même si vous
       changez de prestataire un jour.
     note: >-
       L'ancien nom du Club, cafamp.org, a cessé d'exister faute de
       renouvellement. Ce document existe pour que cela ne se reproduise pas.
+
+  - titre: Pourquoi Infomaniak
+    texte: >-
+      Je vous le conseille pour trois raisons. Rien ne vous oblige à me suivre,
+      mais peu d'hébergeurs les réunissent toutes les trois.
+    liste:
+      - texte: "**Une plateforme simple, stable, fiable.** Elle est suisse, et elle tient dans la durée. Pour un compte que le Club gardera des années, ça pèse plus que quelques euros d'écart."
+      - texte: "**Le .fr y est possible.** Beaucoup d'hébergeurs ne l'enregistrent pas, l'Afnic posant ses conditions. Si vous retenez cette extension, vous n'aurez pas à changer de prestataire en route."
+      - texte: "**Une adresse e-mail à votre nom de domaine est comprise**, sans supplément. C'est exactement l'adresse commune dont le Club a besoin, celle qui survit aux changements de bureau."
 
   - titre: 1. Créer le compte au nom du Club
     texte: >-
@@ -31,7 +40,7 @@ intro:
     liste:
       - texte: "**Utilisez une adresse e-mail que le Club garde quand le bureau change.** Pas l'adresse d'un cabinet, pas une adresse personnelle."
       - texte: "Le jour où la présidence change, le nouveau bureau doit pouvoir entrer dans ce compte. Sans cela, le domaine devient inaccessible et le site avec lui."
-      - texte: "Si le Club n'a pas encore d'adresse commune, créez-la d'abord. Une adresse gratuite suffit pour l'instant, nous la remplacerons par une adresse au nom du domaine une fois le site en ligne."
+      - texte: "Si le Club n'a pas encore d'adresse commune, créez-la d'abord. Une adresse gratuite suffit pour l'instant, je la remplacerai par une adresse au nom du domaine une fois le site en ligne."
       - texte: "Activez la double authentification quand Infomaniak vous la propose. Deux minutes, et l'adresse du site est protégée."
 
   - titre: 2. Commander
@@ -40,9 +49,10 @@ intro:
       Tapez `cafa-toulouse` dans la recherche, cochez la ou les extensions
       retenues, validez le panier.
     note: >-
-      Infomaniak proposera de l'hébergement et des adresses e-mail au moment de
-      payer. Refusez tout. Le site est déjà hébergé, et nous verrons les
-      adresses e-mail ensemble ensuite. Vous n'achetez que le nom.
+      Infomaniak proposera de l'hébergement et des offres mail payantes au
+      moment de payer. Refusez : le site est déjà hébergé, et l'adresse e-mail
+      comprise avec le domaine ne coûte rien. Nous la réglerons ensemble une
+      fois le site en ligne. Vous n'achetez que le nom.
 
   - titre: 3. Renseigner le titulaire
     texte: >-
@@ -68,19 +78,19 @@ intro:
       - texte: "Gardez une carte bancaire valide sur le compte."
       - texte: "Vérifiez que les messages d'Infomaniak arrivent bien dans la boîte du Club, et non dans les indésirables."
 
-  - titre: 5. Nous prévenir, et la suite
+  - titre: 5. M'ajouter à votre compte
     texte: >-
-      Écrivez-nous dès que la commande est passée, en indiquant le ou les noms
-      achetés. Voici ce qui se passe ensuite, pour que vous sachiez où nous
-      allons.
+      Une fois la commande passée, ajoutez-moi à votre compte Infomaniak. Je
+      fais pointer le domaine vers le site moi-même : vous n'avez aucun
+      réglage technique à manipuler.
     liste:
-      - texte: "Nous préparons l'hébergement du site sur ce nom."
-      - texte: "Nous vous envoyons **deux adresses de serveurs de noms**, deux lignes de texte à recopier."
-      - texte: "Vous les saisissez chez Infomaniak : Manager, puis Domaines, puis le nom du domaine, puis **Serveurs DNS** dans le menu de gauche. Cochez Serveurs de noms personnalisés, collez les deux adresses, validez en bas de page."
-      - texte: "Le changement met de quelques minutes à quarante-huit heures à se répandre sur Internet. Le site apparaît ensuite sur votre adresse."
+      - texte: "Dans le Manager, ouvrez la **gestion des utilisateurs**, puis **Ajouter un utilisateur**. Indiquez **ludo@coolbeans.cc** et choisissez le rôle **Administrateur**."
+      - texte: "Le domaine reste au nom du Club. Un administrateur en règle les paramètres, il ne devient pas propriétaire du nom."
+      - texte: "Écrivez-moi dès que c'est fait, en indiquant le ou les noms achetés."
+      - texte: "Je mets à jour les enregistrements DNS. Le changement met de quelques minutes à quarante-huit heures à se répandre sur Internet, puis le site apparaît sur votre adresse."
     note: >-
-      Cette dernière étape est la seule manipulation technique du parcours.
-      Nous pouvons la faire avec vous en visio si vous préférez.
+      Vous pouvez me retirer cet accès quand vous le voulez, une fois le site
+      en ligne.
 
 comparatif:
   titre: Quelle extension retenir
@@ -125,7 +135,7 @@ questions:
   - id: extension
     label: Quelle extension prenez-vous ?
     aide: >-
-      Vous pouvez en cocher deux. Dans ce cas, dites-nous ci-dessous laquelle
+      Vous pouvez en cocher deux. Dans ce cas, dites-moi ci-dessous laquelle
       porte le site, la seconde se contentera de rediriger.
     type: choix
     requis: true
@@ -145,7 +155,7 @@ questions:
     label: Quelle adresse e-mail commune servira à créer le compte ?
     aide: >-
       Elle doit survivre à un changement de bureau. Si elle n'existe pas
-      encore, dites-le-nous, nous verrons ensemble.
+      encore, dites-le-moi, nous verrons ensemble.
     type: texte
     placeholder: contact@… ou bureau@…
   - id: accompagnement
@@ -157,13 +167,13 @@ questions:
       - valeur: visio
         label: Oui, prenons trente minutes ensemble
       - valeur: dns
-        label: Je commande seule, mais accompagnez-moi sur l'étape 5
+        label: Je commande seule, mais aidez-moi à vous ajouter au compte
 
 notes:
   - tone: warning
     texte: >-
       Le nom est déjà pris entre-temps, une extension a disparu de la liste, un
-      champ refuse votre saisie : ne forcez pas, écrivez-nous. Une erreur sur le
+      champ refuse votre saisie : ne forcez pas, écrivez-moi. Une erreur sur le
       titulaire se corrige mal une fois la commande passée.
   - tone: info
     texte: >-
