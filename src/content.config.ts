@@ -184,6 +184,10 @@ const livrable = defineCollection({
     tutoiement: z.boolean().default(false),
     version: z.number().int().min(1).default(1),
     versionDe: z.string().optional(),
+    /* Brouillon : le document existe dans le dépôt mais ne sort pas du build.
+       Visible en développement local seulement, pour la relecture. Premier
+       pas vers le champ `statut` de la spec du 2026-09-22. */
+    brouillon: z.boolean().default(false),
     envoi: z.object({ date: z.coerce.date(), destinataire: z.string() }).optional(),
     linear: z.object({ projet: z.string().optional(), affaire: z.string().optional() }).optional(),
     // Formulaire masqué une fois le livrable validé : la page devient une trace.
