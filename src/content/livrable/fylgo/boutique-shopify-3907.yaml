@@ -119,24 +119,24 @@ sections:
       lisent.
     liste:
       - texte: "**Sur ordinateur, la boutique est rapide.** Rien à signaler de ce côté."
-      - texte: "**Sur téléphone, les pages sont plus lourdes qu'elles ne devraient l'être** : 2,3 Mo pour l'accueil, là où une page confortable sur un réseau mobile en fait moins d'un. La cause n'est ni votre catalogue ni vos visuels, elle est dans le thème."
+      - texte: "**Sur téléphone, les pages sont plus lourdes qu'elles ne devraient l'être** : 2,3 Mo pour l'accueil, là où une page confortable en fait moins d'un. La cause n'est ni votre catalogue ni vos visuels : le thème Flow annonce chaque image à pleine largeur d'écran, pictogrammes compris."
         tooltip: >-
-          Le poids compte surtout sur téléphone, parce que Google classe les
-          sites d'après leur version mobile. Votre catalogue d'images, lui,
-          est correct : Shopify convertit déjà tout seul chaque visuel au
-          format le plus léger que le navigateur sait lire.
-      - texte: "**Le thème Flow annonce au navigateur que chaque image occupe toute la largeur de l'écran**, y compris les pictogrammes affichés en vignette. Un picto large de cent pixels arrive donc en 1445, soit 37 Ko au lieu de 3. Ce n'est pas un réglage cassé, c'est le comportement livré avec le thème, que personne n'a ajusté à votre mise en page."
-      - texte: "**J'ai déjà retiré 386 Ko le 21 septembre**, sur les images de fond et sur la grande image d'accueil. Il reste 494 Ko à récupérer, répartis sur vingt-huit images."
-      - texte: "**Je passe les sections en revue une à une**, sur les heures de support comprises dans votre devis. Ce chantier ne faisait pas partie de la prestation : je vous l'offre."
+          Un picto affiché à cent pixels de large arrive donc en 1445, soit
+          37 Ko au lieu de 3. Ce n'est pas un réglage cassé, c'est le
+          comportement livré avec le thème, que personne n'a ajusté à votre
+          mise en page. Le poids compte surtout sur téléphone, parce que
+          Google classe les sites d'après leur version mobile. Le format de
+          vos images, lui, est correct : Shopify convertit déjà tout seul au
+          plus léger que le navigateur sait lire.
+      - texte: "**J'en ai retiré 386 Ko le 21 septembre, il en reste 494.** Je reprends les sections une à une, sur les heures de support comprises dans votre devis. Ce chantier ne faisait pas partie de la prestation : je vous l'offre."
       - texte: "**Neuf pages n'avaient pas de description pour les moteurs de recherche. C'est corrigé.** Vos quatre collections et vos cinq pages de contenu n'en avaient aucune, et Google composait donc lui-même l'extrait affiché sous le titre, en piochant une phrase au hasard. Les huit textes sont écrits et en ligne, et le score de référencement des collections est passé de 92 à 100 sur 100."
     note: >-
       Vous pouvez mesurer vous-même :
       [l'outil de Google](https://pagespeed.web.dev/analysis?url=https%3A%2F%2Ffylgodrinks.com%2F).
-      Un mot sur la méthode, parce qu'il évite un malentendu : sur un réseau
-      simulé, ces mesures varient beaucoup d'une passe à l'autre. J'ai relevé
-      jusqu'à trois secondes d'écart entre deux mesures du même code. C'est
-      pourquoi je raisonne en poids de page, qui est stable à trois pour cent
-      près, plutôt qu'en note sur cent.
+      Un point de méthode : ces mesures varient beaucoup d'une passe à
+      l'autre, jusqu'à trois secondes d'écart sur le même code. Je raisonne
+      donc en poids de page, stable à trois pour cent près, et non en note
+      sur cent.
 
   - titre: Les textes écrits pour Google
     texte: >-
