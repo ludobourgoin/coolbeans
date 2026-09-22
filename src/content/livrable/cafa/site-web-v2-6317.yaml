@@ -8,7 +8,6 @@ date: 2026-09-22
 contact: Susanne
 version: 2
 versionDe: cafa/site-web-8791
-brouillon: true
 linear:
   projet: Site web CAFA
   affaire: CRM-9
@@ -53,7 +52,7 @@ sections:
       - texte: "**Votre portrait** vient de la rencontre à TSE, comme vous le demandiez. Recadré pour tenir la même échelle que celui de Karsten."
       - texte: "**La photo de la mairie reste**, mais sa légende ne dit plus que c'est vous. Elle disait « Susanne Salerno, présidente, à la Mairie de Toulouse ». Elle dit maintenant « Rencontre à la Mairie de Toulouse »."
       - texte: "**La vue de TSE ouvre la galerie** de Qui sommes-nous, votre nom et votre fonction lisibles à l'écran derrière vous."
-      - texte: "**Le kakemono d'Anja** entre dans cette galerie, crédité Boox Design."
+      - texte: "**Le kakemono d'Anja** est ailleurs, comme elle le demandait : sur Devenir membre, en grand, entre le texte et la demande d'adhésion. Il est crédité à son nom."
       - texte: "**L'affiche du 3 juin** illustre enfin l'actualité qui lui correspond, et **la bannière du congrès** celle de Montpellier."
 
   - titre: Les dates des anciens articles
@@ -67,7 +66,7 @@ sections:
   - titre: Le reste
     liste:
       - texte: "**La Région Occitanie** rejoint les soutiens institutionnels, avec son logo officiel en rouge."
-      - texte: "**Le lien LinkedIn** est en place sur les membres du bureau. Vous saisissez l'adresse de votre profil vous-même, et le lien apparaît sous votre fonction. Karsten aussi, s'il le souhaite."
+      - texte: "**Le lien LinkedIn** est en place sous votre fonction et sous celle de Karsten. Un lien sobre, rien de plus. Dites-moi si Karsten préfère que le sien n'y figure pas."
       - texte: "**Le nom de domaine** est retenu : cafa-toulouse. Le document pour l'acheter vous-même vous arrive séparément."
 
 parcoursTitre: Ce qui a changé, page par page
@@ -78,7 +77,10 @@ parcours:
     texte: Nouvelle écriture, nouvelle photo, la Région dans les partenaires.
   - page: Qui sommes-nous
     url: https://revision-1-cafa.ludo-c97.workers.dev/qui-sommes-nous/
-    texte: Votre portrait, la galerie réordonnée, la légende de la mairie corrigée, le kakemono d'Anja.
+    texte: Votre portrait, la galerie réordonnée, la légende de la mairie corrigée, vos deux profils LinkedIn sous le bureau.
+  - page: Devenir membre
+    url: https://revision-1-cafa.ludo-c97.workers.dev/devenir-membre/
+    texte: Le kakemono d'Anja, en grand, entre le texte et la demande d'adhésion.
   - page: Actualités
     url: https://revision-1-cafa.ludo-c97.workers.dev/actualites/
     texte: Les 32 dates corrigées, et l'affiche du 3 juin sur son article.
@@ -98,8 +100,8 @@ aVerifier:
   - "**Votre portrait**, qui est un recadrage d'une photo prise de loin. Si le rendu ne vous plaît pas, envoyez-m'en une autre."
   - "**Les dates des actualités**, en parcourant la liste. Certaines viennent de vos titres, d'autres du corps de vos articles."
   - "**Trois articles gardent une date douteuse**, faute de date écrite quelque part : « Le tournant énergétique en Allemagne », « L'Allemagne, la France et l'Europe après les élections », « Conseil d'Administration et Assemblée Générale ». Vous seule pouvez les dater."
-  - "**La galerie de Qui sommes-nous.** Elle compte cinq images aujourd'hui. Dites-moi celles que vous gardez, et celles que vous remplacez."
-  - "**Le kakemono dans cette galerie.** C'est une image de communication, pas une photo de rencontre. Si elle jure, elle sort."
+  - "**La galerie de Qui sommes-nous.** Elle compte quatre images aujourd'hui. Dites-moi celles que vous gardez, et celles que vous remplacez."
+  - "**Le kakemono sur Devenir membre.** Il porte la phrase du Club, « Au cœur du partenariat franco-allemand, pour l'Europe ». Dites-moi si cette place vous convient."
 
 suiteTitre: La suite
 suite:
@@ -109,7 +111,7 @@ suite:
     owner: client
   - texte: Créer le compte Resend, qui fera partir les formulaires, et m'y ajouter.
     owner: client
-  - texte: "Me transmettre les retours de Karsten, sa photo en bonne définition, et son profil LinkedIn s'il le souhaite."
+  - texte: "Me transmettre les retours de Karsten et sa photo en bonne définition."
     owner: client
   - texte: Dater les trois articles qui résistent.
     owner: client
