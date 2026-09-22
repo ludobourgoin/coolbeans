@@ -3,8 +3,6 @@ import {
   basculerVisibilite,
   documentsDuClientAdmin,
   documentsVisibles,
-  insererSiAbsente,
-  type DocumentRow,
 } from "./store";
 
 /** Faux D1 : rejoue des résultats fixés et capture sql + bindings. */
@@ -27,21 +25,6 @@ function fakeDb(results: unknown[] = [], changes = 1) {
   return { db, calls };
 }
 
-const ligne: DocumentRow = {
-  id: "d1",
-  client: "amusoire",
-  titre: "Proposition",
-  source: "page",
-  r2_key: null,
-  url: "https://coolbeans.cc/devis/amusoire/refonte-4325",
-  mime: null,
-  taille: null,
-  date_doc: "2026-09-01",
-  visible: 0,
-  cree_le: "2026-09-01T10:00:00.000Z",
-  cle_source: "devis/amusoire/refonte-4325",
-};
-
 /* LE TEST QUI COMPTE : une ligne masquée ne doit jamais partir vers le
    navigateur d'un client. Le filtre vit dans le SQL, pas dans le rendu. */
 test("la vue client filtre les lignes masquées en SQL", async () => {
@@ -56,18 +39,6 @@ test("la vue admin ne filtre pas la visibilité", async () => {
   await documentsDuClientAdmin(db, "amusoire");
   expect(calls[0].sql).toMatch(/WHERE client = \?/);
   expect(calls[0].sql).not.toMatch(/visible = 1/);
-});
-
-test("l'insertion des pages du repo ne crée pas de doublon", async () => {
-  // Le prédicat de l'index partiel doit être répété dans la clause ON
-  // CONFLICT, sinon SQLite ne reconnaît pas la contrainte et lève. Ce que ce
-  // test ne peut pas voir, faute de vraie base : store.sqlite.test.ts le
-  // rejoue contre SQLite.
-  const { db, calls } = fakeDb();
-  await insererSiAbsente(db, ligne);
-  expect(calls[0].sql).toMatch(
-    /ON CONFLICT \(client, cle_source\) WHERE cle_source IS NOT NULL DO NOTHING/,
-  );
 });
 
 test("la bascule est bornée au client courant, pas au seul identifiant", async () => {

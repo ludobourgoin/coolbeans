@@ -3,18 +3,21 @@
  * Les autres tests du store comparent des chaînes : ils vérifient qu'on a
  * écrit la bonne requête, pas qu'elle s'exécute. Cette distinction a coûté un
  * bug qui passait 296 tests au vert tout en faisant répondre 500 à la vue
- * admin, sur tous les clients : la clause ON CONFLICT ne répétait pas le
- * prédicat de l'index unique PARTIEL, et SQLite refusait la requête.
+ * admin, sur tous les clients. On rejoue donc la migration telle qu'elle est
+ * partie en production, contre SQLite, à travers une façade minimale qui imite
+ * l'API D1 utilisée ici.
  *
- * On rejoue donc la migration telle qu'elle partira en production, contre
- * SQLite, à travers une façade minimale qui imite l'API D1 utilisée ici.
+ * Le cas d'origine visait `insererSiAbsente`, retirée le 2026-09-22 avec
+ * l'enregistrement automatique des pages du repo. Ce qui reste à couvrir est
+ * l'insertion d'un fichier déposé : c'est elle qui doit tenir contre la vraie
+ * table, contrainte CHECK et valeurs par défaut comprises.
  */
 
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { expect, test } from "vitest";
-import { insererSiAbsente, type DocumentRow } from "./store";
+import { creerDocument, type DocumentRow } from "./store";
 
 const MIGRATION = fileURLToPath(
   new URL("../../../../migrations/0008_documents.sql", import.meta.url),
@@ -48,60 +51,39 @@ function ligne(surcharge: Partial<DocumentRow> = {}): DocumentRow {
   return {
     id: crypto.randomUUID(),
     client: "amusoire",
-    titre: "Proposition",
-    source: "page",
-    r2_key: null,
-    url: "https://coolbeans.cc/devis/amusoire/refonte-4325",
-    mime: null,
-    taille: null,
+    titre: "facture-2026-09.pdf",
+    source: "fichier",
+    r2_key: "documents/amusoire/abc.pdf",
+    url: null,
+    mime: "application/pdf",
+    taille: 12_345,
     date_doc: "2026-09-01",
     visible: 0,
     cree_le: "2026-09-22T09:00:00.000Z",
-    cle_source: "devis/amusoire/refonte-4325",
+    cle_source: null,
     ...surcharge,
   };
 }
 
-test("la migration s'applique et l'insertion d'une page passe", async () => {
+test("la migration s'applique et le dépôt d'un fichier passe", async () => {
   const { db, compter } = dbSqlite();
-  await insererSiAbsente(db, ligne());
+  await creerDocument(db, ligne());
   expect(compter()).toBe(1);
 });
 
-test("deux passages consécutifs ne créent qu'une ligne", async () => {
-  // Spec §11. C'est l'invariant de l'enregistrement automatique : la vue admin
-  // le rejoue à chaque rendu.
+test("le même fichier déposé deux fois fait bien deux documents", async () => {
+  // L'index unique de la table est PARTIEL, sur les seules lignes qui portent
+  // une clé de source. Un fichier n'en a pas : rien ne le déduplique, et c'est
+  // voulu.
   const { db, compter } = dbSqlite();
-  await insererSiAbsente(db, ligne());
-  await insererSiAbsente(db, ligne());
-  await insererSiAbsente(db, ligne());
-  expect(compter()).toBe(1);
-});
-
-test("la même clé de source chez deux clients fait bien deux lignes", () => {
-  // L'index est unique sur le COUPLE (client, cle_source) : deux workspaces
-  // ne se marchent pas dessus.
-  const { db, compter } = dbSqlite();
-  return Promise.all([
-    insererSiAbsente(db, ligne({ client: "amusoire" })),
-    insererSiAbsente(db, ligne({ client: "oide" })),
-  ]).then(() => {
-    expect(compter()).toBe(2);
-  });
-});
-
-test("les lignes sans clé de source ne se bloquent pas entre elles", async () => {
-  // L'index est partiel : un fichier déposé deux fois reste deux documents,
-  // c'est voulu.
-  const { db, compter } = dbSqlite();
-  await insererSiAbsente(db, ligne({ source: "fichier", cle_source: null, url: null }));
-  await insererSiAbsente(db, ligne({ source: "fichier", cle_source: null, url: null }));
+  await creerDocument(db, ligne());
+  await creerDocument(db, ligne({ id: "autre" }));
   expect(compter()).toBe(2);
 });
 
 test("un document naît masqué", async () => {
   const { db } = dbSqlite();
-  await insererSiAbsente(db, ligne());
+  await creerDocument(db, ligne());
   // `visible` est posé à 0 par l'appelant ET par le DEFAULT de la table.
   expect(ligne().visible).toBe(0);
 });

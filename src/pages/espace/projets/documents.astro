@@ -5,8 +5,12 @@
 // requête SQL, jamais dans le rendu : une ligne masquée ne doit pas atteindre
 // le navigateur d'un client, même cachée en CSS.
 //
-// L'enregistrement automatique des pages du repo ne tourne QUE en vue admin.
-// La vue client lit, elle n'écrit pas.
+// Cette page ne liste plus que des FICHIERS déposés. L'enregistrement
+// automatique des propositions et des cadrages a été retiré le 2026-09-22 :
+// ces documents suivent le cycle de vie du projet, du cadrage au suivi, et se
+// listeront depuis les collections de contenu (spec
+// 2026-09-22-documents-client-entete-design.md). Les devis et les factures
+// Tiime, eux, rejoindront une page Facturation (COO-105).
 export const prerender = false;
 
 import { env } from "cloudflare:workers";
@@ -16,37 +20,25 @@ import ListeDocuments from "../../../components/portail/ListeDocuments";
 import { getPortalContext } from "../../../lib/portail/context";
 import { isAdmin } from "../../../lib/portail/metadata";
 import { documentsDuClientAdmin, documentsVisibles } from "../../../lib/portail/documents/store";
-import { orphelines, pagesDuRepo, synchroniserPagesDuRepo } from "../../../lib/portail/documents/sync";
 
 const { meta, client } = await getPortalContext(Astro);
 const admin = isAdmin(meta);
 Astro.response.headers.set("Cache-Control", "no-store");
 
 let lignes: Awaited<ReturnType<typeof documentsDuClientAdmin>> = [];
-let mortes = new Set<string>();
 
 if (client) {
-  if (admin) {
-    await synchroniserPagesDuRepo(env.PORTAL_DB, client.slug);
-    lignes = await documentsDuClientAdmin(env.PORTAL_DB, client.slug);
-    mortes = orphelines(
-      lignes.map((l) => l.cle_source),
-      await pagesDuRepo(client.slug),
-    );
-  } else {
-    lignes = await documentsVisibles(env.PORTAL_DB, client.slug);
-  }
+  lignes = admin
+    ? await documentsDuClientAdmin(env.PORTAL_DB, client.slug)
+    : await documentsVisibles(env.PORTAL_DB, client.slug);
 }
 
 const vues = lignes.map((l) => ({
   id: l.id,
   titre: l.titre,
-  source: l.source,
-  url: l.url,
   mime: l.mime,
   date_doc: l.date_doc,
   visible: l.visible === 1,
-  orpheline: Boolean(l.cle_source && mortes.has(l.cle_source)),
 }));
 
 const aujourdhui = new Date().toISOString().slice(0, 10);
@@ -90,9 +82,7 @@ const aujourdhui = new Date().toISOString().slice(0, 10);
               aria-hidden="true"
             />
           </summary>
-          {/* Deux natures dans un seul formulaire : un fichier déposé, ou un
-              lien externe. Le premier renseigné gagne, et le document naît
-              masqué dans les deux cas. */}
+          {/* Un fichier déposé, et rien d'autre. Le document naît masqué. */}
           <form
             class="card mt-4 grid gap-4"
             method="POST"
@@ -113,17 +103,6 @@ const aujourdhui = new Date().toISOString().slice(0, 10);
             <div class="grid gap-1">
               <label class="label field-label" for="doc-fichier">Fichier</label>
               <input id="doc-fichier" name="fichier" type="file" />
-            </div>
-
-            <div class="grid gap-1">
-              <label class="label field-label" for="doc-url">ou adresse d'un lien</label>
-              <input
-                class="field"
-                id="doc-url"
-                name="url"
-                type="url"
-                placeholder="https://docs.google.com/..."
-              />
             </div>
 
             <div class="grid gap-1">
