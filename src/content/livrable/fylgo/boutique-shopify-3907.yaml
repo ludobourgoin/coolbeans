@@ -119,17 +119,15 @@ sections:
       lisent.
     liste:
       - texte: "**Sur ordinateur, la boutique est rapide.** Rien à signaler de ce côté."
-      - texte: "**Sur téléphone, elle est lente**, et c'est ce qui compte le plus, parce que Google classe les sites d'après leur version mobile. L'accueil pèse 2,3 Mo, là où une page confortable sur un réseau mobile en fait moins d'un."
-      - texte: "**J'ai retiré 386 Ko le 21 septembre.** Trois images de fond étaient servies aux téléphones à la dimension prévue pour les grands écrans, et la grande image d'accueil se chargeait en dernier au lieu d'être prioritaire. Les deux sont corrigés."
-      - texte: "**Il reste 494 Ko de gaspillage, et j'en connais la cause exacte.** Vingt-huit images de l'accueil déclarent au navigateur qu'elles occupent toute la largeur de l'écran, alors qu'elles s'affichent en vignettes. Il leur sert donc une version bien plus grande que nécessaire."
+      - texte: "**Sur téléphone, les pages sont plus lourdes qu'elles ne devraient l'être** : 2,3 Mo pour l'accueil, là où une page confortable sur un réseau mobile en fait moins d'un. La cause n'est ni votre catalogue ni vos visuels, elle est dans le thème."
         tooltip: >-
-          Le cas le plus parlant : un picto affiché à cent pixels de large est
-          livré en 1445 pixels, soit 37 Ko au lieu de 3. Ce n'est pas un
-          réglage cassé, c'est le comportement par défaut du thème Flow, que
-          personne n'a ajusté à votre mise en page. Le catalogue d'images et
-          leur format, eux, sont corrects : Shopify les convertit déjà tout
-          seul au format le plus léger que le navigateur sait lire.
-      - texte: "**Corriger ce reste est un travail à part**, section par section, avec un relevé des largeurs réelles d'affichage. Je le prends sur les heures de support comprises dans votre devis."
+          Le poids compte surtout sur téléphone, parce que Google classe les
+          sites d'après leur version mobile. Votre catalogue d'images, lui,
+          est correct : Shopify convertit déjà tout seul chaque visuel au
+          format le plus léger que le navigateur sait lire.
+      - texte: "**Le thème Flow annonce au navigateur que chaque image occupe toute la largeur de l'écran**, y compris les pictogrammes affichés en vignette. Un picto large de cent pixels arrive donc en 1445, soit 37 Ko au lieu de 3. Ce n'est pas un réglage cassé, c'est le comportement livré avec le thème, que personne n'a ajusté à votre mise en page."
+      - texte: "**J'ai déjà retiré 386 Ko le 21 septembre**, sur les images de fond et sur la grande image d'accueil. Il reste 494 Ko à récupérer, répartis sur vingt-huit images."
+      - texte: "**Je passe les sections en revue dans les jours qui viennent**, sur les heures de support comprises dans votre devis. Ce chantier ne faisait pas partie de la prestation : je vous l'offre."
       - texte: "**Neuf pages n'avaient pas de description pour les moteurs de recherche. C'est corrigé.** Vos quatre collections et vos cinq pages de contenu n'en avaient aucune, et Google composait donc lui-même l'extrait affiché sous le titre, en piochant une phrase au hasard. Les huit textes sont écrits et en ligne, et le score de référencement des collections est passé de 92 à 100 sur 100."
     note: >-
       Vous pouvez mesurer vous-même :
