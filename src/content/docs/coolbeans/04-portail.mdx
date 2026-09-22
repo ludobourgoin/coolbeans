@@ -67,6 +67,19 @@ client), dont le slug pointe vers le registre YAML ci-dessus, qui reste la
 source de vérité. Connexion par e-mail et mot de passe sur `/connexion` ;
 **aucune inscription publique** : les comptes sont créés à la main.
 
+**Une seule session pour les deux adresses.** Le site et le portail sont
+deux noms de domaine, donc deux origines pour le navigateur. Le cookie de
+session est posé sur `.coolbeans.cc` pour qu'une connexion ouverte sur le
+portail se voie aussi sur le site : sans cet attribut, le cookie reste
+attaché à l'hôte qui l'a posé, et une connexion partie de `coolbeans.cc`
+laisse `my.coolbeans.cc` la redemander aussitôt. Staging partage forcément
+le même domaine parent : c'est le nom du cookie qui sépare les deux
+(`coolbeans-staging`), sans quoi une session de staging masquerait celle de
+production. La page `/connexion` du site redirige vers celle du portail, pour
+qu'il n'y ait qu'une adresse à retenir. Le bouton de la nav du site lit cette
+session depuis le navigateur et devient « Mon espace » — les pages du site
+sont prérendues, elles ne peuvent pas le savoir avant.
+
 **Ouvrir un compte.** Sur `/espace/utilisateurs`, un admin crée le compte
 (nom, e-mail, type, organisation, workspace) et coche « envoyer le mail » ou
 non. Rien ne part sans cette case : un compte peut exister sans que personne
@@ -119,6 +132,7 @@ chantier à part entière (voir la spec de migration dans
 | Ouverture de compte et choix du mail d'invitation | `src/actions/index.ts` (`utilisateurs.inviter`), `src/lib/portail/utilisateurs.ts` |
 | Gabarits des mails d'authentification | `src/emails/auth.ts` (`renderInvitation`, `renderLienMagique`, `renderReinitialisation`) |
 | Page de connexion et menu compte | `src/pages/connexion.astro`, `src/components/portail/PortalNav.astro` |
+| Session partagée site / portail | `src/lib/auth/options.ts` (`cookiesPartages`), `src/components/Nav.astro` |
 | Comptes rattachés à un workspace | `src/lib/portail/comptes.ts` |
 | Registre des workspaces | `src/content/clients/*.yaml`, schéma dans `src/content.config.ts`, lecture dans `src/lib/portail/workspaces.ts` |
 | Lecture métadonnées / workspace courant | `src/lib/portail/metadata.ts`, `current-workspace.ts`, `context.ts` |
