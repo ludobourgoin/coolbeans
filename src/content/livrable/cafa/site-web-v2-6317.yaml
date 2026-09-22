@@ -102,12 +102,20 @@ suite:
     owner: client
   - texte: Dater les trois articles qui résistent.
     owner: client
-  - texte: Brancher les formulaires et la mesure de fréquentation, puis mettre le site en ligne sur votre domaine.
+  - texte: "**Mardi 6 octobre** : brancher les formulaires et la mesure de fréquentation, puis mettre le site en ligne sur votre domaine."
     owner: coolbeans
-  - texte: Vous former à la mise à jour du site, et vous remettre la documentation.
+  - texte: "**Jeudi 8 octobre** : vous former à la mise à jour du site, et vous remettre la documentation."
     owner: coolbeans
 
 notes:
+  - tone: warning
+    texte: >-
+      Je serai absent du 28 septembre au 2 octobre. Ce n'était pas prévu au
+      planning, et cela décale la livraison d'une semaine : mise en ligne le
+      mardi 6 octobre, formation le jeudi 8. Le congrès de Montpellier reste
+      cinq semaines plus loin. Si le domaine et le compte Resend sont ouverts
+      avant mon départ, je n'aurai plus qu'à tout brancher à mon retour.
+      Sinon, dites-moi où vous en êtes, je m'adapte.
   - tone: info
     texte: >-
       Vos formulaires ne partent pas encore. Quand un visiteur laisse un
