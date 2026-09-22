@@ -31,7 +31,21 @@ Un document ne porte plus une étiquette de type mais **la frise des cinq étape
 
 `Production` n'a pas de document et reste grise partout. C'est voulu : elle montre au client qu'une phase de travail existe entre la signature et la livraison.
 
-`green` n'est pas exposé par `Badge.astro` alors que `--ds-green-200/900` existe. Il faut l'ajouter au composant **et** à la section G de `scripts/verify-design-system.js`, qui vérifie les paires ≥ 4.5:1 dans les deux thèmes.
+**Les pastilles sont un composant neuf, pas une extension de `Badge`.** `Badge subtle` utilise `--ds-*-200` et mesure 24 px de haut avec 8 px de padding. L’image OG de Coolbeans, qui fait référence, utilise `--ds-*-100` et des pastilles bien plus aérées. Mesures relevées au pixel dans le fichier source :
+
+| | Valeur |
+|---|---|
+| Fond | `--ds-<teinte>-100` |
+| Texte | `--ds-<teinte>-900` |
+| Hauteur | 32 px (échelle dense retenue ; 42 px dans l’OG) |
+| Padding horizontal | 16 px |
+| Gouttière | 9 px |
+| Texte | 14 px, graisse 500 |
+| Rayon | plein |
+
+Chaque pastille porte **son numéro d’étape, de 1 à 5**, en chiffre monospace atténué devant le libellé. Le numéro dit la séquence, ce qui rend inutile toute distinction visuelle entre étapes passées et à venir : les quatre non courantes restent identiques, sur `--surface-raise`.
+
+`Badge` garde son rôle pour les petites étiquettes. Les paires `-100`/`-900` sont à ajouter à la section G de `scripts/verify-design-system.js`, qui ne vérifie aujourd’hui que les `-200`.
 
 **La frise situe le document, pas l'avancement réel du projet.** Un client qui rouvre la proposition en janvier voit `Proposition` colorée même si le projet est en production. Porte laissée ouverte : brancher la frise sur un état réel demanderait une source de vérité par projet, Linear par exemple. Hors périmètre ici.
 
@@ -84,9 +98,10 @@ Les documents abandonnent le centrage et adoptent la structure des pages de `my.
 
 - contenu : `max-width: 880px`, la largeur que les documents utilisent déjà
 - ancres : `--portal-col`, 264px, collantes, construites depuis les `h2`
+- en dessous de 1100 px, la colonne de droite disparaît au profit de **la nav horizontale de `DevisCorps`**, déjà en place et qui défile latéralement. Rien à inventer, elle est reprise telle quelle
 - pas de navigation globale à gauche : `DocumentTopbar` documente pourquoi ces pages n'ont pas la Nav du site, et ça ne change pas
 
-Le sommaire horizontal collant de `DevisCorps` disparaît au profit de la colonne de droite. Les `scroll-mt-16.5` calés dessus sont à revoir.
+Le sommaire horizontal collant de `DevisCorps` ne disparaît pas, il devient la forme mobile de la colonne de droite. Sur grand écran c’est la colonne qui sert, en dessous de 1100 px c’est lui. Les `scroll-mt-16.5` calés dessus restent valables en mobile et sont à recalculer sur grand écran, où plus rien ne colle au sommet.
 
 ### 6. Les URLs
 
