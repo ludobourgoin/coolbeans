@@ -6,6 +6,7 @@ import DevisCorps from "../../components/devis/DevisCorps.astro";
 import DevisEntetePrint from "../../components/devis/DevisEntetePrint.astro";
 import DevisReponse from "../../components/devis/DevisReponse.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
+import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
 import { dateLongue } from "../../lib/devis";
 
 /* Un devis peut avoir plusieurs versions (révision de périmètre). Elles
@@ -52,6 +53,8 @@ const reference = versions[0].id.split("-").pop();
   description={`Proposition commerciale : ${courante.objet}`}
   noindex
 >
+  <DocumentTopbar />
+
   <!-- EN-TÊTE -->
   <header class="relative overflow-hidden bg-surface-subtle">
     <GridBackdrop />

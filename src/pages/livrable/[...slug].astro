@@ -12,6 +12,7 @@ import LivrableMessage from "../../components/livrable/LivrableMessage.astro";
 import LivrableSuite from "../../components/livrable/LivrableSuite.astro";
 import LivrableReponse from "../../components/livrable/LivrableReponse.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
+import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
 import { dateLongue, riche } from "../../lib/devis";
 
 /* Un livrable peut avoir plusieurs versions : après des retours, la V2 se
@@ -42,6 +43,8 @@ const dateCourte = (d: Date) =>
   description={`Livrable : ${courante.objet}`}
   noindex
 >
+  <DocumentTopbar />
+
   <!-- EN-TÊTE -->
   <header class="relative overflow-hidden bg-surface-subtle">
     <GridBackdrop />

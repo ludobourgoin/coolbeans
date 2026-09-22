@@ -8,6 +8,7 @@ import CadrageIntro from "../../components/cadrage/CadrageIntro.astro";
 import TemoignageCasClient from "../../components/temoignage/TemoignageCasClient.astro";
 import TemoignageFormulaire from "../../components/temoignage/TemoignageFormulaire.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
+import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
 import { dateLongue, riche, ancreSection } from "../../lib/devis";
 
 /* Une page de témoignage par fichier YAML, une URL par fichier. Pas de
@@ -32,6 +33,8 @@ const d = entry.data;
   description={`Témoignage et validation : ${d.objet}`}
   noindex
 >
+  <DocumentTopbar />
+
   <!-- EN-TÊTE -->
   <header class="relative overflow-hidden bg-surface-subtle">
     <GridBackdrop />

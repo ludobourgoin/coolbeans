@@ -1,0 +1,60 @@
+---
+/* Barre de tête des quatre documents client : devis, cadrage, livrable et
+   témoignage. Contrepartie de DevisFooter, qui porte déjà la signature au
+   pied des mêmes quatre pages malgré son nom.
+
+   Ces pages n'ont pas la Nav du site, et c'est voulu : un document envoyé à
+   un client n'est pas une page de parcours, et lui proposer « Projets »,
+   « Services » ou « Blog » l'invite à quitter ce qu'on lui demande de lire.
+   Ne restent donc que deux sorties, le site et la connexion au portail, plus
+   la bascule de thème.
+
+   La bascule est la vraie raison d'être de cette barre. BaseLayout applique
+   `.dark` avant le premier paint en retombant sur `prefers-color-scheme`
+   quand rien n'est stocké : un client dont le système est en sombre recevait
+   un document en sombre, sans aucun moyen d'en sortir. Constaté par Ludo le
+   2026-09-22 sur le livrable Fylgo.
+
+   NON COLLANTE, à la différence de la Nav du site. DevisCorps pose déjà un
+   sommaire de sections en `sticky top-0 z-40`, et les sections portent un
+   `scroll-mt-16.5` calé dessus. Une deuxième barre collante se superposerait
+   à ce sommaire et fausserait toutes les ancres du document.
+
+   Fond `surface-subtle`, sans filet bas : c'est celui du hero qui suit
+   immédiatement, les deux forment une seule bande. Le quadrillage de
+   GridBackdrop commence sous la barre, l'écart est imperceptible. */
+import ThemeSwitch from "../ui/ThemeSwitch.astro";
+---
+
+<header class="bg-surface-subtle print:hidden">
+  <div class="container-site flex items-center justify-between gap-4 py-4">
+    {/* Le logotype mène au site en absolu, jamais en `/` : sur my.coolbeans.cc
+        la racine est le portail, et le client atterrirait sur une page de
+        connexion au lieu du site. Même choix que DevisFooter. */}
+    <a
+      href="https://coolbeans.cc"
+      target="_blank"
+      rel="noopener"
+      aria-label="coolbeans, ouvrir le site dans un nouvel onglet"
+      class="inline-flex items-center leading-0 transition-opacity duration-150 hover:opacity-60"
+    >
+      <img
+        class="block h-5.25 w-auto dark:hidden"
+        src="/img/coolbeans-wordmark.svg"
+        alt="coolbeans"
+        height="21"
+      />
+      <img
+        class="hidden h-5.25 w-auto dark:block"
+        src="/img/coolbeans-wordmark-white.svg"
+        alt="coolbeans"
+        height="21"
+      />
+    </a>
+
+    <div class="flex items-center gap-3.5">
+      <ThemeSwitch />
+      <a class="btn btn-sm" href="/connexion">Se connecter</a>
+    </div>
+  </div>
+</header>
