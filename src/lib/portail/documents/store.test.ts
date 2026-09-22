@@ -59,9 +59,15 @@ test("la vue admin ne filtre pas la visibilité", async () => {
 });
 
 test("l'insertion des pages du repo ne crée pas de doublon", async () => {
+  // Le prédicat de l'index partiel doit être répété dans la clause ON
+  // CONFLICT, sinon SQLite ne reconnaît pas la contrainte et lève. Ce que ce
+  // test ne peut pas voir, faute de vraie base : store.sqlite.test.ts le
+  // rejoue contre SQLite.
   const { db, calls } = fakeDb();
   await insererSiAbsente(db, ligne);
-  expect(calls[0].sql).toMatch(/ON CONFLICT \(client, cle_source\) DO NOTHING/);
+  expect(calls[0].sql).toMatch(
+    /ON CONFLICT \(client, cle_source\) WHERE cle_source IS NOT NULL DO NOTHING/,
+  );
 });
 
 test("la bascule est bornée au client courant, pas au seul identifiant", async () => {

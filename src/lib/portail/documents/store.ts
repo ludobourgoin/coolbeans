@@ -70,6 +70,12 @@ export async function creerDocument(db: D1Database, d: DocumentRow): Promise<voi
  * sinon. L'idempotence est portée par l'index unique partiel de la migration
  * plutôt que par un SELECT préalable : deux rendus concurrents de la vue admin
  * ne peuvent pas créer de doublon.
+ *
+ * Le `WHERE cle_source IS NOT NULL` de la clause ON CONFLICT n'est pas
+ * décoratif : SQLite n'associe une clause ON CONFLICT à un index PARTIEL que
+ * si elle répète le prédicat de l'index, mot pour mot. Sans lui, chaque
+ * insertion lève « ON CONFLICT clause does not match any PRIMARY KEY or
+ * UNIQUE constraint » et la vue admin répond 500.
  */
 export async function insererSiAbsente(db: D1Database, d: DocumentRow): Promise<void> {
   await db
@@ -77,7 +83,7 @@ export async function insererSiAbsente(db: D1Database, d: DocumentRow): Promise<
       `INSERT INTO documents (id, client, titre, source, r2_key, url, mime, taille,
          date_doc, visible, cree_le, cle_source)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-       ON CONFLICT (client, cle_source) DO NOTHING`,
+       ON CONFLICT (client, cle_source) WHERE cle_source IS NOT NULL DO NOTHING`,
     )
     .bind(
       d.id, d.client, d.titre, d.source, d.r2_key, d.url, d.mime, d.taille,

@@ -46,25 +46,48 @@ export async function pagesDuRepo(client: string): Promise<PageDuRepo[]> {
   const { getCollection } = await import("astro:content");
   const [devis, cadrages] = await Promise.all([getCollection("devis"), getCollection("cadrage")]);
 
+  return [
+    ...pagesDepuisEntrees("devis", devis as unknown as EntreeDuRepo[], client),
+    ...pagesDepuisEntrees("cadrage", cadrages as unknown as EntreeDuRepo[], client),
+  ];
+}
+
+/** Ce que ce module lit d'une entrée de collection, et rien de plus. */
+export interface EntreeDuRepo {
+  id: string;
+  data: { titre: string; objet?: string; date: Date | string; versionDe?: string };
+}
+
+/**
+ * La projection, sortie de `pagesDuRepo` pour être testable sans
+ * `astro:content` : c'est ici que se prennent les deux décisions qui se
+ * voient à l'écran, l'appartenance au client et l'exclusion des versions.
+ */
+export function pagesDepuisEntrees(
+  prefixe: "devis" | "cadrage",
+  entrees: EntreeDuRepo[],
+  client: string,
+): PageDuRepo[] {
   const pages: PageDuRepo[] = [];
-  for (const [prefixe, entrees] of [
-    ["devis", devis],
-    ["cadrage", cadrages],
-  ] as const) {
-    for (const entree of entrees) {
-      if (entree.id.split("/")[0] !== client) continue;
-      pages.push({
-        cleSource: `${prefixe}/${entree.id}`,
-        /* Écart assumé avec la spec §3, qui dit « le champ `titre` du YAML ».
-           Ce champ vaut « <Client> x Coolbeans » sur tous les documents d'un
-           même client : une liste de trois propositions porterait trois fois
-           le même nom. `objet` est ce qui les distingue. Le `titre` reste le
-           filet quand `objet` manque. */
-        titre: entree.data.objet || entree.data.titre,
-        url: `${SITE}/${prefixe}/${entree.id}`,
-        date: jour(entree.data.date),
-      });
-    }
+  for (const entree of entrees) {
+    if (entree.id.split("/")[0] !== client) continue;
+    /* Une version de devis n'a pas d'URL propre : elle s'affiche sous un
+       onglet de la V1, et src/pages/devis/[...slug].astro ne construit de
+       route que pour les racines. L'enregistrer poserait au registre une
+       ligne qui mène à une 404, et `orphelines` ne la signalerait pas,
+       puisqu'elle est bien dans la collection. */
+    if (entree.data.versionDe) continue;
+    pages.push({
+      cleSource: `${prefixe}/${entree.id}`,
+      /* Écart assumé avec la spec §3, qui dit « le champ `titre` du YAML ».
+         Ce champ vaut « <Client> x Coolbeans » sur tous les documents d'un
+         même client : une liste de trois propositions porterait trois fois
+         le même nom. `objet` est ce qui les distingue. Le `titre` reste le
+         filet quand `objet` manque. */
+      titre: entree.data.objet || entree.data.titre,
+      url: `${SITE}/${prefixe}/${entree.id}`,
+      date: jour(entree.data.date),
+    });
   }
   return pages;
 }
