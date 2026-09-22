@@ -14,16 +14,16 @@ import LivrableReponse from "../../components/livrable/LivrableReponse.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
 import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
 import { dateLongue, riche } from "../../lib/devis";
+import { construitesEnProduction } from "../../lib/documents/statut";
 
 /* Un livrable peut avoir plusieurs versions : après des retours, la V2 se
    déclare par `versionDe` et partage l'URL de la V1, comme au devis. Le lien
    envoyé au client ne bouge jamais ; les versions précédentes restent
    lisibles sous des onglets. */
 export async function getStaticPaths() {
-  /* Les brouillons ne sortent pas du build. Ils restent lisibles en
-     développement local, le temps de la relecture. */
-  const toutes = await getCollection("livrable");
-  const entries = import.meta.env.DEV ? toutes : toutes.filter((e) => !e.data.brouillon);
+  /* Le filtre passe AVANT le calcul des racines : sur une racine il fait
+     disparaître la page, sur une version il fait disparaître un onglet. */
+  const entries = construitesEnProduction(await getCollection("livrable"), import.meta.env.DEV);
   const racines = entries.filter((e) => !e.data.versionDe);
   return racines.map((racine) => {
     const versions = [racine, ...entries.filter((e) => e.data.versionDe === racine.id)].sort(

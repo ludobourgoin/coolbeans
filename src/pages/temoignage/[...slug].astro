@@ -10,6 +10,7 @@ import TemoignageFormulaire from "../../components/temoignage/TemoignageFormulai
 import DevisFooter from "../../components/devis/DevisFooter.astro";
 import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
 import { dateLongue, riche, ancreSection } from "../../lib/devis";
+import { construitesEnProduction } from "../../lib/documents/statut";
 
 /* Une page de témoignage par fichier YAML, une URL par fichier. Pas de
    versions : contrairement au livrable, ce document ne se rejoue pas. Le
@@ -20,7 +21,7 @@ import { dateLongue, riche, ancreSection } from "../../lib/devis";
    forme, et dupliquer une mise en page pour un document de plus est
    précisément ce qui fait diverger quatre pages qui devraient se ressembler. */
 export async function getStaticPaths() {
-  const entries = await getCollection("temoignage");
+  const entries = construitesEnProduction(await getCollection("temoignage"), import.meta.env.DEV);
   return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 
