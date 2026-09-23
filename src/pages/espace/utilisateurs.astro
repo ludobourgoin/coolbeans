@@ -81,6 +81,13 @@ Astro.response.headers.set("Cache-Control", "no-store");
               {c.organisation ?? "·"}
               {c.workspace ? ` · ${c.workspace}` : ""}
             </span>
+            {/* Le lien s'obtient, il ne s'envoie pas : c'est Ludo qui écrit
+                au client, avec ses mots. La case « envoyer le lien » du
+                formulaire de création reste, pour le cas où le mail type
+                suffit. */}
+            <button class="link" type="button" data-lien-magique={c.email}>
+              Lien de connexion
+            </button>
             <form method="POST" action={actions.utilisateurs.revoquer}>
               <input type="hidden" name="userId" value={c.id} />
               <button
@@ -153,6 +160,34 @@ Astro.response.headers.set("Cache-Control", "no-store");
   document.querySelectorAll<HTMLButtonElement>("button[data-confirmer]").forEach((bouton) => {
     bouton.addEventListener("click", (evenement) => {
       if (!confirm(bouton.dataset.confirmer)) evenement.preventDefault();
+    });
+  });
+
+  // Lien de connexion : on le copie dans le presse-papiers plutôt que de
+  // l'afficher. Un lien de connexion laissé à l'écran finit dans une capture
+  // ou sous les yeux du voisin, et il vaut session.
+  document.querySelectorAll<HTMLButtonElement>("button[data-lien-magique]").forEach((bouton) => {
+    const initial = bouton.textContent;
+    bouton.addEventListener("click", async () => {
+      bouton.disabled = true;
+      bouton.textContent = "…";
+      try {
+        const reponse = await fetch("/api/utilisateurs/lien-magique", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ email: bouton.dataset.lienMagique }),
+        });
+        if (!reponse.ok) throw new Error(await reponse.text());
+        const { url } = (await reponse.json()) as { url: string };
+        await navigator.clipboard.writeText(url);
+        bouton.textContent = "Copié";
+      } catch (erreur) {
+        bouton.textContent = initial;
+        alert(erreur instanceof Error ? erreur.message : "Lien impossible à générer.");
+      } finally {
+        bouton.disabled = false;
+        setTimeout(() => (bouton.textContent = initial), 2500);
+      }
     });
   });
 </script>
