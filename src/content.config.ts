@@ -706,6 +706,23 @@ const temoignage = defineCollection({
         autre: z.boolean().default(false),
         long: z.boolean().default(false),
         placeholder: z.string().optional(),
+        /* Dépliant d'exemple, sous l'aide de la question. Il sert les
+           questions qui demandent une autorisation : on accorde d'autant plus
+           facilement qu'on voit exactement ce qu'on accorde, à sa taille
+           réelle, plutôt qu'une description de ce à quoi ça ressemblerait.
+           Replié par défaut, parce que celui que ça n'intéresse pas répond
+           sans l'ouvrir. */
+        exemple: z
+          .object({
+            resume: z.string().default("À quoi ça ressemble"),
+            /* Maquette d'un bas de page : la ligne du client à gauche, la
+               signature à droite, aux tailles du vrai pied de page. */
+            pied: z
+              .object({ gauche: z.string().optional(), mention: z.string() })
+              .optional(),
+            texte: z.string().optional(),
+          })
+          .optional(),
       }),
     ),
     notes: z

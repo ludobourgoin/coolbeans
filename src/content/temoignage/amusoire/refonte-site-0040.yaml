@@ -96,6 +96,27 @@ questions:
       - { valeur: formulaire, label: "Non, ce formulaire me va très bien" }
       - { valeur: linkedin, label: "Oui, envoyez-moi le lien de votre profil" }
 
+  - id: signature
+    label: Puis-je signer le site en pied de page ?
+    aide: >-
+      Une ligne discrète tout en bas de votre site, avec un lien vers le mien.
+      C'est la seule trace que je laisse, et elle se retire sur simple demande,
+      même dans un an.
+    type: choix
+    multiple: false
+    requis: false
+    exemple:
+      resume: À quoi ça ressemble
+      pied:
+        gauche: "© 2026 Amusoire · Mentions légales"
+        mention: "Design & développement Coolbeans.cc"
+      texte: >-
+        Sur la même ligne que vos mentions légales, à la taille des autres
+        liens du pied de page.
+    options:
+      - { valeur: oui, label: "Oui, vous pouvez l'ajouter" }
+      - { valeur: non, label: "Non, je préfère sans" }
+
 notes:
   - tone: info
     texte: >-

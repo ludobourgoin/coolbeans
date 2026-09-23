@@ -24,9 +24,19 @@ import Choicebox from "../ui/Choicebox.astro";
 import { riche } from "../../lib/devis";
 import type { QuestionCadrage } from "../../lib/cadrage";
 
+/* Le dépliant d'exemple n'existe que sur ce document : le cadrage n'en a pas,
+   et son type partagé n'a pas à porter le champ d'un seul appelant. */
+type QuestionTemoignage = QuestionCadrage & {
+  exemple?: {
+    resume: string;
+    pied?: { gauche?: string; mention: string };
+    texte?: string;
+  };
+};
+
 interface Props {
   slug: string;
-  questions: QuestionCadrage[];
+  questions: QuestionTemoignage[];
   tutoiement?: boolean;
   photo?: {
     titre: string;
@@ -77,7 +87,7 @@ const descripteurs = questions.map((q) => ({
   repere: q.label.length > 60 ? `${q.label.slice(0, 57)}...` : q.label,
 }));
 
-const optionsDe = (q: QuestionCadrage) => [
+const optionsDe = (q: QuestionTemoignage) => [
   ...(q.options ?? []).map((o) => ({ value: o.valeur, title: o.label, hint: o.aide })),
   ...(q.autre ? [{ value: "autre", title: "Autre", hint: "À préciser juste en dessous." }] : []),
 ];
@@ -132,6 +142,51 @@ const optionsDe = (q: QuestionCadrage) => [
 
                   {q.aide && (
                     <p class="text-[13px] leading-[1.6] text-mute" set:html={riche(q.aide)} />
+                  )}
+
+                  {/* Une autorisation se donne d'autant plus facilement qu'on
+                      voit ce qu'on autorise. La maquette montre la mention à
+                      sa taille réelle et à sa place ; le dépliant la garde
+                      repliée, parce que celui que ça n'intéresse pas répond
+                      sans l'ouvrir. */}
+                  {q.exemple && (
+                    <details class="group/exemple mt-1">
+                      <summary class="flex w-fit cursor-pointer list-none items-center gap-2 text-[13px] font-medium text-ink [&::-webkit-details-marker]:hidden">
+                        {/* Le soulignement porte sur le libellé seul : posé sur
+                            le summary, il barrait aussi le + du dépliant. */}
+                        <span class="underline decoration-line underline-offset-4">
+                          {q.exemple.resume}
+                        </span>
+                        <span
+                          class="font-mono text-mute after:content-['+'] group-open/exemple:after:content-['−']"
+                          aria-hidden="true"
+                        />
+                      </summary>
+
+                      {q.exemple.pied && (
+                        <div class="mt-3 max-w-[52ch] overflow-hidden rounded-card border border-line">
+                          {/* Les trois barres ne disent rien : elles donnent
+                              l'échelle et placent la ligne du bas là où elle
+                              sera sur le site. */}
+                          <div class="grid gap-2 bg-surface p-4" aria-hidden="true">
+                            <span class="block h-1.5 w-1/3 rounded-full bg-[var(--ds-gray-200)]" />
+                            <span class="block h-1.5 w-2/3 rounded-full bg-[var(--ds-gray-200)]" />
+                            <span class="block h-1.5 w-1/2 rounded-full bg-[var(--ds-gray-200)]" />
+                          </div>
+                          <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t border-line bg-surface-subtle px-4 py-3 text-[12px] leading-[1.5] text-mute">
+                            {q.exemple.pied.gauche && <span>{q.exemple.pied.gauche}</span>}
+                            <span class="text-ink">{q.exemple.pied.mention}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      {q.exemple.texte && (
+                        <p
+                          class="mt-3 text-[13px] leading-[1.6] text-mute"
+                          set:html={riche(q.exemple.texte)}
+                        />
+                      )}
+                    </details>
                   )}
 
                   {q.type === "choix" ? (
