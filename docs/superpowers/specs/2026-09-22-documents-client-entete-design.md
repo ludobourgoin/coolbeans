@@ -85,6 +85,14 @@ etape: production   # défaut = l'étape habituelle de la collection
 ```
 
 ## 4. Le nom du projet vient de Linear
+**Le nom Linear ne porte pas la jointure.** Tranché le 2026-09-22. Un libellé libre recopié dans cinq fichiers se désaligne à la première faute de frappe, et coupe le projet en deux sans rien signaler. Ce qui relie les cinq documents est un champ `projet` explicite, valant le segment d’URL du projet :
+
+```yaml
+projet: site-web-879        # la jointure, courte et vérifiable au build
+linear:
+  projet: Site web du CAFA Toulouse Occitanie   # le titre affiché
+```
+
 
 Pas de champ `sujet`. `linear.projet` porte le nom exact du projet Linear et devient le titre affiché. Un seul endroit fait autorité, aucune dérive possible.
 
@@ -120,6 +128,8 @@ après : coolbeans.cc/caf/site-web-879/livraison
 - **étape** : le mot de l'étape, en minuscules
 
 Trois règles sur ces chemins :
+
+**Les clés de trois lettres tiennent.** Vérifié le 2026-09-23 contre Linear : 22 des 23 teams portent une clé de trois lettres exactement, sans collision sur les trois premières lettres. La seule à quatre est `LUDO`, la team perso, qui ne porte aucun document client. Deux cas hors team : `danae` prend la clé de sa team Vice Versa, qui porte le nom du projet et non du client, et le manuscrit de Véronique Berthet reste hors nomenclature, à son adresse actuelle, parce que ce n’est pas une cliente.
 
 **Une référence par projet, pas par document.** Aujourd'hui `serial-generations` porte trois références pour un seul projet.
 
