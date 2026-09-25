@@ -1,0 +1,97 @@
+# Livrable de la relecture du manuscrit « Brigitte Bardot, une rencontre
+# inattendue » de Véronique Berthet, composé le 2026-09-25. Même référence que
+# le cadrage (4812), c'est le même projet, non facturé, suivi sur LUDO-32.
+# Le "site" pointe vers le Google Doc lui-même, corrigé en place.
+titre: Le manuscrit relu, prêt à être repris
+objet: Ce que j'ai fait dans ton document, et ce qu'il te reste à trancher.
+date: 2026-09-25
+contact: Véronique
+tutoiement: true
+linear:
+  affaire: LUDO-32
+
+site:
+  url: https://docs.google.com/document/d/1zT-o8rkzFearcn6Vn4NhsrIkJseJxLY2G7IuYzf4Aww/edit
+  label: Ouvrir le manuscrit corrigé
+
+sections:
+  - titre: Ce que j'ai fait
+    texte: >-
+      Tout est corrigé directement dans ton document, avec l'historique
+      Google Docs intact, rien n'a été réécrit en bloc.
+    liste:
+      - "Relecture orthographique complète, 298 corrections (accents, accords, homophones, casse, espaces parasites)."
+      - "Cinq noms propres corrigés, Mylène Demongeot, Marcel Carné, Marc-Olivier Fogiel, Marilyn, Babette."
+      - "Le nom de l'âne unifié sur Bonhomme."
+      - "Deux paragraphes dupliqués supprimés (Gunter Sachs au chapitre 18, « le mistral » au chapitre 24)."
+      - "La date de la mort de Brigitte Bardot ajoutée à l'épilogue, 28 décembre 2025."
+      - "« Saint-Tropez » harmonisé partout, 17 occurrences, plusieurs orthographes différentes, unifiées."
+      - "Deux faits corrigés après vérification, le mariage avec Gunter Sachs a eu lieu à Las Vegas, pas à Los Angeles (chapitre 18), et le nombre de films harmonisé sur « plus de 50 » (chapitre 7)."
+      - "La référence à Marcel Pagnol corrigée, « à la Pagnol » (chapitre 12)."
+
+  - titre: À ta main
+    texte: >-
+      Deux choses qu'aucun outil ne peut faire à ta place, à faire une fois
+      que tu as tranché les points ci-dessous.
+    liste:
+      - "Uniformiser tous les titres de chapitre en Titre 1, le prologue, le chapitre 2 et le chapitre 12 ont un style différent, et les chapitres 11 et 13 n'ont aucun style de titre."
+      - "Remplacer la table des matières manuelle par une table automatique Google Docs, une fois les styles uniformisés."
+      - "Laisser un espace dans la table pour le ou les 1 à 2 chapitres qu'il te manque encore."
+
+  - titre: Trois citations à refermer
+    texte: >-
+      Un guillemet ouvrant sans fermant, ou l'inverse. Je ne sais pas où tu
+      voulais ouvrir ou fermer, donc je n'ai rien touché.
+    liste:
+      - "Chapitre 2, le passage qui se termine par « Comme ça, je ne les entends plus. je préfère rester calme. » compte 3 guillemets ouvrants pour 2 fermants."
+      - "Chapitre 7, « Un farfouillis, véritable Arche de Noé » où j'ai vécu en harmonie avec mes animaux et mes rares amis », deux guillemets fermants, aucun ouvrant."
+      - "Chapitre 23, la citation de Brigitte qui commence par « J'ai un gros chagrin, comme sa chienne Chipie » s'ouvre mais ne se referme jamais avant que le chapitre 24 ne commence."
+
+  - titre: Un découpage à valider pour le chapitre 18
+    texte: >-
+      Il fait 22 500 signes et traverse cinq sujets. Voici une proposition
+      en 4 parties, dans l'ordre du texte, à toi de valider, ajuster ou
+      garder tel quel.
+    liste:
+      - "Samy Frey, l'ouverture (les frelons, la photo trouvée) puis la conversation sur Samy Frey."
+      - "Gunter Sachs, rencontre, mariage, divorce, jusqu'à sa mort en 2011."
+      - "Serge Gainsbourg, « Je t'aime moi non plus », la réaction de Gunter, la rupture, avec la scène de transition sur le chien Charly qui suit directement."
+      - "Ses amitiés, Allain Bougrain-Dubourg, Françoise Sagan, Marguerite Yourcenar."
+
+  - titre: Des repères temporels à retirer, ou à garder
+    texte: >-
+      Le livre annonce un remplacement d'un seul été, mais les scènes
+      s'étalent de 2019 à 2024. Cinq endroits le montrent.
+    liste:
+      - "Chapitre 1, une incohérence indépendante des autres, « dans 2 jours », puis « ce dimanche d'été », puis « dans 48 heures » ne s'accordent pas entre eux."
+      - "Chapitre 21, « Deux mois après l'incendie qui a ravagé Notre-Dame de Paris » situe la scène en juin 2019."
+      - "Chapitre 25, « Nous sommes le 19 septembre 2020, je suis invitée à dîner à la Madrague »."
+      - "Chapitre 16, la mort d'Alain Delon « le 18 août 2024 » est évoquée au passé."
+      - "Chapitre 26, le repas de Noël lui-même, difficile à situer dans un remplacement estival."
+
+  - titre: Deux points de contenu à trancher
+    texte: ""
+    liste:
+      - "La chanson avec Sacha Distel (chapitre 14), « Le soleil de ma vie » est réellement sortie en 1973, alors que le texte la place au moment de votre histoire, fin des années 1950. Écart d'environ 15 ans."
+      - "La scène du Mépris (chapitre 16), la vraie scène enchaîne pieds, chevilles, genoux, cuisses, fesses, puis seins. Le texte actuel répète « fesses » deux fois et saute la question des seins. Proposition à insérer entre les deux, à ajuster à ton ton si besoin, réplique de Nika « Et mes seins, tu les aimes mes seins » puis réponse de Brigitte « Oui, j'aime beaucoup tes seins »."
+
+aVerifierTitre: Ce qu'il te reste à trancher
+aVerifier:
+  - "La titrisation et la table des matières (section « À ta main »)."
+  - "Les 3 citations à refermer."
+  - "Le découpage proposé du chapitre 18."
+  - "Les repères temporels à retirer ou à garder."
+  - "La chanson avec Distel, et la réplique manquante de la scène du Mépris."
+
+suiteTitre: La suite
+suite:
+  - texte: Relire l'ensemble et trancher les points ci-dessus.
+    owner: client
+  - texte: Rien de prévu de plus, la relecture est terminée.
+    owner: coolbeans
+
+notes:
+  - tone: info
+    texte: >-
+      Rien n'est facturé, ce n'est pas une affaire suivie au sens CRM du
+      terme.
