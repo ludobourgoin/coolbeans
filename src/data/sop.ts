@@ -391,7 +391,7 @@ export const etapes: Etape[] = [
     ],
     faire: [
       "Router avant d'exécuter : repo GitHub ? quelle stack ? workspace portail ? compte utilisateur ? monitoring ? Aucune de ces réponses n'est acquise d'avance.",
-      "Créer la team Linear du client, par copie des settings depuis la team « Modèle client ».",
+      "Créer la team Linear du client comme sous-team de « Web », qui lui transmet statuts et estimations, puis activer Triage.",
       "Créer le repo GitHub, scaffolder la stack écrite au devis, puis connecter le repo à l'intégration Git du workspace Linear.",
       "Monter l'infrastructure selon la stack : Worker, base, stockage.",
       "Créer src/content/clients/<slug>.yaml avec nom, linearTeamId et doc — sans ce champ, le module Support du portail reste en empty state.",
