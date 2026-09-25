@@ -267,7 +267,7 @@ Template de la team **🎯 CRM**. Il crée l'affaire directement en **👋 Conta
 9. Émettre la facture d'acompte dans Tiime
 10. Envoyer les trois documents en un seul mail : proposition validée, devis, facture d'acompte
 11. Vérifier l'encaissement de l'acompte
-12. Créer la team Linear du client (« Copy team settings » depuis « Modèle client ») et y créer le premier projet
+12. Créer la team Linear du client comme sous-team de « Web », activer Triage, et y créer le premier projet
 13. Créer le repo GitHub, scaffolder la stack de la proposition, connecter le repo à l'intégration Git de Linear
 14. Créer la fiche client `src/content/clients/<slug>.yaml` avec son `linearTeamId`
 15. Créer le compte utilisateur dans Better Auth, le dossier Drive, le monitoring du domaine
@@ -285,17 +285,17 @@ L'étape 5 est commerciale, pas relationnelle : c'est là que se décide le prix
   Sans le `linearTeamId` de l'étape 14, le module Support du portail reste en empty state : c'est lui qui dit au formulaire support dans quelle team créer ses tickets (COO-30).
 </Callout>
 
-### Modèle B · la team Linear « Modèle client »
+### Modèle B · la team parente « Web »
 
-Team Linear dormante, séparée de Coolbeans, que Ludo ne rejoint pas : elle n'existe que comme config de référence. Au démarrage d'un client, sa team se crée par **« Copy team settings »** depuis Modèle client (Workspace Settings → Teams → New team → champ *Copy from team*) : ça reprend les statuts, les cycles et les settings d'équipe, pas les membres.
+Depuis le 2026-09-25, « Modèle client » est devenue « Web » (clé `WEB`), la team parente de tous les clients et side projects web. Elle reste vide. Chaque team client est une sous-team qui hérite de ses statuts, de ses estimations et de ses statuts de projet : un changement fait sur « Web » vaut aussitôt partout, sans copie qui dérive.
 
-Ce qu'elle porte :
+Ce qu'elle porte :
 
-- Statuts par défaut Linear (Backlog, Todo, In Progress, In Review, Done, Canceled) : rien à recréer, ils collent déjà au kanban historique.
-- Triage activé, Cycles hebdomadaires (même jour de démarrage que Coolbeans, pour que « mon sprint » désigne la même semaine partout), Estimates activé.
-- Les labels `Bug` / `Feature` / `Improvement` sont au niveau workspace : ils apparaissent automatiquement sur toute nouvelle team, rien à dupliquer non plus.
+- Statuts par défaut Linear (Triage, Backlog, Todo, In Progress, In Review, Done, Canceled), qui collent au kanban historique.
+- Estimates en Fibonacci. Pas de cycles.
+- Les labels `Bug` / `Feature` / `Improvement` et les templates restent au niveau workspace : toute sous-team les voit sans rien dupliquer.
 
-Ce qu'elle ne porte pas, contrairement à ce que cette page affirmait jusqu'au 2026-09-17 : le gabarit de livraison. Il n'existait dans aucune team, et il a été créé ce jour-là **au niveau workspace**, pas dans Modèle client. Deux raisons. Un gabarit rangé dans une team que Ludo ne rejoint pas ne se voit jamais, ce qui explique probablement qu'il n'ait jamais été créé. Et « Copy team settings » ne garantit pas la reprise des templates, donc chaque nouvelle team cliente aurait hérité d'un trou.
+Triage ne s'hérite pas : il s'active sur chaque nouvelle sous-team, sinon les tickets du portail n'arrivent pas dans la boîte de réception.
 
 ### Le gabarit 🚚 Livraison et suivi client
 
