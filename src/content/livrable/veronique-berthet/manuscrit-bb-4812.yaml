@@ -28,15 +28,7 @@ sections:
       - "« Saint-Tropez » harmonisé partout, 17 occurrences, plusieurs orthographes différentes, unifiées."
       - "Deux faits corrigés après vérification, le mariage avec Gunter Sachs a eu lieu à Las Vegas, pas à Los Angeles (chapitre 18), et le nombre de films harmonisé sur « plus de 50 » (chapitre 7)."
       - "La référence à Marcel Pagnol corrigée, « à la Pagnol » (chapitre 12)."
-
-  - titre: À ta main
-    texte: >-
-      Deux choses qu'aucun outil ne peut faire à ta place, à faire une fois
-      que tu as tranché les points ci-dessous.
-    liste:
-      - "Uniformiser tous les titres de chapitre en Titre 1, le prologue, le chapitre 2 et le chapitre 12 ont un style différent, et les chapitres 11 et 13 n'ont aucun style de titre."
-      - "Remplacer la table des matières manuelle par une table automatique Google Docs, une fois les styles uniformisés."
-      - "Laisser un espace dans la table pour le ou les 1 à 2 chapitres qu'il te manque encore."
+      - "Les 29 titres de chapitre uniformisés en Titre 1, et la table des matières automatique mise en place, par toi directement dans le document."
 
   - titre: Trois citations à refermer
     texte: >-
@@ -77,7 +69,6 @@ sections:
 
 aVerifierTitre: Ce qu'il te reste à trancher
 aVerifier:
-  - "La titrisation et la table des matières (section « À ta main »)."
   - "Les 3 citations à refermer."
   - "Le découpage proposé du chapitre 18."
   - "Les repères temporels à retirer ou à garder."
