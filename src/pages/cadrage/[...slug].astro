@@ -1,7 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import GridBackdrop from "../../components/GridBackdrop.astro";
 import Banner from "../../components/ui/Banner.astro";
 import Tooltip from "../../components/ui/Tooltip.astro";
 import CadrageIntro from "../../components/cadrage/CadrageIntro.astro";
@@ -9,25 +8,53 @@ import CadrageComparatif from "../../components/cadrage/CadrageComparatif.astro"
 import CadrageSimulateur from "../../components/cadrage/CadrageSimulateur.astro";
 import CadrageFormulaire from "../../components/cadrage/CadrageFormulaire.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
-import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
 import DocumentReponses from "../../components/devis/DocumentReponses.astro";
-import { dateLongue, riche, ancreSection } from "../../lib/devis";
+import DocumentEntete from "../../components/documents/DocumentEntete.astro";
+import DocumentVolet from "../../components/documents/DocumentVolet.astro";
+import { riche, ancreSection } from "../../lib/devis";
 import { construitesEnProduction } from "../../lib/documents/statut";
 import { chargerDocuments } from "../../lib/documents/charger";
+import { frise } from "../../lib/documents/frise";
+import { grouperVersions, libelleOnglet, ligneDate, titreEntete } from "../../lib/documents/entete";
+import { sectionsCadrage } from "../../lib/documents/sections";
 
-/* Un document de cadrage par fichier YAML, une URL par fichier. Pas de
-   versions ici, contrairement au devis : un cadrage se remplit une fois et
-   n'a pas de périmètre à réviser. S'il faut reposer des questions, c'est un
-   autre document. */
+/* Un cadrage par fichier YAML. Deux cadrages peuvent partager une page, en
+   chapitres : le second se déclare par `versionDe` et prend un `onglet`. Ce
+   ne sont pas des versions : chaque chapitre garde ses questions, son
+   formulaire et ses réponses, posés dans son volet. */
 export async function getStaticPaths() {
-  /* Arrête le build si la nomenclature est incohérente (lib/documents/projet.ts). */
-  await chargerDocuments();
+  const documents = await chargerDocuments();
   const entries = construitesEnProduction(await getCollection("cadrage"), import.meta.env.DEV);
-  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+  return grouperVersions(entries).flatMap((chapitres) => {
+    const racine = chapitres[0];
+    const page = {
+      params: { slug: racine.id },
+      props: {
+        chapitres,
+        pastilles: frise(documents, { collection: "cadrage", id: racine.id }, import.meta.env.DEV),
+        redirection: undefined as string | undefined,
+      },
+    };
+    /* Les chapitres suivants avaient leur propre adresse avant de rejoindre
+       la page de leur racine, le 2026-09-29 (achat-domaine-4520,
+       stack-technique-4417). Le lien déjà envoyé mène à la racine, dont le
+       volet ouvert par défaut est le dernier : le leur. Page statique, donc
+       redirection par meta refresh ; le lot 4 en fera des 301. */
+    const anciennes = chapitres.slice(1).map((c) => ({
+      params: { slug: c.id },
+      props: { chapitres, pastilles: [], redirection: `/cadrage/${racine.id}` as string | undefined },
+    }));
+    return [page, ...anciennes];
+  });
 }
 
-const { entry } = Astro.props;
-const d = entry.data;
+const { chapitres, pastilles, redirection } = Astro.props;
+if (redirection) return Astro.redirect(redirection);
+
+const actif = chapitres.length - 1;
+const racine = chapitres[0].data;
+const plusieurs = chapitres.length > 1;
+const courante = chapitres[actif].data;
 
 /* Pas de tirage PDF pour ce document, donc pas de référence imprimée : il se
    lit et se remplit dans le navigateur, il ne circule pas en pièce jointe
@@ -35,92 +62,82 @@ const d = entry.data;
 ---
 
 <BaseLayout
-  title={`Cadrage ${d.titre} · Coolbeans`}
-  description={`Questionnaire de cadrage : ${d.objet}`}
+  title={`Cadrage ${courante.titre} · Coolbeans`}
+  description={`Questionnaire de cadrage : ${courante.objet}`}
   noindex
 >
-  <DocumentTopbar />
+  <DocumentEntete
+    etape={racine.etape}
+    titre={titreEntete(racine)}
+    frise={pastilles}
+    onglets={chapitres.map((c) => ({ libelle: libelleOnglet(c.data), slug: c.id }))}
+    actif={actif}
+  />
 
-  <!-- EN-TÊTE -->
-  <header class="relative overflow-hidden bg-surface-subtle">
-    <GridBackdrop />
-    <div class="container-site relative pt-24x pb-16x text-center">
-      <p class="label">Cadrage du besoin</p>
-      <h1 class="mx-auto mt-5 max-w-[18ch]">{d.titre}</h1>
-      <p class="mx-auto mt-6 max-w-[62ch] text-xl leading-[1.45] font-medium text-balance">
-        {d.objet}
-      </p>
-      <p class="mt-5 font-mono text-[12px] tracking-wide text-mute uppercase">
-        Document du {dateLongue(d.date)}
-      </p>
-    </div>
-  </header>
+  {
+    chapitres.map((c, i) => (
+      <DocumentVolet
+        index={i}
+        actif={actif}
+        total={chapitres.length}
+        titre={c.data.titre}
+        objet={c.data.objet}
+        date={ligneDate(c.data, plusieurs, "Document")}
+        sections={sectionsCadrage(c.data)}
+      >
+        <div class="container-site">
+          <div class="mx-auto max-w-[880px] py-16x">
+            <CadrageIntro sections={c.data.intro} />
 
-  <div class="container-site">
-    <div class="mx-auto max-w-[880px] py-16x">
-      <CadrageIntro sections={d.intro} />
+            {c.data.comparatif && (
+              <CadrageComparatif
+                titre={c.data.comparatif.titre}
+                texte={c.data.comparatif.texte}
+                solutions={c.data.comparatif.solutions}
+                criteres={c.data.comparatif.criteres}
+                mentionCout={c.data.comparatif.mentionCout}
+                ancre={ancreSection(c.data.comparatif.titre)}
+              />
+            )}
 
-      {
-        d.comparatif && (
-          <CadrageComparatif
-            titre={d.comparatif.titre}
-            texte={d.comparatif.texte}
-            solutions={d.comparatif.solutions}
-            criteres={d.comparatif.criteres}
-            mentionCout={d.comparatif.mentionCout}
-            ancre={ancreSection(d.comparatif.titre)}
-          />
-        )
-      }
+            {c.data.comparatif?.simulateur && (
+              <CadrageSimulateur
+                titre={c.data.comparatif.simulateur.titre}
+                solutions={c.data.comparatif.solutions}
+                prixDefaut={c.data.comparatif.simulateur.prixDefaut}
+                prixMin={c.data.comparatif.simulateur.prixMin}
+                prixMax={c.data.comparatif.simulateur.prixMax}
+                ancre={ancreSection(c.data.comparatif.simulateur.titre)}
+              />
+            )}
 
-      {
-        d.comparatif?.simulateur && (
-          <CadrageSimulateur
-            titre={d.comparatif.simulateur.titre}
-            solutions={d.comparatif.solutions}
-            prixDefaut={d.comparatif.simulateur.prixDefaut}
-            prixMin={d.comparatif.simulateur.prixMin}
-            prixMax={d.comparatif.simulateur.prixMax}
-            ancre={ancreSection(d.comparatif.simulateur.titre)}
-          />
-        )
-      }
-
-      {
-        d.notes.length > 0 && (
-          <div class="grid grid-cols-[180px_1fr] gap-10 border-t border-line pt-10 max-[700px]:grid-cols-1 max-[700px]:gap-4">
-            <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">
-              NB
-            </p>
-            <div class="flex max-w-[58ch] flex-col gap-3">
-              {d.notes.map((note) => (
-                <Banner tone={note.tone}>
-                  <Fragment set:html={riche(note.texte)} />
-                  {note.tooltip && <Tooltip texte={note.tooltip} />}
-                </Banner>
-              ))}
-            </div>
+            {c.data.notes.length > 0 && (
+              <div class="grid grid-cols-[180px_1fr] gap-10 border-t border-line pt-10 max-[700px]:grid-cols-1 max-[700px]:gap-4">
+                <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">NB</p>
+                <div class="flex max-w-[58ch] flex-col gap-3">
+                  {c.data.notes.map((note) => (
+                    <Banner tone={note.tone}>
+                      <Fragment set:html={riche(note.texte)} />
+                      {note.tooltip && <Tooltip texte={note.tooltip} />}
+                    </Banner>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        )
-      }
-    </div>
-  </div>
+        </div>
 
-  <!-- Réponses déjà reçues, lues en base à chaque visite. Une réponse clôt
-       le cadrage : le bloc masque alors le formulaire qui suit. -->
-  <DocumentReponses
-    server:defer
-    type="cadrage"
-    versions={[{ slug: entry.id, version: 1 }]}
-    tutoiement={d.tutoiement}
-  />
+        <DocumentReponses
+          server:defer
+          type="cadrage"
+          versions={[{ slug: c.id, version: 1 }]}
+          tutoiement={c.data.tutoiement}
+        />
 
-  <CadrageFormulaire
-    slug={entry.id}
-    questions={d.questions}
-    contact={d.contact}
-    tutoiement={d.tutoiement}
-  />
+        <CadrageFormulaire slug={c.id} questions={c.data.questions} contact={c.data.contact} tutoiement={c.data.tutoiement} />
+      </DocumentVolet>
+    ))
+  }
 
   <DevisFooter />
 </BaseLayout>

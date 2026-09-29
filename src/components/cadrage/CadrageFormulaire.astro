@@ -35,6 +35,7 @@ interface Props {
   tutoiement?: boolean;
 }
 const { slug, questions, tutoiement = false } = Astro.props;
+const cle = slug.replace(/[^a-z0-9]+/gi, "-");
 
 /* Les seules phrases du composant qui changent selon le pronom. Tout le reste
    est déjà neutre ou à la première personne, et n'a rien à faire ici. */
@@ -88,7 +89,7 @@ const optionsDe = (q: QuestionCadrage) => [
 ---
 
 <!-- QUESTIONNAIRE -->
-<section data-cadrage-formulaire class="border-t border-line bg-surface-subtle">
+<section data-cadrage-formulaire data-slug={slug} class="border-t border-line bg-surface-subtle">
   <div class="container-site py-24x">
     <!-- Même grille que le corps d'intro (bloc 880, colonne de libellés 180,
          gouttière 40) : sans elle, le formulaire se recentre sur l'axe de la
@@ -102,7 +103,7 @@ const optionsDe = (q: QuestionCadrage) => [
         <p class="mt-4 leading-[1.6] text-mute">{t.accroche}</p>
 
         <form
-          id="cadrage-form"
+          data-cadrage-form
           class="card mt-10 grid gap-9"
           data-slug={slug}
           data-questions={JSON.stringify(descripteurs)}
@@ -183,13 +184,13 @@ const optionsDe = (q: QuestionCadrage) => [
             </p>
             <div class="grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
               <div class="grid gap-2">
-                <label class="label field-label" for="cadrage-prenom">
+                <label class="label field-label" for={`cadrage-prenom-${cle}`}>
                   Prénom <span class="text-ink" aria-hidden="true">*</span>
                 </label>
                 <input
                   class="field"
                   type="text"
-                  id="cadrage-prenom"
+                  id={`cadrage-prenom-${cle}`}
                   name="prenom"
                   autocomplete="given-name"
                   placeholder={t.prenom}
@@ -197,13 +198,13 @@ const optionsDe = (q: QuestionCadrage) => [
                 />
               </div>
               <div class="grid gap-2">
-                <label class="label field-label" for="cadrage-nom">
+                <label class="label field-label" for={`cadrage-nom-${cle}`}>
                   Nom <span class="text-ink" aria-hidden="true">*</span>
                 </label>
                 <input
                   class="field"
                   type="text"
-                  id="cadrage-nom"
+                  id={`cadrage-nom-${cle}`}
                   name="nom"
                   autocomplete="family-name"
                   placeholder={t.nom}
@@ -212,13 +213,13 @@ const optionsDe = (q: QuestionCadrage) => [
               </div>
             </div>
             <div class="grid gap-2">
-              <label class="label field-label" for="cadrage-email">
+              <label class="label field-label" for={`cadrage-email-${cle}`}>
                 Email <span class="text-ink" aria-hidden="true">*</span>
               </label>
               <input
                 class="field"
                 type="email"
-                id="cadrage-email"
+                id={`cadrage-email-${cle}`}
                 name="email"
                 autocomplete="email"
                 placeholder={t.email}
@@ -226,12 +227,12 @@ const optionsDe = (q: QuestionCadrage) => [
               />
             </div>
             <div class="grid gap-2">
-              <label class="label field-label" for="cadrage-message">
+              <label class="label field-label" for={`cadrage-message-${cle}`}>
                 Quelque chose à ajouter
               </label>
               <textarea
                 class="field h-auto min-h-[100px] py-3"
-                id="cadrage-message"
+                id={`cadrage-message-${cle}`}
                 name="message"
                 placeholder="Tout ce que les questions n'ont pas couvert"></textarea>
             </div>
@@ -240,12 +241,12 @@ const optionsDe = (q: QuestionCadrage) => [
           <div class="grid gap-2 border-t border-line pt-6">
             <label
               class="flex cursor-pointer items-start gap-3 text-[13px] leading-[1.6] text-mute"
-              for="cadrage-consentement"
+              for={`cadrage-consentement-${cle}`}
             >
               <input
                 class="checkbox"
                 type="checkbox"
-                id="cadrage-consentement"
+                id={`cadrage-consentement-${cle}`}
                 name="consentement"
                 required
               />
@@ -285,158 +286,158 @@ const optionsDe = (q: QuestionCadrage) => [
     repere: string;
   }
 
-  const form = document.querySelector<HTMLFormElement>("#cadrage-form");
-  const status = form?.querySelector<HTMLParagraphElement>("[data-cadrage-form-status]");
-  const descripteurs: Descripteur[] = JSON.parse(form?.dataset.questions ?? "[]");
-  /* Les deux phrases de statut portent un pronom, donc elles viennent du
-     composant plutôt que d'être écrites ici : le script ne sait pas si le
-     document tutoie. */
-  const textes: { envoye: string; perdues: string } = JSON.parse(form?.dataset.textes ?? "{}");
+  document.querySelectorAll<HTMLFormElement>("form[data-cadrage-form]").forEach((form) => {
+    const status = form.querySelector<HTMLParagraphElement>("[data-cadrage-form-status]");
+    const descripteurs: Descripteur[] = JSON.parse(form.dataset.questions ?? "[]");
+    /* Les deux phrases de statut portent un pronom, donc elles viennent du
+       composant plutôt que d'être écrites ici : le script ne sait pas si le
+       document tutoie. */
+    const textes: { envoye: string; perdues: string } = JSON.parse(form.dataset.textes ?? "{}");
 
-  /* Le champ « autre » ne s'affiche que quand l'option correspondante est
-     cochée. Visible en permanence, il invite à écrire une précision qui ne
-     partira pas ; masqué sans logique, il empêche de préciser. */
-  const syncAutre = () => {
-    if (!form) return;
-    const fd = new FormData(form);
-    descripteurs
-      .filter((d) => d.autre)
-      .forEach((d) => {
-        const champ = form.querySelector<HTMLInputElement>(`[data-cadrage-autre="${d.id}"]`);
-        if (champ) champ.hidden = !fd.getAll(`q-${d.id}`).includes("autre");
-      });
-  };
-  form?.addEventListener("change", syncAutre);
-  syncAutre();
-
-  /* Réponses au format attendu par l'API : des identifiants et des saisies
-     libres, jamais un libellé de question ni de réponse. */
-  const collecter = (fd: FormData) =>
-    descripteurs.map((d) => {
-      if (d.type === "texte") {
-        return { question: d.id, texte: String(fd.get(`q-${d.id}`) ?? "").trim() };
-      }
-      return {
-        question: d.id,
-        valeurs: fd.getAll(`q-${d.id}`).map(String),
-        texte: String(fd.get(`autre-${d.id}`) ?? "").trim(),
-      };
-    });
-
-  const estVide = (r: { valeurs?: string[]; texte?: string }) =>
-    !(r.valeurs?.length ?? 0) && !r.texte;
-
-  form?.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-    if (!status || !submitBtn) return;
-
-    const fd = new FormData(form);
-    const reponses = collecter(fd);
-
-    /* Les questions obligatoires se valident ici et non en `required` HTML :
-       sur un groupe de cases à cocher, `required` exige LA case portant
-       l'attribut, pas une case du groupe, et bloque la soumission sur une
-       erreur incompréhensible. */
-    const manquantes = descripteurs
-      .map((d, i) => ({ d, i, r: reponses[i] }))
-      .filter(({ d, r }) => d.requis && estVide(r));
-    if (manquantes.length) {
-      status.hidden = false;
-      status.textContent =
-        manquantes.length === 1
-          ? `Il manque la question ${manquantes[0].i + 1} : ${manquantes[0].d.repere}`
-          : `Il manque les questions ${manquantes.map((m) => m.i + 1).join(", ")}.`;
-      status.className = "text-center text-[13px] font-medium text-error";
-      return;
-    }
-
-    const payload = {
-      slug: form.dataset.slug,
-      reponses,
-      prenom: fd.get("prenom"),
-      nom: fd.get("nom"),
-      email: fd.get("email"),
-      message: fd.get("message"),
-      consentement: fd.get("consentement") === "on",
+    /* Le champ « autre » ne s'affiche que quand l'option correspondante est
+       cochée. Visible en permanence, il invite à écrire une précision qui ne
+       partira pas ; masqué sans logique, il empêche de préciser. */
+    const syncAutre = () => {
+      const fd = new FormData(form);
+      descripteurs
+        .filter((d) => d.autre)
+        .forEach((d) => {
+          const champ = form.querySelector<HTMLInputElement>(`[data-cadrage-autre="${d.id}"]`);
+          if (champ) champ.hidden = !fd.getAll(`q-${d.id}`).includes("autre");
+        });
     };
+    form.addEventListener("change", syncAutre);
+    syncAutre();
 
-    submitBtn.disabled = true;
-    status.hidden = false;
-    status.textContent = "Envoi en cours...";
-    status.className = "text-center text-[13px] font-medium text-mute";
-
-    try {
-      const res = await fetch("/api/cadrage-reponse", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(payload),
+    /* Réponses au format attendu par l'API : des identifiants et des saisies
+       libres, jamais un libellé de question ni de réponse. */
+    const collecter = (fd: FormData) =>
+      descripteurs.map((d) => {
+        if (d.type === "texte") {
+          return { question: d.id, texte: String(fd.get(`q-${d.id}`) ?? "").trim() };
+        }
+        return {
+          question: d.id,
+          valeurs: fd.getAll(`q-${d.id}`).map(String),
+          texte: String(fd.get(`autre-${d.id}`) ?? "").trim(),
+        };
       });
-      /* Document déjà clos : une réponse est arrivée entre-temps, d'un autre
-         onglet ou d'une page restée ouverte. Rien n'est perdu, la réponse
-         enregistrée fait foi, et le rechargement l'affiche à la place du
-         formulaire. Ce n'est pas une panne : pas de courriel de secours. */
-      if (res.status === 409) {
-        const { error } = await res.json().catch(() => ({ error: "" }));
-        status.textContent = `${error || "Ce document a déjà reçu une réponse."} La page se recharge.`;
-        status.className = "text-center text-[13px] font-medium text-mute";
-        setTimeout(() => location.reload(), 2500);
+
+    const estVide = (r: { valeurs?: string[]; texte?: string }) =>
+      !(r.valeurs?.length ?? 0) && !r.texte;
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      if (!status || !submitBtn) return;
+
+      const fd = new FormData(form);
+      const reponses = collecter(fd);
+
+      /* Les questions obligatoires se valident ici et non en `required` HTML :
+         sur un groupe de cases à cocher, `required` exige LA case portant
+         l'attribut, pas une case du groupe, et bloque la soumission sur une
+         erreur incompréhensible. */
+      const manquantes = descripteurs
+        .map((d, i) => ({ d, i, r: reponses[i] }))
+        .filter(({ d, r }) => d.requis && estVide(r));
+      if (manquantes.length) {
+        status.hidden = false;
+        status.textContent =
+          manquantes.length === 1
+            ? `Il manque la question ${manquantes[0].i + 1} : ${manquantes[0].d.repere}`
+            : `Il manque les questions ${manquantes.map((m) => m.i + 1).join(", ")}.`;
+        status.className = "text-center text-[13px] font-medium text-error";
         return;
       }
-      if (!res.ok) throw new Error();
-      status.textContent = textes.envoye;
-      status.className = "text-center text-[13px] font-medium text-success";
-      form.reset();
-      syncAutre();
-      /* Le temps de lire la confirmation, puis la page se recharge : les
-         réponses enregistrées s'affichent à la place du formulaire. */
-      setTimeout(() => location.reload(), 2500);
-    } catch {
-      /* Filet de sécurité, repris du formulaire de devis : un envoi qui échoue
-         ne doit jamais laisser quelqu'un sans issue. Ici le coût d'une perte
-         est plus élevé qu'ailleurs, parce que la personne vient de passer dix
-         minutes à répondre. On lui rend sa saisie sous forme de courriel
-         pré-rempli, qui ne dépend d'aucun de nos services.
 
-         Les libellés viennent du DOM et pas du YAML : c'est le seul endroit du
-         parcours où c'est acceptable, puisque ce texte ne sert qu'à composer
-         un mail que la personne relit avant de l'envoyer. */
-      const lignes = descripteurs.map((d, i) => {
-        const champ = form.querySelector<HTMLElement>(`[name="q-${d.id}"]`);
-        const legende =
-          champ?.closest("fieldset")?.querySelector("legend")?.textContent?.trim() ??
-          `Question ${i + 1}`;
-        const r = reponses[i];
-        const valeur = estVide(r)
-          ? "(pas de réponse)"
-          : [...(r.valeurs ?? []), r.texte].filter(Boolean).join(" | ");
-        return `${legende.replace(/\s+/g, " ")}\n  ${valeur}`;
-      });
+      const payload = {
+        slug: form.dataset.slug,
+        reponses,
+        prenom: fd.get("prenom"),
+        nom: fd.get("nom"),
+        email: fd.get("email"),
+        message: fd.get("message"),
+        consentement: fd.get("consentement") === "on",
+      };
 
-      const corps = [
-        `Cadrage : ${payload.slug ?? ""}`,
-        "",
-        `Prénom : ${payload.prenom ?? ""}`,
-        `Nom : ${payload.nom ?? ""}`,
-        `Email : ${payload.email ?? ""}`,
-        "",
-        ...lignes,
-        "",
-        String(payload.message ?? "").trim() || "(pas de message)",
-      ].join("\n");
+      submitBtn.disabled = true;
+      status.hidden = false;
+      status.textContent = "Envoi en cours...";
+      status.className = "text-center text-[13px] font-medium text-mute";
 
-      const lien =
-        "mailto:ludo@coolbeans.cc" +
-        `?subject=${encodeURIComponent(`Cadrage ${payload.slug ?? ""}`)}` +
-        `&body=${encodeURIComponent(corps)}`;
+      try {
+        const res = await fetch("/api/cadrage-reponse", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        /* Document déjà clos : une réponse est arrivée entre-temps, d'un autre
+           onglet ou d'une page restée ouverte. Rien n'est perdu, la réponse
+           enregistrée fait foi, et le rechargement l'affiche à la place du
+           formulaire. Ce n'est pas une panne : pas de courriel de secours. */
+        if (res.status === 409) {
+          const { error } = await res.json().catch(() => ({ error: "" }));
+          status.textContent = `${error || "Ce document a déjà reçu une réponse."} La page se recharge.`;
+          status.className = "text-center text-[13px] font-medium text-mute";
+          setTimeout(() => location.reload(), 2500);
+          return;
+        }
+        if (!res.ok) throw new Error();
+        status.textContent = textes.envoye;
+        status.className = "text-center text-[13px] font-medium text-success";
+        form.reset();
+        syncAutre();
+        /* Le temps de lire la confirmation, puis la page se recharge : les
+           réponses enregistrées s'affichent à la place du formulaire. */
+        setTimeout(() => location.reload(), 2500);
+      } catch {
+        /* Filet de sécurité, repris du formulaire de devis : un envoi qui échoue
+           ne doit jamais laisser quelqu'un sans issue. Ici le coût d'une perte
+           est plus élevé qu'ailleurs, parce que la personne vient de passer dix
+           minutes à répondre. On lui rend sa saisie sous forme de courriel
+           pré-rempli, qui ne dépend d'aucun de nos services.
 
-      status.innerHTML =
-        `L'envoi automatique n'a pas abouti. ${textes.perdues} : ` +
-        `<a class="link" href="${lien}">envoyez-les-moi par e-mail</a>, ` +
-        "le message est déjà prêt.";
-      status.className = "text-center text-[13px] font-medium text-error";
-    } finally {
-      submitBtn.disabled = false;
-    }
+           Les libellés viennent du DOM et pas du YAML : c'est le seul endroit du
+           parcours où c'est acceptable, puisque ce texte ne sert qu'à composer
+           un mail que la personne relit avant de l'envoyer. */
+        const lignes = descripteurs.map((d, i) => {
+          const champ = form.querySelector<HTMLElement>(`[name="q-${d.id}"]`);
+          const legende =
+            champ?.closest("fieldset")?.querySelector("legend")?.textContent?.trim() ??
+            `Question ${i + 1}`;
+          const r = reponses[i];
+          const valeur = estVide(r)
+            ? "(pas de réponse)"
+            : [...(r.valeurs ?? []), r.texte].filter(Boolean).join(" | ");
+          return `${legende.replace(/\s+/g, " ")}\n  ${valeur}`;
+        });
+
+        const corps = [
+          `Cadrage : ${payload.slug ?? ""}`,
+          "",
+          `Prénom : ${payload.prenom ?? ""}`,
+          `Nom : ${payload.nom ?? ""}`,
+          `Email : ${payload.email ?? ""}`,
+          "",
+          ...lignes,
+          "",
+          String(payload.message ?? "").trim() || "(pas de message)",
+        ].join("\n");
+
+        const lien =
+          "mailto:ludo@coolbeans.cc" +
+          `?subject=${encodeURIComponent(`Cadrage ${payload.slug ?? ""}`)}` +
+          `&body=${encodeURIComponent(corps)}`;
+
+        status.innerHTML =
+          `L'envoi automatique n'a pas abouti. ${textes.perdues} : ` +
+          `<a class="link" href="${lien}">envoyez-les-moi par e-mail</a>, ` +
+          "le message est déjà prêt.";
+        status.className = "text-center text-[13px] font-medium text-error";
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
   });
 </script>

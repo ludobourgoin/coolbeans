@@ -20,6 +20,7 @@ import {
   afficherReponseDevis,
   afficherReponseDocument,
   perimetreDevis,
+  selecteurFormulaire,
   type ReponseAffichee,
 } from "../../lib/documents/affichage";
 import { estDefinitive, reponsesDuDocument } from "../../lib/documents/reponses";
@@ -35,14 +36,6 @@ const { type, versions, tutoiement = false } = Astro.props;
 /* Chaque visite relit la base : une réponse arrivée il y a une seconde doit
    déjà remplacer le formulaire. */
 Astro.response.headers.set("Cache-Control", "private, no-store");
-
-/* La section que la règle CSS masque, une par composant de formulaire. */
-const FORMULAIRE = {
-  cadrage: "[data-cadrage-formulaire]",
-  devis: "[data-devis-reponse]",
-  livrable: "[data-livrable-reponse]",
-  temoignage: "[data-temoignage-formulaire]",
-} as const;
 
 const slugs = versions.map((v) => v.slug);
 const courant = slugs.at(-1);
@@ -195,4 +188,4 @@ const titre = tutoiement
   )
 }
 
-{clos && <Fragment set:html={`<style>${FORMULAIRE[type]}{display:none!important}</style>`} />}
+{clos && courant && <Fragment set:html={`<style>${selecteurFormulaire(type, courant)}{display:none!important}</style>`} />}
