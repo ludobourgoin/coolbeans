@@ -45,7 +45,7 @@ const STATUT_TONE: Record<StatutTicket, string> = {
           {tickets.map((t) => (
             <tr class="border-b border-line last:border-b-0">
               <td class="px-4 py-3">
-                <a class="link" href={portalHref(`/messagerie/${t.id}`, Astro.url.hostname)}>
+                <a class="link" href={portalHref(`/demandes/${t.id}`, Astro.url.hostname)}>
                   {t.objet}
                 </a>
               </td>

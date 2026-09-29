@@ -91,7 +91,7 @@ export function renderInvitation({
     contenu: [
       p("Bonjour,"),
       p(
-        `${esc(de)} un accès à <strong>${esc(organisation)}</strong> sur myCoolbeans&nbsp;: la documentation de votre projet, son suivi et la messagerie, au même endroit.`,
+        `${esc(de)} un accès à <strong>${esc(organisation)}</strong> sur myCoolbeans&nbsp;: la documentation de votre projet, son suivi et vos demandes, au même endroit.`,
       ),
       titreSection("Ce que vous y trouverez"),
       p(
@@ -106,7 +106,7 @@ export function renderInvitation({
   const text = [
     "Bonjour,",
     "",
-    `${de} un accès à ${organisation} sur myCoolbeans : la documentation de votre projet, son suivi et la messagerie, au même endroit.`,
+    `${de} un accès à ${organisation} sur myCoolbeans : la documentation de votre projet, son suivi et vos demandes, au même endroit.`,
     "",
     url,
     "",

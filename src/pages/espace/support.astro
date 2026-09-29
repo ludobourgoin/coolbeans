@@ -1,7 +1,8 @@
 ---
-// /support a déménagé : la Messagerie (spec 2026-08-15). 301 vers la forme
+// /support a déménagé : la Messagerie (spec 2026-08-15), devenue « Demandes »
+// le 2026-09-29. 301 vers la forme
 // publique correcte selon l'hôte (portalHref gère my.* vs coolbeans.cc).
 export const prerender = false;
 import { portalHref } from "../../lib/portail/nav";
-return Astro.redirect(portalHref("/messagerie", Astro.url.hostname), 301);
+return Astro.redirect(portalHref("/demandes", Astro.url.hostname), 301);
 ---
