@@ -18,6 +18,7 @@ import {
   type QuestionCadrage,
   type ReponseBrute,
 } from "../../lib/cadrage";
+import { documentClos, enregistrerReponseDocument } from "../../lib/documents/reponses";
 
 export const prerender = false;
 
@@ -30,12 +31,10 @@ export const prerender = false;
      dix minutes de son temps.
    - **La photo part en R2 ET en pièce jointe du mail.** R2 est la copie
      durable, la pièce jointe évite d'écrire une route de téléchargement
-     authentifiée pour une photo par projet. Sans elle, il faudrait une table
-     et une migration, c'est-à-dire un geste non parallélisable qui part en
-     prod dès le merge sur staging.
+     authentifiée pour une photo par projet. La clé R2 est notée en D1.
 
-   Comme le cadrage : aucune écriture en base, aucun effet Linear. Le mail est
-   la trace, Ludo lit et décide. */
+   Comme le cadrage : D1 d'abord, le mail ensuite, une seule réponse par
+   document (409 au-delà), aucun effet Linear. */
 
 const json = (body: unknown, status: number) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
@@ -135,6 +134,14 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: "Document introuvable." }, 404);
   }
 
+  /* Refus avant tout dépôt R2 : une photo envoyée sur un document clos ne
+     doit rien laisser derrière elle. */
+  const clos = await documentClos("temoignage", slug).catch((err) => {
+    console.error("temoignage-reponse: lecture D1 échouée", err);
+    return false;
+  });
+  if (clos) return json({ error: "Ce document a déjà reçu une réponse." }, 409);
+
   const photo = fd.get("photo");
   const aUnePhoto = photo instanceof File && photo.size > 0;
   if (aUnePhoto) {
@@ -170,6 +177,21 @@ export const POST: APIRoute = async ({ request }) => {
       cleR2 = undefined;
     }
     piecesJointes = [{ filename: nomFichier, content: base64(buffer) }];
+  }
+
+  try {
+    await enregistrerReponseDocument({
+      type: "temoignage",
+      slug,
+      reponses: lisibles,
+      message: message || null,
+      prenom,
+      nom,
+      email,
+      photoR2: cleR2 ?? null,
+    });
+  } catch (err) {
+    console.error("temoignage-reponse: écriture D1 échouée", err);
   }
 
   const paires = (rs: typeof lisibles): Array<[string, string]> =>

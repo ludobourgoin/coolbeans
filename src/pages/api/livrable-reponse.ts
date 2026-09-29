@@ -12,13 +12,18 @@ import {
   titreSection,
 } from "../../emails/transactionnel";
 import { REPONSES_LIVRABLE, estReponseLivrable } from "../../lib/livrable";
+import { documentClos, enregistrerReponseDocument } from "../../lib/documents/reponses";
 
 export const prerender = false;
 
-/* Réponse à un document de livrable. Jumeau de /api/cadrage-reponse : aucune
-   écriture en base, aucun effet Linear. Le mail est la trace, Ludo lit et
-   décide. Une validation de livrable n'est pas une signature : elle ouvre la
-   mise en ligne, elle ne déclenche pas de facture. */
+/* Réponse à un document de livrable. Jumeau de /api/cadrage-reponse : D1
+   d'abord, le mail ensuite, aucun effet Linear. Une validation de livrable
+   n'est pas une signature : elle ouvre la mise en ligne, elle ne déclenche
+   pas de facture.
+
+   Une validation clôt la version : l'endpoint refuse ensuite toute réponse
+   sur ce slug, en 409. Des retours, eux, laissent la version ouverte, pour
+   valider une fois les corrections faites. */
 
 const json = (body: unknown, status: number) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
@@ -78,6 +83,26 @@ export const POST: APIRoute = async ({ request }) => {
   const nomClient = nom.trim();
   const emailClient = email.trim();
   const libelle = REPONSES_LIVRABLE[reponse];
+
+  const clos = await documentClos("livrable", slug).catch((err) => {
+    console.error("livrable-reponse: lecture D1 échouée", err);
+    return false;
+  });
+  if (clos) return json({ error: "Cette version a déjà été validée." }, 409);
+
+  try {
+    await enregistrerReponseDocument({
+      type: "livrable",
+      slug,
+      decision: reponse,
+      message: messageClient ?? null,
+      prenom: prenomClient,
+      nom: nomClient,
+      email: emailClient,
+    });
+  } catch (err) {
+    console.error("livrable-reponse: écriture D1 échouée", err);
+  }
   const racine = doc.data.versionDe ?? slug;
   const version = doc.data.version;
 

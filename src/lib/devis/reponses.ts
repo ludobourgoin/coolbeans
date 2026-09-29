@@ -143,3 +143,32 @@ export async function listerReponses(d1: D1Like = db()): Promise<ReponseDevis[]>
   const { results } = await d1.prepare(SQL_LISTE).all<ReponseDevis>();
   return results;
 }
+
+/**
+ * Toutes les réponses reçues par les versions d'un devis, dans l'ordre
+ * d'arrivée. C'est ce que la page publique affiche à la place du formulaire
+ * (spec 2026-09-29-reponses-dans-les-documents-design.md).
+ */
+export async function reponsesDesVersions(
+  slugs: string[],
+  d1: D1Like = db(),
+): Promise<ReponseDevis[]> {
+  if (!slugs.length) return [];
+  const marques = slugs.map(() => "?").join(", ");
+  const { results } = await d1
+    .prepare(`SELECT id, ${COLONNES} FROM devis_reponses WHERE slug IN (${marques}) ORDER BY id`)
+    .bind(...slugs)
+    .all<ReponseDevis>();
+  return results;
+}
+
+/* Une version validée est close : le formulaire disparaît de la page, et
+   l'endpoint refuse toute nouvelle réponse sur ce slug. Une question, elle,
+   ne clôt rien : le client doit pouvoir valider ensuite. */
+const SQL_CLOS =
+  "SELECT id FROM devis_reponses WHERE slug = ? AND decision = 'validation' LIMIT 1";
+
+export async function devisClos(slug: string, d1: D1Like = db()): Promise<boolean> {
+  const { results } = await d1.prepare(SQL_CLOS).bind(slug).all<{ id: number }>();
+  return results.length > 0;
+}

@@ -7,6 +7,7 @@ import DevisEntetePrint from "../../components/devis/DevisEntetePrint.astro";
 import DevisReponse from "../../components/devis/DevisReponse.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
 import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
+import DocumentReponses from "../../components/devis/DocumentReponses.astro";
 import { dateLongue } from "../../lib/devis";
 
 /* Un devis peut avoir plusieurs versions (révision de périmètre). Elles
@@ -125,6 +126,14 @@ const reference = versions[0].id.split("-").pop();
   >
     Proposition nᵒ {reference} · Version {courante.version} · coolbeans.cc/devis/{versions[0].id}
   </div>
+
+  <!-- Réponses déjà reçues, toutes versions confondues. Une validation de la
+       version courante masque le formulaire qui suit. -->
+  <DocumentReponses
+    server:defer
+    type="devis"
+    versions={versions.map((v) => ({ slug: v.id, version: v.data.version }))}
+  />
 
   {
     courante.formulaire && (

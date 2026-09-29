@@ -9,6 +9,7 @@ import TemoignageCasClient from "../../components/temoignage/TemoignageCasClient
 import TemoignageFormulaire from "../../components/temoignage/TemoignageFormulaire.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
 import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
+import DocumentReponses from "../../components/devis/DocumentReponses.astro";
 import { dateLongue, riche, ancreSection } from "../../lib/devis";
 
 /* Une page de témoignage par fichier YAML, une URL par fichier. Pas de
@@ -87,6 +88,15 @@ const d = entry.data;
       }
     </div>
   </div>
+
+  <!-- Réponses déjà reçues, lues en base à chaque visite. Une réponse clôt
+       le document : le bloc masque alors le formulaire qui suit. -->
+  <DocumentReponses
+    server:defer
+    type="temoignage"
+    versions={[{ slug: entry.id, version: 1 }]}
+    tutoiement={d.tutoiement}
+  />
 
   {
     /* Formulaire coupé une fois le témoignage reçu : la page devient une

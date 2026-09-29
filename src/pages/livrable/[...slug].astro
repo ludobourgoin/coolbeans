@@ -13,6 +13,7 @@ import LivrableSuite from "../../components/livrable/LivrableSuite.astro";
 import LivrableReponse from "../../components/livrable/LivrableReponse.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
 import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
+import DocumentReponses from "../../components/devis/DocumentReponses.astro";
 import { dateLongue, riche } from "../../lib/devis";
 
 /* Un livrable peut avoir plusieurs versions : après des retours, la V2 se
@@ -175,6 +176,15 @@ const dateCourte = (d: Date) =>
       ))
     }
   </div>
+
+  <!-- Réponses déjà reçues, toutes versions confondues. Une validation de la
+       version courante masque le formulaire qui suit ; des retours le laissent. -->
+  <DocumentReponses
+    server:defer
+    type="livrable"
+    versions={versions.map((v) => ({ slug: v.id, version: v.data.version }))}
+    tutoiement={courante.tutoiement}
+  />
 
   {
     courante.formulaire && (

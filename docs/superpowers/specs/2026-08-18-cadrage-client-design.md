@@ -298,6 +298,10 @@ migration Better Auth tombe, et l'arbitrage A ou B du §8 devient sans objet.
 
 ### 13.2 Pas de base de données en V1
 
+> Révisé le 2026-09-29 : les réponses vont en D1 (`document_reponses`) et
+> s'affichent à la place du formulaire. Voir
+> `2026-09-29-reponses-dans-les-documents-design.md`.
+
 Le §4.2 prévoyait une table D1 `cadrage_reponses` append-only, qui fondait le
 calcul d'écart du §6.2. Rien de tout ça n'est livré.
 
