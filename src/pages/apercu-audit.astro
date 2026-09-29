@@ -1,0 +1,274 @@
+---
+/* APERÇU JETABLE du document d'audit, pour trancher sa structure avant la
+   spec. Même principe que apercu-gabarit.astro : il réutilise les vrais
+   composants du cadrage et le vrai contenu (./_apercu-audit.ts), et il
+   disparaît quand la collection `audit` existe. */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import GridBackdrop from "../components/GridBackdrop.astro";
+import Badge from "../components/ui/Badge.astro";
+import CadrageIntro from "../components/cadrage/CadrageIntro.astro";
+import CadrageComparatif from "../components/cadrage/CadrageComparatif.astro";
+import DevisFooter from "../components/devis/DevisFooter.astro";
+import DocumentTopbar from "../components/devis/DocumentTopbar.astro";
+import { dateLongue, riche, ancreSection } from "../lib/devis";
+import { audit, ice, virgule, teinteScore, causes, contact } from "./_apercu-audit";
+
+const d = audit;
+
+/* Tri initial par impact, puis par score : le tableau s'ouvre sur ce qui
+   compte le plus pour le client. Les autres tris restent à un clic. */
+const lignes = [...d.optimisations.lignes].sort(
+  (a, b) => b.impact - a.impact || ice(b) - ice(a),
+);
+
+const colonnes = [
+  { cle: "impact", libelle: "Impact" },
+  { cle: "confiance", libelle: "Confiance" },
+  { cle: "facilite", libelle: "Facilité" },
+  { cle: "ice", libelle: "ICE" },
+];
+
+const titreSection = "pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase";
+const grille =
+  "grid scroll-mt-16.5 grid-cols-[180px_1fr] gap-10 border-t border-line py-10 max-[700px]:grid-cols-1 max-[700px]:gap-4";
+const enTete = "border-b border-line px-3 py-3 text-left align-bottom font-mono text-[11px] font-semibold tracking-wide text-mute uppercase";
+---
+
+<BaseLayout title={`Audit ${d.titre} · Coolbeans`} description={d.objet} noindex>
+  <DocumentTopbar />
+
+  <header class="relative overflow-hidden bg-surface-subtle">
+    <GridBackdrop />
+    <div class="container-site relative pt-24x pb-16x text-center">
+      <p class="label">Audit du site</p>
+      <h1 class="mx-auto mt-5 max-w-[18ch]">{d.titre}</h1>
+      <p class="mx-auto mt-6 max-w-[62ch] text-xl leading-[1.45] font-medium text-balance">
+        {d.objet}
+      </p>
+      <p class="mt-5 font-mono text-[12px] tracking-wide text-mute uppercase">
+        Document du {dateLongue(d.date)}
+      </p>
+    </div>
+  </header>
+
+  <div class="container-site">
+    <div class="mx-auto max-w-[880px] py-16x">
+      <CadrageIntro sections={d.intro} />
+
+      <!-- MESURES -->
+      <section id={ancreSection(d.mesures.titre)} class={grille}>
+        <p class={titreSection}>{d.mesures.titre}</p>
+        <div>
+          <p class="mb-6 max-w-[58ch] leading-[1.6]" set:html={riche(d.mesures.texte)} />
+          <div class="-mx-1 overflow-x-auto px-1 pb-1">
+            <table class="w-full min-w-[520px] border-collapse text-[15px]">
+              <thead>
+                <tr>
+                  <th class={enTete}>Page</th>
+                  <th class={enTete}>Mobile</th>
+                  <th class={enTete}>Ordinateur</th>
+                  <th class={enTete}>Affichage</th>
+                  <th class={enTete}>Poids</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  d.mesures.lignes.map((l) => (
+                    <tr>
+                      <th scope="row" class="border-b border-line px-3 py-3 text-left align-top font-medium">
+                        {l.page}
+                        <span class="mt-0.5 block font-mono text-[11px] font-normal text-mute">{l.chemin}</span>
+                      </th>
+                      <td class="border-b border-line px-3 py-3 align-top">
+                        <Badge variant={teinteScore(l.mobile)} subtle>{l.mobile}</Badge>
+                      </td>
+                      <td class="border-b border-line px-3 py-3 align-top">
+                        <Badge variant={teinteScore(l.ordinateur)} subtle>{l.ordinateur}</Badge>
+                      </td>
+                      <td class="border-b border-line px-3 py-3 align-top tabular-nums">{l.affichage}</td>
+                      <td class="border-b border-line px-3 py-3 align-top tabular-nums">{l.poids}</td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-6 max-w-[58ch] text-[14px] leading-[1.6] text-mute" set:html={riche(d.mesures.note)} />
+        </div>
+      </section>
+
+      <!-- CONSTATS : même format que l'intro, sous un titre de partie. -->
+      <div class="border-t border-line pt-10">
+        <p class="font-mono text-[12px] tracking-wide text-mute uppercase">Constats</p>
+      </div>
+      <CadrageIntro sections={d.constats} />
+
+      <!-- OPTIMISATIONS : sort de la colonne de lecture, comme le comparatif. -->
+      <div class="-mx-[calc((100vw-100%)/2)]">
+        <div class="container-site">
+          <section id={ancreSection(d.optimisations.titre)} class={grille}>
+            <p class={titreSection}>{d.optimisations.titre}</p>
+            <div>
+              <p class="mb-6 max-w-[58ch] leading-[1.6]" set:html={riche(d.optimisations.texte)} />
+              <div class="-mx-1 overflow-x-auto px-1 pb-1">
+                <table class="w-full min-w-[820px] border-collapse text-[15px]" data-tri-table>
+                  <thead>
+                    <tr>
+                      <th class={enTete}>Optimisation</th>
+                      <th class={enTete} aria-sort="none" data-tri="cause">
+                        <button type="button" class="inline-flex items-center gap-1 uppercase hover:text-ink">
+                          Cause <span data-fleche aria-hidden="true" />
+                        </button>
+                      </th>
+                      {
+                        colonnes.map((c) => (
+                          <th
+                            class={`${enTete} text-right`}
+                            aria-sort={c.cle === "impact" && "descending"}
+                            data-tri={c.cle}
+                          >
+                            <button type="button" class="inline-flex items-center gap-1 uppercase hover:text-ink">
+                              {c.libelle} <span data-fleche aria-hidden="true" />
+                            </button>
+                          </th>
+                        ))
+                      }
+                      <th class={`${enTete} text-center`} aria-sort="none" data-tri="refonte">
+                        <button type="button" class="inline-flex items-center gap-1 uppercase hover:text-ink">
+                          Réglé par la refonte <span data-fleche aria-hidden="true" />
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      lignes.map((l) => (
+                        <tr
+                          data-cause={l.cause}
+                          data-impact={l.impact}
+                          data-confiance={l.confiance}
+                          data-facilite={l.facilite}
+                          data-ice={ice(l)}
+                          data-refonte={Number(l.refonte)}
+                        >
+                          <th scope="row" class="border-b border-line px-3 py-3 text-left align-top font-medium">
+                            {l.quoi}
+                            <span class="mt-1 block max-w-[46ch] text-[13px] leading-[1.5] font-normal text-mute" set:html={riche(l.pourquoi)} />
+                          </th>
+                          <td class="border-b border-line px-3 py-3 align-top">
+                            <Badge variant={causes[l.cause as keyof typeof causes].teinte} subtle>
+                              {causes[l.cause as keyof typeof causes].libelle}
+                            </Badge>
+                          </td>
+                          <td class="border-b border-line px-3 py-3 text-right align-top tabular-nums">{l.impact}</td>
+                          <td class="border-b border-line px-3 py-3 text-right align-top tabular-nums">{l.confiance}</td>
+                          <td class="border-b border-line px-3 py-3 text-right align-top tabular-nums">{l.facilite}</td>
+                          <td class="border-b border-line px-3 py-3 text-right align-top font-semibold tabular-nums">{virgule(ice(l))}</td>
+                          <td class="border-b border-line px-3 py-3 text-center align-top">
+                            {l.refonte && <span class="text-ink" aria-label="oui">✓</span>}
+                          </td>
+                        </tr>
+                      ))
+                    }
+                  </tbody>
+                </table>
+              </div>
+              <p class="mt-6 max-w-[58ch] text-[14px] leading-[1.6] text-mute" set:html={riche(d.optimisations.note)} />
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <CadrageComparatif
+        titre={d.comparatif.titre}
+        solutions={d.comparatif.solutions}
+        criteres={d.comparatif.criteres}
+        mentionCout={d.comparatif.mentionCout}
+        ancre={ancreSection(d.comparatif.titre)}
+      />
+
+      <!-- LA SUITE -->
+      <section id={ancreSection(d.suite.titre)} class={grille}>
+        <p class={titreSection}>{d.suite.titre}</p>
+        <div>
+          <p class="max-w-[58ch] leading-[1.6]" set:html={riche(d.suite.texte)} />
+
+          {
+            d.suite.video && (
+              <div class="mt-6 overflow-hidden rounded-lg border border-line">
+                <div class="relative aspect-video">
+                  <iframe
+                    class="absolute inset-0 size-full"
+                    src={`https://www.youtube-nocookie.com/embed/${d.suite.video.id}`}
+                    title={d.suite.video.titre ?? "Vidéo"}
+                    loading="lazy"
+                    allowfullscreen
+                  />
+                </div>
+              </div>
+            )
+          }
+          {
+            !d.suite.video && (
+              <div class="mt-6 grid aspect-video place-items-center rounded-lg border border-dashed border-line bg-surface-subtle font-mono text-[12px] tracking-wide text-mute uppercase">
+                Emplacement de la vidéo
+              </div>
+            )
+          }
+
+          <div class="mt-8 flex flex-wrap items-center gap-4">
+            <a class="btn btn-lg" href={d.suite.demo.url}>{d.suite.demo.libelle}</a>
+            <span class="text-[14px] text-mute">{d.suite.demo.aide}</span>
+          </div>
+
+          <p class="mt-8 max-w-[58ch] leading-[1.6]">
+            {d.suite.contact}
+            <span class="mt-2 block">
+              <a class="link" href={`mailto:${contact.mail}`}>{contact.mail}</a>
+              <span class="mx-2 text-mute" aria-hidden="true">·</span>
+              <a class="link" href={`tel:${contact.tel}`}>{contact.telephone}</a>
+            </span>
+          </p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <DevisFooter />
+</BaseLayout>
+
+<script>
+  /* Tri du tableau des optimisations. Premier clic : décroissant, second :
+     croissant. La cause se trie par ordre alphabétique inverse pour mettre
+     « structure » en tête au premier clic. */
+  document.querySelectorAll<HTMLTableElement>("[data-tri-table]").forEach((table) => {
+    const corps = table.tBodies[0];
+    const entetes = table.querySelectorAll<HTMLTableCellElement>("th[data-tri]");
+    const fleches = () =>
+      entetes.forEach((th) => {
+        const f = th.querySelector("[data-fleche]");
+        const etat = th.getAttribute("aria-sort");
+        if (f) f.textContent = etat === "descending" ? "↓" : etat === "ascending" ? "↑" : "";
+      });
+    fleches();
+    entetes.forEach((th) => {
+      th.querySelector("button")?.addEventListener("click", () => {
+        const cle = th.dataset.tri!;
+        const sens = th.getAttribute("aria-sort") === "descending" ? "ascending" : "descending";
+        entetes.forEach((autre) => autre.setAttribute("aria-sort", "none"));
+        th.setAttribute("aria-sort", sens);
+        const facteur = sens === "descending" ? -1 : 1;
+        const lignes = [...corps.rows].sort((a, b) => {
+          const va = a.dataset[cle] ?? "";
+          const vb = b.dataset[cle] ?? "";
+          const na = Number(va);
+          const nb = Number(vb);
+          const ordre = Number.isNaN(na) || Number.isNaN(nb) ? va.localeCompare(vb) : na - nb;
+          return ordre * facteur || Number(b.dataset.ice) - Number(a.dataset.ice);
+        });
+        corps.append(...lignes);
+        fleches();
+      });
+    });
+  });
+</script>
