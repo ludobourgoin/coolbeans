@@ -31,6 +31,10 @@ export interface NouvelleReponse {
 export type ReponseDevis = NouvelleReponse & {
   id: number;
   createdAt: string;
+  /* Comment le client a répondu (migration 0010). Une validation reçue par
+     mail n'a pas coché la case de consentement du formulaire : la page ne
+     l'affiche pas. Optionnel pour les mocks des tests existants. */
+  canal?: "formulaire" | "mail";
   /* Sous-issue Linear de facturation créée à la validation. Sa présence dit
      que le déclenchement a déjà eu lieu : c'est le garde-fou contre une
      seconde soumission du même devis. */
@@ -64,7 +68,7 @@ const SQL_INSERT =
 const COLONNES =
   "slug, decision, message, prenom, nom, email, raison_sociale AS raisonSociale, " +
   "siren, adresse, tva, options_retenues AS optionsRetenues, " +
-  "montant_retenu AS montantRetenu, linear_task_id AS linearTaskId, created_at AS createdAt";
+  "montant_retenu AS montantRetenu, linear_task_id AS linearTaskId, canal, created_at AS createdAt";
 
 /* L'INSERT ne rend pas l'id sous D1Like : on relit la dernière ligne du slug
    pour connaître la réponse qu'on vient d'écrire, et pouvoir y accrocher

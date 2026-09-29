@@ -40,6 +40,8 @@ export interface ReponseDocument {
   email: string;
   photoR2: string | null;
   origine: "formulaire" | "reprise";
+  /** Comment le client a répondu (migration 0010) : distinct d'`origine`. */
+  canal: "formulaire" | "mail";
   createdAt: string;
 }
 
@@ -50,7 +52,7 @@ const SQL_INSERT =
 
 const COLONNES =
   "id, type, slug, decision, reponses, message, prenom, nom, email, " +
-  "photo_r2 AS photoR2, origine, created_at AS createdAt";
+  "photo_r2 AS photoR2, origine, canal, created_at AS createdAt";
 
 /* Une réponse est définitive quand elle n'appelle pas de suite sur la même
    version : toute réponse de cadrage ou de témoignage (decision nulle), une

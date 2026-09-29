@@ -21,6 +21,8 @@ export interface ReponseAffichee {
   decision?: string;
   /** Libellés des champs d'identité, affichés biffés. Jamais leurs valeurs. */
   identite: string[];
+  /** Une décision reçue par mail se date autrement et n'a pas de consentement. */
+  canal: "formulaire" | "mail";
   reponses: { question: string; reponse: string }[];
   /** Proposition à options : ce que le client a coché. */
   perimetre?: { options: string[]; montant?: string };
@@ -46,12 +48,19 @@ export const DECISIONS_DEVIS = {
 
 const IDENTITE = ["Prénom", "Nom", "Email"];
 
+/* Le consentement est une case du formulaire. Une décision prise par mail ne
+   l'a jamais cochée : afficher la ligne, même biffée, affirmerait le contraire. */
+const consentement = (canal: ReponseAffichee["canal"]) =>
+  canal === "mail" ? [] : ["Consentement"];
+
 export function afficherReponseDocument(r: ReponseDocument, version?: number): ReponseAffichee {
+  const canal = r.canal ?? "formulaire";
   return {
     date: dateReponse(r.createdAt),
     version,
     decision: r.decision ? REPONSES_LIVRABLE[r.decision] : undefined,
-    identite: [...IDENTITE, ...(r.photoR2 ? ["Photo"] : []), "Consentement"],
+    identite: [...IDENTITE, ...(r.photoR2 ? ["Photo"] : []), ...consentement(canal)],
+    canal,
     reponses: lireReponses(r.reponses).map(({ question, reponse }) => ({ question, reponse })),
     message: r.message?.trim() || undefined,
   };
@@ -62,10 +71,12 @@ export function afficherReponseDevis(
   perimetre?: ReponseAffichee["perimetre"],
   version?: number,
 ): ReponseAffichee {
+  const canal = r.canal ?? "formulaire";
   return {
     date: dateReponse(r.createdAt),
     version,
     decision: DECISIONS_DEVIS[r.decision],
+    canal,
     /* Même ordre que le mail de notification. Un champ laissé vide n'a pas de
        ligne : une barre sur une valeur absente ferait croire qu'on cache
        quelque chose. */
@@ -75,7 +86,7 @@ export function afficherReponseDevis(
       ...(r.siren ? ["SIREN"] : []),
       ...(r.adresse ? ["Adresse"] : []),
       ...(r.tva ? ["TVA intracom."] : []),
-      "Consentement",
+      ...consentement(canal),
     ],
     reponses: [],
     perimetre,

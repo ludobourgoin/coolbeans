@@ -24,6 +24,7 @@ const document = (surcharge: Partial<ReponseDocument> = {}): ReponseDocument => 
   email: "aurelie@example.com",
   photoR2: null,
   origine: "formulaire",
+  canal: "formulaire",
   createdAt: "2026-09-16 11:59:00",
   ...surcharge,
 });
@@ -98,6 +99,19 @@ describe("afficherReponseDevis", () => {
     for (const valeur of ["Suzanne", "CAFA Toulouse", "123456789", "rue du Port"]) {
       expect(serialise).not.toContain(valeur);
     }
+  });
+});
+
+describe("décision reçue par mail", () => {
+  it("n'affiche pas de consentement : le client n'a jamais coché la case", () => {
+    const livrable = afficherReponseDocument(
+      document({ type: "livrable", decision: "retours", canal: "mail", origine: "reprise" }),
+    );
+    expect(livrable.canal).toBe("mail");
+    expect(livrable.identite).toEqual(["Prénom", "Nom", "Email"]);
+    const proposition = afficherReponseDevis(devis({ canal: "mail" }));
+    expect(proposition.identite).not.toContain("Consentement");
+    expect(afficherReponseDevis(devis()).identite).toContain("Consentement");
   });
 });
 

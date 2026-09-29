@@ -24,6 +24,7 @@ const MIGRATIONS = [
   "0006_devis_facturation.sql",
   "0007_devis_options.sql",
   "0009_document_reponses.sql",
+  "0010_reponses_canal.sql",
 ];
 
 function dbSqlite() {
@@ -74,6 +75,7 @@ describe("document_reponses (D1)", () => {
       type: "cadrage",
       decision: null,
       origine: "formulaire",
+      canal: "formulaire",
       email: "aurelie@example.com",
       photoR2: null,
     });
@@ -150,6 +152,20 @@ describe("document_reponses (D1)", () => {
     ).toThrow();
   });
 
+  it("une décision reprise d'un mail porte son canal", async () => {
+    sqlite.exec(
+      "INSERT INTO document_reponses (type, slug, decision, prenom, nom, email, origine, canal, created_at) " +
+        "VALUES ('livrable', 'cafa/site', 'retours', 'S', 'S', 's@x.fr', 'reprise', 'mail', '2026-09-18 14:01:48')",
+    );
+    const [r] = await reponsesDuDocument("livrable", ["cafa/site"], d1);
+    expect(r).toMatchObject({ origine: "reprise", canal: "mail" });
+    expect(() =>
+      sqlite.exec(
+        "INSERT INTO document_reponses (type, slug, prenom, nom, email, canal) VALUES ('cadrage', 'x', 'a', 'b', 'c', 'sms')",
+      ),
+    ).toThrow();
+  });
+
   it("une reprise garde sa date d'origine", async () => {
     sqlite.exec(
       "INSERT INTO document_reponses (type, slug, prenom, nom, email, origine, created_at) " +
@@ -175,7 +191,7 @@ describe("devis_reponses : lecture par versions et clôture", () => {
 
     const rs = await reponsesDesVersions(["cafa/site-8791", "cafa/site-8791-v2"], d1);
     expect(rs.map((r) => r.decision)).toEqual(["question", "validation"]);
-    expect(rs[1]).toMatchObject({ siren: "123456789" });
+    expect(rs[1]).toMatchObject({ siren: "123456789", canal: "formulaire" });
   });
 
   it("les lignes existantes prennent l'origine « formulaire » par défaut", async () => {
