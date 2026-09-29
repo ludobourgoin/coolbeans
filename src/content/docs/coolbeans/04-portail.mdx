@@ -143,6 +143,26 @@ et retirer l'enveloppe annule l'envoi. Un commentaire sans enveloppe reste
 une note interne. Depuis le 2026-09-29, l'enveloppe remplace les chevrons
 `>>`, qui ne publient plus rien. Le cron passe toutes les cinq minutes.
 
+**Le suivi dans Linear.** La vue partagée [« Support »](https://linear.app/coolbeans-hq/view/support-78f07397ef69)
+de la team Web rassemble tous les tickets du portail, tous clients et tous
+projets confondus, en board avec une colonne par statut. Elle filtre sur le
+label « Support ». Rattachée à la team parente, elle n'affiche les tickets
+des sous-teams clients que parce que l'option d'affichage « Sub-team issues »
+est active : si elle paraît vide, c'est la première chose à vérifier.
+
+Le client ne voit pas ces colonnes. La page Demandes regroupe les statuts du
+board en trois pastilles pâles :
+
+| Statut Linear | Pastille côté client |
+| --- | --- |
+| Triage, Backlog, Todo | « En attente », gris |
+| In Progress | « En cours », bleu |
+| Done, Canceled | « Traité », vert |
+
+Le regroupement lit le type du statut Linear, jamais son nom, qui peut
+varier d'une team à l'autre. Un ticket dont l'issue est introuvable
+(supprimée, pas encore rattachée) n'affiche aucune pastille.
+
 Le client répond depuis la page du fil. Sa réponse arrive en nouveau
 commentaire sur la même issue, précédé de son prénom (« **Susanne (portail)** »),
 avec les liens de ses pièces jointes. Ce commentaire se place à la suite des
@@ -198,3 +218,4 @@ chantier à part entière (voir la spec de migration dans
 | Formulaire, urgence, pièces jointes, liste | `src/components/portail/NouvelleDemande.astro`, `ChoixUrgence.astro`, `PiecesJointes.astro`, `MessagerieBoard.astro` |
 | Création d'une demande, compte au nom duquel écrire | `src/pages/api/messagerie/nouveau.ts`, `comptePrincipal` dans `src/lib/portail/comptes.ts` |
 | Réponses et ouverture depuis Linear | `src/pages/api/linear-webhook.ts`, `src/lib/portail/messagerie/publier.ts` et `ouvrir.ts`, cron dans `src/worker.ts` |
+| Statuts côté client (trois pastilles) | `statutFromStateType` et `STATUT_LABEL` dans `src/lib/portail/messagerie/regles.ts`, couleurs dans `MessagerieBoard.astro` |
