@@ -140,6 +140,8 @@ myCoolbeans). On ne recrée ni nom ni adresse.
 
 ### Popup Nouvelle demande
 
+> Révisé le 2026-09-29 : la section s'appelle « Demandes » et la popup a disparu. Le formulaire s'affiche d'emblée en tête de page, la liste des fils suit, façon boîte de réception. L'urgence se choisit dans un menu maison (icône et couleur par niveau), les pièces jointes dans une zone de dépôt. L'admin n'a plus de liste de comptes : un lien « Ouvrir un ticket au nom de {client} » bascule le formulaire, et le ticket part au nom du contact principal de l'espace.
+
 - **Objet** : obligatoire.
 - **Description** : optionnelle.
 - **Urgence** : optionnelle (mapping §5).

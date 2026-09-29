@@ -1,43 +1,77 @@
 ---
-// Popup Nouvelle demande (spec 2026-08-15-messagerie-portail-design.md §6).
-//
-// Même mécanique que feu SupportForm.astro : soumission fetch, états idle /
-// envoi / succès / erreur dans un role="status". Différences : multipart (pièces
-// jointes possibles) et succès → location.reload() pour faire apparaître le
-// ticket dans MessagerieBoard, plutôt qu'un simple message inline. Composant
-// autonome (bouton + <dialog>) pour rester réutilisable tel quel par la Task 11
-// (page ticket).
-//
-// Pas la classe `card` — mêmes tokens que SupportForm/EmptyState.
-import { URGENCES } from "../../lib/portail/messagerie/regles";
+/* Formulaire « Nouvelle demande », affiché directement en tête de la page
+   Demandes (spec 2026-08-15-messagerie-portail-design.md §6, revu le
+   2026-09-29 : plus de popup, un formulaire visible d'emblée).
+
+   Un seul formulaire pour tout le monde. L'admin qui se trouve dans l'espace
+   d'un client voit en plus un lien discret, « Ouvrir un ticket au nom de
+   {client} ». Ce lien ne navigue pas, il bascule le formulaire : le ticket part
+   alors au nom du contact principal de l'espace, qui reçoit les réponses. Il
+   n'y a pas de liste de comptes à choisir : la demande va dans la boîte de
+   l'espace où l'on se trouve.
+
+   Soumission multipart vers /api/messagerie/nouveau, inchangée : l'urgence et
+   les pièces jointes gardent leurs `name`, et le mode « au nom du client »
+   passe par `pourCompteId`, que l'endpoint contrôle (compte du même espace,
+   admin seulement). Succès : rechargement, la demande apparaît dans la liste. */
+import ChoixUrgence from "./ChoixUrgence.astro";
+import PiecesJointes from "./PiecesJointes.astro";
+
+interface Props {
+  /** Admin dans l'espace d'un client qui a au moins un compte. */
+  auNomDe?: { client: string; compteId: string; destinataire: string };
+  /** Admin dans l'espace d'un client sans aucun compte : on le dit. */
+  clientSansCompte?: string;
+}
+const { auNomDe, clientSansCompte } = Astro.props;
 ---
 
-<button type="button" class="btn" data-nouvelle-demande-ouvrir>
-  Nouvelle demande
-</button>
-
-<dialog
-  data-nouvelle-demande
-  aria-labelledby="nd-titre"
-  class="w-full max-w-[560px] rounded-card border border-line bg-surface p-0 text-ink backdrop:bg-overlay"
->
-  <form data-nouvelle-demande-form enctype="multipart/form-data" class="grid gap-6 p-6x">
-    <div class="flex items-start justify-between gap-4">
-      <h2 id="nd-titre" class="text-lg font-semibold tracking-[-0.02em]">Nouvelle demande</h2>
-      <button
-        type="button"
-        class="text-mute hover:text-ink"
-        data-nouvelle-demande-fermer
-        aria-label="Fermer"
+<section class="grid gap-4" aria-labelledby="nd-titre" data-nouvelle-demande>
+  <div class="grid gap-1.5">
+    <h2 id="nd-titre" class="text-lg font-semibold tracking-[-0.02em]">
+      Nouvelle demande<span data-titre-client hidden>
+        au nom de <b class="font-semibold">{auNomDe?.client}</b></span
       >
-        ✕
-      </button>
-    </div>
+    </h2>
+    {
+      auNomDe && (
+        <p class="text-[13px] text-mute">
+          <button
+            type="button"
+            class="cursor-pointer underline decoration-[var(--line-strong)] underline-offset-4 transition-colors duration-150 ease-in-out hover:text-ink hover:decoration-current"
+            aria-pressed="false"
+            data-bascule
+            data-compte={auNomDe.compteId}
+          >
+            <span data-bascule-client>
+              Ouvrir un ticket au nom de <b class="font-semibold text-ink">{auNomDe.client}</b>
+            </span>
+            <span data-bascule-retour hidden>
+              Revenir à une demande à votre nom
+            </span>
+          </button>
+          <span data-destinataire hidden>
+            · Les réponses iront à {auNomDe.destinataire}.
+          </span>
+        </p>
+      )
+    }
+    {
+      clientSansCompte && (
+        <p class="text-[13px] text-mute">
+          Aucun compte dans l'espace {clientSansCompte}&nbsp;: invitez un utilisateur pour ouvrir
+          un ticket à son nom.
+        </p>
+      )
+    }
+  </div>
 
-    <p class="text-sm text-mute">
-      Un message = un sujet. Trois sujets&nbsp;? Trois demandes séparées : on vous répondra plus
-      vite.
-    </p>
+  <form
+    data-nouvelle-demande-form
+    enctype="multipart/form-data"
+    class="grid gap-6 rounded-card border border-line bg-surface p-6x"
+  >
+    <input type="hidden" name="pourCompteId" value="" data-pour-compte />
 
     <div class="grid gap-2">
       <label class="label field-label" for="nd-objet">
@@ -65,48 +99,43 @@ import { URGENCES } from "../../lib/portail/messagerie/regles";
       ></textarea>
     </div>
 
-    <div class="grid gap-2">
+    <div class="grid max-w-[320px] gap-2">
       <label class="label field-label" for="nd-urgence">Urgence</label>
-      <select class="field" id="nd-urgence" name="urgence">
-        <option value="">—</option>
-        {URGENCES.map((u) => (
-          <option value={u.value}>{u.label}</option>
-        ))}
-      </select>
+      <ChoixUrgence id="nd-urgence" />
     </div>
 
     <div class="grid gap-2">
-      <label class="label field-label" for="nd-fichiers">Pièces jointes</label>
-      <input
-        class="field h-auto py-2"
-        type="file"
-        id="nd-fichiers"
-        name="fichiers"
-        multiple
-        accept="image/*,.pdf,.zip"
-      />
-      <p class="text-[12px] text-mute">3 fichiers max, 10 Mo chacun.</p>
+      <span class="label field-label">Pièces jointes</span>
+      <PiecesJointes id="nd-fichiers" />
     </div>
 
-    <div class="flex items-center gap-4">
+    <div class="flex flex-wrap items-center gap-4">
       <button class="btn" type="submit">Envoyer la demande</button>
-      <button class="btn btn-ghost" type="button" data-nouvelle-demande-fermer>Annuler</button>
+      <p data-nouvelle-demande-status role="status" hidden class="text-[13px] font-medium"></p>
     </div>
-
-    <p data-nouvelle-demande-status role="status" hidden class="text-[13px] font-medium"></p>
   </form>
-</dialog>
+</section>
 
 <script>
-  const dialog = document.querySelector<HTMLDialogElement>("[data-nouvelle-demande]");
-  const ouvrir = document.querySelector<HTMLButtonElement>("[data-nouvelle-demande-ouvrir]");
-  const form = document.querySelector<HTMLFormElement>("[data-nouvelle-demande-form]");
+  const racine = document.querySelector<HTMLElement>("[data-nouvelle-demande]");
+  const form = racine?.querySelector<HTMLFormElement>("[data-nouvelle-demande-form]");
 
-  if (dialog && ouvrir && form) {
-    ouvrir.addEventListener("click", () => dialog.showModal());
-    for (const btn of dialog.querySelectorAll<HTMLButtonElement>("[data-nouvelle-demande-fermer]")) {
-      btn.addEventListener("click", () => dialog.close());
-    }
+  if (racine && form) {
+    /* Bascule « au nom du client ». Le mode se lit dans le titre, pas
+       seulement dans le lien : c'est ce qui évite d'envoyer au nom du client
+       une demande qu'on croyait envoyer à son nom, ou l'inverse. */
+    const bascule = racine.querySelector<HTMLButtonElement>("[data-bascule]");
+    const pourCompte = form.querySelector<HTMLInputElement>("[data-pour-compte]")!;
+    bascule?.addEventListener("click", () => {
+      const actif = bascule.getAttribute("aria-pressed") !== "true";
+      bascule.setAttribute("aria-pressed", String(actif));
+      pourCompte.value = actif ? (bascule.dataset.compte ?? "") : "";
+      racine.querySelector<HTMLElement>("[data-titre-client]")!.hidden = !actif;
+      racine.querySelector<HTMLElement>("[data-destinataire]")!.hidden = !actif;
+      bascule.querySelector<HTMLElement>("[data-bascule-client]")!.hidden = actif;
+      bascule.querySelector<HTMLElement>("[data-bascule-retour]")!.hidden = !actif;
+      form.querySelector<HTMLInputElement>("#nd-objet")?.focus();
+    });
 
     const status = form.querySelector<HTMLParagraphElement>("[data-nouvelle-demande-status]");
     const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
@@ -139,7 +168,7 @@ import { URGENCES } from "../../lib/portail/messagerie/regles";
         if (!res.ok || !body?.ok) throw new Error(body?.error ?? "");
 
         setStatus("Demande envoyée.", "text-success");
-        // Recharge la page : le ticket tout juste créé apparaît dans le board.
+        // Recharge la page : la demande tout juste créée apparaît dans la liste.
         location.reload();
       } catch (err) {
         const message = err instanceof Error && err.message ? err.message : "";

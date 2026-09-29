@@ -1,70 +1,143 @@
 ---
-// Board « boîte mail » de la messagerie (spec 2026-08-15-messagerie-portail-design.md §6).
-// Un ticket par ligne : objet, auteur, date du dernier message, statut. Le
-// statut vient de statutFromStateType (Task 3), calculé côté page à partir du
-// statusType Linear — jamais du nom d'état, propre à chaque team.
-//
-// Pas la classe `card` : `.doc-root .card` (doc.css) la bat en spécificité —
-// même piège que documenté dans EmptyState.astro. Composé en utilitaires, sur
-// les mêmes tokens que feu SupportForm.
+/* Liste des demandes, à la façon d'une boîte de réception Gmail ou Yahoo :
+   une ligne par fil, cliquable en entier, qui mène à la conversation.
+
+   Ce qu'une ligne dit, de gauche à droite : qui a écrit en dernier (et
+   combien de messages compte le fil), l'objet suivi d'un extrait du dernier
+   message, un trombone s'il y a des pièces jointes, le statut, la date.
+
+   Il n'y a pas d'état « lu » en base. Ce qui en tient lieu : un fil dont le
+   dernier message vient de Ludo attend une lecture du client. Il passe en
+   gras, avec une pastille, comme un message non lu.
+
+   Le statut vient de statutFromStateType, calculé côté page à partir du
+   statusType Linear, jamais du nom d'état, propre à chaque team.
+
+   Pas la classe `card` : `.doc-root .card` (doc.css) la bat en spécificité,
+   même piège que documenté dans EmptyState.astro. */
+import Badge from "../ui/Badge.astro";
 import { portalHref } from "../../lib/portail/nav";
+import { dateCourte, extrait } from "../../lib/portail/messagerie/apercu";
 import { STATUT_LABEL, type StatutTicket } from "../../lib/portail/messagerie/regles";
-import type { TicketRow } from "../../lib/portail/messagerie/store";
+import type { ApercuTicket, TicketRow } from "../../lib/portail/messagerie/store";
 
 interface Props {
-  tickets: Array<TicketRow & { statut: StatutTicket }>;
+  tickets: Array<TicketRow & { statut: StatutTicket; apercu?: ApercuTicket }>;
 }
 const { tickets } = Astro.props;
 
-// Couleur de badge par statut : seuls « En cours » et « Traité » portent un
-// ton (spec §6) — « En attente » et « — » restent en encre par défaut.
-const STATUT_TONE: Record<StatutTicket, string> = {
-  en_attente: "",
-  en_cours: "text-success",
-  traite: "text-mute",
-  inconnu: "text-mute",
+/* Seuls les statuts parlants portent une couleur. */
+const TON: Record<StatutTicket, "gray" | "blue" | "green" | null> = {
+  en_attente: "gray",
+  en_cours: "blue",
+  traite: "green",
+  inconnu: null,
 };
 ---
 
 {
   tickets.length === 0 ? (
-    <p class="rounded-card border border-line bg-surface p-6x text-sm text-mute">
-      Aucune demande pour l'instant.
-    </p>
-  ) : (
-    <div class="overflow-hidden rounded-card border border-line bg-surface">
-      <table class="w-full border-collapse text-[13px]">
-        <thead>
-          <tr class="border-b border-line">
-            {["Objet", "Auteur", "Dernier message", "Statut"].map((h) => (
-              <th scope="col" class="label px-4 py-3 text-left">{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {tickets.map((t) => (
-            <tr class="border-b border-line last:border-b-0">
-              <td class="px-4 py-3">
-                <a class="link" href={portalHref(`/demandes/${t.id}`, Astro.url.hostname)}>
-                  {t.objet}
-                </a>
-              </td>
-              <td class="px-4 py-3">
-                {t.author_prenom}
-                {t.created_via === "admin" && (
-                  <span class="ml-2 text-[11px] text-mute">Ouvert par Ludo</span>
-                )}
-              </td>
-              <td class="px-4 py-3 font-mono text-mute">{t.last_message_at.slice(0, 10)}</td>
-              <td class="px-4 py-3">
-                <span class={`text-[12px] font-semibold ${STATUT_TONE[t.statut]}`}>
-                  {STATUT_LABEL[t.statut]}
-                </span>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div class="flex items-center gap-4 rounded-card border border-line bg-surface p-6x">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="shrink-0 text-mute">
+        <path
+          d="M22 12h-6l-2 3h-4l-2-3H2M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <p class="grid gap-1 text-[14px]">
+        <span class="text-ink">Aucune demande pour l'instant.</span>
+        <span class="text-mute">Vos demandes et leurs réponses s'afficheront ici.</span>
+      </p>
     </div>
+  ) : (
+    <ul class="divide-y divide-[var(--line)] overflow-hidden rounded-card border border-line bg-surface">
+      {tickets.map((t) => {
+        const aLire = t.apercu?.dernier_sens === "coolbeans";
+        const auteur = aLire ? "Ludo" : t.author_prenom;
+        const n = t.apercu?.nb_messages ?? 0;
+        const resume = extrait(t.apercu?.dernier_corps);
+        const ton = TON[t.statut];
+        return (
+          <li>
+            <a
+              href={portalHref(`/demandes/${t.id}`, Astro.url.hostname)}
+              class:list={[
+                "flex items-center gap-4 px-4 py-3 text-[14px] no-underline transition-colors duration-150 ease-in-out hover:bg-surface-raise focus-visible:bg-surface-raise max-sm:flex-wrap max-sm:gap-x-3 max-sm:gap-y-1",
+                aLire ? "text-ink" : "text-mute",
+              ]}
+            >
+              <span
+                class:list={[
+                  "size-2 shrink-0 rounded-full",
+                  aLire ? "bg-[var(--accent)]" : "bg-transparent",
+                ]}
+                aria-hidden="true"
+              />
+              <span
+                class:list={[
+                  "w-[140px] shrink-0 truncate max-sm:w-auto max-sm:flex-1",
+                  aLire ? "font-semibold text-ink" : "text-ink",
+                ]}
+              >
+                {aLire && <span class="sr-only">Réponse de Ludo à lire : </span>}
+                {auteur}
+                {n > 1 && <span class="ml-1 font-normal text-mute">{n}</span>}
+              </span>
+              {/* Sur une ligne en bureau, comme Gmail : l'objet puis l'extrait.
+                  Sur mobile, l'extrait passe sous l'objet, sinon il ne reste
+                  rien de lisible. */}
+              <span class="min-w-0 flex-1 truncate max-sm:order-last max-sm:grid max-sm:basis-full max-sm:pl-5">
+                <span class:list={["text-ink max-sm:truncate", aLire && "font-semibold"]}>{t.objet}</span>
+                {resume && <span class="ml-2 text-mute max-sm:ml-0 max-sm:truncate">{resume}</span>}
+              </span>
+              <span class="flex shrink-0 items-center gap-2">
+                {t.created_via === "admin" && (
+                  <Badge variant="gray" subtle size="sm">
+                    Ouvert par Ludo
+                  </Badge>
+                )}
+                {Boolean(t.apercu?.a_pieces_jointes) && (
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="15"
+                    height="15"
+                    role="img"
+                    aria-label="Pièce jointe"
+                    class="text-mute"
+                  >
+                    <path
+                      d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l8.57-8.57A4 4 0 1118 8.84l-8.59 8.57a2 2 0 01-2.83-2.83l8.49-8.48"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                )}
+                {ton && (
+                  <Badge variant={ton} subtle size="sm">
+                    {STATUT_LABEL[t.statut]}
+                  </Badge>
+                )}
+              </span>
+              <time
+                datetime={t.last_message_at}
+                class:list={[
+                  "w-[60px] shrink-0 text-right text-[13px] tabular-nums",
+                  aLire ? "font-semibold text-ink" : "text-mute",
+                ]}
+              >
+                {dateCourte(t.last_message_at)}
+              </time>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
   )
 }

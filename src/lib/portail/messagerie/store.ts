@@ -76,6 +76,41 @@ export async function ticketsDuClient(db: D1Database, client: string): Promise<T
   return results;
 }
 
+/** Résumé d'un fil pour la liste des demandes, façon boîte de réception. */
+export interface ApercuTicket {
+  ticket_id: string;
+  nb_messages: number;
+  dernier_corps: string | null;
+  dernier_sens: "client" | "coolbeans" | null;
+  a_pieces_jointes: number;
+}
+
+/**
+ * Un résumé par fil visible du client, en une requête : nombre de messages,
+ * corps et sens du dernier, présence d'une pièce jointe. Sous-requêtes
+ * corrélées plutôt qu'un GROUP BY : SQLite ne sait pas rendre « la ligne du
+ * MAX » proprement pour deux colonnes à la fois, et le volume par client reste
+ * de quelques dizaines de fils.
+ */
+export async function apercusDesTickets(db: D1Database, client: string): Promise<ApercuTicket[]> {
+  const { results } = await db
+    .prepare(
+      `SELECT t.id AS ticket_id,
+              (SELECT COUNT(*) FROM messages m WHERE m.ticket_id = t.id) AS nb_messages,
+              (SELECT m.body FROM messages m WHERE m.ticket_id = t.id
+                ORDER BY m.created_at DESC LIMIT 1) AS dernier_corps,
+              (SELECT m.direction FROM messages m WHERE m.ticket_id = t.id
+                ORDER BY m.created_at DESC LIMIT 1) AS dernier_sens,
+              EXISTS (SELECT 1 FROM attachments a JOIN messages m ON m.id = a.message_id
+                       WHERE m.ticket_id = t.id) AS a_pieces_jointes
+         FROM tickets t
+        WHERE t.client = ? AND t.masque = 0`,
+    )
+    .bind(client)
+    .all<ApercuTicket>();
+  return results;
+}
+
 /**
  * Masque ou démasque un fil. Appelé quand le label « Support » est retiré de
  * l'issue (ou reposé) : le fil sort du portail sans que rien ne soit détruit,

@@ -11,6 +11,7 @@ export const prerender = false;
 
 import EspaceLayout from "../../../layouts/EspaceLayout.astro";
 import FilMessages from "../../../components/portail/FilMessages.astro";
+import PiecesJointes from "../../../components/portail/PiecesJointes.astro";
 import { env } from "cloudflare:workers";
 import { getPortalContext } from "../../../lib/portail/context";
 import { portalHref } from "../../../lib/portail/nav";
@@ -102,16 +103,8 @@ Astro.response.headers.set("Cache-Control", "no-store");
     </div>
 
     <div class="grid gap-2">
-      <label class="label" for="rep-fichiers">Pièces jointes</label>
-      <input
-        class="field h-auto py-2"
-        type="file"
-        id="rep-fichiers"
-        name="fichiers"
-        multiple
-        accept="image/*,.pdf,.zip"
-      />
-      <p class="text-[12px] text-mute">3 fichiers max, 10 Mo chacun.</p>
+      <span class="label">Pièces jointes</span>
+      <PiecesJointes id="rep-fichiers" />
     </div>
 
     <div>
