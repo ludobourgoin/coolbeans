@@ -95,7 +95,9 @@ const TON: Record<StatutTicket, "gray" | "blue" | "green" | null> = {
                 {resume && <span class="ml-2 text-mute max-sm:ml-0 max-sm:truncate">{resume}</span>}
               </span>
               <span class="flex shrink-0 items-center gap-2">
-                {t.created_via === "admin" && (
+                {/* Seulement pour un fil ouvert depuis Linear. Une demande que
+                    Ludo a saisie au nom du client se lit comme celle du client. */}
+                {t.ouvert_depuis_linear === 1 && (
                   <Badge variant="gray" subtle size="sm">
                     Ouvert par Ludo
                   </Badge>

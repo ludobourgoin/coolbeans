@@ -12,14 +12,13 @@ import NouvelleDemande from "../../components/portail/NouvelleDemande.astro";
 import Collapse from "../../components/ui/Collapse.astro";
 import { env } from "cloudflare:workers";
 import { missingKeysFor, moduleCoupe } from "../../lib/portail/workspaces";
-import { comptesDuWorkspace } from "../../lib/portail/comptes";
 import { getPortalContext } from "../../lib/portail/context";
 import { fetchIssueStateTypes } from "../../lib/portail/linear";
 import { isAdmin } from "../../lib/portail/metadata";
 import { statutFromStateType } from "../../lib/portail/messagerie/regles";
 import { apercusDesTickets, ticketsDuClient } from "../../lib/portail/messagerie/store";
 
-const { meta, client, user } = await getPortalContext(Astro);
+const { meta, client } = await getPortalContext(Astro);
 const admin = isAdmin(meta);
 const missingKeys = missingKeysFor("support", client);
 // La nav masque déjà l'entrée quand la messagerie est coupée, mais l'URL reste
@@ -28,30 +27,6 @@ const missingKeys = missingKeysFor("support", client);
 const coupe = moduleCoupe("support", client);
 const indisponible = coupe || missingKeys.length > 0;
 Astro.response.headers.set("Cache-Control", "no-store");
-
-// Admin dans l'espace d'un client : le ticket peut partir au nom du client,
-// sans liste de comptes à choisir (décision du 2026-09-29). Le compte retenu
-// est le contact principal de la fiche (`prenom` du registre), sinon le
-// premier compte de l'espace. L'admin lui-même, s'il est membre, est écarté.
-// L'appartenance vient de la table `teamMember` depuis la bascule Better Auth.
-let auNomDe: { client: string; compteId: string; destinataire: string } | undefined;
-let clientSansCompte: string | undefined;
-if (admin && client && !client.perso) {
-  const comptes = (await comptesDuWorkspace(env.PORTAL_DB, client.slug)).filter(
-    (c) => c.id !== user?.id,
-  );
-  const principal = client.prenom?.toLowerCase();
-  const cible = comptes.find((c) => principal && c.prenom.toLowerCase() === principal) ?? comptes[0];
-  if (cible) {
-    auNomDe = {
-      client: client.nom,
-      compteId: cible.id,
-      destinataire: cible.nom ? `${cible.nom} (${cible.email})` : cible.email,
-    };
-  } else {
-    clientSansCompte = client.nom;
-  }
-}
 
 let tickets: Awaited<ReturnType<typeof ticketsDuClient>> = [];
 let apercus = new Map<string, Awaited<ReturnType<typeof apercusDesTickets>>[number]>();
@@ -94,7 +69,7 @@ const lignes = tickets.map((t) => ({
       </EmptyState>
     ) : (
       <div class="mt-8x grid gap-10x">
-        <NouvelleDemande auNomDe={auNomDe} clientSansCompte={clientSansCompte} />
+        <NouvelleDemande />
         <section class="grid gap-4" aria-labelledby="vos-demandes">
           <h2 id="vos-demandes" class="flex items-baseline gap-2 text-lg font-semibold tracking-[-0.02em]">
             Vos demandes

@@ -3,76 +3,27 @@
    Demandes (spec 2026-08-15-messagerie-portail-design.md §6, revu le
    2026-09-29 : plus de popup, un formulaire visible d'emblée).
 
-   Un seul formulaire pour tout le monde. L'admin qui se trouve dans l'espace
-   d'un client voit en plus un lien discret, « Ouvrir un ticket au nom de
-   {client} ». Ce lien ne navigue pas, il bascule le formulaire : le ticket part
-   alors au nom du contact principal de l'espace, qui reçoit les réponses. Il
-   n'y a pas de liste de comptes à choisir : la demande va dans la boîte de
-   l'espace où l'on se trouve.
+   Un seul formulaire pour tout le monde. L'admin qui le remplit depuis
+   l'espace d'un client écrit au nom de ce client, sans rien à cocher :
+   l'endpoint choisit le contact principal de l'espace et n'envoie aucun mail
+   (décision du 2026-09-29).
 
    Soumission multipart vers /api/messagerie/nouveau, inchangée : l'urgence et
-   les pièces jointes gardent leurs `name`, et le mode « au nom du client »
-   passe par `pourCompteId`, que l'endpoint contrôle (compte du même espace,
-   admin seulement). Succès : rechargement, la demande apparaît dans la liste. */
+   les pièces jointes gardent leurs `name`. Succès : rechargement, la demande
+   apparaît dans la liste. */
 import ChoixUrgence from "./ChoixUrgence.astro";
 import PiecesJointes from "./PiecesJointes.astro";
 
-interface Props {
-  /** Admin dans l'espace d'un client qui a au moins un compte. */
-  auNomDe?: { client: string; compteId: string; destinataire: string };
-  /** Admin dans l'espace d'un client sans aucun compte : on le dit. */
-  clientSansCompte?: string;
-}
-const { auNomDe, clientSansCompte } = Astro.props;
 ---
 
 <section class="grid gap-4" aria-labelledby="nd-titre" data-nouvelle-demande>
-  <div class="grid gap-1.5">
-    <h2 id="nd-titre" class="text-lg font-semibold tracking-[-0.02em]">
-      Nouvelle demande<span data-titre-client hidden>
-        au nom de <b class="font-semibold">{auNomDe?.client}</b></span
-      >
-    </h2>
-    {
-      auNomDe && (
-        <p class="text-[13px] text-mute">
-          <button
-            type="button"
-            class="cursor-pointer underline decoration-[var(--line-strong)] underline-offset-4 transition-colors duration-150 ease-in-out hover:text-ink hover:decoration-current"
-            aria-pressed="false"
-            data-bascule
-            data-compte={auNomDe.compteId}
-          >
-            <span data-bascule-client>
-              Ouvrir un ticket au nom de <b class="font-semibold text-ink">{auNomDe.client}</b>
-            </span>
-            <span data-bascule-retour hidden>
-              Revenir à une demande à votre nom
-            </span>
-          </button>
-          <span data-destinataire hidden>
-            · Les réponses iront à {auNomDe.destinataire}.
-          </span>
-        </p>
-      )
-    }
-    {
-      clientSansCompte && (
-        <p class="text-[13px] text-mute">
-          Aucun compte dans l'espace {clientSansCompte}&nbsp;: invitez un utilisateur pour ouvrir
-          un ticket à son nom.
-        </p>
-      )
-    }
-  </div>
+  <h2 id="nd-titre" class="text-lg font-semibold tracking-[-0.02em]">Nouvelle demande</h2>
 
   <form
     data-nouvelle-demande-form
     enctype="multipart/form-data"
     class="grid gap-6 rounded-card border border-line bg-surface p-6x"
   >
-    <input type="hidden" name="pourCompteId" value="" data-pour-compte />
-
     <div class="grid gap-2">
       <label class="label field-label" for="nd-objet">
         Objet <span aria-hidden="true">*</span>
@@ -121,22 +72,6 @@ const { auNomDe, clientSansCompte } = Astro.props;
   const form = racine?.querySelector<HTMLFormElement>("[data-nouvelle-demande-form]");
 
   if (racine && form) {
-    /* Bascule « au nom du client ». Le mode se lit dans le titre, pas
-       seulement dans le lien : c'est ce qui évite d'envoyer au nom du client
-       une demande qu'on croyait envoyer à son nom, ou l'inverse. */
-    const bascule = racine.querySelector<HTMLButtonElement>("[data-bascule]");
-    const pourCompte = form.querySelector<HTMLInputElement>("[data-pour-compte]")!;
-    bascule?.addEventListener("click", () => {
-      const actif = bascule.getAttribute("aria-pressed") !== "true";
-      bascule.setAttribute("aria-pressed", String(actif));
-      pourCompte.value = actif ? (bascule.dataset.compte ?? "") : "";
-      racine.querySelector<HTMLElement>("[data-titre-client]")!.hidden = !actif;
-      racine.querySelector<HTMLElement>("[data-destinataire]")!.hidden = !actif;
-      bascule.querySelector<HTMLElement>("[data-bascule-client]")!.hidden = actif;
-      bascule.querySelector<HTMLElement>("[data-bascule-retour]")!.hidden = !actif;
-      form.querySelector<HTMLInputElement>("#nd-objet")?.focus();
-    });
-
     const status = form.querySelector<HTMLParagraphElement>("[data-nouvelle-demande-status]");
     const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
     const setStatus = (texte: string, tone: "text-mute" | "text-success" | "text-error") => {

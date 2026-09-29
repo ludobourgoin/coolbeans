@@ -75,7 +75,7 @@ Astro.response.headers.set("Cache-Control", "no-store");
   </div>
   <p class="mt-1 font-mono text-[12px] text-mute">{ticket.created_at.slice(0, 10)}</p>
   {
-    ticket.created_via === "admin" && (
+    ticket.ouvert_depuis_linear === 1 && (
       <p class="text-[12px] text-mute">Ouvert par Ludo pour {ticket.author_prenom}</p>
     )
   }
