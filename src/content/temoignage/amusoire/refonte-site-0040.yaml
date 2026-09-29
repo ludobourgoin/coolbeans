@@ -11,9 +11,11 @@
 titre: Votre site est en ligne, il me manque vos mots
 objet: Trois questions, une photo, et une page à relire. Un quart d'heure au total, et c'est ce qui m'amène mes prochains projets.
 date: 2026-09-17
+projet: refonte-432
+etape: suivi
 tutoiement: false
 linear:
-  projet: Refonte site Amusoire
+  projet: Refonte Webflow et intégration technique
 
 intro:
   - titre: Pourquoi je vous demande ça

@@ -16,12 +16,15 @@ import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
 import DocumentReponses from "../../components/devis/DocumentReponses.astro";
 import { dateLongue, riche } from "../../lib/devis";
 import { construitesEnProduction } from "../../lib/documents/statut";
+import { chargerDocuments } from "../../lib/documents/charger";
 
 /* Un livrable peut avoir plusieurs versions : après des retours, la V2 se
    déclare par `versionDe` et partage l'URL de la V1, comme au devis. Le lien
    envoyé au client ne bouge jamais ; les versions précédentes restent
    lisibles sous des onglets. */
 export async function getStaticPaths() {
+  /* Arrête le build si la nomenclature est incohérente (lib/documents/projet.ts). */
+  await chargerDocuments();
   /* Le filtre passe AVANT le calcul des racines : sur une racine il fait
      disparaître la page, sur une version il fait disparaître un onglet. */
   const entries = construitesEnProduction(await getCollection("livrable"), import.meta.env.DEV);

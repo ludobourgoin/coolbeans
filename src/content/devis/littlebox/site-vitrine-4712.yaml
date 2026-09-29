@@ -1,6 +1,8 @@
 titre: LittleBox x Coolbeans
 objet: Création du site vitrine de LittleBox
 date: 2026-03-02
+projet: site-vitrine-471
+etape: proposition
 contact: Philippe
 
 envoi:
@@ -8,7 +10,7 @@ envoi:
   destinataire: philippe.bartholi@gmail.com
 
 linear:
-  projet: https://linear.app/coolbeans-hq/project/site-vitrine-littlebox-e181c8e92c1f
+  projet: Site vitrine LittleBox
   affaire: https://linear.app/coolbeans-hq/issue/CRM-26
 
 sections:

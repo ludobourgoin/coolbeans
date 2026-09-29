@@ -3,12 +3,15 @@
 # L'extension reste à elle, d'où le comparatif conservé ici et la question
 # rouverte en bas de page.
 #
-# Ce document n'est pas une V2 du précédent : la collection cadrage ne porte
-# pas `versionDe`, contrairement au devis et au livrable. C'est un second
-# document, qui répond à la question suivante : maintenant, comment l'achète-t-on.
+# Second chapitre du cadrage nom-de-domaine-9042 : il partage sa page par
+# `versionDe`, sous l'onglet « Acheter le nom », sans en être une V2
+# (spec 2026-09-22 §7). Son ancienne adresse redirige vers la racine.
 titre: Prendre le nom de domaine du Club
 objet: Le mode d'emploi pour l'acheter vous-mêmes, en quinze minutes
 date: 2026-09-22
+version: 2
+versionDe: cafa/nom-de-domaine-9042
+onglet: Acheter le nom
 contact: Susanne
 linear:
   projet: Site web CAFA

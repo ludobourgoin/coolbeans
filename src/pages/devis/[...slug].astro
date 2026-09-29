@@ -10,6 +10,7 @@ import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
 import DocumentReponses from "../../components/devis/DocumentReponses.astro";
 import { dateLongue } from "../../lib/devis";
 import { construitesEnProduction } from "../../lib/documents/statut";
+import { chargerDocuments } from "../../lib/documents/charger";
 
 /* Un devis peut avoir plusieurs versions (révision de périmètre). Elles
    partagent l'URL de la V1 — le lien déjà envoyé au client ne bouge jamais —
@@ -17,6 +18,8 @@ import { construitesEnProduction } from "../../lib/documents/statut";
    versions suivantes se déclarent par `versionDe` et n'ont pas d'URL propre,
    sans quoi le client pourrait tomber sur une révision hors de son contexte. */
 export async function getStaticPaths() {
+  /* Arrête le build si la nomenclature est incohérente (lib/documents/projet.ts). */
+  await chargerDocuments();
   /* Le filtre passe AVANT le calcul des racines : sur une racine il fait
      disparaître la page, sur une version il fait disparaître un onglet. */
   const entries = construitesEnProduction(await getCollection("devis"), import.meta.env.DEV);
