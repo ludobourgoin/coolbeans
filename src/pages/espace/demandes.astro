@@ -1,23 +1,22 @@
 ---
-// Messagerie (spec 2026-08-15-messagerie-portail-design.md §6) : board des
-// tickets du client + popup Nouvelle demande. Un message = un sujet — la
-// phrase pédagogique est le seul texte au-dessus du board.
+// Demandes, ex-Messagerie (spec 2026-08-15-messagerie-portail-design.md §6,
+// revue le 2026-09-29) : le formulaire de nouvelle demande s'affiche d'emblée,
+// la liste des fils suit, façon boîte de réception. Un message = un sujet, la
+// phrase pédagogique est le seul texte au-dessus du formulaire.
 export const prerender = false;
 
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import EmptyState from "../../components/portail/EmptyState.astro";
 import MessagerieBoard from "../../components/portail/MessagerieBoard.astro";
 import NouvelleDemande from "../../components/portail/NouvelleDemande.astro";
-import NouvelleDemandeAdmin from "../../components/portail/NouvelleDemandeAdmin.astro";
 import Collapse from "../../components/ui/Collapse.astro";
 import { env } from "cloudflare:workers";
 import { missingKeysFor, moduleCoupe } from "../../lib/portail/workspaces";
-import { comptesDuWorkspace } from "../../lib/portail/comptes";
 import { getPortalContext } from "../../lib/portail/context";
 import { fetchIssueStateTypes } from "../../lib/portail/linear";
 import { isAdmin } from "../../lib/portail/metadata";
 import { statutFromStateType } from "../../lib/portail/messagerie/regles";
-import { ticketsDuClient } from "../../lib/portail/messagerie/store";
+import { apercusDesTickets, ticketsDuClient } from "../../lib/portail/messagerie/store";
 
 const { meta, client } = await getPortalContext(Astro);
 const admin = isAdmin(meta);
@@ -29,21 +28,14 @@ const coupe = moduleCoupe("support", client);
 const indisponible = coupe || missingKeys.length > 0;
 Astro.response.headers.set("Cache-Control", "no-store");
 
-// Comptes du client courant, pour le <select> du formulaire admin (Task 12,
-// spec §8) — une requête D1 réservée à l'admin. L'appartenance vient de la
-// table `teamMember` depuis la bascule Better Auth, plus d'un publicMetadata.
-const users =
-  admin && client
-    ? (await comptesDuWorkspace(env.PORTAL_DB, client.slug)).map((c) => ({
-        id: c.id,
-        label: `${c.nom || "?"} · ${c.email}`,
-      }))
-    : [];
-
 let tickets: Awaited<ReturnType<typeof ticketsDuClient>> = [];
+let apercus = new Map<string, Awaited<ReturnType<typeof apercusDesTickets>>[number]>();
 let statuts = new Map<string, string>();
 if (!indisponible && client) {
   tickets = await ticketsDuClient(env.PORTAL_DB, client.slug);
+  apercus = new Map(
+    (await apercusDesTickets(env.PORTAL_DB, client.slug)).map((a) => [a.ticket_id, a]),
+  );
   const uuids = tickets.map((t) => t.linear_issue_uuid).filter((u): u is string => Boolean(u));
   try {
     if (env.LINEAR_API_KEY) statuts = await fetchIssueStateTypes(env.LINEAR_API_KEY, uuids);
@@ -54,6 +46,7 @@ if (!indisponible && client) {
 const lignes = tickets.map((t) => ({
   ...t,
   statut: statutFromStateType(t.linear_issue_uuid ? statuts.get(t.linear_issue_uuid) : undefined),
+  apercu: apercus.get(t.id),
 }));
 ---
 
@@ -75,10 +68,17 @@ const lignes = tickets.map((t) => ({
         l'affaire.
       </EmptyState>
     ) : (
-      <div class="mt-6x grid gap-6x">
+      <div class="mt-8x grid gap-10x">
         <NouvelleDemande />
-        {admin && <NouvelleDemandeAdmin users={users} />}
-        <MessagerieBoard tickets={lignes} />
+        <section class="grid gap-4" aria-labelledby="vos-demandes">
+          <h2 id="vos-demandes" class="flex items-baseline gap-2 text-lg font-semibold tracking-[-0.02em]">
+            Vos demandes
+            {lignes.length > 0 && (
+              <span class="text-[14px] font-normal text-mute">{lignes.length}</span>
+            )}
+          </h2>
+          <MessagerieBoard tickets={lignes} />
+        </section>
       </div>
     )
   }

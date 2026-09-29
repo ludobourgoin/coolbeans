@@ -1,0 +1,191 @@
+---
+/* Choix de l'urgence d'une demande : un menu maison, pas le <select> du
+   navigateur. Chaque niveau porte une icône et une couleur, sur le modèle des
+   priorités Linear où la demande finit : des barres qui montent pour les trois
+   premiers niveaux, un carré plein pour « Bloquant ».
+
+   La valeur part dans un <input type="hidden"> du même `name` que l'ancien
+   select : l'endpoint ne voit aucune différence. Accessibilité du motif
+   listbox : flèches, Début/Fin, Entrée ou Espace pour choisir, Échap pour
+   fermer, clic dehors pour fermer. */
+import { URGENCES } from "../../lib/portail/messagerie/regles";
+
+interface Props {
+  id: string;
+  name?: string;
+  /** « normal » par défaut : c'est aussi la priorité qu'aurait une demande sans choix. */
+  valeur?: (typeof URGENCES)[number]["value"];
+}
+const { id, name = "urgence", valeur = "normal" } = Astro.props;
+
+/* Couleur et aide par niveau. Les couleurs sont les marches -700/-800 des
+   gammes du design system, lisibles sur surface claire comme sombre. */
+const NIVEAUX: Record<string, { couleur: string; aide: string; barres: number }> = {
+  "pas-presse": { couleur: "var(--ds-gray-700)", aide: "Quand vous aurez un moment", barres: 1 },
+  normal: { couleur: "var(--ds-blue-700)", aide: "Le cas le plus courant", barres: 2 },
+  urgent: { couleur: "var(--ds-amber-800)", aide: "Une gêne réelle, à traiter vite", barres: 3 },
+  bloquant: { couleur: "var(--ds-red-800)", aide: "Site hors ligne, paiement bloqué", barres: 0 },
+};
+
+const options = URGENCES.map((u) => ({ ...u, ...NIVEAUX[u.value] }));
+const choisie = options.find((o) => o.value === valeur) ?? options[1];
+
+/* L'icône est dessinée ici plutôt que prise dans le pack Iconoir, qui n'a pas
+   d'équivalent aux barres de priorité. 16 px, en currentColor. */
+const icone = (barres: number) =>
+  barres === 0
+    ? '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" rx="3" fill="currentColor"/><path d="M8 4.5v4.5" stroke="var(--surface)" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="11.4" r="1" fill="var(--surface)"/></svg>'
+    : `<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">${[5, 8.5, 12]
+        .map(
+          (h, i) =>
+            `<rect x="${1.5 + i * 5}" y="${14 - h}" width="3" height="${h}" rx="1" fill="currentColor" opacity="${i < barres ? 1 : 0.22}"/>`,
+        )
+        .join("")}</svg>`;
+---
+
+<div class="relative" data-choix-urgence>
+  <input type="hidden" name={name} value={choisie.value} data-valeur />
+  <button
+    type="button"
+    id={id}
+    class="field flex items-center gap-2.5 text-left"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    aria-controls={`${id}-liste`}
+    data-declencheur
+  >
+    <span class="flex shrink-0" style={`color:${choisie.couleur}`} data-icone set:html={icone(choisie.barres)} />
+    <span class="flex-1 truncate" data-libelle>{choisie.label}</span>
+    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" class="shrink-0 text-mute">
+      <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </button>
+
+  <ul
+    id={`${id}-liste`}
+    role="listbox"
+    tabindex="-1"
+    aria-labelledby={id}
+    class="material-menu absolute top-[calc(100%+6px)] right-0 left-0 z-30 grid gap-0.5 rounded-card border border-line bg-surface p-1.5 outline-none"
+    hidden
+    data-liste
+  >
+    {
+      options.map((o) => (
+        <li
+          role="option"
+          id={`${id}-${o.value}`}
+          aria-selected={o.value === choisie.value ? "true" : "false"}
+          data-option={o.value}
+          data-couleur={o.couleur}
+          class="group flex cursor-pointer items-start gap-3 rounded-control px-3 py-2.5 data-[actif]:bg-surface-raise"
+        >
+          <span class="mt-0.5 flex shrink-0" style={`color:${o.couleur}`} set:html={icone(o.barres)} />
+          <span class="grid gap-0.5">
+            <span class="text-[14px] font-medium text-ink" data-option-libelle>
+              {o.label}
+            </span>
+            <span class="text-[12px] leading-[1.4] text-mute">{o.aide}</span>
+          </span>
+          {/* La coche dit la valeur retenue ; le fond gris, l'option active au
+              clavier ou à la souris. Les deux se distinguent toujours. */}
+          <svg
+            viewBox="0 0 16 16"
+            width="16"
+            height="16"
+            aria-hidden="true"
+            class="mt-0.5 ml-auto hidden shrink-0 text-ink group-aria-selected:block"
+          >
+            <path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script>
+  for (const racine of document.querySelectorAll<HTMLElement>("[data-choix-urgence]")) {
+    const valeur = racine.querySelector<HTMLInputElement>("[data-valeur]")!;
+    const bouton = racine.querySelector<HTMLButtonElement>("[data-declencheur]")!;
+    const liste = racine.querySelector<HTMLUListElement>("[data-liste]")!;
+    const options = [...liste.querySelectorAll<HTMLLIElement>("[data-option]")];
+    const defaut = valeur.value;
+    let actif = -1;
+
+    const surligner = (i: number) => {
+      actif = (i + options.length) % options.length;
+      options.forEach((o, j) => o.toggleAttribute("data-actif", j === actif));
+      liste.setAttribute("aria-activedescendant", options[actif].id);
+      options[actif].scrollIntoView({ block: "nearest" });
+    };
+
+    const ouvrir = () => {
+      liste.hidden = false;
+      bouton.setAttribute("aria-expanded", "true");
+      surligner(Math.max(0, options.findIndex((o) => o.getAttribute("aria-selected") === "true")));
+      liste.focus();
+    };
+
+    const fermer = (rendreFocus = true) => {
+      liste.hidden = true;
+      bouton.setAttribute("aria-expanded", "false");
+      options.forEach((o) => o.removeAttribute("data-actif"));
+      if (rendreFocus) bouton.focus();
+    };
+
+    const choisir = (o: HTMLLIElement) => {
+      valeur.value = o.dataset.option ?? "";
+      options.forEach((x) => x.setAttribute("aria-selected", String(x === o)));
+      const icone = bouton.querySelector<HTMLElement>("[data-icone]")!;
+      icone.innerHTML = o.querySelector("svg")!.outerHTML;
+      icone.style.color = o.dataset.couleur ?? "";
+      bouton.querySelector("[data-libelle]")!.textContent =
+        o.querySelector("[data-option-libelle]")!.textContent!.trim();
+    };
+
+    bouton.addEventListener("click", () => (liste.hidden ? ouvrir() : fermer()));
+    bouton.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        ouvrir();
+      }
+    });
+
+    options.forEach((o, i) => {
+      o.addEventListener("click", () => {
+        choisir(o);
+        fermer();
+      });
+      o.addEventListener("mousemove", () => actif !== i && surligner(i));
+    });
+
+    liste.addEventListener("keydown", (e) => {
+      const touches: Record<string, () => void> = {
+        ArrowDown: () => surligner(actif + 1),
+        ArrowUp: () => surligner(actif - 1),
+        Home: () => surligner(0),
+        End: () => surligner(options.length - 1),
+        Enter: () => (choisir(options[actif]), fermer()),
+        " ": () => (choisir(options[actif]), fermer()),
+        Escape: () => fermer(),
+        Tab: () => fermer(false),
+      };
+      const action = touches[e.key];
+      if (!action) return;
+      if (e.key !== "Tab") e.preventDefault();
+      action();
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!liste.hidden && !racine.contains(e.target as Node)) fermer(false);
+    });
+
+    /* Un reset du formulaire vide les champs natifs, pas celui-ci : on remet
+       la valeur par défaut à la main. */
+    racine.closest("form")?.addEventListener("reset", () => {
+      const o = options.find((x) => x.dataset.option === defaut);
+      if (o) choisir(o);
+    });
+  }
+</script>

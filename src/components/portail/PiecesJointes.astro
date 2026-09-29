@@ -1,0 +1,191 @@
+---
+/* Pièces jointes d'une demande ou d'une réponse : une zone où déposer ou
+   parcourir, puis une vignette par fichier, retirable.
+
+   Le vrai <input type="file"> reste dans le formulaire, sous le même `name`
+   qu'avant : sa liste est tenue à jour par DataTransfer, donc un
+   `new FormData(form)` l'emporte tel quel et l'endpoint ne voit aucune
+   différence. Les limites sont celles de lib/portail/messagerie/fichiers.ts,
+   vérifiées ici pour prévenir tout de suite, et de nouveau côté serveur. */
+import { MAX_FICHIERS, MAX_TAILLE } from "../../lib/portail/messagerie/fichiers";
+
+interface Props {
+  id: string;
+  name?: string;
+}
+const { id, name = "fichiers" } = Astro.props;
+const ACCEPT = "image/*,.pdf,.zip";
+const aide = `Images, PDF ou ZIP · ${MAX_FICHIERS} fichiers, ${MAX_TAILLE / 1024 / 1024} Mo chacun`;
+---
+
+<div
+  class="grid gap-2"
+  data-pieces-jointes
+  data-max={MAX_FICHIERS}
+  data-max-taille={MAX_TAILLE}
+>
+  <label
+    for={id}
+    class="flex cursor-pointer items-center gap-3 rounded-card border border-dashed border-[var(--ds-gray-500)] bg-surface px-4 py-3.5 text-[14px] text-mute transition-colors duration-150 ease-in-out focus-within:border-[var(--accent)] hover:border-[var(--ds-gray-700)] hover:bg-surface-raise data-[survol]:border-[var(--accent)] data-[survol]:bg-surface-raise data-[plein]:cursor-default data-[plein]:opacity-60"
+    data-zone
+  >
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" class="shrink-0 text-ink">
+      <path
+        d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l8.57-8.57A4 4 0 1118 8.84l-8.59 8.57a2 2 0 01-2.83-2.83l8.49-8.48"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </svg>
+    <span class="grid gap-0.5">
+      <span data-invite>
+        Glissez vos fichiers ici ou <span class="link text-ink">parcourez</span>
+      </span>
+      <span class="text-[12px]" data-aide>{aide}</span>
+    </span>
+    <input
+      id={id}
+      name={name}
+      type="file"
+      multiple
+      accept={ACCEPT}
+      class="sr-only"
+      data-entree
+    />
+  </label>
+
+  <ul class="grid gap-2" data-liste hidden></ul>
+  <p class="text-[13px] font-medium text-error" role="alert" data-erreur hidden></p>
+</div>
+
+<script>
+  const TYPES = /^(image\/|application\/pdf$|application\/(x-)?zip)/;
+  const EXT = /\.(pdf|zip|png|jpe?g|gif|webp|avif|heic|svg)$/i;
+
+  const poids = (o: number) =>
+    o < 1024 * 1024 ? `${Math.max(1, Math.round(o / 1024))} Ko` : `${(o / 1024 / 1024).toFixed(1).replace(".", ",")} Mo`;
+
+  const extension = (nom: string) => (/\.([a-z0-9]+)$/i.exec(nom)?.[1] ?? "").toUpperCase().slice(0, 4);
+
+  for (const racine of document.querySelectorAll<HTMLElement>("[data-pieces-jointes]")) {
+    const entree = racine.querySelector<HTMLInputElement>("[data-entree]")!;
+    const zone = racine.querySelector<HTMLElement>("[data-zone]")!;
+    const liste = racine.querySelector<HTMLUListElement>("[data-liste]")!;
+    const erreur = racine.querySelector<HTMLElement>("[data-erreur]")!;
+    const invite = racine.querySelector<HTMLElement>("[data-invite]")!;
+    const inviteHtml = invite.innerHTML;
+    const max = Number(racine.dataset.max);
+    const maxTaille = Number(racine.dataset.maxTaille);
+    let fichiers: File[] = [];
+    const apercus = new Map<File, string>();
+
+    const signaler = (texte: string) => {
+      erreur.textContent = texte;
+      erreur.hidden = !texte;
+    };
+
+    const synchroniser = () => {
+      const dt = new DataTransfer();
+      fichiers.forEach((f) => dt.items.add(f));
+      entree.files = dt.files;
+
+      const plein = fichiers.length >= max;
+      zone.toggleAttribute("data-plein", plein);
+      entree.disabled = plein;
+      invite.innerHTML = plein
+        ? `${max} fichiers sur ${max}. Retirez-en un pour en ajouter un autre.`
+        : inviteHtml;
+
+      liste.hidden = fichiers.length === 0;
+      liste.replaceChildren(
+        ...fichiers.map((f) => {
+          const li = document.createElement("li");
+          li.className =
+            "flex items-center gap-3 rounded-control border border-line bg-surface py-2 pr-2 pl-2";
+
+          const vignette = document.createElement("span");
+          vignette.className =
+            "flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[4px] bg-surface-raise font-mono text-[10px] font-bold text-mute";
+          if (f.type.startsWith("image/")) {
+            if (!apercus.has(f)) apercus.set(f, URL.createObjectURL(f));
+            const img = document.createElement("img");
+            img.src = apercus.get(f)!;
+            img.alt = "";
+            img.className = "size-full object-cover";
+            vignette.append(img);
+          } else {
+            vignette.textContent = extension(f.name) || "FICHIER";
+          }
+
+          const texte = document.createElement("span");
+          texte.className = "grid min-w-0 flex-1";
+          const nom = document.createElement("span");
+          nom.className = "truncate text-[14px] text-ink";
+          nom.textContent = f.name;
+          const taille = document.createElement("span");
+          taille.className = "text-[12px] text-mute";
+          taille.textContent = poids(f.size);
+          texte.append(nom, taille);
+
+          const retirer = document.createElement("button");
+          retirer.type = "button";
+          retirer.className =
+            "flex size-8 shrink-0 items-center justify-center rounded-control text-mute hover:bg-surface-raise hover:text-ink";
+          retirer.setAttribute("aria-label", `Retirer ${f.name}`);
+          retirer.innerHTML =
+            '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+          retirer.addEventListener("click", () => {
+            const url = apercus.get(f);
+            if (url) URL.revokeObjectURL(url);
+            apercus.delete(f);
+            fichiers = fichiers.filter((x) => x !== f);
+            signaler("");
+            synchroniser();
+          });
+
+          li.append(vignette, texte, retirer);
+          return li;
+        }),
+      );
+    };
+
+    const ajouter = (nouveaux: File[]) => {
+      const refus: string[] = [];
+      for (const f of nouveaux) {
+        if (!TYPES.test(f.type) && !EXT.test(f.name)) refus.push(`« ${f.name} » n'est ni une image, ni un PDF, ni un ZIP.`);
+        else if (f.size > maxTaille) refus.push(`« ${f.name} » dépasse ${maxTaille / 1024 / 1024} Mo.`);
+        else if (fichiers.length >= max) refus.push(`${max} fichiers au maximum par message.`);
+        else if (!fichiers.some((x) => x.name === f.name && x.size === f.size)) fichiers.push(f);
+      }
+      signaler([...new Set(refus)].join(" "));
+      synchroniser();
+    };
+
+    /* L'entrée native garde sa propre sélection : on la reprend dans notre
+       liste, puis synchroniser() réécrit entree.files avec le total. */
+    entree.addEventListener("change", () => ajouter([...(entree.files ?? [])].filter((f) => !fichiers.includes(f))));
+
+    ["dragenter", "dragover"].forEach((type) =>
+      zone.addEventListener(type, (e) => {
+        e.preventDefault();
+        if (fichiers.length < max) zone.setAttribute("data-survol", "");
+      }),
+    );
+    ["dragleave", "drop"].forEach((type) =>
+      zone.addEventListener(type, () => zone.removeAttribute("data-survol")),
+    );
+    zone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      ajouter([...(e.dataTransfer?.files ?? [])]);
+    });
+
+    racine.closest("form")?.addEventListener("reset", () => {
+      apercus.forEach((url) => URL.revokeObjectURL(url));
+      apercus.clear();
+      fichiers = [];
+      signaler("");
+      synchroniser();
+    });
+  }
+</script>

@@ -85,6 +85,14 @@ etape: production   # défaut = l'étape habituelle de la collection
 ```
 
 ## 4. Le nom du projet vient de Linear
+**Le nom Linear ne porte pas la jointure.** Tranché le 2026-09-22. Un libellé libre recopié dans cinq fichiers se désaligne à la première faute de frappe, et coupe le projet en deux sans rien signaler. Ce qui relie les cinq documents est un champ `projet` explicite, valant le segment d’URL du projet :
+
+```yaml
+projet: site-web-879        # la jointure, courte et vérifiable au build
+linear:
+  projet: Site web du CAFA Toulouse Occitanie   # le titre affiché
+```
+
 
 Pas de champ `sujet`. `linear.projet` porte le nom exact du projet Linear et devient le titre affiché. Un seul endroit fait autorité, aucune dérive possible.
 
@@ -120,6 +128,8 @@ après : coolbeans.cc/caf/site-web-879/livraison
 - **étape** : le mot de l'étape, en minuscules
 
 Trois règles sur ces chemins :
+
+**Les clés de trois lettres tiennent.** Vérifié le 2026-09-23 contre Linear : 22 des 23 teams portent une clé de trois lettres exactement, sans collision sur les trois premières lettres. La seule à quatre est `LUDO`, la team perso, qui ne porte aucun document client. Deux cas hors team : `danae` prend la clé de sa team Vice Versa, qui porte le nom du projet et non du client, et le manuscrit de Véronique Berthet reste hors nomenclature, à son adresse actuelle, parce que ce n’est pas une cliente.
 
 **Une référence par projet, pas par document.** Aujourd'hui `serial-generations` porte trois références pour un seul projet.
 
@@ -179,7 +189,9 @@ Le champ `brouillon` existe déjà mais signifie « servie en noindex le temps d
 
 `trame` et `brouillon` se comportent pareil côté client. Ils se distinguent pour Ludo : l’un est une coquille vide, l’autre un texte en cours de relecture.
 
-**Un document non publié n’est pas construit dans le site de production.** Il l’est en préproduction, où Ludo le relit sur `staging.coolbeans.cc`. Filtrage dans `getStaticPaths`, rien de plus. C’est plus sûr qu’un noindex, qui laisse la page atteignable par qui tape l’adresse.
+**Un document non publié n’est pas construit dans le site de production.** Il reste lisible en développement local, le temps de la relecture : masquer un document ne doit pas revenir à le perdre. C’est plus sûr qu’un noindex, qui laisse la page atteignable par qui tape l’adresse.
+
+Pas de détection de la préproduction, corrigé le 2026-09-23. Ces pages sont générées à la compilation, où le nom d’hôte vaut toujours celui de la production, et les variables de `wrangler.jsonc` sont des variables d’exécution. Distinguer `staging` de la production demanderait une variable de build déclarée par environnement dans Workers Builds, pour un usage que la relecture en local couvre déjà.
 
 Le passage à `publie` est un geste de Ludo, jamais un effet de bord d’une autre action.
 
@@ -237,7 +249,7 @@ Sur chaque racine : vérifier `linear.projet`, poser `etape` si l'étape diffè
 - [ ] Le filet reprend la teinte de l'étape dans les deux thèmes
 - [ ] `verify-design-system.js` passe, paires `-100` comprises
 - [ ] Les 28 anciennes URLs redirigent en 301
-- [ ] Un document en `trame` ou en `brouillon` renvoie 404 en production, et s’affiche en préproduction
+- [ ] Un document en `trame` ou en `brouillon` renvoie 404 en production, et s’affiche en développement local
 - [ ] Sa pastille est visible mais estompée et non cliquable
 - [ ] Un client connecté ouvre chacun de ses documents publiés depuis sa barre latérale
 - [ ] Vérifié sur desktop, tablette et mobile, la nav des sections défilant latéralement sur petit écran

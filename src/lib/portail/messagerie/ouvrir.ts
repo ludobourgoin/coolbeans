@@ -1,7 +1,7 @@
 // Ouverture d'un fil depuis Linear, après délai de grâce (migration 0003).
 // Jumelle de publier.ts : le webhook enfile quand le label « Support » est
 // posé, le cron relit l'issue et décide. Le re-fetch est là aussi LE mécanisme
-// d'annulation — retirer le « >> » ou le label pendant le délai annule tout,
+// d'annulation — retirer l'enveloppe ✉️ ou le label pendant le délai annule tout,
 // sans que le client ait rien vu passer.
 import { Resend } from "resend";
 import { SUPPORT_LABEL_ID, fetchIssue } from "../linear";
@@ -27,7 +27,7 @@ type DecisionOuverture =
 /**
  * Décision pure, à partir de la version courante de l'issue. Trois annulations
  * distinctes, toutes légitimes et toutes silencieuses : l'issue a disparu, le
- * label a été retiré, ou il n'y a pas (plus) de bloc « >> » à publier.
+ * label a été retiré, ou il n'y a pas (plus) de bloc ✉️ à publier.
  */
 export function decisionOuverture(
   issue: { title: string; description: string | null; url: string; labelIds: string[] } | null,
@@ -37,9 +37,9 @@ export function decisionOuverture(
     return { type: "annuler", raison: "label Support retiré" };
   }
   const corps = corpsPublieDescription(issue.description);
-  if (corps === null) return { type: "annuler", raison: "pas de bloc >> dans la description" };
+  if (corps === null) return { type: "annuler", raison: "pas de bloc ✉️ dans la description" };
   const { texte, imagesRetirees } = retireImagesLinear(corps);
-  if (!texte) return { type: "annuler", raison: "bloc >> vide après retrait des images" };
+  if (!texte) return { type: "annuler", raison: "bloc ✉️ vide après retrait des images" };
   return { type: "ouvrir", objet: issue.title, corps: texte, url: issue.url, imagesRetirees };
 }
 

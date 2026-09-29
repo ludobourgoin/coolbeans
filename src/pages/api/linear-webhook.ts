@@ -1,6 +1,6 @@
 // Réception des webhooks Linear. Deux événements comptent :
 //
-//   Comment — un « >> » sur un ticket existant : réponse à publier.
+//   Comment — un ✉️ sur un ticket existant : réponse à publier.
 //   Issue   — le label « Support » posé ou retiré : fil à ouvrir ou à masquer.
 //
 // Dans les deux cas on enfile avec un délai de grâce de 3 min et le cron
@@ -56,7 +56,7 @@ export const POST: APIRoute = async ({ request }) => {
   if (!evenement) return new Response(null, { status: 200 });
 
   const ticket = await ticketParIssueUuid(env.PORTAL_DB, evenement.issueId);
-  // Commentaire >> sur une issue hors messagerie (issue de projet classique) :
+  // Commentaire ✉️ sur une issue hors messagerie (issue de projet classique) :
   // rien à publier, ce n'est pas un ticket.
   if (!ticket) return new Response(null, { status: 200 });
 

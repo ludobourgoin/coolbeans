@@ -15,13 +15,9 @@ import { Picto } from "./pictos";
 export interface DocumentVue {
   id: string;
   titre: string;
-  source: "fichier" | "page" | "lien";
-  url: string | null;
   mime: string | null;
   date_doc: string;
   visible: boolean;
-  /** Sa page n'existe plus dans le repo. Signalé, jamais supprimé. */
-  orpheline: boolean;
 }
 
 interface Props {
@@ -33,20 +29,12 @@ const LIBELLES: Record<FamilleDocument, string> = {
   pdf: "PDF",
   image: "Image",
   archive: "Fichier",
-  "google-docs": "Google Docs",
-  granola: "Compte rendu",
-  page: "Page web",
-  lien: "Lien",
 };
 
 function dateLisible(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
   return d.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
-}
-
-function lienDe(doc: DocumentVue): string {
-  return doc.source === "fichier" ? `/api/documents/fichier/${doc.id}` : (doc.url ?? "#");
 }
 
 /* `class:list` est une directive Astro : dans une île Preact, il faut une
@@ -85,7 +73,7 @@ export default function ListeDocuments({ documents, admin }: Props) {
   return (
     <ul class="mt-6 grid list-none gap-0 p-0">
       {lignes.map((doc) => {
-        const famille = familleDocument({ source: doc.source, mime: doc.mime, url: doc.url });
+        const famille = familleDocument(doc.mime);
         const masque = admin && !doc.visible;
         return (
           <li
@@ -97,7 +85,7 @@ export default function ListeDocuments({ documents, admin }: Props) {
             </span>
 
             <a
-              href={lienDe(doc)}
+              href={`/api/documents/fichier/${doc.id}`}
               target="_blank"
               rel="noopener"
               class={cx("group grid min-w-0 flex-1 gap-0.5", masque && "opacity-60")}
@@ -105,7 +93,6 @@ export default function ListeDocuments({ documents, admin }: Props) {
               <span class="truncate font-medium text-ink group-hover:underline">{doc.titre}</span>
               <span class="font-mono text-[12px] text-mute">
                 {LIBELLES[famille]} · {dateLisible(doc.date_doc)}
-                {doc.orpheline && " · page absente du repo"}
               </span>
             </a>
 

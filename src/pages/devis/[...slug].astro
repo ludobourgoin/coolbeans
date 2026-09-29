@@ -9,6 +9,7 @@ import DevisFooter from "../../components/devis/DevisFooter.astro";
 import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
 import DocumentReponses from "../../components/devis/DocumentReponses.astro";
 import { dateLongue } from "../../lib/devis";
+import { construitesEnProduction } from "../../lib/documents/statut";
 
 /* Un devis peut avoir plusieurs versions (révision de périmètre). Elles
    partagent l'URL de la V1 — le lien déjà envoyé au client ne bouge jamais —
@@ -16,7 +17,9 @@ import { dateLongue } from "../../lib/devis";
    versions suivantes se déclarent par `versionDe` et n'ont pas d'URL propre,
    sans quoi le client pourrait tomber sur une révision hors de son contexte. */
 export async function getStaticPaths() {
-  const entries = await getCollection("devis");
+  /* Le filtre passe AVANT le calcul des racines : sur une racine il fait
+     disparaître la page, sur une version il fait disparaître un onglet. */
+  const entries = construitesEnProduction(await getCollection("devis"), import.meta.env.DEV);
   const racines = entries.filter((e) => !e.data.versionDe);
 
   return racines.map((racine) => {

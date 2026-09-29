@@ -25,16 +25,16 @@ describe("analyserEvenement", () => {
     type: "Comment",
     data: { id: "c1", body, issueId: "i1" },
   });
-  test("retient un commentaire créé commençant par >>", () => {
-    expect(analyserEvenement(commentaire(">> Bonjour"))).toEqual({
+  test("retient un commentaire créé commençant par ✉️", () => {
+    expect(analyserEvenement(commentaire("✉️ Bonjour"))).toEqual({
       commentId: "c1",
       issueId: "i1",
-      body: ">> Bonjour",
+      body: "✉️ Bonjour",
     });
   });
   test("ignore les notes internes, les updates et les autres types", () => {
     expect(analyserEvenement(commentaire("note interne"))).toBeNull();
-    expect(analyserEvenement({ ...commentaire(">> x"), action: "update" })).toBeNull();
+    expect(analyserEvenement({ ...commentaire("✉️ x"), action: "update" })).toBeNull();
     expect(analyserEvenement({ action: "create", type: "Issue", data: {} })).toBeNull();
   });
 });

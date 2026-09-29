@@ -1,5 +1,7 @@
 # Messagerie du portail client — design
 
+> Révisé le 2026-09-29 : le marqueur de publication est l'enveloppe ✉️ en tête, à la place de « >> ». Les chevrons ne publient plus rien. Le reste de ce document parle de « >> » : lire « ✉️ ».
+
 Date : 2026-08-15
 Statut : **implémentée sur staging le 2026-08-17** (13 tâches SDD + revue, session parallèle du matin ; plan : `../plans/2026-08-15-messagerie-portail.md`). Reste : recette navigateur de Ludo, gestes prod (migration D1, secrets, webhook Linear prod), doc, puis archivage. Alignée sur la spec produit le 2026-08-17 (voir §12) : l'implémentation a suivi ce design (trois états, pas de notification de clôture dédiée) — les écarts 1 et 2 du §12 restent à arbitrer, l'option par défaut étant désormais le comportement livré.
 
@@ -139,6 +141,8 @@ myCoolbeans). On ne recrée ni nom ni adresse.
   (« c'est en ligne, dis-moi si ça te va »).
 
 ### Popup Nouvelle demande
+
+> Révisé le 2026-09-29 : la section s'appelle « Demandes » et la popup a disparu. Le formulaire s'affiche d'emblée en tête de page, la liste des fils suit, façon boîte de réception. L'urgence se choisit dans un menu maison (icône et couleur par niveau), les pièces jointes dans une zone de dépôt. L'admin n'a plus de liste de comptes, ni de lien à cocher : quand il remplit le formulaire depuis l'espace d'un client, la demande part au nom du contact principal de l'espace, comme si le client l'avait écrite, sans aucun mail Resend. L'étiquette « Ouvert par Ludo » ne reste que sur les fils ouverts depuis Linear.
 
 - **Objet** : obligatoire.
 - **Description** : optionnelle.

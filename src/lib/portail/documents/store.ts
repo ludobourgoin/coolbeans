@@ -5,7 +5,11 @@ export interface DocumentRow {
   id: string;
   client: string;
   titre: string;
-  source: "fichier" | "page" | "lien";
+  /* Toujours "fichier" depuis le 2026-09-22. La colonne survit en base,
+     avec sa contrainte CHECK d'origine, parce qu'aucune ligne n'a jamais
+     été écrite en production : la reprise de la table revient au lot
+     Facturation, qui lui ajoutera son statut de règlement. */
+  source: "fichier";
   r2_key: string | null;
   url: string | null;
   mime: string | null;
@@ -14,7 +18,9 @@ export interface DocumentRow {
   /** 1 = montré au client. 0 par défaut, cf. migration 0008. */
   visible: number;
   cree_le: string;
-  /** Chemin du YAML dans le repo pour une page, `null` sinon. */
+  /* Portait l'idempotence de l'enregistrement automatique des pages du
+     repo, retiré le 2026-09-22. Toujours `null` désormais ; la colonne et
+     son index unique partiel restent en base, inertes. */
   cle_source: string | null;
 }
 
@@ -63,42 +69,6 @@ export async function creerDocument(db: D1Database, d: DocumentRow): Promise<voi
       d.date_doc, d.visible, d.cree_le, d.cle_source,
     )
     .run();
-}
-
-/**
- * Insère une page du repo si elle n'est pas déjà connue, et ne fait rien
- * sinon. L'idempotence est portée par l'index unique partiel de la migration
- * plutôt que par un SELECT préalable : deux rendus concurrents de la vue admin
- * ne peuvent pas créer de doublon.
- *
- * Le `WHERE cle_source IS NOT NULL` de la clause ON CONFLICT n'est pas
- * décoratif : SQLite n'associe une clause ON CONFLICT à un index PARTIEL que
- * si elle répète le prédicat de l'index, mot pour mot. Sans lui, chaque
- * insertion lève « ON CONFLICT clause does not match any PRIMARY KEY or
- * UNIQUE constraint » et la vue admin répond 500.
- */
-export async function insererSiAbsente(db: D1Database, d: DocumentRow): Promise<void> {
-  await db
-    .prepare(
-      `INSERT INTO documents (id, client, titre, source, r2_key, url, mime, taille,
-         date_doc, visible, cree_le, cle_source)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-       ON CONFLICT (client, cle_source) WHERE cle_source IS NOT NULL DO NOTHING`,
-    )
-    .bind(
-      d.id, d.client, d.titre, d.source, d.r2_key, d.url, d.mime, d.taille,
-      d.date_doc, d.visible, d.cree_le, d.cle_source,
-    )
-    .run();
-}
-
-/** Les clés de source déjà enregistrées pour ce client. */
-export async function clesSourceConnues(db: D1Database, client: string): Promise<Set<string>> {
-  const { results } = await db
-    .prepare(`SELECT cle_source FROM documents WHERE client = ? AND cle_source IS NOT NULL`)
-    .bind(client)
-    .all<{ cle_source: string }>();
-  return new Set(results.map((r) => r.cle_source));
 }
 
 /**

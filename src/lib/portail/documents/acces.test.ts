@@ -56,7 +56,11 @@ test("sans client courant résolu, rien ne sort", () => {
 });
 
 test("une ligne qui n'est pas un fichier ne passe pas par cette route", () => {
-  expect(peutServirFichier({ ...client, doc: doc({ source: "lien", r2_key: null }) })).toBe(false);
+  /* Le type ne permet plus d'écrire une telle ligne depuis le 2026-09-22, mais
+     la colonne accepte encore `page` et `lien` en base : la garde reste, et le
+     cast est ce qui permet de la tester. */
+  const autreSource = { source: "lien", r2_key: null } as unknown as Partial<DocumentRow>;
+  expect(peutServirFichier({ ...client, doc: doc(autreSource) })).toBe(false);
   expect(peutServirFichier({ ...client, doc: null })).toBe(false);
 });
 

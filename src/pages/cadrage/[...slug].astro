@@ -12,13 +12,14 @@ import DevisFooter from "../../components/devis/DevisFooter.astro";
 import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
 import DocumentReponses from "../../components/devis/DocumentReponses.astro";
 import { dateLongue, riche, ancreSection } from "../../lib/devis";
+import { construitesEnProduction } from "../../lib/documents/statut";
 
 /* Un document de cadrage par fichier YAML, une URL par fichier. Pas de
    versions ici, contrairement au devis : un cadrage se remplit une fois et
    n'a pas de périmètre à réviser. S'il faut reposer des questions, c'est un
    autre document. */
 export async function getStaticPaths() {
-  const entries = await getCollection("cadrage");
+  const entries = construitesEnProduction(await getCollection("cadrage"), import.meta.env.DEV);
   return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 

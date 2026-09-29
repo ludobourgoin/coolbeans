@@ -1,44 +1,29 @@
 ---
-// Popup Nouvelle demande (spec 2026-08-15-messagerie-portail-design.md §6).
-//
-// Même mécanique que feu SupportForm.astro : soumission fetch, états idle /
-// envoi / succès / erreur dans un role="status". Différences : multipart (pièces
-// jointes possibles) et succès → location.reload() pour faire apparaître le
-// ticket dans MessagerieBoard, plutôt qu'un simple message inline. Composant
-// autonome (bouton + <dialog>) pour rester réutilisable tel quel par la Task 11
-// (page ticket).
-//
-// Pas la classe `card` — mêmes tokens que SupportForm/EmptyState.
-import { URGENCES } from "../../lib/portail/messagerie/regles";
+/* Formulaire « Nouvelle demande », affiché directement en tête de la page
+   Demandes (spec 2026-08-15-messagerie-portail-design.md §6, revu le
+   2026-09-29 : plus de popup, un formulaire visible d'emblée).
+
+   Un seul formulaire pour tout le monde. L'admin qui le remplit depuis
+   l'espace d'un client écrit au nom de ce client, sans rien à cocher :
+   l'endpoint choisit le contact principal de l'espace et n'envoie aucun mail
+   (décision du 2026-09-29).
+
+   Soumission multipart vers /api/messagerie/nouveau, inchangée : l'urgence et
+   les pièces jointes gardent leurs `name`. Succès : rechargement, la demande
+   apparaît dans la liste. */
+import ChoixUrgence from "./ChoixUrgence.astro";
+import PiecesJointes from "./PiecesJointes.astro";
+
 ---
 
-<button type="button" class="btn" data-nouvelle-demande-ouvrir>
-  Nouvelle demande
-</button>
+<section class="grid gap-4" aria-labelledby="nd-titre" data-nouvelle-demande>
+  <h2 id="nd-titre" class="text-lg font-semibold tracking-[-0.02em]">Nouvelle demande</h2>
 
-<dialog
-  data-nouvelle-demande
-  aria-labelledby="nd-titre"
-  class="w-full max-w-[560px] rounded-card border border-line bg-surface p-0 text-ink backdrop:bg-overlay"
->
-  <form data-nouvelle-demande-form enctype="multipart/form-data" class="grid gap-6 p-6x">
-    <div class="flex items-start justify-between gap-4">
-      <h2 id="nd-titre" class="text-lg font-semibold tracking-[-0.02em]">Nouvelle demande</h2>
-      <button
-        type="button"
-        class="text-mute hover:text-ink"
-        data-nouvelle-demande-fermer
-        aria-label="Fermer"
-      >
-        ✕
-      </button>
-    </div>
-
-    <p class="text-sm text-mute">
-      Un message = un sujet. Trois sujets&nbsp;? Trois demandes séparées : on vous répondra plus
-      vite.
-    </p>
-
+  <form
+    data-nouvelle-demande-form
+    enctype="multipart/form-data"
+    class="grid gap-6 rounded-card border border-line bg-surface p-6x"
+  >
     <div class="grid gap-2">
       <label class="label field-label" for="nd-objet">
         Objet <span aria-hidden="true">*</span>
@@ -65,49 +50,28 @@ import { URGENCES } from "../../lib/portail/messagerie/regles";
       ></textarea>
     </div>
 
-    <div class="grid gap-2">
+    <div class="grid max-w-[320px] gap-2">
       <label class="label field-label" for="nd-urgence">Urgence</label>
-      <select class="field" id="nd-urgence" name="urgence">
-        <option value="">—</option>
-        {URGENCES.map((u) => (
-          <option value={u.value}>{u.label}</option>
-        ))}
-      </select>
+      <ChoixUrgence id="nd-urgence" />
     </div>
 
     <div class="grid gap-2">
-      <label class="label field-label" for="nd-fichiers">Pièces jointes</label>
-      <input
-        class="field h-auto py-2"
-        type="file"
-        id="nd-fichiers"
-        name="fichiers"
-        multiple
-        accept="image/*,.pdf,.zip"
-      />
-      <p class="text-[12px] text-mute">3 fichiers max, 10 Mo chacun.</p>
+      <span class="label field-label">Pièces jointes</span>
+      <PiecesJointes id="nd-fichiers" />
     </div>
 
-    <div class="flex items-center gap-4">
+    <div class="flex flex-wrap items-center gap-4">
       <button class="btn" type="submit">Envoyer la demande</button>
-      <button class="btn btn-ghost" type="button" data-nouvelle-demande-fermer>Annuler</button>
+      <p data-nouvelle-demande-status role="status" hidden class="text-[13px] font-medium"></p>
     </div>
-
-    <p data-nouvelle-demande-status role="status" hidden class="text-[13px] font-medium"></p>
   </form>
-</dialog>
+</section>
 
 <script>
-  const dialog = document.querySelector<HTMLDialogElement>("[data-nouvelle-demande]");
-  const ouvrir = document.querySelector<HTMLButtonElement>("[data-nouvelle-demande-ouvrir]");
-  const form = document.querySelector<HTMLFormElement>("[data-nouvelle-demande-form]");
+  const racine = document.querySelector<HTMLElement>("[data-nouvelle-demande]");
+  const form = racine?.querySelector<HTMLFormElement>("[data-nouvelle-demande-form]");
 
-  if (dialog && ouvrir && form) {
-    ouvrir.addEventListener("click", () => dialog.showModal());
-    for (const btn of dialog.querySelectorAll<HTMLButtonElement>("[data-nouvelle-demande-fermer]")) {
-      btn.addEventListener("click", () => dialog.close());
-    }
-
+  if (racine && form) {
     const status = form.querySelector<HTMLParagraphElement>("[data-nouvelle-demande-status]");
     const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
     const setStatus = (texte: string, tone: "text-mute" | "text-success" | "text-error") => {
@@ -139,7 +103,7 @@ import { URGENCES } from "../../lib/portail/messagerie/regles";
         if (!res.ok || !body?.ok) throw new Error(body?.error ?? "");
 
         setStatus("Demande envoyée.", "text-success");
-        // Recharge la page : le ticket tout juste créé apparaît dans le board.
+        // Recharge la page : la demande tout juste créée apparaît dans la liste.
         location.reload();
       } catch (err) {
         const message = err instanceof Error && err.message ? err.message : "";

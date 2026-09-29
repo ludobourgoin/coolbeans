@@ -21,6 +21,16 @@ const devis = defineCollection({
     titre: z.string(),
     objet: z.string(),
     date: z.coerce.date(),
+    /* Les trois états d'un document (spec 2026-09-22 §10) :
+       `trame`     coquille créée avec le projet, jamais servie ;
+       `brouillon` texte en cours, pas encore montrable ;
+       `publie`    servi en production, listé dans le portail.
+       Les deux premiers se comportent pareil côté client ; ils se distinguent
+       pour Ludo, qui sait ce qu'il lui reste à écrire.
+
+       Le défaut est `publie` : les 35 documents d'avant ce champ n'en portent
+       pas, et tout autre défaut les retirerait tous de la production. */
+    statut: z.enum(["trame", "brouillon", "publie"]).default("publie"),
     // Prénom du contact côté client, affiché sur les jalons de planning
     // attribués à "client" (owner: client). Chaque devis a son propre client.
     contact: z.string().optional(),
@@ -180,14 +190,20 @@ const livrable = defineCollection({
     titre: z.string(),
     objet: z.string(),
     date: z.coerce.date(),
+    /* Les trois états d'un document (spec 2026-09-22 §10) :
+       `trame`     coquille créée avec le projet, jamais servie ;
+       `brouillon` texte en cours, pas encore montrable ;
+       `publie`    servi en production, listé dans le portail.
+       Les deux premiers se comportent pareil côté client ; ils se distinguent
+       pour Ludo, qui sait ce qu'il lui reste à écrire.
+
+       Le défaut est `publie` : les 35 documents d'avant ce champ n'en portent
+       pas, et tout autre défaut les retirerait tous de la production. */
+    statut: z.enum(["trame", "brouillon", "publie"]).default("publie"),
     contact: z.string().optional(),
     tutoiement: z.boolean().default(false),
     version: z.number().int().min(1).default(1),
     versionDe: z.string().optional(),
-    /* Brouillon : le document existe dans le dépôt mais ne sort pas du build.
-       Visible en développement local seulement, pour la relecture. Premier
-       pas vers le champ `statut` de la spec du 2026-09-22. */
-    brouillon: z.boolean().default(false),
     envoi: z.object({ date: z.coerce.date(), destinataire: z.string() }).optional(),
     linear: z.object({ projet: z.string().optional(), affaire: z.string().optional() }).optional(),
     // Formulaire masqué une fois le livrable validé : la page devient une trace.
@@ -450,6 +466,16 @@ const cadrage = defineCollection({
     titre: z.string(),
     objet: z.string(),
     date: z.coerce.date(),
+    /* Les trois états d'un document (spec 2026-09-22 §10) :
+       `trame`     coquille créée avec le projet, jamais servie ;
+       `brouillon` texte en cours, pas encore montrable ;
+       `publie`    servi en production, listé dans le portail.
+       Les deux premiers se comportent pareil côté client ; ils se distinguent
+       pour Ludo, qui sait ce qu'il lui reste à écrire.
+
+       Le défaut est `publie` : les 35 documents d'avant ce champ n'en portent
+       pas, et tout autre défaut les retirerait tous de la production. */
+    statut: z.enum(["trame", "brouillon", "publie"]).default("publie"),
     // Prénom du destinataire : ouvre l'accusé de réception, comme au devis.
     contact: z.string().optional(),
     /* Le formulaire vouvoie par défaut, parce qu'il est partagé par tous les
@@ -636,6 +662,16 @@ const temoignage = defineCollection({
     titre: z.string(),
     objet: z.string(),
     date: z.coerce.date(),
+    /* Les trois états d'un document (spec 2026-09-22 §10) :
+       `trame`     coquille créée avec le projet, jamais servie ;
+       `brouillon` texte en cours, pas encore montrable ;
+       `publie`    servi en production, listé dans le portail.
+       Les deux premiers se comportent pareil côté client ; ils se distinguent
+       pour Ludo, qui sait ce qu'il lui reste à écrire.
+
+       Le défaut est `publie` : les 35 documents d'avant ce champ n'en portent
+       pas, et tout autre défaut les retirerait tous de la production. */
+    statut: z.enum(["trame", "brouillon", "publie"]).default("publie"),
     contact: z.string().optional(),
     tutoiement: z.boolean().default(false),
     linear: z.object({ projet: z.string().optional(), affaire: z.string().optional() }).optional(),

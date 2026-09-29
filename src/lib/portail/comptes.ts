@@ -96,3 +96,25 @@ export async function compteDuWorkspace(
     .first<LigneCompte>();
   return row ? toCompte(row) : null;
 }
+
+/**
+ * Le compte au nom duquel l'admin écrit quand il remplit le formulaire de
+ * demande depuis l'espace d'un client : la demande part comme si le client
+ * l'avait écrite (décision du 2026-09-29).
+ *
+ * Le contact principal de la fiche client (`prenom` du registre) d'abord,
+ * sinon le premier compte de l'espace. L'admin lui-même n'est jamais retenu,
+ * même s'il est membre de l'espace. `undefined` si l'espace n'a aucun compte.
+ */
+export function comptePrincipal(
+  comptes: ComptePortail[],
+  prenomPrincipal: string | undefined,
+  exclureId: string,
+): ComptePortail | undefined {
+  const candidats = comptes.filter((c) => c.id !== exclureId);
+  const principal = prenomPrincipal?.trim().toLowerCase();
+  return (
+    (principal ? candidats.find((c) => c.prenom.toLowerCase() === principal) : undefined) ??
+    candidats[0]
+  );
+}

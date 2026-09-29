@@ -41,40 +41,48 @@ export function prioriteFromUrgence(u: string | null | undefined): number {
   }
 }
 
-/** Marqueur de publication : un commentaire Linear qui commence par ">>". */
-const MARQUEUR = ">>";
+/**
+ * Marqueur de publication : l'enveloppe ✉️ en tête du commentaire (décision
+ * du 2026-09-29, qui remplace « >> »). Linear l'enregistre en U+2709, suivi
+ * ou non du sélecteur de variante U+FE0F. `:envelope:` est accepté aussi, au
+ * cas où l'éditeur n'aurait pas converti le code en emoji. Le marqueur doit
+ * ouvrir le texte : une enveloppe au milieu d'une note ne publie rien.
+ */
+const MARQUEUR = /^(?:\u2709\uFE0F?|:envelope:)/;
 
 /**
  * Corps publiable d'un commentaire, ou null s'il ne doit pas partir : pas de
- * marqueur en tête (note interne), ou plus de contenu (le ">>" a été retiré à
- * l'édition pendant le délai de grâce = annulation).
+ * marqueur en tête (note interne), ou plus de contenu (l'enveloppe a été
+ * retirée à l'édition pendant le délai de grâce = annulation).
  */
 export function corpsPublie(body: string): string | null {
-  if (!body.startsWith(MARQUEUR)) return null;
-  const corps = body.slice(MARQUEUR.length).trim();
+  const marqueur = MARQUEUR.exec(body);
+  if (!marqueur) return null;
+  const corps = body.slice(marqueur[0].length).trim();
   return corps || null;
 }
 
 /**
  * Corps publiable d'une DESCRIPTION d'issue, ou null s'il n'y a rien à ouvrir.
  *
- * Un commentaire est publié en entier ou pas du tout : le « >> » doit être en
- * tête. Une description ne peut pas suivre cette règle — elle porte d'abord le
- * contexte interne (ce qu'on a constaté, où ça se passe, ce qu'on va faire),
- * et le mot au client vient à la fin. Le premier « >> » en début de ligne
- * ouvre donc le bloc publié, qui court jusqu'au bout de la description.
+ * Un commentaire est publié en entier ou pas du tout : l'enveloppe doit être
+ * en tête. Une description ne peut pas suivre cette règle — elle porte
+ * d'abord le contexte interne (ce qu'on a constaté, où ça se passe, ce qu'on
+ * va faire), et le mot au client vient à la fin. La première ligne qui
+ * commence par l'enveloppe ouvre donc le bloc publié, qui court jusqu'au bout
+ * de la description.
  *
- * Conséquence voulue : une issue sans « >> » n'ouvre aucun fil. Poser le label
- * « Support » sur une issue de travail ordinaire ne fait donc rien partir, et
- * c'est aussi ce qui distingue les issues créées par le formulaire du portail
- * (elles n'ont pas de « >> ») de celles que Ludo tague à la main.
+ * Conséquence voulue : une issue sans enveloppe n'ouvre aucun fil. Poser le
+ * label « Support » sur une issue de travail ordinaire ne fait donc rien
+ * partir, et c'est aussi ce qui distingue les issues créées par le formulaire
+ * du portail (elles n'ont pas d'enveloppe) de celles que Ludo tague à la main.
  */
 export function corpsPublieDescription(description: string | null | undefined): string | null {
   if (!description) return null;
   const lignes = description.split("\n");
-  const debut = lignes.findIndex((l) => l.startsWith(MARQUEUR));
+  const debut = lignes.findIndex((l) => MARQUEUR.test(l));
   if (debut === -1) return null;
-  const bloc = [lignes[debut].slice(MARQUEUR.length), ...lignes.slice(debut + 1)].join("\n").trim();
+  const bloc = [lignes[debut].replace(MARQUEUR, ""), ...lignes.slice(debut + 1)].join("\n").trim();
   return bloc || null;
 }
 

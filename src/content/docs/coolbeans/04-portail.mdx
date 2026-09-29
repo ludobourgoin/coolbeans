@@ -3,7 +3,7 @@ client: "coolbeans"
 title: "Portail myCoolbeans"
 order: 4
 status: "final"
-updated: 2026-09-15
+updated: 2026-09-29
 description: "L'espace client my.coolbeans.cc : adresses, authentification, registre des clients et modules."
 ---
 
@@ -24,7 +24,8 @@ préfixe technique.
 Le module **Demandes** (`my.coolbeans.cc/demandes`, ex-Messagerie, renommé le
 2026-09-29) est une boîte de tickets et rien d'autre. Les mails échangés avec
 le client restent dans Gmail, et ses décisions vivent dans les documents
-(réponses aux formulaires). L'ancienne adresse `/messagerie` redirige.
+(réponses aux formulaires). L'ancienne adresse `/messagerie` redirige, y
+compris celle d'un fil précis. Le fonctionnement est détaillé plus bas.
 
 ## Ce que vous pouvez modifier vous-même
 
@@ -122,6 +123,73 @@ et les propositions du client s'enregistrent tout seuls, à chaque ouverture
 de la page en vue admin ; une page retirée du repo garde sa ligne, signalée
 plutôt que supprimée en silence.
 
+**Les demandes.** La page Demandes montre d'abord le formulaire, puis la
+liste des fils, façon boîte de réception. Une demande porte un objet, une
+description, une urgence et jusqu'à trois pièces jointes (images, PDF ou ZIP,
+10 Mo chacune), vérifiées avant l'envoi puis de nouveau par le serveur. Un
+fil passe en gras quand son dernier message vient de Ludo : il n'existe pas
+d'état « lu » en base, c'est ce qui en tient lieu.
+
+Chaque demande crée une issue dans la team Linear du client, avec le label
+« Support », assignée à Ludo. L'urgence devient la priorité : Bloquant en
+Urgent, Urgent en High, Normal en Medium, Pas pressé en Low. Le client reçoit
+un accusé de réception, et Ludo une notification. Un compte ne peut pas
+envoyer plus de cinq demandes par jour.
+
+Ludo répond depuis Linear : un commentaire qui commence par l'enveloppe ✉️
+(`:envelope:` au clavier) part chez le client après trois minutes de grâce,
+avec un mail. Pendant ce délai, corriger le commentaire corrige le message,
+et retirer l'enveloppe annule l'envoi. Un commentaire sans enveloppe reste
+une note interne. Depuis le 2026-09-29, l'enveloppe remplace les chevrons
+`>>`, qui ne publient plus rien. Le cron passe toutes les cinq minutes.
+
+**Le suivi dans Linear.** La vue partagée [« Support »](https://linear.app/coolbeans-hq/view/support-78f07397ef69)
+de la team Web rassemble tous les tickets du portail, tous clients et tous
+projets confondus, en board avec une colonne par statut. Elle filtre sur le
+label « Support ». Rattachée à la team parente, elle n'affiche les tickets
+des sous-teams clients que parce que l'option d'affichage « Sub-team issues »
+est active : si elle paraît vide, c'est la première chose à vérifier.
+
+Le client ne voit pas ces colonnes. La page Demandes regroupe les statuts du
+board en trois pastilles pâles :
+
+| Statut Linear | Pastille côté client |
+| --- | --- |
+| Triage, Backlog, Todo | « En attente », gris |
+| In Progress | « En cours », bleu |
+| Done, Canceled | « Traité », vert |
+
+Le regroupement lit le type du statut Linear, jamais son nom, qui peut
+varier d'une team à l'autre. Un ticket dont l'issue est introuvable
+(supprimée, pas encore rattachée) n'affiche aucune pastille.
+
+Le client répond depuis la page du fil. Sa réponse arrive en nouveau
+commentaire sur la même issue, précédé de son prénom (« **Susanne (portail)** »),
+avec les liens de ses pièces jointes. Ce commentaire se place à la suite des
+autres, pas en réponse imbriquée sous celui de Ludo. Linear ne notifie pas ce
+commentaire, parce qu'il est posté avec la clé de Ludo : c'est un mail qui
+prévient Ludo. Et ainsi de suite, une enveloppe après l'autre.
+
+**Écrire au nom d'un client.** Un admin qui remplit le formulaire depuis
+l'espace d'un client écrit au nom de ce client, sans rien à cocher. La demande
+part au nom du contact principal de l'espace (le prénom noté dans sa fiche,
+sinon son premier compte, jamais l'admin), comme si le client l'avait écrite.
+**Aucun mail ne part**, ni au client ni à Ludo, et le quota ne s'applique pas.
+L'issue Linear le dit (« Demande saisie par Ludo au nom de… »), et la base
+garde la provenance. Un espace sans compte refuse l'envoi. Dans ses espaces
+perso (Coolbeans, Spinoza), l'admin écrit en son nom.
+
+Le fil ne porte pas l'étiquette « Ouvert par Ludo » ; elle est réservée
+aux fils ouverts depuis Linear. Les réponses suivantes de Ludo, elles,
+partent par mail comme d'habitude.
+
+**Ouvrir un fil depuis Linear.** Poser le label « Support » sur une issue du
+client ne suffit pas : il faut aussi une ligne qui commence par l'enveloppe
+✉️ dans sa description. Cette ligne ouvre ce qui sera publié, jusqu'à la fin de la
+description, et ce qui précède reste interne. Le fil apparaît chez le client
+après le même délai de grâce, avec l'étiquette « Ouvert par Ludo » et un
+mail.
+
 **Le module Projets** est une page-souche avec état vide : l'outil de
 gestion de projet est Linear, et le branchement du module sur Linear est un
 chantier à part entière (voir la spec de migration dans
@@ -146,3 +214,8 @@ chantier à part entière (voir la spec de migration dans
 | Garde admin (pages et actions) | `src/lib/portail/require-admin.ts` |
 | Pages des modules | `src/pages/espace/*.astro` |
 | États vides et diagnostic | `src/components/portail/EmptyState.astro`, `missingKeysFor` dans `src/lib/portail/workspaces.ts` |
+| Page Demandes et page d'un fil | `src/pages/espace/demandes.astro`, `demandes/[id].astro`, redirections dans `messagerie.astro` et `messagerie/[id].astro` |
+| Formulaire, urgence, pièces jointes, liste | `src/components/portail/NouvelleDemande.astro`, `ChoixUrgence.astro`, `PiecesJointes.astro`, `MessagerieBoard.astro` |
+| Création d'une demande, compte au nom duquel écrire | `src/pages/api/messagerie/nouveau.ts`, `comptePrincipal` dans `src/lib/portail/comptes.ts` |
+| Réponses et ouverture depuis Linear | `src/pages/api/linear-webhook.ts`, `src/lib/portail/messagerie/publier.ts` et `ouvrir.ts`, cron dans `src/worker.ts` |
+| Statuts côté client (trois pastilles) | `statutFromStateType` et `STATUT_LABEL` dans `src/lib/portail/messagerie/regles.ts`, couleurs dans `MessagerieBoard.astro` |

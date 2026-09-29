@@ -5,14 +5,15 @@
 //   2. quota journalier KV (repris tel quel de l'ancien /api/support) ;
 //   3. ligne D1 tickets + message initial + upload R2 des pièces jointes ;
 //   4. issue Linear (projet Support, assignée à Ludo, priorité) → majIssue ;
-//   5. emails Resend (interne + accusé) — best-effort.
+//   5. emails Resend (interne + accusé) — best-effort. Aucun quand l'admin
+//      écrit au nom du client (décision du 2026-09-29).
 
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 import { Resend } from "resend";
 import { renderConfirmationSupport } from "../../../emails/support-confirmation";
-import { citation, esc, kv, p, renderTransactionnel, titreSection } from "../../../emails/transactionnel";
-import { compteDuWorkspace, prenomDe } from "../../../lib/portail/comptes";
+import { citation, esc, kv, renderTransactionnel, titreSection } from "../../../emails/transactionnel";
+import { comptePrincipal, comptesDuWorkspace, prenomDe } from "../../../lib/portail/comptes";
 import { getPortalContext } from "../../../lib/portail/context";
 import { LUDO_LINEAR_USER_ID, createSupportTicket } from "../../../lib/portail/linear";
 import { isAdmin } from "../../../lib/portail/metadata";
@@ -61,32 +62,33 @@ export const POST: APIRoute = async (context) => {
   const emailClient = user.email || null;
   const nomClient = (user.name ?? "").trim() || emailClient || user.id;
 
-  // Création au nom d'un client (spec §8) : réservée à l'admin. L'auteur
-  // reste l'utilisateur du client — c'est lui qui reçoit les notifications —
-  // created_via = 'admin' porte la provenance, affichée sans mimétisme.
+  // L'admin qui remplit le formulaire depuis l'espace d'un client écrit AU NOM
+  // du client, comme si celui-ci avait écrit lui-même (décision du 2026-09-29,
+  // qui remplace la liste de comptes de la spec §8). L'auteur est le contact
+  // principal de l'espace : c'est lui qui recevra les réponses de Ludo.
+  // created_via = 'admin' garde la provenance en base, sans l'afficher.
   // Résolu AVANT le quota : le garde-fou anti-abus vise les clients, pas
-  // l'opérateur (voir plus bas, chemin admin exempté).
-  const pourCompteId = String(fd.get("pourCompteId") ?? "");
+  // l'opérateur (voir plus bas, chemin admin exempté). Dans ses propres espaces
+  // (`perso`), l'admin écrit en son nom, comme n'importe quel client.
   const prenomConnecte = prenomDe(user.name);
   let auteur = { id: user.id, prenom: prenomConnecte || "Client", email: emailClient ?? "" };
   // Prénom optionnel réservé aux emails — distinct d'auteur.prenom (non-null,
   // pour la ligne D1) : "Bonjour ," ne doit pas devenir "Bonjour Client,".
   let prenomEmail: string | undefined = prenomConnecte || undefined;
   let createdVia: "portail" | "admin" = "portail";
-  if (pourCompteId && pourCompteId !== user.id) {
-    if (!isAdmin(meta)) return json({ error: "Réservé à l'administrateur." }, 403);
-    // Le garde-fou est DANS la requête : un id forgé ou périmé pointant vers
-    // un compte d'un AUTRE client rend null. Plus de second contrôle à ne pas
-    // oublier ici.
+  if (isAdmin(meta) && !client.perso) {
     let cible;
     try {
-      cible = await compteDuWorkspace(env.PORTAL_DB, pourCompteId, client.slug);
+      cible = comptePrincipal(await comptesDuWorkspace(env.PORTAL_DB, client.slug), client.prenom, user.id);
     } catch (err) {
-      console.error("messagerie: lecture du compte cible impossible", err);
+      console.error("messagerie: lecture des comptes du client impossible", err);
       return json({ error: `Envoi impossible pour le moment : ${CONTACT_DIRECT}.` }, 503);
     }
     if (!cible) {
-      return json({ error: "Cet utilisateur n'appartient pas au client sélectionné." }, 400);
+      return json(
+        { error: `Aucun compte dans l'espace ${client.nom} : invitez d'abord un utilisateur.` },
+        409,
+      );
     }
     auteur = { id: cible.id, prenom: cible.prenom || "Client", email: cible.email };
     prenomEmail = cible.prenom || undefined;
@@ -112,9 +114,9 @@ export const POST: APIRoute = async (context) => {
   // admin, l'auteur réel côté portail — inchangée sur ce second cas.
   const provenanceTicket =
     createdVia === "admin"
-      ? `Ticket ouvert par Ludo pour **${auteur.prenom}**${
+      ? `Demande saisie par Ludo au nom de **${auteur.prenom}**${
           auteur.email ? ` (${auteur.email})` : ""
-        } le ${jour}, demande reçue hors portail.`
+        } le ${jour}, reçue hors portail. Aucun mail envoyé au client.`
       : `Demande envoyée depuis le portail myCoolbeans par **${nomClient}**${
           emailClient ? ` (${emailClient})` : ""
         } le ${jour}.`;
@@ -256,29 +258,9 @@ export const POST: APIRoute = async (context) => {
       }
     }
 
-    if (auteur.email && createdVia === "admin") {
-      // Boucle email → portail de la spec §8 : remplace l'accusé de réception
-      // standard quand c'est Ludo qui a ouvert le ticket pour le client.
-      const urlTicket = `${env.PORTAL_BASE_URL || "https://my.coolbeans.cc"}/demandes/${ticketId}`;
-      const html = renderTransactionnel({
-        preheader: "Suite à votre demande, votre ticket est ouvert et suivi.",
-        kicker: "Messagerie",
-        titre: "Ludo a ouvert un ticket pour vous",
-        contenu: p("Suite à votre demande, votre ticket est ouvert et suivi ici&nbsp;:"),
-        cta: { label: "Voir le ticket", url: urlTicket },
-      });
-      const { error: erreurAdmin } = await resend.emails.send({
-        from: "Ludo de Coolbeans <support@coolbeans.cc>",
-        to: auteur.email,
-        replyTo: "ludo@coolbeans.cc",
-        subject: `Ludo a ouvert un ticket pour vous · ${objet}`,
-        html,
-        text: `Ludo a ouvert un ticket pour vous.\n\nSuite à votre demande, votre ticket est ouvert et suivi ici : ${urlTicket}`,
-      });
-      if (erreurAdmin) {
-        console.error("messagerie: email « ticket ouvert pour vous » non envoyé", erreurAdmin);
-      }
-    } else if (auteur.email) {
+    // Écrite par l'admin au nom du client : aucun accusé de réception. Le
+    // client n'a rien envoyé lui-même, un mail l'étonnerait.
+    if (auteur.email && createdVia !== "admin") {
       const confirmation = renderConfirmationSupport({
         objet,
         description,

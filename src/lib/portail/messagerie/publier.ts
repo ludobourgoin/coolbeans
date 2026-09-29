@@ -1,6 +1,6 @@
-// Publication des commentaires >> après délai de grâce (spec §7). Appelé par
+// Publication des commentaires ✉️ après délai de grâce (spec §7). Appelé par
 // le cron de src/worker.ts. Le re-fetch au moment de l'envoi est LE mécanisme
-// central : édition = correction, suppression ou retrait du >> = annulation.
+// central : édition = correction, suppression ou retrait de l'enveloppe = annulation.
 import { Resend } from "resend";
 import { fetchComment } from "../linear";
 import { renderReponseMessagerie } from "../../../emails/messagerie-reponse";
