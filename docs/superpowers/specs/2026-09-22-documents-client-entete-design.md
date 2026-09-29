@@ -1,7 +1,7 @@
 # Refonte du gabarit des documents client
 
-Date : 2026-09-22
-Portée : les quatre collections `cadrage`, `devis`, `livrable`, `temoignage`
+Date : 2026-09-22, amendée le 2026-09-29 pour l'étape Audit
+Portée : les quatre collections `cadrage`, `devis`, `livrable`, `temoignage`, et la collection `audit` de COO-295 pour la frise
 Aperçu ayant servi aux arbitrages : `src/pages/apercu-gabarit.astro`, page jetable
 
 ## Le défaut à corriger
@@ -44,10 +44,11 @@ Deux niveaux de navigation, de poids décroissant. La frise change de document, 
 
 ## 2. La frise des étapes
 
-Cinq pastilles, toujours les cinq, numérotées de 1 à 5. Seule celle du document courant est colorée. **Le numéro dit la séquence**, ce qui rend inutile toute distinction visuelle entre étapes passées et à venir.
+Cinq pastilles, toujours les cinq, numérotées de 1 à 5. Une sixième, « 0 · Audit », précède Cadrage quand le projet a un audit. Seule celle du document courant est colorée. **Le numéro dit la séquence**, ce qui rend inutile toute distinction visuelle entre étapes passées et à venir.
 
 | N° | Étape | Teinte | Gabarit habituel |
 |---|---|---|---|
+| 0 | Audit | `teal` | `audit`, seulement si le projet en a un |
 | 1 | Cadrage | `amber` | `cadrage` |
 | 2 | Proposition | `blue` | `devis` |
 | 3 | Production | `gray` | variable |
@@ -55,6 +56,15 @@ Cinq pastilles, toujours les cinq, numérotées de 1 à 5. Seule celle du docume
 | 5 | Suivi | `purple` | `temoignage` |
 
 Les pastilles **naviguent** entre les documents du projet. Survol teinté, page active teintée, les autres grises. Une étape dont le document n'existe pas est estompée et non cliquable.
+
+### L'étape Audit
+
+Tranché le 2026-09-29. L'audit (COO-295) mesure un site existant avant le cadrage. Tous les projets n'en ont pas, d'où deux règles :
+
+- **La pastille n'existe que si le projet a un document d'audit**, quel que soit son statut. Sans audit, la frise garde ses cinq pastilles et commence à 1.
+- **Cadrage reste l'étape 1 partout.** Le zéro place l'audit avant le cycle sans renuméroter les projets qui n'en ont pas.
+
+Comme les autres, la pastille Audit est estompée et non cliquable tant que son document n'est pas publié. Teinte `teal` : le rouge se lirait comme une alerte.
 
 ### Les pastilles sont un composant neuf
 
@@ -83,6 +93,8 @@ Le gabarit est un outil, l'étape est un moment.
 ```yaml
 etape: production   # défaut = l'étape habituelle de la collection
 ```
+
+Valeurs : `audit`, `cadrage`, `proposition`, `production`, `livraison`, `suivi`.
 
 ## 4. Le nom du projet vient de Linear
 **Le nom Linear ne porte pas la jointure.** Tranché le 2026-09-22. Un libellé libre recopié dans cinq fichiers se désaligne à la première faute de frappe, et coupe le projet en deux sans rien signaler. Ce qui relie les cinq documents est un champ `projet` explicite, valant le segment d’URL du projet :
@@ -125,7 +137,7 @@ après : coolbeans.cc/caf/site-web-879/livraison
 
 - **client** : trois lettres, comme la clé de team Linear (`caf`, `amu`, `rev`)
 - **projet** : nom raccourci, suivi d'une référence de **trois chiffres**
-- **étape** : le mot de l'étape, en minuscules
+- **étape** : le mot de l'étape, en minuscules, `audit` compris
 
 Trois règles sur ces chemins :
 
@@ -177,7 +189,7 @@ Une revue des quatre gabarits, champ par champ, reste à faire avant l'implémen
 
 ## 10. Les trois états d’un document
 
-Les cinq documents d’un projet existent dès sa création, en trames vides. Ludo les remplit au fil de l’eau et décide quand chacun devient visible du client.
+Les cinq documents d’un projet existent dès sa création, en trames vides. Ludo les remplit au fil de l’eau et décide quand chacun devient visible du client. L’audit n’en fait pas partie : il se crée seulement pour un projet qui en a un.
 
 Le champ `brouillon` existe déjà mais signifie « servie en noindex le temps de la validation », ce qui ne répond pas au besoin : un document non prêt doit être **invisible du client**, pas seulement absent de Google. Il est remplacé par un état à trois valeurs.
 
@@ -244,6 +256,7 @@ Sur chaque racine : vérifier `linear.projet`, poser `etape` si l'étape diffè
 - [ ] Les quatre gabarits partagent le même composant d'en-tête
 - [ ] La frise affiche cinq pastilles numérotées, une seule colorée, et navigue entre les documents du projet
 - [ ] Une étape sans document est estompée et non cliquable
+- [ ] Sur un projet qui a un audit, la frise commence par « 0 · Audit » en `teal`. Sur les autres, elle commence à « 1 · Cadrage »
 - [ ] Les deux documents de domaine CAFA vivent sous une seule page de production, onglets « Choisir le nom » et « Acheter le nom »
 - [ ] Titre, pastilles, onglets, liens de nav et paragraphes partent tous de la même abscisse, vérifié par mesure
 - [ ] Le filet reprend la teinte de l'étape dans les deux thèmes
