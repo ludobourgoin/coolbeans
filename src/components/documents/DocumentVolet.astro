@@ -1,7 +1,8 @@
 ---
 /* Un volet : ce qui appartient à une version ou à un chapitre, sous la barre
-   d'onglets de DocumentEntete. Titre du document, objet, date, bouton, puis
-   le contenu. La nav des sections s'y ajoute à la tâche suivante. */
+   d'onglets de DocumentEntete. Nav des sections, titre du document, objet,
+   date, bouton, puis le contenu. */
+import DocumentSections from "./DocumentSections.astro";
 import type { SectionNav } from "../../lib/documents/sections";
 
 interface Props {
@@ -15,7 +16,7 @@ interface Props {
   sections: SectionNav[];
 }
 
-const { index, actif, total, titre, objet, date } = Astro.props;
+const { index, actif, total, titre, objet, date, sections } = Astro.props;
 const onglets = total > 1;
 ---
 
@@ -26,6 +27,7 @@ const onglets = total > 1;
   aria-labelledby={onglets ? `onglet-${index}` : undefined}
   hidden={index !== actif}
 >
+  <DocumentSections sections={sections} />
   <div class="container-site">
     <div class="mx-auto max-w-[880px] pt-10">
       <h2 class="text-[1.75rem]/[1.2] tracking-[-0.01em]">{titre}</h2>
