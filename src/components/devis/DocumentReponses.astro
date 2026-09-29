@@ -102,7 +102,7 @@ const titre = tutoiement
               {affichees.map((a) => (
                 <article class="card grid gap-8">
                   <p class="label">
-                    Envoyée le {a.date}
+                    {a.canal === "mail" ? "Reçue par mail le" : "Envoyée le"} {a.date}
                     {a.version !== undefined && <> · V{a.version}</>}
                   </p>
 

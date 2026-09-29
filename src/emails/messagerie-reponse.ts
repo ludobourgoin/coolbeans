@@ -17,7 +17,7 @@ export function renderReponseMessagerie(props: {
   const bonjour = props.prenom ? `Bonjour ${esc(props.prenom)},` : "Bonjour,";
   const html = renderTransactionnel({
     preheader: props.corps.slice(0, 120),
-    kicker: "Messagerie",
+    kicker: "Votre demande",
     titre: `Re : ${esc(props.objet)}`,
     contenu: [
       p(bonjour),

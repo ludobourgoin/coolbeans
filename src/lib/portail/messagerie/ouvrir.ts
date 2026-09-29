@@ -111,7 +111,7 @@ export async function ouvrirLesDues(
         objet: decision.objet,
         corps: decision.corps,
         prenom: due.destinataire_prenom,
-        urlTicket: `${options.baseUrl}/messagerie/${ticketId}`,
+        urlTicket: `${options.baseUrl}/demandes/${ticketId}`,
       });
       let error: unknown = null;
       try {

@@ -12,8 +12,8 @@
 // Hauteur figée à 56px (h-14) : doc.css cale dessus les colonnes collantes
 // (`top: 56px`, `calc(100vh - 56px)`). La changer ici désaligne tout.
 //
-// Le menu compte garde l'ordre décidé au brainstorm 2026-08-14 — Messagerie
-// puis Se déconnecter — mais il est désormais écrit à la main : le <UserButton />
+// Le menu compte garde l'ordre décidé au brainstorm 2026-08-14 — Demandes
+// (ex-Messagerie) puis Se déconnecter — mais il est désormais écrit à la main : le <UserButton />
 // de Clerk est parti avec la bascule Better Auth. « Gérer mon compte », qui
 // ouvrait une modale hébergée par Clerk, n'a pas d'équivalent et disparaît :
 // mieux vaut pas d'entrée qu'une entrée morte.
@@ -38,7 +38,7 @@ const { withAccount = true, prenom = "", email = "" } = Astro.props;
 const initiale = (prenom || email || "?").trim().charAt(0).toUpperCase();
 const { hostname } = Astro.url;
 const home = portalHref("/", hostname);
-const support = portalHref("/messagerie", hostname);
+const support = portalHref("/demandes", hostname);
 ---
 
 <header class="sticky top-0 z-20 flex h-14 items-stretch border-b border-line bg-surface">
@@ -131,7 +131,7 @@ const support = portalHref("/messagerie", hostname);
                 role="menuitem"
               >
                 <Icon name="help" size={14} />
-                Messagerie
+                Demandes
               </a>
               {/* Un POST de formulaire natif serait plus robuste, mais
                   /api/auth/sign-out refuse le form-urlencoded (415, il n'accepte

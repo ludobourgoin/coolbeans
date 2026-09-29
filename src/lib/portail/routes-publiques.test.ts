@@ -27,7 +27,7 @@ test("les préfixes techniques passent", () => {
 
 test("le reste part sous /espace", () => {
   expect(estServiTelQuel("/")).toBe(false);
-  expect(estServiTelQuel("/messagerie")).toBe(false);
+  expect(estServiTelQuel("/demandes")).toBe(false);
   expect(estServiTelQuel("/projets/documents")).toBe(false);
 });
 

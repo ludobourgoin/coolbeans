@@ -54,6 +54,19 @@ CREATE TABLE document_reponses (
 
 Le consentement n'a pas de colonne : l'endpoint refuse toute réponse sans lui, donc chaque ligne en porte la preuve, datée par `created_at`.
 
+## Décisions prises par mail
+
+Une décision peut arriver par mail plutôt que par le formulaire : des retours sur un livrable, un nom de domaine choisi au détour d'un message, une proposition acceptée d'un « J'accepte ». Elle se reprend dans le document concerné, jamais dans la messagerie, devenue « Demandes » et réservée aux tickets.
+
+La colonne `canal` (migration 0010) le dit. Elle est distincte d'`origine` : une réponse envoyée par le formulaire puis recopiée depuis son mail de notification est une reprise, mais son canal reste le formulaire.
+
+Sur la page, une décision reçue par mail se date « Reçue par mail le… » et n'affiche pas la ligne Consentement : le client n'a jamais coché la case.
+
+Ne se reprend pas :
+
+- une décision sans trace écrite (téléphone, SMS) ;
+- un refus : `devis_reponses` ne connaît que `validation` et `question`, et un refus maquillé en question mentirait sur la page.
+
 ## Ce qui ne change pas
 
 - Les mails de notification et d'accusé de réception partent comme avant. Un échec D1 ne bloque jamais le mail.
