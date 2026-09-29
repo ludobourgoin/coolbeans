@@ -207,7 +207,7 @@ Méthode : `src/content.config.ts` pour la liste des champs, les quatre routes 
 | `titre` | écran, impression | h1 seulement si `projet`/`linear.projet` sont absents, toujours présent en impression (`DevisEntetePrint`) |
 | `objet` | écran, impression | |
 | `date` | écran, impression | |
-| `contact` | jamais | non branché sur ce gabarit |
+| `contact` | écran, impression | prénom client, lu par `ownerLabel()` (`src/lib/devis.ts`) sur un jalon de planning attribué à `client`, rendu par `DevisCorps.astro` |
 | `formulaire` | jamais | bascule l'affichage de `DevisReponse` |
 | `version`, `versionDe` | écran, indirect | ligne de date et regroupement des onglets |
 | `envoi` | jamais | lu par le cockpit `/espace/devis`, pas par ce gabarit |
@@ -341,9 +341,9 @@ La même nomenclature servira au rangement de `/dev`, suivi dans **COO-232**.
 
 | Collection | Documents |
 |---|---|
-| `devis` | 23, dont 5 versions |
-| `cadrage` | 7 |
-| `livrable` | 4, dont 2 versions |
+| `devis` | 23, dont 6 versions |
+| `cadrage` | 7, dont 2 chapitres |
+| `livrable` | 5, dont 1 version |
 | `temoignage` | 1 |
 
 Sur chaque racine : vérifier `linear.projet`, poser `etape` si l'étape diffère de l'habituelle, poser la redirection depuis l'ancienne URL.
