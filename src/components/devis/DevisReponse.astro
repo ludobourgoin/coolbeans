@@ -231,7 +231,7 @@ const { slug, enAttente = false } = Astro.props;
        le document ferait remonter celles d'une V1 masquée avec une réponse
        à la V2. On ne transmet que des index : le serveur retrouve les prix
        dans le YAML, un montant venu du navigateur ne s'écrit jamais en base. */
-    const pane = document.querySelector<HTMLElement>("[data-devis-pane]:not([hidden])");
+    const pane = document.querySelector<HTMLElement>("[data-document-volet]:not([hidden])");
     const options = [
       ...(pane ?? document).querySelectorAll<HTMLInputElement>("[data-devis-option]:checked"),
     ].map((c) => Number(c.value));
