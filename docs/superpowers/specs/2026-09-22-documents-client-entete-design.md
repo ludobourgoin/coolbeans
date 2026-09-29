@@ -19,8 +19,8 @@ Elle est reprise en commentaire d'en-tête du composant partagé, et vaut pour t
 ## 1. La structure de l'en-tête
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  filet 3px, teinte de l'étape
  coolbeans                        [connexion]   DocumentTopbar
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  filet 3px, teinte de l'étape
 ───────────────────────────────────────────────
                                                 ZONE STABLE
  Site web du CAFA Toulouse Occitanie            nom du projet, h1
@@ -124,7 +124,7 @@ Reprise de la structure des pages de `my.coolbeans.cc`, sans la navigation globa
 > [!warning] Le piège d'alignement de la nav
 > La liste porte `width: max-content` pour déborder et déclencher le défilement latéral. Elle ne peut donc PAS porter `margin-inline: auto`, qui centrerait la liste au lieu de l'aligner. La colonne est portée par un bloc parent, la liste part de son bord gauche. Erreur commise deux fois pendant la conception, vérifiée depuis par mesure : tous les éléments partent à la même abscisse.
 
-Le filet de 3 px se colle **sous** la barre Coolbeans, il ne flotte pas au-dessus. Un bandeau flottant se lirait comme une alerte. En développement et en préproduction, `EnvBanner` occupe déjà cette place, les deux se superposeront : à traiter.
+Le filet de 3 px se colle **sous** la barre Coolbeans, il ne flotte pas au-dessus. Un bandeau flottant se lirait comme une alerte. `EnvBanner` reste au-dessus de la barre, dans le flux : les deux ne se superposent pas.
 
 ## 6. Les URLs
 
@@ -187,6 +187,104 @@ Cette règle ne peut pas s'appliquer uniformément : la proposition commerciale
 
 Une revue des quatre gabarits, champ par champ, reste à faire avant l'implémentation.
 
+### Revue du 2026-09-29
+
+Méthode : `src/content.config.ts` pour la liste des champs, les quatre routes `src/pages/{cadrage,devis,livrable,temoignage}/[...slug].astro` et les composants qu'elles appellent pour savoir ce qui s'affiche, les 36 fichiers YAML de `src/content/{cadrage,devis,livrable,temoignage}/` pour le contenu. Les commentaires YAML (`#`) sont exclus : jamais rendus.
+
+**Champs communs aux quatre collections** (`identiteDocument`)
+
+| Champ | Rendu | Remarque |
+|---|---|---|
+| `statut` | jamais | filtre de build (`construitesEnProduction`), aucun texte affiché |
+| `projet` | écran, indirect | pilote le h1 avec `linear.projet`, la frise et les URLs |
+| `etape` | jamais, indirect | choisit la teinte du filet et la position dans la frise, sa valeur n'est jamais imprimée telle quelle |
+| `onglet` | écran | libellé de l'onglet, dans la barre et dans la ligne de date |
+
+**`devis`**
+
+| Champ | Rendu | Remarque |
+|---|---|---|
+| `titre` | écran, impression | h1 seulement si `projet`/`linear.projet` sont absents, toujours présent en impression (`DevisEntetePrint`) |
+| `objet` | écran, impression | |
+| `date` | écran, impression | |
+| `contact` | jamais | non branché sur ce gabarit |
+| `formulaire` | jamais | bascule l'affichage de `DevisReponse` |
+| `version`, `versionDe` | écran, indirect | ligne de date et regroupement des onglets |
+| `envoi` | jamais | lu par le cockpit `/espace/devis`, pas par ce gabarit |
+| `destinataire` | impression seule | bloc émetteur/destinataire de `DevisEntetePrint` |
+| `linear.projet` | écran | remplace `titre` en h1 |
+| `linear.affaire` | jamais | lu par le cockpit admin |
+| `sections[].titre/texte/liste/note` | écran, impression | rendu par `DevisCorps` |
+| `sections[].budget` (lignes, mention, reglement, remises, remisePct, remiseLabel, enAttente) | écran, impression | prix et remise donnés au client, jamais un coût interne |
+| `sections[].planning` (options, jalons, indicatif, note) | écran, impression | |
+| `sections[].diagram` | écran, impression | |
+| `notes[].texte/tooltip/tone` | écran, impression | bandeaux de fin de document |
+
+**`cadrage`**
+
+| Champ | Rendu | Remarque |
+|---|---|---|
+| `titre` | écran | h1 seulement si `projet`/`linear.projet` sont absents |
+| `objet` | écran | |
+| `date` | écran | |
+| `contact` | écran | prénom, passé à `CadrageFormulaire` |
+| `tutoiement` | jamais | bascule le pronom des phrases fixes du formulaire |
+| `linear.projet` | écran | remplace `titre` en h1 |
+| `linear.affaire` | jamais | documentaire, jamais affiché |
+| `linear.demande` | jamais | documentaire, jamais affiché |
+| `intro[].titre/texte/liste/note/video` | écran | rendu par `CadrageIntro` |
+| `comparatif` (titre, texte, solutions, criteres, mentionCout, simulateur) | écran | rendu par `CadrageComparatif`/`CadrageSimulateur` |
+| `questions[]` | écran | rendu par `CadrageFormulaire` |
+| `notes[].texte/tooltip/tone` | écran | |
+
+**`livrable`**
+
+| Champ | Rendu | Remarque |
+|---|---|---|
+| `titre` | écran | h1 seulement si `projet`/`linear.projet` sont absents |
+| `objet` | écran | |
+| `date` | écran | |
+| `contact` | écran | prénom, passé à `LivrableSuite` |
+| `tutoiement` | jamais | bascule le pronom de `DocumentReponses`/`LivrableReponse` |
+| `formulaire` | jamais | bascule l'affichage de `LivrableReponse` |
+| `version`, `versionDe` | écran, indirect | ligne de date et regroupement des onglets |
+| `envoi` | jamais | non lu par ce gabarit |
+| `linear.projet` | écran | remplace `titre` en h1 |
+| `linear.affaire` | jamais | jamais affiché |
+| `site` | écran | bouton d'ouverture du livrable |
+| `apercu` | écran | `LivrableApercu` |
+| `video` | écran | `LivrableVideo` |
+| `sections[]` | écran | rendu par `CadrageIntro` |
+| `parcoursTitre`, `parcoursReplie`, `parcours[]` | écran | `LivrableParcours` |
+| `message` | écran | `LivrableMessage` |
+| `aVerifierTitre`, `aVerifier[]` | écran | `LivrableSuite` |
+| `suiteTitre`, `suite[]` | écran | `LivrableSuite` |
+| `notes[].texte/tooltip/tone` | écran | |
+
+**`temoignage`**
+
+| Champ | Rendu | Remarque |
+|---|---|---|
+| `titre` | écran | h1 seulement si `projet`/`linear.projet` sont absents |
+| `objet` | écran | |
+| `date` | écran | |
+| `contact` | jamais | non branché sur ce gabarit |
+| `tutoiement` | jamais | bascule le pronom de `TemoignageFormulaire` |
+| `linear.projet` | écran | remplace `titre` en h1 |
+| `linear.affaire` | jamais | jamais affiché |
+| `formulaire` | jamais | bascule l'affichage de `TemoignageFormulaire` |
+| `intro[]` | écran | rendu par `CadrageIntro` |
+| `casClient` | écran | `TemoignageCasClient` |
+| `photo` | écran | demandée par `TemoignageFormulaire` |
+| `questions[]` | écran | `TemoignageFormulaire` |
+| `notes[].texte/tooltip/tone` | écran | |
+
+**Champ douteux**
+
+`src/content/devis/miharu/plaquette-agen-7231.yaml:70-75`, troisième entrée de `notes` (sans `tone`, donc bandeau `info` à l'écran). Le texte donne la charge du lot en heures (« environ 2 h 50 »), dit l'absence de marge (« Baptiste n'a pas margé sur ce lot »), le taux horaire interne qui en découle (« ~106 €/h, soit l'équivalent de 740 € par jour ») et compare ce taux à celui que Coolbeans demande sur d'autres lots du même compte. Trois des cinq catégories interdites par la présente section, dans un seul champ rendu à l'écran : marge, coût interne, charge en heures.
+
+Les deux entrées précédentes du même fichier (`plaquette-agen-7231.yaml:55-61` et `:62-69`) posent question sans relever à coup sûr d'une des cinq catégories : elles disent que le document « sert la traçabilité interne des propositions faites au compte, pas la relation client » et détaillent une négociation perdue, citation de la cliente comprise. Signalées à Ludo, non corrigées.
+
 ## 10. Les trois états d’un document
 
 Les cinq documents d’un projet existent dès sa création, en trames vides. Ludo les remplit au fil de l’eau et décide quand chacun devient visible du client. L’audit n’en fait pas partie : il se crée seulement pour un projet qui en a un.
@@ -213,6 +311,12 @@ Un projet nouveau doit produire ses cinq fichiers d’un coup, avec leur `etape`
 
 ## 11. La nomenclature client / projet
 
+La table qui fait autorité est `src/lib/documents/nomenclature.ts`.
+
+- `serial-generations` porte deux chapitres de cadrage en onglets (« Le site », « WordPress ou pas »).
+- La réservation en ligne de Sète En Corps Mieux est un projet à part, « Réservation en ligne des cours ».
+- La proposition En Haut reste hors nomenclature, l'affaire étant rouverte sur un nouveau projet.
+
 Tranché le 2026-09-22 :
 
 | Client | Projet | Remarque |
@@ -233,7 +337,7 @@ La même nomenclature servira au rangement de `/dev`, suivi dans **COO-232**.
 
 ## Reprise de l'existant
 
-35 documents, dont 7 versions, soit **28 racines**.
+36 documents, dont 9 versions ou chapitres, soit **27 racines**.
 
 | Collection | Documents |
 |---|---|
@@ -252,17 +356,17 @@ Sur chaque racine : vérifier `linear.projet`, poser `etape` si l'étape diffè
 
 ## Critères de recette
 
-- [ ] Basculer d'onglet ne change rien au-dessus de la barre d'onglets, sur `devis` et `livrable`
-- [ ] Les quatre gabarits partagent le même composant d'en-tête
-- [ ] La frise affiche cinq pastilles numérotées, une seule colorée, et navigue entre les documents du projet
-- [ ] Une étape sans document est estompée et non cliquable
+- [x] Basculer d'onglet ne change rien au-dessus de la barre d'onglets, sur `devis` et `livrable`
+- [x] Les quatre gabarits partagent le même composant d'en-tête
+- [x] La frise affiche cinq pastilles numérotées, une seule colorée, et navigue entre les documents du projet
+- [x] Une étape sans document est estompée et non cliquable
 - [ ] Sur un projet qui a un audit, la frise commence par « 0 · Audit » en `teal`. Sur les autres, elle commence à « 1 · Cadrage »
-- [ ] Les deux documents de domaine CAFA vivent sous une seule page de production, onglets « Choisir le nom » et « Acheter le nom »
-- [ ] Titre, pastilles, onglets, liens de nav et paragraphes partent tous de la même abscisse, vérifié par mesure
-- [ ] Le filet reprend la teinte de l'étape dans les deux thèmes
+- [x] Les deux documents de domaine CAFA vivent sous une seule page de production, onglets « Choisir le nom » et « Acheter le nom »
+- [x] Titre, pastilles, onglets, liens de nav et paragraphes partent tous de la même abscisse, vérifié par mesure
+- [x] Le filet reprend la teinte de l'étape dans les deux thèmes
 - [ ] `verify-design-system.js` passe, paires `-100` comprises
 - [ ] Les 28 anciennes URLs redirigent en 301
 - [ ] Un document en `trame` ou en `brouillon` renvoie 404 en production, et s’affiche en développement local
 - [ ] Sa pastille est visible mais estompée et non cliquable
 - [ ] Un client connecté ouvre chacun de ses documents publiés depuis sa barre latérale
-- [ ] Vérifié sur desktop, tablette et mobile, la nav des sections défilant latéralement sur petit écran
+- [x] Vérifié sur desktop, tablette et mobile, la nav des sections défilant latéralement sur petit écran
