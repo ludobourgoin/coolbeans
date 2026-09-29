@@ -22,6 +22,9 @@ import { estServiTelQuel } from "./lib/portail/routes-publiques";
 import { ouvrirLesDues } from "./lib/portail/messagerie/ouvrir";
 import { publierLesDues } from "./lib/portail/messagerie/publier";
 import { synchroniserLivraisons } from "./lib/livraisons/sync";
+import { collecterAnalytics, estHeureDeCollecte } from "./lib/analytics/collecte";
+import { sourceCloudflare } from "./lib/analytics/cloudflare";
+import type { D1Analytics } from "./lib/analytics/store";
 
 const PORTAL_OF: Record<string, string> = {
   "coolbeans.cc": "my.coolbeans.cc",
@@ -115,6 +118,30 @@ export default {
   // 3 min → latence effective 3-8 min, assumée par la spec §7).
   async scheduled(controller, env, ctx) {
     const scheduledAt = new Date(controller.scheduledTime).toISOString();
+    // Analytics (COO-16) : collecte quotidienne des mesures Cloudflare Web
+    // Analytics, au second passage de 04:00 UTC. Placée avant le garde-fou de
+    // la messagerie, qui sort du handler : elle ne dépend ni de Linear ni de
+    // Resend. Sans jeton, la tâche se saute, ce qui laisse staging et prod
+    // indépendants.
+    if (estHeureDeCollecte(new Date(controller.scheduledTime))) {
+      if (!env.CF_ANALYTICS_TOKEN || !env.CF_ACCOUNT_ID || !env.PORTAL_DB) {
+        console.log(JSON.stringify({ event: "analytics_collecte", status: "skipped_missing_secrets", scheduled_at: scheduledAt }));
+      } else {
+        ctx.waitUntil(
+          collecterAnalytics({
+            db: env.PORTAL_DB as unknown as D1Analytics,
+            source: sourceCloudflare({ token: env.CF_ANALYTICS_TOKEN, compte: env.CF_ACCOUNT_ID }),
+            maintenant: new Date(controller.scheduledTime),
+          })
+            .then((r) =>
+              console.log(JSON.stringify({ event: "analytics_collecte", status: r.echecs.length > 0 ? "partial" : "ok", ...r, scheduled_at: scheduledAt })),
+            )
+            .catch((err) =>
+              console.log(JSON.stringify({ event: "analytics_collecte", status: "error", message: String(err), scheduled_at: scheduledAt })),
+            ),
+        );
+      }
+    }
     if (!env.LINEAR_API_KEY || !env.RESEND_API_KEY || !env.PORTAL_DB) {
       console.log(JSON.stringify({ event: "messagerie_publication", status: "skipped_missing_bindings", scheduled_at: scheduledAt }));
       return;

@@ -77,6 +77,14 @@ interface PortalSecrets {
    * GOOGLE_CALENDAR_LIVRAISONS_ID`, production uniquement.
    */
   GOOGLE_CALENDAR_LIVRAISONS_ID?: string;
+
+  /**
+   * Jeton API Cloudflare, permission « Account Analytics : Read » sur le
+   * compte Coolbeans : collecte Analytics du cron (COO-16,
+   * lib/analytics/collecte.ts). `wrangler secret put CF_ANALYTICS_TOKEN` sur
+   * chaque environnement. Absent, la collecte se saute.
+   */
+  CF_ANALYTICS_TOKEN?: string;
 }
 
 interface Env extends PortalSecrets {}
