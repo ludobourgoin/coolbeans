@@ -39,17 +39,27 @@ describe("prioriteFromUrgence", () => {
 });
 
 describe("corpsPublie", () => {
-  test("retire le marqueur et l'espace qui suit", () => {
-    expect(corpsPublie(">> C'est en ligne !")).toBe("C'est en ligne !");
-    expect(corpsPublie(">>Sans espace")).toBe("Sans espace");
+  test("retire l'enveloppe et ce qui la sépare du message", () => {
+    expect(corpsPublie("✉️ C'est en ligne !")).toBe("C'est en ligne !");
+    expect(corpsPublie("✉️Sans espace")).toBe("Sans espace");
+    // Le format de Ludo : l'enveloppe seule sur sa ligne, puis le message.
+    expect(corpsPublie("✉️\n\nHello Nath,\n\nC'est rectifié.")).toBe("Hello Nath,\n\nC'est rectifié.");
+  });
+  test("accepte l'enveloppe sans sélecteur de variante, et le code :envelope:", () => {
+    expect(corpsPublie("\u2709 Sans variante")).toBe("Sans variante");
+    expect(corpsPublie(":envelope: Code non converti")).toBe("Code non converti");
   });
   test("commentaire interne → null", () => {
     expect(corpsPublie("Note interne")).toBeNull();
-    expect(corpsPublie(" >> marqueur pas en tête")).toBeNull();
+    expect(corpsPublie(" ✉️ marqueur pas en tête")).toBeNull();
+    expect(corpsPublie("Je l'ai prévenue ✉️ hier")).toBeNull();
   });
-  test("marqueur seul (>> retiré à l'édition pendant le délai) → null", () => {
-    expect(corpsPublie(">>")).toBeNull();
-    expect(corpsPublie(">>   ")).toBeNull();
+  test("les chevrons ne publient plus rien", () => {
+    expect(corpsPublie(">> Ancien marqueur")).toBeNull();
+  });
+  test("marqueur seul (message retiré à l'édition pendant le délai) → null", () => {
+    expect(corpsPublie("✉️")).toBeNull();
+    expect(corpsPublie("✉️   \n")).toBeNull();
   });
 });
 

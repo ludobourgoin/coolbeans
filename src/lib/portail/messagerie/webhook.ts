@@ -41,7 +41,7 @@ interface EvenementCommentaire {
 }
 
 /**
- * Ne retient que la création d'un commentaire publiable (marqueur >>).
+ * Ne retient que la création d'un commentaire publiable (marqueur ✉️).
  * Les updates sont ignorés à dessein : c'est le re-fetch du cron qui lit la
  * version finale, un update pendant le délai de grâce n'a rien à déclencher.
  */

@@ -1,5 +1,7 @@
 # Messagerie du portail client — design
 
+> Révisé le 2026-09-29 : le marqueur de publication est l'enveloppe ✉️ en tête, à la place de « >> ». Les chevrons ne publient plus rien. Le reste de ce document parle de « >> » : lire « ✉️ ».
+
 Date : 2026-08-15
 Statut : **implémentée sur staging le 2026-08-17** (13 tâches SDD + revue, session parallèle du matin ; plan : `../plans/2026-08-15-messagerie-portail.md`). Reste : recette navigateur de Ludo, gestes prod (migration D1, secrets, webhook Linear prod), doc, puis archivage. Alignée sur la spec produit le 2026-08-17 (voir §12) : l'implémentation a suivi ce design (trois états, pas de notification de clôture dédiée) — les écarts 1 et 2 du §12 restent à arbitrer, l'option par défaut étant désormais le comportement livré.
 

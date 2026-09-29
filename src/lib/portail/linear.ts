@@ -152,7 +152,7 @@ export async function fetchComment(
 /**
  * Issue relue au moment d'ouvrir un fil : c'est le re-fetch qui décide, jamais
  * le payload du webhook. Entre la pose du label et la fin du délai de grâce,
- * Ludo peut avoir retiré le « >> », retiré le label, ou supprimé l'issue —
+ * Ludo peut avoir retiré l'enveloppe ✉️, retiré le label, ou supprimé l'issue —
  * chacun de ces gestes doit annuler l'ouverture, et seule la version courante
  * les rend visibles.
  *
