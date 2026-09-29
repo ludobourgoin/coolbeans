@@ -12,7 +12,7 @@ Site du studio web Coolbeans (Ludovic Bourgoin) — **Astro 6 + Tailwind v4** (C
   [`astro.config.mjs`](astro.config.mjs) — pas de `tailwind.config.js`, tout vit dans `global.css`.
 - **Dark mode** : classe `.dark` sur `<html>`, script anti-flash dans le layout, toggle dans la nav.
 - **Accent alternatif** : `data-accent="electric"` sur `<html>` (encre → bleu cobalt).
-- Polices **Geomanist** dans `public/fonts/`, assets (texture, logos, photos) dans `public/img/`.
+- Polices **Geist**, **Geist Mono** et **Inter Tight** (le « my » du portail) dans `public/fonts/`, assets (texture, logos, photos) dans `public/img/`.
 
 ## Structure
 

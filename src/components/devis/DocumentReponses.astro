@@ -1,0 +1,198 @@
+---
+/* Réponses reçues par un document, affichées à la place de son formulaire
+   (spec 2026-09-29-reponses-dans-les-documents-design.md).
+
+   Toujours posé en `server:defer` : les quatre pages de documents sont
+   prérendues, et ce bloc seul doit interroger D1 à chaque visite. Il se place
+   juste avant le formulaire.
+
+   Le formulaire ne passe pas dans l'île. Ses scripts ne s'exécuteraient pas
+   de façon sûre dans du HTML injecté après coup, et son balisage dépasserait
+   la limite d'URL de la requête GET de l'île. L'île émet donc, quand le
+   document est clos, une règle CSS qui masque la section du formulaire.
+
+   L'identité n'arrive jamais ici en clair : `ReponseAffichee` ne porte que
+   les libellés des champs, que la page biffe. Voir lib/documents/affichage. */
+import { getEntry } from "astro:content";
+import { riche } from "../../lib/devis";
+import { devisClos, reponsesDesVersions } from "../../lib/devis/reponses";
+import {
+  afficherReponseDevis,
+  afficherReponseDocument,
+  perimetreDevis,
+  type ReponseAffichee,
+} from "../../lib/documents/affichage";
+import { estDefinitive, reponsesDuDocument } from "../../lib/documents/reponses";
+
+interface Props {
+  type: "cadrage" | "devis" | "livrable" | "temoignage";
+  /** Versions du document, de la V1 à la courante. Une seule hors devis et livrable. */
+  versions: { slug: string; version: number }[];
+  tutoiement?: boolean;
+}
+const { type, versions, tutoiement = false } = Astro.props;
+
+/* Chaque visite relit la base : une réponse arrivée il y a une seconde doit
+   déjà remplacer le formulaire. */
+Astro.response.headers.set("Cache-Control", "private, no-store");
+
+/* La section que la règle CSS masque, une par composant de formulaire. */
+const FORMULAIRE = {
+  cadrage: "[data-cadrage-formulaire]",
+  devis: "[data-devis-reponse]",
+  livrable: "[data-livrable-reponse]",
+  temoignage: "[data-temoignage-formulaire]",
+} as const;
+
+const slugs = versions.map((v) => v.slug);
+const courant = slugs.at(-1);
+/* Le numéro de version ne s'affiche que s'il y a de quoi confondre. */
+const numero = (slug: string) =>
+  versions.length > 1 ? versions.find((v) => v.slug === slug)?.version : undefined;
+
+let affichees: ReponseAffichee[] = [];
+let clos = false;
+try {
+  if (type === "devis") {
+    const rs = await reponsesDesVersions(slugs);
+    affichees = await Promise.all(
+      rs.map(async (r) => {
+        const entree = r.optionsRetenues ? await getEntry("devis", r.slug) : undefined;
+        const perimetre = entree && perimetreDevis(entree.data, r.optionsRetenues, r.montantRetenu);
+        return afficherReponseDevis(r, perimetre, numero(r.slug));
+      }),
+    );
+    clos = courant ? await devisClos(courant) : false;
+  } else {
+    const rs = await reponsesDuDocument(type, slugs);
+    affichees = rs.map((r) => afficherReponseDocument(r, numero(r.slug)));
+    clos = rs.some((r) => r.slug === courant && estDefinitive(r.decision));
+  }
+} catch (err) {
+  /* Base injoignable : le bloc ne s'affiche pas et le formulaire reste. Le
+     serveur refusera de toute façon une réponse sur un document clos. */
+  console.error(`DocumentReponses: lecture D1 échouée (${type} ${courant})`, err);
+}
+
+const plusieurs = affichees.length > 1 || type === "cadrage" || type === "temoignage";
+const titre = tutoiement
+  ? plusieurs
+    ? "Tes réponses"
+    : "Ta réponse"
+  : plusieurs
+    ? "Vos réponses"
+    : "Votre réponse";
+---
+
+{
+  affichees.length > 0 && (
+    <section id="reponses" data-document-reponses class="border-t border-line bg-surface-subtle">
+      <div class="container-site py-24x">
+        {/* Même grille que le formulaire qu'il remplace : bloc 880, colonne
+            de libellés 180, gouttière 40. */}
+        <div class="mx-auto grid max-w-[880px] grid-cols-[180px_1fr] gap-10 max-[700px]:grid-cols-1 max-[700px]:gap-4">
+          <div aria-hidden="true" />
+          <div>
+            <h2>{titre}</h2>
+            <p class="mt-4 leading-[1.6] text-mute">
+              Les coordonnées sont masquées sur cette page.
+            </p>
+
+            <div class="mt-10 grid gap-6">
+              {affichees.map((a) => (
+                <article class="card grid gap-8">
+                  <p class="label">
+                    {a.canal === "mail" ? "Reçue par mail le" : "Envoyée le"} {a.date}
+                    {a.version !== undefined && <> · V{a.version}</>}
+                  </p>
+
+                  {a.decision && (
+                    <div>
+                      <p class="text-[13px] leading-[1.5] text-mute">Réponse</p>
+                      <p class="mt-1.5 text-[17px] leading-[1.45] font-semibold text-ink">
+                        {a.decision}
+                      </p>
+                    </div>
+                  )}
+
+                  <dl class="grid grid-cols-[150px_1fr] gap-x-6 gap-y-3 max-[520px]:grid-cols-1 max-[520px]:gap-y-1">
+                    {a.identite.map((champ) => (
+                      <>
+                        <dt class="label pt-0.5 max-[520px]:pt-2">{champ}</dt>
+                        <dd>
+                          {/* Largeur fixe : la barre ne trahit pas la longueur
+                              de la valeur qu'elle remplace. */}
+                          <span
+                            class="inline-block h-[14px] w-[160px] max-w-full rounded-[2px] bg-ink align-middle"
+                            role="img"
+                            aria-label="Masqué"
+                            title="Masqué sur cette page"
+                          />
+                        </dd>
+                      </>
+                    ))}
+                  </dl>
+
+                  {a.perimetre && (
+                    <div class="grid gap-4 border-t border-line pt-6">
+                      <div>
+                        <p class="text-[13px] leading-[1.5] text-mute">Options retenues</p>
+                        <ul class="mt-1.5 grid gap-1 text-[17px] leading-[1.45] font-semibold text-ink">
+                          {a.perimetre.options.map((o) => (
+                            <li>{o}</li>
+                          ))}
+                          {a.perimetre.options.length === 0 && <li>Aucune, le socle seul</li>}
+                        </ul>
+                      </div>
+                      {a.perimetre.montant && (
+                        <div>
+                          <p class="text-[13px] leading-[1.5] text-mute">Montant retenu</p>
+                          <p class="mt-1.5 text-[17px] leading-[1.45] font-semibold text-ink">
+                            {a.perimetre.montant}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {a.reponses.length > 0 && (
+                    <div class="grid gap-5 border-t border-line pt-6">
+                      {a.reponses.map((r, i) => (
+                        <div class:list={[i > 0 && "border-t border-line pt-5"]}>
+                          <p
+                            class="text-[13px] leading-[1.5] text-mute"
+                            set:html={riche(r.question)}
+                          />
+                          {/* `set:text` et non un enfant : avec whitespace-pre-line,
+                              le retour et l'indentation du gabarit
+                              s'afficheraient en ligne vide au-dessus de la
+                              réponse, et Prettier les remet à chaque passage. */}
+                          <p
+                            class="mt-1.5 text-[17px] leading-[1.45] font-semibold whitespace-pre-line text-ink"
+                            set:text={r.reponse}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {a.message && (
+                    <div class="border-t border-line pt-6">
+                      <p class="text-[13px] leading-[1.5] text-mute">Message</p>
+                      <p
+                        class="mt-1.5 leading-[1.6] whitespace-pre-line text-ink"
+                        set:text={a.message}
+                      />
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+{clos && <Fragment set:html={`<style>${FORMULAIRE[type]}{display:none!important}</style>`} />}

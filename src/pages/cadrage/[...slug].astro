@@ -10,6 +10,7 @@ import CadrageSimulateur from "../../components/cadrage/CadrageSimulateur.astro"
 import CadrageFormulaire from "../../components/cadrage/CadrageFormulaire.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
 import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
+import DocumentReponses from "../../components/devis/DocumentReponses.astro";
 import { dateLongue, riche, ancreSection } from "../../lib/devis";
 import { construitesEnProduction } from "../../lib/documents/statut";
 
@@ -101,6 +102,15 @@ const d = entry.data;
       }
     </div>
   </div>
+
+  <!-- Réponses déjà reçues, lues en base à chaque visite. Une réponse clôt
+       le cadrage : le bloc masque alors le formulaire qui suit. -->
+  <DocumentReponses
+    server:defer
+    type="cadrage"
+    versions={[{ slug: entry.id, version: 1 }]}
+    tutoiement={d.tutoiement}
+  />
 
   <CadrageFormulaire
     slug={entry.id}

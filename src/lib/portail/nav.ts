@@ -114,13 +114,15 @@ const SECTIONS: SectionDef[] = [
     icon: "home",
     pages: [
       { label: "Introduction", path: "/", flag: "live" },
-      // Messagerie (spec 2026-08-15-messagerie-portail-design.md §2) :
-      // remplace l'ancien Support, remonte juste sous l'accueil. La clé de
-      // mapping client reste `support` (MODULE_REQUIREMENTS, EmptyState) —
-      // renommer la clé n'apporterait rien et toucherait Task 2.
+      // Demandes, ex-Messagerie (spec 2026-08-15-messagerie-portail-design.md
+      // §2) : remplace l'ancien Support, remonte juste sous l'accueil.
+      // Renommée le 2026-09-29, parce que c'est une boîte de tickets et rien
+      // d'autre : les mails avec le client restent dans Gmail. La clé de
+      // mapping client reste `support` (MODULE_REQUIREMENTS, EmptyState), et
+      // le code garde le nom `messagerie` : seul ce que lit le client change.
       {
-        label: "Messagerie",
-        path: "/messagerie",
+        label: "Demandes",
+        path: "/demandes",
         flag: "live",
         configured: (c) => !moduleCoupe("support", c) && missingKeysFor("support", c).length === 0,
       },

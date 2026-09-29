@@ -15,7 +15,7 @@ import {
 } from "../../emails/transactionnel";
 import { getEntry } from "astro:content";
 import { montantAffiche, budgetDevis, totaux, eur, lignesRetenues } from "../../lib/devis";
-import { derniereReponse, enregistrerReponse } from "../../lib/devis/reponses";
+import { derniereReponse, devisClos, enregistrerReponse } from "../../lib/devis/reponses";
 import { declencherSignature, type ResultatSignature } from "../../lib/devis/signature";
 
 export const prerender = false;
@@ -114,6 +114,15 @@ export const POST: APIRoute = async ({ request }) => {
   // Trace du consentement : sans base de données, l'email de notification est le
   // seul endroit où il en reste une preuve horodatée.
   const traceConsentement = "Accord&eacute; via le formulaire du devis";
+
+  /* Une version validée est close : la page n'affiche plus de formulaire, et
+     une requête forgée ou une page restée ouverte ne doit pas y ajouter une
+     seconde réponse. Une lecture D1 qui échoue ne bloque pas l'envoi. */
+  const clos = await devisClos(slug).catch((err) => {
+    console.error("devis-reponse: lecture D1 échouée", err);
+    return false;
+  });
+  if (clos) return json({ error: "Cette proposition a déjà été validée." }, 409);
 
   /* Le devis est relu ici, avant tout enregistrement : c'est lui qui fait foi
      sur les prix. Le navigateur n'envoie que des index de cases, jamais un

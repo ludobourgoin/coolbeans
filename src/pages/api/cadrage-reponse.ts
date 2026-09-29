@@ -18,16 +18,18 @@ import {
   type QuestionCadrage,
   type ReponseBrute,
 } from "../../lib/cadrage";
+import { documentClos, enregistrerReponseDocument } from "../../lib/documents/reponses";
 
 export const prerender = false;
 
-/* Soumission d'un document de cadrage. Jumeau de /api/devis-reponse, avec
-   deux différences assumées :
+/* Soumission d'un document de cadrage. Jumeau de /api/devis-reponse.
 
-   - **Aucune écriture en base.** Le mail est la trace. Une table D1 imposerait
-     une migration, qui est un geste non parallélisable et qui part en prod dès
-     le merge sur staging ; un cadrage ne pilote aucun statut de cockpit et
-     n'en a pas besoin (décision du 2026-09-05, COO-188).
+   - **D1 d'abord, le mail ensuite.** La réponse s'écrit dans
+     `document_reponses`, que la page relit pour l'afficher à la place du
+     formulaire. Jusqu'au 2026-09-29, le mail était la seule trace : le
+     supprimer perdait la réponse (spec 2026-09-29-reponses-dans-les-documents).
+   - **Une seule réponse.** Un cadrage répondu est clos : l'endpoint refuse la
+     suivante en 409. Pour reposer des questions, on fait un autre document.
    - **Aucun effet Linear.** Pas d'équivalent de `declencherSignature` : un
      cadrage ne valide rien, il informe. Ludo lit et décide. */
 
@@ -120,8 +122,32 @@ export const POST: APIRoute = async ({ request }) => {
   const emailLead = email.trim();
   const messageLead = typeof message === "string" && message.trim() ? message.trim() : undefined;
 
-  /* Trace du consentement : sans base de données, l'email de notification est
-     le seul endroit où il en reste une preuve horodatée. */
+  /* Un document déjà répondu n'accepte plus rien. La lecture qui échoue ne
+     bloque pas : mieux vaut une réponse en double qu'une réponse perdue. */
+  const clos = await documentClos("cadrage", slug).catch((err) => {
+    console.error("cadrage-reponse: lecture D1 échouée", err);
+    return false;
+  });
+  if (clos) return json({ error: "Ce document a déjà reçu une réponse." }, 409);
+
+  /* D1 avant le mail : c'est la trace durable, et la page la relit. Un échec
+     ici ne prive jamais Ludo de la notification. Le consentement n'a pas de
+     colonne : l'endpoint refuse toute réponse sans lui, chaque ligne en est
+     la preuve, datée. */
+  try {
+    await enregistrerReponseDocument({
+      type: "cadrage",
+      slug,
+      reponses: lisibles,
+      message: messageLead ?? null,
+      prenom: prenomLead,
+      nom: nomLead,
+      email: emailLead,
+    });
+  } catch (err) {
+    console.error("cadrage-reponse: écriture D1 échouée", err);
+  }
+
   const traceConsentement = "Accord&eacute; via le formulaire de cadrage";
 
   const paires = (rs: typeof lisibles): Array<[string, string]> =>

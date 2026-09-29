@@ -1,0 +1,253 @@
+---
+// Relance d'une facture impayée. Sous /espace/admin/, donc gardée par le
+// middleware : aucune vérification à écrire ici.
+//
+// La page ne lit aucune source de facturation, et ce n'est pas un manque :
+// Tiime n'expose pas d'API. Les champs se recopient depuis la facture, ce qui
+// oblige au passage à la relire avant de relancer.
+export const prerender = false;
+
+import EspaceLayout from "../../../layouts/EspaceLayout.astro";
+
+// Une page derrière une garde ne doit jamais atterrir dans un cache
+// intermédiaire : même règle que clients.astro et utilisateurs.astro.
+Astro.response.headers.set("Cache-Control", "no-store");
+
+// Coordonnées bancaires de Coolbeans, préremplies parce qu'elles ne changent
+// pas d'une relance à l'autre. Elles restent modifiables : une facture émise
+// sur un autre compte se relance avec le compte qui figure dessus.
+const IBAN = "FR7617418000010000129934835";
+const BIC = "SNNNFR22XXX";
+
+const NIVEAUX = [
+  { value: "rappel", label: "Rappel d'échéance", quand: "J+1" },
+  { value: "relance", label: "Relance ferme", quand: "J+8" },
+  { value: "mise-en-demeure", label: "Mise en demeure", quand: "J+15" },
+];
+---
+
+<EspaceLayout title="Relances">
+  <h1>Relances</h1>
+  <p class="sub">Relancer une facture impayée, en trois paliers.</p>
+
+  <p class="mt-4 text-[13px] text-mute">
+    Cadence : rappel le lendemain de l'échéance, relance ferme à huit jours, mise en demeure à
+    quinze. Une mise en demeure envoyée par email seul a une valeur probatoire faible : elle se
+    double d'une lettre recommandée avec accusé de réception.
+  </p>
+
+  <form id="relance-form" class="mt-6 grid gap-5 max-w-[46rem]">
+    <div class="grid gap-2">
+      <label class="label field-label" for="rf-niveau">Niveau</label>
+      <select class="field" id="rf-niveau" name="niveau">
+        {NIVEAUX.map((n) => (
+          <option value={n.value}>{n.label} ({n.quand})</option>
+        ))}
+      </select>
+      <p class="text-[12px] text-mute" id="rf-suggestion"></p>
+    </div>
+
+    <div class="grid gap-2 sm:grid-cols-2 sm:gap-4">
+      <div class="grid gap-2">
+        <label class="label field-label" for="rf-societe">
+          Société facturée <span aria-hidden="true">*</span>
+        </label>
+        <input class="field" type="text" id="rf-societe" name="societe" required
+          placeholder="Ex. : ABEAM DRINKS" />
+      </div>
+      <div class="grid gap-2">
+        <label class="label field-label" for="rf-prenom">Prénom du destinataire</label>
+        <input class="field" type="text" id="rf-prenom" name="prenom" placeholder="Ex. : Paul" />
+      </div>
+    </div>
+
+    <div class="grid gap-2">
+      <label class="label field-label" for="rf-destinataires">
+        Destinataires <span aria-hidden="true">*</span>
+      </label>
+      <input class="field" type="text" id="rf-destinataires" name="destinataires" required
+        placeholder="une adresse par virgule" />
+      <p class="text-[12px] text-mute">Les réponses reviennent sur ludo@coolbeans.cc.</p>
+    </div>
+
+    <div class="grid gap-2 sm:grid-cols-3 sm:gap-4">
+      <div class="grid gap-2">
+        <label class="label field-label" for="rf-numero">
+          N° de facture <span aria-hidden="true">*</span>
+        </label>
+        <input class="field" type="text" id="rf-numero" name="numeroFacture" required
+          placeholder="24624" />
+      </div>
+      <div class="grid gap-2">
+        <label class="label field-label" for="rf-emission">
+          Émise le <span aria-hidden="true">*</span>
+        </label>
+        <input class="field" type="date" id="rf-emission" name="emissionISO" required />
+      </div>
+      <div class="grid gap-2">
+        <label class="label field-label" for="rf-echeance">
+          Échéance <span aria-hidden="true">*</span>
+        </label>
+        <input class="field" type="date" id="rf-echeance" name="echeanceISO" required />
+      </div>
+    </div>
+
+    <div class="grid gap-2 sm:grid-cols-2 sm:gap-4">
+      <div class="grid gap-2">
+        <label class="label field-label" for="rf-ttc">
+          Montant dû TTC <span aria-hidden="true">*</span>
+        </label>
+        <input class="field" type="number" id="rf-ttc" name="montantTTC" step="0.01" min="0"
+          required placeholder="3528" />
+      </div>
+      <div class="grid gap-2">
+        <label class="label field-label" for="rf-ht">Dont hors taxes</label>
+        <input class="field" type="number" id="rf-ht" name="montantHT" step="0.01" min="0"
+          placeholder="2940" />
+      </div>
+    </div>
+
+    <div class="grid gap-2 sm:grid-cols-2 sm:gap-4">
+      <div class="grid gap-2">
+        <label class="label field-label" for="rf-iban">IBAN</label>
+        <input class="field" type="text" id="rf-iban" name="iban" value={IBAN} />
+      </div>
+      <div class="grid gap-2">
+        <label class="label field-label" for="rf-bic">BIC</label>
+        <input class="field" type="text" id="rf-bic" name="bic" value={BIC} />
+      </div>
+    </div>
+
+    <div class="grid gap-2">
+      <label class="label field-label" for="rf-lien">Lien vers la facture</label>
+      <input class="field" type="url" id="rf-lien" name="lienFacture"
+        placeholder="https://…" />
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <button class="btn btn-outline" type="button" id="rf-apercu">Aperçu</button>
+      <button class="btn" type="button" id="rf-envoyer" disabled>Envoyer</button>
+      <span class="text-[13px] text-mute" id="rf-etat" role="status" aria-live="polite"></span>
+    </div>
+  </form>
+
+  <section class="mt-8 max-w-[46rem]" id="rf-apercu-bloc" hidden>
+    <h2 class="text-[15px] font-semibold">Aperçu</h2>
+    <p class="mt-1 text-[13px] text-mute">Objet : <span id="rf-objet"></span></p>
+    <iframe id="rf-iframe" title="Aperçu de la relance" class="mt-3 w-full h-[36rem] border border-line rounded"
+    ></iframe>
+  </section>
+</EspaceLayout>
+
+<script>
+  const form = document.getElementById("relance-form") as HTMLFormElement | null;
+  const boutonApercu = document.getElementById("rf-apercu") as HTMLButtonElement | null;
+  const boutonEnvoyer = document.getElementById("rf-envoyer") as HTMLButtonElement | null;
+  const etat = document.getElementById("rf-etat");
+  const bloc = document.getElementById("rf-apercu-bloc");
+  const cadre = document.getElementById("rf-iframe") as HTMLIFrameElement | null;
+  const objet = document.getElementById("rf-objet");
+  const suggestion = document.getElementById("rf-suggestion");
+  const champEcheance = document.getElementById("rf-echeance") as HTMLInputElement | null;
+  const champNiveau = document.getElementById("rf-niveau") as HTMLSelectElement | null;
+
+  if (form && boutonApercu && boutonEnvoyer && etat && bloc && cadre && objet) {
+    /* L'aperçu et l'envoi composent le même corps : c'est ce qui garantit que
+       le mail relu est le mail envoyé. */
+    const corps = (action: "apercu" | "envoi") => {
+      const d = new FormData(form);
+      return {
+        action,
+        niveau: String(d.get("niveau") ?? ""),
+        societe: String(d.get("societe") ?? ""),
+        prenom: String(d.get("prenom") ?? ""),
+        numeroFacture: String(d.get("numeroFacture") ?? ""),
+        emissionISO: String(d.get("emissionISO") ?? ""),
+        echeanceISO: String(d.get("echeanceISO") ?? ""),
+        montantTTC: Number(d.get("montantTTC") ?? 0),
+        montantHT: Number(d.get("montantHT") ?? 0),
+        iban: String(d.get("iban") ?? ""),
+        bic: String(d.get("bic") ?? ""),
+        lienFacture: String(d.get("lienFacture") ?? ""),
+        destinataires: String(d.get("destinataires") ?? "")
+          .split(",")
+          .map((a) => a.trim())
+          .filter(Boolean),
+      };
+    };
+
+    const appeler = async (action: "apercu" | "envoi") => {
+      const reponse = await fetch("/api/admin/relance-facture", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(corps(action)),
+      });
+      const data = (await reponse.json()) as Record<string, unknown>;
+      if (!reponse.ok) throw new Error(String(data.error ?? "Échec de la requête."));
+      return data;
+    };
+
+    boutonApercu.addEventListener("click", async () => {
+      if (!form.reportValidity()) return;
+      etat.textContent = "Composition…";
+      boutonEnvoyer.disabled = true;
+      try {
+        const data = await appeler("apercu");
+        objet.textContent = String(data.subject ?? "");
+        cadre.srcdoc = String(data.html ?? "");
+        bloc.hidden = false;
+        boutonEnvoyer.disabled = false;
+        etat.textContent = "Aperçu à jour. Relis avant d'envoyer.";
+      } catch (err) {
+        etat.textContent = err instanceof Error ? err.message : "Aperçu impossible.";
+      }
+    });
+
+    /* Tout changement invalide l'aperçu affiché : sans ça, on relit un mail
+       et on en envoie un autre. */
+    form.addEventListener("input", () => {
+      boutonEnvoyer.disabled = true;
+      if (!bloc.hidden) etat.textContent = "Champs modifiés, refais un aperçu.";
+    });
+
+    boutonEnvoyer.addEventListener("click", async () => {
+      const destinataires = corps("envoi").destinataires.join(", ");
+      if (!confirm(`Envoyer cette relance à ${destinataires} ?`)) return;
+      etat.textContent = "Envoi…";
+      boutonEnvoyer.disabled = true;
+      try {
+        const data = await appeler("envoi");
+        etat.textContent = `Envoyée. Identifiant Resend : ${String(data.id ?? "inconnu")}`;
+      } catch (err) {
+        etat.textContent = err instanceof Error ? err.message : "Envoi impossible.";
+        boutonEnvoyer.disabled = false;
+      }
+    });
+
+    /* Le niveau suggéré suit la cadence J+1, J+8, J+15. Suggéré, pas imposé :
+       une grosse structure en circuit de validation peut mériter un palier de
+       plus, et c'est un jugement, pas une règle. */
+    const suggerer = () => {
+      if (!champEcheance || !champNiveau || !suggestion || !champEcheance.value) return;
+      const echeance = new Date(`${champEcheance.value}T00:00:00Z`);
+      const maintenant = new Date();
+      const aujourdhui = new Date(
+        Date.UTC(maintenant.getUTCFullYear(), maintenant.getUTCMonth(), maintenant.getUTCDate()),
+      );
+      const retard = Math.round((aujourdhui.getTime() - echeance.getTime()) / 86400000);
+      if (retard < 1) {
+        suggestion.textContent = "Échéance non dépassée : rien à relancer aujourd'hui.";
+        return;
+      }
+      const attendu = retard >= 15 ? "mise-en-demeure" : retard >= 8 ? "relance" : "rappel";
+      const nom = { rappel: "rappel", relance: "relance ferme", "mise-en-demeure": "mise en demeure" }[
+        attendu
+      ];
+      suggestion.textContent = `${retard} jour${retard > 1 ? "s" : ""} de retard : la cadence appelle une ${nom}.`;
+      champNiveau.value = attendu;
+    };
+
+    champEcheance?.addEventListener("change", suggerer);
+    suggerer();
+  }
+</script>

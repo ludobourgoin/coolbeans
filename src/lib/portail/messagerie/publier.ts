@@ -79,7 +79,7 @@ export async function publierLesDues(
             objet: ticket.objet,
             corps: decision.corps,
             prenom: ticket.author_prenom,
-            urlTicket: `${options.baseUrl}/messagerie/${ticket.id}`,
+            urlTicket: `${options.baseUrl}/demandes/${ticket.id}`,
           });
           // Un throw (panne réseau...) doit être traité comme {error} : sans ce
           // catch, le message resterait "none" à vie (insere=false au retry).

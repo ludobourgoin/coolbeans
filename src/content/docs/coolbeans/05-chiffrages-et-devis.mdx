@@ -135,6 +135,16 @@ table D1 `devis_reponses` (base `PORTAL_DB`, migration `0002`), puis part en
 notification mail via Resend. Si l'écriture D1 échoue, le mail part quand
 même : la notification prime, l'erreur est loguée. La table est append-only.
 
+Depuis le 2026-09-29, les quatre documents (proposition, cadrage, livrable,
+témoignage) affichent les réponses reçues à la place de leur formulaire. Le
+bloc `DocumentReponses` est un server island posé avant le formulaire : la page
+reste prérendue, seul ce bloc lit D1 à chaque visite. Nom, email, SIREN,
+adresse et consentement gardent leur libellé, la valeur est biffée et ne quitte
+jamais le serveur. Une réponse définitive (validation, ou toute réponse de
+cadrage et de témoignage) masque le formulaire, et l'endpoint refuse la
+suivante en 409. Une question ou des retours le laissent ouvert. Spec
+`2026-09-29-reponses-dans-les-documents-design.md`.
+
 Toutes les pages devis sont exclues des moteurs de recherche et du sitemap :
 accessibles à qui possède le lien, rien de plus. La protection est double
 depuis le 2026-09-05 : `Disallow` dans `robots.txt` **et** balise `noindex`.
@@ -167,9 +177,11 @@ retrouver les libellés de question et d'option : une valeur absente du
 questionnaire est ignorée. C'est la même règle que les prix du devis, qui ne
 remontent jamais depuis une page publique.
 
-**Aucune écriture en base, aucun effet Linear.** Le mail est la trace. Un
-cadrage ne pilote aucun statut de cockpit, donc pas de table D1 et pas de
-migration ; et il ne valide rien, donc pas d'équivalent de `signature.ts`.
+**D1 d'abord, aucun effet Linear.** Jusqu'au 2026-09-29, le mail était la
+seule trace, et le supprimer perdait la réponse. Les réponses de cadrage, de
+livrable et de témoignage s'écrivent désormais dans la table D1
+`document_reponses` (migration `0009`), avec les libellés tels que le client
+les a lus. Un cadrage ne valide rien, donc pas d'équivalent de `signature.ts`.
 
 | Élément | Emplacement |
 | --- | --- |
@@ -177,7 +189,8 @@ migration ; et il ne valide rien, donc pas d'équivalent de `signature.ts`.
 | Rendu | `src/pages/cadrage/[...slug].astro` |
 | Composants | `src/components/cadrage/` (Intro, Comparatif, Formulaire) |
 | Traduction des réponses | `src/lib/cadrage.ts` (`reponsesLisibles`, `trierParPoids`) |
-| Soumission | `src/pages/api/cadrage-reponse.ts` |
+| Soumission | `src/pages/api/cadrage-reponse.ts`, table `document_reponses` (migration `0009`) |
+| Affichage des réponses | `src/components/devis/DocumentReponses.astro`, `src/lib/documents/` |
 | Accusé de réception | `src/emails/cadrage-confirmation.ts` |
 
 ## Référence technique

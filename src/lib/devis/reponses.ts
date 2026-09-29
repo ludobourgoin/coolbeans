@@ -31,6 +31,10 @@ export interface NouvelleReponse {
 export type ReponseDevis = NouvelleReponse & {
   id: number;
   createdAt: string;
+  /* Comment le client a répondu (migration 0010). Une validation reçue par
+     mail n'a pas coché la case de consentement du formulaire : la page ne
+     l'affiche pas. Optionnel pour les mocks des tests existants. */
+  canal?: "formulaire" | "mail";
   /* Sous-issue Linear de facturation créée à la validation. Sa présence dit
      que le déclenchement a déjà eu lieu : c'est le garde-fou contre une
      seconde soumission du même devis. */
@@ -64,7 +68,7 @@ const SQL_INSERT =
 const COLONNES =
   "slug, decision, message, prenom, nom, email, raison_sociale AS raisonSociale, " +
   "siren, adresse, tva, options_retenues AS optionsRetenues, " +
-  "montant_retenu AS montantRetenu, linear_task_id AS linearTaskId, created_at AS createdAt";
+  "montant_retenu AS montantRetenu, linear_task_id AS linearTaskId, canal, created_at AS createdAt";
 
 /* L'INSERT ne rend pas l'id sous D1Like : on relit la dernière ligne du slug
    pour connaître la réponse qu'on vient d'écrire, et pouvoir y accrocher
@@ -142,4 +146,33 @@ export async function marquerTacheLinear(
 export async function listerReponses(d1: D1Like = db()): Promise<ReponseDevis[]> {
   const { results } = await d1.prepare(SQL_LISTE).all<ReponseDevis>();
   return results;
+}
+
+/**
+ * Toutes les réponses reçues par les versions d'un devis, dans l'ordre
+ * d'arrivée. C'est ce que la page publique affiche à la place du formulaire
+ * (spec 2026-09-29-reponses-dans-les-documents-design.md).
+ */
+export async function reponsesDesVersions(
+  slugs: string[],
+  d1: D1Like = db(),
+): Promise<ReponseDevis[]> {
+  if (!slugs.length) return [];
+  const marques = slugs.map(() => "?").join(", ");
+  const { results } = await d1
+    .prepare(`SELECT id, ${COLONNES} FROM devis_reponses WHERE slug IN (${marques}) ORDER BY id`)
+    .bind(...slugs)
+    .all<ReponseDevis>();
+  return results;
+}
+
+/* Une version validée est close : le formulaire disparaît de la page, et
+   l'endpoint refuse toute nouvelle réponse sur ce slug. Une question, elle,
+   ne clôt rien : le client doit pouvoir valider ensuite. */
+const SQL_CLOS =
+  "SELECT id FROM devis_reponses WHERE slug = ? AND decision = 'validation' LIMIT 1";
+
+export async function devisClos(slug: string, d1: D1Like = db()): Promise<boolean> {
+  const { results } = await d1.prepare(SQL_CLOS).bind(slug).all<{ id: number }>();
+  return results.length > 0;
 }

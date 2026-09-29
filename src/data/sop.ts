@@ -59,7 +59,7 @@ export interface Etape {
  *  qu'à l'intérieur d'une même catégorie. */
 export interface ColonneCrm {
   nom: string;
-  type: "backlog" | "unstarted" | "started" | "completed" | "canceled";
+  type: "triage" | "backlog" | "unstarted" | "started" | "completed" | "canceled";
   role: string;
 }
 
@@ -99,7 +99,8 @@ export const phases: PhaseDef[] = [
 ];
 
 export const colonnesCrm: ColonneCrm[] = [
-  { nom: "📥 Triage lead", type: "backlog", role: "Mail entrant non qualifié. SLA de 4 h." },
+  { nom: "Triage", type: "triage", role: "Mail entrant non qualifié. SLA de 4 h." },
+  { nom: "Backlog", type: "backlog", role: "Trié, pas engagé, sans date. Linear impose cette colonne, vide en temps normal." },
   { nom: "👋 Contacté", type: "unstarted", role: "Contact établi, rien de calé." },
   { nom: "📆 Rdv pris", type: "started", role: "Découverte calée ou faite." },
   { nom: "🎯 À chiffrer", type: "started", role: "Besoin cadré, proposition à produire." },
@@ -391,7 +392,7 @@ export const etapes: Etape[] = [
     ],
     faire: [
       "Router avant d'exécuter : repo GitHub ? quelle stack ? workspace portail ? compte utilisateur ? monitoring ? Aucune de ces réponses n'est acquise d'avance.",
-      "Créer la team Linear du client, par copie des settings depuis la team « Modèle client ».",
+      "Créer la team Linear du client comme sous-team de « Web », qui lui transmet statuts et estimations, puis activer Triage.",
       "Créer le repo GitHub, scaffolder la stack écrite au devis, puis connecter le repo à l'intégration Git du workspace Linear.",
       "Monter l'infrastructure selon la stack : Worker, base, stockage.",
       "Créer src/content/clients/<slug>.yaml avec nom, linearTeamId et doc — sans ce champ, le module Support du portail reste en empty state.",

@@ -168,8 +168,9 @@ sections:
 notes:
   - tone: success
     texte: >-
-      **Tarif association appliqué sur l'ensemble de la prestation**, soit
-      560 € de remise sur le montant total.
+      **Tarif association appliqué sur l'ensemble de la prestation**, options
+      comprises. La remise est calculée sur le total, elle n'est jamais
+      réécrite à la main ici : le montant exact figure dans le budget.
   - texte: >-
       La direction visuelle et l'intégration forment un ensemble : la première
       fixe la référence que suit toute la construction du site. Les deux postes

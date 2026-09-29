@@ -259,7 +259,7 @@ export const POST: APIRoute = async (context) => {
     if (auteur.email && createdVia === "admin") {
       // Boucle email → portail de la spec §8 : remplace l'accusé de réception
       // standard quand c'est Ludo qui a ouvert le ticket pour le client.
-      const urlTicket = `${env.PORTAL_BASE_URL || "https://my.coolbeans.cc"}/messagerie/${ticketId}`;
+      const urlTicket = `${env.PORTAL_BASE_URL || "https://my.coolbeans.cc"}/demandes/${ticketId}`;
       const html = renderTransactionnel({
         preheader: "Suite à votre demande, votre ticket est ouvert et suivi.",
         kicker: "Messagerie",

@@ -290,11 +290,25 @@ const { slug, enAttente = false } = Astro.props;
         headers: { "content-type": "application/json" },
         body: JSON.stringify(payload),
       });
+      /* Document déjà clos : une réponse est arrivée entre-temps, d'un autre
+         onglet ou d'une page restée ouverte. Rien n'est perdu, la réponse
+         enregistrée fait foi, et le rechargement l'affiche à la place du
+         formulaire. Ce n'est pas une panne : pas de courriel de secours. */
+      if (res.status === 409) {
+        const { error } = await res.json().catch(() => ({ error: "" }));
+        status.textContent = `${error || "Ce document a déjà reçu une réponse."} La page se recharge.`;
+        status.className = "text-center text-[13px] font-medium text-mute";
+        setTimeout(() => location.reload(), 2500);
+        return;
+      }
       if (!res.ok) throw new Error();
       status.textContent = "Message envoyé, vous recevez une confirmation par email à l'instant.";
       status.className = "text-center text-[13px] font-medium text-success";
       form.reset();
       syncFacturationFields(); // reset() remet la case "validation" : réaffiche la facturation
+      /* Le temps de lire la confirmation, puis la page se recharge : les
+         réponses enregistrées s'affichent à la place du formulaire. */
+      setTimeout(() => location.reload(), 2500);
     } catch {
       /* Filet de sécurité : un envoi qui échoue ne doit jamais laisser le
          client sans issue, sinon la réponse est perdue et personne ne le sait

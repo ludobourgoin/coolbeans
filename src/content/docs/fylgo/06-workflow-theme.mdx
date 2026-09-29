@@ -1,0 +1,101 @@
+---
+client: "fylgo"
+title: "Workflow du thème"
+order: 6
+status: "draft"
+updated: 2026-09-20
+description: "Note technique interne : branche par sujet, thème de revue, publication manuelle, commandes bloquées."
+---
+
+import Callout from "../../../components/doc/Callout.astro";
+
+Note technique interne. Aucune action de l'équipe Fylgo ici.
+
+## La règle
+
+- `main` est le miroir de la boutique. On y récupère, on n'y développe pas.
+- Une branche par sujet, commits fréquents.
+- La publication se fait dans l'admin. Aucune commande ne publie.
+
+## Le cycle
+
+```bash
+# 1. Récupérer, sur main, arbre propre.
+git checkout main
+shopify theme pull --store=fylgo.myshopify.com --theme=182938435920
+git commit -am "chore: récupérer les modifications de l'admin"
+
+# 2. Branche.
+git checkout -b feature/bandeau-livraison
+
+# 3. Aperçu local, localhost:9292.
+shopify theme dev --store=fylgo.myshopify.com
+
+# 4. Envoi sur le thème de revue.
+shopify theme push --store=fylgo.myshopify.com --theme=<id de revue>
+
+# 5. Publication dans l'admin, puis main redevient le miroir.
+git checkout main
+shopify theme pull --store=fylgo.myshopify.com --theme=182938435920
+```
+
+Authentification, une fois par machine :
+`shopify auth login --store=fylgo.myshopify.com`.
+
+Création du thème de revue, une fois :
+
+```bash
+shopify theme push --store=fylgo.myshopify.com --unpublished --theme "Revue client"
+```
+
+## Récupérer en cours de sujet
+
+Le pull écrase les fichiers, jamais l'historique. Il ne se lance que sur `main`.
+
+```bash
+git commit -am "wip: bandeau livraison"
+git checkout main
+shopify theme pull --store=fylgo.myshopify.com --theme=182938435920
+git commit -am "chore: récupérer les modifications de l'admin"
+git checkout feature/bandeau-livraison
+git rebase main
+```
+
+## Bloqué par le garde-fou
+
+`.claude/hooks/garde-shopify.mjs` refuse :
+
+| Commande | Raison |
+| --- | --- |
+| `push` visant `182938435920` ou *Fylgo Production* | Remplace le thème publié |
+| `push` portant `--live`, `--allow-live`, `--publish` | Atteint ou publie le thème en ligne |
+| `push` sans cible explicite | Ambigu |
+| `theme publish` | La publication se fait dans l'admin |
+| `theme delete` | Irréversible |
+| `pull` avec du travail non commité | Écraserait ce travail |
+
+<Callout type="piege">
+  Actif uniquement dans une session Claude Code sur ce dépôt, et seulement si
+  `.claude/settings.json` est **suivi par git**. Dans un terminal ordinaire,
+  rien n'est bloqué.
+</Callout>
+
+## Hors suivi git
+
+| Fichier | Contient |
+| --- | --- |
+| `config/settings_data.json` | Réglages globaux du thème |
+| `templates/**/*.json` | Composition des pages |
+| `sections/*-group.json` | Composition de l'en-tête et du pied de page |
+
+## Référence
+
+| Élément | Valeur |
+| --- | --- |
+| Boutique | `fylgo.myshopify.com` |
+| Thème publié | *Fylgo Production*, `182938435920` |
+| Thème de revue | *Revue client*, non publié, id via `shopify theme list` |
+| Dépôt | `ludobourgoin/fylgo-theme`, privé |
+| Chemin local | `~/dev/fylgo` |
+| Garde-fou | `.claude/hooks/garde-shopify.mjs` |
+| CLI | `brew install shopify-cli` |
