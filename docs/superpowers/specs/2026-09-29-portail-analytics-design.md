@@ -133,9 +133,10 @@ Mise au format :
 
 ### 3.2 Collecte
 
-- Déclenchement : le cron `*/5 * * * *` existant. La collecte ne tourne qu'au premier
-  passage de 04:00 UTC (`getUTCHours() === 4 && getUTCMinutes() < 5`), sur le modèle
-  de la synchronisation Livraisons dans `src/worker.ts`.
+- Déclenchement : le cron `*/5 * * * *` existant. La collecte ne tourne qu'au second
+  passage de 04:00 UTC (`getUTCHours() === 4`, minutes 5 à 9). Le premier passage de
+  chaque heure appartient à la synchronisation Livraisons de `src/worker.ts` : les
+  séparer tient chacune loin du plafond de 50 appels par exécution.
 - Sans `CF_ANALYTICS_TOKEN` ou `CF_ACCOUNT_ID`, la tâche se saute et trace
   `{ event: "analytics_collecte", status: "skipped_missing_secrets" }`.
 - Jours relus à chaque passage : J-1 à J-7 (UTC). Soit 7 requêtes, 7 des
@@ -264,6 +265,8 @@ J-30 à J-1, `6m` couvre J-182 à J-1. La page n'affiche que les jours présents
   montre la clé manquante à l'admin.
 - Site raccordé, aucun jour collecté : `EmptyState` « Les premiers chiffres arrivent
   demain matin. »
+- Lecture D1 en échec : `EmptyState` « Statistiques momentanément indisponibles ».
+  Jamais une 500.
 
 **Design.** Relire `/design-system` avant de coder (labels `.label field-label`,
 tokens de `global.css`). Le graphique suit le skill `dataviz`.
