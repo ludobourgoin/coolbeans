@@ -56,6 +56,8 @@ export interface Barre {
   debut: string;
   visites: number;
   pagesVues: number;
+  /** Vrai sur 6 mois si moins de 7 jours de la semaine ont été collectés. Toujours faux sur 30 jours. */
+  partielle: boolean;
 }
 
 export interface Classement {
@@ -112,6 +114,10 @@ export function construireTableau(o: {
   let pagesVues = 0;
   let estime = false;
   const barres: Barre[] = [];
+  // Jours collectés dans chaque barre en cours de construction, un compteur
+  // par entrée de `barres` : une semaine à moins de 7 est incomplète, ce que
+  // la page doit montrer plutôt que de laisser croire à une vraie baisse.
+  const joursParBarre: number[] = [];
 
   // Seuls les jours collectés comptent : un jour collecté sans trafic vaut 0,
   // un jour jamais collecté n'a pas de barre.
@@ -128,9 +134,16 @@ export function construireTableau(o: {
     if (derniere && derniere.debut === debut) {
       derniere.visites += v;
       derniere.pagesVues += p;
+      joursParBarre[joursParBarre.length - 1] += 1;
     } else {
-      barres.push({ debut, visites: v, pagesVues: p });
+      barres.push({ debut, visites: v, pagesVues: p, partielle: false });
+      joursParBarre.push(1);
     }
+  }
+  if (o.periode === "6m") {
+    barres.forEach((b, i) => {
+      b.partielle = joursParBarre[i] < 7;
+    });
   }
 
   const de = (dimension: Dimension) => o.repartitions.filter((r) => r.dimension === dimension);

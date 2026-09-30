@@ -93,17 +93,34 @@ describe("construireTableau", () => {
 
   it("une barre par jour collecté, à 0 sans trafic, aucune pour un jour jamais collecté", () => {
     expect(construireTableau(base).barres).toEqual([
-      { debut: "2026-09-22", visites: 2, pagesVues: 3 },
-      { debut: "2026-09-23", visites: 0, pagesVues: 0 },
-      { debut: "2026-09-24", visites: 5, pagesVues: 8 },
-      { debut: "2026-09-28", visites: 1, pagesVues: 1 },
+      { debut: "2026-09-22", visites: 2, pagesVues: 3, partielle: false },
+      { debut: "2026-09-23", visites: 0, pagesVues: 0, partielle: false },
+      { debut: "2026-09-24", visites: 5, pagesVues: 8, partielle: false },
+      { debut: "2026-09-28", visites: 1, pagesVues: 1, partielle: false },
     ]);
   });
 
-  it("regroupe par semaine, du lundi, sur 6 mois", () => {
+  it("regroupe par semaine, du lundi, sur 6 mois, et marque les semaines de moins de 7 jours collectés", () => {
+    // 3 jours collectés dans la semaine du 21, 1 seul dans celle du 28 :
+    // les deux sont partielles.
     expect(construireTableau({ ...base, periode: "6m" }).barres).toEqual([
-      { debut: "2026-09-21", visites: 7, pagesVues: 11 },
-      { debut: "2026-09-28", visites: 1, pagesVues: 1 },
+      { debut: "2026-09-21", visites: 7, pagesVues: 11, partielle: true },
+      { debut: "2026-09-28", visites: 1, pagesVues: 1, partielle: true },
+    ]);
+  });
+
+  it("une semaine de 7 jours collectés n'est pas partielle, contrairement à sa voisine incomplète", () => {
+    const semaineComplete = ["2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-19", "2026-09-20"];
+    const semainePartielle = ["2026-09-21", "2026-09-22"];
+    const t = construireTableau({
+      periode: "6m",
+      jours: [],
+      repartitions: [],
+      collectes: [...semaineComplete, ...semainePartielle],
+    });
+    expect(t.barres).toEqual([
+      { debut: "2026-09-14", visites: 0, pagesVues: 0, partielle: false },
+      { debut: "2026-09-21", visites: 0, pagesVues: 0, partielle: true },
     ]);
   });
 
@@ -146,7 +163,7 @@ describe("construireTableau", () => {
     const t = construireTableau({ periode: "30j", jours: [], repartitions: [], collectes: ["2026-09-28"] });
     expect(t.visites).toBe(0);
     expect(t.pages).toEqual([]);
-    expect(t.barres).toEqual([{ debut: "2026-09-28", visites: 0, pagesVues: 0 }]);
+    expect(t.barres).toEqual([{ debut: "2026-09-28", visites: 0, pagesVues: 0, partielle: false }]);
   });
 });
 
