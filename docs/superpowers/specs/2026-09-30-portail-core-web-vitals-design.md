@@ -211,7 +211,7 @@ Trois cartes, dans cet ordre :
 |---|---|---|---|
 | Affichage | LCP | Temps pour afficher le contenu principal. | Bon sous 2,5 s, mauvais au-delà de 4 s. |
 | Réactivité | INP | Délai de réaction à un clic ou une touche. | Bon sous 200 ms, mauvais au-delà de 500 ms. |
-| Stabilité | CLS | Mouvements de la page pendant le chargement. | Bon sous 0,1, mauvais au-delà de 0,25. |
+| Stabilité | CLS | Mouvements inattendus du contenu à l'écran. | Bon sous 0,1, mauvais au-delà de 0,25. |
 
 Dans chaque carte :
 

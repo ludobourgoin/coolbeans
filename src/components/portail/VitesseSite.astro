@@ -28,22 +28,22 @@ const CARTES: Array<{
     titre: "Affichage",
     sigle: "LCP",
     description: "Temps pour afficher le contenu principal.",
-    bon: "2,5 s",
-    mauvais: "4 s",
+    bon: "2,5\u00A0s",
+    mauvais: "4\u00A0s",
   },
   {
     metrique: "inp",
     titre: "Réactivité",
     sigle: "INP",
     description: "Délai de réaction à un clic ou une touche.",
-    bon: "200 ms",
-    mauvais: "500 ms",
+    bon: "200\u00A0ms",
+    mauvais: "500\u00A0ms",
   },
   {
     metrique: "cls",
     titre: "Stabilité",
     sigle: "CLS",
-    description: "Mouvements de la page pendant le chargement.",
+    description: "Mouvements inattendus du contenu à l'écran.",
     bon: "0,1",
     mauvais: "0,25",
   },
@@ -52,7 +52,7 @@ const CARTES: Array<{
 // Le libellé porte le sens, la couleur ne fait que le doubler.
 const NOTES: Record<Note, { libelle: string; variante: "green" | "amber" | "red" }> = {
   bon: { libelle: "Bon", variante: "green" },
-  moyen: { libelle: "À améliorer", variante: "amber" },
+  moyen: { libelle: "À\u00A0améliorer", variante: "amber" },
   mauvais: { libelle: "Mauvais", variante: "red" },
 };
 
@@ -64,7 +64,7 @@ const pourcent = new Intl.NumberFormat("fr-FR", {
   maximumFractionDigits: 0,
   roundingMode: "floor",
 });
-const mesures = (n: number) => `${nombre.format(n)} mesure${n > 1 ? "s" : ""}`;
+const mesures = (n: number) => `${nombre.format(n)}\u00A0mesure${n > 1 ? "s" : ""}`;
 const resume = (e: Evaluation) =>
   e.note
     ? `${pourcent.format(e.partBonne)} de mesures bonnes sur ${nombre.format(e.mesures)}`
@@ -78,7 +78,7 @@ const resume = (e: Evaluation) =>
  */
 const detail = (e: Evaluation) =>
   e.note
-    ? `${NOTES[e.note].libelle} · ${mesures(e.mesures)}`
+    ? `${NOTES[e.note].libelle}\u00A0· ${mesures(e.mesures)}`
     : e.mesures === 0
       ? "aucune mesure"
       : `pas assez de mesures (${nombre.format(e.mesures)})`;
