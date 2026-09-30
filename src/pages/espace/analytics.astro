@@ -1,21 +1,184 @@
 ---
-// Page-souche « Analytics » (section Mon site, spec sidebar 2026-08-14).
-// Entrée `wip` du registre : invisible côté client tant que l'outil n'est pas
-// choisi et branché (COO-16, en pause ; structure de page : COO-36).
+// Analytics (COO-16, spec 2026-09-29-portail-analytics-design.md §5).
+//
+// La fréquentation du site du client, lue dans D1. La page ne parle jamais à
+// Cloudflare : la collecte quotidienne (src/lib/analytics/collecte.ts) s'en
+// charge. Le site affiché vient TOUJOURS de la liste du client courant : le
+// paramètre `site` est un host cherché dans cette liste, jamais un siteTag.
 export const prerender = false;
 
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import EmptyState from "../../components/portail/EmptyState.astro";
+import BarresVisites from "../../components/portail/BarresVisites.astro";
+import ClassementAnalytics from "../../components/portail/ClassementAnalytics.astro";
+import { env } from "cloudflare:workers";
+import { missingKeysFor } from "../../lib/portail/workspaces";
+import { getPortalContext } from "../../lib/portail/context";
+import { isAdmin } from "../../lib/portail/metadata";
+import {
+  chargerTableau,
+  choisirSite,
+  lirePeriode,
+  type Periode,
+} from "../../lib/analytics/tableau";
+import type { D1Analytics } from "../../lib/analytics/store";
+
+const { meta, client } = await getPortalContext(Astro);
+const admin = isAdmin(meta);
+const missingKeys = missingKeysFor("analytics", client);
+const sites = client?.analytics ?? [];
+const site = choisirSite(sites, Astro.url.searchParams.get("site"));
+const periode = lirePeriode(Astro.url.searchParams.get("periode"));
 
 Astro.response.headers.set("Cache-Control", "no-store");
+
+const chargement = site
+  ? await chargerTableau(env.PORTAL_DB as unknown as D1Analytics, {
+      siteTag: site.siteTag,
+      periode,
+      maintenant: new Date(),
+    })
+  : null;
+const tableau = chargement?.ok ? chargement.tableau : null;
+const depuis = chargement?.ok ? chargement.depuis : null;
+const derniereCollecte = chargement?.ok ? chargement.derniereCollecte : null;
+
+// Un seul état affiché à la fois, décidé ici plutôt que par des ternaires
+// dans le template.
+type Etat = "non-raccorde" | "indisponible" | "en-attente" | "pret";
+const etat: Etat = !site
+  ? "non-raccorde"
+  : !chargement?.ok
+    ? "indisponible"
+    : !tableau
+      ? "en-attente"
+      : "pret";
+
+/* Liens des sélecteurs : une chaîne de requête seule, relative à l'URL
+   courante. Sur my.coolbeans.cc l'adresse vue par le navigateur est
+   /analytics, pas /espace/analytics : un chemin absolu coûterait une
+   redirection. */
+function lien(o: { site?: string; periode?: Periode }): string {
+  const params = new URLSearchParams();
+  const host = o.site ?? site?.host;
+  if (host && sites.length > 1) params.set("site", host);
+  const p = o.periode ?? periode;
+  if (p !== "30j") params.set("periode", p);
+  return `?${params.toString()}`;
+}
+
+const PERIODES: Array<{ valeur: Periode; libelle: string }> = [
+  { valeur: "30j", libelle: "30 jours" },
+  { valeur: "6m", libelle: "6 mois" },
+];
+
+const nombre = new Intl.NumberFormat("fr-FR");
+const dateLongue = (jour: string) =>
+  new Intl.DateTimeFormat("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${jour}T00:00:00Z`));
+const horodatage = (iso: string) =>
+  new Intl.DateTimeFormat("fr-FR", {
+    dateStyle: "long",
+    timeStyle: "short",
+    timeZone: "Europe/Paris",
+  }).format(new Date(iso));
+
+const segment =
+  "rounded-[4px] px-3x py-1 text-sm text-mute transition-colors hover:text-ink aria-[current=page]:bg-surface-raise aria-[current=page]:text-ink";
+const courant = (actif: boolean) => (actif ? ("page" as const) : undefined);
 ---
 
 <EspaceLayout title="Analytics">
   <h1>Analytics</h1>
-  <p class="sub">L'audience de votre site.</p>
+  <p class="sub">L'audience de votre site, sans cookies.</p>
 
-  <EmptyState title="Bientôt disponible">
-    Les statistiques de fréquentation de votre site arriveront ici : visiteurs, pages vues,
-    provenance, sans cookies ni bannière.
-  </EmptyState>
+  {
+    etat === "non-raccorde" && (
+      <EmptyState title="Bientôt disponible" missingKeys={missingKeys} isAdmin={admin}>
+        Les statistiques de fréquentation de votre site arriveront ici&nbsp;: visites, pages vues,
+        provenance, sans cookies ni bannière.
+      </EmptyState>
+    )
+  }
+
+  {
+    etat === "indisponible" && (
+      <EmptyState title="Statistiques momentanément indisponibles">
+        Les chiffres de votre site n'ont pas pu être chargés. Réessayez dans quelques minutes.
+      </EmptyState>
+    )
+  }
+
+  {
+    site && (etat === "en-attente" || etat === "pret") && (
+      <div class="mt-6x flex flex-wrap items-center gap-3x">
+        {sites.length > 1 && (
+          <div class="inline-flex rounded-control border border-line p-1" role="group" aria-label="Site">
+            {sites.map((s) => (
+              <a href={lien({ site: s.host })} aria-current={courant(s.host === site.host)} class={segment}>
+                {s.host}
+              </a>
+            ))}
+          </div>
+        )}
+        <div class="inline-flex rounded-control border border-line p-1" role="group" aria-label="Période">
+          {PERIODES.map((p) => (
+            <a href={lien({ periode: p.valeur })} aria-current={courant(p.valeur === periode)} class={segment}>
+              {p.libelle}
+            </a>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  {
+    etat === "en-attente" && (
+      <div class="mt-6x">
+        <EmptyState title="Les premiers chiffres arrivent demain matin">
+          La collecte tourne chaque nuit. Les visites de la veille s'afficheront ici.
+        </EmptyState>
+      </div>
+    )
+  }
+
+  {
+    etat === "pret" && tableau && (
+      <Fragment>
+        {depuis && <p class="mt-3x text-sm text-mute">Données depuis le {dateLongue(depuis)}</p>}
+        <dl class="mt-6x grid grid-cols-2 gap-6x">
+          <div class="rounded-card border border-line bg-surface p-6x">
+            <dt class="label">Visites</dt>
+            <dd class="mt-2x text-3xl font-semibold tabular-nums">{nombre.format(tableau.visites)}</dd>
+          </div>
+          <div class="rounded-card border border-line bg-surface p-6x">
+            <dt class="label">Pages vues</dt>
+            <dd class="mt-2x text-3xl font-semibold tabular-nums">{nombre.format(tableau.pagesVues)}</dd>
+          </div>
+        </dl>
+        <BarresVisites barres={tableau.barres} periode={periode} />
+        <div class="mt-6x grid gap-6x md:grid-cols-3">
+          <ClassementAnalytics titre="Pages les plus vues" lignes={tableau.pages} vide="Aucune page vue sur la période." />
+          <ClassementAnalytics titre="Provenance" lignes={tableau.provenances} vide="Aucune visite sur la période." />
+          <ClassementAnalytics titre="Appareils" lignes={tableau.appareils} vide="Aucune visite sur la période." />
+        </div>
+        {tableau.estime && <p class="mt-3x text-sm text-mute">Certains jours sont estimés par Cloudflare.</p>}
+      </Fragment>
+    )
+  }
+
+  {
+    admin && derniereCollecte && (
+      <p class="mt-6x text-xs text-mute">Dernière collecte&nbsp;: {horodatage(derniereCollecte)}</p>
+    )
+  }
+  {
+    admin && chargement?.ok && !derniereCollecte && (
+      <p class="mt-6x text-xs text-mute">Aucune collecte enregistrée.</p>
+    )
+  }
 </EspaceLayout>

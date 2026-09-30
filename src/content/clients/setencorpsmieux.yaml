@@ -12,3 +12,7 @@ linearTeamId: cbaac50e-c2d2-4275-b16e-faa941fb18ef
 # Pas de clé `doc` : aucune page n'existe encore sous src/content/docs/. Le
 # module Documentation restera en empty state jusqu'à ce que la skill
 # doc-client la produise.
+# Sites mesurés par Cloudflare Web Analytics (COO-16).
+analytics:
+  - host: setencorpsmieux.fr
+    siteTag: 7257179f83b6445d93703f1d1f305a4a

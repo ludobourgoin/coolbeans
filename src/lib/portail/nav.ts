@@ -142,7 +142,12 @@ const SECTIONS: SectionDef[] = [
         dot: true,
       },
       { label: "SEO", path: "/seo", flag: "wip" }, // COO-55
-      { label: "Analytics", path: "/analytics", flag: "wip" }, // COO-16
+      {
+        label: "Analytics",
+        path: "/analytics",
+        flag: "live", // COO-16
+        configured: (c) => missingKeysFor("analytics", c).length === 0,
+      },
     ],
   },
   // La section Documentation est construite à part : ses pages viennent de la

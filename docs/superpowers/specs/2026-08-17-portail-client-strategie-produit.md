@@ -295,7 +295,7 @@ Sans elle, chaque site demande une analyse sur mesure et le coût par site reste
 
 **Point réglementaire à arbitrer par client.** En France, GA4 en configuration standard nécessite un bandeau de consentement, et le taux de refus fait perdre une part significative des données, souvent plusieurs dizaines de pour cent. Une solution d'audience cookieless correctement configurée peut relever de l'exemption de consentement CNIL, ce qui donne des données plus complètes et supprime le bandeau. À vérifier au cas par cas au regard des critères d'exemption en vigueur. Le choix dépend surtout de la dépendance du client à Google Ads : s'il fait de l'acquisition payante, GA4 reste nécessaire. Sinon, l'alternative cookieless est probablement supérieure sur tous les plans.
 
-**Décision (2026-08-18, arbitrage 9.2) :** événements en code via le package interne, envoyés vers une solution cookieless, plus GA4 en complément uniquement chez les clients qui font de l'acquisition payante. Le choix de l'outil cookieless (Plausible vs Umami, COO-16) reste suspendu au volume du parc.
+**Décision (2026-08-18, arbitrage 9.2) :** événements en code via le package interne, envoyés vers une solution cookieless, plus GA4 en complément uniquement chez les clients qui font de l'acquisition payante. Outil cookieless : Cloudflare Web Analytics, retenu le 2026-09-16 (COO-16) et collecté chaque nuit dans D1 (spec 2026-09-29-portail-analytics-design.md). Umami reste le repli.
 
 **Critères d'acceptation :** taxonomie documentée et figée, package interne publié, déployé sur au moins deux sites pilotes, données interrogeables par API de façon identique sur les deux.
 
@@ -511,7 +511,7 @@ Le chemin critique est le **tracking standardisé** (P5) : il conditionne le mot
 ## 9. Questions ouvertes (décision de Ludo requise, ne pas trancher à sa place)
 
 1. ~~**Réponses aux emails de notification.**~~ **Résolu de facto (2026-08-18)** : l'inbound email est explicitement hors scope durable (spec messagerie §10) ; `reply-to` vers la boîte de Ludo, conversion manuelle en ticket pour préserver la règle du canal unique.
-2. ~~**Analytics par client.**~~ **Décidé (2026-08-18)** : cookieless exemptable par défaut sur tout le parc, GA4 en complément uniquement chez les clients qui font de l'acquisition payante (voir 4.1). Outil cookieless (Plausible vs Umami) toujours suspendu au volume (COO-16).
+2. ~~**Analytics par client.**~~ **Décidé (2026-08-18)** : cookieless exemptable par défaut sur tout le parc, GA4 en complément uniquement chez les clients qui font de l'acquisition payante (voir 4.1). Outil cookieless : Cloudflare Web Analytics, retenu le 2026-09-16 (COO-16).
 3. ~~**Source de vérité de la facturation.**~~ **Décidé (2026-08-18)** : **Tiime**. Son API est réservée aux éditeurs de logiciels (sur demande à support@tiime.fr) ; l'accès aux données passe par l'intégration officielle **Make.com**. Conséquence pour P10 : sync via un scénario Make (ou demande de partenariat API si le besoin le justifie) — exception assumée à la règle « pas de Make » du portail, qui visait les flux entrants du formulaire, pas un miroir batch.
 4. **Périmètre exact du « gratuit à vie »** + délai de réponse annoncé. **Reporté au bilan pilote J+14** (décision 2026-08-18) : à figer avant le premier client externe, pas avant le pilote interne.
 5. **Hébergement et modèle de données du portail.** Isolation, sauvegardes, restauration. Toujours ouvert : un audit exécutable par Claude peut préparer la décision.

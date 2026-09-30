@@ -8,6 +8,8 @@
 // Les fonctions `*In` prennent la liste en argument : c'est ce qui les rend
 // testables sans `astro:content`, indisponible sous Vitest.
 
+import type { SiteAnalytics } from "../analytics/types";
+
 export interface PortalWorkspace {
   /** Nom du fichier YAML, sans extension. */
   slug: string;
@@ -27,6 +29,12 @@ export interface PortalWorkspace {
    */
   messagerie?: boolean;
   uptimerobot_monitor_ids: string[];
+  /**
+   * Sites mesurés par Cloudflare Web Analytics (COO-16). Optionnel comme
+   * `messagerie` : le YAML porte un `.default([])`, mais les fiches construites
+   * à la main (tests, design system) n'ont pas à le répéter.
+   */
+  analytics?: SiteAnalytics[];
   /**
    * Workspace « à moi » (Coolbeans, Spinoza…) par opposition aux workspaces
    * clients : le sélecteur les affiche en tête, avant le liseret.
@@ -53,10 +61,10 @@ export interface PortalWorkspace {
 export const DEFAULT_WORKSPACE = "coolbeans";
 
 /** Modules dont l'affichage dépend d'un mapping du client. */
-export type PortalModule = "projets" | "site" | "doc" | "support";
+export type PortalModule = "projets" | "site" | "doc" | "support" | "analytics";
 
 /** Clés de mapping d'un client, telles que nommées dans le YAML. */
-export type WorkspaceMappingKey = "doc" | "linearTeamId" | "uptimerobot_monitor_ids";
+export type WorkspaceMappingKey = "doc" | "linearTeamId" | "uptimerobot_monitor_ids" | "analytics";
 
 /**
  * Mapping sans lequel un module ne peut rien afficher.
@@ -74,6 +82,7 @@ export const MODULE_REQUIREMENTS: Record<PortalModule, readonly WorkspaceMapping
   support: ["linearTeamId"],
   site: ["uptimerobot_monitor_ids"],
   doc: ["doc"],
+  analytics: ["analytics"],
 };
 
 /**
@@ -143,6 +152,8 @@ function hasMapping(client: PortalWorkspace, key: WorkspaceMappingKey): boolean 
       return Boolean(client.linearTeamId);
     case "uptimerobot_monitor_ids":
       return client.uptimerobot_monitor_ids.length > 0;
+    case "analytics":
+      return (client.analytics?.length ?? 0) > 0;
   }
 }
 

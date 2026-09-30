@@ -11,3 +11,10 @@ emoji: ✊
 depuis: "2026-08-26"
 # Team « Revolutions Douces » (REV) du workspace Linear coolbeans-hq.
 linearTeamId: f3afb3d7-ea26-4e50-8785-215510a5de50
+# Sites mesurés par Cloudflare Web Analytics (COO-16). Le site de l'association
+# d'abord, celui du salon ensuite : la page Analytics ouvre sur le premier.
+analytics:
+  - host: revolutionsdouces.org
+    siteTag: 4b3f282e3f8a4d90ac63fbeb41577e72
+  - host: construire-habiter-autrement.org
+    siteTag: 7b1613c4d8524beaae503934203801a4

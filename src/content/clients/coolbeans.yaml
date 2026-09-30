@@ -19,3 +19,7 @@ linearTeamId: 64bf4683-6650-4250-96bc-0e7cb7df7ea2
 # 2026-09-01). Mêmes fichiers que le lockup de la topbar, inversés en sombre.
 logo: /img/coolbeans-mark-black.svg
 logoSombre: /img/coolbeans-mark-white.svg
+# Sites mesurés par Cloudflare Web Analytics (COO-16).
+analytics:
+  - host: coolbeans.cc
+    siteTag: 2ad7fb260e2a498a900a5d97d41b6853
