@@ -879,3 +879,36 @@
     box-shadow: 12px 0 32px rgba(0, 0, 0, 0.12);
   }
 }
+
+/* ---- Documents client dans le portail (spec 2026-09-30, sous-projet 1) ----
+   Le document porte sa colonne de 880 px et sa nav des sections : pas de
+   colonne d'ancres, pas de plafond. */
+.doc-root .doc-content--document {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: none;
+}
+.doc-root .document-main {
+  min-width: 0;
+}
+/* La barre du portail est collante sur 56 px : la nav des sections du
+   document se colle dessous, et une ancre s'arrête sous les deux (56 + 66). */
+.doc-root .document-main [data-document-sections] {
+  top: 56px;
+}
+.doc-root .document-main section[id] {
+  scroll-margin-top: 122px;
+}
+/* La flèche des liens externes est un repère de la doc, pas du document. */
+.doc-root .document-main a[target="_blank"]::after {
+  content: none;
+}
+/* Sur papier, le document seul : ni barre du portail, ni barre latérale. */
+@media print {
+  .doc-root > header,
+  .doc-root .portal-left {
+    display: none !important;
+  }
+  .doc-root .doc-shell {
+    display: block;
+  }
+}

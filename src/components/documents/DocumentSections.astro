@@ -77,7 +77,12 @@ const { sections } = Astro.props;
   const activer = (id: string) =>
     liens.forEach((l) => l.setAttribute("aria-current", l.getAttribute("href") === `#${id}` ? "true" : "false"));
 
-  const hauteurBarre = () => [...barres].find((b) => b.offsetParent !== null)?.offsetHeight ?? 0;
+  /* Bas de la barre une fois collée : sa hauteur, plus son `top`, qui vaut 0
+     en public et 56 px dans le portail (doc.css). */
+  const hauteurBarre = () => {
+    const barre = [...barres].find((b) => b.offsetParent !== null);
+    return barre ? barre.offsetHeight + parseFloat(getComputedStyle(barre).top || "0") : 0;
+  };
 
   const sections = document.querySelectorAll<HTMLElement>("section[id]");
   if (sections.length && liens.length) {
