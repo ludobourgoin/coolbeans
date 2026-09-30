@@ -3,6 +3,10 @@ objet: Plaquette commerciale sur les landing pages Agen
 date: 2026-07-23
 projet: plaquette-agen-723
 etape: proposition
+# Traçabilité interne, jamais servie en production : les notes portent le
+# taux horaire, la charge et une citation de la cliente (revue de
+# confidentialité du 2026-09-29).
+statut: brouillon
 contact: Adeline
 
 linear:
