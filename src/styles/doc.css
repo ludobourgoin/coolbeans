@@ -176,7 +176,23 @@
 
 /* ---- Hub Ressources (COO-37) ----------------------------------------------
    Cards de liens externes par catégorie : rangée d'ancres sous le sub,
-   sections titrées d'un filet, cartes .card standard (domaine en kicker). */
+   sections titrées d'un filet, cartes en utilitaires (favicon en vignette).
+   Seule la flèche ↗ des liens externes (règle a[target="_blank"]::after
+   plus bas) se règle ici : un utilitaire ne bat pas sa spécificité. */
+.doc-root .espace-main .res-card[target="_blank"]::after {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  margin: 0;
+  font-size: 13px;
+  transition:
+    color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.doc-root .espace-main .res-card[target="_blank"]:hover::after {
+  color: var(--ink);
+  transform: translate(2px, -2px);
+}
 .doc-root .espace-main .res-anchors {
   display: flex;
   flex-wrap: wrap;
