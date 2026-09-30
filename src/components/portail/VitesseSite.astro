@@ -1,0 +1,108 @@
+---
+// Core Web Vitals de la page Analytics (spec 2026-09-30-portail-core-web-vitals-design.md §5).
+//
+// Trois cartes, une par métrique notée par Google. La note vient des
+// compteurs de la période (src/lib/analytics/vitaux.ts), jamais d'un
+// percentile. Sous MESURES_MIN mesures, la carte le dit au lieu de noter.
+import Badge from "../ui/Badge.astro";
+import { MESURES_MIN, type Evaluation, type Note, type Vitesse } from "../../lib/analytics/vitaux";
+import type { Metrique } from "../../lib/analytics/types";
+
+interface Props {
+  /** null : aucune mesure sur la période. */
+  vitesse: Vitesse | null;
+}
+
+const { vitesse } = Astro.props;
+
+const CARTES: Array<{ metrique: Metrique; titre: string; sigle: string; description: string; aide: string }> = [
+  {
+    metrique: "lcp",
+    titre: "Affichage",
+    sigle: "LCP",
+    description: "Temps pour afficher le contenu principal.",
+    aide: "Bon sous 2,5 s, mauvais au-delà de 4 s.",
+  },
+  {
+    metrique: "inp",
+    titre: "Réactivité",
+    sigle: "INP",
+    description: "Délai de réaction à un clic ou une touche.",
+    aide: "Bon sous 200 ms, mauvais au-delà de 500 ms.",
+  },
+  {
+    metrique: "cls",
+    titre: "Stabilité",
+    sigle: "CLS",
+    description: "Mouvements de la page pendant le chargement.",
+    aide: "Bon sous 0,1, mauvais au-delà de 0,25.",
+  },
+];
+
+// Le libellé porte le sens, la couleur ne fait que le doubler.
+const NOTES: Record<Note, { libelle: string; variante: "green" | "amber" | "red" }> = {
+  bon: { libelle: "Bon", variante: "green" },
+  moyen: { libelle: "À améliorer", variante: "amber" },
+  mauvais: { libelle: "Mauvais", variante: "red" },
+};
+
+const nombre = new Intl.NumberFormat("fr-FR");
+const pourcent = new Intl.NumberFormat("fr-FR", { style: "percent", maximumFractionDigits: 0 });
+const mesures = (n: number) => `${nombre.format(n)} mesure${n > 1 ? "s" : ""}`;
+const resume = (e: Evaluation) =>
+  e.note
+    ? `${pourcent.format(e.partBonne)} de mesures bonnes sur ${nombre.format(e.mesures)}`
+    : `${mesures(e.mesures)} sur les ${MESURES_MIN} nécessaires`;
+/** Ligne Mobile ou Ordinateur : la note et son nombre de mesures, ou le manque. */
+const detail = (e: Evaluation) =>
+  e.note
+    ? `${NOTES[e.note].libelle} · ${mesures(e.mesures)}`
+    : `pas assez de mesures (${nombre.format(e.mesures)})`;
+---
+
+<section class="mt-6x">
+  <h2 class="label">Vitesse du site</h2>
+  <p class="mt-1 text-sm text-mute">Mesurée chez vos visiteurs, selon les critères de Google.</p>
+  {!vitesse && <p class="mt-4x text-sm text-mute">Aucune mesure de vitesse sur la période.</p>}
+  {
+    vitesse && (
+      <div class="mt-4x grid gap-6x md:grid-cols-3">
+        {CARTES.map((carte) => {
+          const { global, mobile, ordinateur } = vitesse[carte.metrique];
+          return (
+            <div class="rounded-card border border-line bg-surface p-6x">
+              <div class="flex items-baseline justify-between gap-3x">
+                <h3 class="label">{carte.titre}</h3>
+                <span class="text-xs text-mute">{carte.sigle}</span>
+              </div>
+              <p class="mt-1 text-sm text-mute">{carte.description}</p>
+              <p class="mt-4x">
+                {global.note ? (
+                  <Badge size="sm" subtle variant={NOTES[global.note].variante}>
+                    {NOTES[global.note].libelle}
+                  </Badge>
+                ) : (
+                  <Badge size="sm" subtle variant="gray">
+                    Pas assez de mesures
+                  </Badge>
+                )}
+              </p>
+              <p class="mt-2x text-sm tabular-nums">{resume(global)}</p>
+              <dl class="mt-4x grid gap-1 text-sm">
+                <div class="flex justify-between gap-3x">
+                  <dt class="text-mute">Mobile</dt>
+                  <dd class="tabular-nums">{detail(mobile)}</dd>
+                </div>
+                <div class="flex justify-between gap-3x">
+                  <dt class="text-mute">Ordinateur</dt>
+                  <dd class="tabular-nums">{detail(ordinateur)}</dd>
+                </div>
+              </dl>
+              <p class="mt-4x text-xs text-mute">{carte.aide}</p>
+            </div>
+          );
+        })}
+      </div>
+    )
+  }
+</section>
