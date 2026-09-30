@@ -176,4 +176,9 @@ const courant = (actif: boolean) => (actif ? ("page" as const) : undefined);
       <p class="mt-6x text-xs text-mute">Dernière collecte&nbsp;: {horodatage(derniereCollecte)}</p>
     )
   }
+  {
+    admin && chargement?.ok && !derniereCollecte && (
+      <p class="mt-6x text-xs text-mute">Aucune collecte enregistrée.</p>
+    )
+  }
 </EspaceLayout>
