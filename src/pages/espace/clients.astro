@@ -6,11 +6,12 @@ export const prerender = false;
 
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import EmptyState from "../../components/portail/EmptyState.astro";
-import { getPortalContext } from "../../lib/portail/context";
+import { basculerSurCoolbeans, getPortalContext } from "../../lib/portail/context";
 import { isAdmin } from "../../lib/portail/metadata";
 
 const { meta } = await getPortalContext(Astro);
 if (!isAdmin(meta)) return Astro.redirect("/espace");
+await basculerSurCoolbeans(Astro);
 
 Astro.response.headers.set("Cache-Control", "no-store");
 ---

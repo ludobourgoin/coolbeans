@@ -6,7 +6,7 @@ import { getCollection } from "astro:content";
 import { env } from "cloudflare:workers";
 import DevisBoard from "../../../components/portail/DevisBoard.astro";
 import { grouperVersions, nomClient, type LigneDevis } from "../../../lib/devis/cockpit";
-import { getPortalContext } from "../../../lib/portail/context";
+import { basculerSurCoolbeans, getPortalContext } from "../../../lib/portail/context";
 import { isAdmin } from "../../../lib/portail/metadata";
 import { listerReponses, type ReponseDevis } from "../../../lib/devis/reponses";
 import {
@@ -19,6 +19,7 @@ import { adresseDocument } from "../../../lib/documents/adresse";
 
 const { meta } = await getPortalContext(Astro);
 if (!isAdmin(meta)) return Astro.redirect("/espace");
+await basculerSurCoolbeans(Astro);
 
 /* Une ligne par devis, pas par version : les versions successives d'un même
    devis partagent l'URL de la V1 et n'ont pas de page à elles. */

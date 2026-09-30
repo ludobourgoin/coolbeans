@@ -4,11 +4,12 @@ export const prerender = false;
 import EspaceLayout from "../../../layouts/EspaceLayout.astro";
 import ReglagesEditor from "../../../components/chiffrage/ReglagesEditor";
 import { getReglages } from "../../../lib/chiffrage/store";
-import { getPortalContext } from "../../../lib/portail/context";
+import { basculerSurCoolbeans, getPortalContext } from "../../../lib/portail/context";
 import { isAdmin } from "../../../lib/portail/metadata";
 
 const { meta } = await getPortalContext(Astro);
 if (!isAdmin(meta)) return Astro.redirect("/espace");
+await basculerSurCoolbeans(Astro);
 
 const reglages = await getReglages();
 ---

@@ -13,8 +13,7 @@ import type { CollectionEntry } from "astro:content";
 import DocLayout from "../../../layouts/DocLayout.astro";
 import Meta from "../../../components/doc/Meta.astro";
 import { findWorkspaceByDoc } from "../../../lib/portail/workspaces";
-import { WORKSPACE_COOKIE } from "../../../lib/portail/current-workspace";
-import { getPortalContext, overrideCurrentWorkspace } from "../../../lib/portail/context";
+import { getPortalContext, poserWorkspaceCourant } from "../../../lib/portail/context";
 import { isAdmin } from "../../../lib/portail/metadata";
 
 type Doc = CollectionEntry<"docs">;
@@ -43,14 +42,7 @@ let effectif = client;
 if (isAdminUser && clientParam && client?.doc !== clientParam) {
   const proprietaire = await findWorkspaceByDoc(clientParam);
   if (proprietaire) {
-    Astro.cookies.set(WORKSPACE_COOKIE, proprietaire.slug, {
-      path: "/",
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 365,
-    });
-    overrideCurrentWorkspace(Astro, proprietaire);
+    poserWorkspaceCourant(Astro, proprietaire);
     effectif = proprietaire;
   }
 }

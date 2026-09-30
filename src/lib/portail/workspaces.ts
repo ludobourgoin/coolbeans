@@ -62,6 +62,13 @@ export interface PortalWorkspace {
 /** Client affiché par défaut à l'admin, et tête de liste du sélecteur. */
 export const DEFAULT_WORKSPACE = "coolbeans";
 
+/**
+ * Le workspace de Coolbeans : la section Admin n'apparaît que là, l'Aide
+ * jamais (spec 2026-09-30, barre par workspace, §3). Même valeur que
+ * DEFAULT_WORKSPACE, autre sens : l'un est un repli, l'autre une identité.
+ */
+export const WORKSPACE_COOLBEANS = "coolbeans";
+
 /** Modules dont l'affichage dépend d'un mapping du client. */
 export type PortalModule = "projets" | "site" | "doc" | "support" | "analytics";
 
