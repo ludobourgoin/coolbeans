@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { frise } from "./frise";
+import { frise, friseAvec } from "./frise";
 import type { DocumentProjet } from "./projet";
 
 const doc = (p: Partial<DocumentProjet> & Pick<DocumentProjet, "collection" | "id">): DocumentProjet => ({
@@ -70,4 +70,17 @@ test("un document hors nomenclature n'a pas de frise", () => {
 
 test("un document inconnu n'a pas de frise", () => {
   expect(frise(cafa, { collection: "devis", id: "absent" }, false)).toEqual([]);
+});
+
+test("dans le portail, la frise suit ce que le compte lit et pointe vers le portail", () => {
+  const lisible = (d: DocumentProjet) => d.collection !== "livrable";
+  const url = (d: DocumentProjet) => `/projets/${d.projet}/${d.etape}`;
+  const p = friseAvec(cafa, devisCafa, lisible, url);
+  expect(p.map((x) => x.href)).toEqual([
+    undefined,
+    "/projets/site-web-879/proposition",
+    "/projets/site-web-879/production",
+    undefined,
+    undefined,
+  ]);
 });
