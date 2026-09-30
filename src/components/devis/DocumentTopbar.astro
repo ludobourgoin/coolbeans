@@ -15,14 +15,13 @@
    un document en sombre, sans aucun moyen d'en sortir. Constaté par Ludo le
    2026-09-22 sur le livrable Fylgo.
 
-   NON COLLANTE, à la différence de la Nav du site. DevisCorps pose déjà un
-   sommaire de sections en `sticky top-0 z-40`, et les sections portent un
+   NON COLLANTE, à la différence de la Nav du site. DocumentSections pose déjà
+   un sommaire de sections en `sticky top-0 z-40`, et les sections portent un
    `scroll-mt-16.5` calé dessus. Une deuxième barre collante se superposerait
    à ce sommaire et fausserait toutes les ancres du document.
 
-   Fond `surface-subtle`, sans filet bas : c'est celui du hero qui suit
-   immédiatement, les deux forment une seule bande. Le quadrillage de
-   GridBackdrop commence sous la barre, l'écart est imperceptible. */
+   Fond `surface-subtle`. Le filet de l'étape la sépare de l'en-tête du
+   document, qui suit sur le fond de la page : voir DocumentEntete. */
 import ThemeSwitch from "../ui/ThemeSwitch.astro";
 ---
 

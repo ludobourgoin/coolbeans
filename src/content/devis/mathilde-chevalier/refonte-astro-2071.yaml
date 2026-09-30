@@ -1,9 +1,11 @@
 titre: Mathilde Chevalier x Coolbeans
 objet: La V2 de ton site
 date: 2026-09-10
+projet: refonte-207
+etape: proposition
 contact: Mathilde
 linear:
-  projet: "Refonte du site : Webflow vers Astro"
+  projet: Refonte du site de Mathilde Chevalier
   affaire: CRM-90
 
 sections:

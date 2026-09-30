@@ -1,5 +1,33 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
+import { ETAPES, type Etape } from "./lib/documents/etapes";
+import { FORME_PROJET } from "./lib/documents/nomenclature";
+
+/* L'identité d'un document client, commune aux quatre collections (spec
+   2026-09-22 §3, §4, §7 et §10).
+
+   `statut`  les trois états. `trame` : coquille créée avec le projet, jamais
+             servie. `brouillon` : texte en cours. `publie` : servi en
+             production, listé dans le portail. Les deux premiers se
+             comportent pareil côté client. Défaut `publie` : les documents
+             d'avant ce champ n'en portent pas, et tout autre défaut les
+             retirerait tous de la production.
+   `projet`  la jointure entre les documents d'un même projet, valant le
+             segment d'URL du projet (« site-web-879 »). Doit figurer dans
+             lib/documents/nomenclature.ts, vérifié au build par
+             lib/documents/charger.ts. Porté par les racines : une version
+             hérite de sa racine.
+   `etape`   le moment du projet, pas le gabarit. Défaut : l'étape habituelle
+             de la collection.
+   `onglet`  libellé de l'onglet quand deux documents partagent une page sans
+             être deux versions l'un de l'autre. Absent, l'onglet affiche
+             « V2 · 22 sept. 2026 ». */
+const identiteDocument = (etape: Etape) => ({
+  statut: z.enum(["trame", "brouillon", "publie"]).default("publie"),
+  projet: z.string().regex(FORME_PROJET).optional(),
+  etape: z.enum(ETAPES).default(etape),
+  onglet: z.string().optional(),
+});
 
 /* Un fichier YAML par devis dans src/content/devis/<client>/<projet>-<4
    chiffres>.yaml ; le chemin devient l'URL (/devis/<client>/<projet>-1234).
@@ -21,16 +49,7 @@ const devis = defineCollection({
     titre: z.string(),
     objet: z.string(),
     date: z.coerce.date(),
-    /* Les trois états d'un document (spec 2026-09-22 §10) :
-       `trame`     coquille créée avec le projet, jamais servie ;
-       `brouillon` texte en cours, pas encore montrable ;
-       `publie`    servi en production, listé dans le portail.
-       Les deux premiers se comportent pareil côté client ; ils se distinguent
-       pour Ludo, qui sait ce qu'il lui reste à écrire.
-
-       Le défaut est `publie` : les 35 documents d'avant ce champ n'en portent
-       pas, et tout autre défaut les retirerait tous de la production. */
-    statut: z.enum(["trame", "brouillon", "publie"]).default("publie"),
+    ...identiteDocument("proposition"),
     // Prénom du contact côté client, affiché sur les jalons de planning
     // attribués à "client" (owner: client). Chaque devis a son propre client.
     contact: z.string().optional(),
@@ -190,16 +209,7 @@ const livrable = defineCollection({
     titre: z.string(),
     objet: z.string(),
     date: z.coerce.date(),
-    /* Les trois états d'un document (spec 2026-09-22 §10) :
-       `trame`     coquille créée avec le projet, jamais servie ;
-       `brouillon` texte en cours, pas encore montrable ;
-       `publie`    servi en production, listé dans le portail.
-       Les deux premiers se comportent pareil côté client ; ils se distinguent
-       pour Ludo, qui sait ce qu'il lui reste à écrire.
-
-       Le défaut est `publie` : les 35 documents d'avant ce champ n'en portent
-       pas, et tout autre défaut les retirerait tous de la production. */
-    statut: z.enum(["trame", "brouillon", "publie"]).default("publie"),
+    ...identiteDocument("livraison"),
     contact: z.string().optional(),
     tutoiement: z.boolean().default(false),
     version: z.number().int().min(1).default(1),
@@ -466,16 +476,13 @@ const cadrage = defineCollection({
     titre: z.string(),
     objet: z.string(),
     date: z.coerce.date(),
-    /* Les trois états d'un document (spec 2026-09-22 §10) :
-       `trame`     coquille créée avec le projet, jamais servie ;
-       `brouillon` texte en cours, pas encore montrable ;
-       `publie`    servi en production, listé dans le portail.
-       Les deux premiers se comportent pareil côté client ; ils se distinguent
-       pour Ludo, qui sait ce qu'il lui reste à écrire.
-
-       Le défaut est `publie` : les 35 documents d'avant ce champ n'en portent
-       pas, et tout autre défaut les retirerait tous de la production. */
-    statut: z.enum(["trame", "brouillon", "publie"]).default("publie"),
+    ...identiteDocument("cadrage"),
+    /* Deux documents de cadrage peuvent partager une page, en onglets : les
+       deux documents de domaine CAFA, choisir le nom puis l'acheter (spec §7).
+       Même mécanique que les versions du devis : `versionDe` porte l'id de la
+       racine, qui garde seule une URL, `version` ordonne les onglets. */
+    version: z.number().int().min(1).default(1),
+    versionDe: z.string().optional(),
     // Prénom du destinataire : ouvre l'accusé de réception, comme au devis.
     contact: z.string().optional(),
     /* Le formulaire vouvoie par défaut, parce qu'il est partagé par tous les
@@ -662,16 +669,7 @@ const temoignage = defineCollection({
     titre: z.string(),
     objet: z.string(),
     date: z.coerce.date(),
-    /* Les trois états d'un document (spec 2026-09-22 §10) :
-       `trame`     coquille créée avec le projet, jamais servie ;
-       `brouillon` texte en cours, pas encore montrable ;
-       `publie`    servi en production, listé dans le portail.
-       Les deux premiers se comportent pareil côté client ; ils se distinguent
-       pour Ludo, qui sait ce qu'il lui reste à écrire.
-
-       Le défaut est `publie` : les 35 documents d'avant ce champ n'en portent
-       pas, et tout autre défaut les retirerait tous de la production. */
-    statut: z.enum(["trame", "brouillon", "publie"]).default("publie"),
+    ...identiteDocument("suivi"),
     contact: z.string().optional(),
     tutoiement: z.boolean().default(false),
     linear: z.object({ projet: z.string().optional(), affaire: z.string().optional() }).optional(),

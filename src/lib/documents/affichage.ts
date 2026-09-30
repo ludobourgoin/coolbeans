@@ -122,3 +122,17 @@ export function perimetreDevis(
     montant: typeof montantRetenu === "number" ? eur.format(montantRetenu) : undefined,
   };
 }
+
+/* La section de formulaire que DocumentReponses masque quand le document est
+   clos. Un cadrage peut porter plusieurs chapitres sur une page, chacun avec
+   son formulaire : le sélecteur vise alors le seul formulaire du slug clos.
+   Les trois autres gabarits n'ont qu'un formulaire par page. */
+const FORMULAIRE = {
+  devis: "[data-devis-reponse]",
+  livrable: "[data-livrable-reponse]",
+  temoignage: "[data-temoignage-formulaire]",
+} as const;
+
+export function selecteurFormulaire(type: "cadrage" | keyof typeof FORMULAIRE, slug: string): string {
+  return type === "cadrage" ? `[data-cadrage-formulaire][data-slug="${slug}"]` : FORMULAIRE[type];
+}

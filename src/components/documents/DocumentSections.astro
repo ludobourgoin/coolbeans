@@ -1,0 +1,95 @@
+---
+/* Nav des sections d'un document, collante, pleine largeur (spec 2026-09-22
+   §5). Reprise de DevisCorps, qui la portait seul, pour les quatre gabarits.
+
+   PIÈGE D'ALIGNEMENT, commis deux fois pendant la conception. La liste porte
+   `w-max` pour déborder et déclencher le défilement latéral. Elle ne peut
+   donc PAS porter `mx-auto`, qui la centrerait au lieu de l'aligner. La
+   colonne de 880 px est portée par le bloc parent, la liste part de son bord
+   gauche. Se vérifie par mesure, pas à l'œil.
+
+   Rien sous deux sections : une nav d'un seul lien ne mène nulle part. */
+import type { SectionNav } from "../../lib/documents/sections";
+
+interface Props {
+  sections: SectionNav[];
+}
+
+const { sections } = Astro.props;
+---
+
+{
+  sections.length > 1 && (
+    <div
+      data-document-sections
+      class="sticky top-0 z-40 border-y border-line bg-surface/95 backdrop-blur-sm print:hidden"
+    >
+      <nav class="container-site overflow-x-auto" aria-label="Sections du document">
+        <div class="mx-auto max-w-[880px]">
+          <ul class="flex w-max gap-6 py-3.5 whitespace-nowrap">
+            {sections.map((s) => (
+              <li>
+                <a
+                  href={`#${s.ancre}`}
+                  data-section-link
+                  aria-current="false"
+                  class="rounded-control px-2 py-1 font-mono text-[12px]/normal font-semibold tracking-wide text-mute uppercase transition-colors duration-150 ease-in-out hover:bg-surface-raise hover:text-ink aria-current:bg-ink aria-current:text-surface"
+                >
+                  {s.titre}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
+    </div>
+  )
+}
+
+<script>
+  /* Deux comportements, sur toutes les barres de la page.
+
+     1. Un lien mène à la section du volet AFFICHÉ. Les volets d'un livrable à
+        deux versions portent les mêmes ancres : le navigateur irait à la
+        première du document, celle du volet masqué, et rien ne bougerait.
+
+     2. Scrollspy : le lien de la section qui passe sous la barre s'allume.
+        Une section d'un volet masqué ne coupe jamais le viewport, elle ne
+        s'allume donc jamais. */
+  const liens = document.querySelectorAll<HTMLAnchorElement>("[data-section-link]");
+  const barres = document.querySelectorAll<HTMLElement>("[data-document-sections]");
+
+  const cible = (id: string) =>
+    document.querySelector<HTMLElement>(`[data-document-volet]:not([hidden]) section[id="${CSS.escape(id)}"]`) ??
+    document.getElementById(id);
+
+  liens.forEach((lien) => {
+    lien.addEventListener("click", (e) => {
+      const id = lien.getAttribute("href")?.slice(1);
+      const section = id ? cible(id) : null;
+      if (!section) return;
+      e.preventDefault();
+      section.scrollIntoView({ behavior: "smooth" });
+      history.replaceState(null, "", `#${id}`);
+    });
+  });
+
+  const activer = (id: string) =>
+    liens.forEach((l) => l.setAttribute("aria-current", l.getAttribute("href") === `#${id}` ? "true" : "false"));
+
+  const hauteurBarre = () => [...barres].find((b) => b.offsetParent !== null)?.offsetHeight ?? 0;
+
+  const sections = document.querySelectorAll<HTMLElement>("section[id]");
+  if (sections.length && liens.length) {
+    const observateur = new IntersectionObserver(
+      (entrees) => {
+        const visibles = entrees.filter((e) => e.isIntersecting);
+        if (!visibles.length) return;
+        const haut = visibles.reduce((a, b) => (a.boundingClientRect.top < b.boundingClientRect.top ? a : b));
+        activer(haut.target.id);
+      },
+      { rootMargin: `-${hauteurBarre()}px 0px -70% 0px`, threshold: 0 },
+    );
+    sections.forEach((s) => observateur.observe(s));
+  }
+</script>

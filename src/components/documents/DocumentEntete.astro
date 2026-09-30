@@ -1,0 +1,93 @@
+---
+/* En-tête commun aux documents client (spec 2026-09-22 §1, COO-235).
+
+   CE QUI EST AU-DESSUS D'UNE BARRE D'ONGLETS IDENTIFIE LA PAGE ET NE CHANGE
+   JAMAIS D'UN ONGLET À L'AUTRE. CE QUI APPARTIENT À UN ONGLET VIT SOUS LA
+   BARRE. La règle vaut pour tout composant à onglets du site. Elle vient du
+   livrable CAFA, relevé par Ludo le 2026-09-22 : titre, objet et date
+   changeaient avec l'onglet, et le lecteur croyait avoir changé de page.
+
+   Au-dessus de la barre : le nom du projet, la frise, les onglets. Sous la
+   barre, dans DocumentVolet : la nav des sections, le titre du document, son
+   objet, sa date, son bouton.
+
+   Le filet de 3 px se colle sous la barre Coolbeans, dans la teinte de
+   l'étape. Il ne flotte pas en tête de page, où il se lirait comme une
+   alerte : cette place est celle d'EnvBanner, rendue par BaseLayout au-dessus
+   de la barre, dans le flux. Les deux ne se superposent donc jamais. */
+import DocumentTopbar from "../devis/DocumentTopbar.astro";
+import DocumentFrise from "./DocumentFrise.astro";
+import { definitionEtape, type Etape } from "../../lib/documents/etapes";
+import type { Pastille } from "../../lib/documents/frise";
+
+interface Props {
+  etape: Etape;
+  /** Le nom du projet Linear, ou le titre du document hors nomenclature. */
+  titre: string;
+  frise: Pastille[];
+  /** Un par volet. Moins de deux : pas de barre d'onglets. */
+  onglets: { libelle: string; slug: string }[];
+  actif: number;
+}
+
+const { etape, titre, frise, onglets, actif } = Astro.props;
+const { teinte } = definitionEtape(etape);
+---
+
+<DocumentTopbar />
+<div aria-hidden="true" class="h-[3px] print:hidden" style={`background:var(--ds-${teinte}-900)`}></div>
+
+<header class="container-site print:hidden">
+  <div class="mx-auto max-w-[880px] pt-14 pb-7">
+    <h1 class="text-[clamp(2rem,4vw,2.75rem)]/[1.08] tracking-[-0.02em]">{titre}</h1>
+
+    <DocumentFrise pastilles={frise} />
+
+    {
+      onglets.length > 1 && (
+        <div class="mt-7 flex flex-wrap gap-2" role="tablist" aria-label="Versions du document">
+          {onglets.map((o, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`onglet-${i}`}
+              aria-controls={`volet-${i}`}
+              aria-selected={i === actif ? "true" : "false"}
+              data-document-onglet={i}
+              data-slug={o.slug}
+              class="cursor-pointer rounded-full px-[13px] py-[5px] text-[13px]/[1.4] font-semibold text-mute transition-colors duration-150 ease-in-out hover:bg-surface-raise hover:text-ink aria-selected:bg-ink aria-selected:text-surface"
+            >
+              {o.libelle}
+            </button>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</header>
+
+<script>
+  /* Bascule des onglets : on change la visibilité, on ne recharge pas. L'état
+     vit dans `aria-selected`, que les utilitaires lisent : aucune classe
+     ajoutée en JavaScript, donc rien que Tailwind puisse purger.
+
+     Un formulaire qui porte `data-suit-onglet` (proposition, livrable) prend
+     le slug de l'onglet affiché, sans quoi une réponse à la V1 arriverait
+     étiquetée V2. Un formulaire posé DANS un volet (cadrage à chapitres)
+     garde le sien. */
+  const onglets = document.querySelectorAll<HTMLButtonElement>("[data-document-onglet]");
+
+  onglets.forEach((bouton) => {
+    bouton.addEventListener("click", () => {
+      const cible = bouton.dataset.documentOnglet;
+      onglets.forEach((b) => b.setAttribute("aria-selected", String(b === bouton)));
+      document.querySelectorAll<HTMLElement>("[data-document-volet]").forEach((volet) => {
+        volet.hidden = volet.dataset.documentVolet !== cible;
+      });
+      document.querySelectorAll<HTMLFormElement>("form[data-suit-onglet]").forEach((form) => {
+        if (bouton.dataset.slug) form.dataset.slug = bouton.dataset.slug;
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+</script>

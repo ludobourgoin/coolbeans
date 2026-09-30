@@ -6,11 +6,13 @@
 titre: Qui parle du salon, et ce qu'il faut leur faire corriger
 objet: J'ai cherché toutes les pages qui annoncent le salon, édition 2026 et édition 2025. Voici où elles sont, ce qu'elles disent, et lesquelles relancer.
 date: 2026-09-18
+projet: salon-533
+etape: production
 contact: Sam
 tutoiement: true
 
 linear:
-  projet: https://linear.app/coolbeans-hq/project/site-du-salon-edition-2026-e6c1e495a56f
+  projet: Site du salon, édition 2026
   affaire: https://linear.app/coolbeans-hq/issue/CRM-46
 
 site:

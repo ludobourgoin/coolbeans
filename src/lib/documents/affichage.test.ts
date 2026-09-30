@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, test, vi } from "vitest";
 
 vi.mock("cloudflare:workers", () => ({ env: {} }));
 
@@ -9,6 +9,7 @@ import {
   afficherReponseDocument,
   dateReponse,
   perimetreDevis,
+  selecteurFormulaire,
 } from "./affichage";
 import type { ReponseDocument } from "./reponses";
 
@@ -142,4 +143,18 @@ describe("perimetreDevis", () => {
     expect(perimetreDevis(data, null, null)).toBeUndefined();
     expect(perimetreDevis(data, "{", null)).toBeUndefined();
   });
+});
+
+test("un cadrage clos ne masque que son propre formulaire", () => {
+  // Deux chapitres sur une page : répondre au premier ne doit pas retirer
+  // le formulaire du second (documents de domaine CAFA, 2026-09-29).
+  expect(selecteurFormulaire("cadrage", "cafa/nom-de-domaine-9042")).toBe(
+    '[data-cadrage-formulaire][data-slug="cafa/nom-de-domaine-9042"]',
+  );
+});
+
+test("les autres documents masquent leur formulaire unique, comme avant", () => {
+  expect(selecteurFormulaire("devis", "x")).toBe("[data-devis-reponse]");
+  expect(selecteurFormulaire("livrable", "x")).toBe("[data-livrable-reponse]");
+  expect(selecteurFormulaire("temoignage", "x")).toBe("[data-temoignage-formulaire]");
 });
