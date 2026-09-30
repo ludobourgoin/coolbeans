@@ -17,6 +17,12 @@ CREATE TABLE analytics_jours (
   PRIMARY KEY (site_tag, jour)
 );
 
+-- `jour` est en deuxième position de la clé primaire, donc `DELETE ... WHERE
+-- jour = ?` (la réécriture nocturne) ne s'en sert pas et parcourt toute la
+-- table. D1 Free compte chaque ligne lue : sans l'index, cette lecture grossit
+-- avec l'historique.
+CREATE INDEX analytics_jours_jour ON analytics_jours (jour);
+
 CREATE TABLE analytics_repartitions (
   site_tag   TEXT NOT NULL,
   jour       TEXT NOT NULL,
@@ -26,6 +32,9 @@ CREATE TABLE analytics_repartitions (
   pages_vues INTEGER NOT NULL,
   PRIMARY KEY (site_tag, jour, dimension, valeur)
 );
+
+-- Même raison que analytics_jours_jour ci-dessus.
+CREATE INDEX analytics_repartitions_jour ON analytics_repartitions (jour);
 
 -- Jours effectivement collectés, tous sites confondus. Distingue un jour sans
 -- trafic (collecté, aucune ligne) d'un jour jamais collecté (absent). C'est

@@ -38,8 +38,20 @@ const pagesDe = async (db: D1Analytics, siteTag: string, du: string, au: string)
 
 describe("store analytics (D1)", () => {
   let db: D1Analytics;
+  let sqlite: ReturnType<typeof d1Sqlite>["sqlite"];
   beforeEach(() => {
-    ({ db } = d1Sqlite());
+    ({ db, sqlite } = d1Sqlite());
+  });
+
+  it("indexe jour sur les deux tables, pour que la réécriture nocturne n'y scanne pas tout", () => {
+    const noms = sqlite
+      .prepare(
+        "SELECT name FROM sqlite_master WHERE type = 'index' AND name IN ('analytics_jours_jour', 'analytics_repartitions_jour')",
+      )
+      .all()
+      .map((r) => (r as { name: string }).name)
+      .sort();
+    expect(noms).toEqual(["analytics_jours_jour", "analytics_repartitions_jour"]);
   });
 
   it("écrit un jour et le relit", async () => {
