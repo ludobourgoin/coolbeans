@@ -1,5 +1,6 @@
 ---
-// Analytics (COO-16, spec 2026-09-29-portail-analytics-design.md §5).
+// Analytics (COO-16, spec 2026-09-29-portail-analytics-design.md §5, Core Web Vitals,
+// COO-302, spec 2026-09-30-portail-core-web-vitals-design.md §5).
 //
 // La fréquentation du site du client, lue dans D1. La page ne parle jamais à
 // Cloudflare : la collecte quotidienne (src/lib/analytics/collecte.ts) s'en
@@ -11,6 +12,7 @@ import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import EmptyState from "../../components/portail/EmptyState.astro";
 import BarresVisites from "../../components/portail/BarresVisites.astro";
 import ClassementAnalytics from "../../components/portail/ClassementAnalytics.astro";
+import VitesseSite from "../../components/portail/VitesseSite.astro";
 import { env } from "cloudflare:workers";
 import { missingKeysFor } from "../../lib/portail/workspaces";
 import { getPortalContext } from "../../lib/portail/context";
@@ -166,6 +168,7 @@ const courant = (actif: boolean) => (actif ? ("page" as const) : undefined);
           <ClassementAnalytics titre="Provenance" lignes={tableau.provenances} vide="Aucune visite sur la période." />
           <ClassementAnalytics titre="Appareils" lignes={tableau.appareils} vide="Aucune visite sur la période." />
         </div>
+        <VitesseSite vitesse={tableau.vitesse} />
         {tableau.estime && <p class="mt-3x text-sm text-mute">Certains jours sont estimés par Cloudflare.</p>}
       </Fragment>
     )
