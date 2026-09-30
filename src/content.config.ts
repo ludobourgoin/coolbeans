@@ -415,6 +415,13 @@ const clients = defineCollection({
     // module : il faut donc un « non » explicite pour l'éteindre.
     messagerie: z.boolean().default(true),
     uptimerobot_monitor_ids: z.array(z.string()).default([]),
+    /* Sites mesurés par Cloudflare Web Analytics (COO-16, spec
+       2026-09-29-portail-analytics-design.md §4). `siteTag` vient de l'API
+       Cloudflare (GET /accounts/<compte>/rum/site_info/list, champ
+       `site_tag`). Vide = page Analytics en empty state. */
+    analytics: z
+      .array(z.object({ host: z.string(), siteTag: z.string().regex(/^[0-9a-f]{32}$/) }))
+      .default([]),
     // Workspace « à moi » (Coolbeans, Spinoza…) : en tête du sélecteur,
     // avant le liseret qui le sépare des workspaces clients.
     perso: z.boolean().default(false),

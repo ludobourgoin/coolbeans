@@ -1,0 +1,42 @@
+---
+// Liste classée de la page Analytics : libellé, valeur, part de la période.
+import type { Classement } from "../../lib/analytics/tableau";
+
+interface Props {
+  titre: string;
+  lignes: Classement[];
+  /** Phrase affichée quand la liste est vide. */
+  vide: string;
+}
+
+const { titre, lignes, vide } = Astro.props;
+const nombre = new Intl.NumberFormat("fr-FR");
+const pourcent = new Intl.NumberFormat("fr-FR", { style: "percent", maximumFractionDigits: 0 });
+const largeur = (l: Classement) => `width: ${Math.round(l.part * 100)}%`;
+---
+
+<section class="rounded-card border border-line bg-surface p-6x">
+  <h2 class="label">{titre}</h2>
+  {lignes.length === 0 && <p class="mt-4x text-sm text-mute">{vide}</p>}
+  {
+    lignes.length > 0 && (
+      <ol class="mt-4x grid gap-3x">
+        {lignes.map((l) => (
+          <li>
+            <div class="flex items-baseline justify-between gap-3x text-sm">
+              <span class="min-w-0 truncate" title={l.libelle}>
+                {l.libelle}
+              </span>
+              <span class="shrink-0 text-mute tabular-nums">
+                {nombre.format(l.valeur)} · {pourcent.format(l.part)}
+              </span>
+            </div>
+            <div class="mt-1 h-1 rounded-full bg-surface-raise" aria-hidden="true">
+              <div class="h-1 rounded-full bg-ink" style={largeur(l)} />
+            </div>
+          </li>
+        ))}
+      </ol>
+    )
+  }
+</section>

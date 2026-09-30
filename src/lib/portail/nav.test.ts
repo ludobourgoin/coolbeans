@@ -141,6 +141,30 @@ describe("buildSidebar · côté admin", () => {
   });
 });
 
+describe("buildSidebar · Analytics", () => {
+  const mesure: PortalWorkspace = {
+    ...avecDoc,
+    analytics: [{ host: "amusoire.fr", siteTag: "0123456789abcdef0123456789abcdef" }],
+  };
+
+  it("montre Analytics au client dont le site est raccordé", () => {
+    const pages = flat(buildSidebar("my.coolbeans.cc", client, mesure, docPages));
+    const analytics = pages.find((p) => p.label === "Analytics");
+    expect(analytics?.section).toBe("site");
+    expect(analytics?.wip).toBe(false);
+  });
+
+  it("la cache au client sans site raccordé", () => {
+    const pages = flat(buildSidebar("my.coolbeans.cc", client, avecDoc, docPages));
+    expect(pages.find((p) => p.label === "Analytics")).toBeUndefined();
+  });
+
+  it("la montre en wip à l'admin quand le site manque", () => {
+    const pages = flat(buildSidebar("my.coolbeans.cc", admin, avecDoc, docPages));
+    expect(pages.find((p) => p.label === "Analytics")?.wip).toBe(true);
+  });
+});
+
 describe("buildSidebar · liens et préfixe d'hôte", () => {
   it("préfixe tous les liens hors doc en dehors de l'hôte portail", () => {
     const pages = flat(buildSidebar("localhost", client, avecDoc, docPages));

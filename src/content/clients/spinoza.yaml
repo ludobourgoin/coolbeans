@@ -17,3 +17,8 @@ linearTeamId: eddfc58b-08e6-457b-9f55-17e0b630efac
 messagerie: false
 # Emoji du sélecteur : la rose, comme la team Spinoza dans Linear.
 emoji: 🌹
+# Sites mesurés par Cloudflare Web Analytics (COO-16). Scolies est le site du
+# projet Spinoza.
+analytics:
+  - host: scolies.fr
+    siteTag: 1172e579f52c48b8b0e28135a61188ad

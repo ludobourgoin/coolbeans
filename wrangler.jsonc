@@ -77,6 +77,10 @@
   // laisse passer que le premier des cinq déclenchements de chaque heure).
   // La faire passer à "*/1" déclencherait cinq synchronisations par heure
   // au lieu d'une.
+  //
+  // La collecte Analytics (COO-16) prend le second passage de 04:00 UTC, pour
+  // ne pas partager l'exécution de la synchronisation Livraisons :
+  // estHeureDeCollecte dans src/lib/analytics/collecte.ts.
   "triggers": { "crons": ["*/5 * * * *"] },
   // `kv_namespaces` n'est PAS hérité par les environnements nommés
   // (contrairement à `triggers`, `assets` et `routes`) : d'où la duplication.
@@ -96,7 +100,11 @@
   // (issues Linear, emails) plutôt que codée en dur. Comme kv_namespaces et
   // les bindings D1/R2 ci-dessus, `vars` n'est PAS hérité par les
   // environnements nommés : duplication obligatoire dans env.staging.
-  "vars": { "PORTAL_BASE_URL": "https://my.coolbeans.cc" },
+  //
+  // CF_ACCOUNT_ID : compte Cloudflare dont la collecte Analytics lit les
+  // mesures (COO-16). Un identifiant, pas un secret : le jeton, lui, est posé
+  // par `wrangler secret put CF_ANALYTICS_TOKEN`.
+  "vars": { "PORTAL_BASE_URL": "https://my.coolbeans.cc", "CF_ACCOUNT_ID": "c973603680fd067768f1849fc1927069" },
   "env": {
     "staging": {
       "workers_dev": false,
@@ -111,7 +119,7 @@
       "r2_buckets": [
         { "binding": "PORTAL_FILES", "bucket_name": "coolbeans-portal-fichiers-staging" }
       ],
-      "vars": { "PORTAL_BASE_URL": "https://my-staging.coolbeans.cc" }
+      "vars": { "PORTAL_BASE_URL": "https://my-staging.coolbeans.cc", "CF_ACCOUNT_ID": "c973603680fd067768f1849fc1927069" }
     }
   }
 }
