@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { d1Sqlite } from "./d1-sqlite.testutil";
 import { collecterAnalytics, estHeureDeCollecte, joursACollecter } from "./collecte";
-import { lireCollectes, lireJours, type D1Analytics } from "./store";
+import { ecrireJour, lireCollectes, lireJours, type D1Analytics } from "./store";
 import type { JourAnalytics, SourceAnalytics } from "./types";
 
 const SITE = "7257179f83b6445d93703f1d1f305a4a";
@@ -68,11 +68,15 @@ describe("collecterAnalytics", () => {
     ({ db } = d1Sqlite());
   });
 
-  it("interroge les sept jours exacts, et seulement eux", async () => {
+  it("interroge les sept jours exacts, du plus ancien au plus récent", async () => {
+    // J-7 en premier : lui seul n'est jamais retenté à un passage suivant, il
+    // doit donc être collecté avant qu'un éventuel plafond de subrequests
+    // n'interrompe la boucle.
     const source = vi.fn<SourceAnalytics>(async (jour) => [mesure(jour)]);
     const r = await collecterAnalytics({ db, source, maintenant: MAINTENANT });
-    expect(source.mock.calls.map(([jour]) => jour)).toEqual(joursACollecter(MAINTENANT));
-    expect(r).toEqual({ collectes: joursACollecter(MAINTENANT), echecs: [] });
+    const ordreAttendu = [...joursACollecter(MAINTENANT)].reverse();
+    expect(source.mock.calls.map(([jour]) => jour)).toEqual(ordreAttendu);
+    expect(r).toEqual({ collectes: ordreAttendu, echecs: [] });
     expect(await lireCollectes(db, ...TOUT)).toEqual([...joursACollecter(MAINTENANT)].sort());
   });
 
@@ -100,5 +104,33 @@ describe("collecterAnalytics", () => {
     await collecterAnalytics({ db, source, maintenant: MAINTENANT });
     await collecterAnalytics({ db, source, maintenant: MAINTENANT });
     expect(await lireJours(db, SITE, ...TOUT)).toHaveLength(7);
+  });
+
+  it("ne réécrit jamais un jour déjà collecté avec une lecture échantillonnée", async () => {
+    const jour = "2026-09-25";
+    await ecrireJour(db, jour, [mesure(jour)], "2026-09-28T04:05:00.000Z");
+    const source: SourceAnalytics = async (j) =>
+      j === jour ? [{ ...mesure(j), visites: 999, echantillon: 10 }] : [mesure(j)];
+    const r = await collecterAnalytics({ db, source, maintenant: MAINTENANT });
+    expect(r.echecs).toEqual([
+      { jour, message: "lecture échantillonnée, chiffres précédents conservés" },
+    ]);
+    expect(r.collectes).not.toContain(jour);
+    // Les chiffres exacts déjà en base n'ont pas bougé.
+    expect(await lireJours(db, SITE, jour, jour)).toEqual([
+      { jour, visites: 1, pagesVues: 2, echantillon: 1 },
+    ]);
+  });
+
+  it("écrit quand même un jour jamais collecté, même si la lecture est échantillonnée", async () => {
+    const jour = "2026-09-25";
+    const source: SourceAnalytics = async (j) =>
+      j === jour ? [{ ...mesure(j), visites: 999, echantillon: 10 }] : [mesure(j)];
+    const r = await collecterAnalytics({ db, source, maintenant: MAINTENANT });
+    expect(r.echecs).toEqual([]);
+    expect(r.collectes).toContain(jour);
+    expect(await lireJours(db, SITE, jour, jour)).toEqual([
+      { jour, visites: 999, pagesVues: 2, echantillon: 10 },
+    ]);
   });
 });

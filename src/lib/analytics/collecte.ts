@@ -5,7 +5,7 @@
 // panne de moins de sept jours. Au-delà, Cloudflare n'a plus que des chiffres
 // estimés, qui écraseraient nos chiffres exacts : on n'y touche jamais.
 
-import { ecrireJour, type D1Analytics } from "./store";
+import { ecrireJour, lireCollectes, type D1Analytics } from "./store";
 import type { SourceAnalytics } from "./types";
 
 /** Jours que Cloudflare garde exacts, donc relus à chaque passage. */
@@ -47,10 +47,24 @@ export async function collecterAnalytics(o: {
   const resultat: ResultatCollecte = { collectes: [], echecs: [] };
   const collecteLe = o.maintenant.toISOString();
   // Un jour après l'autre : un échec reste confiné à son jour, et on ne
-  // sollicite jamais plus d'une connexion D1 à la fois.
-  for (const jour of joursACollecter(o.maintenant)) {
+  // sollicite jamais plus d'une connexion D1 à la fois. Du plus ancien (J-7)
+  // au plus récent (J-1) : J-7 sort de la fenêtre au passage suivant et ne
+  // sera jamais retenté, donc c'est lui qui doit passer en premier si une
+  // interruption coupe la boucle avant la fin.
+  for (const jour of [...joursACollecter(o.maintenant)].reverse()) {
     try {
       const sites = (await o.source(jour)).filter((s) => s.jour === jour);
+      // Une lecture échantillonnée est une estimation. L'écrire sur un jour
+      // encore jamais collecté vaut mieux que rien (elle sera affichée avec
+      // sa note « estimé »). L'écrire sur un jour déjà exact l'écraserait
+      // par une estimation, ce que l'invariant de la collecte interdit.
+      if (sites.some((s) => s.echantillon > 1) && (await lireCollectes(o.db, jour, jour)).length > 0) {
+        resultat.echecs.push({
+          jour,
+          message: "lecture échantillonnée, chiffres précédents conservés",
+        });
+        continue;
+      }
       await ecrireJour(o.db, jour, sites, collecteLe);
       resultat.collectes.push(jour);
     } catch (erreur) {
