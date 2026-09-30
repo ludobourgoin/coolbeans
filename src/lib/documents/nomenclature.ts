@@ -66,3 +66,28 @@ export const FORME_PROJET = /^[a-z0-9]+(?:-[a-z0-9]+)*-\d{3}$/;
 export function clientDuProjet(projet: string): CleClient | undefined {
   return Object.hasOwn(PROJETS, projet) ? PROJETS[projet] : undefined;
 }
+
+/** Les incohérences entre les fiches client du portail et la nomenclature. */
+export function verifierCles(workspaces: readonly { slug: string; cle?: string }[]): string[] {
+  const erreurs: string[] = [];
+  const vues = new Map<string, string>();
+  for (const w of workspaces) {
+    if (!w.cle) continue;
+    if (!Object.hasOwn(CLIENTS, w.cle)) {
+      erreurs.push(`clients/${w.slug} : clé « ${w.cle} » absente de la nomenclature`);
+    }
+    const deja = vues.get(w.cle);
+    if (deja) erreurs.push(`clé « ${w.cle} » portée par deux workspaces (${deja}, ${w.slug})`);
+    else vues.set(w.cle, w.slug);
+  }
+  return erreurs;
+}
+
+/** Le workspace d'un projet : celui qui porte la clé du client du projet. */
+export function workspaceDuProjet<W extends { cle?: string }>(
+  workspaces: readonly W[],
+  projet: string,
+): W | undefined {
+  const cle = clientDuProjet(projet);
+  return cle ? workspaces.find((w) => w.cle === cle) : undefined;
+}

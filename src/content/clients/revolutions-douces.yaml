@@ -1,6 +1,7 @@
 nom: Rév'olutions Douces
 # Revendeur auquel ce client se rattache (spec 2026-08-19 §3.1).
 organisation: coolbeans
+cle: rev
 prenom: Sam
 # Doc client publiee sur my.coolbeans.cc/docs/revolutions-douces
 doc: revolutions-douces

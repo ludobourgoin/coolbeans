@@ -14,6 +14,8 @@ export interface PortalWorkspace {
   nom: string;
   /** Slug du revendeur. `coolbeans` pour un client direct. */
   organisation: string;
+  /** Clé client de la nomenclature des documents. Absente = aucun document du cycle. */
+  cle?: string;
   /** Prénom du contact principal — salutation en vue admin-basculé. */
   prenom?: string;
   /** Slug dans la collection `docs`. Absent = ce client n'a pas de doc. */

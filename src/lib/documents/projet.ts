@@ -18,6 +18,8 @@ export interface DocumentProjet {
   /** `linear.projet`, le titre affiché en h1. */
   titreProjet?: string;
   versionDe?: string;
+  /** Date du document, pour ordonner les projets dans la barre latérale du portail. */
+  date?: Date;
 }
 
 export const cle = (d: Pick<DocumentProjet, "collection" | "id">) => `${d.collection}/${d.id}`;
