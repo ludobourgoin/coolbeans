@@ -39,7 +39,7 @@ champs vérifiés par introspection le 2026-09-30 :
 
 Réponse réelle du 2026-09-29 (extrait) : le salon a 22 mesures LCP sur mobile (19
 bonnes, 3 à améliorer), 4 sur ordinateur, 2 sur tablette. Setencorpsmieux a 19 mesures
-LCP sur mobile, 1 sur ordinateur. Rév'olutions Douces en a 1. Coolbeans et Scolies
+LCP sur mobile, 1 sur ordinateur. Rév'olutions Douces en a 1, sans aucun chargement de page ce jour-là. Coolbeans et Scolies
 n'en ont aucune. Une ligne a `inpTotal` à 0 et des compteurs LCP et CLS remplis.
 
 ## 3. Architecture
@@ -101,8 +101,8 @@ Dans `normaliserJour` :
   reste devient `autre`. Deux groupes qui tombent sur le même appareil se cumulent.
 - Un groupe dont les neuf compteurs valent 0 est écarté.
 - Un site présent dans `vitaux` mais absent de `totaux` reçoit une entrée à 0 visite
-  et 0 page vue. Cas supposé, jamais observé : un beacon de vitaux peut partir après minuit, alors que la page a été
-  chargée la veille : ses mesures ne doivent pas se perdre.
+  et 0 page vue. Observé le 2026-09-29 : Rév'olutions Douces a une mesure de
+  vitaux et aucun chargement de page ce jour-là. Ses mesures ne doivent pas se perdre.
 - `echantillon` du site devient le maximum de celui du trafic et de l'arrondi
   supérieur du `sampleInterval` des vitaux. L'invariant de la collecte (une lecture
   échantillonnée n'écrase jamais un jour déjà collecté) couvre ainsi les vitaux sans
@@ -215,11 +215,11 @@ Trois cartes, dans cet ordre :
 
 Dans chaque carte :
 
-- la note globale en pastille : « Bon » (token `success`), « À améliorer »
-  (`warning`), « Mauvais » (`error`). Le libellé porte le sens, la couleur ne fait
-  que le doubler ;
+- la note globale en pastille, composant `Badge` (`subtle`, taille `sm`) :
+  « Bon » en `green`, « À améliorer » en `amber`, « Mauvais » en `red`.
+  Le libellé porte le sens, la couleur ne fait que le doubler ;
 - avec une note : « 82 % de mesures bonnes sur 140 » ;
-- sans note : pastille neutre « Pas assez de mesures », puis « 12 mesures sur les 20
+- sans note : pastille `gray` « Pas assez de mesures », puis « 12 mesures sur les 20
   nécessaires » ;
 - deux lignes, Mobile et Ordinateur : la note et le nombre de mesures, ou « pas assez
   de mesures (8) » ;
