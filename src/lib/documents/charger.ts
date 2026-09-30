@@ -6,7 +6,7 @@
    relient un workspace à ses documents. */
 import { getCollection } from "astro:content";
 import type { CollectionDocument } from "./etapes";
-import { verifierCles } from "./nomenclature";
+import { verifierCles, verifierLiensLinear } from "./nomenclature";
 import { verifierNomenclature, type DocumentProjet } from "./projet";
 
 const COLLECTIONS: CollectionDocument[] = ["cadrage", "devis", "livrable", "temoignage"];
@@ -30,7 +30,7 @@ export async function chargerDocuments(): Promise<DocumentProjet[]> {
   );
   const documents = parCollection.flat();
   const clients = (await getCollection("clients")).map((e) => ({ slug: e.id, cle: e.data.cle }));
-  const erreurs = [...verifierNomenclature(documents), ...verifierCles(clients)];
+  const erreurs = [...verifierNomenclature(documents), ...verifierCles(clients), ...verifierLiensLinear()];
   if (erreurs.length > 0) {
     throw new Error(`Nomenclature des documents client incohérente :\n- ${erreurs.join("\n- ")}`);
   }
