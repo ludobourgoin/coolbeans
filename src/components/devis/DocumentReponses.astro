@@ -93,7 +93,7 @@ const titre = tutoiement
 
             <div class="mt-10 grid gap-6">
               {affichees.map((a) => (
-                <article class="card grid gap-8">
+                <article class="grid gap-8 rounded-card border border-line bg-surface p-6x" data-carte>
                   <p class="label">
                     {a.canal === "mail" ? "Reçue par mail le" : "Envoyée le"} {a.date}
                     {a.version !== undefined && <> · V{a.version}</>}

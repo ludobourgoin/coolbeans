@@ -25,7 +25,7 @@ const presse = objet ? `Objet : ${objet}\n\n${corps}` : corps;
 >
   <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">{titre}</p>
   <div class="flex max-w-[68ch] flex-col gap-4">
-    <div class="card flex flex-col gap-4 p-5">
+    <div class="flex flex-col gap-4 p-5 rounded-card border border-line bg-surface" data-carte>
       {
         objet && (
           <p class="text-[15px] text-ink">

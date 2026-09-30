@@ -104,10 +104,11 @@ const optionsDe = (q: QuestionCadrage) => [
 
         <form
           data-cadrage-form
-          class="card mt-10 grid gap-9"
+          class="mt-10 grid gap-9 rounded-card border border-line bg-surface p-6x"
           data-slug={slug}
           data-questions={JSON.stringify(descripteurs)}
           data-textes={JSON.stringify({ envoye: t.envoye, perdues: t.perdues })}
+          data-carte
         >
           <p class="text-[13px] text-mute">Les champs marqués d'une étoile sont obligatoires.</p>
 

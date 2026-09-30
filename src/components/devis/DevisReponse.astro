@@ -37,7 +37,13 @@ const { slug, enAttente = false } = Astro.props;
               : "Validez la proposition ou posez vos questions, je reviens vers vous rapidement."
           }
         </p>
-        <form id="devis-form" class="card mt-10 grid gap-6" data-slug={slug} data-suit-onglet>
+        <form
+          id="devis-form"
+          class="mt-10 grid gap-6 rounded-card border border-line bg-surface p-6x"
+          data-slug={slug}
+          data-suit-onglet
+          data-carte
+        >
           {
             enAttente ? (
               <input type="hidden" name="reponse" value="question" />

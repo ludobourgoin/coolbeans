@@ -50,10 +50,11 @@ const t = tutoiement
         <p class="mt-4 max-w-[44ch] leading-[1.6] text-mute">{t.accroche}</p>
         <form
           id="livrable-form"
-          class="card mt-10 grid gap-6"
+          class="mt-10 grid gap-6 rounded-card border border-line bg-surface p-6x"
           data-slug={slug}
           data-suit-onglet
           data-textes={JSON.stringify({ envoye: t.envoye, perdue: t.perdue, manque: t.manque })}
+          data-carte
         >
           <Choicebox
             name="reponse"
