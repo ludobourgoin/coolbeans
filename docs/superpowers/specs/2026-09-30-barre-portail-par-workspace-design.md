@@ -37,7 +37,7 @@ Les projets viennent juste après Bienvenue : les documents du projet en cours 
 - Le workspace Coolbeans se reconnaît à son slug, `coolbeans`.
 - Admin est visible quand le compte est admin et que le workspace courant est Coolbeans. Jamais ailleurs.
 - L'Aide est absente du workspace Coolbeans. Ses pages restent joignables par leur adresse.
-- Seuls les workspaces clients ont des sections de projet (§4.1). Coolbeans, Spinoza et Tielle & Popcorn n'en ont pas : leurs projets Linear sont du travail interne.
+- Seuls les workspaces clients ont des sections de projet (§4.1). Les workspaces perso n'en ont pas.
 - Le revendeur voit ce que voit le client, dans les workspaces de son organisation.
 - Les règles de visibilité page par page ne changent pas : flag `live` ou `wip`, mapping du client, badge admin.
 
@@ -55,7 +55,9 @@ Sans cette bascule, l'admin qui ouvre `/devis` depuis Amusoire verrait le cockpi
 
 La liste des projets d'un workspace vient de la team Linear de sa fiche client (`linearTeamId`).
 
-Un workspace affiche ses projets quand sa fiche porte une clé client (`cle`) et une team Linear (`linearTeamId`). La clé désigne un client à qui Coolbeans vend : sans elle, les projets Linear sont du travail interne. Au 2026-09-30 : amusoire, cafa, fylgo, littlebox, mathilde-chevalier, oide, revolutions-douces, setencorpsmieux, unlockbreath. Coolbeans, Spinoza et Tielle & Popcorn n'ont pas de clé et n'affichent aucun projet.
+Chaque workspace naît avec sa sous-team Linear, dont la fiche garde l'identifiant (`linearTeamId`). Un workspace client affiche les projets de sa sous-team. Un workspace perso (`perso: true` : Coolbeans, Spinoza, Tielle & Popcorn) n'en affiche aucun : ses projets sont du travail interne. La règle suit ce drapeau, posé à la création du workspace. Elle ne code aucune exception pour Coolbeans.
+
+Une fiche client sans sous-team n'affiche aucun projet. Au 2026-09-30, deux fiches sont dans ce cas : dupontdupont et merciyanis.
 
 La requête lit les projets de la team, sans les archivés ni les annulés (statut de type `canceled`). Elle ne lit que quatre champs : identifiant, nom, type de statut, date de mise à jour. Jamais la description, les membres ni les issues : même liste blanche que le filtre client de la spec du portail (§4.5).
 
@@ -137,6 +139,7 @@ La migration s'écrit à l'étape 3, pas avant. Posée plus tôt dans `migration
 Barre (`nav.test.ts`) :
 
 - admin dans Coolbeans : Admin présente, Aide absente, aucune section de projet ;
+- workspace perso (Spinoza) : aucune section de projet, bien que sa sous-team ait des projets ;
 - admin dans Amusoire : Admin absente, Aide présente ;
 - client : Bienvenue, projets, Mon site, Mode d'emploi, Aide, dans cet ordre ;
 - projet sans document : une ligne grise, sans lien.
