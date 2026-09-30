@@ -129,7 +129,7 @@ Mise au format :
 - `refererHost` vide devient la valeur `""`, affichée « Accès direct » par la page.
 - Une provenance égale au host du site lui-même a 0 visite (navigation interne) :
   les lignes à 0 visite sont écartées.
-- `deviceType` vide devient `"autre"`.
+- `deviceType` hors `mobile`, `desktop`, `tablet` (vide, `smarttv`, ou tout autre type) devient `"autre"`.
 
 ### 3.2 Collecte
 
@@ -139,14 +139,17 @@ Mise au format :
   séparer tient chacune loin du plafond de 50 appels par exécution.
 - Sans `CF_ANALYTICS_TOKEN` ou `CF_ACCOUNT_ID`, la tâche se saute et trace
   `{ event: "analytics_collecte", status: "skipped_missing_secrets" }`.
-- Jours relus à chaque passage : J-1 à J-7 (UTC). Soit 7 requêtes, 7 des
-  50 subrequests du plan gratuit.
+- Jours relus à chaque passage : J-1 à J-7 (UTC), du plus ancien au plus récent,
+  parce que J-7 n'est jamais retenté au passage suivant. Soit 7 requêtes, 7 des
+  50 subrequests du plan gratuit, chacune avec un délai d'abandon de 10 secondes.
 - **Invariant : aucun jour antérieur à J-7 n'est jamais écrit.** Au-delà, l'API ne
   rend plus que de l'estimé, qui écraserait l'exact.
 - Chaque jour est indépendant : un échec est tracé
   (`status: "error"`, jour, message) et n'empêche pas les autres.
 - Réécrire un jour déjà collecté est sans effet de bord : les mesures arrivées en
   retard s'ajoutent, et une panne de moins d'une semaine se rattrape seule.
+  Exception : une lecture échantillonnée (`echantillon > 1`) n'écrase jamais un
+  jour déjà collecté, elle s'écrit seulement sur un jour encore jamais collecté.
 - Premier passage : les 7 jours exacts disponibles. Aucun historique estimé.
 
 ### 3.3 Schéma D1, migration `0011_analytics.sql`
@@ -161,6 +164,10 @@ CREATE TABLE analytics_jours (
   PRIMARY KEY (site_tag, jour)
 );
 
+-- La réécriture nocturne supprime par jour : sans cet index, chaque suppression
+-- scanne toute la table, et D1 Free facture chaque ligne lue.
+CREATE INDEX analytics_jours_jour ON analytics_jours (jour);
+
 CREATE TABLE analytics_repartitions (
   site_tag   TEXT NOT NULL,
   jour       TEXT NOT NULL,
@@ -171,11 +178,22 @@ CREATE TABLE analytics_repartitions (
   PRIMARY KEY (site_tag, jour, dimension, valeur)
 );
 
+CREATE INDEX analytics_repartitions_jour ON analytics_repartitions (jour);
+
 CREATE TABLE analytics_collectes (
   jour       TEXT PRIMARY KEY,
   collecte_le TEXT NOT NULL
 );
 ```
+
+Par site et par dimension (page, provenance, appareil), l'adaptateur ne garde que
+les 100 lignes les plus vues avant l'écriture : la page n'affiche que le top 10,
+ce plafond ne fait que borner les lignes écrites si un site se fait inonder de
+trafic de robots.
+
+`echantillon` stocke l'arrondi supérieur de la moyenne que rend l'API
+(`avg.sampleInterval`) : une valeur fractionnaire comme 1,5 devient 2, pour ne
+jamais faire passer un jour partiellement estimé pour exact.
 
 Écriture d'un jour, en un seul `db.batch` :
 
@@ -249,7 +267,10 @@ J-30 à J-1, `6m` couvre J-182 à J-1. La page n'affiche que les jours présents
 4. Deux chiffres clés sur la période : Visites, Pages vues.
 5. Graphique en barres des visites, SVG rendu côté serveur, sans JavaScript :
    une barre par jour en `30j`, une par semaine (lundi) en `6m`. Un jour collecté
-   sans trafic vaut 0. Un jour jamais collecté n'a pas de barre.
+   sans trafic vaut 0. Un jour jamais collecté n'a pas de barre. En `6m`, une
+   semaine à moins de 7 jours collectés (partielle) se dessine plus claire, et
+   une légende « Barre claire : semaine incomplète. » apparaît sous le graphique
+   dès qu'au moins une barre l'est.
 6. Trois listes :
    - Pages les plus vues : 10 premières par pages vues ;
    - Provenance : 10 premières par visites, `""` affiché « Accès direct » ;
@@ -274,10 +295,11 @@ tokens de `global.css`). Le graphique suit le skill `dataviz`.
 ## 6. Configuration
 
 - Secret `CF_ANALYTICS_TOKEN` : jeton API Cloudflare, permission « Account Analytics :
-  Read » sur le compte Coolbeans. En prod et en staging.
+  Read » sur le compte Coolbeans. En prod et en staging. Déclaré dans
+  `src/worker-env.d.ts`, comme tout secret : `wrangler types` ne le voit pas.
 - Variable `CF_ACCOUNT_ID` dans `vars`, dupliquée dans `env.staging` (les `vars` ne
-  sont pas héritées).
-- Les deux déclarés dans `src/worker-env.d.ts`.
+  sont pas héritées). Publique, elle est typée par `wrangler types` : pas de
+  déclaration dans `src/worker-env.d.ts`, réservé aux secrets.
 
 ## 7. Tests (vitest)
 
@@ -306,8 +328,8 @@ tokens de `global.css`). Le graphique suit le skill `dataviz`.
 Aucune publication en production sans ordre de Ludo.
 
 1. Créer le jeton API et poser le secret en staging et en prod.
-2. Appliquer `0011_analytics.sql` à la base prod au push sur `staging` (une seule
-   session à la fois).
+2. Appliquer `0011_analytics.sql` à `coolbeans-portal` et à `coolbeans-portal-staging`
+   au push sur `staging` (une seule session à la fois).
 3. Le lendemain matin, vérifier que `analytics_collectes` contient 7 jours.
 
 ## 10. Risques connus
