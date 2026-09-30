@@ -83,7 +83,7 @@ describe("construireTableau", () => {
     { dimension: "appareil", valeur: "mobile", visites: 6, pagesVues: 9 },
     { dimension: "appareil", valeur: "desktop", visites: 2, pagesVues: 3 },
   ];
-  const base = { periode: "30j" as const, jours, repartitions, collectes };
+  const base = { periode: "30j" as const, jours, repartitions, collectes, vitaux: [] };
 
   it("totalise la période", () => {
     const t = construireTableau(base);
@@ -117,6 +117,7 @@ describe("construireTableau", () => {
       jours: [],
       repartitions: [],
       collectes: [...semaineComplete, ...semainePartielle],
+      vitaux: [],
     });
     expect(t.barres).toEqual([
       { debut: "2026-09-14", visites: 0, pagesVues: 0, partielle: false },
@@ -160,10 +161,33 @@ describe("construireTableau", () => {
   });
 
   it("ne divise jamais par zéro", () => {
-    const t = construireTableau({ periode: "30j", jours: [], repartitions: [], collectes: ["2026-09-28"] });
+    const t = construireTableau({
+      periode: "30j",
+      jours: [],
+      repartitions: [],
+      collectes: ["2026-09-28"],
+      vitaux: [],
+    });
     expect(t.visites).toBe(0);
     expect(t.pages).toEqual([]);
     expect(t.barres).toEqual([{ debut: "2026-09-28", visites: 0, pagesVues: 0, partielle: false }]);
+  });
+
+  it("note la vitesse sur la période, null sans aucune mesure", () => {
+    expect(construireTableau(base).vitesse).toBeNull();
+    const vitaux = [
+      {
+        appareil: "mobile" as const,
+        lcp: { bon: 20, moyen: 0, mauvais: 0 },
+        inp: { bon: 0, moyen: 0, mauvais: 0 },
+        cls: { bon: 0, moyen: 0, mauvais: 0 },
+      },
+    ];
+    expect(construireTableau({ ...base, vitaux }).vitesse?.lcp.global).toEqual({
+      note: "bon",
+      mesures: 20,
+      partBonne: 1,
+    });
   });
 });
 
@@ -177,6 +201,7 @@ describe("chargerTableau", () => {
     pages: [{ valeur: "/", visites: 2, pagesVues: 3 }],
     provenances: [],
     appareils: [],
+    vitaux: [],
   });
 
   it("rend un tableau nul tant qu'aucun jour n'est collecté", async () => {
@@ -216,6 +241,40 @@ describe("chargerTableau", () => {
       chargerTableau(db, { siteTag: SITE, periode: "30j", maintenant: MAINTENANT }),
     ).resolves.toEqual({ ok: false });
     expect(espion).toHaveBeenCalledOnce();
+    espion.mockRestore();
+  });
+
+  it("note les vitaux du seul site demandé", async () => {
+    const { db } = d1Sqlite();
+    const vitaux = (lcpBon: number, lcpMauvais: number) => [
+      {
+        appareil: "mobile" as const,
+        lcp: { bon: lcpBon, moyen: 0, mauvais: lcpMauvais },
+        inp: { bon: 0, moyen: 0, mauvais: 0 },
+        cls: { bon: 0, moyen: 0, mauvais: 0 },
+      },
+    ];
+    await ecrireJour(
+      db,
+      "2026-09-28",
+      [
+        { ...mesure(SITE, "2026-09-28"), vitaux: vitaux(20, 0) },
+        { ...mesure(AUTRE, "2026-09-28"), vitaux: vitaux(0, 50) },
+      ],
+      "2026-09-29T04:05:00.000Z",
+    );
+    const r = await chargerTableau(db, { siteTag: SITE, periode: "30j", maintenant: MAINTENANT });
+    if (!r.ok) throw new Error("chargement en échec");
+    expect(r.tableau?.vitesse?.lcp.global).toEqual({ note: "bon", mesures: 20, partBonne: 1 });
+  });
+
+  it("sans la table analytics_vitaux, la page passe en « indisponible » sans lever", async () => {
+    // Le code publié avant la migration 0012 : la mise en service doit l'appliquer d'abord.
+    const { db } = d1Sqlite(["0011_analytics.sql"]);
+    const espion = vi.spyOn(console, "error").mockImplementation(() => {});
+    await expect(
+      chargerTableau(db, { siteTag: SITE, periode: "30j", maintenant: MAINTENANT }),
+    ).resolves.toEqual({ ok: false });
     espion.mockRestore();
   });
 });
