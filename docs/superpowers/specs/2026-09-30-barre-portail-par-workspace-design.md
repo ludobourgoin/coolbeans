@@ -29,15 +29,15 @@ Les sections de projet du sous-projet 1 naissent des documents : un projet Line
 
 | Workspace | Sections, dans l'ordre |
 |---|---|
-| Client, direct ou chez un revendeur | Bienvenue, une section par projet, Mon site, Mode d'emploi, Aide |
-| Coolbeans | Bienvenue, Mon site, Mode d'emploi, Admin |
+| Client, direct ou chez un revendeur, et autres workspaces perso | Bienvenue, une section par projet, Mon site, Mode d'emploi, Aide |
+| Coolbeans | Bienvenue, une section par projet, Mon site, Mode d'emploi, Admin |
 
 Les projets viennent juste après Bienvenue : les documents du projet en cours sont ce que le client vient chercher.
 
 - Le workspace Coolbeans se reconnaît à son slug, `coolbeans`.
 - Admin est visible quand le compte est admin et que le workspace courant est Coolbeans. Jamais ailleurs.
 - L'Aide est absente du workspace Coolbeans. Ses pages restent joignables par leur adresse.
-- Seuls les workspaces clients ont des sections de projet (§4.1). Les workspaces perso n'en ont pas.
+- Tous les workspaces ont leurs sections de projet, Coolbeans et les workspaces perso compris (§4.1).
 - Le revendeur voit ce que voit le client, dans les workspaces de son organisation.
 - Les règles de visibilité page par page ne changent pas : flag `live` ou `wip`, mapping du client, badge admin.
 
@@ -55,7 +55,7 @@ Sans cette bascule, l'admin qui ouvre `/devis` depuis Amusoire verrait le cockpi
 
 La liste des projets d'un workspace vient de la team Linear de sa fiche client (`linearTeamId`).
 
-Chaque workspace naît avec sa sous-team Linear, dont la fiche garde l'identifiant (`linearTeamId`). Un workspace client affiche les projets de sa sous-team. Un workspace perso (`perso: true` : Coolbeans, Spinoza, Tielle & Popcorn) n'en affiche aucun : ses projets sont du travail interne. La règle suit ce drapeau, posé à la création du workspace. Elle ne code aucune exception pour Coolbeans.
+Chaque workspace naît avec sa sous-team Linear, dont la fiche garde l'identifiant (`linearTeamId`). Chaque workspace affiche les projets de sa sous-team, sans exception : clients, Coolbeans, Spinoza, Tielle & Popcorn. Au 2026-09-30, Coolbeans en affiche huit, Tielle & Popcorn deux, Spinoza un.
 
 Une fiche client sans sous-team n'affiche aucun projet. Au 2026-09-30, deux fiches sont dans ce cas : dupontdupont et merciyanis.
 
@@ -138,8 +138,8 @@ La migration s'écrit à l'étape 3, pas avant. Posée plus tôt dans `migration
 
 Barre (`nav.test.ts`) :
 
-- admin dans Coolbeans : Admin présente, Aide absente, aucune section de projet ;
-- workspace perso (Spinoza) : aucune section de projet, bien que sa sous-team ait des projets ;
+- admin dans Coolbeans : Admin présente, Aide absente, sections des projets de la team COO ;
+- workspace perso (Spinoza) : sections des projets de sa sous-team ;
 - admin dans Amusoire : Admin absente, Aide présente ;
 - client : Bienvenue, projets, Mon site, Mode d'emploi, Aide, dans cet ordre ;
 - projet sans document : une ligne grise, sans lien.
