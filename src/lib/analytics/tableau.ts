@@ -170,7 +170,8 @@ export async function chargerTableau(
           ? null
           : construireTableau({ periode: o.periode, jours, repartitions, collectes }),
     };
-  } catch {
+  } catch (erreur) {
+    console.error("analytics/tableau: chargement impossible", erreur);
     return { ok: false };
   }
 }

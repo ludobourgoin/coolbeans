@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { d1Sqlite } from "./d1-sqlite.testutil";
 import { ecrireJour, type LigneJour, type LigneRepartition } from "./store";
 import {
@@ -191,11 +191,14 @@ describe("chargerTableau", () => {
     expect(r.tableau?.pages).toEqual([]);
   });
 
-  it("rend ok: false quand D1 échoue, sans lever", async () => {
+  it("rend ok: false quand D1 échoue, sans lever, et journalise l'échec", async () => {
     // Aucune migration : les tables n'existent pas.
     const { db } = d1Sqlite([]);
+    const espion = vi.spyOn(console, "error").mockImplementation(() => {});
     await expect(
       chargerTableau(db, { siteTag: SITE, periode: "30j", maintenant: MAINTENANT }),
     ).resolves.toEqual({ ok: false });
+    expect(espion).toHaveBeenCalledOnce();
+    espion.mockRestore();
   });
 });
