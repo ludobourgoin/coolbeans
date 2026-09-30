@@ -1,0 +1,89 @@
+---
+// Graphique des visites de la page Analytics (spec 2026-09-29-portail-analytics-design.md §5).
+//
+// SVG rendu côté serveur, sans JavaScript. Une barre par jour sur 30 jours,
+// par semaine (du lundi) sur 6 mois. Un jour collecté sans visite garde sa
+// place à hauteur nulle : le creux se voit. Les dates sont en HTML sous le
+// SVG, pour garder une taille de texte lisible quelle que soit la largeur.
+import type { Barre, Periode } from "../../lib/analytics/tableau";
+
+interface Props {
+  barres: Barre[];
+  periode: Periode;
+}
+
+const { barres, periode } = Astro.props;
+
+const LARGEUR = 600;
+const HAUTEUR = 140;
+// `maxReel` sert à l'affichage (0 si toutes les barres sont nulles). `max`
+// sert à l'échelle du dessin : un diviseur nul ferait planter le calcul de
+// hauteur, il reste donc toujours au moins 1. Les deux ne doivent jamais se
+// confondre dans un texte visible.
+const maxReel = barres.length === 0 ? 0 : Math.max(...barres.map((b) => b.visites));
+const max = Math.max(1, maxReel);
+const pas = LARGEUR / Math.max(1, barres.length);
+const largeurBarre = Math.max(2, pas * 0.7);
+const court = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", timeZone: "UTC" });
+const date = (jour: string) => court.format(new Date(`${jour}T00:00:00Z`));
+const unite = periode === "6m" ? "par semaine" : "par jour";
+const libelle = (b: Barre) =>
+  `${periode === "6m" ? "Semaine du " : ""}${date(b.debut)}, ${b.visites} visite${b.visites > 1 ? "s" : ""}${b.partielle ? " (semaine incomplète)" : ""}`;
+const hauteur = (b: Barre) => (b.visites === 0 ? 0 : Math.max(2, (b.visites / max) * (HAUTEUR - 1)));
+const premiere = barres[0];
+const derniere = barres.at(-1);
+const resume =
+  premiere && derniere
+    ? `Visites ${unite}, du ${date(premiere.debut)} au ${date(derniere.debut)}, maximum ${maxReel}`
+    : `Visites ${unite}`;
+const uneSemainePartielle = barres.some((b) => b.partielle);
+---
+
+<figure class="mt-6x rounded-card border border-line bg-surface p-6x">
+  <figcaption class="flex items-baseline justify-between gap-3x">
+    <span class="label">Visites {unite}</span>
+    <span class="text-xs text-mute tabular-nums">max. {maxReel}</span>
+  </figcaption>
+  <svg
+    viewBox={`0 0 ${LARGEUR} ${HAUTEUR}`}
+    preserveAspectRatio="none"
+    class="mt-4x block h-35 w-full text-ink"
+    role="img"
+    aria-label={resume}
+  >
+    {
+      barres.map((b, i) => (
+        <rect
+          x={i * pas + (pas - largeurBarre) / 2}
+          y={HAUTEUR - 1 - hauteur(b)}
+          width={largeurBarre}
+          height={hauteur(b)}
+          fill="currentColor"
+          fill-opacity={b.partielle ? "0.35" : "1"}
+        >
+          <title>{libelle(b)}</title>
+        </rect>
+      ))
+    }
+    <line
+      x1="0"
+      x2={LARGEUR}
+      y1={HAUTEUR - 0.5}
+      y2={HAUTEUR - 0.5}
+      stroke="var(--line-strong)"
+      stroke-width="1"
+      vector-effect="non-scaling-stroke"
+    />
+  </svg>
+  {
+    premiere && derniere && (
+      <div class="mt-2x flex justify-between text-xs text-mute tabular-nums">
+        <span>{date(premiere.debut)}</span>
+        <span>{date(derniere.debut)}</span>
+      </div>
+    )
+  }
+  {
+    uneSemainePartielle && <p class="mt-1x text-xs text-mute">Barre claire&nbsp;: semaine incomplète.</p>
+  }
+</figure>

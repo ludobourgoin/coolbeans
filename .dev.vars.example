@@ -40,3 +40,8 @@ BETTER_AUTH_SECRET=
 GOOGLE_SA_EMAIL=
 GOOGLE_SA_PRIVATE_KEY=
 GOOGLE_CALENDAR_LIVRAISONS_ID=
+
+# Jeton API Cloudflare, permission « Account Analytics : Read » sur le compte
+# Coolbeans : collecte Analytics du cron (COO-16). Vide en local : la collecte
+# se saute.
+CF_ANALYTICS_TOKEN=

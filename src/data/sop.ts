@@ -285,6 +285,7 @@ export const etapes: Etape[] = [
       "Rédiger le YAML : sections, budget, planning, notes.",
       "Vérifier que l'échéancier figure ligne par ligne avec ses dates.",
       "Vérifier que le bloc d'acceptation des CGV est présent.",
+      "Première proposition à une agence qui revend la prestation : poser par écrit que sa marge sur le prix Coolbeans ne dépasse pas 20 %.",
       "Publier et envoyer le lien.",
     ],
     sortie: "Le client a reçu le lien de la proposition commerciale.",
@@ -529,13 +530,13 @@ export const etapes: Etape[] = [
     faire: [
       "Faire le point de clôture.",
       "Lister les bugs traités pendant la garantie.",
-      "Proposer le care plan : 65 €/h au lieu de 90 €/h.",
+      "Proposer le care plan sous forme de pack d'heures : 10 h, 20 h ou 40 h, de 70 à 60 € HT de l'heure.",
     ],
     sortie: "Garantie close, care plan proposé.",
     echeance:
       "« J+30 : clôture de la garantie et proposition du care plan », du projet client, datée dès la livraison.",
     suivants: [{ vers: "S18", si: "la garantie est close" }],
-    note: "Le contenu exact de l'offre de care plan n'est pas arrêté. Le SOP décrit le moment et l'intention ; la définition des formules est un chantier séparé.",
+    note: "Depuis le 2026-09-30, le care plan est un pack d'heures au tarif unique (COO-237). La maintenance n'a plus de grille à part : design, développement et maintenance se décomptent sur les mêmes heures.",
   },
   {
     id: "S18",

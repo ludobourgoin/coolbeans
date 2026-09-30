@@ -1,0 +1,132 @@
+---
+// Core Web Vitals de la page Analytics (spec 2026-09-30-portail-core-web-vitals-design.md §5).
+//
+// Trois cartes, une par métrique notée par Google. La note vient des
+// compteurs de la période (src/lib/analytics/vitaux.ts), jamais d'un
+// percentile. Sous MESURES_MIN mesures, la carte le dit au lieu de noter.
+import Badge from "../ui/Badge.astro";
+import { MESURES_MIN, type Evaluation, type Note, type Vitesse } from "../../lib/analytics/vitaux";
+import type { Metrique } from "../../lib/analytics/types";
+
+interface Props {
+  /** null : aucune mesure sur la période. */
+  vitesse: Vitesse | null;
+}
+
+const { vitesse } = Astro.props;
+
+const CARTES: Array<{
+  metrique: Metrique;
+  titre: string;
+  sigle: string;
+  description: string;
+  bon: string;
+  mauvais: string;
+}> = [
+  {
+    metrique: "lcp",
+    titre: "Affichage",
+    sigle: "LCP",
+    description: "Temps pour afficher le contenu principal.",
+    bon: "2,5\u00A0s",
+    mauvais: "4\u00A0s",
+  },
+  {
+    metrique: "inp",
+    titre: "Réactivité",
+    sigle: "INP",
+    description: "Délai de réaction à un clic ou une touche.",
+    bon: "200\u00A0ms",
+    mauvais: "500\u00A0ms",
+  },
+  {
+    metrique: "cls",
+    titre: "Stabilité",
+    sigle: "CLS",
+    description: "Mouvements inattendus du contenu à l'écran.",
+    bon: "0,1",
+    mauvais: "0,25",
+  },
+];
+
+// Le libellé porte le sens, la couleur ne fait que le doubler.
+const NOTES: Record<Note, { libelle: string; variante: "green" | "amber" | "red" }> = {
+  bon: { libelle: "Bon", variante: "green" },
+  moyen: { libelle: "À\u00A0améliorer", variante: "amber" },
+  mauvais: { libelle: "Mauvais", variante: "red" },
+};
+
+const nombre = new Intl.NumberFormat("fr-FR");
+// Arrondi vers le bas : 74,6 % ne doit jamais s'afficher « 75 % » à côté
+// de « À améliorer », puisque « Bon » commence à 75 % exactement.
+const pourcent = new Intl.NumberFormat("fr-FR", {
+  style: "percent",
+  maximumFractionDigits: 0,
+  roundingMode: "floor",
+});
+const mesures = (n: number) => `${nombre.format(n)}\u00A0mesure${n > 1 ? "s" : ""}`;
+const resume = (e: Evaluation) =>
+  e.note
+    ? `${pourcent.format(e.partBonne)} de mesures bonnes sur ${nombre.format(e.mesures)}`
+    : e.mesures === 0
+      ? "Aucune mesure sur la période"
+      : `${mesures(e.mesures)} sur les ${MESURES_MIN} nécessaires`;
+/**
+ * Ligne Mobile ou Ordinateur : la note et son nombre de mesures, ou le
+ * manque. Espace insécable avant « · » : c'est le seul point de coupure
+ * autorisé d'une valeur notée, jamais entre la note et le point.
+ */
+const detail = (e: Evaluation) =>
+  e.note
+    ? `${NOTES[e.note].libelle}\u00A0· ${mesures(e.mesures)}`
+    : e.mesures === 0
+      ? "aucune mesure"
+      : `pas assez de mesures (${nombre.format(e.mesures)})`;
+---
+
+<section class="mt-6x">
+  <h2 class="label">Vitesse du site</h2>
+  <p class="mt-1 text-sm text-mute">Mesurée chez vos visiteurs, selon les critères de Google.</p>
+  {!vitesse && <p class="mt-4x text-sm text-mute">Aucune mesure de vitesse sur la période.</p>}
+  {
+    vitesse && (
+      <div class="mt-4x grid gap-6x md:grid-cols-3">
+        {CARTES.map((carte) => {
+          const { global, mobile, ordinateur } = vitesse[carte.metrique];
+          return (
+            <div class="rounded-card border border-line bg-surface p-6x">
+              <div class="flex items-baseline justify-between gap-3x">
+                <h3 class="label">{carte.titre}</h3>
+                <span class="text-xs text-mute">{carte.sigle}</span>
+              </div>
+              <p class="mt-1 text-sm text-mute">{carte.description}</p>
+              <p class="mt-4x">
+                {global.note ? (
+                  <Badge size="sm" subtle variant={NOTES[global.note].variante}>
+                    {NOTES[global.note].libelle}
+                  </Badge>
+                ) : (
+                  <Badge size="sm" subtle variant="gray">
+                    Pas assez de mesures
+                  </Badge>
+                )}
+              </p>
+              <p class="mt-2x text-sm tabular-nums">{resume(global)}</p>
+              <dl class="mt-4x grid gap-1 text-sm">
+                <div class="flex flex-wrap items-baseline justify-between gap-x-3x gap-y-1">
+                  <dt class="text-mute">Mobile</dt>
+                  <dd class="ml-auto min-w-0 text-right tabular-nums">{detail(mobile)}</dd>
+                </div>
+                <div class="flex flex-wrap items-baseline justify-between gap-x-3x gap-y-1">
+                  <dt class="text-mute">Ordinateur</dt>
+                  <dd class="ml-auto min-w-0 text-right tabular-nums">{detail(ordinateur)}</dd>
+                </div>
+              </dl>
+              <p class="mt-4x text-xs text-mute">Bon sous <span class="whitespace-nowrap">{carte.bon}</span>, mauvais <span class="whitespace-nowrap">au-delà de {carte.mauvais}</span>.</p>
+            </div>
+          );
+        })}
+      </div>
+    )
+  }
+</section>

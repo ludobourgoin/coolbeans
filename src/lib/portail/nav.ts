@@ -115,18 +115,6 @@ const SECTIONS: SectionDef[] = [
     icon: "home",
     pages: [
       { label: "Introduction", path: "/", flag: "live" },
-      // Demandes, ex-Messagerie (spec 2026-08-15-messagerie-portail-design.md
-      // §2) : remplace l'ancien Support, remonte juste sous l'accueil.
-      // Renommée le 2026-09-29, parce que c'est une boîte de tickets et rien
-      // d'autre : les mails avec le client restent dans Gmail. La clé de
-      // mapping client reste `support` (MODULE_REQUIREMENTS, EmptyState), et
-      // le code garde le nom `messagerie` : seul ce que lit le client change.
-      {
-        label: "Demandes",
-        path: "/demandes",
-        flag: "live",
-        configured: (c) => !moduleCoupe("support", c) && missingKeysFor("support", c).length === 0,
-      },
       { label: "Liens utiles", path: "/liens", flag: "wip" }, // COO-81
     ],
   },
@@ -143,7 +131,12 @@ const SECTIONS: SectionDef[] = [
         dot: true,
       },
       { label: "SEO", path: "/seo", flag: "wip" }, // COO-55
-      { label: "Analytics", path: "/analytics", flag: "wip" }, // COO-16
+      {
+        label: "Analytics",
+        path: "/analytics",
+        flag: "live", // COO-16
+        configured: (c) => missingKeysFor("analytics", c).length === 0,
+      },
     ],
   },
   // La section Documentation est construite à part : ses pages viennent de la
@@ -163,6 +156,19 @@ const SECTIONS: SectionDef[] = [
     label: "Aide",
     icon: "help",
     pages: [
+      // Demandes, ex-Messagerie (spec 2026-08-15-messagerie-portail-design.md
+      // §2) : remplace l'ancien Support. Placée sous l'accueil jusqu'au
+      // 2026-09-30, puis en tête de la section Aide, sur décision de Ludo.
+      // Renommée le 2026-09-29, parce que c'est une boîte de tickets et rien
+      // d'autre : les mails avec le client restent dans Gmail. La clé de
+      // mapping client reste `support` (MODULE_REQUIREMENTS, EmptyState), et
+      // le code garde le nom `messagerie` : seul ce que lit le client change.
+      {
+        label: "Demandes",
+        path: "/demandes",
+        flag: "live",
+        configured: (c) => !moduleCoupe("support", c) && missingKeysFor("support", c).length === 0,
+      },
       { label: "Ressources", path: "/ressources", flag: "live" },
       { label: "Disponibilités", path: "/disponibilites", flag: "live" }, // COO-11
     ],

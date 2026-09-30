@@ -1,7 +1,9 @@
-# Icônes de la boîte à outils (`/tools`)
+# Icônes de la boîte à outils (`/tools`) et des Ressources (`/espace/ressources`)
 
-Une icône par outil de `src/data/tools.ts`, **rapatriée en local** — aucune requête
-réseau au runtime, et aucune dépendance à un service de favicons tiers.
+Une icône par outil de `src/data/tools.ts` et par ressource de `src/data/ressources.ts`,
+**rapatriée en local** : aucune requête réseau au runtime, aucune dépendance à un
+service de favicons tiers. Les deux pages partagent le dossier : `zapier.png`,
+`make.png` et `webflow.png` servent aux deux.
 
 ## La règle
 
@@ -46,6 +48,26 @@ Autres points à savoir :
 - **Une icône pour plusieurs cartes, c'est normal** : `cloudflare.png` sert aux trois
   produits Cloudflare, `apple.png` au macbook / iphone / airpods, `dell.png` aux trois
   écrans et à la webcam. Ce sont les mêmes marques.
+
+## Cas particuliers des Ressources
+
+Rapatriées le 2026-09-30. Même règle, avec ces écarts :
+
+| Ressource | Pourquoi | À la place |
+|---|---|---|
+| iloveimg | les favicons déclarés sont le cœur **rouge** d'iLovePDF, en 16 px | `iloveimg.svg` : le cœur bleu extrait du logo officiel `iloveimg.com/img/iloveimg.svg` |
+| lets-enhance | favicon plafonné à 32×32, le manifest pointe vers des fichiers en 404 | `lets-enhance.svg` : le logo du header, recadré sur le picto (viewBox 24×24) |
+| search-console | favicon 32×32 ; le service Google renvoie le « G » de google.com | `gstatic.com/images/branding/product/2x/search_console_96dp.png` (192 px) |
+| pagespeed-insights | favicon plafonné à 48×48 | gardé tel quel : l'icône produit en haute définition est l'ancienne, grise |
+
+- **`pexels.png`, `flaticon.png`, `microsoft-clarity.png`** viennent du service de
+  favicons Google (128 px) : Pexels et Flaticon répondent `403` à tout
+  téléchargement direct, Clarity ne déclare qu'un `.ico` 16 px.
+- **`flaticon.png`** : la page de blocage de `flaticon.com` sert désormais un favicon
+  « Magnific ». Le service Google garde le « F » turquoise de Flaticon, retenu parce
+  qu'il correspond au nom affiché sur la carte. À revoir si la marque change.
+- **`weglot.png`** : converti depuis le JPG 256 px déclaré en `apple-touch-icon`.
+- **`webflow.png`** sert à deux cartes : Webflow University et Support Webflow.
 
 ## Ne pas confondre avec `../logos/`
 
