@@ -16,11 +16,13 @@ export async function graphql<T>(
   apiKey: string,
   query: string,
   variables: Record<string, unknown>,
+  signal?: AbortSignal,
 ): Promise<T> {
   const res = await fetch(LINEAR_GRAPHQL, {
     method: "POST",
     headers: { "content-type": "application/json", authorization: apiKey },
     body: JSON.stringify({ query, variables }),
+    signal,
   });
   if (!res.ok) throw new Error(`Linear ${res.status}`);
   const payload = (await res.json()) as GraphQLResponse<T>;
