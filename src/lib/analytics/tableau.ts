@@ -10,11 +10,13 @@ import {
   lireCollectes,
   lireJours,
   lireRepartitions,
+  lireVitaux,
   type D1Analytics,
   type LigneJour,
   type LigneRepartition,
 } from "./store";
-import type { Dimension, SiteAnalytics } from "./types";
+import type { Dimension, SiteAnalytics, VitauxAppareil } from "./types";
+import { construireVitesse, type Vitesse } from "./vitaux";
 
 export type Periode = "30j" | "6m";
 
@@ -76,6 +78,8 @@ export interface Tableau {
   appareils: Classement[];
   /** Vrai si un jour de la période n'est pas exact (`echantillon > 1`). */
   estime: boolean;
+  /** Core Web Vitals notés sur la période, null sans aucune mesure. */
+  vitesse: Vitesse | null;
 }
 
 const LIBELLES_APPAREILS: Record<string, string> = {
@@ -108,6 +112,7 @@ export function construireTableau(o: {
   jours: LigneJour[];
   repartitions: LigneRepartition[];
   collectes: string[];
+  vitaux: VitauxAppareil[];
 }): Tableau {
   const parJour = new Map(o.jours.map((j) => [j.jour, j]));
   let visites = 0;
@@ -155,6 +160,7 @@ export function construireTableau(o: {
     pages: classer(de("page"), "pagesVues", 10, (v) => v),
     provenances: classer(de("provenance"), "visites", 10, (v) => (v === "" ? "Accès direct" : v)),
     appareils: classer(de("appareil"), "visites", Infinity, (v) => LIBELLES_APPAREILS[v] ?? v),
+    vitesse: construireVitesse(o.vitaux),
   };
 }
 
@@ -168,11 +174,12 @@ export async function chargerTableau(
 ): Promise<Chargement> {
   try {
     const { du, au } = fenetre(o.periode, o.maintenant);
-    const [etat, collectes, jours, repartitions] = await Promise.all([
+    const [etat, collectes, jours, repartitions, vitaux] = await Promise.all([
       etatCollecte(db),
       lireCollectes(db, du, au),
       lireJours(db, o.siteTag, du, au),
       lireRepartitions(db, o.siteTag, du, au),
+      lireVitaux(db, o.siteTag, du, au),
     ]);
     return {
       ok: true,
@@ -181,7 +188,7 @@ export async function chargerTableau(
       tableau:
         collectes.length === 0
           ? null
-          : construireTableau({ periode: o.periode, jours, repartitions, collectes }),
+          : construireTableau({ periode: o.periode, jours, repartitions, collectes, vitaux }),
     };
   } catch (erreur) {
     console.error("analytics/tableau: chargement impossible", erreur);
