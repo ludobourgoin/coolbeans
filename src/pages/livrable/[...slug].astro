@@ -1,25 +1,11 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Banner from "../../components/ui/Banner.astro";
-import Tooltip from "../../components/ui/Tooltip.astro";
-import CadrageIntro from "../../components/cadrage/CadrageIntro.astro";
-import LivrableApercu from "../../components/livrable/LivrableApercu.astro";
-import LivrableVideo from "../../components/livrable/LivrableVideo.astro";
-import LivrableParcours from "../../components/livrable/LivrableParcours.astro";
-import LivrableMessage from "../../components/livrable/LivrableMessage.astro";
-import LivrableSuite from "../../components/livrable/LivrableSuite.astro";
-import LivrableReponse from "../../components/livrable/LivrableReponse.astro";
-import DevisFooter from "../../components/devis/DevisFooter.astro";
-import DocumentReponses from "../../components/devis/DocumentReponses.astro";
-import DocumentEntete from "../../components/documents/DocumentEntete.astro";
-import DocumentVolet from "../../components/documents/DocumentVolet.astro";
-import { riche } from "../../lib/devis";
+import PageLivrable from "../../components/documents/pages/PageLivrable.astro";
 import { construitesEnProduction } from "../../lib/documents/statut";
 import { chargerDocuments } from "../../lib/documents/charger";
 import { frise } from "../../lib/documents/frise";
-import { grouperVersions, libelleOnglet, ligneDate, titreEntete } from "../../lib/documents/entete";
-import { sectionsLivrable } from "../../lib/documents/sections";
+import { grouperVersions } from "../../lib/documents/entete";
 
 /* Un livrable peut avoir plusieurs versions : après des retours, la V2 se
    déclare par `versionDe` et partage l'URL de la V1, comme à la proposition.
@@ -40,10 +26,7 @@ export async function getStaticPaths() {
 }
 
 const { versions, pastilles } = Astro.props;
-const actif = versions.length - 1;
-const racine = versions[0].data;
-const courante = versions[actif].data;
-const plusieurs = versions.length > 1;
+const courante = versions[versions.length - 1].data;
 ---
 
 <BaseLayout
@@ -51,120 +34,5 @@ const plusieurs = versions.length > 1;
   description={`Livrable : ${courante.objet}`}
   noindex
 >
-  <DocumentEntete
-    etape={racine.etape}
-    titre={titreEntete(racine)}
-    frise={pastilles}
-    onglets={versions.map((v) => ({ libelle: libelleOnglet(v.data), slug: v.id }))}
-    actif={actif}
-  />
-
-  {
-    versions.map((v, i) => (
-      <DocumentVolet
-        index={i}
-        actif={actif}
-        total={versions.length}
-        titre={v.data.titre}
-        objet={v.data.objet}
-        date={ligneDate(v.data, plusieurs, "Document")}
-        sections={sectionsLivrable(v.data)}
-      >
-        <a
-          slot="action"
-          href={v.data.site.url}
-          target="_blank"
-          rel="noopener"
-          class="btn btn-lg mt-6.5 inline-flex"
-        >
-          {v.data.site.label}
-        </a>
-
-        <div class="container-site">
-          <div class="mx-auto max-w-[880px] py-16x">
-            {v.data.apercu && (
-              <LivrableApercu
-                bureau={v.data.apercu.bureau}
-                mobile={v.data.apercu.mobile}
-                url={v.data.apercu.url ?? v.data.site.url}
-                titre={v.data.apercu.titre}
-                legende={v.data.apercu.legende}
-              />
-            )}
-
-            {v.data.video && (
-              <div class:list={[v.data.apercu && "border-t border-line"]}>
-                <LivrableVideo
-                  url={v.data.video.url}
-                  embed={v.data.video.embed}
-                  duree={v.data.video.duree}
-                  legende={v.data.video.legende}
-                />
-              </div>
-            )}
-
-            <div class:list={[(v.data.apercu || v.data.video) && "border-t border-line"]}>
-              <CadrageIntro sections={v.data.sections} />
-            </div>
-
-            {v.data.parcours.length > 0 && (
-              <LivrableParcours
-                titre={v.data.parcoursTitre}
-                etapes={v.data.parcours}
-                replie={v.data.parcoursReplie}
-              />
-            )}
-
-            {v.data.message && (
-              <LivrableMessage
-                titre={v.data.message.titre}
-                objet={v.data.message.objet}
-                corps={v.data.message.corps}
-                note={v.data.message.note}
-              />
-            )}
-
-            <LivrableSuite
-              aVerifier={v.data.aVerifier}
-              aVerifierTitre={v.data.aVerifierTitre}
-              suite={v.data.suite}
-              suiteTitre={v.data.suiteTitre}
-              contact={v.data.contact}
-            />
-
-            {v.data.notes.length > 0 && (
-              <div class="grid grid-cols-[180px_1fr] gap-10 border-t border-line pt-10 max-[700px]:grid-cols-1 max-[700px]:gap-4">
-                <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">NB</p>
-                <div class="flex max-w-[58ch] flex-col gap-3">
-                  {v.data.notes.map((note) => (
-                    <Banner tone={note.tone}>
-                      <Fragment set:html={riche(note.texte)} />
-                      {note.tooltip && <Tooltip texte={note.tooltip} />}
-                    </Banner>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </DocumentVolet>
-    ))
-  }
-
-  <!-- Réponses déjà reçues, toutes versions confondues. Une validation de la
-       version courante masque le formulaire qui suit ; des retours le laissent. -->
-  <DocumentReponses
-    server:defer
-    type="livrable"
-    versions={versions.map((v) => ({ slug: v.id, version: v.data.version }))}
-    tutoiement={courante.tutoiement}
-  />
-
-  {
-    courante.formulaire && (
-      <LivrableReponse slug={versions[actif].id} tutoiement={courante.tutoiement} />
-    )
-  }
-
-  <DevisFooter />
+  <PageLivrable versions={versions} pastilles={pastilles} contexte="public" />
 </BaseLayout>

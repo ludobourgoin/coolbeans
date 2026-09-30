@@ -268,7 +268,7 @@ const ALLOWED = [
   'src/components/Flow.astro',
   'src/components/doc/Sop.astro',
   'src/pages/projets/[slug].astro',
-  'src/pages/devis/[...slug].astro',
+  'src/components/documents/pages/PageProposition.astro',
 ];
 const styled = files.filter(f => f.endsWith('.astro') && (read(f) || '').includes('<style'));
 const illegal = styled.filter(f => !ALLOWED.includes(f.split(path.sep).join('/')));

@@ -1,0 +1,31 @@
+---
+/* Bandeau de l'admin : ce document, ou cet onglet, le client ne le voit pas
+   (spec 2026-09-30, sous-projet 1). Seul l'admin le reçoit : la route ne le
+   pose que sur un document qu'il lit et que le client ne lit pas. D'où le
+   texte, qu'EnvBanner s'interdit. Masqué à l'impression. */
+import type { Bandeau } from "../../lib/documents/acces";
+
+interface Props {
+  raison: Bandeau;
+}
+
+const { raison } = Astro.props;
+
+const TEXTE: Record<Bandeau, string> = {
+  brouillon: "Brouillon · le client ne voit pas ce document",
+  revendeur: "Réservé au revendeur · le client final ne voit pas ce document",
+};
+const TEINTE: Record<Bandeau, string> = {
+  brouillon: "background:var(--ds-amber-100);color:var(--ds-amber-900)",
+  revendeur: "background:var(--ds-blue-100);color:var(--ds-blue-900)",
+};
+---
+
+<p
+  data-bandeau-acces={raison}
+  role="note"
+  style={TEINTE[raison]}
+  class="px-4 py-2.5 text-center font-mono text-[12px]/[1.4] font-semibold tracking-[0.04em] uppercase print:hidden"
+>
+  {TEXTE[raison]}
+</p>

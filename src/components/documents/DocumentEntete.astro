@@ -14,7 +14,10 @@
    Le filet de 3 px se colle sous la barre Coolbeans, dans la teinte de
    l'étape. Il ne flotte pas en tête de page, où il se lirait comme une
    alerte : cette place est celle d'EnvBanner, rendue par BaseLayout au-dessus
-   de la barre, dans le flux. Les deux ne se superposent donc jamais. */
+   de la barre, dans le flux. Les deux ne se superposent donc jamais.
+
+   Dans le portail, la barre du portail tient lieu de barre Coolbeans : thème
+   et compte y sont déjà. */
 import DocumentTopbar from "../devis/DocumentTopbar.astro";
 import DocumentFrise from "./DocumentFrise.astro";
 import { definitionEtape, type Etape } from "../../lib/documents/etapes";
@@ -28,13 +31,15 @@ interface Props {
   /** Un par volet. Moins de deux : pas de barre d'onglets. */
   onglets: { libelle: string; slug: string }[];
   actif: number;
+  /** "portail" : pas de DocumentTopbar, la barre du portail en tient lieu. */
+  contexte?: "public" | "portail";
 }
 
-const { etape, titre, frise, onglets, actif } = Astro.props;
+const { etape, titre, frise, onglets, actif, contexte = "public" } = Astro.props;
 const { teinte } = definitionEtape(etape);
 ---
 
-<DocumentTopbar />
+{contexte === "public" && <DocumentTopbar />}
 <div aria-hidden="true" class="h-[3px] print:hidden" style={`background:var(--ds-${teinte}-900)`}></div>
 
 <header class="container-site print:hidden">

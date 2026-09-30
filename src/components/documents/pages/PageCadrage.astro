@@ -1,0 +1,117 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Banner from "../../ui/Banner.astro";
+import Tooltip from "../../ui/Tooltip.astro";
+import CadrageIntro from "../../cadrage/CadrageIntro.astro";
+import CadrageComparatif from "../../cadrage/CadrageComparatif.astro";
+import CadrageSimulateur from "../../cadrage/CadrageSimulateur.astro";
+import CadrageFormulaire from "../../cadrage/CadrageFormulaire.astro";
+import DevisFooter from "../../devis/DevisFooter.astro";
+import DocumentReponses from "../../devis/DocumentReponses.astro";
+import DocumentEntete from "../DocumentEntete.astro";
+import DocumentVolet from "../DocumentVolet.astro";
+import BandeauAcces from "../BandeauAcces.astro";
+import { riche, ancreSection } from "../../../lib/devis";
+import { libelleOnglet, ligneDate, titreEntete } from "../../../lib/documents/entete";
+import { sectionsCadrage } from "../../../lib/documents/sections";
+import type { Bandeau } from "../../../lib/documents/acces";
+import type { Pastille } from "../../../lib/documents/frise";
+
+interface Props {
+  versions: CollectionEntry<"cadrage">[];
+  pastilles: Pastille[];
+  contexte: "public" | "portail";
+  /** Par id d'entrée : ce que le client ne voit pas. Portail et admin seulement. */
+  bandeaux?: Record<string, Bandeau>;
+}
+const { versions, pastilles, contexte, bandeaux = {} } = Astro.props;
+const chapitres = versions;
+
+const actif = chapitres.length - 1;
+const racine = chapitres[0].data;
+const plusieurs = chapitres.length > 1;
+const courante = chapitres[actif].data;
+
+/* Pas de tirage PDF pour ce document, donc pas de référence imprimée : il se
+   lit et se remplit dans le navigateur, il ne circule pas en pièce jointe
+   comme une proposition. */
+---
+
+{bandeaux[versions[0].id] && <BandeauAcces raison={bandeaux[versions[0].id]} />}
+
+<DocumentEntete
+  etape={racine.etape}
+  titre={titreEntete(racine)}
+  frise={pastilles}
+  onglets={chapitres.map((c) => ({ libelle: libelleOnglet(c.data), slug: c.id }))}
+  actif={actif}
+  contexte={contexte}
+/>
+
+{
+  chapitres.map((c, i) => (
+    <DocumentVolet
+      index={i}
+      actif={actif}
+      total={chapitres.length}
+      titre={c.data.titre}
+      objet={c.data.objet}
+      date={ligneDate(c.data, plusieurs, "Document")}
+      sections={sectionsCadrage(c.data)}
+      bandeau={i > 0 ? (bandeaux[c.id] ?? null) : undefined}
+    >
+      <div class="container-site">
+        <div class="mx-auto max-w-[880px] py-16x">
+          <CadrageIntro sections={c.data.intro} />
+
+          {c.data.comparatif && (
+            <CadrageComparatif
+              titre={c.data.comparatif.titre}
+              texte={c.data.comparatif.texte}
+              solutions={c.data.comparatif.solutions}
+              criteres={c.data.comparatif.criteres}
+              mentionCout={c.data.comparatif.mentionCout}
+              ancre={ancreSection(c.data.comparatif.titre)}
+            />
+          )}
+
+          {c.data.comparatif?.simulateur && (
+            <CadrageSimulateur
+              titre={c.data.comparatif.simulateur.titre}
+              solutions={c.data.comparatif.solutions}
+              prixDefaut={c.data.comparatif.simulateur.prixDefaut}
+              prixMin={c.data.comparatif.simulateur.prixMin}
+              prixMax={c.data.comparatif.simulateur.prixMax}
+              ancre={ancreSection(c.data.comparatif.simulateur.titre)}
+            />
+          )}
+
+          {c.data.notes.length > 0 && (
+            <div class="grid grid-cols-[180px_1fr] gap-10 border-t border-line pt-10 max-[700px]:grid-cols-1 max-[700px]:gap-4">
+              <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">NB</p>
+              <div class="flex max-w-[58ch] flex-col gap-3">
+                {c.data.notes.map((note) => (
+                  <Banner tone={note.tone}>
+                    <Fragment set:html={riche(note.texte)} />
+                    {note.tooltip && <Tooltip texte={note.tooltip} />}
+                  </Banner>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <DocumentReponses
+        server:defer
+        type="cadrage"
+        versions={[{ slug: c.id, version: 1 }]}
+        tutoiement={c.data.tutoiement}
+      />
+
+      <CadrageFormulaire slug={c.id} questions={c.data.questions} contact={c.data.contact} tutoiement={c.data.tutoiement} />
+    </DocumentVolet>
+  ))
+}
+
+<DevisFooter />

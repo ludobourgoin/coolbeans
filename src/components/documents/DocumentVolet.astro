@@ -3,7 +3,9 @@
    d'onglets de DocumentEntete. Nav des sections, titre du document, objet,
    date, bouton, puis le contenu. */
 import DocumentSections from "./DocumentSections.astro";
+import BandeauAcces from "./BandeauAcces.astro";
 import type { SectionNav } from "../../lib/documents/sections";
+import type { Bandeau } from "../../lib/documents/acces";
 
 interface Props {
   index: number;
@@ -14,9 +16,11 @@ interface Props {
   objet: string;
   date: string;
   sections: SectionNav[];
+  /** Ce que le client ne voit pas sur ce volet. Portail et admin seulement. */
+  bandeau?: Bandeau | null;
 }
 
-const { index, actif, total, titre, objet, date, sections } = Astro.props;
+const { index, actif, total, titre, objet, date, sections, bandeau } = Astro.props;
 const onglets = total > 1;
 ---
 
@@ -27,6 +31,7 @@ const onglets = total > 1;
   aria-labelledby={onglets ? `onglet-${index}` : undefined}
   hidden={index !== actif}
 >
+  {bandeau && <BandeauAcces raison={bandeau} />}
   <DocumentSections sections={sections} />
   <div class="container-site">
     <div class="mx-auto max-w-[880px] pt-10">
