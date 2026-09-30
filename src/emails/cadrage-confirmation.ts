@@ -18,6 +18,7 @@
 
 import { citation, esc, p, qr, renderTransactionnel, titreSection } from "./transactionnel";
 import type { ReponseLisible } from "../lib/cadrage";
+import { adresseDocument } from "../lib/documents/adresse";
 
 export interface CadrageConfirmationProps {
   slug: string;
@@ -37,11 +38,7 @@ export interface EmailPret {
   text: string;
 }
 
-/* Pas d'encodeURIComponent : le slug porte un slash de séparation
-   client / projet, que l'encodage transformerait en %2F et qui casserait la
-   route. La regex de validation de l'endpoint garantit déjà qu'il ne contient
-   que [a-z0-9-] et des slashs. */
-const urlCadrage = (slug: string): string => `https://coolbeans.cc/cadrage/${slug}`;
+const urlCadrage = (slug: string): string => adresseDocument("cadrage", slug);
 
 const textes = (tutoiement: boolean) =>
   tutoiement

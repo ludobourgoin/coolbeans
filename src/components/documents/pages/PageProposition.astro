@@ -12,6 +12,7 @@ import { libelleOnglet, ligneDate, titreEntete } from "../../../lib/documents/en
 import { sectionsDevis } from "../../../lib/documents/sections";
 import type { Bandeau } from "../../../lib/documents/acces";
 import type { Pastille } from "../../../lib/documents/frise";
+import { adresseDocument } from "../../../lib/documents/adresse";
 
 interface Props {
   versions: CollectionEntry<"devis">[];
@@ -77,7 +78,7 @@ const reference = versions[0].id.split("-").pop();
   data-devis-pied
   class="container-site hidden text-center font-mono text-[9px] tracking-wide text-mute uppercase print:block"
 >
-  Proposition nᵒ {reference} · Version {courante.version} · coolbeans.cc/devis/{versions[0].id}
+  Proposition nᵒ {reference} · Version {courante.version} · {adresseDocument("devis", versions[0].id).replace(/^https:\/\//, "")}
 </div>
 
 <!-- Réponses déjà reçues, toutes versions confondues. Une validation de la

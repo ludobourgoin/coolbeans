@@ -26,6 +26,7 @@ import {
   type TacheLinear,
 } from "../portail/linear-crm";
 import { marquerTacheLinear, tacheExistante, type D1Like } from "./reponses";
+import { adresseDocument } from "../documents/adresse";
 
 /** Nom de l'état d'arrivée dans le pipeline commercial. */
 const ETAT_PROPOSITION_VALIDEE = "Proposition validée";
@@ -98,7 +99,7 @@ export function corpsTacheFacturation(ctx: ContexteSignature): string {
     "- [ ] Envoyer **un seul mail** au client avec les trois documents : proposition validée, devis, facture d'acompte",
     "- [ ] À l'encaissement : passer l'affaire en 🏆 Signée",
     "",
-    `[Voir la proposition](https://coolbeans.cc/devis/${ctx.slug})`,
+    `[Voir la proposition](${adresseDocument("devis", ctx.slug)})`,
   ].join("\n");
 }
 

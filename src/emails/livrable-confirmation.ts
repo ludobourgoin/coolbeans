@@ -10,6 +10,7 @@
 
 import { citation, esc, p, renderTransactionnel, titreSection } from "./transactionnel";
 import type { ReponseLivrable } from "../lib/livrable";
+import { adresseDocument } from "../lib/documents/adresse";
 
 export interface LivrableConfirmationProps {
   slug: string;
@@ -26,9 +27,7 @@ export interface EmailPret {
   text: string;
 }
 
-/* Pas d'encodeURIComponent : le slug porte un slash client / projet, que
-   l'encodage casserait. La regex de l'endpoint borne déjà les caractères. */
-const urlLivrable = (slug: string): string => `https://coolbeans.cc/livrable/${slug}`;
+const urlLivrable = (slug: string): string => adresseDocument("livrable", slug);
 
 const textes = (tutoiement: boolean, reponse: ReponseLivrable) =>
   tutoiement
