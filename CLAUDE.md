@@ -24,7 +24,9 @@ La règle d'isolation dépend de **ce que la session écrit**, pas du nombre d'i
 git worktree add ../coolbeans-<slug> -b feat/<slug> staging
 cp .env ../coolbeans-<slug>/.env                  # variables de build
 cp .dev.vars ../coolbeans-<slug>/.dev.vars        # secrets + bindings D1/KV/R2
+mkdir -p ../coolbeans-<slug>/.wrangler            # sinon la copie suivante échoue
 cp -R .wrangler/state ../coolbeans-<slug>/.wrangler/state   # base D1 locale
+(cd ../coolbeans-<slug> && npm ci)                # node_modules n'est pas partagé
 ```
 
 Les **trois**, pas seulement `.env`. Chacun a son symptôme, et aucun ne désigne
