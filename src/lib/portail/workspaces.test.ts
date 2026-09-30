@@ -151,6 +151,15 @@ describe("missingKeysFor", () => {
   it("traite un tableau de monitors vide comme une clé manquante", () => {
     expect(missingKeysFor("site", amusoire)).toEqual(["uptimerobot_monitor_ids"]);
   });
+
+  // Analytics (COO-16) : la liste des sites mesurés raccorde le module.
+  it("réclame la liste des sites pour Analytics", () => {
+    const site = { host: "coolbeans.cc", siteTag: "2ad7fb260e2a498a900a5d97d41b6853" };
+    expect(missingKeysFor("analytics", coolbeans)).toEqual(["analytics"]);
+    expect(missingKeysFor("analytics", { ...coolbeans, analytics: [] })).toEqual(["analytics"]);
+    expect(missingKeysFor("analytics", { ...coolbeans, analytics: [site] })).toEqual([]);
+    expect(missingKeysFor("analytics", null)).toEqual(["analytics"]);
+  });
 });
 
 describe("DEFAULT_WORKSPACE", () => {
