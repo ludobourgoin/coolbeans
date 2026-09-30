@@ -21,21 +21,21 @@ const CARTES: Array<{ metrique: Metrique; titre: string; sigle: string; descript
     titre: "Affichage",
     sigle: "LCP",
     description: "Temps pour afficher le contenu principal.",
-    aide: "Bon sous 2,5 s, mauvais au-delà de 4 s.",
+    aide: "Bon sous 2,5 s, mauvais au‑delà de 4 s.",
   },
   {
     metrique: "inp",
     titre: "Réactivité",
     sigle: "INP",
     description: "Délai de réaction à un clic ou une touche.",
-    aide: "Bon sous 200 ms, mauvais au-delà de 500 ms.",
+    aide: "Bon sous 200 ms, mauvais au‑delà de 500 ms.",
   },
   {
     metrique: "cls",
     titre: "Stabilité",
     sigle: "CLS",
     description: "Mouvements de la page pendant le chargement.",
-    aide: "Bon sous 0,1, mauvais au-delà de 0,25.",
+    aide: "Bon sous 0,1, mauvais au‑delà de 0,25.",
   },
 ];
 
@@ -52,12 +52,16 @@ const mesures = (n: number) => `${nombre.format(n)} mesure${n > 1 ? "s" : ""}`;
 const resume = (e: Evaluation) =>
   e.note
     ? `${pourcent.format(e.partBonne)} de mesures bonnes sur ${nombre.format(e.mesures)}`
-    : `${mesures(e.mesures)} sur les ${MESURES_MIN} nécessaires`;
+    : e.mesures === 0
+      ? "Aucune mesure sur la période"
+      : `${mesures(e.mesures)} sur les ${MESURES_MIN} nécessaires`;
 /** Ligne Mobile ou Ordinateur : la note et son nombre de mesures, ou le manque. */
 const detail = (e: Evaluation) =>
   e.note
     ? `${NOTES[e.note].libelle} · ${mesures(e.mesures)}`
-    : `pas assez de mesures (${nombre.format(e.mesures)})`;
+    : e.mesures === 0
+      ? "aucune mesure"
+      : `pas assez de mesures (${nombre.format(e.mesures)})`;
 ---
 
 <section class="mt-6x">
@@ -89,13 +93,13 @@ const detail = (e: Evaluation) =>
               </p>
               <p class="mt-2x text-sm tabular-nums">{resume(global)}</p>
               <dl class="mt-4x grid gap-1 text-sm">
-                <div class="flex justify-between gap-3x">
+                <div class="flex flex-wrap items-baseline justify-between gap-x-3x">
                   <dt class="text-mute">Mobile</dt>
-                  <dd class="tabular-nums">{detail(mobile)}</dd>
+                  <dd class="ml-auto whitespace-nowrap tabular-nums">{detail(mobile)}</dd>
                 </div>
-                <div class="flex justify-between gap-3x">
+                <div class="flex flex-wrap items-baseline justify-between gap-x-3x">
                   <dt class="text-mute">Ordinateur</dt>
-                  <dd class="tabular-nums">{detail(ordinateur)}</dd>
+                  <dd class="ml-auto whitespace-nowrap tabular-nums">{detail(ordinateur)}</dd>
                 </div>
               </dl>
               <p class="mt-4x text-xs text-mute">{carte.aide}</p>
