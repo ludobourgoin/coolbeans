@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { GRAPHQL_URL, normaliserJour, sourceCloudflare, type ReponseJour } from "./cloudflare";
+import { GRAPHQL_URL, LIGNES_MAX, normaliserJour, sourceCloudflare, type ReponseJour } from "./cloudflare";
 
 const SALON = "7b1613c4d8524beaae503934203801a4";
 const COOLBEANS = "2ad7fb260e2a498a900a5d97d41b6853";
@@ -94,6 +94,18 @@ describe("normaliserJour", () => {
     ]);
   });
 
+  it("range tout deviceType hors mobile/desktop/tablet dans « autre », y compris smarttv", () => {
+    const r = vide();
+    r.totaux.push(groupe(SALON, 3, 3, {}, 1));
+    r.appareils.push(
+      groupe(SALON, 1, 1, { deviceType: "smarttv" }),
+      groupe(SALON, 2, 2, { deviceType: "" }),
+    );
+    expect(normaliserJour("2026-09-26", r)[0].appareils).toEqual([
+      { valeur: "autre", visites: 3, pagesVues: 3 },
+    ]);
+  });
+
   it("range un chemin vide sous « / »", () => {
     const r = vide();
     r.totaux.push(groupe(SALON, 1, 1, {}, 1));
@@ -116,6 +128,21 @@ describe("normaliserJour", () => {
     const r = vide();
     r.pages.push(groupe(SALON, 1, 1, { requestPath: "/" }));
     expect(normaliserJour("2026-09-26", r)).toEqual([]);
+  });
+
+  it("plafonne les pages à LIGNES_MAX par site, les plus vues gardées, les totaux du site intacts", () => {
+    const r = vide();
+    r.totaux.push(groupe(SALON, 999, 999, {}, 1));
+    for (let i = 0; i < 150; i++) {
+      r.pages.push(groupe(SALON, 150 - i, 150 - i, { requestPath: `/p${String(i).padStart(3, "0")}` }));
+    }
+    const site = normaliserJour("2026-09-26", r).find((j) => j.siteTag === SALON)!;
+    expect(site.visites).toBe(999);
+    expect(site.pagesVues).toBe(999);
+    expect(site.pages).toHaveLength(LIGNES_MAX);
+    expect(site.pages.map((p) => p.pagesVues)).toEqual(
+      Array.from({ length: LIGNES_MAX }, (_, i) => 150 - i),
+    );
   });
 });
 
@@ -146,6 +173,13 @@ describe("sourceCloudflare", () => {
     await expect(sourceCloudflare({ token: "x", compte: "y", fetch })("2026-09-26")).rejects.toThrow(
       "HTTP 500",
     );
+  });
+
+  it("porte un signal d'abandon sur la requête, pour ne jamais bloquer le cron", async () => {
+    const fetch = repondre({ data: { viewer: { accounts: [REPONSE_26_SEPTEMBRE] } }, errors: null });
+    await sourceCloudflare({ token: "jeton", compte: "c9736", fetch })("2026-09-26");
+    const [, init] = fetch.mock.calls[0] as unknown as [string, RequestInit];
+    expect(init.signal).toBeInstanceOf(AbortSignal);
   });
 
   it("lève si le compte manque dans la réponse", async () => {

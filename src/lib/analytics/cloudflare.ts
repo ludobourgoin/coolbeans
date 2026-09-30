@@ -12,6 +12,17 @@ import type { JourAnalytics, Ligne, SourceAnalytics } from "./types";
 
 export const GRAPHQL_URL = "https://api.cloudflare.com/client/v4/graphql";
 
+// La page n'affiche que le top 10 : ce plafond n'appauvrit pas l'affichage,
+// il borne les écritures D1 si un robot inonde un site (le jeton du snippet
+// posé sur la page est public, donc rejouable).
+export const LIGNES_MAX = 100;
+
+const TYPES_APPAREILS = new Set(["mobile", "desktop", "tablet"]);
+
+// Le cron tourne sans surveillance : une requête qui pend indéfiniment
+// bloquerait les jours suivants jusqu'à la limite CPU du Worker.
+export const DELAI_GRAPHQL_MS = 10_000;
+
 export const REQUETE_JOUR = `query ($compte: String!, $jour: Date!) {
   viewer {
     accounts(filter: { accountTag: $compte }) {
@@ -88,24 +99,42 @@ export function normaliserJour(jour: string, reponse: ReponseJour): JourAnalytic
     groupes: Groupe[],
     cible: "pages" | "provenances" | "appareils",
     dimension: string,
-    siVide: string,
+    normaliser: (valeur: string) => string,
   ) => {
     for (const g of groupes) {
       const site = parSite.get(g.dimensions.siteTag ?? "");
       if (!site) continue;
-      cumuler(site[cible], g.dimensions[dimension] || siVide, g.sum.visits, g.count);
+      cumuler(site[cible], normaliser(g.dimensions[dimension] ?? ""), g.sum.visits, g.count);
     }
   };
-  repartir(reponse.pages, "pages", "requestPath", "/");
+  repartir(reponse.pages, "pages", "requestPath", (v) => v || "/");
   // Une provenance égale au site lui-même est de la navigation interne :
   // Cloudflare lui compte 0 visite. Elle n'a rien à faire dans « Provenance ».
   repartir(
     reponse.provenances.filter((g) => g.sum.visits > 0),
     "provenances",
     "refererHost",
-    "",
+    (v) => v,
   );
-  repartir(reponse.appareils, "appareils", "deviceType", "autre");
+  // Tout ce que Cloudflare ne range pas dans mobile, desktop ou tablet (vide,
+  // « smarttv », un futur type d'appareil) tombe dans « autre », pour que les
+  // lignes fusionnent au lieu de se disperser.
+  repartir(reponse.appareils, "appareils", "deviceType", (v) =>
+    TYPES_APPAREILS.has(v) ? v : "autre",
+  );
+
+  // Le classement plafonne les lignes par site et par dimension, après la
+  // fusion des doublons : la page n'affiche jamais plus que le top 10, ce
+  // plafond ne fait que borner les écritures D1.
+  const plafonner = (lignes: Ligne[], mesure: "visites" | "pagesVues"): void => {
+    lignes.sort((a, b) => b[mesure] - a[mesure] || a.valeur.localeCompare(b.valeur));
+    lignes.length = Math.min(lignes.length, LIGNES_MAX);
+  };
+  for (const site of parSite.values()) {
+    plafonner(site.pages, "pagesVues");
+    plafonner(site.provenances, "visites");
+    plafonner(site.appareils, "visites");
+  }
 
   return [...parSite.values()];
 }
@@ -130,6 +159,7 @@ export function sourceCloudflare(o: {
       method: "POST",
       headers: { Authorization: `Bearer ${o.token}`, "Content-Type": "application/json" },
       body: JSON.stringify({ query: REQUETE_JOUR, variables: { compte: o.compte, jour } }),
+      signal: AbortSignal.timeout(DELAI_GRAPHQL_MS),
     });
     if (!reponse.ok) throw new Error(`Cloudflare GraphQL, HTTP ${reponse.status}`);
 
