@@ -19,9 +19,8 @@
 //   · portalHref()  construit un lien   → dépend de l'HÔTE
 //   · isActive()    surligne l'entrée   → dépend du PATHNAME interne
 
-import { missingKeysFor, moduleCoupe, type PortalWorkspace } from "./workspaces";
+import { missingKeysFor, moduleCoupe, WORKSPACE_COOLBEANS, type PortalWorkspace } from "./workspaces";
 import { isAdmin, type PortalMetadata } from "./metadata";
-import type { SectionProjet } from "../documents/projets-portail";
 
 /** Hôtes sur lesquels le préfixe /espace est retiré de l'URL publique. */
 const PORTAL_HOSTS = ["my.coolbeans.cc", "my-staging.coolbeans.cc"];
@@ -84,6 +83,13 @@ export interface DocPageLink {
   href: string;
 }
 
+/** Un projet de la section Projets, résolu par le layout (projets-courants.ts). */
+export interface EntreeProjetBarre {
+  titre: string;
+  /** Chemin sous /espace. */
+  chemin: string;
+}
+
 type PageFlag = "live" | "wip";
 
 interface PageDef {
@@ -105,6 +111,8 @@ interface SectionDef {
   label: string;
   icon: IconName;
   adminOnly?: boolean;
+  /** Absente du workspace Coolbeans (spec 2026-09-30, barre par workspace, §3). */
+  horsCoolbeans?: boolean;
   pages: PageDef[];
 }
 
@@ -139,22 +147,11 @@ const SECTIONS: SectionDef[] = [
       },
     ],
   },
-  // La section Documentation est construite à part : ses pages viennent de la
-  // collection `docs` du client courant, pas d'une liste statique.
-  {
-    key: "projets",
-    label: "Projets",
-    icon: "folder",
-    pages: [
-      { label: "Actifs", path: "/projets", flag: "wip" }, // COO-69 (sync Linear)
-      { label: "Terminés", path: "/projets/termines", flag: "wip" }, // COO-69
-      { label: "Documents", path: "/projets/documents", flag: "live" }, // COO-70
-    ],
-  },
   {
     key: "aide",
     label: "Aide",
     icon: "help",
+    horsCoolbeans: true,
     pages: [
       // Demandes, ex-Messagerie (spec 2026-08-15-messagerie-portail-design.md
       // §2) : remplace l'ancien Support. Placée sous l'accueil jusqu'au
@@ -189,30 +186,34 @@ const SECTIONS: SectionDef[] = [
 
 
 /**
- * La sidebar complète pour un utilisateur donné.
+ * La sidebar complète pour un utilisateur donné (spec 2026-09-30, barre par
+ * workspace, §3).
  *
- * `docPages` : pages de doc du CLIENT COURANT (un admin basculé sur Amusoire
- * voit la doc d'Amusoire), résolues par le layout. Client sans doc : la
- * section pointe pour l'admin vers la page d'explication /espace/doc plutôt
- * qu'un lien mort, et disparaît pour un client.
+ * `docPages` : pages de doc du CLIENT COURANT, résolues par le layout. Client
+ * sans doc : la section pointe pour l'admin vers la page d'explication
+ * /espace/doc, et disparaît pour un client.
  *
- * `projets` : sections de projet du client courant (documents du cycle),
- * calculées par le layout.
+ * `projets` : les projets de la sous-team du workspace courant, dans l'ordre
+ * de Linear. Une entrée par projet, dans la section Projets.
+ *
+ * Admin n'apparaît que dans le workspace Coolbeans, l'Aide jamais.
  */
 export function buildSidebar(
   hostname: string,
   meta: PortalMetadata,
   client: PortalWorkspace | null,
   docPages: DocPageLink[],
-  projets: SectionProjet[] = [],
+  projets: EntreeProjetBarre[] = [],
 ): SidebarSection[] {
   const admin = isAdmin(meta);
+  const coolbeans = client?.slug === WORKSPACE_COOLBEANS;
   const at = (path: string) => portalHref(path, hostname);
 
   const sections: SidebarSection[] = [];
 
   for (const def of SECTIONS) {
-    if (def.adminOnly && !admin) continue;
+    if (def.adminOnly && !(admin && coolbeans)) continue;
+    if (def.horsCoolbeans && coolbeans) continue;
 
     const pages: SidebarPage[] = [];
     for (const page of def.pages) {
@@ -230,34 +231,31 @@ export function buildSidebar(
     if (pages.length > 0) sections.push({ key: def.key, label: def.label, icon: def.icon, pages });
   }
 
-  // Documentation se place après « Mon site » — ou après « Bienvenue » quand
-  // la section site a disparu (client sans page site prête) : un index fixe
-  // se décalerait dès qu'une section est filtrée.
-  const doc = buildDocSection(admin, docPages, at);
-  if (doc) {
-    const site = sections.findIndex((s) => s.key === "site");
-    const anchor = site >= 0 ? site : sections.findIndex((s) => s.key === "bienvenue");
-    sections.splice(anchor + 1, 0, doc);
+  // Projets, juste après Bienvenue : les documents du projet en cours sont ce
+  // que le client vient chercher. Chaque entrée ne s'allume que sur sa page.
+  if (projets.length > 0) {
+    const bienvenue = sections.findIndex((s) => s.key === "bienvenue");
+    sections.splice(bienvenue + 1, 0, {
+      key: "projets",
+      label: "Projets",
+      icon: "folder",
+      pages: projets.map((p) => ({
+        label: p.titre,
+        href: at(p.chemin),
+        activePrefix: `/espace${p.chemin}`,
+        wip: false,
+      })),
+    });
   }
 
-  // Les documents du cycle, une section par projet, juste après « Projets »
-  // (ou après « Bienvenue » si elle manque). Chaque entrée ne s'allume que
-  // sur elle-même, comme les pages de doc.
-  const deProjet: SidebarSection[] = projets.map((p) => ({
-    key: `projet-${p.projet}`,
-    label: p.titre,
-    icon: "folder",
-    pages: p.entrees.map((e) => ({
-      label: e.label,
-      href: at(e.chemin),
-      activePrefix: `/espace${e.chemin}`,
-      wip: false,
-    })),
-  }));
-  if (deProjet.length > 0) {
-    const apresProjets = sections.findIndex((s) => s.key === "projets");
-    const ancre = apresProjets >= 0 ? apresProjets : sections.findIndex((s) => s.key === "bienvenue");
-    sections.splice(ancre + 1, 0, ...deProjet);
+  // Mode d'emploi se place après Mon site, à défaut après Projets, à défaut
+  // après Bienvenue : un index fixe se décalerait dès qu'une section manque.
+  const doc = buildDocSection(admin, docPages, at);
+  if (doc) {
+    const ancre = ["site", "projets", "bienvenue"]
+      .map((k) => sections.findIndex((s) => s.key === k))
+      .find((i) => i >= 0);
+    sections.splice((ancre ?? -1) + 1, 0, doc);
   }
 
   return sections;
@@ -271,7 +269,7 @@ function buildDocSection(
   if (docPages.length > 0) {
     return {
       key: "doc",
-      label: "Documentation",
+      label: "Mode d'emploi",
       icon: "book",
       pages: docPages.map((p) => ({
         label: p.title,
@@ -286,8 +284,8 @@ function buildDocSection(
   if (!admin) return null;
   return {
     key: "doc",
-    label: "Documentation",
+    label: "Mode d'emploi",
     icon: "book",
-    pages: [{ label: "La doc", href: at("/doc"), activePrefix: "/espace/doc", wip: true }],
+    pages: [{ label: "Mode d'emploi", href: at("/doc"), activePrefix: "/espace/doc", wip: true }],
   };
 }

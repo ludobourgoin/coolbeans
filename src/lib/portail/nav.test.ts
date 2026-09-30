@@ -1,10 +1,16 @@
-import { describe, expect, it, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import type { PortalWorkspace } from "./workspaces";
-import type { PortalMetadata } from "./metadata";
 import { readPortalMetadata } from "./metadata";
-import { buildSidebar, isActive, isPortalHost, portalHref, type DocPageLink } from "./nav";
+import {
+  buildSidebar,
+  isActive,
+  isPortalHost,
+  portalHref,
+  type DocPageLink,
+  type EntreeProjetBarre,
+} from "./nav";
 
-const avecDoc: PortalWorkspace = {
+const amusoire: PortalWorkspace = {
   slug: "amusoire",
   nom: "Amusoire",
   doc: "amusoire",
@@ -12,6 +18,12 @@ const avecDoc: PortalWorkspace = {
   archive: false,
 };
 const sansDoc: PortalWorkspace = {
+  slug: "amusoire",
+  nom: "Amusoire",
+  uptimerobot_monitor_ids: [],
+  archive: false,
+};
+const coolbeans: PortalWorkspace = {
   slug: "coolbeans",
   nom: "Coolbeans",
   uptimerobot_monitor_ids: [],
@@ -26,53 +38,17 @@ const docPages: DocPageLink[] = [
   { title: "Édition", href: "/docs/amusoire/edition" },
 ];
 
-const flat = (sections: ReturnType<typeof buildSidebar>) =>
-  sections.flatMap((s) => s.pages.map((p) => ({ section: s.key, ...p })));
-
-const metaClient: PortalMetadata = { role: "client", organisation: "coolbeans", workspace: "cafa" };
-const wsCafa: PortalWorkspace = {
-  slug: "cafa",
-  nom: "CAFA",
-  organisation: "coolbeans",
-  cle: "caf",
-  uptimerobot_monitor_ids: [],
-  archive: false,
-};
-const projetsCafa = [
+const projets: EntreeProjetBarre[] = [
   {
-    projet: "site-web-879",
-    titre: "Site web CAFA",
-    entrees: [{ label: "2 · Proposition", chemin: "/projets/site-web-879/proposition" }],
+    titre: "Refonte Webflow et intégration technique",
+    chemin: "/projets/refonte-webflow-et-integration-technique-9a553e01b917",
   },
+  { titre: "Site anglais et Music Quiz", chemin: "/projets/site-anglais-et-music-quiz-8ca6ad11bb6f" },
 ];
 
-test("une section par projet se place juste après « Projets »", () => {
-  const sections = buildSidebar("my.coolbeans.cc", metaClient, wsCafa, [], projetsCafa);
-  const cles = sections.map((s) => s.key);
-  expect(cles.indexOf("projet-site-web-879")).toBe(cles.indexOf("projets") + 1);
-  const section = sections.find((s) => s.key === "projet-site-web-879")!;
-  expect(section).toMatchObject({ label: "Site web CAFA", icon: "folder" });
-  expect(section.pages).toEqual([
-    {
-      label: "2 · Proposition",
-      href: "/projets/site-web-879/proposition",
-      activePrefix: "/espace/projets/site-web-879/proposition",
-      wip: false,
-    },
-  ]);
-});
-
-test("hors du portail, l'entrée garde le préfixe /espace", () => {
-  const sections = buildSidebar("localhost", metaClient, wsCafa, [], projetsCafa);
-  const section = sections.find((s) => s.key === "projet-site-web-879")!;
-  expect(section.pages[0].href).toBe("/espace/projets/site-web-879/proposition");
-});
-
-test("sans projet, la barre latérale ne change pas", () => {
-  expect(buildSidebar("my.coolbeans.cc", metaClient, wsCafa, [])).toEqual(
-    buildSidebar("my.coolbeans.cc", metaClient, wsCafa, [], []),
-  );
-});
+const flat = (sections: ReturnType<typeof buildSidebar>) =>
+  sections.flatMap((s) => s.pages.map((p) => ({ section: s.key, ...p })));
+const cles = (sections: ReturnType<typeof buildSidebar>) => sections.map((s) => s.key);
 
 describe("isPortalHost", () => {
   it("reconnaît les deux hôtes portail", () => {
@@ -107,58 +83,49 @@ describe("portalHref", () => {
   });
 });
 
-describe("buildSidebar · visibilité côté client", () => {
-  // La règle à deux étages (spec sidebar 2026-08-14, COO-80) : un client ne
-  // voit que les pages `live` ET configurées pour lui. Aujourd'hui seules
-  // Introduction, la doc, Ressources et Disponibilités sont lancées.
+describe("buildSidebar · workspace client", () => {
+  const sections = buildSidebar("my.coolbeans.cc", client, amusoire, docPages, projets);
+
+  it("range Bienvenue, Projets, Mode d'emploi, Aide", () => {
+    // Mon site n'a aucune page prête côté client : la section disparaît.
+    expect(cles(sections)).toEqual(["bienvenue", "projets", "doc", "aide"]);
+  });
+
   it("ne montre que les pages live et configurées", () => {
-    const pages = flat(buildSidebar("my.coolbeans.cc", client, avecDoc, docPages));
-    expect(pages.map((p) => p.label)).toEqual([
+    expect(flat(sections).map((p) => p.label)).toEqual([
       "Introduction",
+      "Refonte Webflow et intégration technique",
+      "Site anglais et Music Quiz",
       "Vue d'ensemble",
       "Édition",
-      "Documents",
       "Ressources",
       "Disponibilités",
     ]);
   });
 
   it("ne marque jamais une page wip côté client", () => {
-    const pages = flat(buildSidebar("my.coolbeans.cc", client, avecDoc, docPages));
-    expect(pages.every((p) => !p.wip)).toBe(true);
+    expect(flat(sections).every((p) => !p.wip)).toBe(true);
   });
 
   it("masque le bloc Admin", () => {
-    const sections = buildSidebar("my.coolbeans.cc", client, avecDoc, docPages);
     expect(sections.find((s) => s.key === "admin")).toBeUndefined();
   });
 
-  it("masque la section Documentation d'un client sans doc", () => {
-    const sections = buildSidebar("my.coolbeans.cc", client, sansDoc, []);
-    expect(sections.find((s) => s.key === "doc")).toBeUndefined();
+  it("masque le mode d'emploi d'un workspace sans doc", () => {
+    expect(buildSidebar("my.coolbeans.cc", client, sansDoc, []).find((s) => s.key === "doc")).toBeUndefined();
   });
 
-  it("fait disparaître une section dont aucune page n'est prête", () => {
-    const sections = buildSidebar("my.coolbeans.cc", client, avecDoc, docPages);
-    // Mon site : tout est wip aujourd'hui. Projets survit par Documents, seule
-    // page lancée de la section depuis COO-70.
-    expect(sections.map((s) => s.key)).toEqual(["bienvenue", "doc", "projets", "aide"]);
+  it("n'a pas de section Projets sans projet", () => {
+    expect(cles(buildSidebar("my.coolbeans.cc", client, amusoire, docPages))).toEqual(["bienvenue", "doc", "aide"]);
   });
 });
 
-describe("buildSidebar · côté admin", () => {
-  const sections = buildSidebar("my.coolbeans.cc", admin, avecDoc, docPages);
+describe("buildSidebar · admin dans un workspace client", () => {
+  const sections = buildSidebar("my.coolbeans.cc", admin, amusoire, docPages, projets);
   const pages = flat(sections);
 
-  it("montre toutes les sections, bloc Admin en dernier", () => {
-    expect(sections.map((s) => s.key)).toEqual([
-      "bienvenue",
-      "site",
-      "doc",
-      "projets",
-      "aide",
-      "admin",
-    ]);
+  it("n'affiche pas Admin hors du workspace Coolbeans", () => {
+    expect(cles(sections)).toEqual(["bienvenue", "projets", "site", "doc", "aide"]);
   });
 
   it("badge wip les pages non lancées, pas les autres", () => {
@@ -167,116 +134,152 @@ describe("buildSidebar · côté admin", () => {
     expect(wip).toContain("Liens utiles");
     expect(wip).not.toContain("Introduction");
     expect(wip).not.toContain("Ressources");
-    expect(wip).not.toContain("Devis");
   });
 
   it("badge wip une page dont le mapping client manque", () => {
-    // Monitoring est wip pour deux raisons chez Amusoire : flag global ET
-    // aucun monitor configuré. Le badge reste un seul et même signal.
     const monitoring = pages.find((p) => p.label === "Monitoring");
     expect(monitoring?.wip).toBe(true);
     expect(monitoring?.dot).toBe(true);
   });
 
-  it("pointe la doc absente vers la page d'explication, en wip", () => {
-    const sections = buildSidebar("my.coolbeans.cc", admin, sansDoc, []);
-    const doc = sections.find((s) => s.key === "doc");
-    expect(doc?.pages).toHaveLength(1);
-    expect(doc?.pages[0].href).toBe("/doc");
-    expect(doc?.pages[0].wip).toBe(true);
+  it("ouvre la section Aide par les demandes", () => {
+    const aide = sections.find((s) => s.key === "aide")!.pages;
+    expect(aide[0]).toMatchObject({ label: "Demandes", href: "/demandes" });
+    expect(sections.find((s) => s.key === "bienvenue")!.pages.map((p) => p.label)).not.toContain("Demandes");
+  });
+});
+
+describe("buildSidebar · workspace Coolbeans", () => {
+  const sections = buildSidebar("my.coolbeans.cc", admin, coolbeans, [], projets);
+
+  it("range Bienvenue, Projets, Mon site, Mode d'emploi, Admin, sans Aide", () => {
+    expect(cles(sections)).toEqual(["bienvenue", "projets", "site", "doc", "admin"]);
+  });
+
+  it("porte les outils admin", () => {
+    expect(sections.find((s) => s.key === "admin")!.pages.map((p) => p.label)).toEqual([
+      "Accueil admin",
+      "Mes clients",
+      "Utilisateurs",
+      "Devis",
+    ]);
+  });
+
+  it("pointe le mode d'emploi absent vers la page d'explication, en wip", () => {
+    const doc = sections.find((s) => s.key === "doc")!;
+    expect(doc.label).toBe("Mode d'emploi");
+    expect(doc.pages).toEqual([{ label: "Mode d'emploi", href: "/doc", activePrefix: "/espace/doc", wip: true }]);
+  });
+
+  it("un compte non admin n'y voit ni Admin ni Aide", () => {
+    const lecteur = readPortalMetadata({ portalRole: "client", workspace: "coolbeans" });
+    expect(cles(buildSidebar("my.coolbeans.cc", lecteur, coolbeans, [], projets))).toEqual(["bienvenue", "projets"]);
+  });
+});
+
+describe("buildSidebar · Projets", () => {
+  it("une entrée par projet, libellée du nom Linear", () => {
+    const section = buildSidebar("my.coolbeans.cc", client, amusoire, docPages, projets).find(
+      (s) => s.key === "projets",
+    )!;
+    expect(section).toMatchObject({ label: "Projets", icon: "folder" });
+    expect(section.pages[0]).toEqual({
+      label: "Refonte Webflow et intégration technique",
+      href: "/projets/refonte-webflow-et-integration-technique-9a553e01b917",
+      activePrefix: "/espace/projets/refonte-webflow-et-integration-technique-9a553e01b917",
+      wip: false,
+    });
+  });
+
+  it("hors du portail, l'entrée garde le préfixe /espace", () => {
+    const section = buildSidebar("localhost", client, amusoire, docPages, projets).find((s) => s.key === "projets")!;
+    expect(section.pages[0].href).toBe("/espace/projets/refonte-webflow-et-integration-technique-9a553e01b917");
+  });
+
+  it("sans projet, la barre ne change pas", () => {
+    expect(buildSidebar("my.coolbeans.cc", client, amusoire, docPages)).toEqual(
+      buildSidebar("my.coolbeans.cc", client, amusoire, docPages, []),
+    );
+  });
+});
+
+describe("buildSidebar · Mode d'emploi", () => {
+  it("nomme Mode d'emploi la section des pages de doc", () => {
+    const doc = buildSidebar("my.coolbeans.cc", client, amusoire, docPages).find((s) => s.key === "doc")!;
+    expect(doc.label).toBe("Mode d'emploi");
+    expect(doc.pages.map((p) => p.label)).toEqual(["Vue d'ensemble", "Édition"]);
   });
 });
 
 describe("buildSidebar · Analytics", () => {
   const mesure: PortalWorkspace = {
-    ...avecDoc,
+    ...amusoire,
     analytics: [{ host: "amusoire.fr", siteTag: "0123456789abcdef0123456789abcdef" }],
   };
 
   it("montre Analytics au client dont le site est raccordé", () => {
-    const pages = flat(buildSidebar("my.coolbeans.cc", client, mesure, docPages));
-    const analytics = pages.find((p) => p.label === "Analytics");
+    const analytics = flat(buildSidebar("my.coolbeans.cc", client, mesure, docPages)).find(
+      (p) => p.label === "Analytics",
+    );
     expect(analytics?.section).toBe("site");
     expect(analytics?.wip).toBe(false);
   });
 
   it("la cache au client sans site raccordé", () => {
-    const pages = flat(buildSidebar("my.coolbeans.cc", client, avecDoc, docPages));
-    expect(pages.find((p) => p.label === "Analytics")).toBeUndefined();
+    expect(flat(buildSidebar("my.coolbeans.cc", client, amusoire, docPages)).find((p) => p.label === "Analytics")).toBeUndefined();
   });
 
   it("la montre en wip à l'admin quand le site manque", () => {
-    const pages = flat(buildSidebar("my.coolbeans.cc", admin, avecDoc, docPages));
-    expect(pages.find((p) => p.label === "Analytics")?.wip).toBe(true);
+    expect(flat(buildSidebar("my.coolbeans.cc", admin, amusoire, docPages)).find((p) => p.label === "Analytics")?.wip).toBe(true);
   });
 });
 
 describe("buildSidebar · liens et préfixe d'hôte", () => {
   it("préfixe tous les liens hors doc en dehors de l'hôte portail", () => {
-    const pages = flat(buildSidebar("localhost", client, avecDoc, docPages));
+    const pages = flat(buildSidebar("localhost", client, amusoire, docPages, projets));
     expect(pages.map((p) => p.href)).toEqual([
       "/espace",
+      "/espace/projets/refonte-webflow-et-integration-technique-9a553e01b917",
+      "/espace/projets/site-anglais-et-music-quiz-8ca6ad11bb6f",
       "/docs/amusoire/vue-densemble",
       "/docs/amusoire/edition",
-      "/espace/projets/documents",
       "/espace/ressources",
       "/espace/disponibilites",
     ]);
   });
 
   it("rend des liens courts sur l'hôte portail", () => {
-    const pages = flat(buildSidebar("my.coolbeans.cc", client, avecDoc, docPages));
+    const pages = flat(buildSidebar("my.coolbeans.cc", client, amusoire, docPages));
     expect(pages.find((p) => p.label === "Introduction")?.href).toBe("/");
     expect(pages.find((p) => p.label === "Ressources")?.href).toBe("/ressources");
   });
 });
 
-describe("buildSidebar · Demandes remplace Support", () => {
-  // Spec 2026-08-15-messagerie-portail-design.md §2 : l'entrée remplace
-  // « Support ». Elle vit en tête de la section Aide depuis le 2026-09-30
-  // (avant : sous l'accueil). Elle s'appelait « Messagerie » jusqu'au
-  // 2026-09-29 : c'est une boîte de tickets, pas une messagerie.
-  it("les demandes remplacent le support et ouvrent la section Aide", () => {
-    const sections = buildSidebar("my.coolbeans.cc", admin, avecDoc, docPages);
-    const pages = sections.flatMap((s) => s.pages);
-    const labels = pages.map((p) => p.label);
-    expect(labels).toContain("Demandes");
-    expect(labels).not.toContain("Support");
-    expect(labels).not.toContain("Messagerie");
-    expect(pages.find((p) => p.label === "Demandes")?.href).toBe("/demandes");
-    const aide = sections.find((s) => s.key === "aide")!.pages.map((p) => p.label);
-    expect(aide[0]).toBe("Demandes");
-    const bienvenue = sections.find((s) => s.key === "bienvenue")!.pages.map((p) => p.label);
-    expect(bienvenue).not.toContain("Demandes");
-  });
-});
-
 describe("isActive", () => {
-  const pages = flat(buildSidebar("my.coolbeans.cc", admin, avecDoc, docPages));
+  const pages = flat(buildSidebar("my.coolbeans.cc", admin, amusoire, docPages, projets));
   const page = (label: string) => pages.find((p) => p.label === label)!;
 
-  it("s'allume sur la page et ses sous-pages", () => {
-    expect(isActive(page("Actifs"), "/espace/projets")).toBe(true);
-    expect(isActive(page("Actifs"), "/espace/projets/1217")).toBe(true);
+  it("s'allume sur la page d'un projet", () => {
+    expect(isActive(page("Site anglais et Music Quiz"), "/espace/projets/site-anglais-et-music-quiz-8ca6ad11bb6f")).toBe(true);
   });
 
   it("ne s'allume pas sur une autre entrée", () => {
-    expect(isActive(page("Actifs"), "/espace/support")).toBe(false);
-    expect(isActive(page("Monitoring"), "/espace/projets")).toBe(false);
+    expect(
+      isActive(page("Site anglais et Music Quiz"), "/espace/projets/refonte-webflow-et-integration-technique-9a553e01b917"),
+    ).toBe(false);
+    expect(isActive(page("Monitoring"), "/espace/projets/site-anglais-et-music-quiz-8ca6ad11bb6f")).toBe(false);
   });
 
   // Le piège du préfixe nu : /espace/site ne doit pas allumer une entrée /espace/s.
   it("ne s'allume pas sur un préfixe partiel de segment", () => {
-    expect(isActive({ label: "x", href: "/s", activePrefix: "/espace/s" }, "/espace/site")).toBe(
-      false,
-    );
+    expect(isActive({ label: "x", href: "/s", activePrefix: "/espace/s" }, "/espace/site")).toBe(false);
   });
 
   it("n'allume Introduction que sur la racine", () => {
     const intro = page("Introduction");
     expect(isActive(intro, "/espace")).toBe(true);
     expect(isActive(intro, "/espace/")).toBe(true);
-    expect(isActive(intro, "/espace/projets")).toBe(false);
+    expect(isActive(intro, "/espace/projets/site-anglais-et-music-quiz-8ca6ad11bb6f")).toBe(false);
   });
 
   // Chaque page de doc ne s'allume que sur elle-même : toutes partagent le

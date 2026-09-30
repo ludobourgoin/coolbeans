@@ -1,7 +1,7 @@
 ---
-// Cible de l'entrée « Doc » quand l'utilisateur n'a aucun slug de doc
-// (tâche S0.7). Un utilisateur correctement onboardé n'atterrit jamais ici :
-// la nav pointe directement sur /docs/{slug}.
+// Cible de l'entrée « Mode d'emploi » quand l'utilisateur n'a aucun slug de
+// doc (tâche S0.7). Un utilisateur correctement onboardé n'atterrit jamais
+// ici : la nav pointe directement sur /docs/{slug}.
 //
 // Cette page existe pour que l'entrée ne soit ni un lien mort (/docs n'est pas
 // une route) ni une entrée qui disparaît de la nav — auquel cas l'oubli de
@@ -26,16 +26,16 @@ if (client?.doc) {
 }
 ---
 
-<EspaceLayout title="Doc">
-  <h1>Doc</h1>
-  <p class="sub">La documentation de passation de votre projet.</p>
+<EspaceLayout title="Mode d'emploi">
+  <h1>Mode d'emploi</h1>
+  <p class="sub">Le mode d'emploi de votre site.</p>
 
   <EmptyState
-    title="Aucune documentation associée à cet espace"
+    title="Aucun mode d'emploi associé à cet espace"
     missingKeys={missingKeysFor("doc", client)}
     isAdmin={isAdmin(meta)}
   >
-    La doc de passation est ouverte à la livraison du projet. Si vous pensez
-    qu'elle devrait être là, écrivez à ludo@coolbeans.cc.
+    Le mode d'emploi s'ouvre à la livraison du projet. S'il devrait être là,
+    écrivez à ludo@coolbeans.cc.
   </EmptyState>
 </EspaceLayout>
