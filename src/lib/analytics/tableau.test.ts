@@ -177,6 +177,7 @@ describe("chargerTableau", () => {
     pages: [{ valeur: "/", visites: 2, pagesVues: 3 }],
     provenances: [],
     appareils: [],
+    vitaux: [],
   });
 
   it("rend un tableau nul tant qu'aucun jour n'est collecté", async () => {

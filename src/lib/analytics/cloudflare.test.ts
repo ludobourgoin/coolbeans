@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { GRAPHQL_URL, LIGNES_MAX, normaliserJour, sourceCloudflare, type ReponseJour } from "./cloudflare";
+import { GRAPHQL_URL, LIGNES_MAX, REQUETE_JOUR, normaliserJour, sourceCloudflare, type ReponseJour } from "./cloudflare";
 
 const SALON = "7b1613c4d8524beaae503934203801a4";
 const COOLBEANS = "2ad7fb260e2a498a900a5d97d41b6853";
@@ -32,9 +32,10 @@ const REPONSE_26_SEPTEMBRE: ReponseJour = {
     { count: 4, dimensions: { deviceType: "desktop", siteTag: SALON }, sum: { visits: 4 } },
     { count: 1, dimensions: { deviceType: "desktop", siteTag: SECM }, sum: { visits: 1 } },
   ],
+  vitaux: [],
 };
 
-const vide = (): ReponseJour => ({ totaux: [], pages: [], provenances: [], appareils: [] });
+const vide = (): ReponseJour => ({ totaux: [], pages: [], provenances: [], appareils: [], vitaux: [] });
 
 function groupe(
   siteTag: string,
@@ -51,6 +52,72 @@ function groupe(
   };
 }
 
+// Réponse réelle de l'API pour le 2026-09-29, totaux et vitaux, enregistrée le
+// 2026-09-30. Rév'olutions Douces (REV) y a une mesure de vitaux et aucun
+// chargement de page.
+const REPONSE_29_SEPTEMBRE: ReponseJour = {
+  totaux: [
+    { avg: { sampleInterval: 1 }, count: 22, dimensions: { siteTag: SECM }, sum: { visits: 6 } },
+    { avg: { sampleInterval: 1 }, count: 33, dimensions: { siteTag: SALON }, sum: { visits: 20 } },
+    { avg: { sampleInterval: 1 }, count: 1, dimensions: { siteTag: COOLBEANS }, sum: { visits: 1 } },
+  ],
+  pages: [],
+  provenances: [],
+  appareils: [],
+  vitaux: [
+    {
+      avg: { sampleInterval: 1 },
+      dimensions: { deviceType: "mobile", siteTag: SALON },
+      sum: { clsGood: 19, clsNeedsImprovement: 0, clsPoor: 0, inpGood: 9, inpNeedsImprovement: 0, inpPoor: 0, lcpGood: 19, lcpNeedsImprovement: 3, lcpPoor: 0 },
+    },
+    {
+      avg: { sampleInterval: 1 },
+      dimensions: { deviceType: "mobile", siteTag: SECM },
+      sum: { clsGood: 2, clsNeedsImprovement: 0, clsPoor: 0, inpGood: 1, inpNeedsImprovement: 0, inpPoor: 0, lcpGood: 19, lcpNeedsImprovement: 0, lcpPoor: 0 },
+    },
+    {
+      avg: { sampleInterval: 1 },
+      dimensions: { deviceType: "tablet", siteTag: SALON },
+      sum: { clsGood: 2, clsNeedsImprovement: 0, clsPoor: 0, inpGood: 1, inpNeedsImprovement: 0, inpPoor: 0, lcpGood: 2, lcpNeedsImprovement: 0, lcpPoor: 0 },
+    },
+    {
+      avg: { sampleInterval: 1 },
+      dimensions: { deviceType: "desktop", siteTag: SALON },
+      sum: { clsGood: 2, clsNeedsImprovement: 0, clsPoor: 0, inpGood: 0, inpNeedsImprovement: 0, inpPoor: 0, lcpGood: 4, lcpNeedsImprovement: 0, lcpPoor: 0 },
+    },
+    {
+      avg: { sampleInterval: 1 },
+      dimensions: { deviceType: "desktop", siteTag: SECM },
+      sum: { clsGood: 1, clsNeedsImprovement: 0, clsPoor: 0, inpGood: 0, inpNeedsImprovement: 0, inpPoor: 0, lcpGood: 1, lcpNeedsImprovement: 0, lcpPoor: 0 },
+    },
+    {
+      avg: { sampleInterval: 1 },
+      dimensions: { deviceType: "mobile", siteTag: REV },
+      sum: { clsGood: 1, clsNeedsImprovement: 0, clsPoor: 0, inpGood: 0, inpNeedsImprovement: 0, inpPoor: 0, lcpGood: 1, lcpNeedsImprovement: 0, lcpPoor: 0 },
+    },
+  ],
+};
+
+type Triplet = [bon: number, moyen: number, mauvais: number];
+
+function groupeVitaux(
+  siteTag: string,
+  deviceType: string,
+  m: { lcp?: Triplet; inp?: Triplet; cls?: Triplet },
+  sampleInterval = 1,
+) {
+  const [lcpGood, lcpNeedsImprovement, lcpPoor] = m.lcp ?? [0, 0, 0];
+  const [inpGood, inpNeedsImprovement, inpPoor] = m.inp ?? [0, 0, 0];
+  const [clsGood, clsNeedsImprovement, clsPoor] = m.cls ?? [0, 0, 0];
+  return {
+    avg: { sampleInterval },
+    sum: { lcpGood, lcpNeedsImprovement, lcpPoor, inpGood, inpNeedsImprovement, inpPoor, clsGood, clsNeedsImprovement, clsPoor },
+    dimensions: { siteTag, deviceType },
+  };
+}
+
+const c = (bon: number, moyen: number, mauvais: number) => ({ bon, moyen, mauvais });
+
 describe("normaliserJour", () => {
   it("rend un JourAnalytics par site, sur une réponse réelle", () => {
     const jours = normaliserJour("2026-09-26", REPONSE_26_SEPTEMBRE);
@@ -64,6 +131,7 @@ describe("normaliserJour", () => {
       pages: [{ valeur: "/", visites: 4, pagesVues: 4 }],
       provenances: [{ valeur: "", visites: 4, pagesVues: 4 }],
       appareils: [{ valeur: "desktop", visites: 4, pagesVues: 4 }],
+      vitaux: [],
     });
     expect(jours.find((j) => j.siteTag === COOLBEANS)?.provenances).toEqual([
       { valeur: "www.ifacnet.com", visites: 1, pagesVues: 1 },
@@ -146,6 +214,75 @@ describe("normaliserJour", () => {
   });
 });
 
+describe("normaliserJour, Core Web Vitals", () => {
+  it("rattache les vitaux à leur site et à leur appareil, sur une réponse réelle", () => {
+    const jours = normaliserJour("2026-09-29", REPONSE_29_SEPTEMBRE);
+    const salon = jours.find((j) => j.siteTag === SALON)!;
+    expect(salon.vitaux).toHaveLength(3);
+    expect(salon.vitaux).toEqual(
+      expect.arrayContaining([
+        { appareil: "mobile", lcp: c(19, 3, 0), inp: c(9, 0, 0), cls: c(19, 0, 0) },
+        { appareil: "tablet", lcp: c(2, 0, 0), inp: c(1, 0, 0), cls: c(2, 0, 0) },
+        { appareil: "desktop", lcp: c(4, 0, 0), inp: c(0, 0, 0), cls: c(2, 0, 0) },
+      ]),
+    );
+    expect(salon.visites).toBe(20);
+    expect(jours.find((j) => j.siteTag === COOLBEANS)?.vitaux).toEqual([]);
+  });
+
+  it("garde les vitaux d'un site sans aucun chargement de page ce jour-là, à 0 visite", () => {
+    const rev = normaliserJour("2026-09-29", REPONSE_29_SEPTEMBRE).find((j) => j.siteTag === REV);
+    expect(rev).toEqual({
+      siteTag: REV,
+      jour: "2026-09-29",
+      visites: 0,
+      pagesVues: 0,
+      echantillon: 1,
+      pages: [],
+      provenances: [],
+      appareils: [],
+      vitaux: [{ appareil: "mobile", lcp: c(1, 0, 0), inp: c(0, 0, 0), cls: c(1, 0, 0) }],
+    });
+  });
+
+  it("range un deviceType inconnu dans « autre » et cumule les groupes du même appareil", () => {
+    const r = vide();
+    r.totaux.push(groupe(SALON, 3, 3, {}, 1));
+    r.vitaux.push(
+      groupeVitaux(SALON, "smarttv", { lcp: [1, 0, 0] }),
+      groupeVitaux(SALON, "", { lcp: [0, 1, 0], cls: [2, 0, 0] }),
+    );
+    expect(normaliserJour("2026-09-29", r)[0].vitaux).toEqual([
+      { appareil: "autre", lcp: c(1, 1, 0), inp: c(0, 0, 0), cls: c(2, 0, 0) },
+    ]);
+  });
+
+  it("écarte un groupe sans aucune mesure de LCP, INP ou CLS", () => {
+    const r = vide();
+    r.totaux.push(groupe(SALON, 3, 3, {}, 1));
+    r.vitaux.push(groupeVitaux(SALON, "mobile", {}));
+    expect(normaliserJour("2026-09-29", r)[0].vitaux).toEqual([]);
+  });
+
+  it("n'invente aucun site pour un groupe de vitaux vide", () => {
+    const r = vide();
+    r.vitaux.push(groupeVitaux(SALON, "mobile", {}));
+    expect(normaliserJour("2026-09-29", r)).toEqual([]);
+  });
+
+  it("marque le jour estimé dès que le trafic ou les vitaux le sont", () => {
+    const r = vide();
+    r.totaux.push(groupe(SALON, 3, 3, {}, 1), groupe(COOLBEANS, 3, 3, {}, 10));
+    r.vitaux.push(
+      groupeVitaux(SALON, "mobile", { lcp: [1, 0, 0] }, 10),
+      groupeVitaux(COOLBEANS, "mobile", { lcp: [1, 0, 0] }, 1),
+    );
+    const jours = normaliserJour("2026-09-29", r);
+    expect(jours.find((j) => j.siteTag === SALON)?.echantillon).toBe(10);
+    expect(jours.find((j) => j.siteTag === COOLBEANS)?.echantillon).toBe(10);
+  });
+});
+
 describe("sourceCloudflare", () => {
   const repondre = (corps: unknown, status = 200) =>
     vi.fn(async () => new Response(JSON.stringify(corps), { status }));
@@ -187,5 +324,15 @@ describe("sourceCloudflare", () => {
     await expect(sourceCloudflare({ token: "x", compte: "y", fetch })("2026-09-26")).rejects.toThrow(
       "compte introuvable",
     );
+  });
+
+  it("demande les vitaux dans la même requête que le trafic", async () => {
+    const fetch = repondre({ data: { viewer: { accounts: [REPONSE_29_SEPTEMBRE] } }, errors: null });
+    const jours = await sourceCloudflare({ token: "jeton", compte: "c9736", fetch })("2026-09-29");
+    expect(fetch).toHaveBeenCalledOnce();
+    const [, init] = fetch.mock.calls[0] as unknown as [string, RequestInit];
+    expect(JSON.parse(init.body as string).query).toBe(REQUETE_JOUR);
+    expect(REQUETE_JOUR).toContain("vitaux: rumWebVitalsEventsAdaptiveGroups");
+    expect(jours.find((j) => j.siteTag === SALON)?.vitaux).toHaveLength(3);
   });
 });

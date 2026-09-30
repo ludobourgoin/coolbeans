@@ -17,6 +17,7 @@ const mesure = (jour: string): JourAnalytics => ({
   pages: [{ valeur: "/", visites: 1, pagesVues: 2 }],
   provenances: [],
   appareils: [],
+  vitaux: [],
 });
 
 describe("joursACollecter", () => {

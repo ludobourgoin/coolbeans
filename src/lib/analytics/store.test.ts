@@ -27,6 +27,7 @@ function mesure(jour: string, p: Partial<JourAnalytics> = {}): JourAnalytics {
     ],
     provenances: [{ valeur: "", visites: 3, pagesVues: 5 }],
     appareils: [{ valeur: "mobile", visites: 3, pagesVues: 5 }],
+    vitaux: [],
     ...p,
   };
 }

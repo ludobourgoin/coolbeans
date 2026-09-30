@@ -6,6 +6,30 @@
 
 export type Dimension = "page" | "provenance" | "appareil";
 
+/** Type d'appareil tel que la collecte le range : tout type inconnu tombe dans « autre ». */
+export type Appareil = "mobile" | "desktop" | "tablet" | "autre";
+
+/** Les trois Core Web Vitals que Google note (spec 2026-09-30-portail-core-web-vitals-design.md). */
+export type Metrique = "lcp" | "inp" | "cls";
+
+export const METRIQUES: readonly Metrique[] = ["lcp", "inp", "cls"];
+
+/** Mesures d'une métrique, comptées par note de Google. */
+export interface Compteurs {
+  bon: number;
+  /** « Needs improvement » chez Cloudflare, « À améliorer » à l'écran. */
+  moyen: number;
+  mauvais: number;
+}
+
+/** Core Web Vitals d'un site sur un type d'appareil, pour un jour ou une période. */
+export interface VitauxAppareil {
+  appareil: Appareil;
+  lcp: Compteurs;
+  inp: Compteurs;
+  cls: Compteurs;
+}
+
 export interface Ligne {
   valeur: string;
   visites: number;
@@ -23,6 +47,8 @@ export interface JourAnalytics {
   pages: Ligne[];
   provenances: Ligne[];
   appareils: Ligne[];
+  /** Core Web Vitals du jour, une entrée par appareil qui a au moins une mesure. */
+  vitaux: VitauxAppareil[];
 }
 
 /** Rend les mesures de tous les sites du compte pour un jour UTC. */
