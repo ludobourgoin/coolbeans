@@ -123,6 +123,42 @@ et les propositions du client s'enregistrent tout seuls, à chaque ouverture
 de la page en vue admin ; une page retirée du repo garde sa ligne, signalée
 plutôt que supprimée en silence.
 
+**Les documents client.** Le cycle d'un projet (cadrage, proposition,
+livrable, témoignage) se lit aussi à l'adresse
+`my.coolbeans.cc/projets/<projet>/<étape>`. La frise du document y mène
+directement, sans passer par la page publique. La page est rendue à la
+demande, jamais prérendue : elle dépend de la session.
+
+Qui lit quoi dépend de trois règles, dans cet ordre. D'abord la portée du
+compte (`workspacesVisibles`) : un client ne lit que son propre
+workspace, un revendeur tous ceux de son organisation, l'admin tous les
+workspaces. Ensuite le statut : un client ou un revendeur ne voit que
+les documents `publie`, l'admin voit aussi les brouillons. Enfin, la
+proposition d'un workspace de revendeur ne se lit que par les comptes du
+revendeur et par l'admin : le client final ne la voit pas. Un refus
+répond toujours 404, jamais 403, pour ne pas révéler qu'un document existe.
+
+Sur un document que le client ne peut pas lire, l'admin voit un bandeau
+collé sous la barre du portail : « Brouillon · le client ne voit
+pas ce document », ou « Réservé au revendeur · le client final ne
+voit pas ce document » pour la proposition d'un workspace de revendeur.
+Masqué à l'impression.
+
+La barre latérale porte une section par projet du workspace courant, sous
+la section Projets, le projet au document le plus récent en tête. Chaque
+section liste les documents que le compte lit, libellés par leur étape
+(« 2 · Proposition »).
+
+Le champ `cle` d'une fiche client (`src/content/clients/<slug>.yaml`) relie
+son workspace à la nomenclature des projets : trois lettres, reprises
+de la clé de team Linear. Le build vérifie qu'elle existe dans la
+nomenclature et qu'aucune clé n'est portée par deux workspaces. Un workspace
+sans clé (Coolbeans, Spinoza…) n'a aucun document du cycle.
+
+Les adresses publiques des documents restent servies telles quelles : leur
+fermeture, le bouton qui publie un document depuis le portail et
+l'invitation d'un compte viendront par la suite.
+
 **Les demandes.** La page Demandes montre d'abord le formulaire, puis la
 liste des fils, façon boîte de réception. Une demande porte un objet, une
 description, une urgence et jusqu'à trois pièces jointes (images, PDF ou ZIP,
@@ -219,3 +255,9 @@ chantier à part entière (voir la spec de migration dans
 | Création d'une demande, compte au nom duquel écrire | `src/pages/api/messagerie/nouveau.ts`, `comptePrincipal` dans `src/lib/portail/comptes.ts` |
 | Réponses et ouverture depuis Linear | `src/pages/api/linear-webhook.ts`, `src/lib/portail/messagerie/publier.ts` et `ouvrir.ts`, cron dans `src/worker.ts` |
 | Statuts côté client (trois pastilles) | `statutFromStateType` et `STATUT_LABEL` dans `src/lib/portail/messagerie/regles.ts`, couleurs dans `MessagerieBoard.astro` |
+| Règle de lecture, bandeau et adresse d'un document dans le portail | `src/lib/documents/acces.ts` |
+| Sections de projets de la barre latérale | `src/lib/documents/projets-portail.ts` |
+| Adresse publique d'un document, pour tout lien émis | `src/lib/documents/adresse.ts` |
+| Bandeau de l'admin sur un document | `src/components/documents/BandeauAcces.astro` |
+| Composants de page des quatre gabarits | `src/components/documents/pages/PageCadrage.astro`, `PageProposition.astro`, `PageLivrable.astro`, `PageTemoignage.astro` |
+| Route d'un document dans le portail | `src/pages/espace/projets/[projet]/[etape].astro` |
