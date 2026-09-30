@@ -38,7 +38,7 @@ Le sous-projet 1 donne une section de barre à chaque projet et une adresse à c
 
 - Le workspace Coolbeans se reconnaît à son slug, `coolbeans`.
 - Admin est visible quand le compte est admin et que le workspace courant est Coolbeans. Jamais ailleurs.
-- L'Aide est absente du workspace Coolbeans. Ses pages restent joignables par leur adresse.
+- L'Aide est absente du workspace Coolbeans. Ses pages restent joignables par leur adresse. Demandes vit dans l'Aide depuis le 2026-09-30 : elle disparaît aussi de la barre de Coolbeans.
 - Projets porte une entrée par projet de la sous-team, libellée du nom du projet Linear, dans l'ordre du §4.1. La section disparaît quand le workspace n'a aucun projet.
 - Le revendeur voit ce que voit le client, dans les workspaces de son organisation.
 - Les règles de visibilité page par page ne changent pas : flag `live` ou `wip`, mapping du client, badge admin.
@@ -47,7 +47,7 @@ Le sous-projet 1 donne une section de barre à chaque projet et une adresse à c
 
 Toutes les pages de la section Admin posent le cookie de workspace sur `coolbeans` et appellent `overrideCurrentWorkspace`. La doc applique déjà ce mécanisme, dans `src/pages/docs/[client]/[...slug].astro`.
 
-Pages concernées : `/admin`, `/admin/relances`, `/clients`, `/utilisateurs`, `/devis`, `/devis/reglages`, `/chiffrages`, `/chiffrages/reglages`.
+Pages concernées : `/admin`, `/admin/relances`, `/clients`, `/utilisateurs`, `/devis`, `/devis/reglages`. `/chiffrages` et `/chiffrages/reglages` redirigent déjà vers `/devis` : la bascule s'y fait à l'arrivée.
 
 Sans cette bascule, l'admin qui ouvre `/devis` depuis Amusoire verrait le cockpit des devis sous la barre d'Amusoire, sans section Admin.
 
@@ -79,7 +79,7 @@ La page retrouve le projet par l'identifiant court, les douze derniers caractèr
 
 ### 4.3 Le lien entre un document et son projet
 
-La table `PROJETS` de `src/lib/documents/nomenclature.ts` associe aujourd'hui un slug à une clé client. Elle associe désormais un slug à `{ client, linear }`, où `linear` est l'identifiant (UUID) du projet Linear.
+La table `PROJETS` de `src/lib/documents/nomenclature.ts` associe aujourd'hui un slug à une clé client. Elle associe désormais un slug à `{ client, linear }`, où `linear` est l'identifiant court du projet Linear (`slugId`, les douze caractères qui terminent son adresse). L'identifiant court, et non l'UUID, parce qu'il sert aussi à retrouver la page d'un projet quand Linear ne répond pas (§4.4).
 
 Le build échoue si une entrée n'a pas d'identifiant, ou si deux entrées portent le même.
 
