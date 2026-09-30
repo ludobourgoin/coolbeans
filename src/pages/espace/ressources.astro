@@ -1,7 +1,7 @@
 ---
 // Hub Ressources (COO-37) : cards de liens statiques par catégorie, mise en
-// page façon boîte à outils du site public (/tools), adaptée à l'idiome du
-// portail (.cards/.card de doc.css).
+// page façon boîte à outils du site public (/tools) : vignette du favicon,
+// nom, domaine. Cartes en utilitaires, jamais .card (doc.css l'écraserait).
 //
 // Seul module à ne dépendre d'aucun mapping publicMetadata : son contenu est
 // commun à tous les clients. Les liens vivent dans src/data/ressources.ts,
@@ -29,12 +29,26 @@ Astro.response.headers.set("Cache-Control", "no-store");
     ressourceCategories.map((cat) => (
       <section class="res-section" id={cat.id}>
         <h2>{cat.title}</h2>
-        <div class="cards">
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4">
           {cat.cards.map((r) => (
-            <a class="card" href={r.href} target="_blank" rel="noopener">
-              <div class="k">{r.domain}</div>
-              <div class="t">{r.name}</div>
-              <div class="d">{r.desc}</div>
+            <a
+              class="res-card group relative flex flex-col gap-3 rounded-card border border-line bg-surface p-4.5 text-ink no-underline transition-colors duration-150 ease-brand hover:border-ink hover:bg-surface-raise"
+              href={r.href}
+              target="_blank"
+              rel="noopener"
+            >
+              <div class="flex items-center gap-3 pr-5">
+                <div class="grid size-11 shrink-0 place-items-center border border-line bg-tile transition-transform duration-150 ease-brand group-hover:-rotate-3">
+                  <img src={r.logo} alt="" loading="lazy" class="size-3/4 object-contain" />
+                </div>
+                <div class="min-w-0">
+                  <div class="font-display text-lg/tight font-bold">{r.name}</div>
+                  <div class="truncate font-mono text-[10.5px]/normal tracking-[0.08em] text-mute uppercase">
+                    {r.domain}
+                  </div>
+                </div>
+              </div>
+              <div class="text-[13px]/[1.55] text-mute">{r.desc}</div>
             </a>
           ))}
         </div>
