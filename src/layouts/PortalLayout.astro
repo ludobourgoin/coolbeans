@@ -12,7 +12,11 @@
 import BaseLayout from "./BaseLayout.astro";
 import PortalNav from "../components/portail/PortalNav.astro";
 import PortalSidebar from "../components/portail/PortalSidebar.astro";
+import { chargerDocuments } from "../lib/documents/charger";
+import { lecture } from "../lib/documents/acces";
+import { sectionsProjets } from "../lib/documents/projets-portail";
 import { listWorkspaces, selectableWorkspaces } from "../lib/portail/workspaces";
+import { workspacesVisibles } from "../lib/portail/appartenances";
 import { prenomDe } from "../lib/portail/comptes";
 import { getPortalContext } from "../lib/portail/context";
 import { hrefOf, listDocEntries } from "../lib/portail/doc";
@@ -50,7 +54,16 @@ const admin = isAdmin(meta);
 // Le registre n'est lu que pour l'admin : lui seul voit le sélecteur (en tête
 // de la sidebar depuis le 2026-08-18).
 // Les archivés sortent du sélecteur, sauf s'ils sont le client courant.
-const clients = admin ? selectableWorkspaces(await listWorkspaces(), client) : [];
+const tousWorkspaces = await listWorkspaces();
+const clients = admin ? selectableWorkspaces(tousWorkspaces, client) : [];
+
+// Les documents du cycle du workspace courant, une section par projet. Un
+// workspace sans clé n'en a aucun. La règle de lecture est celle de la route
+// du document : la barre ne propose jamais une page qui répondrait 404.
+const compteLecteur = { role: meta.role, portee: workspacesVisibles(tousWorkspaces, meta).map((w) => w.slug) };
+const projets = client?.cle
+  ? sectionsProjets(await chargerDocuments(), client.cle, (d) => lecture(d, compteLecteur, client).lisible)
+  : [];
 
 // La sidebar liste les pages de doc du CLIENT COURANT, à plat (jamais
 // repliées) : même source et même ordre que la route /docs.
@@ -60,6 +73,7 @@ const sections = buildSidebar(
   meta,
   client,
   docEntries.map((e) => ({ title: e.data.title, href: hrefOf(e) })),
+  projets,
 );
 
 // `</script>` peut apparaître dans le texte indexé (extraits de code) : on
