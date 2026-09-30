@@ -17,7 +17,8 @@ seulement du sien.
 Hors périmètre de cette version :
 
 - le tableau admin qui compare tous les sites ;
-- les pays, les Core Web Vitals, la comparaison avec la période précédente ;
+- les pays, la comparaison avec la période précédente ;
+- les Core Web Vitals, livrés ensuite par COO-302 (`2026-09-30-portail-core-web-vitals-design.md`) ;
 - le filtrage des robots ;
 - l'historique d'avant le lancement au-delà de 7 jours ;
 - la pose du snippet sur de nouveaux sites (REV-22, MAT-15, SPI-35, CAFA).
