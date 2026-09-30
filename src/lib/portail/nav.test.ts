@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, test } from "vitest";
 import type { PortalWorkspace } from "./workspaces";
+import type { PortalMetadata } from "./metadata";
 import { readPortalMetadata } from "./metadata";
 import { buildSidebar, isActive, isPortalHost, portalHref, type DocPageLink } from "./nav";
 
@@ -27,6 +28,51 @@ const docPages: DocPageLink[] = [
 
 const flat = (sections: ReturnType<typeof buildSidebar>) =>
   sections.flatMap((s) => s.pages.map((p) => ({ section: s.key, ...p })));
+
+const metaClient: PortalMetadata = { role: "client", organisation: "coolbeans", workspace: "cafa" };
+const wsCafa: PortalWorkspace = {
+  slug: "cafa",
+  nom: "CAFA",
+  organisation: "coolbeans",
+  cle: "caf",
+  uptimerobot_monitor_ids: [],
+  archive: false,
+};
+const projetsCafa = [
+  {
+    projet: "site-web-879",
+    titre: "Site web CAFA",
+    entrees: [{ label: "2 · Proposition", chemin: "/projets/site-web-879/proposition" }],
+  },
+];
+
+test("une section par projet se place juste après « Projets »", () => {
+  const sections = buildSidebar("my.coolbeans.cc", metaClient, wsCafa, [], projetsCafa);
+  const cles = sections.map((s) => s.key);
+  expect(cles.indexOf("projet-site-web-879")).toBe(cles.indexOf("projets") + 1);
+  const section = sections.find((s) => s.key === "projet-site-web-879")!;
+  expect(section).toMatchObject({ label: "Site web CAFA", icon: "folder" });
+  expect(section.pages).toEqual([
+    {
+      label: "2 · Proposition",
+      href: "/projets/site-web-879/proposition",
+      activePrefix: "/espace/projets/site-web-879/proposition",
+      wip: false,
+    },
+  ]);
+});
+
+test("hors du portail, l'entrée garde le préfixe /espace", () => {
+  const sections = buildSidebar("localhost", metaClient, wsCafa, [], projetsCafa);
+  const section = sections.find((s) => s.key === "projet-site-web-879")!;
+  expect(section.pages[0].href).toBe("/espace/projets/site-web-879/proposition");
+});
+
+test("sans projet, la barre latérale ne change pas", () => {
+  expect(buildSidebar("my.coolbeans.cc", metaClient, wsCafa, [])).toEqual(
+    buildSidebar("my.coolbeans.cc", metaClient, wsCafa, [], []),
+  );
+});
 
 describe("isPortalHost", () => {
   it("reconnaît les deux hôtes portail", () => {

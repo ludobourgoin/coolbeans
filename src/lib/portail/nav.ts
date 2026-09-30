@@ -21,6 +21,7 @@
 
 import { missingKeysFor, moduleCoupe, type PortalWorkspace } from "./workspaces";
 import { isAdmin, type PortalMetadata } from "./metadata";
+import type { SectionProjet } from "../documents/projets-portail";
 
 /** Hôtes sur lesquels le préfixe /espace est retiré de l'URL publique. */
 const PORTAL_HOSTS = ["my.coolbeans.cc", "my-staging.coolbeans.cc"];
@@ -188,12 +189,16 @@ const SECTIONS: SectionDef[] = [
  * voit la doc d'Amusoire), résolues par le layout. Client sans doc : la
  * section pointe pour l'admin vers la page d'explication /espace/doc plutôt
  * qu'un lien mort, et disparaît pour un client.
+ *
+ * `projets` : sections de projet du client courant (documents du cycle),
+ * calculées par le layout.
  */
 export function buildSidebar(
   hostname: string,
   meta: PortalMetadata,
   client: PortalWorkspace | null,
   docPages: DocPageLink[],
+  projets: SectionProjet[] = [],
 ): SidebarSection[] {
   const admin = isAdmin(meta);
   const at = (path: string) => portalHref(path, hostname);
@@ -227,6 +232,26 @@ export function buildSidebar(
     const site = sections.findIndex((s) => s.key === "site");
     const anchor = site >= 0 ? site : sections.findIndex((s) => s.key === "bienvenue");
     sections.splice(anchor + 1, 0, doc);
+  }
+
+  // Les documents du cycle, une section par projet, juste après « Projets »
+  // (ou après « Bienvenue » si elle manque). Chaque entrée ne s'allume que
+  // sur elle-même, comme les pages de doc.
+  const deProjet: SidebarSection[] = projets.map((p) => ({
+    key: `projet-${p.projet}`,
+    label: p.titre,
+    icon: "folder",
+    pages: p.entrees.map((e) => ({
+      label: e.label,
+      href: at(e.chemin),
+      activePrefix: `/espace${e.chemin}`,
+      wip: false,
+    })),
+  }));
+  if (deProjet.length > 0) {
+    const apresProjets = sections.findIndex((s) => s.key === "projets");
+    const ancre = apresProjets >= 0 ? apresProjets : sections.findIndex((s) => s.key === "bienvenue");
+    sections.splice(ancre + 1, 0, ...deProjet);
   }
 
   return sections;
