@@ -29,6 +29,8 @@
 titre: La boutique Fylgo
 objet: Le détail de ce qui a été fait, ce qui reste ouvert et pourquoi, et ce que vous pouvez faire sans moi.
 date: 2026-09-22
+projet: boutique-shopify-390
+etape: livraison
 # Pas de formulaire de réponse : ce document ne demande pas une validation,
 # il acte une livraison. Le client répond par mail ou sur WhatsApp.
 formulaire: false

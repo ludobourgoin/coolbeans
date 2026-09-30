@@ -21,9 +21,12 @@
 titre: La précommande de ton livre en ligne
 objet: Quelques questions avant de te faire une proposition
 date: 2026-09-15
+projet: precommande-livre-412
+etape: cadrage
 contact: Aurélie
 tutoiement: true
 linear:
+  projet: Précommande du livre
   affaire: CRM-95
 
 intro:

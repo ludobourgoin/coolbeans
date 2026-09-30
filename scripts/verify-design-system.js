@@ -284,26 +284,25 @@ check('blocs <style> limités aux exceptions', illegal.length === 0, illegal.joi
    pas juste se voir en dark mode. */
 const badge = read('src/components/ui/Badge.astro');
 check('Badge.astro existe', !!badge);
+const dsRoot = geist ? declMap(extractBlock(geist, ':root {')) : {};
+const dsDark = geist ? declMap(extractBlock(geist, '.dark {')) : {};
+const extractPairMap = (source, name) => {
+  const m = source.match(new RegExp(name + '\\s*:\\s*Record<string,\\s*string>\\s*=\\s*\\{([\\s\\S]*?)\\n\\s*\\};'));
+  if (!m) return null;
+  const map = {};
+  for (const pm of m[1].matchAll(/(\w+):\s*"([^"]+)"/g)) map[pm[1]] = pm[2];
+  return map;
+};
+const resolveDsColor = (token, mode) => {
+  const raw = (mode === 'dark' && dsDark[token]) || dsRoot[token];
+  if (!raw) throw new Error(token + ' non défini dans geist-tokens.css (mode ' + mode + ')');
+  if (!HEX.test(raw)) throw new Error(token + ' = "' + raw + '" — pas un hex direct');
+  return raw;
+};
+
 if (badge && geist) {
-  const dsRoot = declMap(extractBlock(geist, ':root {'));
-  const dsDark = declMap(extractBlock(geist, '.dark {'));
-
-  const extractPairMap = name => {
-    const m = badge.match(new RegExp(name + '\\s*:\\s*Record<string,\\s*string>\\s*=\\s*\\{([\\s\\S]*?)\\n\\s*\\};'));
-    if (!m) return null;
-    const map = {};
-    for (const pm of m[1].matchAll(/(\w+):\s*"([^"]+)"/g)) map[pm[1]] = pm[2];
-    return map;
-  };
-  const resolveDsColor = (token, mode) => {
-    const raw = (mode === 'dark' && dsDark[token]) || dsRoot[token];
-    if (!raw) throw new Error(token + ' non défini dans geist-tokens.css (mode ' + mode + ')');
-    if (!HEX.test(raw)) throw new Error(token + ' = "' + raw + '" — pas un hex direct');
-    return raw;
-  };
-
   for (const [mapName, styleLabel] of [['SOLID', 'pleine'], ['SUBTLE', 'discrète']]) {
-    const pairs = extractPairMap(mapName);
+    const pairs = extractPairMap(badge, mapName);
     if (!pairs) {
       check('Badge.astro : objet ' + mapName + ' lisible', false, 'introuvable ou format inattendu');
       continue;
@@ -333,6 +332,36 @@ if (badge && geist) {
   }
 } else {
   check('résolution des contrastes Badge', false, 'Badge.astro ou geist-tokens.css introuvable');
+}
+
+/* G bis · contraste des pastilles de la frise des documents client. Même
+   méthode que pour Badge : les paires sont LUES dans l'objet TEINTES de
+   DocumentFrise.astro, jamais supposées. Le texte -900 doit se lire sur le
+   fond -100, en clair comme en sombre, y compris la teinte teal de l'audit. */
+const frise = read('src/components/documents/DocumentFrise.astro');
+check('DocumentFrise.astro existe', !!frise);
+if (frise && geist) {
+  const pairs = extractPairMap(frise, 'TEINTES');
+  if (!pairs) {
+    check('DocumentFrise.astro : objet TEINTES lisible', false, 'introuvable ou format inattendu');
+  } else {
+    for (const [teinte, decl] of Object.entries(pairs)) {
+      const m = decl.match(/--fond:var\((--ds-[\w-]+)\);--encre:var\((--ds-[\w-]+)\)/);
+      if (!m) {
+        check('Pastille ' + teinte + ' : déclaration analysable', false, decl);
+        continue;
+      }
+      const [, bgToken, fgToken] = m;
+      for (const mode of ['light', 'dark']) {
+        try {
+          const r = ratio(resolveDsColor(fgToken, mode), resolveDsColor(bgToken, mode));
+          check('contraste pastille ' + teinte + ', ' + mode + ' (' + r.toFixed(2) + ':1)', r >= 4.5, 'attendu ≥ 4.5, ' + fgToken + ' sur ' + bgToken);
+        } catch (e) {
+          check('contraste pastille ' + teinte + ', ' + mode, false, e.message);
+        }
+      }
+    }
+  }
 }
 
 /* ── H · la table SEMANTIC de /design-system correspond à global.css ──

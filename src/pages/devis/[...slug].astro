@@ -1,54 +1,52 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import GridBackdrop from "../../components/GridBackdrop.astro";
+import DocumentEntete from "../../components/documents/DocumentEntete.astro";
+import DocumentVolet from "../../components/documents/DocumentVolet.astro";
 import DevisCorps from "../../components/devis/DevisCorps.astro";
 import DevisEntetePrint from "../../components/devis/DevisEntetePrint.astro";
 import DevisReponse from "../../components/devis/DevisReponse.astro";
 import DevisFooter from "../../components/devis/DevisFooter.astro";
-import DocumentTopbar from "../../components/devis/DocumentTopbar.astro";
 import DocumentReponses from "../../components/devis/DocumentReponses.astro";
-import { dateLongue } from "../../lib/devis";
 import { construitesEnProduction } from "../../lib/documents/statut";
+import { chargerDocuments } from "../../lib/documents/charger";
+import { frise } from "../../lib/documents/frise";
+import { grouperVersions, libelleOnglet, ligneDate, titreEntete } from "../../lib/documents/entete";
+import { sectionsDevis } from "../../lib/documents/sections";
 
-/* Un devis peut avoir plusieurs versions (révision de périmètre). Elles
-   partagent l'URL de la V1 — le lien déjà envoyé au client ne bouge jamais —
-   et se choisissent par des onglets. Seule la V1 génère une route ; les
-   versions suivantes se déclarent par `versionDe` et n'ont pas d'URL propre,
-   sans quoi le client pourrait tomber sur une révision hors de son contexte. */
+/* Une proposition peut avoir plusieurs versions (révision de périmètre).
+   Elles partagent l'URL de la V1, et le lien déjà envoyé au client ne bouge
+   jamais. Seule la V1 génère une route ; les versions suivantes se déclarent
+   par `versionDe` et n'ont pas d'URL propre, sans quoi le client pourrait
+   tomber sur une révision hors de son contexte. */
 export async function getStaticPaths() {
-  /* Le filtre passe AVANT le calcul des racines : sur une racine il fait
+  /* Charge aussi les trois autres collections, pour la frise, et arrête le
+     build si la nomenclature est incohérente. */
+  const documents = await chargerDocuments();
+  /* Le filtre passe AVANT le regroupement : sur une racine il fait
      disparaître la page, sur une version il fait disparaître un onglet. */
   const entries = construitesEnProduction(await getCollection("devis"), import.meta.env.DEV);
-  const racines = entries.filter((e) => !e.data.versionDe);
-
-  return racines.map((racine) => {
-    const versions = [racine, ...entries.filter((e) => e.data.versionDe === racine.id)].sort(
-      (a, b) => a.data.version - b.data.version,
-    );
-    return { params: { slug: racine.id }, props: { versions } };
-  });
+  return grouperVersions(entries).map((versions) => ({
+    params: { slug: versions[0].id },
+    props: {
+      versions,
+      pastilles: frise(documents, { collection: "devis", id: versions[0].id }, import.meta.env.DEV),
+    },
+  }));
 }
 
-const { versions } = Astro.props;
+const { versions, pastilles } = Astro.props;
 
 /* La dernière version est celle qui engage : c'est elle qu'on ouvre. Les
    précédentes restent consultables, jamais réécrites. */
 const actif = versions.length - 1;
-
-const dateCourte = (d: Date) =>
-  d.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
-
-/* La date du devis n'était portée que par le frontmatter : le client ne la
-   voyait nulle part, alors qu'elle date l'engagement commercial. Le format
-   vient de `lib/devis` — trois copies locales de la même fonction avaient
-   divergé, et la correction du « 1er » n'en aurait touché qu'une. */
-
+const racine = versions[0].data;
 const courante = versions[actif].data;
+const plusieurs = versions.length > 1;
 
 /* Référence du document, reprise telle quelle sur le devis Tiime qui y
-   renvoie : c'est le suffixe à quatre chiffres du slug de la V1, stable
-   d'une version à l'autre puisque les suivantes n'ont pas d'URL propre. */
+   renvoie : le suffixe à quatre chiffres du slug de la V1, stable d'une
+   version à l'autre puisque les suivantes n'ont pas d'URL propre. */
 const reference = versions[0].id.split("-").pop();
 ---
 
@@ -57,68 +55,36 @@ const reference = versions[0].id.split("-").pop();
   description={`Proposition commerciale : ${courante.objet}`}
   noindex
 >
-  <DocumentTopbar />
+  <DocumentEntete
+    etape={racine.etape}
+    titre={titreEntete(racine)}
+    frise={pastilles}
+    onglets={versions.map((v) => ({ libelle: libelleOnglet(v.data), slug: v.id }))}
+    actif={actif}
+  />
 
-  <!-- EN-TÊTE -->
-  <header class="relative overflow-hidden bg-surface-subtle">
-    <GridBackdrop />
-    <div class="container-site relative pt-24x pb-16x text-center">
-      <p class="label">Proposition commerciale</p>
-      {
-        versions.map((v, i) => (
-          <div data-devis-entete={i} hidden={i !== actif}>
-            <h1 class="mx-auto mt-5 max-w-[18ch]">{v.data.titre}</h1>
-            <p class="mx-auto mt-6 max-w-[62ch] text-xl leading-[1.45] font-medium text-balance">
-              {v.data.objet}
-            </p>
-            <p class="mt-5 font-mono text-[12px] tracking-wide text-mute uppercase">
-              Proposition du {dateLongue(v.data.date)}
-            </p>
-          </div>
-        ))
-      }
-
-      {
-        versions.length > 1 && (
-          <div class="mt-8 flex flex-wrap justify-center gap-2" role="tablist">
-            {versions.map((v, i) => (
-              <button
-                type="button"
-                role="tab"
-                aria-pressed={i === actif}
-                data-devis-onglet={i}
-                data-devis-slug={v.id}
-                class:list={[
-                  "rounded-full px-3 py-1 text-[13px] font-semibold transition-colors duration-150 ease-in-out",
-                  i === actif
-                    ? "bg-ink text-surface"
-                    : "text-mute hover:bg-surface-raise hover:text-ink",
-                ]}
-              >
-                V{v.data.version} · {dateCourte(v.data.date)}
-              </button>
-            ))}
-          </div>
-        )
-      }
-    </div>
-  </header>
-
-  <!-- CORPS DU DEVIS -->
-  <div class="container-site">
-    {
-      versions.map((v, i) => (
-        <div data-devis-pane={i} hidden={i !== actif}>
+  {
+    versions.map((v, i) => (
+      <DocumentVolet
+        index={i}
+        actif={actif}
+        total={versions.length}
+        titre={v.data.titre}
+        objet={v.data.objet}
+        date={ligneDate(v.data, plusieurs, "Proposition")}
+        sections={sectionsDevis(v.data, plusieurs ? v.data.version : undefined)}
+      >
+        <div class="container-site">
           <DevisEntetePrint d={v.data} reference={reference} />
           <DevisCorps
             d={v.data}
-            version={versions.length > 1 ? v.data.version : undefined}
+            version={plusieurs ? v.data.version : undefined}
             precedent={i > 0 ? versions[i - 1].data : undefined}
           />
         </div>
-      ))
-    }
-  </div>
+      </DocumentVolet>
+    ))
+  }
 
   <!-- Pied du tirage PDF. Masqué à l'écran, où la page porte déjà son URL
        dans la barre du navigateur ; indispensable sur un document qui
@@ -149,40 +115,6 @@ const reference = versions[0].id.split("-").pop();
 
   <DevisFooter />
 </BaseLayout>
-
-<script>
-  /* Onglets de versions. Même mécanique que le sélecteur d'options de planning
-     de DevisCorps : on bascule la visibilité, on ne recharge pas. Le slug du
-     formulaire de réponse suit la version affichée, sans quoi une réponse à la
-     V1 arriverait étiquetée V2. */
-  const onglets = document.querySelectorAll<HTMLButtonElement>("[data-devis-onglet]");
-  const form = document.querySelector<HTMLFormElement>("#devis-form");
-
-  onglets.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const cible = btn.dataset.devisOnglet;
-
-      onglets.forEach((b) => {
-        const actif = b.dataset.devisOnglet === cible;
-        b.setAttribute("aria-pressed", String(actif));
-        b.classList.toggle("bg-ink", actif);
-        b.classList.toggle("text-surface", actif);
-        b.classList.toggle("text-mute", !actif);
-        b.classList.toggle("hover:bg-surface-raise", !actif);
-        b.classList.toggle("hover:text-ink", !actif);
-      });
-
-      document
-        .querySelectorAll<HTMLElement>("[data-devis-pane], [data-devis-entete]")
-        .forEach((el) => {
-          el.hidden = (el.dataset.devisPane ?? el.dataset.devisEntete) !== cible;
-        });
-
-      if (form && btn.dataset.devisSlug) form.dataset.slug = btn.dataset.devisSlug;
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-  });
-</script>
 
 <style is:global>
   /* Feuille d'impression du devis. Le PDF part en pièce jointe d'un mail, à
@@ -228,7 +160,6 @@ const reference = versions[0].id.split("-").pop();
        site, et l'en-tête web — un hero centré sur fond quadrillé qui mange
        un tiers de la première page pour redire un titre. DevisEntetePrint
        le remplace par un bloc émetteur / destinataire / référence. */
-    [data-sticky-devis-nav],
     [data-devis-reponse],
     header,
     footer {

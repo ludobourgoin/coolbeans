@@ -1,6 +1,8 @@
 titre: Miharu x Coolbeans
 objet: Formulaire avant le téléchargement des brochures
 date: 2026-08-31
+projet: formulaire-brochures-831
+etape: proposition
 contact: Jérémy
 
 envoi:
@@ -8,7 +10,7 @@ envoi:
   destinataire: jeremy@trigger.fr
 
 linear:
-  projet: https://linear.app/coolbeans-hq/project/formulaire-avant-telechargement-des-brochures-603b24fea5d1
+  projet: Formulaire avant téléchargement des brochures
   affaire: https://linear.app/coolbeans-hq/issue/CRM-74
 
 sections:

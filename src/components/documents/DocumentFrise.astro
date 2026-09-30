@@ -1,0 +1,64 @@
+---
+/* La frise des étapes d'un projet (spec 2026-09-22 §2). Elle navigue entre
+   les documents du projet : survol teinté, page courante teintée, les autres
+   grises. Une étape sans document servi est estompée et non cliquable.
+
+   Pastilles reprises de l'image OG, à l'échelle dense : fond -100, encre
+   -900, 32 px de haut, rayon plein, numéro devant le libellé. `Badge subtle`
+   ne convient pas : fond -200, 24 px, trop dense. */
+import type { Pastille } from "../../lib/documents/frise";
+
+interface Props {
+  pastilles: Pastille[];
+}
+
+const { pastilles } = Astro.props;
+
+/* Paires fond et encre de chaque teinte. La section G de
+   scripts/verify-design-system.js lit cet objet pour en vérifier le
+   contraste : ne pas changer son format. */
+const TEINTES: Record<string, string> = {
+  teal: "--fond:var(--ds-teal-100);--encre:var(--ds-teal-900)",
+  amber: "--fond:var(--ds-amber-100);--encre:var(--ds-amber-900)",
+  blue: "--fond:var(--ds-blue-100);--encre:var(--ds-blue-900)",
+  gray: "--fond:var(--ds-gray-100);--encre:var(--ds-gray-900)",
+  green: "--fond:var(--ds-green-100);--encre:var(--ds-green-900)",
+  purple: "--fond:var(--ds-purple-100);--encre:var(--ds-purple-900)",
+};
+
+const PASTILLE =
+  "inline-flex h-8 items-center gap-[7px] rounded-full bg-surface-raise px-4 text-[14px]/none font-medium tracking-[-0.01em] whitespace-nowrap text-mute";
+const NUMERO = "font-mono text-[11px]/none font-semibold opacity-[.55]";
+---
+
+{
+  pastilles.length > 0 && (
+    <nav aria-label="Documents du projet" class="mt-6">
+      <ol class="flex flex-wrap gap-[9px]">
+        {pastilles.map((p) => (
+          <li>
+            {p.href ? (
+              <a
+                href={p.href}
+                aria-current={p.courante ? "page" : undefined}
+                style={TEINTES[p.teinte]}
+                class:list={[
+                  PASTILLE,
+                  "transition-colors duration-150 ease-in-out hover:bg-(--fond) hover:text-(--encre) aria-[current=page]:bg-(--fond) aria-[current=page]:text-(--encre)",
+                ]}
+              >
+                <span class={NUMERO}>{p.numero}</span>
+                {p.libelle}
+              </a>
+            ) : (
+              <span class:list={[PASTILLE, "opacity-[.45]"]} aria-disabled="true">
+                <span class={NUMERO}>{p.numero}</span>
+                {p.libelle}
+              </span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}

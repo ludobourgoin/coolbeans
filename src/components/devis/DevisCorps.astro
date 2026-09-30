@@ -43,32 +43,6 @@ const NEUF = `${NEUF_FOND} rounded-[2px]`;
 const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
 ---
 
-<!-- BLOC STICKY : nav de sections. Colle au sommet du viewport, la page
-     devis n'a pas de Nav Coolbeans au-dessus. -->
-<div
-  data-sticky-devis-nav
-  class="sticky top-0 z-40 -mx-[calc((100vw-100%)/2)] border-b border-line bg-surface/95 backdrop-blur-sm"
->
-  <nav class="overflow-x-auto" aria-label="Sections du devis">
-    <ul class="mx-auto flex w-max max-w-260 gap-6 px-6 py-3.5 whitespace-nowrap">
-      {
-        d.sections.map((section) => (
-          <li>
-            <a
-              href={`#${ancre(section.titre)}`}
-              data-section-link
-              aria-current="false"
-              class="rounded-control px-2 py-1 font-mono text-[12px] font-semibold tracking-wide text-mute uppercase transition-colors duration-150 ease-in-out hover:bg-surface-raise hover:text-ink aria-current:bg-ink aria-current:text-surface"
-            >
-              {section.titre}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
-</div>
-
 <div class="mx-auto max-w-[880px] py-16x">
   {
     /* Légende du surlignage, juste sous la nav : le client la rencontre avant
@@ -438,39 +412,6 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
 </div>
 
 <script>
-  /* scrollspy de la nav de section : surligne le lien qui correspond à la
-     section actuellement sous le bloc sticky, pour toujours savoir où on se
-     situe dans le devis. */
-  const sections = document.querySelectorAll<HTMLElement>("section[id]");
-  const links = document.querySelectorAll<HTMLAnchorElement>("[data-section-link]");
-  const stickyBars = document.querySelectorAll<HTMLElement>("[data-sticky-devis-nav]");
-
-  const setActive = (id: string) => {
-    links.forEach((link) => {
-      link.setAttribute("aria-current", link.getAttribute("href") === `#${id}` ? "true" : "false");
-    });
-  };
-
-  const stickyOffset = () => {
-    const visible = [...stickyBars].find((bar) => bar.offsetParent !== null);
-    return visible?.offsetHeight ?? 0;
-  };
-
-  if (sections.length && links.length) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (!visible.length) return;
-        const top = visible.reduce((a, b) =>
-          a.boundingClientRect.top < b.boundingClientRect.top ? a : b,
-        );
-        setActive(top.target.id);
-      },
-      { rootMargin: `-${stickyOffset()}px 0px -70% 0px`, threshold: 0 },
-    );
-    sections.forEach((section) => observer.observe(section));
-  }
-
   /* sélecteur local d'options de planning (ex. démarrage immédiat vs
      démarrage différé), scopé par groupe pour gérer plusieurs plannings sur
      la même page. */

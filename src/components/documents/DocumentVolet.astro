@@ -1,0 +1,40 @@
+---
+/* Un volet : ce qui appartient à une version ou à un chapitre, sous la barre
+   d'onglets de DocumentEntete. Nav des sections, titre du document, objet,
+   date, bouton, puis le contenu. */
+import DocumentSections from "./DocumentSections.astro";
+import type { SectionNav } from "../../lib/documents/sections";
+
+interface Props {
+  index: number;
+  actif: number;
+  /** Nombre de volets de la page. Un seul : pas de rôle d'onglet. */
+  total: number;
+  titre: string;
+  objet: string;
+  date: string;
+  sections: SectionNav[];
+}
+
+const { index, actif, total, titre, objet, date, sections } = Astro.props;
+const onglets = total > 1;
+---
+
+<div
+  data-document-volet={index}
+  id={onglets ? `volet-${index}` : undefined}
+  role={onglets ? "tabpanel" : undefined}
+  aria-labelledby={onglets ? `onglet-${index}` : undefined}
+  hidden={index !== actif}
+>
+  <DocumentSections sections={sections} />
+  <div class="container-site">
+    <div class="mx-auto max-w-[880px] pt-10">
+      <h2 class="text-[1.75rem]/[1.2] tracking-[-0.01em]">{titre}</h2>
+      <p class="mt-3.5 max-w-[62ch] text-lg/normal text-mute">{objet}</p>
+      <p class="mt-4.5 font-mono text-[12px]/normal tracking-[0.04em] text-mute uppercase">{date}</p>
+      <slot name="action" />
+    </div>
+  </div>
+  <slot />
+</div>
