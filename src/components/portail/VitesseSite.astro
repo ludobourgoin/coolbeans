@@ -15,27 +15,37 @@ interface Props {
 
 const { vitesse } = Astro.props;
 
-const CARTES: Array<{ metrique: Metrique; titre: string; sigle: string; description: string; aide: string }> = [
+const CARTES: Array<{
+  metrique: Metrique;
+  titre: string;
+  sigle: string;
+  description: string;
+  bon: string;
+  mauvais: string;
+}> = [
   {
     metrique: "lcp",
     titre: "Affichage",
     sigle: "LCP",
     description: "Temps pour afficher le contenu principal.",
-    aide: "Bon sous 2,5 s, mauvais au‑delà de 4 s.",
+    bon: "2,5 s",
+    mauvais: "4 s",
   },
   {
     metrique: "inp",
     titre: "Réactivité",
     sigle: "INP",
     description: "Délai de réaction à un clic ou une touche.",
-    aide: "Bon sous 200 ms, mauvais au‑delà de 500 ms.",
+    bon: "200 ms",
+    mauvais: "500 ms",
   },
   {
     metrique: "cls",
     titre: "Stabilité",
     sigle: "CLS",
     description: "Mouvements de la page pendant le chargement.",
-    aide: "Bon sous 0,1, mauvais au‑delà de 0,25.",
+    bon: "0,1",
+    mauvais: "0,25",
   },
 ];
 
@@ -47,7 +57,13 @@ const NOTES: Record<Note, { libelle: string; variante: "green" | "amber" | "red"
 };
 
 const nombre = new Intl.NumberFormat("fr-FR");
-const pourcent = new Intl.NumberFormat("fr-FR", { style: "percent", maximumFractionDigits: 0 });
+// Arrondi vers le bas : 74,6 % ne doit jamais s'afficher « 75 % » à côté
+// de « À améliorer », puisque « Bon » commence à 75 % exactement.
+const pourcent = new Intl.NumberFormat("fr-FR", {
+  style: "percent",
+  maximumFractionDigits: 0,
+  roundingMode: "floor",
+});
 const mesures = (n: number) => `${nombre.format(n)} mesure${n > 1 ? "s" : ""}`;
 const resume = (e: Evaluation) =>
   e.note
@@ -55,10 +71,14 @@ const resume = (e: Evaluation) =>
     : e.mesures === 0
       ? "Aucune mesure sur la période"
       : `${mesures(e.mesures)} sur les ${MESURES_MIN} nécessaires`;
-/** Ligne Mobile ou Ordinateur : la note et son nombre de mesures, ou le manque. */
+/**
+ * Ligne Mobile ou Ordinateur : la note et son nombre de mesures, ou le
+ * manque. Espace insécable avant « · » : c'est le seul point de coupure
+ * autorisé d'une valeur notée, jamais entre la note et le point.
+ */
 const detail = (e: Evaluation) =>
   e.note
-    ? `${NOTES[e.note].libelle} · ${mesures(e.mesures)}`
+    ? `${NOTES[e.note].libelle} · ${mesures(e.mesures)}`
     : e.mesures === 0
       ? "aucune mesure"
       : `pas assez de mesures (${nombre.format(e.mesures)})`;
@@ -93,16 +113,16 @@ const detail = (e: Evaluation) =>
               </p>
               <p class="mt-2x text-sm tabular-nums">{resume(global)}</p>
               <dl class="mt-4x grid gap-1 text-sm">
-                <div class="flex flex-wrap items-baseline justify-between gap-x-3x">
+                <div class="flex flex-wrap items-baseline justify-between gap-x-3x gap-y-1">
                   <dt class="text-mute">Mobile</dt>
-                  <dd class="ml-auto whitespace-nowrap tabular-nums">{detail(mobile)}</dd>
+                  <dd class="ml-auto min-w-0 text-right tabular-nums">{detail(mobile)}</dd>
                 </div>
-                <div class="flex flex-wrap items-baseline justify-between gap-x-3x">
+                <div class="flex flex-wrap items-baseline justify-between gap-x-3x gap-y-1">
                   <dt class="text-mute">Ordinateur</dt>
-                  <dd class="ml-auto whitespace-nowrap tabular-nums">{detail(ordinateur)}</dd>
+                  <dd class="ml-auto min-w-0 text-right tabular-nums">{detail(ordinateur)}</dd>
                 </div>
               </dl>
-              <p class="mt-4x text-xs text-mute">{carte.aide}</p>
+              <p class="mt-4x text-xs text-mute">Bon sous <span class="whitespace-nowrap">{carte.bon}</span>, mauvais <span class="whitespace-nowrap">au-delà de {carte.mauvais}</span>.</p>
             </div>
           );
         })}

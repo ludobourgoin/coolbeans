@@ -1439,6 +1439,9 @@ Laisser le serveur tourner si la relecture visuelle n'est pas finie. Sinon `npx 
 
 Rien de ce qui suit ne se fait sans ordre explicite de Ludo (spec §8).
 
-1. Appliquer `0012_analytics_vitaux.sql` à `coolbeans-portal` et à `coolbeans-portal-staging` (`--remote`), **avant** tout push de la branche sur `staging`. Sans la table, la collecte de nuit échoue en entier, trafic compris, dès qu'une autre session merge `staging` dans `main`.
-2. Merger `feat/core-web-vitals` dans `staging`, pousser, vérifier le build.
-3. Le lendemain de la mise en ligne, vérifier que `analytics_vitaux` contient des lignes pour les 7 derniers jours.
+1. Depuis le worktree `/Users/ludovicbourgoin/dev/coolbeans-core-web-vitals`, seul endroit où `0012_analytics_vitaux.sql` existe avant le merge : `npx wrangler d1 migrations list coolbeans-portal --remote` doit montrer 0012 seule en attente, puis `npx wrangler d1 migrations apply coolbeans-portal --remote`. Lancée depuis le clone principal, la commande répond « No migrations to apply » et passe pour un succès.
+2. Même chose pour staging, avec `--env staging` : `npx wrangler d1 migrations list coolbeans-portal-staging --remote --env staging`, puis `apply`. Le nom `coolbeans-portal-staging` n'existe que sous `env.staging`.
+3. Sans la table, la page Analytics passe en « indisponible » pour tous les clients dès le déploiement du code, pas seulement à la collecte de 04:05.
+4. Merger `feat/core-web-vitals` dans `staging`, pousser, vérifier le build.
+5. Le lendemain de la mise en ligne, vérifier que `analytics_vitaux` contient des lignes pour les 7 derniers jours.
+6. Après le merge, appliquer 0012 en `--local` dans le clone principal : sinon sa page Analytics locale est « indisponible », et chaque nouveau worktree recopie cette base.
