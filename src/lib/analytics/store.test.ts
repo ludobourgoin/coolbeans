@@ -6,6 +6,7 @@ import {
   lireCollectes,
   lireJours,
   lireRepartitions,
+  lireVitaux,
   type D1Analytics,
 } from "./store";
 import type { JourAnalytics } from "./types";
@@ -31,6 +32,10 @@ function mesure(jour: string, p: Partial<JourAnalytics> = {}): JourAnalytics {
     ...p,
   };
 }
+
+const c = (bon: number, moyen: number, mauvais: number) => ({ bon, moyen, mauvais });
+const VITAUX_MOBILE = { appareil: "mobile" as const, lcp: c(8, 1, 1), inp: c(3, 0, 0), cls: c(9, 0, 1) };
+const VITAUX_ORDINATEUR = { appareil: "desktop" as const, lcp: c(2, 0, 0), inp: c(0, 0, 0), cls: c(2, 0, 0) };
 
 const pagesDe = async (db: D1Analytics, siteTag: string, du: string, au: string) =>
   (await lireRepartitions(db, siteTag, du, au))
@@ -113,5 +118,59 @@ describe("store analytics (D1)", () => {
       premierJour: "2026-09-22",
       derniereCollecte: "2026-09-29T04:05:01.000Z",
     });
+  });
+
+  it("indexe jour sur analytics_vitaux", () => {
+    const index = sqlite
+      .prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND name = 'analytics_vitaux_jour'")
+      .all();
+    expect(index).toHaveLength(1);
+  });
+
+  it("écrit les vitaux d'un jour et les relit par appareil", async () => {
+    await ecrireJour(
+      db,
+      "2026-09-28",
+      [mesure("2026-09-28", { vitaux: [VITAUX_MOBILE, VITAUX_ORDINATEUR] })],
+      COLLECTE,
+    );
+    expect(await lireVitaux(db, SITE, "2026-09-01", "2026-09-30")).toEqual([
+      VITAUX_ORDINATEUR,
+      VITAUX_MOBILE,
+    ]);
+  });
+
+  it("somme les vitaux sur la fenêtre, pour le seul site demandé", async () => {
+    await ecrireJour(
+      db,
+      "2026-09-27",
+      [
+        mesure("2026-09-27", { vitaux: [VITAUX_MOBILE] }),
+        mesure("2026-09-27", { siteTag: AUTRE, vitaux: [VITAUX_MOBILE] }),
+      ],
+      COLLECTE,
+    );
+    await ecrireJour(db, "2026-09-28", [mesure("2026-09-28", { vitaux: [VITAUX_MOBILE] })], COLLECTE);
+    // Hors fenêtre : ne compte pas.
+    await ecrireJour(db, "2026-09-29", [mesure("2026-09-29", { vitaux: [VITAUX_MOBILE] })], COLLECTE);
+    expect(await lireVitaux(db, SITE, "2026-09-27", "2026-09-28")).toEqual([
+      { appareil: "mobile", lcp: c(16, 2, 2), inp: c(6, 0, 0), cls: c(18, 0, 2) },
+    ]);
+  });
+
+  it("réécrire un jour efface ses anciens vitaux", async () => {
+    await ecrireJour(db, "2026-09-28", [mesure("2026-09-28", { vitaux: [VITAUX_MOBILE] })], COLLECTE);
+    await ecrireJour(db, "2026-09-28", [mesure("2026-09-28")], "2026-09-30T04:05:00.000Z");
+    expect(await lireVitaux(db, SITE, "2026-09-28", "2026-09-28")).toEqual([]);
+  });
+
+  it("refuse un appareil hors liste, sans rien écrire du jour", async () => {
+    const intrus = { ...VITAUX_MOBILE, appareil: "smarttv" as never };
+    await expect(
+      ecrireJour(db, "2026-09-28", [mesure("2026-09-28", { vitaux: [intrus] })], COLLECTE),
+    ).rejects.toThrow(/CHECK/);
+    // Le batch est une transaction : ni le trafic ni la collecte du jour ne sont écrits.
+    expect(await lireCollectes(db, "2026-09-28", "2026-09-28")).toEqual([]);
+    expect(await lireJours(db, SITE, "2026-09-28", "2026-09-28")).toEqual([]);
   });
 });

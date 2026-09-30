@@ -12,7 +12,7 @@ interface Instruction extends D1Statement {
   executer(): void;
 }
 
-export function d1Sqlite(migrations: string[] = ["0011_analytics.sql"]): {
+export function d1Sqlite(migrations: string[] = ["0011_analytics.sql", "0012_analytics_vitaux.sql"]): {
   db: D1Analytics;
   sqlite: DatabaseSync;
 } {

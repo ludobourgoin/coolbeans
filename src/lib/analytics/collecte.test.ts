@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { d1Sqlite } from "./d1-sqlite.testutil";
 import { collecterAnalytics, estHeureDeCollecte, joursACollecter } from "./collecte";
-import { ecrireJour, lireCollectes, lireJours, type D1Analytics } from "./store";
+import { ecrireJour, lireCollectes, lireJours, lireVitaux, type D1Analytics } from "./store";
 import type { JourAnalytics, SourceAnalytics } from "./types";
 
 const SITE = "7257179f83b6445d93703f1d1f305a4a";
@@ -67,6 +67,26 @@ describe("collecterAnalytics", () => {
   let db: D1Analytics;
   beforeEach(() => {
     ({ db } = d1Sqlite());
+  });
+
+  const VITAUX = [
+    { appareil: "mobile" as const, lcp: { bon: 2, moyen: 0, mauvais: 0 }, inp: { bon: 1, moyen: 0, mauvais: 0 }, cls: { bon: 2, moyen: 0, mauvais: 0 } },
+  ];
+
+  it("écrit les vitaux avec le reste du jour", async () => {
+    const source: SourceAnalytics = async (jour) => [{ ...mesure(jour), vitaux: VITAUX }];
+    await collecterAnalytics({ db, source, maintenant: MAINTENANT });
+    expect(await lireVitaux(db, SITE, "2026-09-28", "2026-09-28")).toEqual(VITAUX);
+  });
+
+  it("garde les vitaux exacts d'un jour déjà collecté face à une lecture échantillonnée", async () => {
+    const jour = "2026-09-25";
+    await ecrireJour(db, jour, [{ ...mesure(jour), vitaux: VITAUX }], "2026-09-28T04:05:00.000Z");
+    const estimes = [{ ...VITAUX[0], lcp: { bon: 0, moyen: 0, mauvais: 90 } }];
+    const source: SourceAnalytics = async (j) =>
+      j === jour ? [{ ...mesure(j), echantillon: 10, vitaux: estimes }] : [mesure(j)];
+    await collecterAnalytics({ db, source, maintenant: MAINTENANT });
+    expect(await lireVitaux(db, SITE, jour, jour)).toEqual(VITAUX);
   });
 
   it("interroge les sept jours exacts, du plus ancien au plus récent", async () => {
