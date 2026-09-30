@@ -187,10 +187,10 @@ describe("buildSidebar · liens et préfixe d'hôte", () => {
 
 describe("buildSidebar · Demandes remplace Support", () => {
   // Spec 2026-08-15-messagerie-portail-design.md §2 : l'entrée remplace
-  // « Support » et remonte haut dans la nav, juste sous l'accueil, avant la
-  // section Projets. Elle s'appelait « Messagerie » jusqu'au 2026-09-29 :
-  // c'est une boîte de tickets, pas une messagerie.
-  it("les demandes remplacent le support et vivent haut dans la nav", () => {
+  // « Support ». Elle vit en tête de la section Aide depuis le 2026-09-30
+  // (avant : sous l'accueil). Elle s'appelait « Messagerie » jusqu'au
+  // 2026-09-29 : c'est une boîte de tickets, pas une messagerie.
+  it("les demandes remplacent le support et ouvrent la section Aide", () => {
     const sections = buildSidebar("my.coolbeans.cc", admin, avecDoc, docPages);
     const pages = sections.flatMap((s) => s.pages);
     const labels = pages.map((p) => p.label);
@@ -198,9 +198,10 @@ describe("buildSidebar · Demandes remplace Support", () => {
     expect(labels).not.toContain("Support");
     expect(labels).not.toContain("Messagerie");
     expect(pages.find((p) => p.label === "Demandes")?.href).toBe("/demandes");
-    // Position : Demandes apparaît avant les pages de la section Projets
-    // (« Actifs » en est la première).
-    expect(labels.indexOf("Demandes")).toBeLessThan(labels.indexOf("Actifs"));
+    const aide = sections.find((s) => s.key === "aide")!.pages.map((p) => p.label);
+    expect(aide[0]).toBe("Demandes");
+    const bienvenue = sections.find((s) => s.key === "bienvenue")!.pages.map((p) => p.label);
+    expect(bienvenue).not.toContain("Demandes");
   });
 });
 
