@@ -23,7 +23,7 @@ import type { Pastille } from "../../../lib/documents/frise";
 interface Props {
   versions: CollectionEntry<"livrable">[];
   pastilles: Pastille[];
-  contexte: "public" | "portail" | "projet";
+  contexte: "public" | "projet";
   /** Préfixe des id sur la page projet. Vide ailleurs. */
   prefixe?: string;
   /** Id de la version à ouvrir, lu dans ?version=. Inconnu ou absent : la dernière. */

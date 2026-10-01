@@ -36,11 +36,10 @@ interface Props {
   onglets: { libelle: string; slug: string }[];
   actif: number;
   /**
-   * "portail" : pas de DocumentTopbar, la barre du portail en tient lieu.
    * "projet" : ni titre ni frise, la page projet les porte ; restent les
    * sous-onglets de version.
    */
-  contexte?: "public" | "portail" | "projet";
+  contexte?: "public" | "projet";
   /** Préfixe des id : plusieurs documents partagent la page projet. Vide ailleurs. */
   prefixe?: string;
 }

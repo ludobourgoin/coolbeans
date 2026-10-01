@@ -17,7 +17,7 @@ import { adresseDocument } from "../../../lib/documents/adresse";
 interface Props {
   versions: CollectionEntry<"devis">[];
   pastilles: Pastille[];
-  contexte: "public" | "portail" | "projet";
+  contexte: "public" | "projet";
   /** Préfixe des id sur la page projet. Vide ailleurs. */
   prefixe?: string;
   /** Id de la version à ouvrir, lu dans ?version=. Inconnu ou absent : la dernière. */
