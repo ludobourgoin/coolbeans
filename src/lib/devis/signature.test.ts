@@ -65,6 +65,17 @@ const contexte = (surcharge: Partial<ContexteSignature> = {}): ContexteSignature
   ...surcharge,
 });
 
+describe("corpsTacheFacturation — facture directe", () => {
+  it("demande la facture du montant total, sans devis ni acompte", () => {
+    const corps = corpsTacheFacturation(contexte({ facturation: "facture" }));
+    expect(corps).toContain("- [ ] Émettre la facture du montant total");
+    expect(corps).not.toContain("Émettre le devis");
+    expect(corps).not.toContain("facture d'acompte");
+    expect(corps).toContain("- [ ] Envoyer **un seul mail** au client avec la proposition validée et la facture");
+    expect(corps).toContain("passer l'affaire en 🏆 Signée");
+  });
+});
+
 describe("corpsTacheFacturation", () => {
   it("porte les coordonnées de facturation fournies, et tait les autres", () => {
     const corps = corpsTacheFacturation(contexte());
@@ -150,6 +161,17 @@ describe("declencherSignature", () => {
       "Proposition validée",
     );
     expect(await tacheExistante(ctx.slug, d1)).toBe("uuid-tache");
+  });
+
+  it("intitule la sous-tâche « Facture » quand la proposition se facture sans devis", async () => {
+    /* Un pack d'heures se paie en une fois : ni devis Tiime ni acompte, la
+       facture du montant total part dès que le client a choisi. */
+    const ctx = contexte({ facturation: "facture" });
+    const id = await enregistrer(ctx.slug);
+    await declencherSignature("clé", ctx, id, d1);
+    expect(creerSousTache).toHaveBeenCalledWith(
+      expect.objectContaining({ title: "Facture : Site du salon Construire & Habiter Autrement" }),
+    );
   });
 
   it("ne marque JAMAIS l'affaire signée sur la seule validation du formulaire", async () => {

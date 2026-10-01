@@ -88,6 +88,19 @@ export type SelectionOptions = readonly number[] | undefined;
 export const selectionDefaut = (budget: DevisBudget): number[] =>
   budget.lignes.flatMap((ligne, i) => (ligne.optionnel && ligne.defaut ? [i] : []));
 
+/**
+ * Sélection ramenée à ce que le budget permet. Un budget à choix unique (un
+ * pack d'heures parmi plusieurs) ne retient qu'une option : la page le
+ * garantit par des boutons radio, mais la sélection arrive d'une page
+ * publique, et une requête forgée ne doit pas faire facturer deux packs.
+ * Sans sélection, le défaut du YAML s'applique : rien à normaliser.
+ */
+export const normaliserSelection = (budget: DevisBudget, selection: SelectionOptions): SelectionOptions => {
+  if (!budget.choixUnique || selection === undefined) return selection;
+  const premier = selection.find((i) => budget.lignes[i]?.optionnel);
+  return premier === undefined ? [] : [premier];
+};
+
 /** Lignes réellement facturées : tout le socle, plus les options retenues. */
 export const lignesRetenues = (budget: DevisBudget, selection?: SelectionOptions) =>
   budget.lignes.filter(
@@ -97,11 +110,22 @@ export const lignesRetenues = (budget: DevisBudget, selection?: SelectionOptions
 /* Remises à appliquer, dans l'ordre. Normalise l'ancienne forme à remise
    unique vers la nouvelle : un seul chemin de calcul en aval, et les douze
    devis déjà publiés continuent de s'afficher à l'identique. */
-export const remisesDe = (budget: DevisBudget): Array<{ label: string; pct: number }> =>
+export type Remise = { label: string; pct?: number; montant?: number };
+
+export const remisesDe = (budget: DevisBudget): Remise[] =>
   budget.remises ??
   (budget.remisePct
     ? [{ label: budget.remiseLabel ?? "Remise exceptionnelle", pct: budget.remisePct }]
     : []);
+
+/* Ce qu'une remise retire du reliquat. Une remise en montant se déduit telle
+   quelle, plafonnée à ce qui reste : décocher une option ne doit jamais
+   produire un total négatif. Le pendant de ce calcul vit dans le script
+   client de DevisCorps.astro. */
+export const montantRemise = (remise: Remise, restant: number) =>
+  remise.montant !== undefined
+    ? Math.min(remise.montant, restant)
+    : (restant * (remise.pct ?? 0)) / 100;
 
 /* Totaux dérivés des lignes retenues ; les lignes sans prix sont « Inclus ».
    Les remises s'enchaînent : chacune mord sur ce que la précédente a laissé,
@@ -114,10 +138,10 @@ export const totaux = (budget: DevisBudget, selection?: SelectionOptions) => {
     0,
   );
   let restant = total;
-  const paliers = remisesDe(budget).map(({ label, pct }) => {
-    const montant = (restant * pct) / 100;
+  const paliers = remisesDe(budget).map((r) => {
+    const montant = montantRemise(r, restant);
     restant -= montant;
-    return { label, pct, montant };
+    return { label: r.label, pct: r.pct, montant };
   });
   return {
     total,
@@ -194,7 +218,10 @@ export const montantTri = (d: DevisData): number => {
 export const cleLigne = (l: { label: string; prix?: number }) =>
   `ligne:${l.label}:${l.prix ?? ""}`;
 
-export const cleRemise = (r: { label: string; pct: number }) => `remise:${r.label}:${r.pct}`;
+/* La forme `remise:<label>:<pct>` est celle des versions déjà publiées : elle
+   ne bouge pas, sans quoi leurs remises inchangées passeraient pour neuves. */
+export const cleRemise = (r: Remise) =>
+  r.pct !== undefined ? `remise:${r.label}:${r.pct}` : `remise:${r.label}:${r.montant}€`;
 
 export const cleJalon = (j: { date: string; label: string; owner?: string }) =>
   `jalon:${j.date}:${j.label}:${j.owner ?? ""}`;

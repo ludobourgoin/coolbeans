@@ -14,7 +14,7 @@ import {
   titreSection,
 } from "../../emails/transactionnel";
 import { getEntry } from "astro:content";
-import { montantAffiche, budgetDevis, totaux, eur, lignesRetenues } from "../../lib/devis";
+import { montantAffiche, budgetDevis, totaux, eur, lignesRetenues, normaliserSelection } from "../../lib/devis";
 import { derniereReponse, devisClos, enregistrerReponse } from "../../lib/devis/reponses";
 import { declencherSignature, type ResultatSignature } from "../../lib/devis/signature";
 
@@ -133,11 +133,13 @@ export const POST: APIRoute = async ({ request }) => {
   /* Un devis sans ligne optionnelle n'a pas de périmètre composé : on écrit
      null plutôt qu'un tableau vide, qui se lirait comme « tout décoché ». */
   const aDesOptions = budget?.lignes.some((l) => l.optionnel) ?? false;
+  /* Un choix unique ne retient qu'une option, quoi que la requête porte. */
+  const selection = budget ? normaliserSelection(budget, optionsRecues) : optionsRecues;
   const montantCompose =
     budget && !budget.enAttente && aDesOptions
-      ? totaux(budget, optionsRecues).totalFinal
+      ? totaux(budget, selection).totalFinal
       : undefined;
-  const perimetreCompose = aDesOptions && optionsRecues ? JSON.stringify(optionsRecues) : undefined;
+  const perimetreCompose = aDesOptions && selection ? JSON.stringify(selection) : undefined;
 
   // D1 d'abord : le cockpit /espace/devis lit cette table, et la tâche de
   // facturation a besoin de l'id de la ligne écrite. Un échec D1 ne bloque
@@ -195,6 +197,7 @@ export const POST: APIRoute = async ({ request }) => {
                   ? eur.format(montantCompose)
                   : montantAffiche(entry.data),
               reglement: budgetDevis(entry.data)?.reglement,
+              facturation: entry.data.facturation,
               client: {
                 prenom: prenomClient,
                 nom: nomClient,
@@ -239,7 +242,7 @@ export const POST: APIRoute = async ({ request }) => {
      devis, gras du markdown retiré. */
   const optionsRetenuesLabels =
     budget && aDesOptions
-      ? lignesRetenues(budget, optionsRecues)
+      ? lignesRetenues(budget, selection)
           .filter((l) => l.optionnel)
           .map((l) => l.label.replaceAll("**", ""))
       : [];
