@@ -390,6 +390,7 @@ export const etapes: Etape[] = [
       "Resend",
       "Google Drive",
       "src/content/clients/<slug>.yaml",
+      "Stream Deck, profil Web",
     ],
     faire: [
       "Router avant d'exécuter : repo GitHub ? quelle stack ? workspace portail ? compte utilisateur ? monitoring ? Aucune de ces réponses n'est acquise d'avance.",
@@ -400,6 +401,7 @@ export const etapes: Etape[] = [
       "Créer le compte utilisateur du client dans Better Auth.",
       "Poser domaine et DNS, puis authentifier le domaine du client chez Resend si le site envoie du mail transactionnel.",
       "Brancher le monitoring du domaine : superviser la résolution, pas seulement l'expiration.",
+      "Créer le dossier Stream Deck du client dans le profil Web : compléter sa ligne du Sheet « Dossiers Stream Deck », puis reconstruire le profil avec la skill.",
       "Rédiger le mail d'onboarding et le soumettre à validation avant envoi : accès au portail, canal de communication, rythme des points, qui fait quoi.",
       "Écrire les engagements du client : chaque élément à sa charge porte une date et une porte de sortie.",
       "Reporter dans Linear ce qui a été créé, et ce qui a été volontairement écarté.",
