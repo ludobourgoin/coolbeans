@@ -4,6 +4,7 @@ date: 2026-02-02
 projet: plateforme-327
 etape: proposition
 contact: Thierry
+tutoiement: true
 linear:
   projet: Plateforme UnlockBreath
   affaire: https://linear.app/coolbeans-hq/issue/CRM-24
