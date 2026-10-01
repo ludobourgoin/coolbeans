@@ -131,6 +131,17 @@ Une section qui prend toute la largeur de son conteneur. Elle porte :
 - Un projet hors de la portée du compte, ou inconnu, répond 404.
 - L'impression ne sort que l'onglet ouvert, sans la barre ni l'en-tête du portail.
 
+### 5.5 L'avancement (ajout du 2026-10-01)
+
+Un bloc « Avancement » se place entre l'en-tête et les onglets d'étape. Décision de Ludo du 2026-10-01.
+
+- Il liste les issues du projet Linear, rangées par jalon dans l'ordre de leurs dates, les issues sans jalon à la fin.
+- Chaque issue montre son titre, son état traduit d'après son type (Backlog « À venir », Todo « À faire », In Progress et In Review « En cours », Done « Fait ») et son échéance.
+- Les issues annulées et celles en Triage ne s'affichent pas. Les issues faites se replient sous leur jalon.
+- Un compteur ouvre le bloc : « 7 sur 12 faites ».
+- Jamais lus : la description, les commentaires, l'assigné, l'estimate.
+- Même lecture que les projets : cache de 10 minutes, abandon à 2 secondes. Linear muet ou projet sans issue visible : le bloc ne s'affiche pas.
+
 ## 6. Le mode d'emploi
 
 - La section « Documentation » devient « Mode d'emploi ».
@@ -206,7 +217,7 @@ Recette locale avec `npm run comptes-locaux` : admin dans Coolbeans puis dans A
 
 ## 11. Hors périmètre
 
-- Afficher du projet Linear autre chose que le §5.1 : avancement, jalons, issues.
+- Afficher des issues autre chose que le §5.5 : description, commentaires, assigné, estimate.
 - Changer les adresses `/docs`.
 - Les pages publiques des documents : elles basculent au sous-projet 6.
 - Les sous-projets 2 à 6 de la spec du 2026-09-30. Leurs liens visent désormais la page projet et son onglet.

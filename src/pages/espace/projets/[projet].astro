@@ -2,16 +2,18 @@
 /* La page d'un projet dans le portail (spec 2026-09-30, barre par workspace,
    §5). /espace/projets/<segment>, publiée sur my.coolbeans.cc/projets/…
 
-   Une seule page par projet : l'en-tête du projet Linear, une étape par
+   Une seule page par projet : l'en-tête du projet Linear, une étape par
    onglet, les versions d'une étape en sous-onglets. Le serveur ne rend que
-   les documents que le compte lit : un document refusé n'atteint jamais le
+   les documents que le compte lit : un document refusé n'atteint jamais le
    navigateur, même caché. Tout refus répond 404, comme un projet inconnu. */
 export const prerender = false;
 
+import { env } from "cloudflare:workers";
 import { getCollection } from "astro:content";
 import PortalLayout from "../../../layouts/PortalLayout.astro";
 import ProjetEntete from "../../../components/portail/projet/ProjetEntete.astro";
 import OngletsEtapes from "../../../components/portail/projet/OngletsEtapes.astro";
+import AvancementProjet from "../../../components/portail/projet/AvancementProjet.astro";
 import PageCadrage from "../../../components/documents/pages/PageCadrage.astro";
 import PageProposition from "../../../components/documents/pages/PageProposition.astro";
 import PageLivrable from "../../../components/documents/pages/PageLivrable.astro";
@@ -23,6 +25,8 @@ import { workspacesVisibles } from "../../../lib/portail/appartenances";
 import { getPortalContext, poserWorkspaceCourant } from "../../../lib/portail/context";
 import { portalHref } from "../../../lib/portail/nav";
 import { lecteurDe, projetsDe } from "../../../lib/portail/projets-courants";
+import { avancementDuProjet, type Avancement } from "../../../lib/portail/avancement-linear";
+import { cacheWorker } from "../../../lib/portail/projets-linear";
 import { listWorkspaces } from "../../../lib/portail/workspaces";
 
 const introuvable = async () => {
@@ -42,7 +46,7 @@ const portee = workspacesVisibles(workspaces, meta);
 const dansLaPortee = (slug: string) => portee.some((w) => w.slug === slug);
 
 // Le projet se cherche dans le workspace courant, puis dans celui que la
-// nomenclature désigne : un lien reçu par mail ouvre le bon workspace.
+// nomenclature désigne : un lien reçu par mail ouvre le bon workspace.
 let workspace = client && dansLaPortee(client.slug) ? client : null;
 let projet = workspace ? (await projetsDe(Astro, workspace)).find((p) => p.slugId === slugId) : undefined;
 if (!projet) {
@@ -54,14 +58,20 @@ if (!projet) {
 }
 if (!workspace || !projet) return introuvable();
 
-// Le nom a changé dans Linear : l'ancienne adresse mène à la nouvelle. Pas
-// quand Linear est muet : le segment de repli n'est que l'identifiant court.
+// Le nom a changé dans Linear : l'ancienne adresse mène à la nouvelle. Pas
+// quand Linear est muet : le segment de repli n'est que l'identifiant court.
 if (projet.statut && segment !== projet.segment) {
   return Astro.redirect(portalHref(`/projets/${projet.segment}`, Astro.url.hostname) + Astro.url.search, 302);
 }
 
 // L'adresse gagne sur le sélecteur, comme pour la doc.
 if (client?.slug !== workspace.slug) poserWorkspaceCourant(Astro, workspace);
+
+// L'avancement ne se lit que si Linear a répondu pour la liste des projets :
+// en repli, la page n'a ni statut ni issues.
+const avancement = projet.statut
+  ? await avancementDuProjet(projet.slugId, { apiKey: env.LINEAR_API_KEY, cache: cacheWorker<Avancement>() })
+  : null;
 
 const documents = await chargerDocuments();
 const lire = await lecteurDe(Astro, workspace);
@@ -92,6 +102,7 @@ const etapes = await Promise.all(
   pageDocument
 >
   <ProjetEntete projet={projet} />
+  <AvancementProjet avancement={avancement} />
   <OngletsEtapes onglets={onglets} ouvert={ouvert} />
 
   {

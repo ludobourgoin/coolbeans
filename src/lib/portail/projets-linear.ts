@@ -128,32 +128,38 @@ export function estValide(s: StatutLinear): boolean {
 
 /* ---- Cache --------------------------------------------------------------- */
 
-export type EntreeCache = { ok: true; projets: ProjetLinear[] } | { ok: false };
+/** Ce que le cache garde d'une lecture Linear : la valeur, ou l'échec. */
+export type EntreeCache<T = ProjetLinear[]> = { ok: true; valeur: T } | { ok: false };
 
-export interface CacheProjets {
-  lire(cle: string): Promise<EntreeCache | undefined>;
-  ecrire(cle: string, entree: EntreeCache, secondes: number): Promise<void>;
+export interface CacheLinear<T = ProjetLinear[]> {
+  lire(cle: string): Promise<EntreeCache<T> | undefined>;
+  ecrire(cle: string, entree: EntreeCache<T>, secondes: number): Promise<void>;
 }
+
+export type CacheProjets = CacheLinear<ProjetLinear[]>;
 
 export const DUREE_SUCCES = 600;
 export const DUREE_ECHEC = 60;
 export const DELAI_MS = 2000;
 
 /**
- * Les projets de la sous-team. `null` : Linear n'a pas répondu, l'appelant se
- * replie sur les documents. Ne lève jamais : une page ne casse pas à cause de
- * Linear. L'échec se garde 60 secondes, pour qu'une panne ne ralentisse pas
- * chaque page.
+ * Une lecture Linear, au plus une fois toutes les 10 minutes. Elle abandonne
+ * au bout de 2 secondes, et l'échec se garde 60 secondes pour qu'une panne ne
+ * ralentisse pas chaque page. `null` : Linear n'a pas répondu, l'appelant se
+ * replie. Ne lève jamais : une page ne casse pas à cause de Linear.
  */
-export async function projetsDeLaTeam(
-  teamId: string,
-  options: { apiKey?: string; cache: CacheProjets; lire?: typeof lireProjetsLinear },
-): Promise<ProjetLinear[] | null> {
-  const { apiKey, cache, lire = lireProjetsLinear } = options;
+export async function lectureEnCache<T>(
+  cle: string,
+  options: {
+    apiKey?: string;
+    cache: CacheLinear<T>;
+    lire: (apiKey: string, signal: AbortSignal) => Promise<T>;
+  },
+): Promise<T | null> {
+  const { apiKey, cache, lire } = options;
   if (!apiKey) return null;
-  const cle = `v1:linear-projets:${teamId}`;
   const connu = await cache.lire(cle).catch(() => undefined);
-  if (connu) return connu.ok ? connu.projets : null;
+  if (connu) return connu.ok ? connu.valeur : null;
 
   const controleur = new AbortController();
   const minuterie = setTimeout(() => controleur.abort(), DELAI_MS);
@@ -162,9 +168,9 @@ export async function projetsDeLaTeam(
     controleur.signal.addEventListener("abort", () => rejeter(new Error("Linear : délai dépassé")));
   });
   try {
-    const projets = await Promise.race([lire(apiKey, teamId, controleur.signal), delai]);
-    await cache.ecrire(cle, { ok: true, projets }, DUREE_SUCCES).catch(() => {});
-    return projets;
+    const valeur = await Promise.race([lire(apiKey, controleur.signal), delai]);
+    await cache.ecrire(cle, { ok: true, valeur }, DUREE_SUCCES).catch(() => {});
+    return valeur;
   } catch {
     await cache.ecrire(cle, { ok: false }, DUREE_ECHEC).catch(() => {});
     return null;
@@ -173,17 +179,30 @@ export async function projetsDeLaTeam(
   }
 }
 
+/** Les projets de la sous-team. `null` : Linear n'a pas répondu. */
+export function projetsDeLaTeam(
+  teamId: string,
+  options: { apiKey?: string; cache: CacheProjets; lire?: typeof lireProjetsLinear },
+): Promise<ProjetLinear[] | null> {
+  const lire = options.lire ?? lireProjetsLinear;
+  return lectureEnCache(`v1:linear-projets:${teamId}`, {
+    apiKey: options.apiKey,
+    cache: options.cache,
+    lire: (apiKey, signal) => lire(apiKey, teamId, signal),
+  });
+}
+
 const ORIGINE_CACHE = "https://cache.coolbeans.internal/";
 
 /** Le cache du Worker. Absent (Vitest, Node) : un cache qui ne garde rien. */
-export function cacheWorker(): CacheProjets {
+export function cacheWorker<T = ProjetLinear[]>(): CacheLinear<T> {
   const cache = (globalThis as { caches?: { default?: Cache } }).caches?.default;
   if (!cache) return { lire: async () => undefined, ecrire: async () => {} };
   const adresse = (cle: string) => ORIGINE_CACHE + encodeURIComponent(cle);
   return {
     async lire(cle) {
       const reponse = await cache.match(adresse(cle));
-      return reponse ? ((await reponse.json()) as EntreeCache) : undefined;
+      return reponse ? ((await reponse.json()) as EntreeCache<T>) : undefined;
     },
     async ecrire(cle, entree, secondes) {
       await cache.put(

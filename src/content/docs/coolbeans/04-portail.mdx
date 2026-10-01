@@ -136,7 +136,9 @@ en second temps, sur ordre explicite de Ludo.
 largeur, porte le titre, le résumé du projet Linear écrit pour le client, son
 statut traduit (« Proposition », « À venir », « Planifié », « En cours »,
 « En pause », « Terminé ») et ses dates, affichées seulement une fois le
-projet validé. Les six étapes du cycle (audit si présent, cadrage,
+projet validé. Sous l'en-tête, le bloc « Avancement » liste les issues
+du projet par jalon, avec leur état traduit et leur échéance ; les annulées
+et celles en Triage n'y figurent pas. Les six étapes du cycle (audit si présent, cadrage,
 proposition, production, livraison, suivi) s'ouvrent en onglets ; une
 étape sans document lisible par le compte garde son onglet, grisé, sans
 trahir l'existence d'un brouillon. Les
@@ -277,6 +279,7 @@ mail.
 | Projets de la requête, mémoïsés | `src/lib/portail/projets-courants.ts` |
 | Bascule de workspace depuis une page | `poserWorkspaceCourant`, `basculerSurCoolbeans` dans `src/lib/portail/context.ts` |
 | Page projet | `src/pages/espace/projets/[projet].astro`, `src/components/portail/projet/` |
+| Bloc Avancement de la page projet (issues par jalon) | `src/lib/portail/avancement-linear.ts`, `src/components/portail/projet/AvancementProjet.astro` |
 | Adresse publique d'un document, pour tout lien émis | `src/lib/documents/adresse.ts` |
 | Bandeau de l'admin sur un document | `src/components/documents/BandeauAcces.astro` |
 | Composants de page des quatre gabarits | `src/components/documents/pages/` (contextes `public`, `projet`) |
