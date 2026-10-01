@@ -107,7 +107,10 @@ invitation.
 est mémorisé dans un cookie. Règle d'arbitrage : **l'URL gagne** : un admin
 qui ouvre la doc d'un client alors que son sélecteur est ailleurs bascule
 automatiquement sur ce client, pour que l'écran et le sélecteur racontent la
-même chose.
+même chose. Les pages de la section Admin (`/admin`, `/admin/relances`,
+`/clients`, `/utilisateurs`, `/devis`, `/devis/reglages`) imposent l'inverse :
+ouvertes depuis un autre workspace, elles basculent sur Coolbeans, pour ne
+jamais afficher le cockpit admin sous la barre d'un client.
 
 **Les projets.** La section Projets de la barre liste les projets de la
 sous-team Linear du workspace courant, annulés exclus : en cours, puis à
@@ -119,6 +122,12 @@ est écarté, son quota tomberait trop vite. En cas de panne ou de délai
 dépassé (deux secondes), la section se replie sur les projets de la
 nomenclature qui ont un document lisible, sans résumé, statut ni dates ;
 l'échec se garde soixante secondes pour ne pas ralentir chaque page.
+
+Les fichiers déposés disparaissent avec cette tâche, mais pas la table
+`documents` (migration `0008_documents.sql`) : plus aucun code ne la lit ni
+n'y écrit, et elle reste en base tant que la prod n'a pas basculé sur ce
+chantier. Sa suppression, fichiers de stockage puis `DROP TABLE`, se fait en
+second temps, sur ordre explicite de Ludo.
 
 **La page d'un projet.** Chaque projet n'a qu'une page,
 `my.coolbeans.cc/projets/<nom-du-projet-identifiant>`. L'en-tête, pleine
