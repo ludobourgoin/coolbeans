@@ -157,11 +157,12 @@ const ouvert = demandee >= 0 ? demandee : actif;
   type="livrable"
   versions={versions.map((v) => ({ slug: v.id, version: v.data.version }))}
   tutoiement={courante.tutoiement}
+  prefixe={prefixe}
 />
 
 {
   courante.formulaire && (
-    <LivrableReponse slug={versions[ouvert].id} tutoiement={courante.tutoiement} />
+    <LivrableReponse slug={versions[ouvert].id} tutoiement={courante.tutoiement} prefixe={prefixe} />
   )
 }
 
