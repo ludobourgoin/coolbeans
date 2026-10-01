@@ -115,7 +115,7 @@ describe("projetsDeLaTeam", () => {
     expect(await projetsDeLaTeam("team", { apiKey: "k", cache, lire })).toHaveLength(1);
     expect(await projetsDeLaTeam("team", { apiKey: "k", cache, lire })).toHaveLength(1);
     expect(lire).toHaveBeenCalledTimes(1);
-    expect(entrees.get("linear-projets:team")?.secondes).toBe(DUREE_SUCCES);
+    expect(entrees.get("v1:linear-projets:team")?.secondes).toBe(DUREE_SUCCES);
   });
 
   it("rend null sur un échec, et garde l'échec 60 secondes", async () => {
@@ -126,7 +126,7 @@ describe("projetsDeLaTeam", () => {
     expect(await projetsDeLaTeam("team", { apiKey: "k", cache, lire })).toBeNull();
     expect(await projetsDeLaTeam("team", { apiKey: "k", cache, lire })).toBeNull();
     expect(lire).toHaveBeenCalledTimes(1);
-    expect(entrees.get("linear-projets:team")?.secondes).toBe(DUREE_ECHEC);
+    expect(entrees.get("v1:linear-projets:team")?.secondes).toBe(DUREE_ECHEC);
   });
 
   it("rend null sans clé, sans appeler Linear", async () => {

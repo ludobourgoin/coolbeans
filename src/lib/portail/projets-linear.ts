@@ -151,7 +151,7 @@ export async function projetsDeLaTeam(
 ): Promise<ProjetLinear[] | null> {
   const { apiKey, cache, lire = lireProjetsLinear } = options;
   if (!apiKey) return null;
-  const cle = `linear-projets:${teamId}`;
+  const cle = `v1:linear-projets:${teamId}`;
   const connu = await cache.lire(cle).catch(() => undefined);
   if (connu) return connu.ok ? connu.projets : null;
 
