@@ -143,8 +143,19 @@ const devis = defineCollection({
                personnel : le client doit voir les deux efforts séparément,
                sinon le second se fond dans le premier et ne compte pour rien.
                `remisePct` / `remiseLabel` restent lus quand ce champ est
-               absent — les devis déjà publiés n'ont pas à être réécrits. */
-            remises: z.array(z.object({ label: z.string(), pct: z.number() })).optional(),
+               absent — les devis déjà publiés n'ont pas à être réécrits.
+               Une remise porte soit un `pct`, soit un `montant` en euros.
+               Le montant sert à maintenir un prix déjà signé, qu'aucun
+               pourcentage au dixième ne retrouve au centime. */
+            remises: z
+              .array(
+                z
+                  .object({ label: z.string(), pct: z.number().optional(), montant: z.number().optional() })
+                  .refine((r) => (r.pct === undefined) !== (r.montant === undefined), {
+                    message: "Une remise porte soit `pct`, soit `montant`, jamais les deux.",
+                  }),
+              )
+              .optional(),
             mention: z.string().optional(), // suffixe des totaux, ex. « HT »
             reglement: z.string().optional(),
           })

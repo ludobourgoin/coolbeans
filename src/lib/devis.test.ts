@@ -168,6 +168,30 @@ describe("totaux — remises", () => {
     expect(totaux(b, [1]).totalFinal).toBe(1500);
   });
 
+  it("déduit une remise en montant telle quelle, après les pourcentages", () => {
+    /* Un prix déjà signé à maintenir : 12 300 € − 15 % = 10 455 €, puis
+       1 509 € pour retomber pile sur les 8 946 € du devis signé. Aucun
+       pourcentage au dixième n'y arrive. */
+    const b = budget([{ label: "Site", prix: 12300 }], {
+      remises: [
+        { label: "Volume", pct: 15 },
+        { label: "Prix signé maintenu", montant: 1509 },
+      ],
+    });
+    const { paliers, totalFinal } = totaux(b);
+    expect(paliers.map((p) => p.montant)).toEqual([1845, 1509]);
+    expect(totalFinal).toBe(8946);
+  });
+
+  it("plafonne une remise en montant à ce qui reste", () => {
+    /* Une option décochée peut faire passer le reliquat sous la remise : le
+       total ne descend jamais sous zéro. */
+    const b = budget([{ label: "Site", prix: 500 }], {
+      remises: [{ label: "Geste", montant: 800 }],
+    });
+    expect(totaux(b).totalFinal).toBe(0);
+  });
+
   it("`remises` prend le pas sur `remisePct` quand les deux sont là", () => {
     const b = budget([{ label: "Site", prix: 1000 }], {
       remisePct: 50,
