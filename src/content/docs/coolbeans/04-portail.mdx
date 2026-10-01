@@ -117,26 +117,29 @@ sous-team Linear du workspace courant, annulés exclus : en cours, puis à
 venir, puis terminés, le plus récemment modifié en tête de chaque groupe.
 Chaque fiche client porte l'identifiant de sa sous-team (`linearTeamId`) ;
 une fiche sans sous-team n'affiche aucun projet. Linear est lu au plus une
-fois toutes les dix minutes par sous-team, dans le cache du Worker : le KV
-est écarté, son quota tomberait trop vite. En cas de panne ou de délai
+fois toutes les dix minutes par sous-team, dans le cache du Worker : la
+limite vaut par centre de données, jamais globalement, l'API Cache n'étant
+pas partagée entre eux. Le KV est écarté, son quota tomberait trop vite. En
+cas de panne ou de délai
 dépassé (deux secondes), la section se replie sur les projets de la
 nomenclature qui ont un document lisible, sans résumé, statut ni dates ;
 l'échec se garde soixante secondes pour ne pas ralentir chaque page.
 
 Les fichiers déposés disparaissent avec cette tâche, mais pas la table
 `documents` (migration `0008_documents.sql`) : plus aucun code ne la lit ni
-n'y écrit, et elle reste en base tant que la prod n'a pas basculé sur ce
-chantier. Sa suppression, fichiers de stockage puis `DROP TABLE`, se fait en
-second temps, sur ordre explicite de Ludo.
+n'y écrit, et elle reste en base tant que ce chantier n'est pas en
+production. Sa suppression, fichiers de stockage puis `DROP TABLE`, se fait
+en second temps, sur ordre explicite de Ludo.
 
 **La page d'un projet.** Chaque projet n'a qu'une page,
 `my.coolbeans.cc/projets/<nom-du-projet-identifiant>`. L'en-tête, pleine
 largeur, porte le titre, le résumé du projet Linear écrit pour le client, son
 statut traduit (« Proposition », « À venir », « Planifié », « En cours »,
 « En pause », « Terminé ») et ses dates, affichées seulement une fois le
-projet validé. Les étapes du cycle (cadrage, proposition, livrable,
-témoignage) s'ouvrent en onglets ; une étape sans document lisible par le
-compte garde son onglet, grisé, sans trahir l'existence d'un brouillon. Les
+projet validé. Les six étapes du cycle (audit si présent, cadrage,
+proposition, production, livraison, suivi) s'ouvrent en onglets ; une
+étape sans document lisible par le compte garde son onglet, grisé, sans
+trahir l'existence d'un brouillon. Les
 versions d'une étape s'ouvrent en sous-onglets. L'adresse porte l'étape et la
 version ouvertes (`?etape=proposition&version=…`), sans recharger la page au
 changement d'onglet. La page est rendue à la demande, jamais prérendue : elle
@@ -276,7 +279,7 @@ mail.
 | Page projet | `src/pages/espace/projets/[projet].astro`, `src/components/portail/projet/` |
 | Adresse publique d'un document, pour tout lien émis | `src/lib/documents/adresse.ts` |
 | Bandeau de l'admin sur un document | `src/components/documents/BandeauAcces.astro` |
-| Composants de page des quatre gabarits | `src/components/documents/pages/` (contextes `public`, `portail`, `projet`) |
+| Composants de page des quatre gabarits | `src/components/documents/pages/` (contextes `public`, `projet`) |
 | Tables `analytics_jours`, `analytics_repartitions`, `analytics_collectes` | Migration `migrations/0011_analytics.sql`, lecture et écriture dans `src/lib/analytics/store.ts` |
 | Table `analytics_vitaux` | Migration `migrations/0012_analytics_vitaux.sql`, lecture et écriture dans `src/lib/analytics/store.ts` |
 | Secret et variable de collecte Cloudflare | `CF_ANALYTICS_TOKEN` (jeton « Account Analytics : Read »), `CF_ACCOUNT_ID` |
