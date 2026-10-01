@@ -32,6 +32,7 @@ export type CleClient = keyof typeof CLIENTS;
 /** Segment d'URL du projet, référence comprise, vers la clé de son client. */
 export const PROJETS: Readonly<Record<string, CleClient>> = {
   "refonte-432": "amu",
+  "pack-heures-973": "amu",
   "site-web-879": "caf",
   "boutique-shopify-390": "fyl",
   "site-vitrine-471": "lit",
