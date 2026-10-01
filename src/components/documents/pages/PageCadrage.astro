@@ -116,6 +116,7 @@ const ouvert = demande >= 0 ? demande : actif;
         type="cadrage"
         versions={[{ slug: c.id, version: 1 }]}
         tutoiement={c.data.tutoiement}
+        prefixe={prefixe}
       />
 
       <CadrageFormulaire slug={c.id} questions={c.data.questions} contact={c.data.contact} tutoiement={c.data.tutoiement} />

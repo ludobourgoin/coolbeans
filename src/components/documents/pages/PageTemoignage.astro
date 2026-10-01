@@ -87,7 +87,13 @@ const d = entry.data;
   </div>
 </DocumentVolet>
 
-<DocumentReponses server:defer type="temoignage" versions={[{ slug: entry.id, version: 1 }]} tutoiement={d.tutoiement} />
+<DocumentReponses
+  server:defer
+  type="temoignage"
+  versions={[{ slug: entry.id, version: 1 }]}
+  tutoiement={d.tutoiement}
+  prefixe={prefixe}
+/>
 
 {
   /* Formulaire coupé une fois le témoignage reçu : la page devient une

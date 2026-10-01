@@ -158,3 +158,15 @@ test("les autres documents masquent leur formulaire unique, comme avant", () => 
   expect(selecteurFormulaire("livrable", "x")).toBe("[data-livrable-reponse]");
   expect(selecteurFormulaire("temoignage", "x")).toBe("[data-temoignage-formulaire]");
 });
+
+test("sur la page projet, le sélecteur se limite à l'étape du document clos", () => {
+  // Deux étapes d'un même projet peuvent porter un livrable (production et
+  // livraison) : sans portée, clore l'un masquerait aussi le formulaire de
+  // l'autre (spec 2026-09-30, I1).
+  expect(selecteurFormulaire("livrable", "x", "livraison-")).toBe(
+    '[data-etape-volet="livraison"] [data-livrable-reponse]',
+  );
+  expect(selecteurFormulaire("cadrage", "cafa/nom-de-domaine-9042", "production-")).toBe(
+    '[data-etape-volet="production"] [data-cadrage-formulaire][data-slug="cafa/nom-de-domaine-9042"]',
+  );
+});

@@ -133,6 +133,18 @@ const FORMULAIRE = {
   temoignage: "[data-temoignage-formulaire]",
 } as const;
 
-export function selecteurFormulaire(type: "cadrage" | keyof typeof FORMULAIRE, slug: string): string {
-  return type === "cadrage" ? `[data-cadrage-formulaire][data-slug="${slug}"]` : FORMULAIRE[type];
+export function selecteurFormulaire(
+  type: "cadrage" | keyof typeof FORMULAIRE,
+  slug: string,
+  /** Préfixe de l'étape sur la page projet (`"<etape>-"`). Vide ailleurs. */
+  prefixe = "",
+): string {
+  const base = type === "cadrage" ? `[data-cadrage-formulaire][data-slug="${slug}"]` : FORMULAIRE[type];
+  /* Sur la page projet, plusieurs étapes partagent la page : un même type de
+     document peut y apparaître deux fois (spec 2026-09-30, I1). Sans portée,
+     la règle masquerait les DEUX formulaires dès que l'un des deux documents
+     est clos. On la scope donc à l'étape du document concerné, comme
+     DocumentEntete le fait déjà pour ses propres onglets. */
+  const etape = prefixe.replace(/-$/, "");
+  return etape ? `[data-etape-volet="${etape}"] ${base}` : base;
 }

@@ -30,8 +30,10 @@ interface Props {
   /** Versions du document, de la V1 à la courante. Une seule hors devis et livrable. */
   versions: { slug: string; version: number }[];
   tutoiement?: boolean;
+  /** Préfixe de l'étape sur la page projet. Vide ailleurs. */
+  prefixe?: string;
 }
-const { type, versions, tutoiement = false } = Astro.props;
+const { type, versions, tutoiement = false, prefixe = "" } = Astro.props;
 
 /* Chaque visite relit la base : une réponse arrivée il y a une seconde doit
    déjà remplacer le formulaire. */
@@ -188,4 +190,4 @@ const titre = tutoiement
   )
 }
 
-{clos && courant && <Fragment set:html={`<style>${selecteurFormulaire(type, courant)}{display:none!important}</style>`} />}
+{clos && courant && <Fragment set:html={`<style>${selecteurFormulaire(type, courant, prefixe)}{display:none!important}</style>`} />}

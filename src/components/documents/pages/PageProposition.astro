@@ -98,6 +98,7 @@ const reference = versions[0].id.split("-").pop();
   server:defer
   type="devis"
   versions={versions.map((v) => ({ slug: v.id, version: v.data.version }))}
+  prefixe={prefixe}
 />
 
 {
