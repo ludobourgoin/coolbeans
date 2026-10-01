@@ -34,7 +34,7 @@ sections:
           brésilien)
         tooltip: >-
           Chaque langue suppose des textes traduits et des fichiers vidéo
-          distincts, fournis par vos soins. La mise en place technique du
+          distincts, fournis par tes soins. La mise en place technique du
           multilingue est au devis ; la traduction elle-même n'y est pas.
     note: >-
       Ce devis ne couvre que le **développement et les intégrations
@@ -74,7 +74,7 @@ sections:
       lecteur vidéo).
     liste:
       - texte: >-
-          **Vous restez autonome sur le contenu** : les textes des pages se
+          **Tu restes autonome sur le contenu** : les textes des pages se
           modifient directement dans Webflow, sans intervention technique
       - texte: >-
           **Les vidéos du programme sont sur bunny.net**, pas sur YouTube :
@@ -131,7 +131,7 @@ sections:
         - label: >-
             **Intégration Stripe** : Stripe Checkout et Klarna
           prix: 325
-          tooltip: 5 heures. Klarna sous réserve d'éligibilité de votre compte.
+          tooltip: 5 heures. Klarna sous réserve d'éligibilité de ton compte.
         - label: >-
             **Intégration multilingue** : mise en place de Webflow Localize et
             du sélecteur de langue
@@ -165,7 +165,7 @@ sections:
           pré-production et production, accès administrateur, liens utiles,
           clés API et paramètres techniques.
 
-  - titre: Ce dont j'ai besoin de vous, et quand
+  - titre: Ce dont j'ai besoin de toi, et quand
     texte: >-
       Le planning ci-dessous tient si ces éléments arrivent aux dates
       indiquées. Un retard sur l'un d'eux décale la livraison d'autant.
@@ -178,7 +178,7 @@ sections:
           abonnements aux outils
         tooltip: >-
           Webflow, Memberstack, Make, Webflow Localize, bunny.net et les
-          solutions de paiement sont souscrits et payés par vos soins. Ils ne
+          solutions de paiement sont souscrits et payés par tes soins. Ils ne
           sont pas compris dans ce devis.
       - texte: >-
           **Avant l'intégration** : les fichiers vidéo du programme en anglais,
@@ -188,15 +188,15 @@ sections:
           les questions-réponses de la FAQ, et les libellés définitifs des
           boutons d'action
       - texte: >-
-          **Avant la mise en ligne** : les textes juridiques revus par votre
+          **Avant la mise en ligne** : les textes juridiques revus par ton
           avocat
         tooltip: >-
           Le disclaimer V01 est intégré tel quel pour la pré-production. La
           version définitive relève d'une mise à jour de contenu, hors
           périmètre V01.
     note: >-
-      Sans retour de votre part sous **5 jours ouvrés**, un livrable est
-      considéré comme validé. La mise en production est conditionnée à votre
+      Sans retour de ta part sous **5 jours ouvrés**, un livrable est
+      considéré comme validé. La mise en production est conditionnée à ton
       **Go écrit** à l'issue de la recette.
 
   - titre: Planning
@@ -210,13 +210,13 @@ sections:
             - { date: Avril, label: "Intégration Webflow des onze pages, par lots soumis à validation", owner: coolbeans }
             - { date: Début mai, label: "Développement custom : Memberstack, Stripe, emails, multilingue", owner: coolbeans }
             - { date: 19/05 → 22/05, label: Recette et validations finales, owner: client }
-            - { date: Fin mai, label: "Mise en production, sur votre Go écrit", owner: coolbeans }
+            - { date: Fin mai, label: "Mise en production, sur ton Go écrit", owner: coolbeans }
           note: >-
             Les validations intermédiaires se font sur une pré-production en
-            ligne, page par page, avec SOVANB et vous.
+            ligne, page par page, avec SOVANB et toi.
 
   - titre: En option
-    texte: "Non compris dans le montant ci-dessus, à activer si vous le souhaitez :"
+    texte: "Non compris dans le montant ci-dessus, à activer si tu le souhaites :"
     liste:
       - texte: >-
           **Maintenance STARTER : 210 € HT / mois** pour 3 heures, soit 70 € de
@@ -225,7 +225,7 @@ sections:
       - texte: >-
           **Pack 5 heures : 450 € HT**, soit 90 € de l'heure, valable 3 mois.
         tooltip: >-
-          À préférer si votre besoin est ponctuel plutôt que mensuel.
+          À préférer si ton besoin est ponctuel plutôt que mensuel.
     note: >-
       Les mises à jour simples (textes, couleurs, vidéos, déplacement d'un
       élément d'interface) relèvent de SOVANB, à 35 € HT de l'heure.
@@ -237,7 +237,7 @@ notes:
       partir de neuf pages, soit 1 578,75 € de remise.
   - texte: >-
       Les abonnements aux outils (Webflow, Memberstack, Make, Localize,
-      bunny.net) sont **à votre charge à compter du 1er mars 2026** et ne sont
+      bunny.net) sont **à ta charge à compter du 1er mars 2026** et ne sont
       pas compris dans ce devis. Comptez de 60 à 94 € par mois selon les plans
       retenus, plus la consommation bunny.net, facturée à l'usage.
   - tone: info
