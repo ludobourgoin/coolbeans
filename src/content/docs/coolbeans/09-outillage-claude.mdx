@@ -3,8 +3,8 @@ client: "coolbeans"
 title: "Outillage Claude"
 order: 9
 status: "final"
-updated: 2026-08-29
-description: "L'environnement de travail Claude Code : ce qu'il contient et comment il est sauvegardé dans le repo dotfiles."
+updated: 2026-10-01
+description: "L'environnement de travail Claude Code : ce qu'il contient, comment il se branche aux applications et comment il est sauvegardé dans le repo dotfiles."
 ---
 
 L'environnement de travail Claude Code de Ludo : ce qu'il contient et
@@ -47,3 +47,57 @@ automatiquement depuis la liste conservée dans dotfiles.
 
 La liste complète, par catégorie, avec l'emplacement de chacun et les mots
 qui le déclenchent : [Catalogue des skills](/docs/coolbeans/catalogue-skills).
+
+## Les connexions aux applications
+
+Claude se branche aux applications (Figma, Gmail, Notion, Linear…) par des
+serveurs MCP. Ces serveurs arrivent par trois sources, et une même
+application peut arriver par plusieurs à la fois. Chaque doublon demande
+alors sa propre connexion, d'où des dizaines de demandes d'autorisation au
+démarrage.
+
+| Source                | Où ça se règle                                                                 | Ce qui y vit                                                                                       |
+| --------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| Connecteurs claude.ai | [claude.ai/customize/connectors](https://claude.ai/customize/connectors)       | Figma, Gmail, Agenda, Drive, Sheets, Notion, Slack, Asana, Webflow, Shopify, Ahrefs, Sentry        |
+| Serveurs locaux       | `~/.claude.json`, avec la commande `claude mcp`                                | Sanity, Relume, Linear, Cloudflare, Granola, HubSpot, Clerk, Make, google-docs, astro-docs         |
+| Plugins               | `/plugin` dans Claude Code. Les plugins synchronisés viennent du compte claude.ai | Des skills, et parfois leurs propres serveurs                                                   |
+
+### La règle : une application, une source
+
+1. **Le connecteur claude.ai d'abord.** Il s'autorise une seule fois, sur
+   claude.ai, et sert partout : terminal, extension VS Code, app desktop,
+   web.
+2. **Un serveur local seulement quand claude.ai n'en propose pas**, comme
+   Sanity, Linear ou Cloudflare.
+3. **Un plugin sert pour ses skills.** Ses serveurs en double sont bloqués.
+
+### Ce qui a été réglé le 2026-10-01
+
+- Les plugins `sales`, `marketing` et `productivity`, synchronisés depuis
+  le compte claude.ai, sont désactivés sur le Mac. Aucun de leurs skills
+  n'avait jamais servi. Ils restent sur le compte claude.ai.
+- Les plugins `design` et `figma` sont gardés pour leurs skills
+  (`design-critique`, `figma-use`). Leurs 10 serveurs en double sont bloqués
+  dans `~/.claude/settings.json`, sous la clé `deniedMcpServers` : Figma,
+  Slack, Notion, Asana, Gmail, Agenda, Linear, Atlassian, Intercom.
+- Ces réglages sont sauvegardés dans le repo dotfiles.
+
+### Revenir en arrière
+
+Rien n'a été supprimé.
+
+- Réactiver un plugin : `claude plugin enable sales@synced`.
+- Débloquer un serveur : retirer sa ligne de `deniedMcpServers`.
+- Retrouver un plugin retiré du compte : il se réinstalle depuis le
+  catalogue « knowledge-work-plugins » de claude.ai.
+
+### Quand un connecteur disparaît d'une session
+
+Les connecteurs claude.ai se chargent au démarrage de chaque session. Si le
+réseau coupe à ce moment, Claude Code réessaie trois fois, puis s'en passe
+jusqu'à la fin de la session. L'autorisation n'est pas en cause : il n'y a
+rien à reconnecter sur claude.ai. Il suffit d'ouvrir une nouvelle
+conversation dans l'extension ou de relancer `claude` dans le terminal.
+
+Le terminal et l'extension VS Code sont deux instances distinctes : `/mcp`
+dans l'un ne dit rien des connexions de l'autre.
