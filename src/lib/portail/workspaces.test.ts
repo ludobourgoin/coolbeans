@@ -111,12 +111,6 @@ describe("missingKeysFor", () => {
     expect(missingKeysFor("doc", coolbeans)).toEqual(["doc"]);
   });
 
-  // Projets ne dépend plus d'aucun mapping depuis le retrait du sync Asana :
-  // son empty state dit « module à refaire », pas « clé absente ».
-  it("ne réclame rien pour les modules sans dépendance au registre", () => {
-    expect(missingKeysFor("projets", coolbeans)).toEqual([]);
-  });
-
   // Support crée ses tickets dans la team Linear du client, marqués par le
   // label workspace « Support » (COO-30, migration du 2026-08-19).
   it("réclame la team Linear pour le support", () => {

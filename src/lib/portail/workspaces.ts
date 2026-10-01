@@ -70,7 +70,7 @@ export const DEFAULT_WORKSPACE = "coolbeans";
 export const WORKSPACE_COOLBEANS = "coolbeans";
 
 /** Modules dont l'affichage dépend d'un mapping du client. */
-export type PortalModule = "projets" | "site" | "doc" | "support" | "analytics";
+export type PortalModule = "site" | "doc" | "support" | "analytics";
 
 /** Clés de mapping d'un client, telles que nommées dans le YAML. */
 export type WorkspaceMappingKey = "doc" | "linearTeamId" | "uptimerobot_monitor_ids" | "analytics";
@@ -79,15 +79,11 @@ export type WorkspaceMappingKey = "doc" | "linearTeamId" | "uptimerobot_monitor_
  * Mapping sans lequel un module ne peut rien afficher.
  * Ressources n'y figure pas : son contenu est commun à tous les clients.
  *
- * Projets ne réclame plus rien depuis le retrait du sync Asana : il ne
- * dépendait que d'`asana_team_gid`, dont plus aucun code ne se sert. Son empty
- * state ne relève donc plus d'un mapping manquant mais d'un module à refaire —
- * c'est ce que dit sa page. Support n'exige plus que la team Linear du client :
- * depuis que les tickets se marquent avec le label workspace « Support »
- * (2026-08-19), il n'y a plus de projet par team à mapper.
+ * Support n'exige plus que la team Linear du client : depuis que les tickets
+ * se marquent avec le label workspace « Support » (2026-08-19), il n'y a plus
+ * de projet par team à mapper.
  */
 export const MODULE_REQUIREMENTS: Record<PortalModule, readonly WorkspaceMappingKey[]> = {
-  projets: [],
   support: ["linearTeamId"],
   site: ["uptimerobot_monitor_ids"],
   doc: ["doc"],
