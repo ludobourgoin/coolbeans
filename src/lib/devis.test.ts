@@ -4,6 +4,7 @@ import {
   dateLongue,
   lignesRetenues,
   listeItem,
+  normaliserSelection,
   remisesDe,
   riche,
   selectionDefaut,
@@ -173,5 +174,47 @@ describe("totaux — remises", () => {
       remises: [{ label: "Tarif association", pct: 25 }],
     });
     expect(totaux(b).totalFinal).toBe(750);
+  });
+});
+
+/* Choix unique : le client prend une option parmi plusieurs, par exemple un
+   pack d'heures. La page le garantit par des boutons radio, mais la sélection
+   arrive d'une page publique : le serveur ne doit jamais facturer deux packs
+   parce qu'une requête forgée en coche deux. */
+describe("normaliserSelection — choix unique", () => {
+  const packs = budget(
+    [
+      { label: "Pack de 10 h", prix: 700, optionnel: true, defaut: false },
+      { label: "Pack de 20 h", prix: 1300, optionnel: true, defaut: true },
+      { label: "Pack de 40 h", prix: 2400, optionnel: true, defaut: false },
+    ],
+    { choixUnique: true },
+  );
+
+  it("ne garde qu'un choix quand la requête en porte plusieurs", () => {
+    expect(normaliserSelection(packs, [0, 2])).toEqual([0]);
+    expect(totaux(packs, normaliserSelection(packs, [0, 2])).total).toBe(700);
+  });
+
+  it("laisse passer un choix unique", () => {
+    expect(normaliserSelection(packs, [2])).toEqual([2]);
+  });
+
+  it("sans sélection, laisse le défaut du YAML s'appliquer", () => {
+    expect(normaliserSelection(packs, undefined)).toBeUndefined();
+    expect(totaux(packs).total).toBe(1300);
+  });
+
+  it("écarte un index hors des options avant de retenir le premier", () => {
+    expect(normaliserSelection(packs, [99, 1])).toEqual([1]);
+  });
+
+  it("ne touche pas un budget à options cumulables", () => {
+    const cumulable = budget([
+      { label: "Socle", prix: 1000 },
+      { label: "Option A", prix: 300, optionnel: true },
+      { label: "Option B", prix: 500, optionnel: true },
+    ]);
+    expect(normaliserSelection(cumulable, [1, 2])).toEqual([1, 2]);
   });
 });

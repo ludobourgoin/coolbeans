@@ -56,6 +56,11 @@ const devis = defineCollection({
     // Formulaire de validation masqué sur les devis déjà signés : la page
     // sert alors de feuille de route, pas d'une proposition à valider.
     formulaire: z.boolean().default(true),
+    /* Ce qui suit la validation, côté facturation. Par défaut, un devis Tiime
+       et une facture d'acompte. Un pack d'heures se paie en une fois : la
+       facture du montant total part sans devis ni acompte, et la sous-tâche
+       CRM créée à la validation le dit. */
+    facturation: z.enum(["devis-acompte", "facture"]).default("devis-acompte"),
     /* Versions successives d'un même devis. Une révision de périmètre n'est
        pas un devis neuf : le client garde son lien, et retrouve sous des
        onglets ce qu'on lui avait proposé avant. `versionDe` porte l'id de la
@@ -112,8 +117,16 @@ const devis = defineCollection({
                    budget lui fait peur avant de lui faire choisir (retex Vice
                    Versa du 2026-08-27). */
                 defaut: z.boolean().default(true),
+                /* Ligne recommandée : un badge la signale, sans la cocher.
+                   Sert un choix unique où le client part sur un autre pack
+                   que celui que Ludo conseille. */
+                conseille: z.boolean().default(false),
               }),
             ),
+            /* Les options s'excluent : le client en prend une seule, par
+               exemple un pack d'heures parmi trois. Boutons radio à l'écran,
+               une seule option retenue côté serveur. */
+            choixUnique: z.boolean().default(false),
             /* Devis « en construction » : le périmètre n'est pas encore
                arrêté, donc aucun montant n'est annoncé. Les lignes restent
                visibles — elles disent ce qui sera chiffré — mais les totaux
@@ -135,6 +148,13 @@ const devis = defineCollection({
             mention: z.string().optional(), // suffixe des totaux, ex. « HT »
             reglement: z.string().optional(),
           })
+          /* Un choix unique s'ouvre sur un seul pack coché : `defaut` vaut
+             true par défaut, et trois packs cochés d'office afficheraient un
+             total faux avant même le premier clic. */
+          .refine(
+            (b) => !b.choixUnique || b.lignes.filter((l) => l.optionnel && l.defaut).length === 1,
+            { message: "choixUnique : exactement une option doit porter defaut: true" },
+          )
           .optional(),
         // `options` : un seul planning la plupart du temps, mais peut porter
         // plusieurs scénarios de calendrier alternatifs (ex. démarrage

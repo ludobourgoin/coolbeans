@@ -88,6 +88,19 @@ export type SelectionOptions = readonly number[] | undefined;
 export const selectionDefaut = (budget: DevisBudget): number[] =>
   budget.lignes.flatMap((ligne, i) => (ligne.optionnel && ligne.defaut ? [i] : []));
 
+/**
+ * Sélection ramenée à ce que le budget permet. Un budget à choix unique (un
+ * pack d'heures parmi plusieurs) ne retient qu'une option : la page le
+ * garantit par des boutons radio, mais la sélection arrive d'une page
+ * publique, et une requête forgée ne doit pas faire facturer deux packs.
+ * Sans sélection, le défaut du YAML s'applique : rien à normaliser.
+ */
+export const normaliserSelection = (budget: DevisBudget, selection: SelectionOptions): SelectionOptions => {
+  if (!budget.choixUnique || selection === undefined) return selection;
+  const premier = selection.find((i) => budget.lignes[i]?.optionnel);
+  return premier === undefined ? [] : [premier];
+};
+
 /** Lignes réellement facturées : tout le socle, plus les options retenues. */
 export const lignesRetenues = (budget: DevisBudget, selection?: SelectionOptions) =>
   budget.lignes.filter(

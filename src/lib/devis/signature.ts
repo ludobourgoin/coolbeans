@@ -41,6 +41,12 @@ export interface ContexteSignature {
   total: string;
   /** Phrase de règlement du budget, citée telle quelle. */
   reglement: string | undefined;
+  /**
+   * Ce qui suit la validation (champ `facturation` du YAML). Absent : devis
+   * Tiime et facture d'acompte. « facture » : la facture du montant total,
+   * sans devis ni acompte, comme pour un pack d'heures.
+   */
+  facturation?: "devis-acompte" | "facture";
   client: {
     prenom: string;
     nom: string;
@@ -93,9 +99,16 @@ export function corpsTacheFacturation(ctx: ContexteSignature): string {
     "",
     "## À faire",
     "- [ ] Créer ou vérifier le client dans Tiime",
-    "- [ ] Émettre le devis dans Tiime, au périmètre exact de la proposition validée",
-    "- [ ] Émettre la facture d'acompte",
-    "- [ ] Envoyer **un seul mail** au client avec les trois documents : proposition validée, devis, facture d'acompte",
+    ...(ctx.facturation === "facture"
+      ? [
+          "- [ ] Émettre la facture du montant total de la proposition validée, sans devis ni acompte",
+          "- [ ] Envoyer **un seul mail** au client avec la proposition validée et la facture",
+        ]
+      : [
+          "- [ ] Émettre le devis dans Tiime, au périmètre exact de la proposition validée",
+          "- [ ] Émettre la facture d'acompte",
+          "- [ ] Envoyer **un seul mail** au client avec les trois documents : proposition validée, devis, facture d'acompte",
+        ]),
     "- [ ] À l'encaissement : passer l'affaire en 🏆 Signée",
     "",
     `[Voir la proposition](https://coolbeans.cc/devis/${ctx.slug})`,
@@ -138,7 +151,7 @@ export async function declencherSignature(
   const tache = await creerSousTache({
     apiKey,
     parentId: affaire.issueId,
-    title: `Devis et acompte : ${ctx.titre}`,
+    title: `${ctx.facturation === "facture" ? "Facture" : "Devis et acompte"} : ${ctx.titre}`,
     description: corpsTacheFacturation(ctx),
   });
   await marquerTacheLinear(reponseId, tache.id, d1);

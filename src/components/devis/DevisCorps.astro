@@ -134,6 +134,12 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
                  rien bouger et promettrait un arbitrage qui n'existe pas. */
               const cochable = !b.enAttente;
               const premiereOption = b.lignes.findIndex((l) => l.optionnel);
+              /* Choix unique : les options s'excluent (un pack parmi trois).
+                 Des boutons radio, nommés par section et par version pour que
+                 deux versions affichées sur la même page ne partagent pas le
+                 même groupe. */
+              const choix = b.choixUnique;
+              const nomChoix = `choix-${ancre(section.titre)}`;
               return (
                 <div
                   data-devis-budget
@@ -159,7 +165,8 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
                         <span class="flex items-baseline gap-3">
                           {aCase && (
                             <input
-                              type="checkbox"
+                              type={choix ? "radio" : "checkbox"}
+                              name={choix ? nomChoix : undefined}
                               data-devis-option
                               value={i}
                               checked={ligne.defaut}
@@ -169,11 +176,16 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
                           <span>
                             <Fragment set:html={riche(ligne.label)} />
                             {ligne.tooltip && <Tooltip texte={ligne.tooltip} />}
+                            {ligne.conseille && (
+                              <span class="ml-2 rounded-full bg-surface-raise px-2 py-0.5 align-middle font-mono text-[11px] tracking-wide text-ink uppercase">
+                                Conseillé
+                              </span>
+                            )}
                           </span>
                         </span>
                         {ligne.prix !== undefined ? (
                           <span class="font-mono whitespace-nowrap tabular-nums">
-                            {aCase && "+ "}
+                            {aCase && !choix && "+ "}
                             {eur.format(ligne.prix)} {mention}
                           </span>
                         ) : (
@@ -194,7 +206,7 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
                              une case au milieu d'une liste se lit comme un
                              défaut d'affichage plutôt que comme un choix. */
                           <p class="pt-7 pb-1 font-mono text-[12px] font-semibold tracking-wide text-mute uppercase">
-                            À composer selon le budget
+                            {choix ? "Au choix" : "À composer selon le budget"}
                           </p>
                         )}
                         {aCase ? (
