@@ -1,7 +1,7 @@
 import { describe, expect, it, test } from "vitest";
 import { cheminProjet, ongletOuvert, ongletsDuProjet, projetsDuWorkspace, slugIdDe } from "./projets-portail";
 import type { ProjetLinear } from "../portail/projets-linear";
-import type { Lecture } from "./acces";
+import { lecture, type Lecture } from "./acces";
 import type { DocumentProjet } from "./projet";
 
 const docSalon = (o: Partial<DocumentProjet> & Pick<DocumentProjet, "collection" | "id" | "etape">): DocumentProjet => ({
@@ -161,6 +161,29 @@ describe("ongletsDuProjet", () => {
     const onglets = ongletsDuProjet([proposition], null, lisibleSiPublie);
     expect(onglets).toHaveLength(5);
     expect(onglets.every((o) => o.racine === null)).toBe(true);
+  });
+
+  it("avec la vraie règle de lecture, la proposition d'un revendeur est grisée pour le client, active pour le revendeur (I4)", () => {
+    // Le contrôle de fuite ne vaut rien s'il ne tourne jamais avec la vraie
+    // règle `lecture` : une proposition (collection devis) d'un workspace hors
+    // Coolbeans est adressée au revendeur, pas au client final (acces.ts §3).
+    const workspace = { slug: "amusoire", organisation: "trigger" };
+    const client = { role: "client" as const, portee: ["amusoire"] };
+    const revendeur = { role: "revendeur" as const, portee: ["amusoire"] };
+    const lireClient = (d: DocumentProjet) => lecture(d, client, workspace);
+    const lireRevendeur = (d: DocumentProjet) => lecture(d, revendeur, workspace);
+
+    const ongletClient = ongletsDuProjet([proposition], "salon-533", lireClient).find(
+      (o) => o.etape === "proposition",
+    )!;
+    expect(ongletClient.racine).toBeNull();
+    expect(ongletClient.ids).toEqual([]);
+
+    const ongletRevendeur = ongletsDuProjet([proposition], "salon-533", lireRevendeur).find(
+      (o) => o.etape === "proposition",
+    )!;
+    expect(ongletRevendeur.racine).not.toBeNull();
+    expect(ongletRevendeur.ids).toEqual([proposition.id]);
   });
 });
 
