@@ -19,18 +19,30 @@ import type { Pastille } from "../../../lib/documents/frise";
 interface Props {
   versions: CollectionEntry<"temoignage">[];
   pastilles: Pastille[];
-  contexte: "public" | "portail";
+  contexte: "public" | "portail" | "projet";
+  /** Préfixe des id sur la page projet. Vide ailleurs. */
+  prefixe?: string;
+  /** Id de la version à ouvrir, lu dans ?version=. Inconnu ou absent : la dernière. */
+  versionActive?: string;
   /** Par id d'entrée : ce que le client ne voit pas. Portail et admin seulement. */
   bandeaux?: Record<string, Bandeau>;
 }
-const { versions, pastilles, contexte, bandeaux = {} } = Astro.props;
+const { versions, pastilles, contexte, prefixe = "", versionActive, bandeaux = {} } = Astro.props;
 const entry = versions[0];
 const d = entry.data;
 ---
 
 {bandeaux[versions[0].id] && <BandeauAcces raison={bandeaux[versions[0].id]} />}
 
-<DocumentEntete etape={d.etape} titre={titreEntete(d)} frise={pastilles} onglets={[]} actif={0} contexte={contexte} />
+<DocumentEntete
+  etape={d.etape}
+  titre={titreEntete(d)}
+  frise={pastilles}
+  onglets={[]}
+  actif={0}
+  contexte={contexte}
+  prefixe={prefixe}
+/>
 
 <DocumentVolet
   index={0}
@@ -40,6 +52,7 @@ const d = entry.data;
   objet={d.objet}
   date={ligneDate({ date: d.date, version: 1 }, false, "Document")}
   sections={sectionsTemoignage(d)}
+  prefixe={prefixe}
 >
   <div class="container-site">
     <div class="mx-auto max-w-[880px] py-16x">

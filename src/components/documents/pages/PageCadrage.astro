@@ -20,17 +20,24 @@ import type { Pastille } from "../../../lib/documents/frise";
 interface Props {
   versions: CollectionEntry<"cadrage">[];
   pastilles: Pastille[];
-  contexte: "public" | "portail";
+  contexte: "public" | "portail" | "projet";
+  /** Préfixe des id sur la page projet. Vide ailleurs. */
+  prefixe?: string;
+  /** Id de la version à ouvrir, lu dans ?version=. Inconnu ou absent : la dernière. */
+  versionActive?: string;
   /** Par id d'entrée : ce que le client ne voit pas. Portail et admin seulement. */
   bandeaux?: Record<string, Bandeau>;
 }
-const { versions, pastilles, contexte, bandeaux = {} } = Astro.props;
+const { versions, pastilles, contexte, prefixe = "", versionActive, bandeaux = {} } = Astro.props;
 const chapitres = versions;
 
 const actif = chapitres.length - 1;
 const racine = chapitres[0].data;
 const plusieurs = chapitres.length > 1;
 const courante = chapitres[actif].data;
+
+const demande = versionActive ? chapitres.findIndex((c) => c.id === versionActive) : -1;
+const ouvert = demande >= 0 ? demande : actif;
 
 /* Pas de tirage PDF pour ce document, donc pas de référence imprimée : il se
    lit et se remplit dans le navigateur, il ne circule pas en pièce jointe
@@ -44,21 +51,23 @@ const courante = chapitres[actif].data;
   titre={titreEntete(racine)}
   frise={pastilles}
   onglets={chapitres.map((c) => ({ libelle: libelleOnglet(c.data), slug: c.id }))}
-  actif={actif}
+  actif={ouvert}
   contexte={contexte}
+  prefixe={prefixe}
 />
 
 {
   chapitres.map((c, i) => (
     <DocumentVolet
       index={i}
-      actif={actif}
+      actif={ouvert}
       total={chapitres.length}
       titre={c.data.titre}
       objet={c.data.objet}
       date={ligneDate(c.data, plusieurs, "Document")}
       sections={sectionsCadrage(c.data)}
       bandeau={i > 0 ? (bandeaux[c.id] ?? null) : undefined}
+      prefixe={prefixe}
     >
       <div class="container-site">
         <div class="mx-auto max-w-[880px] py-16x">

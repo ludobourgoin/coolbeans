@@ -18,17 +18,19 @@ interface Props {
   sections: SectionNav[];
   /** Ce que le client ne voit pas sur ce volet. Portail et admin seulement. */
   bandeau?: Bandeau | null;
+  /** Préfixe des id, comme DocumentEntete. Vide hors de la page projet. */
+  prefixe?: string;
 }
 
-const { index, actif, total, titre, objet, date, sections, bandeau } = Astro.props;
+const { index, actif, total, titre, objet, date, sections, bandeau, prefixe = "" } = Astro.props;
 const onglets = total > 1;
 ---
 
 <div
   data-document-volet={index}
-  id={onglets ? `volet-${index}` : undefined}
+  id={onglets ? `${prefixe}volet-${index}` : undefined}
   role={onglets ? "tabpanel" : undefined}
-  aria-labelledby={onglets ? `onglet-${index}` : undefined}
+  aria-labelledby={onglets ? `${prefixe}onglet-${index}` : undefined}
   hidden={index !== actif}
 >
   {bandeau && <BandeauAcces raison={bandeau} />}

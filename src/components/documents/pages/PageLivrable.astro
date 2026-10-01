@@ -23,16 +23,25 @@ import type { Pastille } from "../../../lib/documents/frise";
 interface Props {
   versions: CollectionEntry<"livrable">[];
   pastilles: Pastille[];
-  contexte: "public" | "portail";
+  contexte: "public" | "portail" | "projet";
+  /** Préfixe des id sur la page projet. Vide ailleurs. */
+  prefixe?: string;
+  /** Id de la version à ouvrir, lu dans ?version=. Inconnu ou absent : la dernière. */
+  versionActive?: string;
   /** Par id d'entrée : ce que le client ne voit pas. Portail et admin seulement. */
   bandeaux?: Record<string, Bandeau>;
 }
-const { versions, pastilles, contexte, bandeaux = {} } = Astro.props;
+const { versions, pastilles, contexte, prefixe = "", versionActive, bandeaux = {} } = Astro.props;
 
 const actif = versions.length - 1;
 const racine = versions[0].data;
 const courante = versions[actif].data;
 const plusieurs = versions.length > 1;
+
+/* La version ouverte à l'arrivée : celle que l'adresse demande, sinon la
+   dernière. `actif` reste celle qui engage, pour le formulaire. */
+const demandee = versionActive ? versions.findIndex((v) => v.id === versionActive) : -1;
+const ouvert = demandee >= 0 ? demandee : actif;
 ---
 
 {bandeaux[versions[0].id] && <BandeauAcces raison={bandeaux[versions[0].id]} />}
@@ -42,21 +51,23 @@ const plusieurs = versions.length > 1;
   titre={titreEntete(racine)}
   frise={pastilles}
   onglets={versions.map((v) => ({ libelle: libelleOnglet(v.data), slug: v.id }))}
-  actif={actif}
+  actif={ouvert}
   contexte={contexte}
+  prefixe={prefixe}
 />
 
 {
   versions.map((v, i) => (
     <DocumentVolet
       index={i}
-      actif={actif}
+      actif={ouvert}
       total={versions.length}
       titre={v.data.titre}
       objet={v.data.objet}
       date={ligneDate(v.data, plusieurs, "Document")}
       sections={sectionsLivrable(v.data)}
       bandeau={i > 0 ? (bandeaux[v.id] ?? null) : undefined}
+      prefixe={prefixe}
     >
       <a
         slot="action"
@@ -150,7 +161,7 @@ const plusieurs = versions.length > 1;
 
 {
   courante.formulaire && (
-    <LivrableReponse slug={versions[actif].id} tutoiement={courante.tutoiement} />
+    <LivrableReponse slug={versions[ouvert].id} tutoiement={courante.tutoiement} />
   )
 }
 
