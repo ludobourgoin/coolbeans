@@ -44,6 +44,7 @@ export interface EntreeProjet {
 /** Segment du projet, référence comprise, vers son client et son projet Linear. */
 export const PROJETS: Readonly<Record<string, EntreeProjet>> = {
   "refonte-432": { client: "amu", linear: "9a553e01b917" },
+  "pack-heures-973": { client: "amu", linear: "8947ac98efef" },
   "site-web-879": { client: "caf", linear: "2361b9acfd1a" },
   "boutique-shopify-390": { client: "fyl", linear: "42d0fb9d1281" },
   "site-vitrine-471": { client: "lit", linear: "e181c8e92c1f" },

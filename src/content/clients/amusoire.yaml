@@ -1,6 +1,8 @@
 nom: Amusoire
-# Revendeur auquel ce client se rattache (spec 2026-08-19 §3.1).
-organisation: trigger
+# Revendeur auquel ce client se rattache (spec 2026-08-19 §3.1). Client direct
+# de Coolbeans depuis le 2026-09-30, à la demande de Trigger (CRM-76) ; la team
+# suit en base avec scripts/deplacer-workspace.mjs (COO-303).
+organisation: coolbeans
 cle: amu
 prenom: Noémie
 # Emoji du sélecteur (repris de l'icône de la team Linear) et début de la

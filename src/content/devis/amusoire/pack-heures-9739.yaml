@@ -1,0 +1,51 @@
+titre: Amusoire × Coolbeans
+objet: Pack d'heures pour faire évoluer le site
+date: 2026-10-01
+projet: pack-heures-973
+contact: Mikael
+facturation: facture
+linear:
+  projet: Pack d'heures, octobre 2026
+  affaire: CRM-76
+
+sections:
+  - titre: Le principe
+    texte: "Le forfait de la refonte est soldé. La suite se fait en heures : tu choisis un pack, et chaque demande s'y décompte."
+
+  - titre: Comment une demande se décompte
+    liste:
+      - "Je chiffre chaque demande avant d'intervenir : 1, 2, 3, 5 ou 8 h. Tu valides, puis je m'y mets."
+      - Une heure minimum par demande.
+      - "Au-delà de 8 h, la demande passe par une proposition à part."
+      - Le solde se suit dans le Sheet de suivi, que l'équipe connaît déjà.
+
+  - titre: Ce que couvrent les heures
+    liste:
+      - "Évolutions du site Webflow : pages, sections, composants"
+      - "Intégrations et outils tiers : formulaires, CRM, tracking"
+      - Corrections et support
+      - "Conseil technique : performance, référencement, choix d'outils"
+
+  - titre: Budget
+    budget:
+      choixUnique: true
+      mention: HT
+      reglement: Facture du pack choisi, payable à réception.
+      lignes:
+        - label: "Pack de 10 h, soit 70 € l'heure"
+          prix: 700
+          optionnel: true
+          defaut: false
+        - label: "Pack de 20 h, soit 65 € l'heure"
+          prix: 1300
+          optionnel: true
+          defaut: true
+        - label: "Pack de 40 h, soit 60 € l'heure"
+          prix: 2400
+          optionnel: true
+          defaut: false
+          conseille: true
+          tooltip: "Au rythme de juin à août, 12 h par mois, 40 h couvrent un peu plus de trois mois."
+
+  - titre: Validité
+    texte: "Les heures sont valables six mois à compter du règlement. Celles qui restent au bout de six mois ne se reportent pas."
