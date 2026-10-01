@@ -22,8 +22,7 @@ export const urlDocument = (d: Pick<DocumentProjet, "collection" | "id">) => `/$
 
 /**
  * La frise, avec la règle de lecture et la fabrique d'adresse du contexte.
- * Public : `frise` ci-dessous. Portail : la route passe `lecture` et
- * `portalHref(cheminPortail(d))`.
+ * Public : `frise` ci-dessous.
  */
 export function friseAvec(
   documents: DocumentProjet[],

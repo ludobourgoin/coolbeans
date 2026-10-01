@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { cheminPortail, documentDuPortail, lecture, versionsDuPortail, type CompteLecteur } from "./acces";
+import { lecture, versionsDuPortail, type CompteLecteur } from "./acces";
 import type { DocumentProjet } from "./projet";
 
 const direct = { slug: "cafa", organisation: "coolbeans" };
@@ -59,18 +59,6 @@ const cafa = [
   doc({ collection: "devis", id: "cafa/site-web-v2-4106", projet: undefined, versionDe: "cafa/site-web-8791", statut: "brouillon" }),
   doc({ collection: "livrable", id: "cafa/site-web-8791", etape: "livraison" }),
 ];
-
-test("une adresse du portail désigne une racine, jamais une version", () => {
-  expect(documentDuPortail(cafa, "site-web-879", "proposition")?.id).toBe("cafa/site-web-8791");
-  expect(documentDuPortail(cafa, "site-web-879", "livraison")?.collection).toBe("livrable");
-  expect(documentDuPortail(cafa, "site-web-879", "suivi")).toBeUndefined();
-  expect(documentDuPortail(cafa, "inconnu-000", "proposition")).toBeUndefined();
-});
-
-test("le chemin du portail se construit depuis le projet et l'étape", () => {
-  expect(cheminPortail(cafa[0])).toBe("/projets/site-web-879/proposition");
-  expect(() => cheminPortail({ etape: "proposition" })).toThrow();
-});
 
 test("une V2 en brouillon disparaît pour le client et porte son bandeau pour l'admin", () => {
   // Point de vigilance 2.

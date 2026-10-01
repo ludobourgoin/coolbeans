@@ -1,0 +1,59 @@
+---
+/* L'en-tête d'une page projet (spec 2026-09-30, barre par workspace, §5.1) :
+   ce qui identifie la page et ne change jamais d'un onglet à l'autre. Il
+   prend toute la largeur de son conteneur.
+
+   Le statut est traduit pour le client. Les dates ne s'affichent qu'une fois
+   le projet validé, sorti de Proposal et de Backlog : avant l'acompte, une
+   date serait une promesse. */
+import { estValide, libelleStatut } from "../../../lib/portail/projets-linear";
+import type { ProjetPortail } from "../../../lib/documents/projets-portail";
+
+interface Props {
+  projet: ProjetPortail;
+}
+
+const { projet } = Astro.props;
+const dateLongue = (iso: string) =>
+  new Date(`${iso}T12:00:00Z`).toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Europe/Paris",
+  });
+const valide = projet.statut !== null && estValide(projet.statut);
+const debut = valide ? projet.debut : null;
+const fin = valide ? projet.fin : null;
+---
+
+<header class="w-full border-b border-line print:hidden">
+  <div class="px-6 pt-10 pb-8 md:px-10">
+    {
+      projet.statut && (
+        <span class="inline-block rounded-full bg-surface-raise px-[10px] py-[3px] text-[12px]/[1.4] font-semibold text-ink">
+          {libelleStatut(projet.statut)}
+        </span>
+      )
+    }
+    <h1 class="mt-3 text-[clamp(2rem,4vw,2.75rem)]/[1.08] tracking-[-0.02em]">{projet.titre}</h1>
+    {projet.resume && <p class="mt-3.5 max-w-[62ch] text-lg/normal text-mute">{projet.resume}</p>}
+    {
+      (debut || fin) && (
+        <dl class="mt-5 flex flex-wrap gap-x-8 gap-y-2 font-mono text-[12px]/normal tracking-[0.04em] text-mute uppercase">
+          {debut && (
+            <div class="flex gap-2">
+              <dt>Début</dt>
+              <dd>{dateLongue(debut)}</dd>
+            </div>
+          )}
+          {fin && (
+            <div class="flex gap-2">
+              <dt>Fin prévue</dt>
+              <dd>{dateLongue(fin)}</dd>
+            </div>
+          )}
+        </dl>
+      )
+    }
+  </div>
+</header>

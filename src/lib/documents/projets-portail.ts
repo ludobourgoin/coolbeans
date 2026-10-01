@@ -1,48 +1,11 @@
-/* Les sections de projet de la barre latérale du portail (spec 2026-09-30,
- * sous-projet 1) : une section par projet du workspace courant, une entrée par
- * document que le compte lit, libellée par son étape et dans l'ordre de la
- * frise. Le projet au document le plus récent vient en tête.
+/* Les projets du portail et les onglets d'une page projet (spec 2026-09-30,
+ * barre par workspace, §4 et §5).
  */
-import { cheminPortail, versionsDuPortail, type Bandeau, type Lecture } from "./acces";
-import { DEFINITIONS, definitionEtape, type Etape, type Teinte } from "./etapes";
+import { versionsDuPortail, type Bandeau, type Lecture } from "./acces";
+import { DEFINITIONS, type Etape, type Teinte } from "./etapes";
 import { clientDuProjet, linearDuProjet, projetDuLinear } from "./nomenclature";
 import type { DocumentProjet } from "./projet";
 import { trierProjets, type ProjetLinear, type StatutLinear } from "../portail/projets-linear";
-
-export interface EntreeProjet {
-  label: string;
-  /** Chemin sous /espace, à passer par portalHref. */
-  chemin: string;
-}
-
-export interface SectionProjet {
-  projet: string;
-  titre: string;
-  entrees: EntreeProjet[];
-}
-
-export function sectionsProjets(
-  documents: DocumentProjet[],
-  cle: string,
-  lisible: (d: DocumentProjet) => boolean,
-): SectionProjet[] {
-  const parProjet = new Map<string, DocumentProjet[]>();
-  for (const d of documents) {
-    if (d.versionDe || !d.projet || clientDuProjet(d.projet) !== cle || !lisible(d)) continue;
-    parProjet.set(d.projet, [...(parProjet.get(d.projet) ?? []), d]);
-  }
-  const plusRecent = (docs: DocumentProjet[]) => Math.max(...docs.map((d) => d.date?.getTime() ?? 0));
-  return [...parProjet.entries()]
-    .sort(([, a], [, b]) => plusRecent(b) - plusRecent(a))
-    .map(([projet, docs]) => ({
-      projet,
-      titre: docs[0].titreProjet ?? projet,
-      entrees: docs
-        .map((d) => ({ d, def: definitionEtape(d.etape) }))
-        .sort((a, b) => a.def.numero - b.def.numero)
-        .map(({ d, def }) => ({ label: `${def.numero} · ${def.libelle}`, chemin: cheminPortail(d) })),
-    }));
-}
 
 /* ---- Projets Linear (spec 2026-09-30, barre par workspace, §4 et §5) ------ */
 

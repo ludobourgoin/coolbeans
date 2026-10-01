@@ -1,0 +1,122 @@
+---
+/* La page d'un projet dans le portail (spec 2026-09-30, barre par workspace,
+   §5). /espace/projets/<segment>, publiée sur my.coolbeans.cc/projets/…
+
+   Une seule page par projet : l'en-tête du projet Linear, une étape par
+   onglet, les versions d'une étape en sous-onglets. Le serveur ne rend que
+   les documents que le compte lit : un document refusé n'atteint jamais le
+   navigateur, même caché. Tout refus répond 404, comme un projet inconnu. */
+export const prerender = false;
+
+import { getCollection } from "astro:content";
+import PortalLayout from "../../../layouts/PortalLayout.astro";
+import ProjetEntete from "../../../components/portail/projet/ProjetEntete.astro";
+import OngletsEtapes from "../../../components/portail/projet/OngletsEtapes.astro";
+import PageCadrage from "../../../components/documents/pages/PageCadrage.astro";
+import PageProposition from "../../../components/documents/pages/PageProposition.astro";
+import PageLivrable from "../../../components/documents/pages/PageLivrable.astro";
+import PageTemoignage from "../../../components/documents/pages/PageTemoignage.astro";
+import { chargerDocuments } from "../../../lib/documents/charger";
+import { workspaceDuLinear } from "../../../lib/documents/nomenclature";
+import { ongletOuvert, ongletsDuProjet, slugIdDe } from "../../../lib/documents/projets-portail";
+import { workspacesVisibles } from "../../../lib/portail/appartenances";
+import { getPortalContext, poserWorkspaceCourant } from "../../../lib/portail/context";
+import { portalHref } from "../../../lib/portail/nav";
+import { lecteurDe, projetsDe } from "../../../lib/portail/projets-courants";
+import { listWorkspaces } from "../../../lib/portail/workspaces";
+
+const introuvable = async () => {
+  const rendu = await Astro.rewrite("/404");
+  return new Response(rendu.body, { status: 404, headers: rendu.headers });
+};
+
+Astro.response.headers.set("Cache-Control", "no-store");
+
+const segment = Astro.params.projet ?? "";
+const slugId = slugIdDe(segment);
+if (!slugId) return introuvable();
+
+const { meta, client } = await getPortalContext(Astro);
+const workspaces = await listWorkspaces();
+const portee = workspacesVisibles(workspaces, meta);
+const dansLaPortee = (slug: string) => portee.some((w) => w.slug === slug);
+
+// Le projet se cherche dans le workspace courant, puis dans celui que la
+// nomenclature désigne : un lien reçu par mail ouvre le bon workspace.
+let workspace = client && dansLaPortee(client.slug) ? client : null;
+let projet = workspace ? (await projetsDe(Astro, workspace)).find((p) => p.slugId === slugId) : undefined;
+if (!projet) {
+  const designe = workspaceDuLinear(workspaces, slugId);
+  if (designe && dansLaPortee(designe.slug) && designe.slug !== workspace?.slug) {
+    workspace = designe;
+    projet = (await projetsDe(Astro, designe)).find((p) => p.slugId === slugId);
+  }
+}
+if (!workspace || !projet) return introuvable();
+
+// Le nom a changé dans Linear : l'ancienne adresse mène à la nouvelle. Pas
+// quand Linear est muet : le segment de repli n'est que l'identifiant court.
+if (projet.statut && segment !== projet.segment) {
+  return Astro.redirect(portalHref(`/projets/${projet.segment}`, Astro.url.hostname) + Astro.url.search, 302);
+}
+
+// L'adresse gagne sur le sélecteur, comme pour la doc.
+if (client?.slug !== workspace.slug) poserWorkspaceCourant(Astro, workspace);
+
+const documents = await chargerDocuments();
+const lire = await lecteurDe(Astro, workspace);
+const onglets = ongletsDuProjet(documents, projet.nomenclature, lire);
+const ouvert = ongletOuvert(onglets, Astro.url.searchParams.get("etape"));
+const versionDemandee = Astro.url.searchParams.get("version") ?? undefined;
+
+// Les entrées de chaque étape disponible, triées par version.
+const etapes = await Promise.all(
+  onglets
+    .filter((o) => o.racine)
+    .map(async (o) => ({
+      onglet: o,
+      collection: o.racine!.collection,
+      entrees: (await getCollection(o.racine!.collection))
+        .filter((e) => o.ids.includes(e.id))
+        .sort(
+          (a, b) => ((a.data as { version?: number }).version ?? 1) - ((b.data as { version?: number }).version ?? 1),
+        ),
+    })),
+);
+---
+
+<PortalLayout
+  title={`${projet.titre} · Coolbeans`}
+  description="Espace client Coolbeans"
+  mainClass="document-main"
+  pageDocument
+>
+  <ProjetEntete projet={projet} />
+  <OngletsEtapes onglets={onglets} ouvert={ouvert} />
+
+  {
+    etapes.map(({ onglet, collection, entrees }) => {
+      const commun = {
+        pastilles: [],
+        contexte: "projet" as const,
+        prefixe: `${onglet.etape}-`,
+        bandeaux: onglet.bandeaux,
+        versionActive: onglet.etape === ouvert ? versionDemandee : undefined,
+      };
+      return (
+        <div
+          data-etape-volet={onglet.etape}
+          id={`etape-${onglet.etape}`}
+          role="tabpanel"
+          aria-labelledby={`onglet-etape-${onglet.etape}`}
+          hidden={onglet.etape !== ouvert}
+        >
+          {collection === "devis" && <PageProposition versions={entrees as never} {...commun} />}
+          {collection === "livrable" && <PageLivrable versions={entrees as never} {...commun} />}
+          {collection === "cadrage" && <PageCadrage versions={entrees as never} {...commun} />}
+          {collection === "temoignage" && <PageTemoignage versions={entrees as never} {...commun} />}
+        </div>
+      );
+    })
+  }
+</PortalLayout>

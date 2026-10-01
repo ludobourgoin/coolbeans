@@ -48,21 +48,6 @@ export function lecture(
   return { lisible: true, bandeau: null };
 }
 
-/** La racine visée par une adresse du portail. Une version n'a pas d'adresse. */
-export function documentDuPortail(
-  documents: DocumentProjet[],
-  projet: string,
-  etape: string,
-): DocumentProjet | undefined {
-  return documents.find((d) => !d.versionDe && d.projet === projet && d.etape === etape);
-}
-
-/** Le chemin d'un document sous /espace. Toujours passer le résultat à portalHref. */
-export function cheminPortail(doc: Pick<DocumentProjet, "projet" | "etape">): string {
-  if (!doc.projet) throw new Error("cheminPortail : document hors nomenclature");
-  return `/projets/${doc.projet}/${doc.etape}`;
-}
-
 /**
  * Les onglets d'une page du portail : la racine et ses versions que le compte
  * lit, avec le bandeau de chacune. Une version illisible disparaît, sans
