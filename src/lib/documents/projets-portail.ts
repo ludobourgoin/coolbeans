@@ -35,6 +35,16 @@ export function projetsDuWorkspace(
   cle: string | undefined,
   lisible: (d: DocumentProjet) => boolean,
 ): ProjetPortail[] {
+  /* Le projet Linear de la table n'est retenu que s'il appartient au CLIENT
+     de ce workspace : un projet Linear d'une autre sous-team peut, par
+     erreur ou coïncidence de slugId, être relié à un projet de la table qui
+     appartient à un autre client. Sans ce garde, ses documents (dont une
+     proposition au prix d'un autre client) seraient servis sous ce workspace
+     (spec 2026-09-30, barre par workspace, §4.3). */
+  const nomenclatureDuClient = (slugId: string) => {
+    const projet = projetDuLinear(slugId);
+    return projet && clientDuProjet(projet) === cle ? projet : null;
+  };
   if (linear) {
     return trierProjets(linear).map((p) => ({
       slugId: p.slugId,
@@ -44,7 +54,7 @@ export function projetsDuWorkspace(
       statut: p.statut,
       debut: p.debut,
       fin: p.fin,
-      nomenclature: projetDuLinear(p.slugId) ?? null,
+      nomenclature: nomenclatureDuClient(p.slugId),
     }));
   }
   if (!cle) return [];

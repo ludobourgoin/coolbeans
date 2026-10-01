@@ -93,6 +93,14 @@ describe("projetsDuWorkspace", () => {
       "/projets/site-du-salon-edition-2026-e6c1e495a56f",
     );
   });
+
+  it("un projet Linear d'un autre client n'a pas de nomenclature (spec §4.3)", () => {
+    // site-web-879 appartient à caf (CAFA) dans la table ; lu ici dans un
+    // workspace de clé rev, il ne doit pas en porter les documents.
+    const caf = salon({ slugId: "2361b9acfd1a", segment: "site-web-caf-2361b9acfd1a" });
+    const projets = projetsDuWorkspace([caf], [], "rev", () => true);
+    expect(projets[0].nomenclature).toBeNull();
+  });
 });
 
 describe("slugIdDe", () => {
