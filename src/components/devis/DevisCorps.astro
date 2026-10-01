@@ -6,6 +6,7 @@ import {
   eur,
   ancreSection,
   totaux,
+  remisesDe,
   ownerLabel,
   listeItem,
   nouveautesDepuis,
@@ -129,6 +130,7 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
             (() => {
               const b = section.budget;
               const { total, paliers, totalFinal, mention } = totaux(b);
+              const remises = remisesDe(b);
               /* Les options ne sont cochables que sur un devis chiffré : sous
                  `enAttente` aucune ligne n'a de prix, une case ne ferait donc
                  rien bouger et promettrait un arbitrage qui n'existe pas. */
@@ -143,7 +145,7 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
               return (
                 <div
                   data-devis-budget
-                  data-remises={JSON.stringify(paliers.map((p) => p.pct))}
+                  data-remises={JSON.stringify(remises.map(({ pct, montant }) => ({ pct, montant })))}
                   data-mention={mention}
                 >
                   {b.lignes.map((ligne, i) => {
@@ -248,15 +250,16 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
                           {eur.format(total)} {mention}
                         </span>
                       </div>
-                      {paliers.map((palier) => (
+                      {paliers.map((palier, i) => (
                         <div
                           class:list={[
                             "flex items-baseline justify-between gap-4 border-b border-line py-3 text-[15px] text-mute max-[700px]:text-[16px]",
-                            estNeuf(cleRemise(palier)) && NEUF,
+                            estNeuf(cleRemise(remises[i])) && NEUF,
                           ]}
                         >
                           <span>
-                            {palier.label} (−{palier.pct}&nbsp;%)
+                            {palier.label}
+                            {palier.pct !== undefined && <> (−{palier.pct}&nbsp;%)</>}
                           </span>
                           <span data-devis-remise class="font-mono whitespace-nowrap tabular-nums">
                             −{eur.format(palier.montant)}
@@ -479,7 +482,9 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
     if (!cases.length) return;
 
     const mention = bloc.dataset.mention ?? "";
-    const pourcentages: number[] = JSON.parse(bloc.dataset.remises || "[]");
+    const remises: Array<{ pct?: number; montant?: number }> = JSON.parse(
+      bloc.dataset.remises || "[]",
+    );
     const suffixe = (montant: number) => `${eur.format(montant)}${mention ? ` ${mention}` : ""}`;
 
     const recalculer = () => {
@@ -494,8 +499,10 @@ const NEUF_BANDEAU = `${NEUF_FOND} rounded-control`;
          que la précédente a laissé. Les deux calculs doivent rester d'accord,
          sans quoi le client lit un montant et en valide un autre. */
       let restant = total;
-      const montants = pourcentages.map((pct) => {
-        const montant = (restant * pct) / 100;
+      const montants = remises.map(({ pct, montant: fixe }) => {
+        /* Miroir de `montantRemise` : un montant fixe se déduit tel quel,
+           plafonné au reliquat. */
+        const montant = fixe !== undefined ? Math.min(fixe, restant) : (restant * (pct ?? 0)) / 100;
         restant -= montant;
         return montant;
       });
