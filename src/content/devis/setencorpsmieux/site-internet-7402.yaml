@@ -24,6 +24,9 @@
 # Une partie du règlement se fera en séances (Pilates, massages). Ludo s'arrange
 # avec elle directement : volontairement absent de cette page. La facture Tiime
 # porte quand même le montant entier, TVA comprise.
+#
+# Les 9 CHF du transfert du domaine (27 août) ont été remboursés par Nathalie
+# directement. Reste à elle de remplacer la carte de Ludo chez Infomaniak.
 titre: Sète En Corps Mieux x Coolbeans
 objet: Site setencorpsmieux.fr
 date: 2026-10-02
@@ -161,6 +164,9 @@ sections:
       - texte: >-
           La mise à jour du site : textes, photos, prestations et planning se
           changent depuis le Studio.
+      - texte: >-
+          Le renouvellement du nom de domaine : remplace ma carte bancaire par
+          la tienne chez Infomaniak, pour les années à venir.
 
 notes:
   - tone: success
@@ -175,6 +181,3 @@ notes:
       Pour plus tard, si tu en as besoin : la réservation en ligne des cours, avec
       une jauge et une liste d'attente. Rien n'est chiffré ici, et rien ne
       l'empêche.
-  - texte: >-
-      J'ai avancé neuf francs suisses pour le transfert du domaine le 27 août.
-      C'est le seul frais engagé pour l'instant.
