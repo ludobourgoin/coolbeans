@@ -84,8 +84,8 @@ Déduites des documents envoyés et des mails, à valider par Ludo à la relectu
 | coolbeans | | tu | Le workspace de Ludo |
 | spinoza | | tu | Perso |
 | tielle-popcorn | | tu | Perso |
-| dupontdupont | | à trancher | Aucun document |
-| merciyanis | | à trancher | Aucun document |
+| dupontdupont | | tu | Mail à Kat du 2026-01-25 |
+| merciyanis | | tu | Mails à Gaëlle et Laura, janvier et août 2026 |
 
 Fiches à créer, pour les clients de la nomenclature qui n'en ont pas :
 
@@ -93,7 +93,7 @@ Fiches à créer, pour les clients de la nomenclature qui n'en ont pas :
 |---|---|---|---|---|
 | mal | Aurélie Malbec | coolbeans | tu | 3 documents, tutoyés |
 | mih | Miharu | trigger | vous | 2 documents, vouvoyés |
-| uni | Université de Montpellier | coolbeans | à trancher | 2 documents, registres mêlés |
+| uni | Université de Montpellier | coolbeans | tu | Mails à Isabelle Tournier, septembre 2026. Les documents vouvoient l'équipe du labo |
 | vic | Vice Versa | coolbeans | tu | 1 document, tutoyé |
 
 Organisations : `coolbeans`, tu. `trigger`, à trancher.
