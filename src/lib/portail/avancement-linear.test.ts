@@ -18,6 +18,7 @@ const jalon = (id: string, name: string, targetDate: string | null, sortOrder = 
 const issue = (title: string, type: string, o: Partial<NoeudIssue> = {}): NoeudIssue => ({
   title,
   dueDate: null,
+  sortOrder: 0,
   state: { type },
   projectMilestone: null,
   ...o,
@@ -68,15 +69,15 @@ describe("construireAvancement", () => {
     expect(a.groupes.map((g) => g.jalon?.nom)).toEqual(["Bientôt", "Plus tard"]);
   });
 
-  it("dans un jalon, met les issues ouvertes d'abord, par échéance, puis les faites", () => {
+  it("dans un jalon, suit l'ordre manuel de Linear, les faites en dernier", () => {
     const a = construireAvancement([], [
-      issue("Faite", "completed", { dueDate: "2026-10-01" }),
-      issue("Sans échéance", "unstarted"),
-      issue("Tardive", "started", { dueDate: "2026-10-20" }),
-      issue("Proche", "backlog", { dueDate: "2026-10-05" }),
+      issue("Faite", "completed", { sortOrder: -10 }),
+      issue("Troisième", "unstarted", { sortOrder: 30 }),
+      issue("Première", "started", { sortOrder: -5 }),
+      issue("Deuxième", "backlog", { sortOrder: 12, dueDate: "2026-10-05" }),
     ]);
-    expect(a.groupes[0].issues.map((i) => i.titre)).toEqual(["Proche", "Tardive", "Sans échéance", "Faite"]);
-    expect(a.groupes[0].issues[0]).toEqual({ titre: "Proche", etat: "backlog", echeance: "2026-10-05" });
+    expect(a.groupes[0].issues.map((i) => i.titre)).toEqual(["Première", "Deuxième", "Troisième", "Faite"]);
+    expect(a.groupes[0].issues[1]).toEqual({ titre: "Deuxième", etat: "backlog", echeance: "2026-10-05" });
   });
 
   it("rend un avancement vide pour un projet sans issue", () => {
