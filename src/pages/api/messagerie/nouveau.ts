@@ -37,7 +37,7 @@ const json = (body: unknown, status: number) =>
 /** Demandes par utilisateur et par jour. Au-delà : 429 et message clair. */
 const QUOTA_PAR_JOUR = 5;
 
-const CONTACT_DIRECT = "écrivez-moi à ludo@coolbeans.cc";
+const CONTACT_DIRECT = "un mail à ludo@coolbeans.cc fonctionne aussi";
 
 export const POST: APIRoute = async (context) => {
   const { request } = context;
@@ -89,7 +89,7 @@ export const POST: APIRoute = async (context) => {
     }
     if (!cible) {
       return json(
-        { error: `Aucun compte dans l'espace ${client.nom} : un utilisateur est à inviter d'abord.` },
+        { error: `Aucun compte dans l'espace ${client.nom} : il faut d'abord y inviter un utilisateur.` },
         409,
       );
     }
@@ -107,7 +107,7 @@ export const POST: APIRoute = async (context) => {
   if (createdVia !== "admin" && dejaEnvoyees >= QUOTA_PAR_JOUR) {
     return json(
       {
-        error: `Limite de ${QUOTA_PAR_JOUR} demandes atteinte pour aujourd'hui. Pour une urgence, ${CONTACT_DIRECT}.`,
+        error: `Limite de ${QUOTA_PAR_JOUR} demandes atteinte pour aujourd'hui. Une urgence passe par un mail à ludo@coolbeans.cc.`,
       },
       429,
     );

@@ -18,7 +18,7 @@ export const prerender = false;
 const json = (body: unknown, status: number) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
 
-const CONTACT_DIRECT = "écrivez-moi à ludo@coolbeans.cc";
+const CONTACT_DIRECT = "un mail à ludo@coolbeans.cc fonctionne aussi";
 
 export const POST: APIRoute = async (context) => {
   const { request } = context;

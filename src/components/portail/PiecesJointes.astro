@@ -94,7 +94,7 @@ const aide = `Images, PDF ou ZIP · ${MAX_FICHIERS} fichiers, ${MAX_TAILLE / 102
       zone.toggleAttribute("data-plein", plein);
       entree.disabled = plein;
       invite.innerHTML = plein
-        ? `${max} fichiers sur ${max}. Retirez-en un pour en ajouter un autre.`
+        ? `${max} fichiers sur ${max}. Pour en ajouter un autre, il faut d'abord en retirer un.`
         : inviteHtml;
 
       liste.hidden = fichiers.length === 0;
