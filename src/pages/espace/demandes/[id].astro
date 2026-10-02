@@ -98,7 +98,7 @@ Astro.response.headers.set("Cache-Control", "no-store");
         id="rep-message"
         name="message"
         maxlength="5000"
-        placeholder="Votre réponse…"
+        placeholder="Réponse…"
       ></textarea>
     </div>
 
@@ -151,7 +151,7 @@ Astro.response.headers.set("Cache-Control", "no-store");
       } catch (err) {
         const message = err instanceof Error && err.message ? err.message : "";
         setStatus(
-          message || "Envoi impossible, réessayez dans un instant ou écrivez-moi à ludo@coolbeans.cc.",
+          message || "Envoi impossible pour l'instant. Un mail à ludo@coolbeans.cc fonctionne aussi.",
           "text-error",
         );
         submitBtn.disabled = false;

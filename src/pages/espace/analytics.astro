@@ -96,12 +96,12 @@ const courant = (actif: boolean) => (actif ? ("page" as const) : undefined);
 
 <EspaceLayout title="Analytics">
   <h1>Analytics</h1>
-  <p class="sub">L'audience de votre site, sans cookies.</p>
+  <p class="sub">L'audience du site, sans cookies.</p>
 
   {
     etat === "non-raccorde" && (
       <EmptyState title="Bientôt disponible" missingKeys={missingKeys} isAdmin={admin}>
-        Les statistiques de fréquentation de votre site arriveront ici&nbsp;: visites, pages vues,
+        Les statistiques de fréquentation du site arriveront ici&nbsp;: visites, pages vues,
         provenance, sans cookies ni bannière.
       </EmptyState>
     )
@@ -110,7 +110,7 @@ const courant = (actif: boolean) => (actif ? ("page" as const) : undefined);
   {
     etat === "indisponible" && (
       <EmptyState title="Statistiques momentanément indisponibles">
-        Les chiffres de votre site n'ont pas pu être chargés. Réessayez dans quelques minutes.
+        Les chiffres du site n'ont pas pu être chargés. Ils reviennent en général au bout de quelques minutes.
       </EmptyState>
     )
   }

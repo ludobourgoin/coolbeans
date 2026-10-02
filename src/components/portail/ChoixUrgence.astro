@@ -21,7 +21,7 @@ const { id, name = "urgence", valeur = "normal" } = Astro.props;
 /* Couleur et aide par niveau. Les couleurs sont les marches -700/-800 des
    gammes du design system, lisibles sur surface claire comme sombre. */
 const NIVEAUX: Record<string, { couleur: string; aide: string; barres: number }> = {
-  "pas-presse": { couleur: "var(--ds-gray-700)", aide: "Quand vous aurez un moment", barres: 1 },
+  "pas-presse": { couleur: "var(--ds-gray-700)", aide: "Dès qu'un créneau se libère", barres: 1 },
   normal: { couleur: "var(--ds-blue-700)", aide: "Le cas le plus courant", barres: 2 },
   urgent: { couleur: "var(--ds-amber-800)", aide: "Une gêne réelle, à traiter vite", barres: 3 },
   bloquant: { couleur: "var(--ds-red-800)", aide: "Site hors ligne, paiement bloqué", barres: 0 },
