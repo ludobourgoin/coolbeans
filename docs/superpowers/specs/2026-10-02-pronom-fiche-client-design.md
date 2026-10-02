@@ -72,7 +72,7 @@ Déduites des documents envoyés et des mails, à valider par Ludo à la relectu
 
 | Fiche | Clé | Pronom proposé | Source |
 |---|---|---|---|
-| amusoire | amu | vous | 3 documents, vouvoyés |
+| amusoire | amu | tu | Décision du 2026-10-02. La refonte et le témoignage, déjà envoyés, vouvoient : le témoignage garde sa surcharge `tutoiement: false` |
 | cafa | caf | vous | 3 documents, vouvoyés |
 | fylgo | fyl | vous | 2 documents, vouvoyés |
 | littlebox | lit | tu | 1 document, tutoyé |
