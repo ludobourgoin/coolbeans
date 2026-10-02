@@ -11,11 +11,22 @@
 # retenue 3 500 € HT, répartie sur les postes par la valeur livrée et non par
 # les heures passées. Tarif ami de -50 % appliqué sur le total.
 #
-# Ce chiffre est l'ancrage de la proposition OSMOSE (même cliente) : les deux
-# documents doivent rester cohérents.
+# Rechiffré le 2026-10-02, avant tout envoi. En juin, Ludo avait dit à Nathalie
+# de vive voix « normalement 1 500 à 2 000 €, je te fais 50 % ». Cette parole est
+# le seul document d'origine et elle fait foi : base ramenée à 1 500 € (bas de
+# la fourchette, choix de Ludo), postes rabattus au prorata, 750 € HT. La base
+# de 3 500 € ne lui a jamais été montrée.
+#
+# Une partie du règlement se fera en séances (Pilates, massages). Ludo s'arrange
+# avec elle directement : volontairement absent de cette page. La facture Tiime
+# porte quand même le montant entier, TVA comprise.
+#
+# Ce chiffre est l'ancrage de la proposition OSMOSE (même cliente), dont la V2
+# envoyée le 2026-09-08 est plus chère pour un site plus petit. Seule explication
+# honnête : le prix de setencorpsmieux a été annoncé en juin, avant le travail.
 titre: Sète En Corps Mieux x Coolbeans
 objet: Site setencorpsmieux.fr
-date: 2026-09-01
+date: 2026-10-02
 projet: refonte-740
 etape: proposition
 contact: Nathalie
@@ -73,26 +84,26 @@ sections:
     budget:
       lignes:
         - label: "**Fondations techniques** : projet, espace d'administration, hébergement"
-          prix: 250
+          prix: 100
         - label: "**Modélisation du contenu** : dix types de contenu et structure du Studio"
-          prix: 400
+          prix: 175
           tooltip: >-
             C'est l'étape invisible qui décide de ton autonomie : chaque champ que
             tu vois dans le Studio a été pensé et nommé ici.
         - label: "**Direction artistique et maquettes** des huit pages"
-          prix: 600
+          prix: 250
         - label: "**Intégration du site** : huit pages, vingt-et-un blocs, deux gabarits automatiques"
-          prix: 900
+          prix: 375
         - label: "**Planning hebdomadaire** : grille de la semaine, filtres, navigation"
-          prix: 400
+          prix: 175
         - label: "**Mise en forme de tes contenus** et reprise dans le Studio"
-          prix: 300
+          prix: 125
         - label: "**Responsive et recette** : quatre largeurs d'écran vérifiées sur les huit pages"
-          prix: 300
+          prix: 125
         - label: "**Deux rondes de retours** intégrées (1er août et 13 août)"
-          prix: 200
+          prix: 100
         - label: "**Nom de domaine, DNS et mise en production**"
-          prix: 150
+          prix: 75
           tooltip: >-
             Sortie du domaine de chez Ionos, rapatriement, bascule de
             l'hébergement et publication automatique depuis le Studio.
@@ -100,8 +111,7 @@ sections:
       remiseLabel: Tarif ami
       mention: HT
       reglement: >-
-        Montant et échéances à convenir ensemble. Rien n'a été facturé à ce
-        jour. TVA de 20 % en sus.
+        Modalités à convenir ensemble. Rien n'a été facturé à ce jour. TVA de 20 % en sus.
 
   - titre: Le déroulé
     planning:
@@ -117,16 +127,16 @@ sections:
             - { date: 02/08 → 11/08, label: "Retours intégrés, nouveau planning hebdomadaire", owner: coolbeans }
             - { date: 13/08, label: "Deuxième ronde de retours", owner: client }
             - { date: 27/08, label: "Nom de domaine sorti d'Ionos et rapatrié", owner: coolbeans }
+            - { date: 04/09, label: "Site en ligne sur setencorpsmieux.fr", owner: coolbeans }
 
-  - titre: Ce qui reste avant la mise en ligne
+  - titre: Ce qui reste à faire
     texte: >-
       Ces points sont compris dans le montant ci-dessus, il n'y a rien de plus à
       prévoir.
     liste:
       - "Les retours de ta deuxième ronde : ordre du menu, tarif Shiatsu, fil d'Ariane, photo du lieu sur mobile, logo du pied de page"
       - "Rendre les images des prestations modifiables directement depuis l'accueil"
-      - "Valider ensemble les créneaux de cours affichés"
-      - "Finaliser le référencement et la configuration du domaine"
+      - "Finaliser le référencement"
       - "Mettre en place la sauvegarde du contenu et la surveillance du site"
 
 notes:
