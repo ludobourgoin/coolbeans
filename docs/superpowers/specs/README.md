@@ -13,6 +13,7 @@
 | `2026-08-19-crm-opportunites-checklist-design.md` | Modèle hybride du CRM : check-list des 14 étapes en description, sous-issues réservées aux actions (statuts Todo/Doing/Done), vocabulaire « Opportunité » | Team `🎯 CRM` | En vigueur : modèle appliqué dans Linear le 2026-08-29 (§9) ; reste la réécriture de `02-vente.mdx` et `sop.ts` |
 | `2026-08-14-portail-sidebar-design.md` | Refonte navigation : sidebar unique structure Geist | COO-80 (In Review), COO-81 | Actif, chantier en cours |
 | `2026-08-11-portail-session-clerk.md` | Procédure durée de session Clerk (A2HS) | COO-46 (arbitrage en attente), bloque COO-42 | Actif tant que COO-46 n'est pas tranché |
+| `2026-10-02-pronom-fiche-client-design.md` | Le tu ou le vous se pose sur la fiche client et vaut partout : documents, formulaires, portail, mails | Chantier « Documents client, harmonisation », lot 1 | Spec à relire ; dépend de la fusion de `feat/documents-portail` |
 
 ## Cycle de vie d'une spec
 
