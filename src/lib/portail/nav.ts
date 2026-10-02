@@ -182,6 +182,7 @@ const SECTIONS: SectionDef[] = [
       { label: "Mes clients", path: "/clients", flag: "wip" }, // COO-81
       { label: "Utilisateurs", path: "/utilisateurs", flag: "live" },
       { label: "Devis", path: "/devis", flag: "live" },
+      { label: "Pièces", path: "/admin/finances/pieces", flag: "live" },
     ],
   },
 ];
