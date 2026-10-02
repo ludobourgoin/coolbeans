@@ -108,7 +108,7 @@ est mémorisé dans un cookie. Règle d'arbitrage : **l'URL gagne** : un admin
 qui ouvre la doc d'un client alors que son sélecteur est ailleurs bascule
 automatiquement sur ce client, pour que l'écran et le sélecteur racontent la
 même chose. Les pages de la section Admin (`/admin`, `/admin/relances`,
-`/clients`, `/utilisateurs`, `/devis`, `/devis/reglages`) imposent l'inverse :
+`/admin/finances/pieces`, `/clients`, `/utilisateurs`, `/devis`, `/devis/reglages`) imposent l'inverse :
 ouvertes depuis un autre workspace, elles basculent sur Coolbeans, pour ne
 jamais afficher le cockpit admin sous la barre d'un client.
 
@@ -137,7 +137,11 @@ statut traduit (« Proposition », « À venir », « Planifié », « En
 « En pause », « Terminé ») et ses dates, affichées seulement une fois le
 projet validé. Sous l'en-tête, le bloc « Avancement » liste les issues
 du projet par jalon, avec leur état traduit et leur échéance ; les annulées
-et celles en Triage n'y figurent pas. Les six étapes du cycle (audit si présent, cadrage,
+et celles en Triage n'y figurent pas.
+Sous l'avancement, le bloc « Devis et factures » liste les pièces Tiime du
+projet, avec leur date, leur montant TTC, leur statut et un lien vers le PDF.
+Une pièce sans projet, ou adressée à un revendeur, n'y figure jamais.
+Les six étapes du cycle (audit si présent, cadrage,
 proposition, production, livraison, suivi) s'ouvrent en onglets ; une
 étape sans document lisible par le compte garde son onglet, grisé, sans
 trahir l'existence d'un brouillon. Les
@@ -279,6 +283,8 @@ mail.
 | Bascule de workspace depuis une page | `poserWorkspaceCourant`, `basculerSurCoolbeans` dans `src/lib/portail/context.ts` |
 | Page projet | `src/pages/espace/projets/[projet].astro`, `src/components/portail/projet/` |
 | Bloc Avancement de la page projet (issues par jalon) | `src/lib/portail/avancement-linear.ts`, `src/components/portail/projet/AvancementProjet.astro` |
+| Devis et factures : registre, import, bloc de la page projet, PDF | `migrations/0014_pieces.sql`, `src/lib/pieces/`, `scripts/importer-pieces.mts`, `src/components/portail/projet/PiecesProjet.astro`, `src/pages/api/pieces/[id].ts` |
+| Pièces côté admin : rattachement et règlements | `src/pages/espace/admin/finances/pieces.astro`, `src/pages/api/admin/finances/pieces/` |
 | Liste de tous les projets (entrée « Tous ») | `src/pages/espace/projets/index.astro` |
 | Packs d'heures : heures restantes, statuts des demandes, rattachement des demandes | `construireHeures` dans `src/lib/portail/avancement-linear.ts`, `src/lib/devis/heures.ts`, `totalDuPack` dans `src/lib/portail/projets-courants.ts`, `src/components/portail/projet/HeuresPack.astro`, `packActif` dans `src/lib/documents/projets-portail.ts` |
 | Adresse publique d'un document, pour tout lien émis | `src/lib/documents/adresse.ts` |
