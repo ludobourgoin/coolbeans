@@ -125,11 +125,10 @@ dépassé (deux secondes), la section se replie sur les projets de la
 nomenclature qui ont un document lisible, sans résumé, statut ni dates ;
 l'échec se garde soixante secondes pour ne pas ralentir chaque page.
 
-Les fichiers déposés disparaissent avec cette tâche, mais pas la table
-`documents` (migration `0008_documents.sql`) : plus aucun code ne la lit ni
-n'y écrit, et elle reste en base tant que ce chantier n'est pas en
-production. Sa suppression, fichiers de stockage puis `DROP TABLE`, se fait
-en second temps, sur ordre explicite de Ludo.
+Les fichiers déposés ont disparu avec cette tâche. Leur table `documents`
+(migration `0008_documents.sql`) est supprimée le 2026-10-02 par la
+migration `0013_retire_documents.sql`, en prod et en staging. Elle était
+vide, et aucun fichier ne restait dans le stockage.
 
 **La page d'un projet.** Chaque projet n'a qu'une page,
 `my.coolbeans.cc/projets/<nom-du-projet-identifiant>`. L'en-tête, pleine
