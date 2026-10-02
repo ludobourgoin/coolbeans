@@ -8,6 +8,8 @@ interface Props {
   description?: string;
   noindex?: boolean;
   image?: string;
+  /** Classe du <body>. SiteLayout y pose la colonne flex du sticky footer. */
+  bodyClass?: string;
 }
 
 const {
@@ -15,6 +17,7 @@ const {
   description = "Studio web indépendant basé à Sète. Design, développement et maintenance de sites performants, pensés pour vos objectifs et prêts pour l'ère de l'IA.",
   noindex = false,
   image = "/og-image.png",
+  bodyClass,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -95,7 +98,7 @@ const organizationSchema = {
       })();
     </script>
   </head>
-  <body>
+  <body class={bodyClass}>
     <EnvBanner />
     <slot />
   </body>

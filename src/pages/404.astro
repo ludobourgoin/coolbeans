@@ -7,19 +7,15 @@
 // Voir docs/superpowers/specs/2026-09-01-portail-garde-admin-design.md
 export const prerender = false;
 
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Nav from "../components/Nav.astro";
-import Footer from "../components/Footer.astro";
+import SiteLayout from "../layouts/SiteLayout.astro";
 import GridBackdrop from "../components/GridBackdrop.astro";
 ---
 
-<BaseLayout
+<SiteLayout
   title="Page introuvable · Coolbeans"
   description="Cette page n'existe pas, ou plus. Le reste du site fonctionne très bien."
   noindex
 >
-  <Nav />
-
   <section
     class="relative flex flex-1 flex-col justify-center overflow-hidden border-b border-line bg-surface-subtle"
   >
@@ -74,9 +70,7 @@ import GridBackdrop from "../components/GridBackdrop.astro";
       </p>
     </div>
   </section>
-
-  <Footer />
-</BaseLayout>
+</SiteLayout>
 
 {/* Irréductible : aucun utilitaire ne porte sur `body`, qui appartient au
     layout. Sans ça, la page 404 est trop courte pour remplir l'écran et le
