@@ -281,6 +281,7 @@ mail.
 | Page projet | `src/pages/espace/projets/[projet].astro`, `src/components/portail/projet/` |
 | Bloc Avancement de la page projet (issues par jalon) | `src/lib/portail/avancement-linear.ts`, `src/components/portail/projet/AvancementProjet.astro` |
 | Liste de tous les projets (entrée « Tous ») | `src/pages/espace/projets/index.astro` |
+| Packs d'heures : heures restantes, statuts des demandes, rattachement des demandes | `construireHeures` dans `src/lib/portail/avancement-linear.ts`, `src/lib/devis/heures.ts`, `totalDuPack` dans `src/lib/portail/projets-courants.ts`, `src/components/portail/projet/HeuresPack.astro`, `packActif` dans `src/lib/documents/projets-portail.ts` |
 | Adresse publique d'un document, pour tout lien émis | `src/lib/documents/adresse.ts` |
 | Bandeau de l'admin sur un document | `src/components/documents/BandeauAcces.astro` |
 | Composants de page des quatre gabarits | `src/components/documents/pages/` (contextes `public`, `projet`) |

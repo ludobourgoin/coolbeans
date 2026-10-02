@@ -12,7 +12,7 @@ import { trierProjets, type ProjetLinear, type StatutLinear } from "../portail/p
 /** Un projet tel que la barre et sa page l'affichent. */
 export interface ProjetPortail {
   slugId: string;
-  /** Segment d'adresse : `/projets/<segment>`. */
+  /** Segment d'adresse : `/projets/<segment>`. */
   segment: string;
   titre: string;
   resume: string | null;
@@ -22,6 +22,10 @@ export interface ProjetPortail {
   fin: string | null;
   /** Le projet de la nomenclature, qui porte les documents. `null` : aucun document. */
   nomenclature: string | null;
+  /** UUID du projet Linear. `null` quand Linear n'a pas répondu. */
+  idLinear: string | null;
+  /** Projet vendu en heures : la page montre les heures restantes. */
+  pack: boolean;
 }
 
 /**
@@ -55,6 +59,8 @@ export function projetsDuWorkspace(
       debut: p.debut,
       fin: p.fin,
       nomenclature: nomenclatureDuClient(p.slugId),
+      idLinear: p.id,
+      pack: p.pack,
     }));
   }
   if (!cle) return [];
@@ -67,7 +73,7 @@ export function projetsDuWorkspace(
   return [...parProjet.entries()]
     .sort(([, a], [, b]) => plusRecent(b) - plusRecent(a))
     .map(([projet, docs]) => {
-      // La table garantit l'identifiant : le build échoue sans lui.
+      // La table garantit l'identifiant : le build échoue sans lui.
       const slugId = linearDuProjet(projet) as string;
       return {
         slugId,
@@ -78,6 +84,8 @@ export function projetsDuWorkspace(
         debut: null,
         fin: null,
         nomenclature: projet,
+        idLinear: null,
+        pack: false,
       };
     });
 }
@@ -94,7 +102,7 @@ export function slugIdDe(segment: string): string | null {
 /** Un onglet d'étape de la page projet. */
 export interface OngletEtape {
   etape: Etape;
-  /** « 2 · Proposition » */
+  /** « 2 · Proposition » */
   libelle: string;
   teinte: Teinte;
   /** La racine de l'étape. `null` : l'onglet est grisé. */
@@ -108,7 +116,7 @@ export interface OngletEtape {
 
 /**
  * Les onglets d'un projet, dans l'ordre de la frise. Une étape sans document
- * lisible par le compte garde son onglet, grisé : un brouillon que le client
+ * lisible par le compte garde son onglet, grisé : un brouillon que le client
  * ne lit pas compte comme absent. L'audit n'a d'onglet que s'il existe.
  */
 export function ongletsDuProjet(
@@ -141,7 +149,7 @@ export function ongletsDuProjet(
 }
 
 /**
- * L'étape ouverte à l'arrivée : celle que l'adresse demande si elle a un
+ * L'étape ouverte à l'arrivée : celle que l'adresse demande si elle a un
  * document, sinon celle du document le plus récent. À égalité, la plus
  * avancée. `null` quand toutes sont grisées.
  */
@@ -151,4 +159,16 @@ export function ongletOuvert(onglets: OngletEtape[], demande: string | null): Et
   if (voulu) return voulu.etape;
   if (disponibles.length === 0) return null;
   return disponibles.reduce((a, b) => (b.recent >= a.recent ? b : a)).etape;
+}
+
+/**
+ * Le pack d'heures où se rangent les nouvelles demandes du workspace : le
+ * premier pack planifié ou en cours, dans l'ordre de la barre. Un pack pas
+ * encore payé (Proposal) ou terminé n'en reçoit pas. `undefined` : aucune
+ * demande ne se rattache à un pack.
+ */
+export function packActif(projets: ProjetPortail[]): ProjetPortail | undefined {
+  return projets.find(
+    (p) => p.pack && p.idLinear && (p.statut?.type === "planned" || p.statut?.type === "started"),
+  );
 }

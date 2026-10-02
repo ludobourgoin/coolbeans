@@ -3,10 +3,14 @@
  * 2026-10-01 : le client voit toutes les issues du projet, sauf les annulées et
  * celles en Triage, pas encore qualifiées.
  *
- * Lecture en liste blanche, comme pour les projets : titre, type d'état,
- * échéance et jalon. Jamais la description, les commentaires, l'assigné ni
- * l'estimate. Les titres sont écrits pour être lus par le client, c'est une
- * règle de la skill linear.
+ * Lecture en liste blanche, comme pour les projets : titre, état, échéance,
+ * jalon, et l'estimate, qui ne s'affiche que sur un pack d'heures. Jamais la
+ * description, les commentaires ni l'assigné. Les titres sont écrits pour être
+ * lus par le client, c'est une règle de la skill linear.
+ *
+ * Un pack d'heures (décision du 2026-10-02) se lit autrement : ses issues sont
+ * les demandes du client, chiffrées en heures. Celles à chiffrer et celles non
+ * retenues restent visibles, et la jauge compte les heures restantes.
  */
 import { graphql } from "./linear-graphql";
 import { lectureEnCache, type CacheLinear } from "./projets-linear";
@@ -25,8 +29,16 @@ export interface NoeudIssue {
   dueDate: string | null;
   /** L'ordre manuel de la vue Linear. */
   sortOrder: number;
-  state: { type: string };
+  /** En heures sur un pack (échelle Fibonacci de Linear). */
+  estimate: number | null;
+  state: { type: string; name: string };
   projectMilestone: { id: string } | null;
+}
+
+/** Ce que le cache garde d'un projet : ses jalons et ses issues, bruts. */
+export interface DetailProjet {
+  jalons: NoeudJalon[];
+  issues: NoeudIssue[];
 }
 
 export interface IssueAvancement {
@@ -51,7 +63,7 @@ export interface Avancement {
 export const REQUETE_AVANCEMENT = `query AvancementDuProjet($id: String!) {
   project(id: $id) {
     projectMilestones(first: 50) { nodes { id name targetDate sortOrder } }
-    issues(first: 150) { nodes { title dueDate sortOrder state { type } projectMilestone { id } } }
+    issues(first: 150) { nodes { title dueDate sortOrder estimate state { type name } projectMilestone { id } } }
   }
 }`;
 
@@ -108,21 +120,102 @@ const LIBELLES: Record<TypeEtat, string> = {
 
 export const libelleEtat = (etat: TypeEtat): string => LIBELLES[etat];
 
-export async function lireAvancement(apiKey: string, slugId: string, signal?: AbortSignal): Promise<Avancement> {
+
+/* ---- Pack d'heures ------------------------------------------------------ */
+
+export type StatutDemande = "a-chiffrer" | "chiffree" | "acceptee" | "en-cours" | "faite" | "non-retenue";
+
+/** Le statut Linear qui porte une demande chiffrée, en attente du go du client. */
+export const ETAT_CHIFFREE = "Chiffrée";
+
+export function statutDemande(etat: { type: string; name: string }): StatutDemande {
+  if (etat.name === ETAT_CHIFFREE) return "chiffree";
+  switch (etat.type) {
+    case "unstarted":
+      return "acceptee";
+    case "started":
+      return "en-cours";
+    case "completed":
+      return "faite";
+    case "canceled":
+    case "duplicate":
+      return "non-retenue";
+    default:
+      return "a-chiffrer";
+  }
+}
+
+const LIBELLES_DEMANDE: Record<StatutDemande, string> = {
+  "a-chiffrer": "À chiffrer",
+  chiffree: "Chiffrée, attend ton accord",
+  acceptee: "Acceptée",
+  "en-cours": "En cours",
+  faite: "Faite",
+  "non-retenue": "Non retenue",
+};
+
+export const libelleDemande = (statut: StatutDemande): string => LIBELLES_DEMANDE[statut];
+
+/** Les heures sortent du pack au go du client : acceptée, en cours ou faite. */
+const ENGAGEES: readonly StatutDemande[] = ["acceptee", "en-cours", "faite"];
+/** Se replient sous la liste : ce qui est clos. */
+const CLOSES: readonly StatutDemande[] = ["faite", "non-retenue"];
+
+export interface DemandePack {
+  titre: string;
+  statut: StatutDemande;
+  heures: number | null;
+  echeance: string | null;
+}
+
+export interface HeuresPack {
+  /** Heures commandées. `null` : la proposition n'est pas encore validée. */
+  total: number | null;
+  engagees: number;
+  /** Peut passer sous zéro : un dépassement se montre, il ne se cache pas. */
+  restantes: number | null;
+  /** Les ouvertes d'abord, dans l'ordre de Linear, puis les faites, puis les non retenues. */
+  demandes: DemandePack[];
+}
+
+export function construireHeures(noeuds: NoeudIssue[], total: number | null): HeuresPack {
+  const lues = noeuds
+    .filter((n) => n.state.type !== "duplicate")
+    .map((n) => ({ n, statut: statutDemande(n.state) }));
+  const engagees = lues
+    .filter((l) => ENGAGEES.includes(l.statut))
+    .reduce((somme, l) => somme + (l.n.estimate ?? 0), 0);
+  const demandes = lues
+    .sort(
+      (a, b) =>
+        Number(CLOSES.includes(a.statut)) - Number(CLOSES.includes(b.statut)) ||
+        Number(a.statut === "non-retenue") - Number(b.statut === "non-retenue") ||
+        a.n.sortOrder - b.n.sortOrder,
+    )
+    .map(({ n, statut }): DemandePack => ({ titre: n.title, statut, heures: n.estimate, echeance: n.dueDate }));
+  return { total, engagees, restantes: total === null ? null : total - engagees, demandes };
+}
+
+/* ---- Lecture ------------------------------------------------------------- */
+
+export async function lireDetail(apiKey: string, slugId: string, signal?: AbortSignal): Promise<DetailProjet> {
   const data = await graphql<{
     project: { projectMilestones: { nodes: NoeudJalon[] }; issues: { nodes: NoeudIssue[] } } | null;
   }>(apiKey, REQUETE_AVANCEMENT, { id: slugId }, signal);
   if (!data.project) throw new Error(`Linear : projet ${slugId} introuvable`);
-  return construireAvancement(data.project.projectMilestones.nodes, data.project.issues.nodes);
+  return { jalons: data.project.projectMilestones.nodes, issues: data.project.issues.nodes };
 }
 
-/** L'avancement du projet, en cache 10 minutes. `null` : Linear n'a pas répondu. */
-export function avancementDuProjet(
+/**
+ * Les jalons et les issues du projet, bruts, en cache 10 minutes : la page en
+ * tire l'avancement ou les heures d'un pack. `null` : Linear n'a pas répondu.
+ */
+export function detailDuProjet(
   slugId: string,
-  options: { apiKey?: string; cache: CacheLinear<Avancement>; lire?: typeof lireAvancement },
-): Promise<Avancement | null> {
-  const lire = options.lire ?? lireAvancement;
-  return lectureEnCache(`v1:linear-avancement:${slugId}`, {
+  options: { apiKey?: string; cache: CacheLinear<DetailProjet>; lire?: typeof lireDetail },
+): Promise<DetailProjet | null> {
+  const lire = options.lire ?? lireDetail;
+  return lectureEnCache(`v2:linear-detail:${slugId}`, {
     apiKey: options.apiKey,
     cache: options.cache,
     lire: (apiKey, signal) => lire(apiKey, slugId, signal),

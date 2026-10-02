@@ -20,6 +20,10 @@ export interface StatutLinear {
 }
 
 export interface ProjetLinear {
+  /** UUID du projet : c'est lui qu'une issue créée par l'API désigne. */
+  id: string;
+  /** Projet vendu en heures : il porte le label « Pack d'heures ». */
+  pack: boolean;
   /** Les douze caractères qui terminent l'adresse Linear du projet. */
   slugId: string;
   /** Le dernier segment de l'adresse Linear : le nom en minuscules, puis le slugId. */
@@ -36,6 +40,7 @@ export interface ProjetLinear {
 }
 
 interface NoeudProjet {
+  id: string;
   slugId: string;
   url: string;
   name: string;
@@ -44,12 +49,16 @@ interface NoeudProjet {
   targetDate: string | null;
   updatedAt: string;
   status: { name: string; type: string };
+  labels: { nodes: Array<{ name: string }> };
 }
+
+/** Le label de projet Linear qui marque un pack d'heures. */
+export const LABEL_PACK = "Pack d'heures";
 
 export const REQUETE_PROJETS = `query ProjetsDeLaTeam($id: String!) {
   team(id: $id) {
     projects(first: 100) {
-      nodes { slugId url name description startDate targetDate updatedAt status { name type } }
+      nodes { id slugId url name description startDate targetDate updatedAt status { name type } labels { nodes { name } } }
     }
   }
 }`;
@@ -59,6 +68,8 @@ export function normaliserProjets(noeuds: NoeudProjet[]): ProjetLinear[] {
   return noeuds
     .filter((n) => n.status.type !== "canceled")
     .map((n) => ({
+      id: n.id,
+      pack: n.labels.nodes.some((l) => l.name === LABEL_PACK),
       slugId: n.slugId,
       segment: n.url.split("/").pop() || n.slugId,
       nom: n.name,

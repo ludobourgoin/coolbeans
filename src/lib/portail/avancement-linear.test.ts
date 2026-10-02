@@ -1,8 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import {
-  avancementDuProjet,
   construireAvancement,
+  construireHeures,
+  detailDuProjet,
+  libelleDemande,
   libelleEtat,
+  statutDemande,
   type NoeudIssue,
   type NoeudJalon,
 } from "./avancement-linear";
@@ -19,7 +22,8 @@ const issue = (title: string, type: string, o: Partial<NoeudIssue> = {}): NoeudI
   title,
   dueDate: null,
   sortOrder: 0,
-  state: { type },
+  estimate: null,
+  state: { type, name: type },
   projectMilestone: null,
   ...o,
 });
@@ -94,7 +98,77 @@ describe("libelleEtat", () => {
   });
 });
 
-describe("avancementDuProjet", () => {
+describe("statutDemande", () => {
+  it("lit le statut d'une demande sur un pack, statut Chiffrée compris", () => {
+    expect(statutDemande({ type: "triage", name: "Triage" })).toBe("a-chiffrer");
+    expect(statutDemande({ type: "backlog", name: "Chiffrée" })).toBe("chiffree");
+    expect(statutDemande({ type: "backlog", name: "Backlog" })).toBe("a-chiffrer");
+    expect(statutDemande({ type: "unstarted", name: "Todo" })).toBe("acceptee");
+    expect(statutDemande({ type: "started", name: "In Review" })).toBe("en-cours");
+    expect(statutDemande({ type: "completed", name: "Done" })).toBe("faite");
+    expect(statutDemande({ type: "canceled", name: "Canceled" })).toBe("non-retenue");
+  });
+
+  it("traduit chaque statut pour le client", () => {
+    expect(libelleDemande("a-chiffrer")).toBe("À chiffrer");
+    expect(libelleDemande("chiffree")).toBe("Chiffrée, attend ton accord");
+    expect(libelleDemande("acceptee")).toBe("Acceptée");
+    expect(libelleDemande("en-cours")).toBe("En cours");
+    expect(libelleDemande("faite")).toBe("Faite");
+    expect(libelleDemande("non-retenue")).toBe("Non retenue");
+  });
+});
+
+describe("construireHeures", () => {
+  const demandes = [
+    issue("Simulateur", "unstarted", { estimate: 5, sortOrder: 2 }),
+    issue("Bandeau", "completed", { estimate: 2, sortOrder: 1 }),
+    issue("Libellés", "started", { estimate: 1, sortOrder: 3 }),
+    issue("Nouvelle page", "backlog", { estimate: 8, sortOrder: 4, state: { type: "backlog", name: "Chiffrée" } }),
+    issue("Formulaire", "triage", { sortOrder: 5 }),
+    issue("Refusée", "canceled", { estimate: 3, sortOrder: 0 }),
+    issue("Doublon", "duplicate", { estimate: 3, sortOrder: 6 }),
+  ];
+
+  it("décompte les demandes acceptées, en cours et faites, au go du client", () => {
+    const h = construireHeures(demandes, 20);
+    expect(h).toMatchObject({ total: 20, engagees: 8, restantes: 12 });
+  });
+
+  it("ne décompte ni les demandes à chiffrer, ni les chiffrées en attente, ni les refusées", () => {
+    expect(construireHeures([demandes[3], demandes[4], demandes[5]], 20).engagees).toBe(0);
+  });
+
+  it("garde les demandes à chiffrer et les refusées visibles, écarte les doublons", () => {
+    expect(construireHeures(demandes, 20).demandes.map((d) => d.titre)).toEqual([
+      "Simulateur",
+      "Libellés",
+      "Nouvelle page",
+      "Formulaire",
+      "Bandeau",
+      "Refusée",
+    ]);
+  });
+
+  it("porte l'estimate de chaque demande", () => {
+    expect(construireHeures(demandes, 20).demandes[0]).toEqual({
+      titre: "Simulateur",
+      statut: "acceptee",
+      heures: 5,
+      echeance: null,
+    });
+  });
+
+  it("sans total connu, ne calcule pas de solde", () => {
+    expect(construireHeures(demandes, null)).toMatchObject({ total: null, engagees: 8, restantes: null });
+  });
+
+  it("laisse voir un dépassement", () => {
+    expect(construireHeures(demandes, 5).restantes).toBe(-3);
+  });
+});
+
+describe("detailDuProjet", () => {
   it("lit Linear une fois, puis sert le cache", async () => {
     const entrees = new Map();
     const cache: CacheLinear<unknown> = {
@@ -103,12 +177,12 @@ describe("avancementDuProjet", () => {
         entrees.set(c, e);
       },
     };
-    const lire = vi.fn(async () => construireAvancement([], [issue("A", "started")]));
-    await avancementDuProjet("8947ac98efef", { apiKey: "k", cache: cache as never, lire });
-    const deuxieme = await avancementDuProjet("8947ac98efef", { apiKey: "k", cache: cache as never, lire });
+    const lire = vi.fn(async () => ({ jalons: [], issues: [issue("A", "started")] }));
+    await detailDuProjet("8947ac98efef", { apiKey: "k", cache: cache as never, lire });
+    const deuxieme = await detailDuProjet("8947ac98efef", { apiKey: "k", cache: cache as never, lire });
     expect(lire).toHaveBeenCalledTimes(1);
-    expect(deuxieme?.total).toBe(1);
-    expect([...entrees.keys()]).toEqual(["v1:linear-avancement:8947ac98efef"]);
+    expect(deuxieme?.issues).toHaveLength(1);
+    expect([...entrees.keys()]).toEqual(["v2:linear-detail:8947ac98efef"]);
   });
 
   it("rend null quand Linear échoue", async () => {
@@ -116,6 +190,6 @@ describe("avancementDuProjet", () => {
     const lire = vi.fn(async () => {
       throw new Error("Linear 500");
     });
-    expect(await avancementDuProjet("8947ac98efef", { apiKey: "k", cache: cache as never, lire })).toBeNull();
+    expect(await detailDuProjet("8947ac98efef", { apiKey: "k", cache: cache as never, lire })).toBeNull();
   });
 });

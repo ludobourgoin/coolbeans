@@ -43,6 +43,8 @@ export async function createSupportTicket(options: {
   assigneeId?: string;
   /** Priorité Linear 1-4 issue du champ urgence. */
   priority?: number;
+  /** Pack d'heures actif du workspace : la demande s'y range (décision du 2026-10-02). */
+  projectId?: string;
 }): Promise<SupportTicket> {
   const { apiKey, teamId, title, description } = options;
   const stateId = await triageStateId(apiKey, teamId);
@@ -69,6 +71,7 @@ export async function createSupportTicket(options: {
         // interdit cette valeur en entrée, ce n'est pas un oubli à corriger
         // en `!== undefined`.
         ...(options.priority ? { priority: options.priority } : {}),
+        ...(options.projectId ? { projectId: options.projectId } : {}),
       },
     },
   );

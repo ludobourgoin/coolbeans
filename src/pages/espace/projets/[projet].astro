@@ -14,6 +14,7 @@ import PortalLayout from "../../../layouts/PortalLayout.astro";
 import ProjetEntete from "../../../components/portail/projet/ProjetEntete.astro";
 import OngletsEtapes from "../../../components/portail/projet/OngletsEtapes.astro";
 import AvancementProjet from "../../../components/portail/projet/AvancementProjet.astro";
+import HeuresPack from "../../../components/portail/projet/HeuresPack.astro";
 import PageCadrage from "../../../components/documents/pages/PageCadrage.astro";
 import PageProposition from "../../../components/documents/pages/PageProposition.astro";
 import PageLivrable from "../../../components/documents/pages/PageLivrable.astro";
@@ -24,8 +25,13 @@ import { ongletOuvert, ongletsDuProjet, slugIdDe } from "../../../lib/documents/
 import { workspacesVisibles } from "../../../lib/portail/appartenances";
 import { getPortalContext, poserWorkspaceCourant } from "../../../lib/portail/context";
 import { portalHref } from "../../../lib/portail/nav";
-import { lecteurDe, projetsDe } from "../../../lib/portail/projets-courants";
-import { avancementDuProjet, type Avancement } from "../../../lib/portail/avancement-linear";
+import { lecteurDe, projetsDe, totalDuPack } from "../../../lib/portail/projets-courants";
+import {
+  construireAvancement,
+  construireHeures,
+  detailDuProjet,
+  type DetailProjet,
+} from "../../../lib/portail/avancement-linear";
 import { cacheWorker } from "../../../lib/portail/projets-linear";
 import { listWorkspaces } from "../../../lib/portail/workspaces";
 
@@ -67,11 +73,14 @@ if (projet.statut && segment !== projet.segment) {
 // L'adresse gagne sur le sélecteur, comme pour la doc.
 if (client?.slug !== workspace.slug) poserWorkspaceCourant(Astro, workspace);
 
-// L'avancement ne se lit que si Linear a répondu pour la liste des projets :
-// en repli, la page n'a ni statut ni issues.
-const avancement = projet.statut
-  ? await avancementDuProjet(projet.slugId, { apiKey: env.LINEAR_API_KEY, cache: cacheWorker<Avancement>() })
+// Le détail Linear ne se lit que si Linear a répondu pour la liste des
+// projets : en repli, la page n'a ni statut ni issues. Un pack en tire ses
+// heures, les autres projets leur avancement.
+const detail = projet.statut
+  ? await detailDuProjet(projet.slugId, { apiKey: env.LINEAR_API_KEY, cache: cacheWorker<DetailProjet>() })
   : null;
+const avancement = detail && !projet.pack ? construireAvancement(detail.jalons, detail.issues) : null;
+const heures = detail && projet.pack ? construireHeures(detail.issues, await totalDuPack(projet)) : null;
 
 const documents = await chargerDocuments();
 const lire = await lecteurDe(Astro, workspace);
@@ -102,7 +111,13 @@ const etapes = await Promise.all(
   pageDocument
 >
   <ProjetEntete projet={projet} />
-  <AvancementProjet avancement={avancement} />
+  {
+    projet.pack ? (
+      <HeuresPack heures={heures} lienDemandes={portalHref("/demandes", Astro.url.hostname)} />
+    ) : (
+      <AvancementProjet avancement={avancement} />
+    )
+  }
   <OngletsEtapes onglets={onglets} ouvert={ouvert} />
 
   {

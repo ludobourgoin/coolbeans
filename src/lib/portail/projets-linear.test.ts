@@ -14,6 +14,7 @@ import {
 } from "./projets-linear";
 
 const noeud = (o: Record<string, unknown> = {}) => ({
+  id: "51b46e5e-ce64-49df-a51b-88a0af3434bc",
   slugId: "e6c1e495a56f",
   url: "https://linear.app/coolbeans-hq/project/site-du-salon-edition-2026-e6c1e495a56f",
   name: "Site du salon, édition 2026",
@@ -22,10 +23,13 @@ const noeud = (o: Record<string, unknown> = {}) => ({
   targetDate: "2026-10-02",
   updatedAt: "2026-09-30T10:00:00.000Z",
   status: { name: "In Progress", type: "started" },
+  labels: { nodes: [] },
   ...o,
 });
 
 const projet = (slugId: string, type: TypeStatut, misAJour: string): ProjetLinear => ({
+  id: slugId,
+  pack: false,
   slugId,
   segment: slugId,
   nom: slugId,
@@ -55,6 +59,8 @@ describe("normaliserProjets", () => {
   it("garde le résumé, le segment d'adresse, le statut et les dates", () => {
     expect(normaliserProjets([noeud()])).toEqual([
       {
+        id: "51b46e5e-ce64-49df-a51b-88a0af3434bc",
+        pack: false,
         slugId: "e6c1e495a56f",
         segment: "site-du-salon-edition-2026-e6c1e495a56f",
         nom: "Site du salon, édition 2026",
@@ -65,6 +71,11 @@ describe("normaliserProjets", () => {
         misAJour: "2026-09-30T10:00:00.000Z",
       },
     ]);
+  });
+
+  it("reconnaît un pack d'heures à son label", () => {
+    const [p] = normaliserProjets([noeud({ labels: { nodes: [{ name: "Pack d'heures" }] } })]);
+    expect(p.pack).toBe(true);
   });
 
   it("écarte les projets annulés", () => {

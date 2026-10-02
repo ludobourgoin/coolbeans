@@ -1,7 +1,8 @@
 ---
 /* La liste des projets du workspace (retour de Ludo du 2026-10-02) : un
    tableau qui reprend chaque projet Linear de la sous-team, son statut en
-   couleur, sa jauge d'avancement en vert et ses dates. Un clic mène à la page du projet. L'entrée « Tous »
+   couleur, sa jauge en vert (issues faites, ou heures restantes sur un pack) et ses
+   dates. Un clic mène à la page du projet. L'entrée « Tous »
    de la section Projets y mène.
 
    Mêmes projets et même ordre que la barre (projetsDe) : en cours, puis à
@@ -15,9 +16,14 @@ import { cheminProjet } from "../../../lib/documents/projets-portail";
 import { dateCourte } from "../../../lib/documents/entete";
 import { getPortalContext } from "../../../lib/portail/context";
 import { portalHref } from "../../../lib/portail/nav";
-import { projetsDe } from "../../../lib/portail/projets-courants";
+import { projetsDe, totalDuPack } from "../../../lib/portail/projets-courants";
 import { cacheWorker, estValide, libelleStatut, type TypeStatut } from "../../../lib/portail/projets-linear";
-import { avancementDuProjet, type Avancement } from "../../../lib/portail/avancement-linear";
+import {
+  construireAvancement,
+  construireHeures,
+  detailDuProjet,
+  type DetailProjet,
+} from "../../../lib/portail/avancement-linear";
 
 Astro.response.headers.set("Cache-Control", "no-store");
 
@@ -25,13 +31,23 @@ const { client } = await getPortalContext(Astro);
 const projets = client ? await projetsDe(Astro, client) : [];
 
 // Une lecture par projet, en parallèle et en cache 10 minutes : le même
-// avancement que le bloc de la page projet. Linear muet : pas de jauge.
-const avancements = await Promise.all(
-  projets.map((p) =>
-    p.statut
-      ? avancementDuProjet(p.slugId, { apiKey: env.LINEAR_API_KEY, cache: cacheWorker<Avancement>() })
-      : Promise.resolve(null),
-  ),
+// détail que la page projet. La jauge compte les issues faites, ou les heures
+// restantes sur un pack. Linear muet ou rien à compter : pas de jauge.
+type Jauge = { part: number; texte: string };
+const jauges: Array<Jauge | null> = await Promise.all(
+  projets.map(async (p): Promise<Jauge | null> => {
+    if (!p.statut) return null;
+    const detail = await detailDuProjet(p.slugId, { apiKey: env.LINEAR_API_KEY, cache: cacheWorker<DetailProjet>() });
+    if (!detail) return null;
+    if (p.pack) {
+      const h = construireHeures(detail.issues, await totalDuPack(p));
+      if (h.total === null || h.restantes === null) return null;
+      return { part: Math.round((Math.max(0, h.restantes) / h.total) * 100), texte: `${h.restantes} h / ${h.total} h` };
+    }
+    const a = construireAvancement(detail.jalons, detail.issues);
+    if (a.total === 0) return null;
+    return { part: Math.round((a.faites / a.total) * 100), texte: `${a.faites} / ${a.total}` };
+  }),
 );
 
 const TON: Record<TypeStatut, string> = {
@@ -68,8 +84,7 @@ const date = (iso: string | null) => (iso ? dateCourte(new Date(`${iso}T12:00:00
           <tbody>
             {projets.map((p, i) => {
               const dates = p.statut !== null && estValide(p.statut);
-              const a = avancements[i];
-              const part = a && a.total > 0 ? Math.round((a.faites / a.total) * 100) : 0;
+              const jauge = jauges[i];
               return (
                 <tr class="border-b border-line last:border-b-0 hover:bg-surface-subtle">
                   <td class="px-4 py-3">
@@ -87,14 +102,12 @@ const date = (iso: string | null) => (iso ? dateCourte(new Date(`${iso}T12:00:00
                     )}
                   </td>
                   <td class="px-4 py-3">
-                    {a && a.total > 0 ? (
+                    {jauge ? (
                       <span class="flex items-center gap-3">
                         <span class="h-1.5 w-28 shrink-0 overflow-hidden rounded-full bg-surface-raise" aria-hidden="true">
-                          <span class="block h-full rounded-full bg-success" style={`width:${part}%`} />
+                          <span class="block h-full rounded-full bg-success" style={`width:${jauge.part}%`} />
                         </span>
-                        <span class="font-mono text-[12px] whitespace-nowrap text-mute">
-                          {a.faites} / {a.total}
-                        </span>
+                        <span class="font-mono text-[12px] whitespace-nowrap text-mute">{jauge.texte}</span>
                       </span>
                     ) : (
                       <span class="text-mute">—</span>

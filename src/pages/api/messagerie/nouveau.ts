@@ -1,5 +1,5 @@
 // Création d'un ticket de messagerie (spec 2026-08-15-messagerie-portail-design.md).
-// Ordre des opérations, du bloquant au best-effort — D1 D'ABORD (§6 : si la
+// Ordre des opérations, du bloquant au best-effort — D1 D'ABORD (§6 : si la
 // création Linear échoue, le ticket existe côté client et sera ré-appairé) :
 //   1. session + validation + mappings client (team ET projet Support) ;
 //   2. quota journalier KV (repris tel quel de l'ancien /api/support) ;
@@ -15,6 +15,8 @@ import { renderConfirmationSupport } from "../../../emails/support-confirmation"
 import { citation, esc, kv, renderTransactionnel, titreSection } from "../../../emails/transactionnel";
 import { comptePrincipal, comptesDuWorkspace, prenomDe } from "../../../lib/portail/comptes";
 import { getPortalContext } from "../../../lib/portail/context";
+import { packActif } from "../../../lib/documents/projets-portail";
+import { projetsDe } from "../../../lib/portail/projets-courants";
 import { LUDO_LINEAR_USER_ID, createSupportTicket } from "../../../lib/portail/linear";
 import { isAdmin } from "../../../lib/portail/metadata";
 import { cleR2, validerFichiers } from "../../../lib/portail/messagerie/fichiers";
@@ -31,7 +33,7 @@ export const prerender = false;
 const json = (body: unknown, status: number) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
 
-/** Demandes par utilisateur et par jour. Au-delà : 429 et message clair. */
+/** Demandes par utilisateur et par jour. Au-delà : 429 et message clair. */
 const QUOTA_PAR_JOUR = 5;
 
 const CONTACT_DIRECT = "écrivez-moi à ludo@coolbeans.cc";
@@ -65,15 +67,15 @@ export const POST: APIRoute = async (context) => {
   // L'admin qui remplit le formulaire depuis l'espace d'un client écrit AU NOM
   // du client, comme si celui-ci avait écrit lui-même (décision du 2026-09-29,
   // qui remplace la liste de comptes de la spec §8). L'auteur est le contact
-  // principal de l'espace : c'est lui qui recevra les réponses de Ludo.
+  // principal de l'espace : c'est lui qui recevra les réponses de Ludo.
   // created_via = 'admin' garde la provenance en base, sans l'afficher.
-  // Résolu AVANT le quota : le garde-fou anti-abus vise les clients, pas
+  // Résolu AVANT le quota : le garde-fou anti-abus vise les clients, pas
   // l'opérateur (voir plus bas, chemin admin exempté). Dans ses propres espaces
   // (`perso`), l'admin écrit en son nom, comme n'importe quel client.
   const prenomConnecte = prenomDe(user.name);
   let auteur = { id: user.id, prenom: prenomConnecte || "Client", email: emailClient ?? "" };
   // Prénom optionnel réservé aux emails — distinct d'auteur.prenom (non-null,
-  // pour la ligne D1) : "Bonjour ," ne doit pas devenir "Bonjour Client,".
+  // pour la ligne D1) : "Bonjour ," ne doit pas devenir "Bonjour Client,".
   let prenomEmail: string | undefined = prenomConnecte || undefined;
   let createdVia: "portail" | "admin" = "portail";
   if (isAdmin(meta) && !client.perso) {
@@ -95,7 +97,7 @@ export const POST: APIRoute = async (context) => {
     createdVia = "admin";
   }
 
-  // Quota : clé datée, donc remise à zéro naturelle à minuit UTC ; le TTL ne
+  // Quota : clé datée, donc remise à zéro naturelle à minuit UTC ; le TTL ne
   // sert qu'à nettoyer. KV est en cohérence différée — assez bon pour un
   // garde-fou, ce n'est pas un compteur comptable. Exempté côté admin.
   const quotaKey = `support:quota:${user.id}:${jour}`;
@@ -110,7 +112,7 @@ export const POST: APIRoute = async (context) => {
     );
   }
 
-  // Provenance embarquée dans l'issue Linear (spec §8) : porte la cible côté
+  // Provenance embarquée dans l'issue Linear (spec §8) : porte la cible côté
   // admin, l'auteur réel côté portail — inchangée sur ce second cas.
   const provenanceTicket =
     createdVia === "admin"
@@ -121,13 +123,13 @@ export const POST: APIRoute = async (context) => {
           emailClient ? ` (${emailClient})` : ""
         } le ${jour}.`;
 
-  // Le séparateur "---" n'a de sens qu'après un corps réel : sans description,
+  // Le séparateur "---" n'a de sens qu'après un corps réel : sans description,
   // l'issue Linear ne doit pas s'ouvrir sur un filet suivi de la provenance seule.
   const descriptionTicket = description
     ? [description, "", "---", provenanceTicket].join("\n")
     : provenanceTicket;
 
-  // Le compteur ne bouge qu'une fois le ticket D1 posé : un échec plus loin
+  // Le compteur ne bouge qu'une fois le ticket D1 posé : un échec plus loin
   // dans la requête (R2, Linear) laisse quand même une trace consommée, mais
   // c'est le même compromis que l'ancien /api/support — un garde-fou, pas un
   // compteur comptable. Skippé côté admin, à l'unisson du chemin quota.
@@ -159,7 +161,7 @@ export const POST: APIRoute = async (context) => {
       masque: 0,
       ouvert_depuis_linear: 0,
     });
-    // Message porteur : posé dès qu'il y a une description OU des fichiers, sinon
+    // Message porteur : posé dès qu'il y a une description OU des fichiers, sinon
     // les pièces jointes n'auraient aucune ligne `messages` à référencer (FK,
     // invisibles au JOIN de piecesJointesDuTicket) — body vide accepté ici.
     if (description || fichiers.length > 0) {
@@ -185,23 +187,29 @@ export const POST: APIRoute = async (context) => {
         size: f.size,
         mime: f.type,
       });
-      // Repli sur l'URL de prod : évite de casser en local si la var n'est pas définie (wrangler dev sans .dev.vars complet).
+      // Repli sur l'URL de prod : évite de casser en local si la var n'est pas définie (wrangler dev sans .dev.vars complet).
       liens.push(`[${f.name}](${env.PORTAL_BASE_URL || "https://my.coolbeans.cc"}/api/messagerie/fichier/${pieceId})`);
     }
   } catch (err) {
-    // Chaîne bloquante D1/R2 : le front attend du JSON, pas la page d'erreur
+    // Chaîne bloquante D1/R2 : le front attend du JSON, pas la page d'erreur
     // générique Astro. Pas de rollback R2 en v1 — un log suffit, ça reste
     // rattrapable à la main vu le faible volume attendu.
     console.error("messagerie: création du ticket (D1/R2) échouée", err);
     return json({ error: `Envoi impossible pour le moment : ${CONTACT_DIRECT}.` }, 500);
   }
 
-  // Best-effort : le ticket existe déjà côté client (D1), un échec Linear ici
+  // Best-effort : le ticket existe déjà côté client (D1), un échec Linear ici
   // laisse un ticket orphelin (linear_issue_uuid null) à ré-appairer plutôt
   // que de faire échouer toute la requête (spec §9).
   let ticket: { issueId: string; identifier: string; url: string } | null = null;
   try {
+    // Un workspace qui a un pack d'heures actif y range ses demandes : elles
+    // arrivent en Triage, Ludo les chiffre, puis le client voit leur statut
+    // et le solde du pack sur la page du projet. Une panne de lecture des
+    // projets ne bloque pas la demande : elle part sans projet.
+    const pack = packActif(await projetsDe(context, client).catch(() => []));
     ticket = await createSupportTicket({
+      projectId: pack?.idLinear ?? undefined,
       apiKey,
       teamId: client.linearTeamId,
       assigneeId: LUDO_LINEAR_USER_ID,
@@ -217,7 +225,7 @@ export const POST: APIRoute = async (context) => {
   try {
     const resend = new Resend(env.RESEND_API_KEY);
 
-    // Notification interne inutile côté admin : c'est Ludo lui-même qui saisit.
+    // Notification interne inutile côté admin : c'est Ludo lui-même qui saisit.
     if (createdVia !== "admin") {
       const htmlInterne = renderTransactionnel({
         preheader: `${client.nom} · ${objet}`,
@@ -258,7 +266,7 @@ export const POST: APIRoute = async (context) => {
       }
     }
 
-    // Écrite par l'admin au nom du client : aucun accusé de réception. Le
+    // Écrite par l'admin au nom du client : aucun accusé de réception. Le
     // client n'a rien envoyé lui-même, un mail l'étonnerait.
     if (auteur.email && createdVia !== "admin") {
       const confirmation = renderConfirmationSupport({

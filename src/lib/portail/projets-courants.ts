@@ -1,9 +1,13 @@
 /* Les projets d'un workspace pour la requête en cours (spec 2026-09-30, barre
  * par workspace, §4). La barre (PortalLayout) et la page projet les demandent
- * toutes deux : la promesse est mémoïsée par requête et par workspace, comme
+ * toutes deux : la promesse est mémoïsée par requête et par workspace, comme
  * getPortalContext.
  */
 import { env } from "cloudflare:workers";
+import { getEntry } from "astro:content";
+import { budgetDevis } from "../devis";
+import { heuresRetenues } from "../devis/heures";
+import { reponsesDesVersions } from "../devis/reponses";
 import { chargerDocuments } from "../documents/charger";
 import { lecture, type Lecture } from "../documents/acces";
 import type { DocumentProjet } from "../documents/projet";
@@ -44,4 +48,29 @@ export function projetsDe(context: PortalRequestContext, workspace: PortalWorksp
     memo.set(workspace.slug, projets);
   }
   return projets;
+}
+
+/**
+ * Les heures commandées sur un pack : celles du pack validé dans sa
+ * proposition (décision du 2026-10-02). `null` tant que la proposition n'est
+ * pas validée, ou si la base ne répond pas : la page n'affiche alors pas de
+ * jauge plutôt qu'un solde faux.
+ */
+export async function totalDuPack(projet: ProjetPortail): Promise<number | null> {
+  if (!projet.pack || !projet.nomenclature) return null;
+  const documents = await chargerDocuments();
+  const racine = documents.find(
+    (d) => d.collection === "devis" && !d.versionDe && d.projet === projet.nomenclature,
+  );
+  if (!racine) return null;
+  const ids = [
+    racine.id,
+    ...documents.filter((d) => d.collection === "devis" && d.versionDe === racine.id).map((d) => d.id),
+  ];
+  const reponses = await reponsesDesVersions(ids).catch(() => []);
+  const validation = [...reponses].reverse().find((r) => r.decision === "validation");
+  if (!validation) return null;
+  const entree = await getEntry("devis", validation.slug);
+  const budget = entree && budgetDevis(entree.data);
+  return budget ? heuresRetenues(budget, validation.optionsRetenues ?? null) : null;
 }

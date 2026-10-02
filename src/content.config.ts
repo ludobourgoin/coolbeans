@@ -125,6 +125,10 @@ const devis = defineCollection({
                    Sert un choix unique où le client part sur un autre pack
                    que celui que Ludo conseille. */
                 conseille: z.boolean().default(false),
+                /* Heures que la ligne apporte, sur un pack d'heures. Le portail
+                   en tire le total du pack choisi par le client, et la jauge
+                   des heures restantes de son projet. */
+                heures: z.number().int().positive().optional(),
               }),
             ),
             /* Les options s'excluent : le client en prend une seule, par

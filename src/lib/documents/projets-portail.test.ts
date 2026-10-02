@@ -1,8 +1,9 @@
 import { describe, expect, it, test } from "vitest";
-import { cheminProjet, ongletOuvert, ongletsDuProjet, projetsDuWorkspace, slugIdDe } from "./projets-portail";
+import { cheminProjet, ongletOuvert, ongletsDuProjet, packActif, projetsDuWorkspace, slugIdDe } from "./projets-portail";
 import type { ProjetLinear } from "../portail/projets-linear";
 import { lecture, type Lecture } from "./acces";
 import type { DocumentProjet } from "./projet";
+import type { ProjetPortail } from "./projets-portail";
 
 const docSalon = (o: Partial<DocumentProjet> & Pick<DocumentProjet, "collection" | "id" | "etape">): DocumentProjet => ({
   statut: "publie",
@@ -16,6 +17,8 @@ const lisibleSiPublie = (d: DocumentProjet): Lecture =>
   d.statut === "publie" ? { lisible: true, bandeau: null } : { lisible: false };
 
 const salon = (o: Partial<ProjetLinear> = {}): ProjetLinear => ({
+  id: "uuid-salon",
+  pack: false,
   slugId: "e6c1e495a56f",
   segment: "site-du-salon-edition-2026-e6c1e495a56f",
   nom: "Site du salon, édition 2026",
@@ -28,6 +31,7 @@ const salon = (o: Partial<ProjetLinear> = {}): ProjetLinear => ({
 });
 
 const association = salon({
+  id: "uuid-association",
   slugId: "9a42140d4288",
   segment: "site-de-lassociation-revolutions-douces-9a42140d4288",
   nom: "Site de l'association Rev'Olutions Douces",
@@ -48,6 +52,8 @@ describe("projetsDuWorkspace", () => {
         debut: "2026-08-28",
         fin: "2026-10-02",
         nomenclature: "salon-533",
+        idLinear: "uuid-salon",
+        pack: false,
       },
       {
         slugId: "9a42140d4288",
@@ -58,6 +64,8 @@ describe("projetsDuWorkspace", () => {
         debut: "2026-08-28",
         fin: "2026-10-02",
         nomenclature: null,
+        idLinear: "uuid-association",
+        pack: false,
       },
     ]);
   });
@@ -74,6 +82,8 @@ describe("projetsDuWorkspace", () => {
         debut: null,
         fin: null,
         nomenclature: "salon-533",
+        idLinear: null,
+        pack: false,
       },
     ]);
   });
@@ -206,5 +216,33 @@ describe("ongletOuvert", () => {
 
   it("n'ouvre rien quand tout est grisé", () => {
     expect(ongletOuvert(ongletsDuProjet([], "salon-533", lisibleSiPublie), null)).toBeNull();
+  });
+});
+
+describe("packActif", () => {
+  const projet = (o: Partial<ProjetPortail>): ProjetPortail => ({
+    slugId: "8947ac98efef",
+    segment: "pack-dheures-octobre-2026-8947ac98efef",
+    titre: "Pack d'heures, octobre 2026",
+    resume: null,
+    statut: { nom: "In Progress", type: "started" },
+    debut: null,
+    fin: null,
+    nomenclature: "pack-heures-973",
+    idLinear: "uuid-pack",
+    pack: true,
+    ...o,
+  });
+
+  it("rend le pack planifié ou en cours, premier dans l'ordre de la barre", () => {
+    const refonte = projet({ pack: false, idLinear: "uuid-refonte" });
+    expect(packActif([refonte, projet({})])?.idLinear).toBe("uuid-pack");
+    expect(packActif([projet({ statut: { nom: "Planned", type: "planned" } })])?.idLinear).toBe("uuid-pack");
+  });
+
+  it("ignore un pack pas encore payé, terminé, ou sans identifiant Linear", () => {
+    expect(packActif([projet({ statut: { nom: "Proposal", type: "backlog" } })])).toBeUndefined();
+    expect(packActif([projet({ statut: { nom: "Completed", type: "completed" } })])).toBeUndefined();
+    expect(packActif([projet({ idLinear: null, statut: null })])).toBeUndefined();
   });
 });

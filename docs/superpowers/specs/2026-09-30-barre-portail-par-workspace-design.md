@@ -148,6 +148,16 @@ Un bloc « Avancement » se place entre l'en-tête et les onglets d'étape. Déc
 - La page `/projets` reprend les projets de la barre, dans le même ordre, en tableau : le nom (lien vers sa page), le statut en couleur, une jauge verte (issues faites sur issues visibles, comme le bloc Avancement), les dates de début et de fin une fois le projet validé.
 - Le bloc Avancement de la page projet suit la largeur des documents (880 px) et sa barre passe au même vert.
 
+### 5.7 Les packs d'heures (ajout du 2026-10-02)
+
+- Un projet Linear qui porte le label de projet « Pack d'heures » est un pack. Sa page remplace le bloc Avancement par « Heures du pack ».
+- Le total vient de la proposition validée : chaque ligne de pack porte `heures` (10, 20, 40), et le portail lit le pack retenu dans `devis_reponses`. Proposition pas encore validée : « Pack en attente de validation », sans jauge.
+- Les heures sortent du pack au go du client : la somme des estimates des demandes acceptées (Todo), en cours et faites. La jauge verte montre les heures restantes ; un dépassement s'affiche.
+- Statuts lus par le client : Triage « À chiffrer », Chiffrée « Chiffrée, attend ton accord », Todo « Acceptée », In Progress et In Review « En cours », Done « Faite », Canceled « Non retenue ». Le statut « Chiffrée » (type backlog) est créé dans la team Web, dont héritent les sous-teams clientes.
+- Sur un pack, les demandes à chiffrer et les non retenues restent visibles ; faites et non retenues se replient. Chaque demande montre son estimate en heures.
+- Une demande faite depuis Demandes, dans un workspace qui a un pack planifié ou en cours, se range dans ce projet Linear (`projectId`), toujours en Triage.
+- La liste « Tous » montre les heures restantes d'un pack à la place des issues faites.
+
 ## 6. Le mode d'emploi
 
 - La section « Documentation » devient « Mode d'emploi ».
