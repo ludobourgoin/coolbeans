@@ -11,19 +11,24 @@
 # retenue 3 500 € HT, répartie sur les postes par la valeur livrée et non par
 # les heures passées. Tarif ami de -50 % appliqué sur le total.
 #
-# Rechiffré le 2026-10-02, avant tout envoi. En juin, Ludo avait dit à Nathalie
-# de vive voix « normalement 1 500 à 2 000 €, je te fais 50 % ». Cette parole est
-# le seul document d'origine et elle fait foi : base ramenée à 1 500 € (bas de
-# la fourchette, choix de Ludo), postes rabattus au prorata, 750 € HT. La base
-# de 3 500 € ne lui a jamais été montrée.
+# Rechiffré le 2026-10-02, avant tout envoi, en deux temps. En juin, Ludo avait
+# dit à Nathalie de vive voix « normalement 1 500 à 2 000 €, je te fais 50 % ».
+# Nathalie détient aussi la proposition OSMOSE : Ludo a voulu que les tarifs
+# AVANT réduction soient alignés entre les deux. Base recalculée sur la grille
+# d'Osmose V2 : maquettes 950 (700 € les 6 pages, ramené à 8), site et Studio 980,
+# pages de prestation 450 (prix de l'option « page par praticien »), mise en
+# ligne 250, planning 400 (sans équivalent chez Osmose, prix de l'ancienne base),
+# contenus 0 (textes fournis par elle). Total 3 030 €. Tarif ami fixé par Ludo à
+# 75 %, soit 757,50 € HT. Une seule ligne au budget : le détail ne servait qu'à
+# être comparé à Osmose. Comparatif : claude.ai/artifact/CxLLPEyZaMvz7XHymrDABv
 #
 # Une partie du règlement se fera en séances (Pilates, massages). Ludo s'arrange
 # avec elle directement : volontairement absent de cette page. La facture Tiime
 # porte quand même le montant entier, TVA comprise.
 #
-# Ce chiffre est l'ancrage de la proposition OSMOSE (même cliente), dont la V2
-# envoyée le 2026-09-08 est plus chère pour un site plus petit. Seule explication
-# honnête : le prix de setencorpsmieux a été annoncé en juin, avant le travail.
+# Après réduction, setencorpsmieux (757,50 €) reste sous Osmose V2 (1 160,25 €)
+# pour un site plus gros : l'écart tient au geste, tarif ami contre tarif
+# association et ouverture du lieu.
 titre: Sète En Corps Mieux x Coolbeans
 objet: Site setencorpsmieux.fr
 date: 2026-10-02
@@ -80,34 +85,17 @@ sections:
       À chaque publication depuis le Studio, le site se reconstruit et se met en
       ligne tout seul. Aucune intervention de ma part n'est nécessaire.
 
-  - titre: Le travail, poste par poste
+  - titre: Le budget
     budget:
       lignes:
-        - label: "**Fondations techniques** : projet, espace d'administration, hébergement"
-          prix: 100
-        - label: "**Modélisation du contenu** : dix types de contenu et structure du Studio"
-          prix: 175
+        - label: "**Le site setencorpsmieux.fr**, livré et en ligne depuis le 4 septembre"
+          prix: 3030
           tooltip: >-
-            C'est l'étape invisible qui décide de ton autonomie : chaque champ que
-            tu vois dans le Studio a été pensé et nommé ici.
-        - label: "**Direction artistique et maquettes** des huit pages"
-          prix: 250
-        - label: "**Intégration du site** : huit pages, vingt-et-un blocs, deux gabarits automatiques"
-          prix: 375
-        - label: "**Planning hebdomadaire** : grille de la semaine, filtres, navigation"
-          prix: 175
-        - label: "**Mise en forme de tes contenus** et reprise dans le Studio"
-          prix: 125
-        - label: "**Responsive et recette** : quatre largeurs d'écran vérifiées sur les huit pages"
-          prix: 125
-        - label: "**Deux rondes de retours** intégrées (1er août et 13 août)"
-          prix: 100
-        - label: "**Nom de domaine, DNS et mise en production**"
-          prix: 75
-          tooltip: >-
-            Sortie du domaine de chez Ionos, rapatriement, bascule de
-            l'hébergement et publication automatique depuis le Studio.
-      remisePct: 50
+            Les maquettes des huit pages, le site et son espace d'administration,
+            une page par prestation, le planning hebdomadaire et la mise en ligne,
+            sortie du domaine de chez Ionos comprise. Retours, responsive et
+            recette compris.
+      remisePct: 75
       remiseLabel: Tarif ami
       mention: HT
       reglement: >-
@@ -132,7 +120,7 @@ sections:
 notes:
   - tone: success
     texte: >-
-      Tarif ami de 50 % sur l'ensemble. Le montant plein est affiché pour que tu
+      Tarif ami de 75 % sur l'ensemble. Le montant plein est affiché pour que tu
       voies ce que représente le travail, pas pour te le faire payer.
   - texte: >-
       Aucun abonnement mensuel : l'hébergement et l'espace d'administration
