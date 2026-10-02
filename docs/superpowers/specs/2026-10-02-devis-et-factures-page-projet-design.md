@@ -75,15 +75,13 @@ Les PDF vont dans le bucket du binding `PORTAL_FILES` : `coolbeans-portal-fichi
 
 Script `scripts/importer-pieces.mjs`, lancé à la main depuis le poste de Ludo.
 
-- **Entrées** : le CSV exporté de Tiime et le dossier des PDF.
-- **Client** : la raison sociale de chaque ligne désigne une fiche par `raisonsSociales`. Une raison sociale inconnue écarte la ligne et s'affiche en sortie. Ludo ajoute l'alias sur la fiche et relance.
-- **PDF** : retrouvé par son numéro dans le nom du fichier. Les PDF Tiime relevés le 2026-10-02 suivent la forme `Facture_024626_Coolbeans_<nom>.pdf` et `Devis_004331_Coolbeans_<nom>.pdf`. Une ligne sans PDF écarte la ligne et s'affiche en sortie.
-- **Sans option, le script n'écrit rien.** Il affiche quatre listes : pièces nouvelles, pièces modifiées (avec le champ qui change), raisons sociales inconnues, PDF manquants.
-- **Avec `--appliquer`**, il envoie chaque PDF dans R2, puis écrit les lignes dans D1. Une ligne existante garde son `projet`, que l'import ne touche jamais.
+- **Entrées** : un manifeste JSON et le dossier des PDF. Le premier export de Tiime (2026-10-02) est arrivé en PDF, avec les listes Devis et Factures en capture : aucun CSV. Le manifeste se rédige depuis ces deux sources, une ligne par pièce. Le premier vit dans `scripts/pieces/tiime-2026-10-02.json`.
+- **Client** : chaque ligne porte déjà `client` ou `organisation`. Le script vérifie que la fiche existe et que la raison sociale figure dans ses `raisonsSociales`. Un écart écarte la ligne et s'affiche en sortie.
+- **PDF** : retrouvé par son numéro dans le nom du fichier, de la forme `Facture_024626_Coolbeans_<nom>.pdf` et `Devis_004331_Coolbeans_<nom>.pdf`. Une ligne sans PDF écarte la ligne et s'affiche en sortie.
+- **Sans option, le script n'écrit rien.** Il affiche quatre listes : pièces nouvelles, pièces modifiées (avec le champ qui change), fiches introuvables, PDF manquants.
+- **Avec `--appliquer`**, il envoie chaque PDF dans R2, puis écrit les lignes dans D1. Une ligne existante garde son `projet` s'il a été changé dans l'admin.
 - **Cible** : la base locale par défaut, `--env staging` pour le staging, `--env production` pour la prod. La prod ne s'importe que sur ordre de Ludo.
-- **Idempotence** : relancer le même export ne change rien et l'annonce.
-
-Le format exact du CSV n'est pas connu au 2026-10-02 (voir §10). Le parseur s'écrit sur le premier export réel, et ses tests partent de cet export, anonymisé.
+- **Idempotence** : relancer le même manifeste ne change rien et l'annonce.
 
 ## 3. La page admin
 
@@ -143,13 +141,12 @@ Dans cet ordre, une seule session à la fois pour la migration :
 
 `src/content/docs/coolbeans/04-portail.mdx` décrit le bloc, la page admin et le script d'import, dans le même lot.
 
-## 10. Ce qui reste inconnu
+## 10. Ce que le premier export a appris
 
-- Le format du CSV de Tiime : colonnes, séparateur, format des dates et des montants, présence du statut de paiement et de l'échéance.
-- Le nom des PDF dans l'export groupé de Tiime, s'il diffère de celui des PDF téléchargés un par un.
-- La façon dont Tiime exporte un avoir et une facture annulée.
-
-Les trois se lèvent sur le premier export, avant l'écriture du plan d'implémentation.
+- Tiime n'a pas fourni de CSV. Ses listes donnent la date, le numéro, le client, le HT, le TTC et le statut (devis : Accepté ; factures : Payée, Envoyée, Facturée).
+- Aucune liste ne donne la date de règlement. `reglee_le` reste vide à l'import et se remplit au clic de l'admin.
+- Toutes les factures sont « À réception » : l'échéance vaut la date d'émission.
+- Le premier export ne contient ni avoir ni facture annulée.
 
 ## 11. Hors périmètre
 
@@ -157,3 +154,12 @@ Les trois se lèvent sur le premier export, avant l'écriture du plan d'impléme
 - Le pré-remplissage de la page des relances depuis une pièce. Ce lot vient ensuite, une fois le registre en place.
 - Une vue revendeur des pièces.
 - Le remplissage de l'onglet `sales` du Google Sheet, qui part du même export mais à la main.
+
+## 12. État au 2026-10-02
+
+- **R2** : les 23 PDF du premier export sont dans le bucket de staging sous `pieces/<client ou organisation>/<id>.pdf`, vérifiés octet par octet. Le bucket de prod attend l'ordre de Ludo.
+- **Linear** : la refonte Amusoire passe dans la team Trigger sous le nom « Refonte Amusoire » (identifiant court inchangé, issues TRI-2 à TRI-5). Projets créés, terminés : « Landing pages Promologis » (TRI), « Gravure et prise de rendez-vous » (nouvelle sous-team DupontDupont, `DUP`), « Page d'accueil et méga-menu Webflow » (MER).
+- **À faire dans le lot** :
+  - `nomenclature.ts` : les clés `tri`, `dup` et `mer`, `refonte-432` rattaché à `tri`, et les trois projets de `projetsNouveaux` du manifeste ;
+  - fiches `dupontdupont` et `merciyanis` : leur `linearTeamId`. Ce sont les teams `DUP` (`43af2a28-f9b5-457a-af0d-d730551ef568`) et `MER` (`d4a0264c-fbd7-42dd-b290-df35780d8db3`) ;
+  - `raisonsSociales` sur chaque fiche citée par le manifeste.
