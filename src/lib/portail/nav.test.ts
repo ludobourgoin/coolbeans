@@ -94,6 +94,7 @@ describe("buildSidebar · workspace client", () => {
   it("ne montre que les pages live et configurées", () => {
     expect(flat(sections).map((p) => p.label)).toEqual([
       "Introduction",
+      "Tous",
       "Refonte Webflow et intégration technique",
       "Site anglais et Music Quiz",
       "Vue d'ensemble",
@@ -183,7 +184,7 @@ describe("buildSidebar · Projets", () => {
       (s) => s.key === "projets",
     )!;
     expect(section).toMatchObject({ label: "Projets", icon: "folder" });
-    expect(section.pages[0]).toEqual({
+    expect(section.pages[1]).toEqual({
       label: "Refonte Webflow et intégration technique",
       href: "/projets/refonte-webflow-et-integration-technique-9a553e01b917",
       activePrefix: "/espace/projets/refonte-webflow-et-integration-technique-9a553e01b917",
@@ -191,9 +192,20 @@ describe("buildSidebar · Projets", () => {
     });
   });
 
+  it("ouvre la section par la liste de tous les projets", () => {
+    const section = buildSidebar("my.coolbeans.cc", client, amusoire, docPages, projets).find((s) => s.key === "projets")!;
+    expect(section.pages[0]).toEqual({
+      label: "Tous",
+      href: "/projets",
+      activePrefix: "/espace/projets",
+      exact: true,
+      wip: false,
+    });
+  });
+
   it("hors du portail, l'entrée garde le préfixe /espace", () => {
     const section = buildSidebar("localhost", client, amusoire, docPages, projets).find((s) => s.key === "projets")!;
-    expect(section.pages[0].href).toBe("/espace/projets/refonte-webflow-et-integration-technique-9a553e01b917");
+    expect(section.pages[1].href).toBe("/espace/projets/refonte-webflow-et-integration-technique-9a553e01b917");
   });
 
   it("sans projet, la barre ne change pas", () => {
@@ -239,6 +251,7 @@ describe("buildSidebar · liens et préfixe d'hôte", () => {
     const pages = flat(buildSidebar("localhost", client, amusoire, docPages, projets));
     expect(pages.map((p) => p.href)).toEqual([
       "/espace",
+      "/espace/projets",
       "/espace/projets/refonte-webflow-et-integration-technique-9a553e01b917",
       "/espace/projets/site-anglais-et-music-quiz-8ca6ad11bb6f",
       "/docs/amusoire/vue-densemble",
@@ -268,6 +281,11 @@ describe("isActive", () => {
       isActive(page("Site anglais et Music Quiz"), "/espace/projets/refonte-webflow-et-integration-technique-9a553e01b917"),
     ).toBe(false);
     expect(isActive(page("Monitoring"), "/espace/projets/site-anglais-et-music-quiz-8ca6ad11bb6f")).toBe(false);
+  });
+
+  it("n'allume « Tous » que sur la liste, jamais sur la page d'un projet", () => {
+    expect(isActive(page("Tous"), "/espace/projets")).toBe(true);
+    expect(isActive(page("Tous"), "/espace/projets/site-anglais-et-music-quiz-8ca6ad11bb6f")).toBe(false);
   });
 
   // Le piège du préfixe nu : /espace/site ne doit pas allumer une entrée /espace/s.

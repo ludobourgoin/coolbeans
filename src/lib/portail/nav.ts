@@ -45,6 +45,8 @@ export interface PortalNavItem {
   href: string;
   /** Préfixe de pathname INTERNE qui marque l'entrée comme active. */
   activePrefix: string;
+  /** Active sur ce chemin seul, jamais sur ses sous-pages (« Tous » des projets). */
+  exact?: boolean;
 }
 
 /**
@@ -55,7 +57,7 @@ export interface PortalNavItem {
  */
 export function isActive(item: PortalNavItem, pathname: string): boolean {
   const prefix = item.activePrefix;
-  if (prefix === "/espace") return pathname === "/espace" || pathname === "/espace/";
+  if (prefix === "/espace" || item.exact) return pathname === prefix || pathname === `${prefix}/`;
   return pathname === prefix || pathname.startsWith(`${prefix}/`);
 }
 
@@ -239,12 +241,17 @@ export function buildSidebar(
       key: "projets",
       label: "Projets",
       icon: "folder",
-      pages: projets.map((p) => ({
-        label: p.titre,
-        href: at(p.chemin),
-        activePrefix: `/espace${p.chemin}`,
-        wip: false,
-      })),
+      // « Tous » ouvre la liste des projets ; il ne s'allume que sur elle,
+      // pas sur la page d'un projet, qui a sa propre entrée.
+      pages: [
+        { label: "Tous", href: at("/projets"), activePrefix: "/espace/projets", exact: true, wip: false },
+        ...projets.map((p) => ({
+          label: p.titre,
+          href: at(p.chemin),
+          activePrefix: `/espace${p.chemin}`,
+          wip: false,
+        })),
+      ],
     });
   }
 

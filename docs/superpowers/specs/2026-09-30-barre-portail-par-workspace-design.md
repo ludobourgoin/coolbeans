@@ -142,6 +142,12 @@ Un bloc « Avancement » se place entre l'en-tête et les onglets d'étape. Déc
 - Jamais lus : la description, les commentaires, l'assigné, l'estimate.
 - Même lecture que les projets : cache de 10 minutes, abandon à 2 secondes. Linear muet ou projet sans issue visible : le bloc ne s'affiche pas.
 
+### 5.6 La liste des projets (ajout du 2026-10-02)
+
+- Une entrée « Tous » ouvre la section Projets de la barre. Elle ne s'allume que sur la liste, pas sur la page d'un projet.
+- La page `/projets` reprend les projets de la barre, dans le même ordre, en tableau : le nom (lien vers sa page), le statut en couleur, une jauge verte (issues faites sur issues visibles, comme le bloc Avancement), les dates de début et de fin une fois le projet validé.
+- Le bloc Avancement de la page projet suit la largeur des documents (880 px) et sa barre passe au même vert.
+
 ## 6. Le mode d'emploi
 
 - La section « Documentation » devient « Mode d'emploi ».
