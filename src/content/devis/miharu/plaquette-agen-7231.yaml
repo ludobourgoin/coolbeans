@@ -8,6 +8,8 @@ etape: proposition
 # confidentialité du 2026-09-29).
 statut: brouillon
 contact: Adeline
+# Le corps vouvoie : la proposition, déjà envoyée, garde le vous dans son formulaire.
+tutoiement: false
 
 linear:
   projet: Plaquette commerciale sur les LP Agen

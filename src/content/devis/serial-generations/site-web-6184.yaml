@@ -66,6 +66,8 @@ date: 2026-09-11
 projet: serial-generations-618
 etape: proposition
 contact: Isabelle
+# Le corps vouvoie : la proposition, déjà envoyée, garde le vous dans son formulaire.
+tutoiement: false
 linear:
   projet: Sérial Générations
   affaire: CRM-91
