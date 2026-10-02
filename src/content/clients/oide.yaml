@@ -3,6 +3,8 @@ nom: Oïde
 # pas un revendeur — la facturation va à Oïde (3BNBW - OÏDE).
 organisation: coolbeans
 cle: oid
+# Noms sous lesquels Tiime facture ce client (pièces du portail).
+raisonsSociales: ["3BNBW - OÏDE"]
 prenom: Clément
 # Emoji du sélecteur, repris de l'icône de la team Linear Oïde (:shorts:).
 emoji: 🩳

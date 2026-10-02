@@ -3,8 +3,10 @@
    incohérente. Non testé sous Vitest, où `astro:content` est indisponible :
    toute la logique vit dans projet.ts et frise.ts. COO-295 ajoutera ici la
    collection `audit`. Il vérifie aussi les clés des fiches client, qui
-   relient un workspace à ses documents. */
+   relient un workspace à ses documents, et l'unicité des raisons sociales,
+   qui relient une pièce Tiime à sa fiche. */
 import { getCollection } from "astro:content";
+import { verifierRaisonsSociales } from "../pieces/raisons-sociales";
 import type { CollectionDocument } from "./etapes";
 import { verifierCles, verifierLiensLinear } from "./nomenclature";
 import { verifierNomenclature, type DocumentProjet } from "./projet";
@@ -29,8 +31,21 @@ export async function chargerDocuments(): Promise<DocumentProjet[]> {
     ),
   );
   const documents = parCollection.flat();
-  const clients = (await getCollection("clients")).map((e) => ({ slug: e.id, cle: e.data.cle }));
-  const erreurs = [...verifierNomenclature(documents), ...verifierCles(clients), ...verifierLiensLinear()];
+  const fichesClients = await getCollection("clients");
+  const clients = fichesClients.map((e) => ({ slug: e.id, cle: e.data.cle }));
+  const raisons = [
+    ...fichesClients.map((e) => ({ chemin: `clients/${e.id}`, raisonsSociales: e.data.raisonsSociales })),
+    ...(await getCollection("organisations")).map((e) => ({
+      chemin: `organisations/${e.id}`,
+      raisonsSociales: e.data.raisonsSociales,
+    })),
+  ];
+  const erreurs = [
+    ...verifierNomenclature(documents),
+    ...verifierCles(clients),
+    ...verifierLiensLinear(),
+    ...verifierRaisonsSociales(raisons),
+  ];
   if (erreurs.length > 0) {
     throw new Error(`Nomenclature des documents client incohérente :\n- ${erreurs.join("\n- ")}`);
   }

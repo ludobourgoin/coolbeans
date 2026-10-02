@@ -1,10 +1,16 @@
 nom: MerciYanis
 # Client direct, pas de revendeur (spec 2026-08-19 §3.1).
 organisation: coolbeans
+# Clé de la nomenclature des documents : la clé de la team Linear MER.
+cle: mer
+# Noms sous lesquels Tiime facture ce client (pièces du portail).
+raisonsSociales: [MERCIYANIS]
+# Team « MerciYanis » (MER), créée le 2026-09-25 sous Web.
+linearTeamId: d4a0264c-fbd7-42dd-b290-df35780d8db3
 # Deux contacts, Gaëlle et Laura. La topbar n'en salue qu'un.
 prenom: Gaëlle
 # Emoji du sélecteur et début de la relation, daté du devis 341.
 emoji: 🛎️
 depuis: "2025-11-06"
-# Pas de team Linear : le module Support reste en empty state (COO-30).
+# Messagerie coupée en attendant que Ludo l'ouvre (COO-30).
 messagerie: false

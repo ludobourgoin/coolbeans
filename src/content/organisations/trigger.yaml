@@ -1,1 +1,3 @@
 nom: Trigger
+# Nom sous lequel Tiime facture ce revendeur (pièces du portail).
+raisonsSociales: [TRIGGER]
