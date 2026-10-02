@@ -9,6 +9,7 @@ import {
   afficherReponseDocument,
   dateReponse,
   perimetreDevis,
+  reponsesAffichees,
   selecteurFormulaire,
 } from "./affichage";
 import type { ReponseDocument } from "./reponses";
@@ -169,4 +170,35 @@ test("sur la page projet, le sélecteur se limite à l'étape du document clos",
   expect(selecteurFormulaire("cadrage", "cafa/nom-de-domaine-9042", "production-")).toBe(
     '[data-etape-volet="production"] [data-cadrage-formulaire][data-slug="cafa/nom-de-domaine-9042"]',
   );
+});
+
+/* Soit le formulaire, soit la réponse, jamais les deux (Ludo, 2026-10-02).
+   Seule compte la version courante : la validation de la V1 UnlockBreath,
+   reprise du mail de février, s'affichait au-dessus du formulaire de la V2. */
+describe("reponsesAffichees", () => {
+  const v1 = { slug: "unlockbreath/plateforme-3271", decision: "validation" };
+  const question = { slug: "unlockbreath/plateforme-v2-5840", decision: "question" };
+  const validation = { slug: "unlockbreath/plateforme-v2-5840", decision: "validation" };
+
+  it("une réponse à une version précédente ne s'affiche pas, le formulaire reste", () => {
+    expect(reponsesAffichees([v1], "unlockbreath/plateforme-v2-5840")).toEqual({ reponses: [], formulaireMasque: false });
+  });
+
+  it("une question sur la version courante s'affiche et masque le formulaire", () => {
+    expect(reponsesAffichees([v1, question], "unlockbreath/plateforme-v2-5840")).toEqual({
+      reponses: [question],
+      formulaireMasque: true,
+    });
+  });
+
+  it("toutes les réponses à la version courante s'affichent, dans l'ordre", () => {
+    expect(reponsesAffichees([question, validation], "unlockbreath/plateforme-v2-5840").reponses).toEqual([
+      question,
+      validation,
+    ]);
+  });
+
+  it("sans version courante, rien ne s'affiche", () => {
+    expect(reponsesAffichees([v1], undefined)).toEqual({ reponses: [], formulaireMasque: false });
+  });
 });

@@ -16,6 +16,8 @@ Le choix du 2026-09-05 évitait une migration D1, geste non parallélisable qui 
 2. **Le document affiche les réponses à la place du formulaire**, dans la forme du mail de notification : la question en petit, la réponse en gras.
 3. **L'identité s'affiche biffée.** Prénom, nom, email, raison sociale, SIREN, adresse, TVA, consentement et photo gardent leur libellé, avec la valeur remplacée par une barre. La valeur en clair ne vit qu'en D1 et dans le mail. Elle n'atteint jamais le navigateur : la barre a une largeur fixe, qui ne trahit pas la longueur.
 4. **Une réponse définitive fait disparaître le formulaire.** Est définitive : toute réponse à un cadrage ou à un témoignage, une validation de proposition ou de livrable sur la version courante. Une question sur une proposition ou des retours sur un livrable laissent le formulaire en place, sous les réponses déjà reçues.
+
+   **Remplacée le 2026-10-02 par Ludo :** soit le formulaire, soit la réponse, jamais les deux. Seules les réponses à la version courante s'affichent, et la première, question comprise, masque le formulaire. La validation d'une V1 ne s'affiche donc plus au-dessus du formulaire de la V2 (`reponsesAffichees`, `src/lib/documents/affichage.ts`).
 5. **Le serveur refuse une deuxième réponse** sur un document clos, en 409. Si le client s'est trompé, il faut un nouveau document.
 6. **Les réponses passées sont reprises depuis les mails**, avec leur date d'origine et `origine = 'reprise'`.
 
