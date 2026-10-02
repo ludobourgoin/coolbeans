@@ -160,7 +160,7 @@ Dans cet ordre, une seule session à la fois pour la migration :
 - **R2** : les 23 PDF du premier export sont dans le bucket de staging sous `pieces/<client ou organisation>/<id>.pdf`, vérifiés octet par octet. Même chose en prod, sur ordre de Ludo du 2026-10-02.
 - **Linear** : la refonte Amusoire passe dans la team Trigger sous le nom « Refonte Amusoire » (identifiant court inchangé, issues TRI-2 à TRI-5). Projets créés, terminés : « Landing pages Promologis » (TRI), « Gravure et prise de rendez-vous » (nouvelle sous-team DupontDupont, `DUP`), « Page d'accueil et méga-menu Webflow » (MER).
 - **À faire dans le lot** :
-  - `nomenclature.ts` : les clés `tri`, `dup` et `mer`, `refonte-432` rattaché à `tri`, et les trois projets de `projetsNouveaux` du manifeste ;
+  - `nomenclature.ts` : les clés `tri`, `dup` et `mer`, et les trois projets de `projetsNouveaux` du manifeste. `refonte-432` garde la clé `amu` : il porte aussi le témoignage d'Amusoire (`temoignage/amusoire/refonte-site-0040`), et son rattachement attend la décision de Ludo ;
   - fiches `dupontdupont` et `merciyanis` : leur `linearTeamId`. Ce sont les teams `DUP` (`43af2a28-f9b5-457a-af0d-d730551ef568`) et `MER` (`d4a0264c-fbd7-42dd-b290-df35780d8db3`) ;
   - `raisonsSociales` sur chaque fiche citée par le manifeste.
 - **Doublon à trancher** : la facture Tiime 24615 (MerciYanis, 1 245 € TTC) reprend le contenu et le montant de la facture Shine 20250146. Un seul virement, rapproché de 20250146. Tant qu'un avoir n'annule pas l'une des deux, l'import n'affiche pas 24615.
