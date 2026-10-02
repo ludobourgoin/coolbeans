@@ -14,6 +14,7 @@ import BandeauAcces from "../BandeauAcces.astro";
 import { riche, ancreSection } from "../../../lib/devis";
 import { libelleOnglet, ligneDate, titreEntete } from "../../../lib/documents/entete";
 import { sectionsCadrage } from "../../../lib/documents/sections";
+import { tutoiementDe } from "../../../lib/documents/pronom-contenu";
 import type { Bandeau } from "../../../lib/documents/acces";
 import type { Pastille } from "../../../lib/documents/frise";
 
@@ -38,6 +39,10 @@ const courante = chapitres[actif].data;
 
 const demande = versionActive ? chapitres.findIndex((c) => c.id === versionActive) : -1;
 const ouvert = demande >= 0 ? demande : actif;
+// Un chapitre peut porter sa propre clé : le pronom se résout chapitre par chapitre.
+const tutoiements: Record<string, boolean> = Object.fromEntries(
+  await Promise.all(chapitres.map(async (c) => [c.id, await tutoiementDe("cadrage", c.id)] as const)),
+);
 
 /* Pas de tirage PDF pour ce document, donc pas de référence imprimée : il se
    lit et se remplit dans le navigateur, il ne circule pas en pièce jointe
@@ -115,11 +120,11 @@ const ouvert = demande >= 0 ? demande : actif;
         server:defer
         type="cadrage"
         versions={[{ slug: c.id, version: 1 }]}
-        tutoiement={c.data.tutoiement}
+        tutoiement={tutoiements[c.id]}
         prefixe={prefixe}
       />
 
-      <CadrageFormulaire slug={c.id} questions={c.data.questions} contact={c.data.contact} tutoiement={c.data.tutoiement} />
+      <CadrageFormulaire slug={c.id} questions={c.data.questions} contact={c.data.contact} tutoiement={tutoiements[c.id]} />
     </DocumentVolet>
   ))
 }

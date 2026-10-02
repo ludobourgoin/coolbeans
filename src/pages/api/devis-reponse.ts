@@ -18,6 +18,7 @@ import { montantAffiche, budgetDevis, totaux, eur, lignesRetenues, normaliserSel
 import { derniereReponse, devisClos, enregistrerReponse } from "../../lib/devis/reponses";
 import { declencherSignature, type ResultatSignature } from "../../lib/devis/signature";
 import { adresseDocument } from "../../lib/documents/adresse";
+import { tutoiementDe } from "../../lib/documents/pronom-contenu";
 
 export const prerender = false;
 
@@ -73,15 +74,15 @@ export const POST: APIRoute = async ({ request }) => {
   // Prénom obligatoire : il ouvre les accusés de réception, qui n'ont pas de
   // formulation de repli. Nom obligatoire aussi, quelle que soit la réponse.
   if (typeof prenom !== "string" || !prenom.trim()) {
-    return json({ error: "Merci de renseigner votre prénom." }, 400);
+    return json({ error: "Le prénom est obligatoire." }, 400);
   }
   if (typeof nom !== "string" || !nom.trim()) {
-    return json({ error: "Merci de renseigner votre nom." }, 400);
+    return json({ error: "Le nom est obligatoire." }, 400);
   }
   // Le consentement conditionne l'envoi : la case du formulaire ne protège que
   // le navigateur, un POST direct doit être refusé de la même façon.
   if (consentement !== true) {
-    return json({ error: "Merci d'accepter la conservation de vos informations." }, 400);
+    return json({ error: "La conservation des informations doit être acceptée." }, 400);
   }
   // L'email est obligatoire : il sert d'adresse de réponse ET de destinataire de
   // l'accusé de réception envoyé au client.
@@ -338,7 +339,7 @@ export const POST: APIRoute = async ({ request }) => {
       siren: champ(siren),
       adresse: champ(adresse),
       tva: champ(tva),
-      tutoiement: devis?.data.tutoiement,
+      tutoiement: await tutoiementDe("devis", slug),
     });
 
     const { error: erreurConfirmation } = await resend.emails.send({
