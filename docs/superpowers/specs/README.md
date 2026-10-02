@@ -14,6 +14,7 @@
 | `2026-08-14-portail-sidebar-design.md` | Refonte navigation : sidebar unique structure Geist | COO-80 (In Review), COO-81 | Actif, chantier en cours |
 | `2026-08-11-portail-session-clerk.md` | Procédure durée de session Clerk (A2HS) | COO-46 (arbitrage en attente), bloque COO-42 | Actif tant que COO-46 n'est pas tranché |
 | `2026-10-02-pronom-fiche-client-design.md` | Le tu ou le vous se pose sur la fiche client et vaut partout : documents, formulaires, portail, mails | Chantier « Documents client, harmonisation », lot 1 | Spec à relire ; dépend de la fusion de `feat/documents-portail` |
+| `2026-10-02-sections-documents-design.md` | Une liste fixe de sections par type de document, titres courts venus du code, sous-blocs à titre libre | Chantier « Documents client, harmonisation », lot 2 | Spec à relire ; dépend de la fusion de `feat/documents-portail` |
 
 ## Cycle de vie d'une spec
 
