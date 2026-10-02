@@ -65,9 +65,10 @@ const t = tutoiement
         </p>
         <form
           id="devis-form"
-          class="card mt-10 grid gap-6"
+          class="mt-10 grid gap-6 rounded-card border border-line bg-surface p-6x"
           data-slug={slug}
           data-suit-onglet
+          data-carte
           data-textes={JSON.stringify({ envoye: t.envoye, perdues: t.perdues, renvoi: t.renvoi })}
         >
           {
@@ -266,15 +267,21 @@ const t = tutoiement
        coexistent dans le DOM, une seule visible : ramasser les cases de tout
        le document ferait remonter celles d'une V1 masquée avec une réponse
        à la V2. On ne transmet que des index : le serveur retrouve les prix
-       dans le YAML, un montant venu du navigateur ne s'écrit jamais en base. */
-    const pane = document.querySelector<HTMLElement>("[data-document-volet]:not([hidden])");
+       dans le YAML, un montant venu du navigateur ne s'écrit jamais en base.
+
+       Sur la page projet, plusieurs étapes partagent la page : chercher sur
+       tout le document ramasserait aussi les cases d'une autre étape, dont le
+       volet actif n'a pas `hidden` (seule l'enveloppe de l'étape l'a). On
+       cherche donc d'abord dans l'étape du formulaire, jamais plus large. */
+    const racine = form.closest<HTMLElement>("[data-etape-volet]") ?? document;
+    const pane = racine.querySelector<HTMLElement>("[data-document-volet]:not([hidden])");
     const options = [
-      ...(pane ?? document).querySelectorAll<HTMLInputElement>("[data-devis-option]:checked"),
+      ...(pane ?? racine).querySelectorAll<HTMLInputElement>("[data-devis-option]:checked"),
     ].map((c) => Number(c.value));
     /* Libellés lisibles, pour le seul courriel de secours ci-dessous. Le
        serveur, lui, n'a que faire de ces chaînes : il relit le YAML. */
     const optionsLabels = [
-      ...(pane ?? document).querySelectorAll<HTMLInputElement>("[data-devis-option]:checked"),
+      ...(pane ?? racine).querySelectorAll<HTMLInputElement>("[data-devis-option]:checked"),
     ].map((c) => c.closest("[data-devis-ligne]")?.textContent?.trim().replace(/\s+/g, " ") ?? "");
 
     const payload = {

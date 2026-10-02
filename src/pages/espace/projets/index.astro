@@ -1,0 +1,126 @@
+---
+/* La liste des projets du workspace (retour de Ludo du 2026-10-02) : un
+   tableau qui reprend chaque projet Linear de la sous-team, son statut en
+   couleur, sa jauge en vert (issues faites, ou heures restantes sur un pack) et ses
+   dates. Un clic mène à la page du projet. L'entrée « Tous »
+   de la section Projets y mène.
+
+   Mêmes projets et même ordre que la barre (projetsDe) : en cours, puis à
+   venir, puis terminés. Les dates ne s'affichent qu'une fois le projet
+   validé, comme dans l'en-tête de sa page. */
+export const prerender = false;
+
+import { env } from "cloudflare:workers";
+import EspaceLayout from "../../../layouts/EspaceLayout.astro";
+import { cheminProjet } from "../../../lib/documents/projets-portail";
+import { dateCourte } from "../../../lib/documents/entete";
+import { getPortalContext } from "../../../lib/portail/context";
+import { portalHref } from "../../../lib/portail/nav";
+import { projetsDe, totalDuPack } from "../../../lib/portail/projets-courants";
+import { cacheWorker, estValide, libelleStatut, type TypeStatut } from "../../../lib/portail/projets-linear";
+import {
+  construireAvancement,
+  construireHeures,
+  detailDuProjet,
+  type DetailProjet,
+} from "../../../lib/portail/avancement-linear";
+
+Astro.response.headers.set("Cache-Control", "no-store");
+
+const { client } = await getPortalContext(Astro);
+const projets = client ? await projetsDe(Astro, client) : [];
+
+// Une lecture par projet, en parallèle et en cache 10 minutes : le même
+// détail que la page projet. La jauge compte les issues faites, ou les heures
+// restantes sur un pack. Linear muet ou rien à compter : pas de jauge.
+type Jauge = { part: number; texte: string };
+const jauges: Array<Jauge | null> = await Promise.all(
+  projets.map(async (p): Promise<Jauge | null> => {
+    if (!p.statut) return null;
+    const detail = await detailDuProjet(p.slugId, { apiKey: env.LINEAR_API_KEY, cache: cacheWorker<DetailProjet>() });
+    if (!detail) return null;
+    if (p.pack) {
+      const h = construireHeures(detail.issues, await totalDuPack(p));
+      if (h.total === null || h.restantes === null) return null;
+      return { part: Math.round((Math.max(0, h.restantes) / h.total) * 100), texte: `${h.restantes} h / ${h.total} h` };
+    }
+    const a = construireAvancement(detail.jalons, detail.issues);
+    if (a.total === 0) return null;
+    return { part: Math.round((a.faites / a.total) * 100), texte: `${a.faites} / ${a.total}` };
+  }),
+);
+
+const TON: Record<TypeStatut, string> = {
+  started: "bg-info/10 text-info",
+  paused: "bg-warning/10 text-warning",
+  planned: "bg-surface-raise text-ink",
+  backlog: "bg-surface-raise text-mute",
+  completed: "bg-success/10 text-success",
+  canceled: "bg-surface-raise text-mute",
+};
+const date = (iso: string | null) => (iso ? dateCourte(new Date(`${iso}T12:00:00Z`)) : "—");
+---
+
+<EspaceLayout title="Projets">
+  <h1>Projets</h1>
+
+  {
+    projets.length === 0 ? (
+      <p class="mt-8 rounded-card border border-line bg-surface p-6x text-sm text-mute">
+        Aucun projet pour l'instant.
+      </p>
+    ) : (
+      <div class="mt-8 overflow-x-auto rounded-card border border-line bg-surface">
+        <table class="w-full border-collapse text-[14px]">
+          <thead>
+            <tr class="border-b border-line text-left">
+              <th scope="col" class="label px-4 py-3">Projet</th>
+              <th scope="col" class="label px-4 py-3">Statut</th>
+              <th scope="col" class="label px-4 py-3">Avancement</th>
+              <th scope="col" class="label px-4 py-3">Début</th>
+              <th scope="col" class="label px-4 py-3">Fin</th>
+            </tr>
+          </thead>
+          <tbody>
+            {projets.map((p, i) => {
+              const dates = p.statut !== null && estValide(p.statut);
+              const jauge = jauges[i];
+              return (
+                <tr class="border-b border-line last:border-b-0 hover:bg-surface-subtle">
+                  <td class="px-4 py-3">
+                    <a href={portalHref(cheminProjet(p), Astro.url.hostname)} class="font-semibold text-ink">
+                      {p.titre}
+                    </a>
+                  </td>
+                  <td class="px-4 py-3">
+                    {p.statut ? (
+                      <span class:list={["rounded-full px-2 py-0.5 text-[12px] font-semibold whitespace-nowrap", TON[p.statut.type]]}>
+                        {libelleStatut(p.statut)}
+                      </span>
+                    ) : (
+                      <span class="text-mute">—</span>
+                    )}
+                  </td>
+                  <td class="px-4 py-3">
+                    {jauge ? (
+                      <span class="flex items-center gap-3">
+                        <span class="h-1.5 w-28 shrink-0 overflow-hidden rounded-full bg-surface-raise" aria-hidden="true">
+                          <span class="block h-full rounded-full bg-success" style={`width:${jauge.part}%`} />
+                        </span>
+                        <span class="font-mono text-[12px] whitespace-nowrap text-mute">{jauge.texte}</span>
+                      </span>
+                    ) : (
+                      <span class="text-mute">—</span>
+                    )}
+                  </td>
+                  <td class="px-4 py-3 font-mono text-[13px] whitespace-nowrap text-mute">{dates ? date(p.debut) : "—"}</td>
+                  <td class="px-4 py-3 font-mono text-[13px] whitespace-nowrap text-mute">{dates ? date(p.fin) : "—"}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+</EspaceLayout>

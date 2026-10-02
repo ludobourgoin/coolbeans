@@ -12,7 +12,7 @@ export const prerender = false;
 import { actions } from "astro:actions";
 import { env } from "cloudflare:workers";
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
-import { getPortalContext } from "../../lib/portail/context";
+import { basculerSurCoolbeans, getPortalContext } from "../../lib/portail/context";
 import { isAdmin } from "../../lib/portail/metadata";
 import { listOrganisations } from "../../lib/portail/organisations";
 import { listWorkspaces } from "../../lib/portail/workspaces";
@@ -20,6 +20,7 @@ import { listerUtilisateurs } from "../../lib/portail/utilisateurs";
 
 const { meta } = await getPortalContext(Astro);
 if (!isAdmin(meta)) return Astro.redirect("/espace");
+await basculerSurCoolbeans(Astro);
 
 const resultatInvitation = Astro.getActionResult(actions.utilisateurs.inviter);
 const resultatRevocation = Astro.getActionResult(actions.utilisateurs.revoquer);

@@ -41,7 +41,8 @@ const { url, embed, duree, legende } = Astro.props;
           href={url}
           target="_blank"
           rel="noopener"
-          class="card flex items-center gap-5 no-underline transition-colors duration-150 hover:border-[var(--ds-gray-500)]"
+          class="flex items-center gap-5 no-underline transition-colors duration-150 hover:border-[var(--ds-gray-500)] rounded-card border border-line bg-surface p-6x"
+          data-carte
         >
           <span
             aria-hidden="true"

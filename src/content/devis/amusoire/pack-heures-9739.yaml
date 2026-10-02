@@ -34,14 +34,17 @@ sections:
       lignes:
         - label: "Pack de 10 h, soit 70 € l'heure"
           prix: 700
+          heures: 10
           optionnel: true
           defaut: false
         - label: "Pack de 20 h, soit 65 € l'heure"
           prix: 1300
+          heures: 20
           optionnel: true
           defaut: true
         - label: "Pack de 40 h, soit 60 € l'heure"
           prix: 2400
+          heures: 40
           optionnel: true
           defaut: false
           conseille: true

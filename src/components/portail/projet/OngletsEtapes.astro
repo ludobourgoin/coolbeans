@@ -1,0 +1,61 @@
+---
+/* La barre des étapes d'une page projet (spec 2026-09-30, barre par
+   workspace, §5.2). Une étape sans document lisible garde son onglet, grisé
+   et sans clic. Changer d'étape met l'adresse à jour (?etape=) sans
+   recharger : un lien copié rouvre la même étape.
+
+   Onglets soulignés, pour se distinguer des sous-onglets de version, en
+   pastilles, que chaque document porte sous cette barre. */
+import type { Etape } from "../../../lib/documents/etapes";
+import type { OngletEtape } from "../../../lib/documents/projets-portail";
+
+interface Props {
+  onglets: OngletEtape[];
+  ouvert: Etape | null;
+}
+
+const { onglets, ouvert } = Astro.props;
+---
+
+<div class="w-full border-b border-line px-6 md:px-10 print:hidden">
+  <div class="flex flex-wrap gap-x-6" role="tablist" aria-label="Étapes du projet">
+    {
+      onglets.map((o) => (
+        <button
+          type="button"
+          role="tab"
+          id={`onglet-etape-${o.etape}`}
+          aria-controls={o.racine ? `etape-${o.etape}` : undefined}
+          aria-selected={o.etape === ouvert ? "true" : "false"}
+          disabled={!o.racine}
+          data-etape-onglet={o.etape}
+          class="-mb-px flex cursor-pointer items-center gap-2 border-b-2 border-transparent py-3.5 text-[14px]/[1.4] font-semibold text-mute transition-colors duration-150 ease-in-out hover:text-ink aria-selected:border-ink aria-selected:text-ink disabled:cursor-default disabled:opacity-40 disabled:hover:text-mute"
+        >
+          <span aria-hidden="true" class="size-2 rounded-full" style={`background:var(--ds-${o.teinte}-900)`}></span>
+          {o.libelle}
+        </button>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  const onglets = document.querySelectorAll<HTMLButtonElement>("[data-etape-onglet]:not([disabled])");
+
+  onglets.forEach((bouton) => {
+    bouton.addEventListener("click", () => {
+      const etape = bouton.dataset.etapeOnglet ?? "";
+      document.querySelectorAll<HTMLButtonElement>("[data-etape-onglet]").forEach((b) => {
+        b.setAttribute("aria-selected", String(b === bouton));
+      });
+      document.querySelectorAll<HTMLElement>("[data-etape-volet]").forEach((volet) => {
+        volet.hidden = volet.dataset.etapeVolet !== etape;
+      });
+      const url = new URL(location.href);
+      url.searchParams.set("etape", etape);
+      url.searchParams.delete("version");
+      history.replaceState(null, "", url);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+</script>

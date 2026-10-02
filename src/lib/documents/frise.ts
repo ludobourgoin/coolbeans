@@ -20,10 +20,15 @@ export interface Pastille extends DefinitionEtape {
 /** L'adresse d'un document, jusqu'au lot 4 qui la déplace sous /<client>/<projet>/<étape>. */
 export const urlDocument = (d: Pick<DocumentProjet, "collection" | "id">) => `/${d.collection}/${d.id}`;
 
-export function frise(
+/**
+ * La frise, avec la règle de lecture et la fabrique d'adresse du contexte.
+ * Public : `frise` ci-dessous.
+ */
+export function friseAvec(
   documents: DocumentProjet[],
   courant: Pick<DocumentProjet, "collection" | "id">,
-  dev: boolean,
+  lisible: (d: DocumentProjet) => boolean,
+  url: (d: DocumentProjet) => string,
 ): Pastille[] {
   const racine = documents.find(
     (d) => !d.versionDe && d.collection === courant.collection && d.id === courant.id,
@@ -35,7 +40,16 @@ export function frise(
 
   return DEFINITIONS.filter((def) => def.etape !== "audit" || aUnAudit).map((def) => {
     const doc = duProjet.find((d) => d.etape === def.etape);
-    const servi = doc !== undefined && (dev || doc.statut === "publie");
-    return { ...def, courante: def.etape === racine.etape, href: servi ? urlDocument(doc) : undefined };
+    const servi = doc !== undefined && lisible(doc);
+    return { ...def, courante: def.etape === racine.etape, href: servi ? url(doc) : undefined };
   });
+}
+
+/** La frise des pages publiques : un document non publié n'est servi qu'en développement. */
+export function frise(
+  documents: DocumentProjet[],
+  courant: Pick<DocumentProjet, "collection" | "id">,
+  dev: boolean,
+): Pastille[] {
+  return friseAvec(documents, courant, (d) => dev || d.statut === "publie", urlDocument);
 }

@@ -19,6 +19,7 @@ import {
   type ReponseBrute,
 } from "../../lib/cadrage";
 import { documentClos, enregistrerReponseDocument } from "../../lib/documents/reponses";
+import { adresseDocument } from "../../lib/documents/adresse";
 
 export const prerender = false;
 
@@ -176,10 +177,8 @@ export const POST: APIRoute = async ({ request }) => {
         : titreSection("Message") + p("(pas de message)"),
     ].join(""),
     cta: {
-      // Pas d'encodeURIComponent : le slug porte un slash, que l'encodage
-      // casserait. La regex ci-dessus borne déjà les caractères possibles.
       label: "Voir le document",
-      url: `https://coolbeans.cc/cadrage/${slug}`,
+      url: adresseDocument("cadrage", slug),
     },
     piedContexte: "R&eacute;ponses re&ccedil;ues via la page publique de cadrage.",
   });

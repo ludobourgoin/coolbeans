@@ -7,10 +7,12 @@
 export const prerender = false;
 
 import EspaceLayout from "../../../layouts/EspaceLayout.astro";
+import { basculerSurCoolbeans } from "../../../lib/portail/context";
 
 // Une page derrière une garde ne doit jamais atterrir dans un cache
 // intermédiaire : même règle que clients.astro et utilisateurs.astro.
 Astro.response.headers.set("Cache-Control", "no-store");
+await basculerSurCoolbeans(Astro);
 
 const outils = [
   {

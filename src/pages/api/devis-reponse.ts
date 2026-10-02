@@ -17,6 +17,7 @@ import { getEntry } from "astro:content";
 import { montantAffiche, budgetDevis, totaux, eur, lignesRetenues, normaliserSelection } from "../../lib/devis";
 import { derniereReponse, devisClos, enregistrerReponse } from "../../lib/devis/reponses";
 import { declencherSignature, type ResultatSignature } from "../../lib/devis/signature";
+import { adresseDocument } from "../../lib/documents/adresse";
 
 export const prerender = false;
 
@@ -281,11 +282,7 @@ export const POST: APIRoute = async ({ request }) => {
     ].join(""),
     cta: {
       label: "Voir le devis",
-      /* Pas d'encodeURIComponent : le slug peut porter un slash de
-         séparation client/projet, que l'encodage transformerait en %2F et
-         casserait la route. La regex de validation ci-dessus garantit déjà
-         qu'il ne contient que [a-z0-9-] et des slashs. */
-      url: `https://coolbeans.cc/devis/${slug}`,
+      url: adresseDocument("devis", slug),
     },
     piedContexte: "R&eacute;ponse re&ccedil;ue via la page publique du devis.",
   });

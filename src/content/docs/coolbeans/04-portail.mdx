@@ -15,11 +15,11 @@ portail sont servies.
 
 ## Ce que c'est
 
-Chaque client se connecte sur `my.coolbeans.cc` et voit son espace : accueil,
-doc de son projet, projets en cours, site, ressources, demandes. Les admins
-voient en plus le module Chiffrages et un sélecteur pour basculer d'un client
-à l'autre. Les adresses sont propres : `my.coolbeans.cc/chiffrages`, sans
-préfixe technique.
+Chaque client se connecte sur `my.coolbeans.cc` et voit son espace : Bienvenue,
+Projets, Mon site, Mode d'emploi, Aide. Le workspace Coolbeans remplace Aide
+par Admin, où les admins retrouvent en plus le module Chiffrages et un
+sélecteur pour basculer d'un client à l'autre. Les adresses sont propres :
+`my.coolbeans.cc/chiffrages`, sans préfixe technique.
 
 Le module **Demandes** (`my.coolbeans.cc/demandes`, ex-Messagerie, renommé le
 2026-09-29, section Aide) est une boîte de tickets et rien d'autre. Les mails échangés avec
@@ -107,21 +107,76 @@ invitation.
 est mémorisé dans un cookie. Règle d'arbitrage : **l'URL gagne** : un admin
 qui ouvre la doc d'un client alors que son sélecteur est ailleurs bascule
 automatiquement sur ce client, pour que l'écran et le sélecteur racontent la
-même chose.
+même chose. Les pages de la section Admin (`/admin`, `/admin/relances`,
+`/clients`, `/utilisateurs`, `/devis`, `/devis/reglages`) imposent l'inverse :
+ouvertes depuis un autre workspace, elles basculent sur Coolbeans, pour ne
+jamais afficher le cockpit admin sous la barre d'un client.
 
-**Les documents.** La page Documents d'un workspace rassemble trois natures
-de documents : les fichiers déposés depuis la vue admin (devis, factures,
-contrats, logos), les pages produites par le repo (cadrages et propositions
-commerciales), et les liens externes (Google Docs, comptes rendus Granola).
-La base ne stocke jamais le contenu, seulement la décision de le montrer.
+**Les projets.** La section Projets de la barre liste les projets de la
+sous-team Linear du workspace courant, annulés exclus : en cours, puis à
+venir, puis terminés, le plus récemment modifié en tête de chaque groupe.
+Chaque fiche client porte l'identifiant de sa sous-team (`linearTeamId`) ;
+une fiche sans sous-team n'affiche aucun projet. Linear est lu au plus une
+fois toutes les dix minutes par sous-team, dans le cache du Worker : la
+limite vaut par centre de données, jamais globalement, l'API Cache n'étant
+pas partagée entre eux. Le KV est écarté, son quota tomberait trop vite. En
+cas de panne ou de délai
+dépassé (deux secondes), la section se replie sur les projets de la
+nomenclature qui ont un document lisible, sans résumé, statut ni dates ;
+l'échec se garde soixante secondes pour ne pas ralentir chaque page.
 
-Tout document arrive **masqué**. Le client ne voit que ce qui a été rendu
-visible, ligne par ligne, d'un clic depuis la vue admin. Une ligne masquée
-n'apparaît ni dans la page ni dans le HTML servi, parce que le filtre vit
-dans la requête SQL, et sa route de téléchargement répond 404. Les cadrages
-et les propositions du client s'enregistrent tout seuls, à chaque ouverture
-de la page en vue admin ; une page retirée du repo garde sa ligne, signalée
-plutôt que supprimée en silence.
+Les fichiers déposés disparaissent avec cette tâche, mais pas la table
+`documents` (migration `0008_documents.sql`) : plus aucun code ne la lit ni
+n'y écrit, et elle reste en base tant que ce chantier n'est pas en
+production. Sa suppression, fichiers de stockage puis `DROP TABLE`, se fait
+en second temps, sur ordre explicite de Ludo.
+
+**La page d'un projet.** Chaque projet n'a qu'une page,
+`my.coolbeans.cc/projets/<nom-du-projet-identifiant>`. L'en-tête, pleine
+largeur, porte le titre, le résumé du projet Linear écrit pour le client, son
+statut traduit (« Proposition », « À venir », « Planifié », « En cours »,
+« En pause », « Terminé ») et ses dates, affichées seulement une fois le
+projet validé. Sous l'en-tête, le bloc « Avancement » liste les issues
+du projet par jalon, avec leur état traduit et leur échéance ; les annulées
+et celles en Triage n'y figurent pas. Les six étapes du cycle (audit si présent, cadrage,
+proposition, production, livraison, suivi) s'ouvrent en onglets ; une
+étape sans document lisible par le compte garde son onglet, grisé, sans
+trahir l'existence d'un brouillon. Les
+versions d'une étape s'ouvrent en sous-onglets. L'adresse porte l'étape et la
+version ouvertes (`?etape=proposition&version=…`), sans recharger la page au
+changement d'onglet. La page est rendue à la demande, jamais prérendue : elle
+dépend de la session.
+
+Qui lit quoi dépend de trois règles, dans cet ordre. D'abord la portée du
+compte (`workspacesVisibles`) : un client ne lit que son propre
+workspace, un revendeur tous ceux de son organisation, l'admin tous les
+workspaces. Ensuite le statut : un client ou un revendeur ne voit que
+les documents `publie`, l'admin voit aussi les brouillons. Enfin, la
+proposition d'un workspace de revendeur ne se lit que par les comptes du
+revendeur et par l'admin : le client final ne la voit pas. Un refus
+répond toujours 404, jamais 403, pour ne pas révéler qu'un document existe.
+
+Sur un document que le client ne peut pas lire, l'admin voit un bandeau
+collé sous la barre du portail : « Brouillon · le client ne voit
+pas ce document », ou « Réservé au revendeur · le client final ne
+voit pas ce document » pour la proposition d'un workspace de revendeur.
+Masqué à l'impression.
+
+La table de nomenclature relie chaque projet à son projet Linear par
+l'identifiant court (`slugId`, les douze derniers caractères de son adresse
+Linear) : c'est lui qui range un document sous la bonne page, et lui aussi
+qui retrouve la page quand Linear ne répond pas. Le build échoue si une
+entrée n'a pas d'identifiant, ou si deux entrées portent le même.
+
+Le champ `cle` d'une fiche client (`src/content/clients/<slug>.yaml`) relie
+son workspace à la nomenclature des projets : trois lettres, reprises
+de la clé de team Linear. Le build vérifie qu'elle existe dans la
+nomenclature et qu'aucune clé n'est portée par deux workspaces. Un workspace
+sans clé (Coolbeans, Spinoza…) n'a aucun document du cycle.
+
+Les adresses publiques des documents restent servies telles quelles : leur
+fermeture, le bouton qui publie un document depuis le portail et
+l'invitation d'un compte viendront par la suite.
 
 **Les demandes.** La page Demandes montre d'abord le formulaire, puis la
 liste des fils, façon boîte de réception. Une demande porte un objet, une
@@ -190,11 +245,6 @@ description, et ce qui précède reste interne. Le fil apparaît chez le client
 après le même délai de grâce, avec l'étiquette « Ouvert par Ludo » et un
 mail.
 
-**Le module Projets** est une page-souche avec état vide : l'outil de
-gestion de projet est Linear, et le branchement du module sur Linear est un
-chantier à part entière (voir la spec de migration dans
-`docs/superpowers/specs/`).
-
 **Les statistiques de fréquentation.** La page Analytics montre au client les visites de son site, sans cookies. Les mesures viennent de Cloudflare Web Analytics, où tous les sites sont enregistrés dans le compte Coolbeans. Cloudflare ne rend un chiffre exact que pour un jour isolé des sept derniers jours : au-delà, ou sur une période plus longue, il n'en garde qu'une mesure sur dix. Chaque nuit, au second passage de 04:00 UTC, le cron relit donc ces sept jours un par un et les stocke dans D1 (`src/lib/analytics/collecte.ts`). La page ne lit que D1. Pour raccorder un site, ajouter une entrée `analytics` (`host` et `siteTag`) dans la fiche du client sous `src/content/clients/`. Le `siteTag` se lit dans l'API Cloudflare, `GET /accounts/<compte>/rum/site_info/list`.
 
 **La vitesse du site.** Sous les listes, la page note les trois Core Web Vitals mesurés chez les visiteurs, sur la période choisie : Affichage (LCP), Réactivité (INP), Stabilité (CLS), tous appareils confondus puis sur mobile et sur ordinateur. Les mesures viennent du même compte Cloudflare, dans la même requête nocturne que le trafic (jeu `rumWebVitalsEventsAdaptiveGroups`). D1 garde, par site, jour et appareil, le nombre de mesures bonnes, à améliorer et mauvaises : ces compteurs s'additionnent sur n'importe quelle période, les percentiles non. La note suit la règle de Google : « Bon » si au moins 75 % des mesures sont bonnes, « À améliorer » si les bonnes et celles à améliorer réunies atteignent 75 %, « Mauvais » sinon. Sous 20 mesures sur la période, la carte n'affiche pas de note (`src/lib/analytics/vitaux.ts`).
@@ -223,6 +273,18 @@ chantier à part entière (voir la spec de migration dans
 | Création d'une demande, compte au nom duquel écrire | `src/pages/api/messagerie/nouveau.ts`, `comptePrincipal` dans `src/lib/portail/comptes.ts` |
 | Réponses et ouverture depuis Linear | `src/pages/api/linear-webhook.ts`, `src/lib/portail/messagerie/publier.ts` et `ouvrir.ts`, cron dans `src/worker.ts` |
 | Statuts côté client (trois pastilles) | `statutFromStateType` et `STATUT_LABEL` dans `src/lib/portail/messagerie/regles.ts`, couleurs dans `MessagerieBoard.astro` |
+| Règle de lecture et bandeau d'un document | `src/lib/documents/acces.ts` |
+| Projets Linear d'une sous-team, cache, libellés de statut | `src/lib/portail/projets-linear.ts` |
+| Projets du portail et onglets d'une page projet | `src/lib/documents/projets-portail.ts` |
+| Projets de la requête, mémoïsés | `src/lib/portail/projets-courants.ts` |
+| Bascule de workspace depuis une page | `poserWorkspaceCourant`, `basculerSurCoolbeans` dans `src/lib/portail/context.ts` |
+| Page projet | `src/pages/espace/projets/[projet].astro`, `src/components/portail/projet/` |
+| Bloc Avancement de la page projet (issues par jalon) | `src/lib/portail/avancement-linear.ts`, `src/components/portail/projet/AvancementProjet.astro` |
+| Liste de tous les projets (entrée « Tous ») | `src/pages/espace/projets/index.astro` |
+| Packs d'heures : heures restantes, statuts des demandes, rattachement des demandes | `construireHeures` dans `src/lib/portail/avancement-linear.ts`, `src/lib/devis/heures.ts`, `totalDuPack` dans `src/lib/portail/projets-courants.ts`, `src/components/portail/projet/HeuresPack.astro`, `packActif` dans `src/lib/documents/projets-portail.ts` |
+| Adresse publique d'un document, pour tout lien émis | `src/lib/documents/adresse.ts` |
+| Bandeau de l'admin sur un document | `src/components/documents/BandeauAcces.astro` |
+| Composants de page des quatre gabarits | `src/components/documents/pages/` (contextes `public`, `projet`) |
 | Tables `analytics_jours`, `analytics_repartitions`, `analytics_collectes` | Migration `migrations/0011_analytics.sql`, lecture et écriture dans `src/lib/analytics/store.ts` |
 | Table `analytics_vitaux` | Migration `migrations/0012_analytics_vitaux.sql`, lecture et écriture dans `src/lib/analytics/store.ts` |
 | Secret et variable de collecte Cloudflare | `CF_ANALYTICS_TOKEN` (jeton « Account Analytics : Read »), `CF_ACCOUNT_ID` |

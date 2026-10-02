@@ -1,0 +1,169 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Banner from "../../ui/Banner.astro";
+import Tooltip from "../../ui/Tooltip.astro";
+import CadrageIntro from "../../cadrage/CadrageIntro.astro";
+import LivrableApercu from "../../livrable/LivrableApercu.astro";
+import LivrableVideo from "../../livrable/LivrableVideo.astro";
+import LivrableParcours from "../../livrable/LivrableParcours.astro";
+import LivrableMessage from "../../livrable/LivrableMessage.astro";
+import LivrableSuite from "../../livrable/LivrableSuite.astro";
+import LivrableReponse from "../../livrable/LivrableReponse.astro";
+import DevisFooter from "../../devis/DevisFooter.astro";
+import DocumentReponses from "../../devis/DocumentReponses.astro";
+import DocumentEntete from "../DocumentEntete.astro";
+import DocumentVolet from "../DocumentVolet.astro";
+import BandeauAcces from "../BandeauAcces.astro";
+import { riche } from "../../../lib/devis";
+import { libelleOnglet, ligneDate, titreEntete } from "../../../lib/documents/entete";
+import { sectionsLivrable } from "../../../lib/documents/sections";
+import type { Bandeau } from "../../../lib/documents/acces";
+import type { Pastille } from "../../../lib/documents/frise";
+
+interface Props {
+  versions: CollectionEntry<"livrable">[];
+  pastilles: Pastille[];
+  contexte: "public" | "projet";
+  /** Préfixe des id sur la page projet. Vide ailleurs. */
+  prefixe?: string;
+  /** Id de la version à ouvrir, lu dans ?version=. Inconnu ou absent : la dernière. */
+  versionActive?: string;
+  /** Par id d'entrée : ce que le client ne voit pas. Portail et admin seulement. */
+  bandeaux?: Record<string, Bandeau>;
+}
+const { versions, pastilles, contexte, prefixe = "", versionActive, bandeaux = {} } = Astro.props;
+
+const actif = versions.length - 1;
+const racine = versions[0].data;
+const courante = versions[actif].data;
+const plusieurs = versions.length > 1;
+
+/* La version ouverte à l'arrivée : celle que l'adresse demande, sinon la
+   dernière. `actif` reste celle qui engage, pour le formulaire. */
+const demandee = versionActive ? versions.findIndex((v) => v.id === versionActive) : -1;
+const ouvert = demandee >= 0 ? demandee : actif;
+---
+
+{bandeaux[versions[0].id] && <BandeauAcces raison={bandeaux[versions[0].id]} />}
+
+<DocumentEntete
+  etape={racine.etape}
+  titre={titreEntete(racine)}
+  frise={pastilles}
+  onglets={versions.map((v) => ({ libelle: libelleOnglet(v.data), slug: v.id }))}
+  actif={ouvert}
+  contexte={contexte}
+  prefixe={prefixe}
+/>
+
+{
+  versions.map((v, i) => (
+    <DocumentVolet
+      index={i}
+      actif={ouvert}
+      total={versions.length}
+      titre={v.data.titre}
+      objet={v.data.objet}
+      date={ligneDate(v.data, plusieurs, "Document")}
+      sections={sectionsLivrable(v.data)}
+      bandeau={i > 0 ? (bandeaux[v.id] ?? null) : undefined}
+      prefixe={prefixe}
+    >
+      <a
+        slot="action"
+        href={v.data.site.url}
+        target="_blank"
+        rel="noopener"
+        class="btn btn-lg mt-6.5 inline-flex"
+      >
+        {v.data.site.label}
+      </a>
+
+      <div class="container-site">
+        <div class="mx-auto max-w-[880px] py-16x">
+          {v.data.apercu && (
+            <LivrableApercu
+              bureau={v.data.apercu.bureau}
+              mobile={v.data.apercu.mobile}
+              url={v.data.apercu.url ?? v.data.site.url}
+              titre={v.data.apercu.titre}
+              legende={v.data.apercu.legende}
+            />
+          )}
+
+          {v.data.video && (
+            <div class:list={[v.data.apercu && "border-t border-line"]}>
+              <LivrableVideo
+                url={v.data.video.url}
+                embed={v.data.video.embed}
+                duree={v.data.video.duree}
+                legende={v.data.video.legende}
+              />
+            </div>
+          )}
+
+          <div class:list={[(v.data.apercu || v.data.video) && "border-t border-line"]}>
+            <CadrageIntro sections={v.data.sections} />
+          </div>
+
+          {v.data.parcours.length > 0 && (
+            <LivrableParcours
+              titre={v.data.parcoursTitre}
+              etapes={v.data.parcours}
+              replie={v.data.parcoursReplie}
+            />
+          )}
+
+          {v.data.message && (
+            <LivrableMessage
+              titre={v.data.message.titre}
+              objet={v.data.message.objet}
+              corps={v.data.message.corps}
+              note={v.data.message.note}
+            />
+          )}
+
+          <LivrableSuite
+            aVerifier={v.data.aVerifier}
+            aVerifierTitre={v.data.aVerifierTitre}
+            suite={v.data.suite}
+            suiteTitre={v.data.suiteTitre}
+            contact={v.data.contact}
+          />
+
+          {v.data.notes.length > 0 && (
+            <div class="grid grid-cols-[180px_1fr] gap-10 border-t border-line pt-10 max-[700px]:grid-cols-1 max-[700px]:gap-4">
+              <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">NB</p>
+              <div class="flex max-w-[58ch] flex-col gap-3">
+                {v.data.notes.map((note) => (
+                  <Banner tone={note.tone}>
+                    <Fragment set:html={riche(note.texte)} />
+                    {note.tooltip && <Tooltip texte={note.tooltip} />}
+                  </Banner>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </DocumentVolet>
+  ))
+}
+
+<!-- Réponses déjà reçues, toutes versions confondues. Une validation de la
+     version courante masque le formulaire qui suit ; des retours le laissent. -->
+<DocumentReponses
+  server:defer
+  type="livrable"
+  versions={versions.map((v) => ({ slug: v.id, version: v.data.version }))}
+  tutoiement={courante.tutoiement}
+  prefixe={prefixe}
+/>
+
+{
+  courante.formulaire && (
+    <LivrableReponse slug={versions[ouvert].id} tutoiement={courante.tutoiement} prefixe={prefixe} />
+  )
+}
+
+<DevisFooter />

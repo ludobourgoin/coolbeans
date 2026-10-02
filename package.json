@@ -12,7 +12,8 @@
     "astro": "astro",
     "verify": "node scripts/verify-design-system.js",
     "tokens": "node scripts/extract-geist-tokens.js",
-    "test": "vitest run"
+    "test": "vitest run",
+    "comptes-locaux": "node scripts/comptes-locaux.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.1.7",

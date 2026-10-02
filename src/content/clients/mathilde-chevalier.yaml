@@ -1,6 +1,7 @@
 nom: Mathilde Chevalier
 # Cliente directe : pas de revendeur entre elle et Coolbeans (spec 2026-08-19 §3.1).
 organisation: coolbeans
+cle: mat
 prenom: Mathilde
 # Emoji du sélecteur, repris de l'icône de la team Linear (micro, pour le
 # podcast « Au cœur du travail »).

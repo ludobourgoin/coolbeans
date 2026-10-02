@@ -13,7 +13,7 @@
 // cookies.
 
 import type { APIContext } from "astro";
-import { listWorkspaces, type PortalWorkspace } from "./workspaces";
+import { listWorkspaces, WORKSPACE_COOLBEANS, type PortalWorkspace } from "./workspaces";
 
 /* On ne demande que ce dont la résolution a besoin. `Astro` dans une page est
    un AstroGlobal, pas un APIContext : exiger le type complet ne compilerait
@@ -76,4 +76,33 @@ export function overrideCurrentWorkspace(context: PortalRequestContext, client: 
     );
   }
   cache[CACHE_KEY] = previous.then((ctx) => ({ ...ctx, client }));
+}
+
+/**
+ * L'adresse impose un workspace : cookie posé pour les requêtes suivantes,
+ * contexte réécrit pour celle-ci, afin que la barre et la page parlent du même
+ * workspace. Préférence d'affichage, sans effet sur les droits.
+ */
+export function poserWorkspaceCourant(context: PortalRequestContext, workspace: PortalWorkspace): void {
+  context.cookies.set(WORKSPACE_COOKIE, workspace.slug, {
+    path: "/",
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 365,
+  });
+  overrideCurrentWorkspace(context, workspace);
+}
+
+/**
+ * Une page de la section Admin s'affiche dans le workspace Coolbeans, jamais
+ * ailleurs : ouverte depuis Amusoire, elle y bascule (spec barre §3.1). Sans
+ * ça, le cockpit des devis s'afficherait sous la barre d'Amusoire, sans
+ * section Admin.
+ */
+export async function basculerSurCoolbeans(context: PortalRequestContext): Promise<void> {
+  const { client } = await getPortalContext(context);
+  if (client?.slug === WORKSPACE_COOLBEANS) return;
+  const coolbeans = (await listWorkspaces()).find((w) => w.slug === WORKSPACE_COOLBEANS);
+  if (coolbeans) poserWorkspaceCourant(context, coolbeans);
 }

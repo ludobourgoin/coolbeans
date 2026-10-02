@@ -14,7 +14,14 @@
    Le filet de 3 px se colle sous la barre Coolbeans, dans la teinte de
    l'étape. Il ne flotte pas en tête de page, où il se lirait comme une
    alerte : cette place est celle d'EnvBanner, rendue par BaseLayout au-dessus
-   de la barre, dans le flux. Les deux ne se superposent donc jamais. */
+   de la barre, dans le flux. Les deux ne se superposent donc jamais.
+
+   Dans le portail, la barre du portail tient lieu de barre Coolbeans : thème
+   et compte y sont déjà.
+
+   Sur la page projet (contexte "projet"), l'en-tête du projet et les onglets
+   d'étape jouent ce rôle : ce composant ne garde que les sous-onglets de
+   version. */
 import DocumentTopbar from "../devis/DocumentTopbar.astro";
 import DocumentFrise from "./DocumentFrise.astro";
 import { definitionEtape, type Etape } from "../../lib/documents/etapes";
@@ -28,43 +35,53 @@ interface Props {
   /** Un par volet. Moins de deux : pas de barre d'onglets. */
   onglets: { libelle: string; slug: string }[];
   actif: number;
+  /**
+   * "projet" : ni titre ni frise, la page projet les porte ; restent les
+   * sous-onglets de version.
+   */
+  contexte?: "public" | "projet";
+  /** Préfixe des id : plusieurs documents partagent la page projet. Vide ailleurs. */
+  prefixe?: string;
 }
 
-const { etape, titre, frise, onglets, actif } = Astro.props;
+const { etape, titre, frise, onglets, actif, contexte = "public", prefixe = "" } = Astro.props;
 const { teinte } = definitionEtape(etape);
+const projet = contexte === "projet";
 ---
 
-<DocumentTopbar />
-<div aria-hidden="true" class="h-[3px] print:hidden" style={`background:var(--ds-${teinte}-900)`}></div>
+{contexte === "public" && <DocumentTopbar />}
+{!projet && <div aria-hidden="true" class="h-[3px] print:hidden" style={`background:var(--ds-${teinte}-900)`}></div>}
 
-<header class="container-site print:hidden">
-  <div class="mx-auto max-w-[880px] pt-14 pb-7">
-    <h1 class="text-[clamp(2rem,4vw,2.75rem)]/[1.08] tracking-[-0.02em]">{titre}</h1>
+{
+  (!projet || onglets.length > 1) && (
+    <header class="container-site print:hidden">
+      <div class:list={["mx-auto max-w-[880px]", projet ? "pt-6" : "pt-14 pb-7"]}>
+        {!projet && <h1 class="text-[clamp(2rem,4vw,2.75rem)]/[1.08] tracking-[-0.02em]">{titre}</h1>}
 
-    <DocumentFrise pastilles={frise} />
+        {!projet && <DocumentFrise pastilles={frise} />}
 
-    {
-      onglets.length > 1 && (
-        <div class="mt-7 flex flex-wrap gap-2" role="tablist" aria-label="Versions du document">
-          {onglets.map((o, i) => (
-            <button
-              type="button"
-              role="tab"
-              id={`onglet-${i}`}
-              aria-controls={`volet-${i}`}
-              aria-selected={i === actif ? "true" : "false"}
-              data-document-onglet={i}
-              data-slug={o.slug}
-              class="cursor-pointer rounded-full px-[13px] py-[5px] text-[13px]/[1.4] font-semibold text-mute transition-colors duration-150 ease-in-out hover:bg-surface-raise hover:text-ink aria-selected:bg-ink aria-selected:text-surface"
-            >
-              {o.libelle}
-            </button>
-          ))}
-        </div>
-      )
-    }
-  </div>
-</header>
+        {onglets.length > 1 && (
+          <div class:list={["flex flex-wrap gap-2", !projet && "mt-7"]} role="tablist" aria-label="Versions du document">
+            {onglets.map((o, i) => (
+              <button
+                type="button"
+                role="tab"
+                id={`${prefixe}onglet-${i}`}
+                aria-controls={`${prefixe}volet-${i}`}
+                aria-selected={i === actif ? "true" : "false"}
+                data-document-onglet={i}
+                data-slug={o.slug}
+                class="cursor-pointer rounded-full px-[13px] py-[5px] text-[13px]/[1.4] font-semibold text-mute transition-colors duration-150 ease-in-out hover:bg-surface-raise hover:text-ink aria-selected:bg-ink aria-selected:text-surface"
+              >
+                {o.libelle}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </header>
+  )
+}
 
 <script>
   /* Bascule des onglets : on change la visibilité, on ne recharge pas. L'état
@@ -74,19 +91,31 @@ const { teinte } = definitionEtape(etape);
      Un formulaire qui porte `data-suit-onglet` (proposition, livrable) prend
      le slug de l'onglet affiché, sans quoi une réponse à la V1 arriverait
      étiquetée V2. Un formulaire posé DANS un volet (cadrage à chapitres)
-     garde le sien. */
+     garde le sien.
+
+     Sur la page projet, chaque étape a ses onglets : on n'agit que dans
+     l'étape du bouton, et l'adresse retient la version (?version=). */
   const onglets = document.querySelectorAll<HTMLButtonElement>("[data-document-onglet]");
 
   onglets.forEach((bouton) => {
     bouton.addEventListener("click", () => {
+      const etape = bouton.closest<HTMLElement>("[data-etape-volet]");
+      const racine: ParentNode = etape ?? document;
       const cible = bouton.dataset.documentOnglet;
-      onglets.forEach((b) => b.setAttribute("aria-selected", String(b === bouton)));
-      document.querySelectorAll<HTMLElement>("[data-document-volet]").forEach((volet) => {
+      racine.querySelectorAll<HTMLButtonElement>("[data-document-onglet]").forEach((b) => {
+        b.setAttribute("aria-selected", String(b === bouton));
+      });
+      racine.querySelectorAll<HTMLElement>("[data-document-volet]").forEach((volet) => {
         volet.hidden = volet.dataset.documentVolet !== cible;
       });
-      document.querySelectorAll<HTMLFormElement>("form[data-suit-onglet]").forEach((form) => {
+      racine.querySelectorAll<HTMLFormElement>("form[data-suit-onglet]").forEach((form) => {
         if (bouton.dataset.slug) form.dataset.slug = bouton.dataset.slug;
       });
+      if (etape && bouton.dataset.slug) {
+        const url = new URL(location.href);
+        url.searchParams.set("version", bouton.dataset.slug);
+        history.replaceState(null, "", url);
+      }
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   });

@@ -18,6 +18,7 @@ import {
   renderTransactionnel,
   titreSection,
 } from "./transactionnel";
+import { adresseDocument } from "../lib/documents/adresse";
 
 export interface DevisConfirmationProps {
   slug: string;
@@ -43,8 +44,7 @@ export interface EmailPret {
   text: string;
 }
 
-const urlDevis = (slug: string): string =>
-  `https://coolbeans.cc/devis/${encodeURIComponent(slug)}`;
+const urlDevis = (slug: string): string => adresseDocument("devis", slug);
 
 const textes = (tutoiement: boolean) =>
   tutoiement

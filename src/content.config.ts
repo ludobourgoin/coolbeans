@@ -125,6 +125,10 @@ const devis = defineCollection({
                    Sert un choix unique où le client part sur un autre pack
                    que celui que Ludo conseille. */
                 conseille: z.boolean().default(false),
+                /* Heures que la ligne apporte, sur un pack d'heures. Le portail
+                   en tire le total du pack choisi par le client, et la jauge
+                   des heures restantes de son projet. */
+                heures: z.number().int().positive().optional(),
               }),
             ),
             /* Les options s'excluent : le client en prend une seule, par
@@ -436,6 +440,11 @@ const clients = defineCollection({
        personne ne le voit — pas meme un admin, dont la portee est le registre
        entier mais dont le selecteur passe par l'organisation. */
     organisation: z.string(),
+    /* Clé client de la nomenclature des documents (lib/documents/nomenclature.ts) :
+       la clé de team Linear, en minuscules. Le projet d'un document donne la
+       clé, la clé donne le workspace. Absente, le workspace n'a aucun document
+       du cycle. Vérifiée au build par lib/documents/charger.ts. */
+    cle: z.string().regex(/^[a-z]{3}$/).optional(),
     // Prénom du contact principal : c'est lui que salue la topbar quand un
     // admin est basculé sur ce client (« vue client », retour du 2026-08-17).
     // Absent, la salutation retombe sur le nom du client.

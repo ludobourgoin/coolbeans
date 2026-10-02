@@ -13,6 +13,7 @@ import {
 } from "../../emails/transactionnel";
 import { REPONSES_LIVRABLE, estReponseLivrable } from "../../lib/livrable";
 import { documentClos, enregistrerReponseDocument } from "../../lib/documents/reponses";
+import { adresseDocument } from "../../lib/documents/adresse";
 
 export const prerender = false;
 
@@ -123,7 +124,7 @@ export const POST: APIRoute = async ({ request }) => {
         ? titreSection("Message") + citation(esc(messageClient).replace(/\n/g, "<br>"))
         : titreSection("Message") + p("(pas de message)"),
     ].join(""),
-    cta: { label: "Voir le livrable", url: `https://coolbeans.cc/livrable/${racine}` },
+    cta: { label: "Voir le livrable", url: adresseDocument("livrable", racine) },
     piedContexte: "R&eacute;ponse re&ccedil;ue via la page publique du livrable.",
   });
 

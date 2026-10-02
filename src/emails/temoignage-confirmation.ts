@@ -19,6 +19,7 @@
 
 import { citation, esc, p, qr, renderTransactionnel, titreSection } from "./transactionnel";
 import type { ReponseLisible } from "../lib/cadrage";
+import { adresseDocument } from "../lib/documents/adresse";
 
 export interface TemoignageConfirmationProps {
   slug: string;
@@ -37,9 +38,7 @@ export interface EmailPret {
   text: string;
 }
 
-/* Pas d'encodeURIComponent : le slug porte un slash de séparation
-   client / projet, que l'encodage transformerait en %2F. */
-const urlTemoignage = (slug: string): string => `https://coolbeans.cc/temoignage/${slug}`;
+const urlTemoignage = (slug: string): string => adresseDocument("temoignage", slug);
 
 const textes = (tutoiement: boolean) =>
   tutoiement

@@ -5,6 +5,7 @@
 nom: UnlockBreath
 # Revendeur auquel ce client se rattache (spec 2026-08-19 §3.1).
 organisation: coolbeans
+cle: unl
 prenom: Thierry
 # Emoji du sélecteur : le souffle, comme sur la carte CRM-24. La team Linear
 # n'en porte pas.

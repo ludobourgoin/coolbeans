@@ -11,11 +11,13 @@ export const prerender = false;
 
 import EspaceLayout from "../../layouts/EspaceLayout.astro";
 import Icon from "../../components/portail/Icon.astro";
+import { cheminProjet } from "../../lib/documents/projets-portail";
 import { prenomDe } from "../../lib/portail/comptes";
 import { getPortalContext } from "../../lib/portail/context";
 import { hrefOf, listDocEntries } from "../../lib/portail/doc";
 import { isAdmin } from "../../lib/portail/metadata";
 import { buildSidebar } from "../../lib/portail/nav";
+import { projetsDe } from "../../lib/portail/projets-courants";
 
 const { user, meta, client } = await getPortalContext(Astro);
 const admin = isAdmin(meta);
@@ -24,12 +26,18 @@ const admin = isAdmin(meta);
 // contact du client courant, pas Ludo.
 const prenom = admin && client ? (client.prenom ?? client.nom) : prenomDe(user?.name);
 
+// Les projets de la sous-team du workspace courant (spec 2026-09-30, barre
+// par workspace, §4), comme PortalLayout : les cartes de cette page suivent
+// la même liste que la barre.
+const projets = client ? await projetsDe(Astro, client) : [];
+
 const docEntries = await listDocEntries(client?.doc);
 const sections = buildSidebar(
   Astro.url.hostname,
   meta,
   client,
   docEntries.map((e) => ({ title: e.data.title, href: hrefOf(e) })),
+  projets.map((p) => ({ titre: p.titre, chemin: cheminProjet(p) })),
 );
 
 Astro.response.headers.set("Cache-Control", "no-store");
@@ -38,7 +46,7 @@ Astro.response.headers.set("Cache-Control", "no-store");
 <EspaceLayout title="Introduction">
   <h1>Bonjour{prenom ? ` ${prenom}` : ""}.</h1>
   <p class="sub">
-    Votre espace Coolbeans : tout ce qui touche à votre projet, au même endroit : documentation,
+    Votre espace Coolbeans : tout ce qui touche à votre projet, au même endroit : mode d'emploi,
     avancement, demandes et ressources.
   </p>
 

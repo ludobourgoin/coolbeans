@@ -19,6 +19,7 @@ import {
   type ReponseBrute,
 } from "../../lib/cadrage";
 import { documentClos, enregistrerReponseDocument } from "../../lib/documents/reponses";
+import { adresseDocument } from "../../lib/documents/adresse";
 
 export const prerender = false;
 
@@ -220,7 +221,7 @@ export const POST: APIRoute = async ({ request }) => {
     ].join(""),
     cta: {
       label: "Voir le document",
-      url: `https://coolbeans.cc/temoignage/${slug}`,
+      url: adresseDocument("temoignage", slug),
     },
     piedContexte: "R&eacute;ponses re&ccedil;ues via la page publique de t&eacute;moignage.",
   });

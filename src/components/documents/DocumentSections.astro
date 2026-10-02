@@ -49,9 +49,10 @@ const { sections } = Astro.props;
 <script>
   /* Deux comportements, sur toutes les barres de la page.
 
-     1. Un lien mène à la section du volet AFFICHÉ. Les volets d'un livrable à
-        deux versions portent les mêmes ancres : le navigateur irait à la
-        première du document, celle du volet masqué, et rien ne bougerait.
+     1. Un lien mène à la section visible. Les volets d'un livrable à deux
+        versions, et les étapes d'une page projet, portent les mêmes
+        ancres : le navigateur irait à la première, masquée, et rien ne
+        bougerait.
 
      2. Scrollspy : le lien de la section qui passe sous la barre s'allume.
         Une section d'un volet masqué ne coupe jamais le viewport, elle ne
@@ -59,9 +60,12 @@ const { sections } = Astro.props;
   const liens = document.querySelectorAll<HTMLAnchorElement>("[data-section-link]");
   const barres = document.querySelectorAll<HTMLElement>("[data-document-sections]");
 
+  /* La section visible qui porte cet id : les volets masqués, et sur la page
+     projet les étapes masquées, portent les mêmes ancres. */
   const cible = (id: string) =>
-    document.querySelector<HTMLElement>(`[data-document-volet]:not([hidden]) section[id="${CSS.escape(id)}"]`) ??
-    document.getElementById(id);
+    [...document.querySelectorAll<HTMLElement>(`section[id="${CSS.escape(id)}"]`)].find(
+      (s) => s.offsetParent !== null,
+    ) ?? document.getElementById(id);
 
   liens.forEach((lien) => {
     lien.addEventListener("click", (e) => {
@@ -77,7 +81,12 @@ const { sections } = Astro.props;
   const activer = (id: string) =>
     liens.forEach((l) => l.setAttribute("aria-current", l.getAttribute("href") === `#${id}` ? "true" : "false"));
 
-  const hauteurBarre = () => [...barres].find((b) => b.offsetParent !== null)?.offsetHeight ?? 0;
+  /* Bas de la barre une fois collée : sa hauteur, plus son `top`, qui vaut 0
+     en public et 56 px dans le portail (doc.css). */
+  const hauteurBarre = () => {
+    const barre = [...barres].find((b) => b.offsetParent !== null);
+    return barre ? barre.offsetHeight + parseFloat(getComputedStyle(barre).top || "0") : 0;
+  };
 
   const sections = document.querySelectorAll<HTMLElement>("section[id]");
   if (sections.length && liens.length) {

@@ -1,21 +1,10 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Banner from "../../components/ui/Banner.astro";
-import Tooltip from "../../components/ui/Tooltip.astro";
-import CadrageIntro from "../../components/cadrage/CadrageIntro.astro";
-import TemoignageCasClient from "../../components/temoignage/TemoignageCasClient.astro";
-import TemoignageFormulaire from "../../components/temoignage/TemoignageFormulaire.astro";
-import DevisFooter from "../../components/devis/DevisFooter.astro";
-import DocumentReponses from "../../components/devis/DocumentReponses.astro";
-import DocumentEntete from "../../components/documents/DocumentEntete.astro";
-import DocumentVolet from "../../components/documents/DocumentVolet.astro";
-import { riche, ancreSection } from "../../lib/devis";
+import PageTemoignage from "../../components/documents/pages/PageTemoignage.astro";
 import { construitesEnProduction } from "../../lib/documents/statut";
 import { chargerDocuments } from "../../lib/documents/charger";
 import { frise } from "../../lib/documents/frise";
-import { ligneDate, titreEntete } from "../../lib/documents/entete";
-import { sectionsTemoignage } from "../../lib/documents/sections";
 
 /* Une page de témoignage par fichier YAML, une URL par fichier. Pas de
    versions : contrairement au livrable, ce document ne se rejoue pas. Le
@@ -39,65 +28,5 @@ const d = entry.data;
 ---
 
 <BaseLayout title={`${d.titre} · Coolbeans`} description={`Témoignage et validation : ${d.objet}`} noindex>
-  <DocumentEntete etape={d.etape} titre={titreEntete(d)} frise={pastilles} onglets={[]} actif={0} />
-
-  <DocumentVolet
-    index={0}
-    actif={0}
-    total={1}
-    titre={d.titre}
-    objet={d.objet}
-    date={ligneDate({ date: d.date, version: 1 }, false, "Document")}
-    sections={sectionsTemoignage(d)}
-  >
-    <div class="container-site">
-      <div class="mx-auto max-w-[880px] py-16x">
-        <CadrageIntro sections={d.intro} />
-
-        {d.casClient && (
-          <TemoignageCasClient
-            titre={d.casClient.titre}
-            texte={d.casClient.texte}
-            slug={d.casClient.slug}
-            label={d.casClient.label}
-            fauxTexte={d.casClient.fauxTexte}
-            tutoiement={d.tutoiement}
-            ancre={ancreSection(d.casClient.titre)}
-          />
-        )}
-
-        {d.notes.length > 0 && (
-          <div class="mt-16x grid grid-cols-[180px_1fr] gap-10 border-t border-line pt-10 max-[700px]:grid-cols-1 max-[700px]:gap-4">
-            <p class="pt-1 font-mono text-[15px] font-extrabold tracking-wide text-ink uppercase">NB</p>
-            <div class="flex max-w-[58ch] flex-col gap-3">
-              {d.notes.map((note) => (
-                <Banner tone={note.tone}>
-                  <Fragment set:html={riche(note.texte)} />
-                  {note.tooltip && <Tooltip texte={note.tooltip} />}
-                </Banner>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  </DocumentVolet>
-
-  <DocumentReponses server:defer type="temoignage" versions={[{ slug: entry.id, version: 1 }]} tutoiement={d.tutoiement} />
-
-  {
-    /* Formulaire coupé une fois le témoignage reçu : la page devient une
-       trace, et rien n'invite à répondre deux fois. Même mécanique que le
-       livrable validé. */
-    d.formulaire && (
-      <TemoignageFormulaire
-        slug={entry.id}
-        questions={d.questions}
-        tutoiement={d.tutoiement}
-        photo={d.photo}
-      />
-    )
-  }
-
-  <DevisFooter />
+  <PageTemoignage versions={[entry]} pastilles={pastilles} contexte="public" />
 </BaseLayout>

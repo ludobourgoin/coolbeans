@@ -96,7 +96,7 @@ Fiches à créer, pour les clients de la nomenclature qui n'en ont pas :
 | uni | Université de Montpellier | coolbeans | tu | Mails à Isabelle Tournier, septembre 2026. Les documents vouvoient l'équipe du labo |
 | vic | Vice Versa | coolbeans | tu | 1 document, tutoyé |
 
-Organisations : `coolbeans`, tu. `trigger`, à trancher.
+Organisations : `coolbeans`, tu. `trigger`, tu.
 
 ## La création de fiche par les skills
 
