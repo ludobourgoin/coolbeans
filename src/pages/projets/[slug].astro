@@ -1,8 +1,6 @@
 ---
 import { getCollection, render } from "astro:content";
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import Nav from "../../components/Nav.astro";
-import Footer from "../../components/Footer.astro";
+import SiteLayout from "../../layouts/SiteLayout.astro";
 import GridBackdrop from "../../components/GridBackdrop.astro";
 import Browser from "../../components/Browser.astro";
 import CtaBand from "../../components/CtaBand.astro";
@@ -24,13 +22,11 @@ const { Content } = await render(entry);
 const domaine = p.url ? new URL(p.url).hostname.replace(/^www\./, "") : undefined;
 ---
 
-<BaseLayout
+<SiteLayout
   title={`${p.titre} · Coolbeans`}
   description={p.accroche}
   noindex={p.brouillon}
 >
-  <Nav />
-
   <!-- EN-TÊTE -->
   <header class="relative overflow-hidden bg-surface-subtle">
     <GridBackdrop />
@@ -239,9 +235,7 @@ const domaine = p.url ? new URL(p.url).hostname.replace(/^www\./, "") : undefine
     title="Envie d'un projet comme celui-là ?"
     text="Racontez-moi où vous en êtes, je vous dis franchement ce que je ferais à votre place."
   />
-
-  <Footer />
-</BaseLayout>
+</SiteLayout>
 
 <style>
   /* Typo du corps Markdown : le HTML rendu par <Content /> échappe aux

@@ -1,7 +1,5 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Nav from "../components/Nav.astro";
-import Footer from "../components/Footer.astro";
+import SiteLayout from "../layouts/SiteLayout.astro";
 import { toolCategories } from "../data/tools";
 
 const toolCount = toolCategories.reduce((n, cat) => n + cat.cards.length, 0);
@@ -12,12 +10,10 @@ const groups = [
 ];
 ---
 
-<BaseLayout
+<SiteLayout
   title="Boîte à outils · Coolbeans"
   description="Les outils qui font tourner les projets Coolbeans, du framework au terminal de paiement : testés en production, recommandés les yeux fermés."
 >
-  <Nav />
-
   <section class="border-b border-line">
     <div class="container-site pt-20 pb-12 text-center">
       <h1>Boîte à outils.</h1>
@@ -94,6 +90,4 @@ const groups = [
       }
     </div>
   </div>
-
-  <Footer />
-</BaseLayout>
+</SiteLayout>

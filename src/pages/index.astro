@@ -1,7 +1,5 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Nav from "../components/Nav.astro";
-import Footer from "../components/Footer.astro";
+import SiteLayout from "../layouts/SiteLayout.astro";
 import CtaBand from "../components/CtaBand.astro";
 import Flow from "../components/Flow.astro";
 import Browser from "../components/Browser.astro";
@@ -59,12 +57,10 @@ const caseColSpan = (span: string) =>
       : "col-span-4";
 ---
 
-<BaseLayout
+<SiteLayout
   title="Coolbeans : stratégie, design et développement web"
   description="Coolbeans, studio web. Stratégie, design, développement : des sites qui convertissent et qui durent. 40+ projets livrés depuis 2018."
 >
-  <Nav />
-
   <!-- HERO centré + flux -->
   <section
     class="relative flex flex-col gap-10 overflow-hidden border-b border-line bg-surface-subtle pt-14 pb-10"
@@ -338,6 +334,4 @@ const caseColSpan = (span: string) =>
     secondaryLabel="Voir la boîte à outils"
     secondaryHref="/tools"
   />
-
-  <Footer />
-</BaseLayout>
+</SiteLayout>

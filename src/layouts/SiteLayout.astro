@@ -1,0 +1,29 @@
+---
+// Coquille des pages vitrine : Nav, contenu, Footer.
+//
+// Sticky footer : le body fait au moins la hauteur de l'écran et le <main>
+// prend l'espace restant. Sur une page courte (contact, 404), le footer reste
+// collé en bas au lieu de remonter et de laisser une bande vide dessous.
+// Posé sur le body, pas sur un wrapper : l'EnvBanner du staging entre dans
+// la colonne au lieu de s'ajouter à la hauteur et de forcer un défilement.
+import BaseLayout from "./BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+  image?: string;
+}
+
+const props = Astro.props;
+---
+
+<BaseLayout {...props} bodyClass="flex min-h-dvh flex-col">
+  <Nav />
+  <main class="flex-1">
+    <slot />
+  </main>
+  <Footer />
+</BaseLayout>
