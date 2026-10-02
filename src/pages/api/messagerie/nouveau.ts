@@ -21,6 +21,7 @@ import { LUDO_LINEAR_USER_ID, createSupportTicket } from "../../../lib/portail/l
 import { isAdmin } from "../../../lib/portail/metadata";
 import { cleR2, validerFichiers } from "../../../lib/portail/messagerie/fichiers";
 import { prioriteFromUrgence } from "../../../lib/portail/messagerie/regles";
+import { pronomDuPortail } from "../../../lib/portail/pronom";
 import {
   ajouterMessage,
   ajouterPieceJointe,
@@ -273,6 +274,7 @@ export const POST: APIRoute = async (context) => {
         objet,
         description,
         prenom: prenomEmail,
+        tutoiement: (await pronomDuPortail(meta)) === "tu",
       });
       const { error: erreurConfirmation } = await resend.emails.send({
         from: "Ludo de Coolbeans <support@coolbeans.cc>",

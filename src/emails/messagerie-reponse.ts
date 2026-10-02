@@ -13,19 +13,24 @@ export function renderReponseMessagerie(props: {
   corps: string;
   prenom?: string;
   urlTicket: string;
+  /** Pronom du destinataire (src/lib/portail/pronom.ts). Vous par défaut. */
+  tutoiement?: boolean;
 }): EmailPret {
+  const tu = props.tutoiement ?? false;
   const bonjour = props.prenom ? `Bonjour ${esc(props.prenom)},` : "Bonjour,";
   const html = renderTransactionnel({
     preheader: props.corps.slice(0, 120),
-    kicker: "Votre demande",
+    kicker: tu ? "Ta demande" : "Votre demande",
     titre: `Re : ${esc(props.objet)}`,
     contenu: [
       p(bonjour),
       citation(esc(props.corps).replace(/\n/g, "<br>")),
-      p("Vous pouvez r&eacute;pondre directement depuis votre espace."),
+      p(tu ? "Tu peux r&eacute;pondre directement depuis ton espace." : "Vous pouvez r&eacute;pondre directement depuis votre espace."),
     ].join(""),
     cta: { label: "Répondre sur le portail", url: props.urlTicket },
-    piedContexte: "Vous recevez cet email car un ticket vous concerne sur my.coolbeans.cc.",
+    piedContexte: tu
+      ? "Tu re&ccedil;ois cet email car un ticket te concerne sur my.coolbeans.cc."
+      : "Vous recevez cet email car un ticket vous concerne sur my.coolbeans.cc.",
   });
   return {
     subject: `Re : ${props.objet}`,
