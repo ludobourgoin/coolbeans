@@ -5,6 +5,7 @@
 nom: Fylgo
 # Revendeur auquel ce client se rattache (spec 2026-08-19 §3.1).
 organisation: coolbeans
+tutoiement: false
 cle: fyl
 # Fabien (fabien.vp@fylgodrinks.com) est le contact client. Paul Lévy portait
 # les échanges au démarrage depuis son adresse Talenvia — c'est lui qui a reçu

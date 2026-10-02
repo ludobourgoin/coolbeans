@@ -2,6 +2,7 @@ nom: Oïde
 # Client direct : Margaux Billet (Studio Caperky) est la designer du projet,
 # pas un revendeur — la facturation va à Oïde (3BNBW - OÏDE).
 organisation: coolbeans
+tutoiement: false
 cle: oid
 prenom: Clément
 # Emoji du sélecteur, repris de l'icône de la team Linear Oïde (:shorts:).

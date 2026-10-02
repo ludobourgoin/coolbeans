@@ -1,6 +1,7 @@
 nom: LittleBox
 # Client direct, pas de revendeur (spec 2026-08-19 §3.1).
 organisation: coolbeans
+tutoiement: true
 cle: lit
 prenom: Philippe
 # Emoji du sélecteur (repris de l'icône de la team Linear) et début de la
