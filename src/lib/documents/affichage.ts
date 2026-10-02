@@ -148,3 +148,19 @@ export function selecteurFormulaire(
   const etape = prefixe.replace(/-$/, "");
   return etape ? `[data-etape-volet="${etape}"] ${base}` : base;
 }
+
+/**
+ * Ce que la page montre : soit le formulaire, soit la réponse, jamais les deux
+ * (règle de Ludo du 2026-10-02, qui remplace la décision 4 de la spec du
+ * 2026-09-29). Seules comptent les réponses à la version courante, celle qui
+ * engage : la validation d'une V1 ne s'affiche pas au-dessus du formulaire de
+ * la V2. Dès que la version courante a une réponse, question comprise, le
+ * formulaire disparaît.
+ */
+export function reponsesAffichees<R extends { slug: string }>(
+  reponses: readonly R[],
+  courant: string | undefined,
+): { reponses: R[]; formulaireMasque: boolean } {
+  const retenues = courant ? reponses.filter((r) => r.slug === courant) : [];
+  return { reponses: retenues, formulaireMasque: retenues.length > 0 };
+}

@@ -1,6 +1,8 @@
 ---
 /* Réponses reçues par un document, affichées à la place de son formulaire
-   (spec 2026-09-29-reponses-dans-les-documents-design.md).
+   (spec 2026-09-29-reponses-dans-les-documents-design.md). Soit le formulaire,
+   soit la réponse à la version courante, jamais les deux : voir
+   reponsesAffichees (lib/documents/affichage).
 
    Toujours posé en `server:defer` : les quatre pages de documents sont
    prérendues, et ce bloc seul doit interroger D1 à chaque visite. Il se place
@@ -15,15 +17,16 @@
    les libellés des champs, que la page biffe. Voir lib/documents/affichage. */
 import { getEntry } from "astro:content";
 import { riche } from "../../lib/devis";
-import { devisClos, reponsesDesVersions } from "../../lib/devis/reponses";
+import { reponsesDesVersions } from "../../lib/devis/reponses";
 import {
   afficherReponseDevis,
   afficherReponseDocument,
   perimetreDevis,
+  reponsesAffichees,
   selecteurFormulaire,
   type ReponseAffichee,
 } from "../../lib/documents/affichage";
-import { estDefinitive, reponsesDuDocument } from "../../lib/documents/reponses";
+import { reponsesDuDocument } from "../../lib/documents/reponses";
 
 interface Props {
   type: "cadrage" | "devis" | "livrable" | "temoignage";
@@ -49,19 +52,19 @@ let affichees: ReponseAffichee[] = [];
 let clos = false;
 try {
   if (type === "devis") {
-    const rs = await reponsesDesVersions(slugs);
+    const { reponses, formulaireMasque } = reponsesAffichees(await reponsesDesVersions(slugs), courant);
     affichees = await Promise.all(
-      rs.map(async (r) => {
+      reponses.map(async (r) => {
         const entree = r.optionsRetenues ? await getEntry("devis", r.slug) : undefined;
         const perimetre = entree && perimetreDevis(entree.data, r.optionsRetenues, r.montantRetenu);
         return afficherReponseDevis(r, perimetre, numero(r.slug));
       }),
     );
-    clos = courant ? await devisClos(courant) : false;
+    clos = formulaireMasque;
   } else {
-    const rs = await reponsesDuDocument(type, slugs);
-    affichees = rs.map((r) => afficherReponseDocument(r, numero(r.slug)));
-    clos = rs.some((r) => r.slug === courant && estDefinitive(r.decision));
+    const { reponses, formulaireMasque } = reponsesAffichees(await reponsesDuDocument(type, slugs), courant);
+    affichees = reponses.map((r) => afficherReponseDocument(r, numero(r.slug)));
+    clos = formulaireMasque;
   }
 } catch (err) {
   /* Base injoignable : le bloc ne s'affiche pas et le formulaire reste. Le
