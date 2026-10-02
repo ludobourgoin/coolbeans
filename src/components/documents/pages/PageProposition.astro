@@ -99,6 +99,7 @@ const reference = versions[0].id.split("-").pop();
   type="devis"
   versions={versions.map((v) => ({ slug: v.id, version: v.data.version }))}
   prefixe={prefixe}
+  tutoiement={courante.tutoiement}
 />
 
 {
@@ -106,6 +107,7 @@ const reference = versions[0].id.split("-").pop();
     <DevisReponse
       slug={versions[ouvert].id}
       enAttente={courante.sections.some((s) => s.budget?.enAttente)}
+      tutoiement={courante.tutoiement}
     />
   )
 }

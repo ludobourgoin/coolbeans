@@ -10,8 +10,34 @@ interface Props {
      sans prix ferait signer un engagement vide : le formulaire se replie sur
      la seule réponse qui ait du sens, et les champs de facturation avec. */
   enAttente?: boolean;
+  /** Bascule les phrases du composant qui portent un pronom. Cf. content.config.ts. */
+  tutoiement?: boolean;
 }
-const { slug, enAttente = false } = Astro.props;
+const { slug, enAttente = false, tutoiement = false } = Astro.props;
+
+/* Les seules phrases du composant qui changent selon le pronom, comme dans
+   CadrageFormulaire. Le reste est neutre ou à la première personne. */
+const t = tutoiement
+  ? {
+      accroche: "Valide la proposition ou pose tes questions, je reviens vers toi rapidement.",
+      precision: "Précise-la dans le message ci-dessous.",
+      prenom: "Ton prénom",
+      nom: "Ton nom",
+      email: "toi@entreprise.com",
+      envoye: "Message envoyé, tu reçois une confirmation par email à l'instant.",
+      perdues: "Tes réponses ne sont pas perdues",
+      renvoi: "envoie-les-moi par e-mail",
+    }
+  : {
+      accroche: "Validez la proposition ou posez vos questions, je reviens vers vous rapidement.",
+      precision: "Précisez-la dans le message ci-dessous.",
+      prenom: "Votre prénom",
+      nom: "Votre nom",
+      email: "vous@entreprise.com",
+      envoye: "Message envoyé, vous recevez une confirmation par email à l'instant.",
+      perdues: "Vos réponses ne sont pas perdues",
+      renvoi: "envoyez-les-moi par e-mail",
+    };
 ---
 
 <!-- RÉPONSE -->
@@ -34,7 +60,7 @@ const { slug, enAttente = false } = Astro.props;
           {
             enAttente
               ? "Réponses, remarques, questions : tout arrive directement dans ma boîte mail."
-              : "Validez la proposition ou posez vos questions, je reviens vers vous rapidement."
+              : t.accroche
           }
         </p>
         <form
@@ -43,6 +69,7 @@ const { slug, enAttente = false } = Astro.props;
           data-slug={slug}
           data-suit-onglet
           data-carte
+          data-textes={JSON.stringify({ envoye: t.envoye, perdues: t.perdues, renvoi: t.renvoi })}
         >
           {
             enAttente ? (
@@ -60,7 +87,7 @@ const { slug, enAttente = false } = Astro.props;
                   {
                     value: "question",
                     title: "J'ai une question ou une remarque",
-                    hint: "Précisez-la dans le message ci-dessous.",
+                    hint: t.precision,
                   },
                 ]}
               />
@@ -78,7 +105,7 @@ const { slug, enAttente = false } = Astro.props;
                 id="devis-prenom"
                 name="prenom"
                 autocomplete="given-name"
-                placeholder="Votre prénom"
+                placeholder={t.prenom}
                 required
               />
             </div>
@@ -92,7 +119,7 @@ const { slug, enAttente = false } = Astro.props;
                 id="devis-nom"
                 name="nom"
                 autocomplete="family-name"
-                placeholder="Votre nom"
+                placeholder={t.nom}
                 required
               />
             </div>
@@ -107,7 +134,7 @@ const { slug, enAttente = false } = Astro.props;
               id="devis-email"
               name="email"
               autocomplete="email"
-              placeholder="vous@entreprise.com"
+              placeholder={t.email}
               required
             />
           </div>
@@ -215,6 +242,10 @@ const { slug, enAttente = false } = Astro.props;
   const form = document.querySelector<HTMLFormElement>("#devis-form");
   const status = form?.querySelector<HTMLParagraphElement>("[data-devis-form-status]");
   const facturationFields = form?.querySelector<HTMLElement>("[data-facturation-fields]");
+  /* Phrases au pronom du document, posées côté serveur (cf. `t` plus haut). */
+  const textes: { envoye: string; perdues: string; renvoi: string } = JSON.parse(
+    form?.dataset.textes ?? "{}",
+  );
 
   const syncFacturationFields = () => {
     if (!form || !facturationFields) return;
@@ -314,7 +345,7 @@ const { slug, enAttente = false } = Astro.props;
         return;
       }
       if (!res.ok) throw new Error();
-      status.textContent = "Message envoyé, vous recevez une confirmation par email à l'instant.";
+      status.textContent = textes.envoye;
       status.className = "text-center text-[13px] font-medium text-success";
       form.reset();
       syncFacturationFields(); // reset() remet la case "validation" : réaffiche la facturation
@@ -354,8 +385,8 @@ const { slug, enAttente = false } = Astro.props;
         `&body=${encodeURIComponent(corps)}`;
 
       status.innerHTML =
-        "L'envoi automatique n'a pas abouti. Vos réponses ne sont pas perdues : " +
-        `<a class="link" href="${lien}">envoyez-les-moi par e-mail</a>, ` +
+        `L'envoi automatique n'a pas abouti. ${textes.perdues} : ` +
+        `<a class="link" href="${lien}">${textes.renvoi}</a>, ` +
         "le message est déjà prêt.";
       status.className = "text-center text-[13px] font-medium text-error";
     } finally {

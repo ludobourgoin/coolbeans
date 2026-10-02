@@ -53,6 +53,10 @@ const devis = defineCollection({
     // Prénom du contact côté client, affiché sur les jalons de planning
     // attribués à "client" (owner: client). Chaque devis a son propre client.
     contact: z.string().optional(),
+    /* Le formulaire de réponse et l'accusé de réception vouvoient par défaut.
+       Sur une proposition qui tutoie, ce mélange se lit comme deux
+       interlocuteurs : le drapeau bascule leurs phrases au « tu ». */
+    tutoiement: z.boolean().default(false),
     // Formulaire de validation masqué sur les devis déjà signés : la page
     // sert alors de feuille de route, pas d'une proposition à valider.
     formulaire: z.boolean().default(true),

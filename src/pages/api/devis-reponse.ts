@@ -338,6 +338,7 @@ export const POST: APIRoute = async ({ request }) => {
       siren: champ(siren),
       adresse: champ(adresse),
       tva: champ(tva),
+      tutoiement: devis?.data.tutoiement,
     });
 
     const { error: erreurConfirmation } = await resend.emails.send({
