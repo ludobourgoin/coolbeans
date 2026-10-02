@@ -19,6 +19,7 @@ import type { APIRoute } from "astro";
 import { getPortalContext } from "../../../lib/portail/context";
 import { WORKSPACE_COOKIE } from "../../../lib/portail/current-workspace";
 import { isAdmin } from "../../../lib/portail/metadata";
+import { portalHref } from "../../../lib/portail/nav";
 import { getWorkspace } from "../../../lib/portail/workspaces";
 
 export const prerender = false;
@@ -45,5 +46,10 @@ export const GET: APIRoute = async (context) => {
   // L'accueil du workspace, jamais la page d'où l'on vient : le Stream Deck
   // n'a pas de page d'origine, et revenir sur une page de doc relancerait la
   // règle « l'URL gagne » de la route de doc, qui réécrirait le cookie.
-  return context.redirect("/espace", 302);
+  //
+  // portalHref et non "/espace" en dur : sur my.coolbeans.cc le portail est à
+  // la racine, et le worker renvoie /espace/... en 301 vers la forme sans
+  // préfixe. Un chemin codé en dur marcherait, au prix d'un aller-retour
+  // inutile et d'une URL non canonique dans la barre d'adresse.
+  return context.redirect(portalHref("/", context.url.hostname), 302);
 };
