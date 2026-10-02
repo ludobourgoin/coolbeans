@@ -123,43 +123,36 @@ questions:
   - id: budget
     label: Quel ordre de grandeur peux-tu y consacrer ?
     aide: >-
-      Réponds franchement, y compris "je ne sais pas". Ça sert à ne pas te
-      proposer quelque chose que tu ne prendras pas.
+      Ça décide aussi qui écrit le texte de la page. En dessous d'un certain
+      budget, tu m'envoies ton texte final tel qu'il doit apparaître, et je
+      le mets en ligne tel quel, sans le retravailler. Au-dessus, c'est moi
+      qui l'écris, à partir de tes réponses à quelques questions sur le
+      livre : un texte pensé pour donner envie d'acheter, pas juste posé sur
+      la page. Réponds franchement, y compris "je ne sais pas".
     type: choix
     decisif: true
     requis: true
     options:
-      - valeur: sous-300
-        label: Moins de 300 €
-      - valeur: 300-600
-        label: De 300 à 600 €
-      - valeur: plus-600
-        label: Plus de 600 €
+      - valeur: sous-400
+        label: Moins de 400 €
+        aide: >-
+          La mise en place technique. Tu m'envoies ton texte final, je le
+          mets en ligne sans l'optimiser.
+      - valeur: 500-900
+        label: De 500 à 900 €
+        aide: >-
+          La technique, plus un texte et une mise en page pensés pour
+          convertir, à partir de tes réponses à quelques questions sur le
+          livre.
+      - valeur: plus-900
+        label: Plus de 900 €
+        aide: >-
+          Une page ultra-optimisée, pensée comme une vraie machine à
+          vendre : tous les ingrédients de conversion, des témoignages de
+          lecteurs avec avis en étoiles, un visuel sur mesure, et plusieurs
+          itérations sur le texte jusqu'à ce qu'il te convienne.
       - valeur: inconnu
         label: Je ne sais pas encore
-
-  - id: process-contenu
-    label: >-
-      Pour le texte de la page, ça te va qu'on fonctionne comme ça : tu
-      m'envoies le sujet, à qui il s'adresse, pourquoi tu l'as écrit et le
-      prix, et je t'écris un texte qui donne envie de l'acheter ?
-    type: choix
-    requis: true
-    options:
-      - valeur: oui
-        label: Oui, ça me va
-      - valeur: on-en-discute
-        label: J'aimerais qu'on en discute avant
-
-  - id: infos-livre
-    label: Si oui, dis-m'en un peu plus sur ton livre
-    aide: >-
-      Le sujet en une phrase, à qui il s'adresse, pourquoi tu l'as écrit, et
-      le prix que tu envisages. Dis-moi aussi si tu as déjà une image de
-      couverture ou d'autres visuels à me transmettre.
-    type: texte
-    long: true
-    placeholder: Sujet, cible, pourquoi ce livre, prix envisagé, visuels disponibles...
 
 notes:
   - tone: info

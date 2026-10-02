@@ -1,19 +1,15 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Nav from "../components/Nav.astro";
-import Footer from "../components/Footer.astro";
+import SiteLayout from "../layouts/SiteLayout.astro";
 import CtaBand from "../components/CtaBand.astro";
 import LogoMarquee from "../components/LogoMarquee.astro";
 import GridBackdrop from "../components/GridBackdrop.astro";
 import { proofPrimary, proofSecondary } from "../data/logos";
 ---
 
-<BaseLayout
+<SiteLayout
   title="À propos · Coolbeans, studio web par Ludovic Bourgoin"
   description="Ludovic Bourgoin a créé Coolbeans après un double master en marketing et communication, puis une formation au développement. Stratégie, design et code réunis."
 >
-  <Nav />
-
   <!-- HERO -->
   <section class="relative overflow-hidden bg-surface-subtle">
     <GridBackdrop />
@@ -260,6 +256,4 @@ import { proofPrimary, proofSecondary } from "../data/logos";
     secondaryLabel="Voir la boîte à outils"
     secondaryHref="/tools"
   />
-
-  <Footer />
-</BaseLayout>
+</SiteLayout>
