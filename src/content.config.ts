@@ -53,10 +53,9 @@ const devis = defineCollection({
     // Prénom du contact côté client, affiché sur les jalons de planning
     // attribués à "client" (owner: client). Chaque devis a son propre client.
     contact: z.string().optional(),
-    /* Le formulaire de réponse et l'accusé de réception vouvoient par défaut.
-       Sur une proposition qui tutoie, ce mélange se lit comme deux
-       interlocuteurs : le drapeau bascule leurs phrases au « tu ». */
-    tutoiement: z.boolean().default(false),
+    /* Surcharge le pronom de la fiche client (src/lib/documents/pronom.ts).
+       Absente, le document hérite de sa racine, puis de sa fiche. */
+    tutoiement: z.boolean().optional(),
     // Formulaire de validation masqué sur les devis déjà signés : la page
     // sert alors de feuille de route, pas d'une proposition à valider.
     formulaire: z.boolean().default(true),
@@ -250,7 +249,9 @@ const livrable = defineCollection({
     date: z.coerce.date(),
     ...identiteDocument("livraison"),
     contact: z.string().optional(),
-    tutoiement: z.boolean().default(false),
+    /* Surcharge le pronom de la fiche client (src/lib/documents/pronom.ts).
+       Absente, le document hérite de sa racine, puis de sa fiche. */
+    tutoiement: z.boolean().optional(),
     version: z.number().int().min(1).default(1),
     versionDe: z.string().optional(),
     envoi: z.object({ date: z.coerce.date(), destinataire: z.string() }).optional(),
@@ -449,6 +450,9 @@ const clients = defineCollection({
     // admin est basculé sur ce client (« vue client », retour du 2026-08-17).
     // Absent, la salutation retombe sur le nom du client.
     prenom: z.string().optional(),
+    // Le tu ou le vous, pour tout ce qui s'adresse à ce client : documents,
+    // portail, mails (spec 2026-10-02). Obligatoire, sans défaut.
+    tutoiement: z.boolean(),
     doc: z.string().optional(),
     // UUID de la team Linear du client : le formulaire support y crée ses
     // tickets. Absent = module Support en empty state (COO-30).
@@ -498,6 +502,9 @@ const organisations = defineCollection({
   loader: glob({ pattern: "*.yaml", base: "./src/content/organisations" }),
   schema: z.object({
     nom: z.string(),
+    // Le pronom des comptes revendeur et des propositions qui leur sont
+    // adressées (spec 2026-10-02). Obligatoire, sans défaut.
+    tutoiement: z.boolean(),
   }),
 });
 
@@ -536,13 +543,9 @@ const cadrage = defineCollection({
     versionDe: z.string().optional(),
     // Prénom du destinataire : ouvre l'accusé de réception, comme au devis.
     contact: z.string().optional(),
-    /* Le formulaire vouvoie par défaut, parce qu'il est partagé par tous les
-       clients. Sur un document dont les questions tutoient, ce mélange se lit
-       à deux lignes d'écart : « Vos réponses » posé au-dessus de « Tes 1 500 à
-       2 000 € ». Le drapeau bascule les seules phrases du composant qui portent
-       un pronom ; les libellés, eux, viennent déjà du YAML. Relevé par Ludo le
-       2026-09-10 sur le cadrage Sérial'Générations. */
-    tutoiement: z.boolean().default(false),
+    /* Surcharge le pronom de la fiche client (src/lib/documents/pronom.ts).
+       Absente, le document hérite de sa racine, puis de sa fiche. */
+    tutoiement: z.boolean().optional(),
     linear: z
       .object({
         projet: z.string().optional(),
@@ -722,7 +725,9 @@ const temoignage = defineCollection({
     date: z.coerce.date(),
     ...identiteDocument("suivi"),
     contact: z.string().optional(),
-    tutoiement: z.boolean().default(false),
+    /* Surcharge le pronom de la fiche client (src/lib/documents/pronom.ts).
+       Absente, le document hérite de sa racine, puis de sa fiche. */
+    tutoiement: z.boolean().optional(),
     linear: z.object({ projet: z.string().optional(), affaire: z.string().optional() }).optional(),
     /* Masque le formulaire une fois le témoignage reçu : la page devient une
        trace, même mécanique que le livrable validé. */

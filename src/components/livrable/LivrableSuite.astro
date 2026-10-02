@@ -18,7 +18,8 @@ interface Props {
   contact?: string;
 }
 const { aVerifier = [], aVerifierTitre, suite = [], suiteTitre, contact } = Astro.props;
-const libelle = { coolbeans: "Ludo", client: contact ?? "Vous" } as const;
+// Sans prénom, l'étape du client se libelle « Client », comme au planning du devis.
+const libelle = { coolbeans: "Ludo", client: contact ?? "Client" } as const;
 ---
 
 {

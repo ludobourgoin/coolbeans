@@ -30,46 +30,83 @@ export interface EmailPret {
    un domaine non authentifié part en spam sans erreur visible. */
 const EXPEDITEUR = "Coolbeans <support@coolbeans.cc>";
 
-const PIED = "Email automatique de votre espace my.coolbeans.cc.";
+const textes = (tutoiement: boolean) =>
+  tutoiement
+    ? {
+        pied: "Email automatique de ton espace my.coolbeans.cc.",
+        enClair: "Si le bouton ne fonctionne pas, copie cette adresse dans ton navigateur&nbsp;:",
+        lien: {
+          preheader: "Ton lien de connexion à myCoolbeans, valable quelques minutes.",
+          titre: "Ton lien de connexion",
+          corps: "Voici ton lien de connexion à ton espace. Il est valable quelques minutes et ne fonctionne qu'une fois.",
+          pasMoi: "Tu n'as pas demandé cette connexion&nbsp;? Ignore cet email, rien ne se passera.",
+          pasMoiTexte: "Tu n'as pas demandé cette connexion ? Ignore cet email, rien ne se passera.",
+          objet: "Ton lien de connexion à myCoolbeans",
+        },
+        invitation: {
+          de: (inviteur?: string) => (inviteur ? `${inviteur} t'ouvre` : "Nous t'ouvrons"),
+          preheader: (organisation: string) => `Ton accès à l'espace ${organisation} est prêt.`,
+          titre: "Ton espace t'attend",
+          suite: "la documentation de ton projet, son suivi et tes demandes, au même endroit.",
+          section: "Ce que tu y trouveras",
+          contenu: "La doc de ton projet, l'état de ce qui est en cours, et de quoi me joindre sans passer par le mail.",
+          objet: (organisation: string) => `Ton accès à ${organisation} sur myCoolbeans`,
+        },
+        reinit: {
+          preheader: "Choisis un nouveau mot de passe pour ton espace.",
+          corps: "Tu as demandé à réinitialiser le mot de passe de ton espace. Ce lien est valable une heure.",
+          pasMoi: "Tu n'es pas à l'origine de cette demande&nbsp;? Ignore cet email&nbsp;: ton mot de passe actuel reste valable.",
+          pasMoiTexte: "Tu n'es pas à l'origine de cette demande ? Ignore cet email : ton mot de passe actuel reste valable.",
+          objet: "Réinitialiser ton mot de passe myCoolbeans",
+        },
+      }
+    : {
+        pied: "Email automatique de votre espace my.coolbeans.cc.",
+        enClair: "Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur&nbsp;:",
+        lien: {
+          preheader: "Votre lien de connexion à myCoolbeans, valable quelques minutes.",
+          titre: "Votre lien de connexion",
+          corps: "Voici votre lien de connexion à votre espace. Il est valable quelques minutes et ne fonctionne qu'une fois.",
+          pasMoi: "Vous n'avez pas demandé cette connexion&nbsp;? Ignorez cet email, rien ne se passera.",
+          pasMoiTexte: "Vous n'avez pas demandé cette connexion ? Ignorez cet email, rien ne se passera.",
+          objet: "Votre lien de connexion à myCoolbeans",
+        },
+        invitation: {
+          de: (inviteur?: string) => (inviteur ? `${inviteur} vous ouvre` : "Nous vous ouvrons"),
+          preheader: (organisation: string) => `Votre accès à l'espace ${organisation} est prêt.`,
+          titre: "Votre espace vous attend",
+          suite: "la documentation de votre projet, son suivi et vos demandes, au même endroit.",
+          section: "Ce que vous y trouverez",
+          contenu: "La doc de votre projet, l'état de ce qui est en cours, et de quoi me joindre sans passer par le mail.",
+          objet: (organisation: string) => `Votre accès à ${organisation} sur myCoolbeans`,
+        },
+        reinit: {
+          preheader: "Choisissez un nouveau mot de passe pour votre espace.",
+          corps: "Vous avez demandé à réinitialiser le mot de passe de votre espace. Ce lien est valable une heure.",
+          pasMoi: "Vous n'êtes pas à l'origine de cette demande&nbsp;? Ignorez cet email&nbsp;: votre mot de passe actuel reste valable.",
+          pasMoiTexte: "Vous n'êtes pas à l'origine de cette demande ? Ignorez cet email : votre mot de passe actuel reste valable.",
+          objet: "Réinitialiser votre mot de passe myCoolbeans",
+        },
+      };
 
 /** Le lien en toutes lettres, sous le bouton, dans une taille discrète. */
-function urlEnClair(url: string): string {
-  return p(
-    `<span style="font-size:13px;">Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur&nbsp;:<br>${lien(esc(url), url)}</span>`,
-  );
+function urlEnClair(url: string, enClair: string): string {
+  return p(`<span style="font-size:13px;">${enClair}<br>${lien(esc(url), url)}</span>`);
 }
 
 /** Connexion par lien magique : pas de mot de passe à retenir. */
-export function renderLienMagique({ url }: { url: string }): EmailPret {
+export function renderLienMagique({ url, tutoiement = false }: { url: string; tutoiement?: boolean }): EmailPret {
+  const t = textes(tutoiement);
   const html = renderTransactionnel({
-    preheader: "Votre lien de connexion à myCoolbeans, valable quelques minutes.",
+    preheader: t.lien.preheader,
     kicker: "Connexion · myCoolbeans",
-    titre: "Votre lien de connexion",
-    contenu: [
-      p("Bonjour,"),
-      p(
-        "Voici votre lien de connexion à votre espace. Il est valable quelques minutes et ne fonctionne qu'une fois.",
-      ),
-      urlEnClair(url),
-      p(
-        "Vous n'avez pas demandé cette connexion&nbsp;? Ignorez cet email, rien ne se passera.",
-      ),
-    ].join(""),
+    titre: t.lien.titre,
+    contenu: [p("Bonjour,"), p(t.lien.corps), urlEnClair(url, t.enClair), p(t.lien.pasMoi)].join(""),
     cta: { label: "Me connecter", url },
-    piedContexte: PIED,
+    piedContexte: t.pied,
   });
-
-  const text = [
-    "Bonjour,",
-    "",
-    "Voici votre lien de connexion à votre espace. Il est valable quelques minutes et ne fonctionne qu'une fois.",
-    "",
-    url,
-    "",
-    "Vous n'avez pas demandé cette connexion ? Ignorez cet email, rien ne se passera.",
-  ].join("\n");
-
-  return { subject: "Votre lien de connexion à myCoolbeans", html, text };
+  const text = ["Bonjour,", "", t.lien.corps, "", url, "", t.lien.pasMoiTexte].join("\n");
+  return { subject: t.lien.objet, html, text };
 }
 
 /** Ouverture d'un accès : quelqu'un est invité dans un espace. */
@@ -77,79 +114,64 @@ export function renderInvitation({
   url,
   organisation,
   inviteur,
+  tutoiement = false,
 }: {
   url: string;
   organisation: string;
   inviteur?: string;
+  tutoiement?: boolean;
 }): EmailPret {
-  const de = inviteur ? `${inviteur} vous ouvre` : "Nous vous ouvrons";
-
+  const t = textes(tutoiement);
+  const de = t.invitation.de(inviteur);
   const html = renderTransactionnel({
-    preheader: `Votre accès à l'espace ${organisation} est prêt.`,
+    preheader: t.invitation.preheader(organisation),
     kicker: "Invitation · myCoolbeans",
-    titre: "Votre espace vous attend",
+    titre: t.invitation.titre,
     contenu: [
       p("Bonjour,"),
-      p(
-        `${esc(de)} un accès à <strong>${esc(organisation)}</strong> sur myCoolbeans&nbsp;: la documentation de votre projet, son suivi et vos demandes, au même endroit.`,
-      ),
-      titreSection("Ce que vous y trouverez"),
-      p(
-        "La doc de votre projet, l'état de ce qui est en cours, et de quoi me joindre sans passer par le mail.",
-      ),
-      urlEnClair(url),
+      p(`${esc(de)} un accès à <strong>${esc(organisation)}</strong> sur myCoolbeans&nbsp;: ${t.invitation.suite}`),
+      titreSection(t.invitation.section),
+      p(t.invitation.contenu),
+      urlEnClair(url, t.enClair),
     ].join(""),
     cta: { label: "Ouvrir mon espace", url },
-    piedContexte: PIED,
+    piedContexte: t.pied,
   });
-
   const text = [
     "Bonjour,",
     "",
-    `${de} un accès à ${organisation} sur myCoolbeans : la documentation de votre projet, son suivi et vos demandes, au même endroit.`,
+    `${de} un accès à ${organisation} sur myCoolbeans : ${t.invitation.suite}`,
     "",
     url,
     "",
     "À très vite,",
     "Ludo",
   ].join("\n");
-
-  return { subject: `Votre accès à ${organisation} sur myCoolbeans`, html, text };
+  return { subject: t.invitation.objet(organisation), html, text };
 }
 
 /** Mot de passe oublié. */
-export function renderReinitialisation({ url, prenom }: { url: string; prenom?: string }): EmailPret {
+export function renderReinitialisation({
+  url,
+  prenom,
+  tutoiement = false,
+}: {
+  url: string;
+  prenom?: string;
+  tutoiement?: boolean;
+}): EmailPret {
+  const t = textes(tutoiement);
   const bonjour = prenom ? `Bonjour ${prenom},` : "Bonjour,";
-
   const html = renderTransactionnel({
-    preheader: "Choisissez un nouveau mot de passe pour votre espace.",
+    preheader: t.reinit.preheader,
     kicker: "Mot de passe · myCoolbeans",
     titre: "Choisir un nouveau mot de passe",
-    contenu: [
-      p(esc(bonjour)),
-      p(
-        "Vous avez demandé à réinitialiser le mot de passe de votre espace. Ce lien est valable une heure.",
-      ),
-      urlEnClair(url),
-      p(
-        "Vous n'êtes pas à l'origine de cette demande&nbsp;? Ignorez cet email&nbsp;: votre mot de passe actuel reste valable.",
-      ),
-    ].join(""),
+    contenu: [p(esc(bonjour)), p(t.reinit.corps), urlEnClair(url, t.enClair), p(t.reinit.pasMoi)].join(""),
     cta: { label: "Choisir un nouveau mot de passe", url },
-    piedContexte: PIED,
+    piedContexte: t.pied,
   });
-
-  const text = [
-    bonjour,
-    "",
-    "Vous avez demandé à réinitialiser le mot de passe de votre espace. Ce lien est valable une heure.",
-    "",
-    url,
-    "",
-    "Vous n'êtes pas à l'origine de cette demande ? Ignorez cet email : votre mot de passe actuel reste valable.",
-  ].join("\n");
-
-  return { subject: "Réinitialiser votre mot de passe myCoolbeans", html, text };
+  const text = [bonjour, "", t.reinit.corps, "", url, "", t.reinit.pasMoiTexte].join("\n");
+  return { subject: t.reinit.objet, html, text };
 }
 
 /**

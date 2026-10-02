@@ -10,6 +10,7 @@ import DevisFooter from "../../devis/DevisFooter.astro";
 import DocumentReponses from "../../devis/DocumentReponses.astro";
 import { libelleOnglet, ligneDate, titreEntete } from "../../../lib/documents/entete";
 import { sectionsDevis } from "../../../lib/documents/sections";
+import { tutoiementDe } from "../../../lib/documents/pronom-contenu";
 import type { Bandeau } from "../../../lib/documents/acces";
 import type { Pastille } from "../../../lib/documents/frise";
 import { adresseDocument } from "../../../lib/documents/adresse";
@@ -38,6 +39,8 @@ const plusieurs = versions.length > 1;
    dernière. `actif` reste celle qui engage, pour le formulaire. */
 const demandee = versionActive ? versions.findIndex((v) => v.id === versionActive) : -1;
 const ouvert = demandee >= 0 ? demandee : actif;
+// Le formulaire et le bloc des réponses visent la dernière version, celle qui engage.
+const tutoiement = await tutoiementDe("devis", versions[actif].id);
 
 /* Référence du document, reprise telle quelle sur le devis Tiime qui y
    renvoie : le suffixe à quatre chiffres du slug de la V1, stable d'une
@@ -99,7 +102,7 @@ const reference = versions[0].id.split("-").pop();
   type="devis"
   versions={versions.map((v) => ({ slug: v.id, version: v.data.version }))}
   prefixe={prefixe}
-  tutoiement={courante.tutoiement}
+  tutoiement={tutoiement}
 />
 
 {
@@ -107,7 +110,7 @@ const reference = versions[0].id.split("-").pop();
     <DevisReponse
       slug={versions[ouvert].id}
       enAttente={courante.sections.some((s) => s.budget?.enAttente)}
-      tutoiement={courante.tutoiement}
+      tutoiement={tutoiement}
     />
   )
 }

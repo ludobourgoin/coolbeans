@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 import { Resend } from "resend";
 import { getEntry } from "astro:content";
+import { tutoiementDe } from "../../lib/documents/pronom-contenu";
 import { renderLivrableConfirmation } from "../../emails/livrable-confirmation";
 import {
   citation,
@@ -55,20 +56,20 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: "Message trop long (8 000 caractères max)." }, 400);
   }
   if (typeof prenom !== "string" || !prenom.trim()) {
-    return json({ error: "Merci de renseigner votre prénom." }, 400);
+    return json({ error: "Le prénom est obligatoire." }, 400);
   }
   if (typeof nom !== "string" || !nom.trim()) {
-    return json({ error: "Merci de renseigner votre nom." }, 400);
+    return json({ error: "Le nom est obligatoire." }, 400);
   }
   if (consentement !== true) {
-    return json({ error: "Merci d'accepter la conservation de vos informations." }, 400);
+    return json({ error: "La conservation des informations doit être acceptée." }, 400);
   }
   if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
     return json({ error: "Merci de renseigner un email valide." }, 400);
   }
   const messageClient = typeof message === "string" && message.trim() ? message.trim() : undefined;
   if (reponse === "retours" && !messageClient) {
-    return json({ error: "Merci de détailler vos retours dans le message." }, 400);
+    return json({ error: "Les retours sont à détailler dans le message." }, 400);
   }
 
   /* Le document est relu ici : titre et version viennent du YAML, jamais du
@@ -158,7 +159,7 @@ export const POST: APIRoute = async ({ request }) => {
       titre: doc.data.titre,
       reponse,
       message: messageClient,
-      tutoiement: doc.data.tutoiement,
+      tutoiement: await tutoiementDe("livrable", doc.id),
     });
     const { error: erreurConfirmation } = await resend.emails.send({
       from: "Ludo de Coolbeans <devis@coolbeans.cc>",

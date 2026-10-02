@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 import { Resend } from "resend";
 import { getEntry } from "astro:content";
+import { tutoiementDe } from "../../lib/documents/pronom-contenu";
 import { renderTemoignageConfirmation } from "../../emails/temoignage-confirmation";
 import {
   citation,
@@ -96,10 +97,10 @@ export const POST: APIRoute = async ({ request }) => {
   if (message.length > MAX_MESSAGE) {
     return json({ error: "Message trop long (5 000 caractères max)." }, 400);
   }
-  if (!prenom) return json({ error: "Merci de renseigner votre prénom." }, 400);
-  if (!nom) return json({ error: "Merci de renseigner votre nom." }, 400);
+  if (!prenom) return json({ error: "Le prénom est obligatoire." }, 400);
+  if (!nom) return json({ error: "Le nom est obligatoire." }, 400);
   if (!consentement) {
-    return json({ error: "Merci d'accepter la conservation de vos informations." }, 400);
+    return json({ error: "La conservation des informations doit être acceptée." }, 400);
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return json({ error: "Merci de renseigner un email valide." }, 400);
@@ -263,7 +264,7 @@ export const POST: APIRoute = async ({ request }) => {
       titre: doc.data.titre,
       reponses: lisibles,
       message: message || undefined,
-      tutoiement: doc.data.tutoiement,
+      tutoiement: await tutoiementDe("temoignage", doc.id),
       avecPhoto: aUnePhoto,
     });
 

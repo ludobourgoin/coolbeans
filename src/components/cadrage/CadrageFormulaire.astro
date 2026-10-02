@@ -52,6 +52,8 @@ const t = tutoiement
         "J'accepte que Coolbeans conserve ces informations pour traiter ma demande et assurer le suivi de notre collaboration.",
       envoye: "Merci, c'est envoyé. Tu reçois une copie de tes réponses par email à l'instant.",
       perdues: "Tes réponses ne sont pas perdues",
+      renvoi: "envoie-les-moi par e-mail",
+      precise: "Précise",
       reponse: "Ta réponse",
     }
   : {
@@ -66,6 +68,8 @@ const t = tutoiement
         "J'accepte que Coolbeans conserve ces informations pour traiter ma demande et assurer le suivi de notre collaboration.",
       envoye: "Merci, c'est envoyé. Vous recevez une copie de vos réponses par email à l'instant.",
       perdues: "Vos réponses ne sont pas perdues",
+      renvoi: "envoyez-les-moi par e-mail",
+      precise: "Précisez",
       reponse: "Votre réponse",
     };
 
@@ -107,7 +111,7 @@ const optionsDe = (q: QuestionCadrage) => [
           class="mt-10 grid gap-9 rounded-card border border-line bg-surface p-6x"
           data-slug={slug}
           data-questions={JSON.stringify(descripteurs)}
-          data-textes={JSON.stringify({ envoye: t.envoye, perdues: t.perdues })}
+          data-textes={JSON.stringify({ envoye: t.envoye, perdues: t.perdues, renvoi: t.renvoi })}
           data-carte
         >
           <p class="text-[13px] text-mute">Les champs marqués d'une étoile sont obligatoires.</p>
@@ -155,7 +159,7 @@ const optionsDe = (q: QuestionCadrage) => [
                           type="text"
                           name={`autre-${q.id}`}
                           data-cadrage-autre={q.id}
-                          placeholder="Précisez"
+                          placeholder={t.precise}
                           hidden
                         />
                       )}
@@ -293,7 +297,7 @@ const optionsDe = (q: QuestionCadrage) => [
     /* Les deux phrases de statut portent un pronom, donc elles viennent du
        composant plutôt que d'être écrites ici : le script ne sait pas si le
        document tutoie. */
-    const textes: { envoye: string; perdues: string } = JSON.parse(form.dataset.textes ?? "{}");
+    const textes: { envoye: string; perdues: string; renvoi: string } = JSON.parse(form.dataset.textes ?? "{}");
 
     /* Le champ « autre » ne s'affiche que quand l'option correspondante est
        cochée. Visible en permanence, il invite à écrire une précision qui ne
@@ -433,7 +437,7 @@ const optionsDe = (q: QuestionCadrage) => [
 
         status.innerHTML =
           `L'envoi automatique n'a pas abouti. ${textes.perdues} : ` +
-          `<a class="link" href="${lien}">envoyez-les-moi par e-mail</a>, ` +
+          `<a class="link" href="${lien}">${textes.renvoi}</a>, ` +
           "le message est déjà prêt.";
         status.className = "text-center text-[13px] font-medium text-error";
       } finally {

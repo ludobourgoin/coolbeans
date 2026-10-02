@@ -60,6 +60,8 @@ const t = tutoiement
         "J'accepte que Coolbeans conserve ces informations et publie mon retour sur son site.",
       envoye: "Merci, c'est envoyé. Tu reçois une copie de tes réponses par email à l'instant.",
       perdues: "Tes réponses ne sont pas perdues",
+      renvoi: "envoie-les-moi par e-mail",
+      precise: "Précise",
       reponse: "Ta réponse",
       ajout: "Tout ce que les questions n'ont pas couvert",
     }
@@ -74,6 +76,8 @@ const t = tutoiement
         "J'accepte que Coolbeans conserve ces informations et publie mon retour sur son site.",
       envoye: "Merci, c'est envoyé. Vous recevez une copie de vos réponses par email à l'instant.",
       perdues: "Vos réponses ne sont pas perdues",
+      renvoi: "envoyez-les-moi par e-mail",
+      precise: "Précisez",
       reponse: "Votre réponse",
       ajout: "Tout ce que les questions n'ont pas couvert",
     };
@@ -109,7 +113,7 @@ const optionsDe = (q: QuestionTemoignage) => [
           class="mt-10 grid gap-9 rounded-card border border-line bg-surface p-6x"
           data-slug={slug}
           data-questions={JSON.stringify(descripteurs)}
-          data-textes={JSON.stringify({ envoye: t.envoye, perdues: t.perdues })}
+          data-textes={JSON.stringify({ envoye: t.envoye, perdues: t.perdues, renvoi: t.renvoi })}
           data-photo-requise={photo?.requis ? "1" : "0"}
           data-carte
         >
@@ -203,7 +207,7 @@ const optionsDe = (q: QuestionTemoignage) => [
                           type="text"
                           name={`autre-${q.id}`}
                           data-temoignage-autre={q.id}
-                          placeholder="Précisez"
+                          placeholder={t.precise}
                           hidden
                         />
                       )}
@@ -389,7 +393,7 @@ const optionsDe = (q: QuestionTemoignage) => [
   const form = document.querySelector<HTMLFormElement>("#temoignage-form");
   const status = form?.querySelector<HTMLParagraphElement>("[data-temoignage-form-status]");
   const descripteurs: Descripteur[] = JSON.parse(form?.dataset.questions ?? "[]");
-  const textes: { envoye: string; perdues: string } = JSON.parse(form?.dataset.textes ?? "{}");
+  const textes: { envoye: string; perdues: string; renvoi: string } = JSON.parse(form?.dataset.textes ?? "{}");
 
   const erreur = (message: string) => {
     if (!status) return;
@@ -546,7 +550,7 @@ const optionsDe = (q: QuestionTemoignage) => [
 
       status.innerHTML =
         `L'envoi automatique n'a pas abouti. ${textes.perdues} : ` +
-        `<a class="link" href="${lien}">envoyez-les-moi par e-mail</a>, ` +
+        `<a class="link" href="${lien}">${textes.renvoi}</a>, ` +
         "le message est déjà prêt" +
         (photo ? ", la photo est à y joindre à la main." : ".");
       status.className = "text-center text-[13px] font-medium text-error";

@@ -1,6 +1,7 @@
 nom: Setencorpsmieux
 # Cliente directe : pas de revendeur entre elle et Coolbeans (spec 2026-08-19 §3.1).
 organisation: coolbeans
+tutoiement: true
 cle: set
 prenom: Nathalie
 # Emoji du sélecteur, repris de l'icône de la team Linear (lotus).

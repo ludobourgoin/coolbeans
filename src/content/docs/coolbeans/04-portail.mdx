@@ -125,11 +125,10 @@ dépassé (deux secondes), la section se replie sur les projets de la
 nomenclature qui ont un document lisible, sans résumé, statut ni dates ;
 l'échec se garde soixante secondes pour ne pas ralentir chaque page.
 
-Les fichiers déposés disparaissent avec cette tâche, mais pas la table
-`documents` (migration `0008_documents.sql`) : plus aucun code ne la lit ni
-n'y écrit, et elle reste en base tant que ce chantier n'est pas en
-production. Sa suppression, fichiers de stockage puis `DROP TABLE`, se fait
-en second temps, sur ordre explicite de Ludo.
+Les fichiers déposés ont disparu avec cette tâche. Leur table `documents`
+(migration `0008_documents.sql`) est supprimée le 2026-10-02 par la
+migration `0013_retire_documents.sql`, en prod et en staging. Elle était
+vide, et aucun fichier ne restait dans le stockage.
 
 **La page d'un projet.** Chaque projet n'a qu'une page,
 `my.coolbeans.cc/projets/<nom-du-projet-identifiant>`. L'en-tête, pleine
@@ -248,6 +247,20 @@ mail.
 **Les statistiques de fréquentation.** La page Analytics montre au client les visites de son site, sans cookies. Les mesures viennent de Cloudflare Web Analytics, où tous les sites sont enregistrés dans le compte Coolbeans. Cloudflare ne rend un chiffre exact que pour un jour isolé des sept derniers jours : au-delà, ou sur une période plus longue, il n'en garde qu'une mesure sur dix. Chaque nuit, au second passage de 04:00 UTC, le cron relit donc ces sept jours un par un et les stocke dans D1 (`src/lib/analytics/collecte.ts`). La page ne lit que D1. Pour raccorder un site, ajouter une entrée `analytics` (`host` et `siteTag`) dans la fiche du client sous `src/content/clients/`. Le `siteTag` se lit dans l'API Cloudflare, `GET /accounts/<compte>/rum/site_info/list`.
 
 **La vitesse du site.** Sous les listes, la page note les trois Core Web Vitals mesurés chez les visiteurs, sur la période choisie : Affichage (LCP), Réactivité (INP), Stabilité (CLS), tous appareils confondus puis sur mobile et sur ordinateur. Les mesures viennent du même compte Cloudflare, dans la même requête nocturne que le trafic (jeu `rumWebVitalsEventsAdaptiveGroups`). D1 garde, par site, jour et appareil, le nombre de mesures bonnes, à améliorer et mauvaises : ces compteurs s'additionnent sur n'importe quelle période, les percentiles non. La note suit la règle de Google : « Bon » si au moins 75 % des mesures sont bonnes, « À améliorer » si les bonnes et celles à améliorer réunies atteignent 75 %, « Mauvais » sinon. Sous 20 mesures sur la période, la carte n'affiche pas de note (`src/lib/analytics/vitaux.ts`).
+
+## Le tu ou le vous
+
+Chaque fiche client (`src/content/clients/<slug>.yaml`) et chaque organisation
+(`src/content/organisations/<slug>.yaml`) porte `tutoiement: true` ou `false`.
+La clé est obligatoire : sans elle, le build échoue.
+
+- Un document hérite du pronom de sa fiche. Une version hérite de sa racine.
+- Chez un revendeur, la proposition suit le pronom de l'organisation, les autres documents celui du client final.
+- Un document peut surcharger sa fiche avec sa propre clé `tutoiement`. Le témoignage Amusoire le fait.
+- Les mails du portail suivent le compte du destinataire : un client sa fiche, un revendeur son organisation, un admin la fiche Coolbeans.
+- Les libellés du portail sont neutres : ils désignent le site ou le projet, jamais la personne.
+
+La règle vit dans `src/lib/documents/pronom.ts`.
 
 ## Référence technique
 

@@ -53,8 +53,7 @@ const lignes = tickets.map((t) => ({
 <EspaceLayout title="Demandes">
   <h1>Demandes</h1>
   <p class="sub">
-    Un message = un sujet. Trois sujets&nbsp;? Trois demandes séparées : on vous répondra plus
-    vite.
+    Un message = un sujet. Trois sujets&nbsp;? Trois demandes séparées : la réponse arrive plus vite.
   </p>
 
   {
@@ -64,15 +63,14 @@ const lignes = tickets.map((t) => ({
         missingKeys={coupe ? [] : missingKeys}
         isAdmin={isAdmin(meta)}
       >
-        Vos demandes arriveront ici. En attendant, un email à ludo@coolbeans.cc fait tout aussi bien
-        l'affaire.
+        Les demandes arriveront ici. En attendant, un email à ludo@coolbeans.cc fait tout aussi bien l'affaire.
       </EmptyState>
     ) : (
       <div class="mt-8x grid gap-10x">
         <NouvelleDemande />
-        <section class="grid gap-4" aria-labelledby="vos-demandes">
-          <h2 id="vos-demandes" class="flex items-baseline gap-2 text-lg font-semibold tracking-[-0.02em]">
-            Vos demandes
+        <section class="grid gap-4" aria-labelledby="suivi-demandes">
+          <h2 id="suivi-demandes" class="flex items-baseline gap-2 text-lg font-semibold tracking-[-0.02em]">
+            Suivi des demandes
             {lignes.length > 0 && (
               <span class="text-[14px] font-normal text-mute">{lignes.length}</span>
             )}
@@ -87,15 +85,10 @@ const lignes = tickets.map((t) => ({
   <section class="mt-16x max-w-[640px]">
     <h2 class="mb-6x text-lg font-semibold tracking-[-0.02em]">Questions fréquentes</h2>
     <Collapse question="Comment bien formuler ma demande ?">
-      Un message = un sujet. Si vous avez deux choses à signaler, envoyez deux demandes
-      séparées : chacune suit son propre fil, rien ne se perd en route. Plus la description est
-      concrète (la page concernée, ce que vous attendiez, ce qui s'est passé), plus la réponse
-      est rapide.
+      Un message = un sujet. Deux choses à signaler, deux demandes séparées : chacune suit son propre fil, rien ne se perd en route. Plus la description est concrète (la page concernée, le résultat attendu, ce qui s'est passé), plus la réponse est rapide.
     </Collapse>
     <Collapse question="Sous quel délai aurai-je une réponse ?">
-      En général sous un jour ouvré. Si votre site est hors ligne ou qu'un paiement est
-      bloqué, dites-le dans l'urgence de votre demande : ces urgences passent devant tout le
-      reste.
+      En général sous un jour ouvré. Un site hors ligne ou un paiement bloqué se signale dans l'urgence de la demande : ces urgences passent devant tout le reste.
     </Collapse>
     <Collapse question="Puis-je toujours passer par email ?">
       Bien sûr. Un message à

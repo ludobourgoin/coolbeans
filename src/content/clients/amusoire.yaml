@@ -3,6 +3,7 @@ nom: Amusoire
 # de Coolbeans depuis le 2026-09-30, à la demande de Trigger (CRM-76) ; la team
 # suit en base avec scripts/deplacer-workspace.mjs (COO-303).
 organisation: coolbeans
+tutoiement: true
 cle: amu
 prenom: Noémie
 # Emoji du sélecteur (repris de l'icône de la team Linear) et début de la
