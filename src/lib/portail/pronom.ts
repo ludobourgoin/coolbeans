@@ -18,17 +18,34 @@ async function registres() {
   };
 }
 
-/** Le pronom de la personne connectée. */
+/** Le pronom de la personne connectée. Ne lève jamais : une panne donne le vous. */
 export async function pronomDuPortail(meta: PortalMetadata): Promise<Pronom> {
-  return ouVous(pronomDuCompte(meta, await registres()), `compte ${meta.role}`);
+  try {
+    return ouVous(pronomDuCompte(meta, await registres()), `compte ${meta.role}`);
+  } catch (err) {
+    console.error("pronom: fiches illisibles", err);
+    return ouVous(undefined, "compte : erreur");
+  }
 }
 
 /**
  * Le pronom du destinataire d'un mail, d'après son compte. Même jointure que
  * listerUtilisateurs (utilisateurs.ts). L'adresse se compare en minuscules :
  * Better Auth la stocke telle que saisie à l'invitation.
+ *
+ * Ne lève jamais : la messagerie l'appelle après avoir écrit le message en
+ * base, et un échec à ce moment-là le laisserait sans mail pour toujours.
  */
 export async function pronomDuDestinataire(db: D1Database, email: string): Promise<Pronom> {
+  try {
+    return await resoudreDestinataire(db, email);
+  } catch (err) {
+    console.error("pronom: résolution du destinataire impossible", err);
+    return ouVous(undefined, "destinataire : erreur");
+  }
+}
+
+async function resoudreDestinataire(db: D1Database, email: string): Promise<Pronom> {
   const ligne = await db
     .prepare(
       `SELECT u.portalRole AS role, o.slug AS organisation, t.slug AS workspace
