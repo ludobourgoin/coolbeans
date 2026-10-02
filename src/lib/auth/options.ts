@@ -10,6 +10,7 @@
 
 import { magicLink } from "better-auth/plugins/magic-link";
 import { EN_TETE_CAPTURE, deposerLien } from "./capture-lien";
+import { pronomDuDestinataire } from "../portail/pronom";
 import { organization } from "better-auth/plugins/organization";
 import {
   envoyerMailAuth,
@@ -73,7 +74,11 @@ export function optionsAuth(env?: Env, baseURL = "https://my.coolbeans.cc") {
       // que personne d'autre que Ludo ne peut ouvrir un compte.
       sendResetPassword: async ({ user, url }: { user: { email: string; name?: string }; url: string }) => {
         if (!env) return; // generation de schema
-        await envoyerMailAuth(env, user.email, renderReinitialisation({ url, prenom: user.name }));
+        await envoyerMailAuth(env, user.email, renderReinitialisation({
+            url,
+            prenom: user.name,
+            tutoiement: (await pronomDuDestinataire(env.PORTAL_DB, user.email)) === "tu",
+          }));
       },
     },
     user: {
@@ -105,6 +110,7 @@ export function optionsAuth(env?: Env, baseURL = "https://my.coolbeans.cc") {
              au prealable, sans quoi un en-tete pose au hasard suffirait a
              empecher un mail de partir. */
           if (deposerLien(request?.headers.get(EN_TETE_CAPTURE), url)) return;
+          const tutoiement = (await pronomDuDestinataire(env.PORTAL_DB, email)) === "tu";
           // La metadata posee a l'invitation distingue un premier acces d'un
           // retour ; sans elle, on suppose un retour.
           if (metadata?.invitation) {
@@ -115,11 +121,12 @@ export function optionsAuth(env?: Env, baseURL = "https://my.coolbeans.cc") {
                 url,
                 organisation: (metadata.organisation as string | undefined) ?? "myCoolbeans",
                 inviteur: metadata.inviteur as string | undefined,
+                tutoiement,
               }),
             );
             return;
           }
-          await envoyerMailAuth(env, email, renderLienMagique({ url }));
+          await envoyerMailAuth(env, email, renderLienMagique({ url, tutoiement }));
         },
       }),
       // organisation = le revendeur, team = le workspace client (spec §3.1).
@@ -155,6 +162,7 @@ export function optionsAuth(env?: Env, baseURL = "https://my.coolbeans.cc") {
               url,
               organisation: data.organization.name,
               inviteur: data.inviter.user.name ?? undefined,
+              tutoiement: (await pronomDuDestinataire(env.PORTAL_DB, data.email)) === "tu",
             }),
           );
         },

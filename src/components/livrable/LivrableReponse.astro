@@ -26,6 +26,9 @@ const t = tutoiement
       messageAide: "Page par page si possible : c'est ce qui me permet d'aller vite.",
       envoye: "Merci, c'est envoyé. Tu reçois une copie par email à l'instant.",
       perdue: "Ta réponse n'est pas perdue",
+      titre: "Ta réponse",
+      detail: "Détaille-les dans le message ci-dessous.",
+      renvoi: "envoie-la-moi par e-mail",
       manque: "Tu annonces des retours : merci de les écrire dans le message.",
     }
   : {
@@ -36,6 +39,9 @@ const t = tutoiement
       messageAide: "Page par page si possible : c'est ce qui me permet d'aller vite.",
       envoye: "Merci, c'est envoyé. Vous recevez une copie par email à l'instant.",
       perdue: "Votre réponse n'est pas perdue",
+      titre: "Votre réponse",
+      detail: "Détaillez-les dans le message ci-dessous.",
+      renvoi: "envoyez-la-moi par e-mail",
       manque: "Vous annoncez des retours : merci de les écrire dans le message.",
     };
 ---
@@ -48,7 +54,7 @@ const t = tutoiement
     >
       <div aria-hidden="true"></div>
       <div>
-        <h2>Votre réponse</h2>
+        <h2>{t.titre}</h2>
         <p class="mt-4 max-w-[44ch] leading-[1.6] text-mute">{t.accroche}</p>
         <form
           id={`${prefixe}livrable-form`}
@@ -56,7 +62,7 @@ const t = tutoiement
           data-slug={slug}
           data-suit-onglet
           data-livrable-form
-          data-textes={JSON.stringify({ envoye: t.envoye, perdue: t.perdue, manque: t.manque })}
+          data-textes={JSON.stringify({ envoye: t.envoye, perdue: t.perdue, manque: t.manque, renvoi: t.renvoi })}
           data-carte
         >
           <Choicebox
@@ -71,7 +77,7 @@ const t = tutoiement
               {
                 value: "retours",
                 title: REPONSES_LIVRABLE.retours,
-                hint: "Détaillez-les dans le message ci-dessous.",
+                hint: t.detail,
               },
             ]}
           />
@@ -175,7 +181,7 @@ const t = tutoiement
 
   function setupLivrableForm(form: HTMLFormElement) {
     const status = form.querySelector<HTMLParagraphElement>("[data-livrable-form-status]");
-    const textes: { envoye: string; perdue: string; manque: string } = JSON.parse(
+    const textes: { envoye: string; perdue: string; manque: string; renvoi: string } = JSON.parse(
       form.dataset.textes ?? "{}",
     );
 
@@ -253,7 +259,7 @@ const t = tutoiement
           `&body=${encodeURIComponent(corps)}`;
         status.innerHTML =
           `L'envoi automatique n'a pas abouti. ${textes.perdue} : ` +
-          `<a class="link" href="${lien}">envoyez-la-moi par e-mail</a>, ` +
+          `<a class="link" href="${lien}">${textes.renvoi}</a>, ` +
           "le message est déjà prêt.";
         status.className = "text-center text-[13px] font-medium text-error";
       } finally {

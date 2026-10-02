@@ -13,6 +13,7 @@ import BandeauAcces from "../BandeauAcces.astro";
 import { riche, ancreSection } from "../../../lib/devis";
 import { ligneDate, titreEntete } from "../../../lib/documents/entete";
 import { sectionsTemoignage } from "../../../lib/documents/sections";
+import { tutoiementDe } from "../../../lib/documents/pronom-contenu";
 import type { Bandeau } from "../../../lib/documents/acces";
 import type { Pastille } from "../../../lib/documents/frise";
 
@@ -30,6 +31,7 @@ interface Props {
 const { versions, pastilles, contexte, prefixe = "", versionActive, bandeaux = {} } = Astro.props;
 const entry = versions[0];
 const d = entry.data;
+const tutoiement = await tutoiementDe("temoignage", entry.id);
 ---
 
 {bandeaux[versions[0].id] && <BandeauAcces raison={bandeaux[versions[0].id]} />}
@@ -65,7 +67,7 @@ const d = entry.data;
           slug={d.casClient.slug}
           label={d.casClient.label}
           fauxTexte={d.casClient.fauxTexte}
-          tutoiement={d.tutoiement}
+          tutoiement={tutoiement}
           ancre={ancreSection(d.casClient.titre)}
         />
       )}
@@ -91,7 +93,7 @@ const d = entry.data;
   server:defer
   type="temoignage"
   versions={[{ slug: entry.id, version: 1 }]}
-  tutoiement={d.tutoiement}
+  tutoiement={tutoiement}
   prefixe={prefixe}
 />
 
@@ -103,7 +105,7 @@ const d = entry.data;
     <TemoignageFormulaire
       slug={entry.id}
       questions={d.questions}
-      tutoiement={d.tutoiement}
+      tutoiement={tutoiement}
       photo={d.photo}
     />
   )

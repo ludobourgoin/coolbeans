@@ -21,6 +21,7 @@ import { LUDO_LINEAR_USER_ID, createSupportTicket } from "../../../lib/portail/l
 import { isAdmin } from "../../../lib/portail/metadata";
 import { cleR2, validerFichiers } from "../../../lib/portail/messagerie/fichiers";
 import { prioriteFromUrgence } from "../../../lib/portail/messagerie/regles";
+import { pronomDuPortail } from "../../../lib/portail/pronom";
 import {
   ajouterMessage,
   ajouterPieceJointe,
@@ -36,12 +37,12 @@ const json = (body: unknown, status: number) =>
 /** Demandes par utilisateur et par jour. Au-delà : 429 et message clair. */
 const QUOTA_PAR_JOUR = 5;
 
-const CONTACT_DIRECT = "écrivez-moi à ludo@coolbeans.cc";
+const CONTACT_DIRECT = "un mail à ludo@coolbeans.cc fonctionne aussi";
 
 export const POST: APIRoute = async (context) => {
   const { request } = context;
   const { user, meta, client } = await getPortalContext(context);
-  if (!user) return json({ error: "Session expirée : reconnectez-vous puis réessayez." }, 401);
+  if (!user) return json({ error: "Session expirée : il faut se reconnecter, puis réessayer." }, 401);
 
   const fd = await request.formData();
   const objet = String(fd.get("objet") ?? "").trim().slice(0, 200);
@@ -88,7 +89,7 @@ export const POST: APIRoute = async (context) => {
     }
     if (!cible) {
       return json(
-        { error: `Aucun compte dans l'espace ${client.nom} : invitez d'abord un utilisateur.` },
+        { error: `Aucun compte dans l'espace ${client.nom} : il faut d'abord y inviter un utilisateur.` },
         409,
       );
     }
@@ -106,7 +107,7 @@ export const POST: APIRoute = async (context) => {
   if (createdVia !== "admin" && dejaEnvoyees >= QUOTA_PAR_JOUR) {
     return json(
       {
-        error: `Vous avez atteint la limite de ${QUOTA_PAR_JOUR} demandes pour aujourd'hui. Pour une urgence, ${CONTACT_DIRECT}.`,
+        error: `Limite de ${QUOTA_PAR_JOUR} demandes atteinte pour aujourd'hui. Une urgence passe par un mail à ludo@coolbeans.cc.`,
       },
       429,
     );
@@ -273,6 +274,7 @@ export const POST: APIRoute = async (context) => {
         objet,
         description,
         prenom: prenomEmail,
+        tutoiement: (await pronomDuPortail(meta)) === "tu",
       });
       const { error: erreurConfirmation } = await resend.emails.send({
         from: "Ludo de Coolbeans <support@coolbeans.cc>",

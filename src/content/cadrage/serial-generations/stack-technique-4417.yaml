@@ -39,7 +39,6 @@ version: 2
 versionDe: serial-generations/site-web-3720
 onglet: WordPress ou pas
 contact: Isabelle
-tutoiement: true
 linear:
   projet: Sérial Générations
   affaire: CRM-91

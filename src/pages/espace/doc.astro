@@ -28,14 +28,13 @@ if (client?.doc) {
 
 <EspaceLayout title="Mode d'emploi">
   <h1>Mode d'emploi</h1>
-  <p class="sub">Le mode d'emploi de votre site.</p>
+  <p class="sub">Le mode d'emploi du site.</p>
 
   <EmptyState
     title="Aucun mode d'emploi associé à cet espace"
     missingKeys={missingKeysFor("doc", client)}
     isAdmin={isAdmin(meta)}
   >
-    Le mode d'emploi s'ouvre à la livraison du projet. S'il devrait être là,
-    écrivez à ludo@coolbeans.cc.
+    Le mode d'emploi s'ouvre à la livraison du projet. S'il devrait déjà être là, un mail à ludo@coolbeans.cc suffit.
   </EmptyState>
 </EspaceLayout>

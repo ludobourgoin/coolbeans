@@ -6,6 +6,7 @@
 import { Resend } from "resend";
 import { SUPPORT_LABEL_ID, fetchIssue } from "../linear";
 import { renderReponseMessagerie } from "../../../emails/messagerie-reponse";
+import { pronomDuDestinataire } from "../pronom";
 import { corpsPublieDescription, retireImagesLinear } from "./regles";
 import {
   ajouterMessage,
@@ -112,6 +113,7 @@ export async function ouvrirLesDues(
         corps: decision.corps,
         prenom: due.destinataire_prenom,
         urlTicket: `${options.baseUrl}/demandes/${ticketId}`,
+        tutoiement: (await pronomDuDestinataire(db, due.destinataire_email)) === "tu",
       });
       let error: unknown = null;
       try {

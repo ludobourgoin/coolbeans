@@ -40,7 +40,7 @@ const aide = `Images, PDF ou ZIP · ${MAX_FICHIERS} fichiers, ${MAX_TAILLE / 102
     </svg>
     <span class="grid gap-0.5">
       <span data-invite>
-        Glissez vos fichiers ici ou <span class="link text-ink">parcourez</span>
+        Glisser des fichiers ici ou <span class="link text-ink">parcourir</span>
       </span>
       <span class="text-[12px]" data-aide>{aide}</span>
     </span>
@@ -94,7 +94,7 @@ const aide = `Images, PDF ou ZIP · ${MAX_FICHIERS} fichiers, ${MAX_TAILLE / 102
       zone.toggleAttribute("data-plein", plein);
       entree.disabled = plein;
       invite.innerHTML = plein
-        ? `${max} fichiers sur ${max}. Retirez-en un pour en ajouter un autre.`
+        ? `${max} fichiers sur ${max}. Pour en ajouter un autre, il faut d'abord en retirer un.`
         : inviteHtml;
 
       liste.hidden = fichiers.length === 0;

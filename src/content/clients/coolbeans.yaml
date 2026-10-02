@@ -3,6 +3,7 @@
 nom: Coolbeans
 # Revendeur auquel ce client se rattache (spec 2026-08-19 §3.1).
 organisation: coolbeans
+tutoiement: true
 prenom: Ludo
 # Workspace perso : en tête du sélecteur, avant le liseret des clients.
 perso: true

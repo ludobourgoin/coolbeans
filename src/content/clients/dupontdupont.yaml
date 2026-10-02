@@ -7,6 +7,7 @@ cle: dup
 raisonsSociales: [DUPONTDUPONT]
 # Team « DupontDupont » (DUP), créée le 2026-10-02 sous Web.
 linearTeamId: 43af2a28-f9b5-457a-af0d-d730551ef568
+tutoiement: true
 prenom: Kateline
 # Emoji du sélecteur et début de la relation, daté du premier règlement
 # retrouvé au relevé (facture 24613, 270 €).

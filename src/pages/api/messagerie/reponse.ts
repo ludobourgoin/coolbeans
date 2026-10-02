@@ -18,12 +18,12 @@ export const prerender = false;
 const json = (body: unknown, status: number) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
 
-const CONTACT_DIRECT = "écrivez-moi à ludo@coolbeans.cc";
+const CONTACT_DIRECT = "un mail à ludo@coolbeans.cc fonctionne aussi";
 
 export const POST: APIRoute = async (context) => {
   const { request } = context;
   const { user, client } = await getPortalContext(context);
-  if (!user) return json({ error: "Session expirée : reconnectez-vous puis réessayez." }, 401);
+  if (!user) return json({ error: "Session expirée : il faut se reconnecter, puis réessayer." }, 401);
 
   const fd = await request.formData();
   const ticketId = String(fd.get("ticketId") ?? "");

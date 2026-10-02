@@ -4,6 +4,7 @@
 import { Resend } from "resend";
 import { fetchComment } from "../linear";
 import { renderReponseMessagerie } from "../../../emails/messagerie-reponse";
+import { pronomDuDestinataire } from "../pronom";
 import { corpsPublie, retireImagesLinear } from "./regles";
 import {
   ajouterMessage,
@@ -80,6 +81,7 @@ export async function publierLesDues(
             corps: decision.corps,
             prenom: ticket.author_prenom,
             urlTicket: `${options.baseUrl}/demandes/${ticket.id}`,
+            tutoiement: (await pronomDuDestinataire(db, ticket.author_email)) === "tu",
           });
           // Un throw (panne réseau...) doit être traité comme {error} : sans ce
           // catch, le message resterait "none" à vie (insere=false au retry).

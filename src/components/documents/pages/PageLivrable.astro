@@ -17,6 +17,7 @@ import BandeauAcces from "../BandeauAcces.astro";
 import { riche } from "../../../lib/devis";
 import { libelleOnglet, ligneDate, titreEntete } from "../../../lib/documents/entete";
 import { sectionsLivrable } from "../../../lib/documents/sections";
+import { tutoiementDe } from "../../../lib/documents/pronom-contenu";
 import type { Bandeau } from "../../../lib/documents/acces";
 import type { Pastille } from "../../../lib/documents/frise";
 
@@ -42,6 +43,7 @@ const plusieurs = versions.length > 1;
    dernière. `actif` reste celle qui engage, pour le formulaire. */
 const demandee = versionActive ? versions.findIndex((v) => v.id === versionActive) : -1;
 const ouvert = demandee >= 0 ? demandee : actif;
+const tutoiement = await tutoiementDe("livrable", versions[actif].id);
 ---
 
 {bandeaux[versions[0].id] && <BandeauAcces raison={bandeaux[versions[0].id]} />}
@@ -156,13 +158,13 @@ const ouvert = demandee >= 0 ? demandee : actif;
   server:defer
   type="livrable"
   versions={versions.map((v) => ({ slug: v.id, version: v.data.version }))}
-  tutoiement={courante.tutoiement}
+  tutoiement={tutoiement}
   prefixe={prefixe}
 />
 
 {
   courante.formulaire && (
-    <LivrableReponse slug={versions[ouvert].id} tutoiement={courante.tutoiement} prefixe={prefixe} />
+    <LivrableReponse slug={versions[ouvert].id} tutoiement={tutoiement} prefixe={prefixe} />
   )
 }
 

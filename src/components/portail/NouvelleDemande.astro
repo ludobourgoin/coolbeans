@@ -108,7 +108,7 @@ import PiecesJointes from "./PiecesJointes.astro";
       } catch (err) {
         const message = err instanceof Error && err.message ? err.message : "";
         setStatus(
-          message || "Envoi impossible, réessayez dans un instant ou écrivez-moi à ludo@coolbeans.cc.",
+          message || "Envoi impossible pour l'instant. Un mail à ludo@coolbeans.cc fonctionne aussi.",
           "text-error",
         );
         submitBtn.disabled = false;

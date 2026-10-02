@@ -4,6 +4,8 @@ date: 2026-08-31
 projet: formulaire-brochures-831
 etape: proposition
 contact: Jérémy
+# Le corps vouvoie : la proposition, déjà envoyée, garde le vous dans son formulaire.
+tutoiement: false
 
 envoi:
   date: 2026-08-31

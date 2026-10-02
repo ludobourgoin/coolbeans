@@ -6,16 +6,30 @@
 # Chiffrage : PAS de temps × TJM. Le site a été produit vite (brief vers Claude
 # Design pour la maquette, validation cliente, puis Claude Code pour
 # l'intégration, Ludo en chef d'orchestre) et le temps humain réel est faible.
-# Le prix est celui du marché pour un site comparable vendu à un commerce local
-# — repères internes : LittleBox 3 000 €, En Haut 3 250 €, CAFA 2 000 €. Base
-# retenue 3 500 € HT, répartie sur les postes par la valeur livrée et non par
-# les heures passées. Tarif ami de -50 % appliqué sur le total.
 #
-# Ce chiffre est l'ancrage de la proposition OSMOSE (même cliente) : les deux
-# documents doivent rester cohérents.
+# Rechiffré le 2026-10-02, avant tout envoi. En juin, Ludo avait dit à Nathalie
+# de vive voix « normalement 1 500 à 2 000 €, je te fais 50 % ». Nathalie détient
+# aussi la proposition OSMOSE (V2, envoyée le 2026-09-08) : Ludo a voulu que les
+# deux documents aient les mêmes sections, dans le même ordre, et les mêmes
+# tarifs AVANT réduction. Base recalculée sur la grille d'Osmose V2 : contenus 0
+# (textes fournis par elle), maquettes 950 (700 € les 6 pages, ramené à 8), site
+# et Studio 980, pages de prestation 450 (prix de l'option « page par
+# praticien »), planning 400 (sans équivalent chez Osmose, prix de l'ancienne
+# base), mise en ligne 250. Total 3 030 €. Tarif ami fixé par Ludo à 75 %, soit
+# 757,50 € HT. Comparatif : claude.ai/artifact/CxLLPEyZaMvz7XHymrDABv
+#
+# Sections calquées sur osmose/site-v2-5127.yaml. Vérifier avant tout commit :
+#   diff <(grep "^  - titre:" osmose/site-v2-5127.yaml) <(grep "^  - titre:" setencorpsmieux/site-internet-7402.yaml)
+#
+# Une partie du règlement se fera en séances (Pilates, massages). Ludo s'arrange
+# avec elle directement : volontairement absent de cette page. La facture Tiime
+# porte quand même le montant entier, TVA comprise.
+#
+# Les 9 CHF du transfert du domaine (27 août) ont été remboursés par Nathalie
+# directement. Reste à elle de remplacer la carte de Ludo chez Infomaniak.
 titre: Sète En Corps Mieux x Coolbeans
 objet: Site setencorpsmieux.fr
-date: 2026-09-01
+date: 2026-10-02
 projet: refonte-740
 etape: proposition
 contact: Nathalie
@@ -23,85 +37,104 @@ linear:
   projet: Refonte du site Sète En Corps Mieux
 
 sections:
-  - titre: Le projet
+  - titre: Ce que j'ai compris
     texte: >-
-      Remplacer l'ancien site par un site que tu tiens toi-même, sans abonnement
-      mensuel et sans dépendre de personne pour changer un texte, une photo ou un
-      créneau de cours.
+      Sète En Corps Mieux, c'est ton activité : Pilates, Do-In, Gym sénior, Amma
+      assis et Shiatsu de confort, en cours collectifs et en séances
+      individuelles.
     liste:
       - texte: >-
-          Huit pages, cinq prestations (Pilates, Do-In, Gym sénior, Amma assis,
-          Shiatsu de confort) et un planning de la semaine.
+          Ton ancien site dépendait d'un webmaster et d'un abonnement chez Ionos.
       - texte: >-
-          Le contenu vit dans un espace d'administration en français, accessible
-          depuis un ordinateur comme depuis un téléphone.
+          Changer un texte, une photo ou un créneau voulait dire demander, puis
+          attendre.
       - texte: >-
-          Tu as fourni les textes, les tarifs, le planning et les photos entre le
-          5 et le 23 juillet. J'ai fait le reste.
+          Ton planning change souvent : cours, ateliers, permanences.
+    note: >-
+      C'est sur ces trois points que le site a été construit.
+
+  - titre: Ce que le site change
+    liste:
+      - texte: >-
+          Tu changes toi-même un texte, une photo, un tarif ou un créneau, depuis
+          ton ordinateur comme depuis ton téléphone, sans me demander.
+      - texte: >-
+          Le planning de la semaine se filtre par activité : chacun trouve son
+          cours sans lire tout le reste.
+      - texte: >-
+          Chaque prestation a sa page, avec ses bienfaits, ses formats et ses
+          tarifs. Tu en ajoutes une, la page existe.
+      - texte: >-
+          À chaque publication depuis le Studio, le site se met à jour tout seul,
+          sans intervention de ma part.
 
   - titre: Le site
     liste:
+      - texte: "Accueil, À propos et Contact, plus les mentions légales et la politique des cookies."
       - texte: >-
-          Accueil, À propos, Planning, Contact, plus les mentions légales et la
-          politique des cookies.
-      - texte: >-
-          Une page par prestation, générée automatiquement : tu en ajoutes une,
-          la page existe.
+          Prestations : une page par activité, générée depuis sa fiche.
         tooltip: >-
-          Même chose côté articles : le blog est prêt, il n'attend que du contenu.
+          Même chose côté articles : le blog est prêt, il n'attend que du contenu.
       - texte: >-
-          Un planning hebdomadaire avec les cours, les ateliers et les
-          permanences, filtrables par activité.
+          Planning : les cours, les ateliers et les permanences, filtrables par
+          activité et navigables de semaine en semaine.
       - texte: >-
           Vingt-et-un blocs réutilisables (bienfaits, formats, tarifs, appel à
           l'action) que tu recombines sans toucher au code.
-
-  - titre: Ce que tu modifies toi-même
-    texte: >-
-      Dix types de contenu ont été modélisés dans le Studio, avec des libellés en
-      français et une structure qui empêche les fausses manœuvres.
-    liste:
-      - "Les textes et les images de chaque page"
-      - "Les prestations, leurs formats, leurs tarifs et leurs bienfaits"
-      - "Les cours, les ateliers et les permanences du planning"
-      - "Les titres et descriptions vus par Google"
     note: >-
-      À chaque publication depuis le Studio, le site se reconstruit et se met en
-      ligne tout seul. Aucune intervention de ma part n'est nécessaire.
+      Compris : responsive et recette sur quatre largeurs d'écran, certificat
+      SSL, hébergement, sortie du domaine de chez Ionos et raccordement, pages
+      légales, titres et descriptions pour Google modifiables dans le Studio.
 
-  - titre: Le travail, poste par poste
+  - titre: L'identité
+    texte: >-
+      Ton logo existait depuis 2025. Je l'ai décliné à l'écran : c'est le design
+      du site.
+    liste:
+      - texte: >-
+          J'ai posé la palette, les typographies et la mise en page des huit
+          pages, version mobile comprise.
+      - texte: >-
+          Tu as validé les maquettes avant que j'intègre le site.
+      - texte: >-
+          J'ai complété ce qui manquait pour le web : favicon et icône pour
+          l'écran d'accueil du téléphone.
+    note: >-
+      Le flyer, le kakemono et le travail sur le logo de 2025 ne sont pas comptés
+      ici. Ils étaient offerts, ils le restent.
+
+  - titre: Le budget
+    texte: >-
+      Le site tel qu'il est en ligne, poste par poste.
     budget:
       lignes:
-        - label: "**Fondations techniques** : projet, espace d'administration, hébergement"
-          prix: 250
-        - label: "**Modélisation du contenu** : dix types de contenu et structure du Studio"
-          prix: 400
+        - label: "**Contenus** : tes textes, mis en forme dans le Studio"
+          prix: 0
           tooltip: >-
-            C'est l'étape invisible qui décide de ton autonomie : chaque champ que
-            tu vois dans le Studio a été pensé et nommé ici.
-        - label: "**Direction artistique et maquettes** des huit pages"
-          prix: 600
-        - label: "**Intégration du site** : huit pages, vingt-et-un blocs, deux gabarits automatiques"
-          prix: 900
-        - label: "**Planning hebdomadaire** : grille de la semaine, filtres, navigation"
+            Tu as écrit tes textes et choisi tes photos. Je n'ai rien rédigé, ce
+            poste ne compte donc pas.
+        - label: "**Maquettes des huit pages** : validées avant l'intégration"
+          prix: 950
+        - label: "**Le site et son espace d'administration** : tu ajoutes une prestation ou un cours toi-même"
+          prix: 980
+          tooltip: >-
+            Dix types de contenu, avec des libellés en français et une structure
+            qui empêche les fausses manœuvres.
+        - label: "**Une page par prestation**, générée depuis sa fiche"
+          prix: 450
+        - label: "**Le planning de la semaine** : filtres par activité, navigation de semaine en semaine"
           prix: 400
-        - label: "**Mise en forme de tes contenus** et reprise dans le Studio"
-          prix: 300
-        - label: "**Responsive et recette** : quatre largeurs d'écran vérifiées sur les huit pages"
-          prix: 300
-        - label: "**Deux rondes de retours** intégrées (1er août et 13 août)"
-          prix: 200
-        - label: "**Nom de domaine, DNS et mise en production**"
-          prix: 150
+        - label: "**Mise en ligne** : nom de domaine, hébergement, recette"
+          prix: 250
           tooltip: >-
             Sortie du domaine de chez Ionos, rapatriement, bascule de
             l'hébergement et publication automatique depuis le Studio.
-      remisePct: 50
+      remisePct: 75
       remiseLabel: Tarif ami
       mention: HT
       reglement: >-
-        Montant et échéances à convenir ensemble. Rien n'a été facturé à ce
-        jour. TVA de 20 % en sus.
+        Modalités à convenir ensemble. Rien n'a été facturé à ce jour. TVA de 20 %
+        en sus.
 
   - titre: Le déroulé
     planning:
@@ -117,30 +150,34 @@ sections:
             - { date: 02/08 → 11/08, label: "Retours intégrés, nouveau planning hebdomadaire", owner: coolbeans }
             - { date: 13/08, label: "Deuxième ronde de retours", owner: client }
             - { date: 27/08, label: "Nom de domaine sorti d'Ionos et rapatrié", owner: coolbeans }
+            - { date: 04/09, label: "Site en ligne sur setencorpsmieux.fr", owner: coolbeans }
 
-  - titre: Ce qui reste avant la mise en ligne
+  - titre: De ton côté
     texte: >-
-      Ces points sont compris dans le montant ci-dessus, il n'y a rien de plus à
-      prévoir.
+      Ce que tu as fourni, et ce qui est désormais entre tes mains.
     liste:
-      - "Les retours de ta deuxième ronde : ordre du menu, tarif Shiatsu, fil d'Ariane, photo du lieu sur mobile, logo du pied de page"
-      - "Rendre les images des prestations modifiables directement depuis l'accueil"
-      - "Valider ensemble les créneaux de cours affichés"
-      - "Finaliser le référencement et la configuration du domaine"
-      - "Mettre en place la sauvegarde du contenu et la surveillance du site"
+      - texte: >-
+          Les textes, les tarifs, le planning et les photos, transmis entre le 5
+          et le 23 juillet.
+      - texte: >-
+          Tes retours, en deux rondes, le 1er et le 13 août.
+      - texte: >-
+          La mise à jour du site : textes, photos, prestations et planning se
+          changent depuis le Studio.
+      - texte: >-
+          Le renouvellement du nom de domaine : remplace ma carte bancaire par
+          la tienne chez Infomaniak, pour les années à venir.
 
 notes:
   - tone: success
     texte: >-
-      Tarif ami de 50 % sur l'ensemble. Le montant plein est affiché pour que tu
+      Tarif ami de 75 % sur l'ensemble. Le montant plein est affiché pour que tu
       voies ce que représente le travail, pas pour te le faire payer.
   - texte: >-
-      Aucun abonnement mensuel : l'hébergement et l'espace d'administration
+      Aucun abonnement mensuel : l'hébergement et l'espace d'administration
       tiennent dans les offres gratuites. Seul le nom de domaine se renouvelle,
       autour de dix euros par an.
   - texte: >-
-      J'ai avancé neuf francs suisses pour le transfert du domaine le 27 août.
-      C'est le seul frais engagé pour l'instant.
-  - texte: >-
-      Le flyer, le kakemono et le travail sur le logo de 2025 ne sont pas
-      comptés ici. Ils étaient offerts, ils le restent.
+      Pour plus tard, si tu en as besoin : la réservation en ligne des cours, avec
+      une jauge et une liste d'attente. Rien n'est chiffré ici, et rien ne
+      l'empêche.

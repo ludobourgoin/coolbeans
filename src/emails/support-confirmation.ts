@@ -16,6 +16,8 @@ export interface SupportConfirmationProps {
    * alors sur sa forme nue plutôt que d'inventer un nom.
    */
   prenom?: string;
+  /** Pronom de l'auteur (src/lib/portail/pronom.ts). Vous par défaut. */
+  tutoiement?: boolean;
 }
 
 export interface EmailPret {
@@ -24,39 +26,57 @@ export interface EmailPret {
   text: string;
 }
 
-const PIED = "Vous recevez cet email suite &agrave; votre demande sur my.coolbeans.cc.";
+const textes = (tutoiement: boolean) =>
+  tutoiement
+    ? {
+        pied: "Tu re&ccedil;ois cet email suite &agrave; ta demande sur my.coolbeans.cc.",
+        preheader: "Ta demande est bien enregistrée, je reviens vers toi rapidement.",
+        accuse:
+          "Ta demande est bien enregistrée et arrive directement dans mon outil de suivi. Je reviens vers toi rapidement, en général sous un jour ouvré.",
+        demande: "Ta demande",
+        detail: "Un détail à ajouter entre-temps&nbsp;? Réponds simplement à cet email.",
+        detailTexte: "Un détail à ajouter entre-temps ? Réponds simplement à cet email.",
+      }
+    : {
+        pied: "Vous recevez cet email suite &agrave; votre demande sur my.coolbeans.cc.",
+        preheader: "Votre demande est bien enregistrée, je reviens vers vous rapidement.",
+        accuse:
+          "Votre demande est bien enregistrée et arrive directement dans mon outil de suivi. Je reviens vers vous rapidement, en général sous un jour ouvré.",
+        demande: "Votre demande",
+        detail: "Un détail à ajouter entre-temps&nbsp;? Répondez simplement à cet email.",
+        detailTexte: "Un détail à ajouter entre-temps ? Répondez simplement à cet email.",
+      };
 
 /** Accusé de réception d'une demande support envoyée depuis le portail. */
 export function renderConfirmationSupport(props: SupportConfirmationProps): EmailPret {
-  const { objet, description, prenom } = props;
+  const { objet, description, prenom, tutoiement = false } = props;
+  const t = textes(tutoiement);
   const bonjour = prenom ? `Bonjour ${prenom},` : "Bonjour,";
 
   const html = renderTransactionnel({
-    preheader: "Votre demande est bien enregistrée, je reviens vers vous rapidement.",
+    preheader: t.preheader,
     kicker: "Support · myCoolbeans",
     titre: "Bien reçu, je m'en occupe",
     contenu: [
       p(esc(bonjour)),
-      p(
-        "Votre demande est bien enregistrée et arrive directement dans mon outil de suivi. Je reviens vers vous rapidement, en général sous un jour ouvré.",
-      ),
-      titreSection(`Votre demande · ${esc(objet)}`),
+      p(t.accuse),
+      titreSection(`${t.demande} · ${esc(objet)}`),
       citation(esc(description).replace(/\n/g, "<br>")),
-      p("Un détail à ajouter entre-temps&nbsp;? Répondez simplement à cet email."),
+      p(t.detail),
       p("À très vite,<br>Ludo"),
     ].join(""),
-    piedContexte: PIED,
+    piedContexte: t.pied,
   });
 
   const text = [
     bonjour,
     "",
-    "Votre demande est bien enregistrée et arrive directement dans mon outil de suivi. Je reviens vers vous rapidement, en général sous un jour ouvré.",
+    t.accuse,
     "",
-    `Votre demande · ${objet} :`,
+    `${t.demande} · ${objet} :`,
     description,
     "",
-    "Un détail à ajouter entre-temps ? Répondez simplement à cet email.",
+    t.detailTexte,
     "",
     "À très vite,",
     "Ludo",

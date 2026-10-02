@@ -20,6 +20,7 @@ import {
 } from "../../lib/cadrage";
 import { documentClos, enregistrerReponseDocument } from "../../lib/documents/reponses";
 import { adresseDocument } from "../../lib/documents/adresse";
+import { tutoiementDe } from "../../lib/documents/pronom-contenu";
 
 export const prerender = false;
 
@@ -71,15 +72,15 @@ export const POST: APIRoute = async ({ request }) => {
   // Prénom obligatoire : il ouvre l'accusé de réception, qui n'a pas de
   // formulation de repli. Nom obligatoire aussi.
   if (typeof prenom !== "string" || !prenom.trim()) {
-    return json({ error: "Merci de renseigner votre prénom." }, 400);
+    return json({ error: "Le prénom est obligatoire." }, 400);
   }
   if (typeof nom !== "string" || !nom.trim()) {
-    return json({ error: "Merci de renseigner votre nom." }, 400);
+    return json({ error: "Le nom est obligatoire." }, 400);
   }
   // Le consentement conditionne l'envoi : la case du formulaire ne protège que
   // le navigateur, un POST direct doit être refusé de la même façon.
   if (consentement !== true) {
-    return json({ error: "Merci d'accepter la conservation de vos informations." }, 400);
+    return json({ error: "La conservation des informations doit être acceptée." }, 400);
   }
   // L'email sert d'adresse de réponse ET de destinataire de l'accusé.
   if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
@@ -220,7 +221,7 @@ export const POST: APIRoute = async ({ request }) => {
       titre: doc.data.titre,
       reponses: lisibles,
       message: messageLead,
-      tutoiement: doc.data.tutoiement,
+      tutoiement: await tutoiementDe("cadrage", doc.id),
     });
 
     const { error: erreurConfirmation } = await resend.emails.send({

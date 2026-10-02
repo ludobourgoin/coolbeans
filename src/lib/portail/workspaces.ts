@@ -20,6 +20,11 @@ export interface PortalWorkspace {
   cle?: string;
   /** Prénom du contact principal — salutation en vue admin-basculé. */
   prenom?: string;
+  /**
+   * Le tu ou le vous du client (spec 2026-10-02). Obligatoire dans le YAML ;
+   * optionnel ici pour les fiches construites à la main dans les tests.
+   */
+  tutoiement?: boolean;
   /** Slug dans la collection `docs`. Absent = ce client n'a pas de doc. */
   doc?: string;
   /** UUID de la team Linear où le formulaire support crée ses tickets. */

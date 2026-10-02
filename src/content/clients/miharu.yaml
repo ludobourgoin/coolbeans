@@ -1,0 +1,6 @@
+# Client final de Trigger : les propositions s'adressent à l'agence et
+# suivent son pronom, les autres documents suivent celui-ci.
+nom: Miharu
+organisation: trigger
+tutoiement: false
+cle: mih
