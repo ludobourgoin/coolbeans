@@ -4,22 +4,31 @@
 // financière (règle de src/lib/portail/pages-admin.test.ts).
 export const prerender = false;
 
+import { getCollection } from "astro:content";
 import EspaceLayout from "../../../../layouts/EspaceLayout.astro";
 import { db } from "../../../../lib/devis/reponses";
 import { CLIENTS, PROJETS } from "../../../../lib/documents/nomenclature";
 import { dateFr, libellePiece, montantEuros, statutPiece } from "../../../../lib/pieces/affichage";
-import { toutesLesPieces } from "../../../../lib/pieces/store";
+import { projetsProposes } from "../../../../lib/pieces/actions-admin";
+import { lireSansPanne, toutesLesPieces } from "../../../../lib/pieces/store";
 import { basculerSurCoolbeans } from "../../../../lib/portail/context";
 
 Astro.response.headers.set("Cache-Control", "no-store");
 await basculerSurCoolbeans(Astro);
 
 const filtre = Astro.url.searchParams.get("filtre");
-const toutes = await toutesLesPieces(db());
-const pieces = toutes.filter((p) =>
+// Une base pas encore migrée affiche un message au lieu de répondre 500.
+const toutes = await lireSansPanne(() => toutesLesPieces(db()), null);
+const pieces = (toutes ?? []).filter((p) =>
   filtre === "sans-projet" ? !p.projet : filtre === "a-regler" ? p.statut === "a_regler" : true,
 );
-const projets = Object.entries(PROJETS).map(([slug, e]) => ({ slug, client: CLIENTS[e.client] }));
+const clesDesFiches = Object.fromEntries((await getCollection("clients")).map((e) => [e.id, e.data.cle]));
+// Le projet déjà rattaché reste dans le menu, même hors des projets proposés.
+const optionsDe = (p: (typeof pieces)[number]) => [
+  ...new Set([...(p.projet ? [p.projet] : []), ...projetsProposes(p, clesDesFiches)]),
+];
+const libelleProjet = (slug: string) =>
+  `${Object.hasOwn(PROJETS, slug) ? CLIENTS[PROJETS[slug].client] : "Hors nomenclature"} · ${slug}`;
 const aujourdHui = new Date().toISOString().slice(0, 10);
 const FILTRES = [
   { valeur: null, libelle: "Toutes" },
@@ -45,6 +54,14 @@ const FILTRES = [
     }
   </nav>
 
+  {
+    toutes === null && (
+      <p class="mt-6 text-[14px]">
+        Base des pièces illisible : migration 0014 absente de cet environnement, ou D1 indisponible.
+      </p>
+    )
+  }
+
   <p class="mt-4 text-[13px] text-mute" id="pieces-etat" aria-live="polite"></p>
 
   <ul class="mt-2 divide-y divide-line">
@@ -63,9 +80,9 @@ const FILTRES = [
           <div class="flex flex-wrap items-center gap-2">
             <select class="field" data-action="rattacher" aria-label={`Projet de ${libellePiece(p)}`}>
               <option value="" selected={!p.projet}>Sans projet</option>
-              {projets.map((pr) => (
-                <option value={pr.slug} selected={p.projet === pr.slug}>
-                  {pr.client} · {pr.slug}
+              {optionsDe(p).map((slug) => (
+                <option value={slug} selected={p.projet === slug}>
+                  {libelleProjet(slug)}
                 </option>
               ))}
             </select>

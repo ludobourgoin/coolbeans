@@ -4,17 +4,25 @@
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { D1Like } from "../devis/reponses";
 import { planifierImport, sqlEcriture, type Fiche, type PieceManifeste } from "./plan-import";
-import { annulerReglement, marquerReglee, pieceParId, piecesDuProjet, rattacher, toutesLesPieces } from "./store";
+import {
+  annulerReglement,
+  lireSansPanne,
+  marquerReglee,
+  pieceParId,
+  piecesDuProjet,
+  rattacher,
+  toutesLesPieces,
+} from "./store";
 
 const lire = (chemin: string) => readFileSync(fileURLToPath(new URL(chemin, import.meta.url)), "utf8");
 const manifeste = JSON.parse(lire("../../../scripts/pieces/tiime-2026-10-02.json")).pieces as PieceManifeste[];
 
-function dbSqlite() {
+function dbSqlite({ migree = true } = {}) {
   const sqlite = new DatabaseSync(":memory:");
-  sqlite.exec(lire("../../../migrations/0014_pieces.sql"));
+  if (migree) sqlite.exec(lire("../../../migrations/0014_pieces.sql"));
   const requete = (sql: string, binds: unknown[] = []) => {
     const stmt = sqlite.prepare(sql);
     return {
@@ -96,5 +104,21 @@ describe("table pieces (D1)", () => {
   it("ne marque jamais un devis comme réglé", async () => {
     await marquerReglee(d1, "devis-004330", "2026-10-05");
     expect((await pieceParId(d1, "devis-004330"))?.statut).toBeNull();
+  });
+});
+
+describe("lireSansPanne", () => {
+  it("rend le repli quand la table manque, au lieu de lever", async () => {
+    const erreur = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { d1 } = dbSqlite({ migree: false });
+    expect(await lireSansPanne(() => toutesLesPieces(d1), null)).toBeNull();
+    expect(await lireSansPanne(() => pieceParId(d1, "facture-024624"), null)).toBeNull();
+    expect(erreur).toHaveBeenCalledTimes(2);
+    erreur.mockRestore();
+  });
+
+  it("rend la lecture quand la table répond", async () => {
+    const { d1 } = dbSqlite();
+    expect(await lireSansPanne(() => toutesLesPieces(d1), null)).toEqual([]);
   });
 });

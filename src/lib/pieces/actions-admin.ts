@@ -1,5 +1,8 @@
 /* Les trois gestes de la page admin des pièces (spec 2026-10-02, §3), lus et
    validés avant d'atteindre la base. */
+import { PROJETS, type EntreeProjet } from "../documents/nomenclature";
+import type { Piece } from "./piece";
+
 export type ActionPiece =
   | { action: "rattacher"; id: string; projet: string | null }
   | { action: "regler"; id: string; date: string }
@@ -25,4 +28,19 @@ export function lireAction(corps: unknown, projetsConnus: readonly string[]): Ac
     return { action, id, date };
   }
   return { action: "annuler-reglement", id };
+}
+
+/** Les projets proposés au rattachement d'une pièce (spec 2026-10-02, §3) :
+    ceux de son client dans la table PROJETS, trouvés par la clé de sa fiche.
+    Une pièce de revendeur n'entre dans aucune page projet : tous les projets
+    lui restent ouverts, pour le classement de l'admin. */
+export function projetsProposes(
+  piece: Pick<Piece, "client" | "organisation">,
+  clesDesFiches: Readonly<Record<string, string | undefined>>,
+  projets: Readonly<Record<string, EntreeProjet>> = PROJETS,
+): string[] {
+  const tous = Object.keys(projets);
+  if (!piece.client) return tous;
+  const cle = clesDesFiches[piece.client];
+  return cle ? tous.filter((p) => projets[p].client === cle) : [];
 }

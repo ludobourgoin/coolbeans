@@ -26,6 +26,18 @@ export async function toutesLesPieces(d1: D1Like): Promise<Piece[]> {
   return results;
 }
 
+/** Une lecture qui ne casse pas la page quand la base se tait : table absente
+    sur un environnement pas encore migré, D1 indisponible. Rend le repli et
+    laisse une trace. */
+export async function lireSansPanne<T>(lecture: () => Promise<T>, repli: T): Promise<T> {
+  try {
+    return await lecture();
+  } catch (err) {
+    console.error("Table pieces illisible", err);
+    return repli;
+  }
+}
+
 export async function rattacher(d1: D1Like, id: string, projet: string | null): Promise<void> {
   await d1.prepare("UPDATE pieces SET projet = ? WHERE id = ?").bind(projet, id).run();
 }
