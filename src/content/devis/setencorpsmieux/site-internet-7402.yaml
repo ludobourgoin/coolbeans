@@ -129,16 +129,6 @@ sections:
             - { date: 27/08, label: "Nom de domaine sorti d'Ionos et rapatrié", owner: coolbeans }
             - { date: 04/09, label: "Site en ligne sur setencorpsmieux.fr", owner: coolbeans }
 
-  - titre: Ce qui reste à faire
-    texte: >-
-      Ces points sont compris dans le montant ci-dessus, il n'y a rien de plus à
-      prévoir.
-    liste:
-      - "Les retours de ta deuxième ronde : ordre du menu, tarif Shiatsu, fil d'Ariane, photo du lieu sur mobile, logo du pied de page"
-      - "Rendre les images des prestations modifiables directement depuis l'accueil"
-      - "Finaliser le référencement"
-      - "Mettre en place la sauvegarde du contenu et la surveillance du site"
-
 notes:
   - tone: success
     texte: >-
