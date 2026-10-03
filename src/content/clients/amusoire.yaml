@@ -5,6 +5,8 @@ nom: Amusoire
 organisation: coolbeans
 tutoiement: true
 cle: amu
+# Noms sous lesquels Tiime facture ce client (pièces du portail).
+raisonsSociales: [AMUSOIRE]
 prenom: Noémie
 # Emoji du sélecteur (repris de l'icône de la team Linear) et début de la
 # relation (création de la fiche au registre) : fonde le tri chronologique.

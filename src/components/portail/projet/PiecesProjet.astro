@@ -1,0 +1,51 @@
+---
+/* Le bloc « Devis et factures » d'une page projet (spec 2026-10-02, §4) :
+   entre Avancement et les onglets d'étape, à la même largeur. Une ligne par
+   pièce, de la plus ancienne à la plus récente. Sans pièce, pas de bloc. */
+import type { Piece } from "../../../lib/pieces/piece";
+import { dateFr, libellePiece, montantEuros, statutPiece } from "../../../lib/pieces/affichage";
+
+interface Props {
+  pieces: Piece[];
+}
+
+const { pieces } = Astro.props;
+const PASTILLE: Record<string, string> = {
+  reglee: "bg-success/10 text-success",
+  a_regler: "bg-info/10 text-info",
+  annulee: "bg-surface-raise text-mute",
+};
+---
+
+{
+  pieces.length > 0 && (
+    <section class="container-site print:hidden" aria-labelledby="pieces-titre">
+      <div class="mx-auto max-w-[880px] border-b border-line pt-10 pb-8">
+        <h2 id="pieces-titre" class="text-[1.25rem]/[1.3] tracking-[-0.01em]">
+          Devis et factures
+        </h2>
+        <ul class="mt-4 divide-y divide-line">
+          {pieces.map((p) => {
+            const statut = statutPiece(p);
+            return (
+              <li class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-3 text-[15px]">
+                <a href={`/api/pieces/${p.id}`} target="_blank" rel="noopener" class="font-medium text-ink">
+                  {libellePiece(p)}
+                </a>
+                <span class="flex shrink-0 flex-wrap items-baseline gap-3">
+                  <span class="font-mono text-[12px] text-mute">{dateFr(p.emise_le)}</span>
+                  <span class="tabular-nums">{montantEuros(p.ttc)}</span>
+                  {statut && p.statut && (
+                    <span class:list={["rounded-full px-2 py-0.5 text-[12px] font-semibold", PASTILLE[p.statut]]}>
+                      {statut}
+                    </span>
+                  )}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+  )
+}

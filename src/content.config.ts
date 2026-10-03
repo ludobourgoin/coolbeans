@@ -446,6 +446,11 @@ const clients = defineCollection({
        clé, la clé donne le workspace. Absente, le workspace n'a aucun document
        du cycle. Vérifiée au build par lib/documents/charger.ts. */
     cle: z.string().regex(/^[a-z]{3}$/).optional(),
+    /* Noms sous lesquels Tiime facture ce client (spec 2026-10-02, devis et
+       factures, §1.2). L'import des pièces s'en sert pour vérifier qu'une
+       pièce arrive dans la bonne fiche. Une raison sociale ne désigne qu'une
+       fiche : charger.ts le vérifie au build. */
+    raisonsSociales: z.array(z.string()).default([]),
     // Prénom du contact principal : c'est lui que salue la topbar quand un
     // admin est basculé sur ce client (« vue client », retour du 2026-08-17).
     // Absent, la salutation retombe sur le nom du client.
@@ -502,6 +507,9 @@ const organisations = defineCollection({
   loader: glob({ pattern: "*.yaml", base: "./src/content/organisations" }),
   schema: z.object({
     nom: z.string(),
+    /* Noms sous lesquels Tiime facture ce revendeur (spec 2026-10-02, devis
+       et factures, §1.2). */
+    raisonsSociales: z.array(z.string()).default([]),
     // Le pronom des comptes revendeur et des propositions qui leur sont
     // adressées (spec 2026-10-02). Obligatoire, sans défaut.
     tutoiement: z.boolean(),

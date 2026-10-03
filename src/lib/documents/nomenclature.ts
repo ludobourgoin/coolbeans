@@ -19,14 +19,17 @@
 export const CLIENTS = {
   amu: "Amusoire",
   caf: "CAFA",
+  dup: "DupontDupont",
   fyl: "Fylgo",
   lit: "Little Box",
   mal: "Aurélie Malbec",
   mat: "Mathilde Chevalier",
+  mer: "MerciYanis",
   mih: "Miharu",
   oid: "Oïde",
   rev: "Revolutions Douces",
   set: "Setencorpsmieux",
+  tri: "Trigger",
   uni: "Université de Montpellier",
   unl: "UnlockBreath",
   vic: "Vice Versa",
@@ -61,7 +64,11 @@ export const PROJETS: Readonly<Record<string, EntreeProjet>> = {
   "serial-generations-618": { client: "uni", linear: "fff0a01f2a8c" },
   "plateforme-327": { client: "unl", linear: "03dc21021720" },
   "page-vitrine-561": { client: "vic", linear: "52f28a6e9424" },
+  "gravure-432": { client: "dup", linear: "07f5b96c0310" },
+  "accueil-mega-menu-246": { client: "mer", linear: "a76c5a381d75" },
+  "landing-pages-246": { client: "tri", linear: "b274199a0f82" },
 };
+// Les trois derniers projets portent des pièces Tiime et aucun document (spec 2026-10-02, devis et factures, §12).
 
 /** Documents sans projet, par choix. Désignés par `collection/id`. */
 export const HORS_NOMENCLATURE: readonly string[] = [

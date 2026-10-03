@@ -7,6 +7,8 @@ nom: UnlockBreath
 organisation: coolbeans
 tutoiement: true
 cle: unl
+# Noms sous lesquels Tiime facture ce client (pièces du portail).
+raisonsSociales: [DOS ET POSTURE]
 prenom: Thierry
 # Emoji du sélecteur : le souffle, comme sur la carte CRM-24. La team Linear
 # n'en porte pas.

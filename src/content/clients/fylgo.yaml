@@ -7,6 +7,8 @@ nom: Fylgo
 organisation: coolbeans
 tutoiement: false
 cle: fyl
+# Noms sous lesquels Tiime facture ce client (pièces du portail).
+raisonsSociales: [ABEAM DRINKS]
 # Fabien (fabien.vp@fylgodrinks.com) est le contact client. Paul Lévy portait
 # les échanges au démarrage depuis son adresse Talenvia — c'est lui qui a reçu
 # le devis en mars — mais il est passé lui aussi sous fylgodrinks.com fin avril.

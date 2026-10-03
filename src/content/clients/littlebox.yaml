@@ -3,6 +3,8 @@ nom: LittleBox
 organisation: coolbeans
 tutoiement: true
 cle: lit
+# Noms sous lesquels Tiime facture ce client (pièces du portail).
+raisonsSociales: [LITTLE BOX]
 prenom: Philippe
 # Emoji du sélecteur (repris de l'icône de la team Linear) et début de la
 # relation, daté du premier devis.
