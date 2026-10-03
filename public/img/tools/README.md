@@ -42,11 +42,16 @@ Autres points à savoir :
   favicon officiel plafonne à 32×32.
 - **`nextjs.svg`** vient de Simple Icons aussi : `nextjs.org` ne déclare qu'un
   `favicon.ico` 48×48, et n'expose ni `apple-icon.png` ni `icon.png`.
+- **`superpowers.png`** et **`firstmate.png`** : les deux outils n'ont pas de site,
+  seulement un repo GitHub (2026-10-03). Superpowers vient de `assets/app-icon.png`
+  du repo `obra/superpowers`, recadré sur le picto (marges de 13 %) puis réduit à 180 px. Firstmate n'a aucune icône : c'est
+  l'ancre de gauche de `assets/banner.png` (repo `kunchenguid/firstmate`), recadrée
+  en 146×146. À remplacer si l'un des deux ouvre un site.
 - **Fichiers orphelins** (plus référencés par `tools.ts`, conservés au cas où l'outil
   reviendrait dans la liste) : `clerk.svg` — carte remplacée par Better Auth — et
   `asana.png` — carte retirée, Linear a pris la place.
 - **Une icône pour plusieurs cartes, c'est normal** : `cloudflare.png` sert aux trois
-  produits Cloudflare, `apple.png` au macbook / iphone / airpods, `dell.png` aux trois
+  produits Cloudflare, `claude.png` à Claude et Claude Code, `apple.png` au macbook / iphone / airpods, `dell.png` aux trois
   écrans et à la webcam. Ce sont les mêmes marques.
 
 ## Cas particuliers des Ressources

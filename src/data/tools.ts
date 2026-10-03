@@ -57,6 +57,15 @@ export const toolCategories: ToolCategory[] = [
         "logo": "/img/tools/github.svg"
       },
       {
+        "name": "Claude",
+        "desc": "Assistant du quotidien : recherche, rédaction, relecture. Branché sur Linear, Gmail et Figma.",
+        "chips": [
+          "Assistant IA"
+        ],
+        "href": "https://claude.com",
+        "logo": "/img/tools/claude.png"
+      },
+      {
         "name": "Claude Code",
         "desc": "Agent terminal pour pair-coding. Refactors, tests, scripts de migration. Un vrai game changer !",
         "chips": [
@@ -64,6 +73,34 @@ export const toolCategories: ToolCategory[] = [
         ],
         "href": "https://www.anthropic.com/claude-code",
         "logo": "/img/tools/claude.png"
+      },
+      {
+        "name": "Superpowers",
+        "desc": "Plugin de méthode pour Claude Code : brainstorming, plan d'implémentation, tests d'abord, revue de code.",
+        "chips": [
+          "Plugin"
+        ],
+        "href": "https://github.com/obra/superpowers",
+        "logo": "/img/tools/superpowers.png"
+      },
+      {
+        "name": "Firstmate",
+        "desc": "Je parle à un seul agent, il répartit le travail entre plusieurs autres. Chacun dans son worktree, chacun rend sa PR.",
+        "chips": [
+          "Orchestration"
+        ],
+        "href": "https://github.com/kunchenguid/firstmate",
+        "logo": "/img/tools/firstmate.png"
+      },
+      {
+        "name": "Herdr",
+        "desc": "Le terminal où tournent les agents. Les sessions continuent quand je ferme l'ordinateur, je les reprends depuis n'importe quelle machine.",
+        "chips": [
+          "Agents",
+          "Terminal"
+        ],
+        "href": "https://herdr.dev",
+        "logo": "/img/tools/herdr.png"
       },
       {
         "name": "GSAP",
