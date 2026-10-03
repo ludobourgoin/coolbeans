@@ -50,9 +50,11 @@ Autres points à savoir :
 - **Fichiers orphelins** (plus référencés par `tools.ts`, conservés au cas où l'outil
   reviendrait dans la liste) : `clerk.svg` — carte remplacée par Better Auth — et
   `asana.png` — carte retirée, Linear a pris la place.
+  Le 2026-10-03, trois de plus : `netlify.png`, carte remplacée par Vercel, puis
+  `dji.png` et `logitech-g.png`, partis avec la section Audio & vidéo.
 - **Une icône pour plusieurs cartes, c'est normal** : `cloudflare.png` sert aux trois
-  produits Cloudflare, `claude.png` à Claude et Claude Code, `apple.png` au macbook / iphone / airpods, `dell.png` aux trois
-  écrans et à la webcam. Ce sont les mêmes marques.
+  produits Cloudflare, `apple.png` au macbook et à l'iphone, `dell.png` aux deux
+  écrans. Ce sont les mêmes marques.
 
 ## Cas particuliers des Ressources
 

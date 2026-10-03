@@ -57,15 +57,6 @@ export const toolCategories: ToolCategory[] = [
         "logo": "/img/tools/github.svg"
       },
       {
-        "name": "Claude",
-        "desc": "Assistant du quotidien : recherche, rédaction, relecture. Branché sur Linear, Gmail et Figma.",
-        "chips": [
-          "Assistant IA"
-        ],
-        "href": "https://claude.com",
-        "logo": "/img/tools/claude.png"
-      },
-      {
         "name": "Claude Code",
         "desc": "Agent terminal pour pair-coding. Refactors, tests, scripts de migration. Un vrai game changer !",
         "chips": [
@@ -249,13 +240,13 @@ export const toolCategories: ToolCategory[] = [
     "title": "Hébergement & déploiement",
     "cards": [
       {
-        "name": "Cloudflare Pages",
-        "desc": "Hébergement edge gratuit pour 95 % des projets. Workers + D1 pour la partie dynamique. ~10 €/mois max.",
+        "name": "Cloudflare Workers",
+        "desc": "Hébergement edge de mes sites Astro, statiques comme dynamiques. Déploiement à chaque push via Workers Builds.",
         "chips": [
           "Hosting",
           "Edge"
         ],
-        "href": "https://pages.cloudflare.com",
+        "href": "https://www.cloudflare.com/products/workers/",
         "logo": "/img/tools/cloudflare.png"
       },
       {
@@ -279,14 +270,23 @@ export const toolCategories: ToolCategory[] = [
         "logo": "/img/tools/cloudflare.png"
       },
       {
-        "name": "Netlify",
-        "desc": "Utilisé sur les vieux projets Webflow et quand le client veut un CMS intégré simple. Déploiement via webhook.",
+        "name": "Cloudflare R2",
+        "desc": "Stockage de fichiers compatible S3, sans frais de sortie. Les pièces jointes du portail client y sont rangées.",
         "chips": [
-          "Hosting",
-          "Legacy"
+          "Storage",
+          "Edge"
         ],
-        "href": "https://www.netlify.com",
-        "logo": "/img/tools/netlify.png"
+        "href": "https://www.cloudflare.com/product/r2",
+        "logo": "/img/tools/cloudflare.png"
+      },
+      {
+        "name": "Vercel",
+        "desc": "Hébergement taillé pour Next.js, avec une preview à chaque branche.",
+        "chips": [
+          "Hosting"
+        ],
+        "href": "https://vercel.com",
+        "logo": "/img/tools/vercel.png"
       }
     ]
   },
@@ -395,6 +395,15 @@ export const toolCategories: ToolCategory[] = [
         ],
         "href": "https://resend.com",
         "logo": "/img/tools/resend.png"
+      },
+      {
+        "name": "Loops",
+        "desc": "Emails marketing et transactionnels dans un seul outil, pensé pour les SaaS.",
+        "chips": [
+          "Email marketing"
+        ],
+        "href": "https://loops.so",
+        "logo": "/img/tools/loops.png"
       },
       {
         "name": "HubSpot",
@@ -561,7 +570,7 @@ export const toolCategories: ToolCategory[] = [
   {
     "id": "workstation",
     "group": "hardware",
-    "title": "Poste de travail",
+    "title": "Hardware",
     "cards": [
       {
         "name": "MacBook Air 15\"",
@@ -611,52 +620,6 @@ export const toolCategories: ToolCategory[] = [
         ],
         "href": "https://www.apple.com/iphone-17/",
         "logo": "/img/tools/apple.png"
-      }
-    ]
-  },
-  {
-    "id": "audio",
-    "group": "hardware",
-    "title": "Audio & vidéo",
-    "cards": [
-      {
-        "name": "AirPods Pro 2026",
-        "desc": "Écouteurs du quotidien : calls en déplacement et réduction de bruit pour le deep work.",
-        "chips": [
-          "Audio"
-        ],
-        "href": "https://www.apple.com/airpods-pro/",
-        "logo": "/img/tools/apple.png"
-      },
-      {
-        "name": "DJI Mic Mini",
-        "desc": "Micro-cravate sans fil pour les tournages et démos vidéo sur le terrain.",
-        "chips": [
-          "Micro",
-          "Vidéo"
-        ],
-        "href": "https://www.dji.com/mic-mini",
-        "logo": "/img/tools/dji.png"
-      },
-      {
-        "name": "Blue Yeti",
-        "desc": "Micro USB d'appoint pour les enregistrements voix et les sessions podcast.",
-        "chips": [
-          "Micro",
-          "Audio"
-        ],
-        "href": "https://www.logitechg.com/en-us/shop/p/yeti-premium-usb-microphone",
-        "logo": "/img/tools/logitech-g.png"
-      },
-      {
-        "name": "Dell Pro Webcam WB5023",
-        "desc": "Webcam 2K pour les calls clients et démos vidéo. Cadrage net et stable, fixée en haut de l'écran.",
-        "chips": [
-          "Caméra",
-          "Vidéo"
-        ],
-        "href": "https://www.dell.com/en-us/shop/dell-pro-webcam-wb5023/apd/319-bbjj/pc-accessories",
-        "logo": "/img/tools/dell.png"
       }
     ]
   }
