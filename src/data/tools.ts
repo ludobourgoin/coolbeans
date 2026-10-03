@@ -243,8 +243,7 @@ export const toolCategories: ToolCategory[] = [
         "name": "Cloudflare Workers",
         "desc": "Hébergement edge de mes sites Astro, statiques comme dynamiques. Déploiement à chaque push via Workers Builds.",
         "chips": [
-          "Hosting",
-          "Edge"
+          "Hosting"
         ],
         "href": "https://www.cloudflare.com/products/workers/",
         "logo": "/img/tools/cloudflare.png"
@@ -263,8 +262,7 @@ export const toolCategories: ToolCategory[] = [
         "name": "Cloudflare D1",
         "desc": "Base SQLite serverless sur l'edge Cloudflare. La partie dynamique de mes sites Astro.",
         "chips": [
-          "DB",
-          "Edge"
+          "DB"
         ],
         "href": "https://www.cloudflare.com/developer-platform/d1/",
         "logo": "/img/tools/cloudflare.png"
@@ -273,8 +271,7 @@ export const toolCategories: ToolCategory[] = [
         "name": "Cloudflare R2",
         "desc": "Stockage de fichiers compatible S3, sans frais de sortie. Les pièces jointes du portail client y sont rangées.",
         "chips": [
-          "Storage",
-          "Edge"
+          "Storage"
         ],
         "href": "https://www.cloudflare.com/product/r2",
         "logo": "/img/tools/cloudflare.png"
