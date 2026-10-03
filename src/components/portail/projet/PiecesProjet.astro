@@ -1,7 +1,9 @@
 ---
 /* Le bloc « Devis et factures » d'une page projet : un lien par PDF du
    dossier R2 du projet, ouvert dans un nouvel onglet. Sans pièce, pas de
-   bloc. Entre Avancement et les onglets d'étape, à la même largeur. */
+   bloc. Entre Avancement et les onglets d'étape, à la même largeur. La
+   page projet coupe la flèche ↗ des liens externes (doc.css) : le bloc pose
+   la sienne. */
 import type { PieceAffichee } from "../../../lib/pieces/pieces-r2";
 
 interface Props {
@@ -21,8 +23,9 @@ const { pieces } = Astro.props;
         <ul class="mt-4 divide-y divide-line">
           {pieces.map((p) => (
             <li class="py-3 text-[15px]">
-              <a href={p.href} target="_blank" rel="noopener" class="font-medium text-ink">
+              <a href={p.href} target="_blank" rel="noopener" class="font-medium text-ink hover:underline">
                 {p.libelle}
+                <span aria-hidden="true" class="ml-1 text-[0.72em] text-mute">↗</span>
               </a>
             </li>
           ))}
