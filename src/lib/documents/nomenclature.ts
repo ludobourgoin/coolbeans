@@ -68,7 +68,7 @@ export const PROJETS: Readonly<Record<string, EntreeProjet>> = {
   "accueil-mega-menu-246": { client: "mer", linear: "a76c5a381d75" },
   "landing-pages-246": { client: "tri", linear: "b274199a0f82" },
 };
-// Les trois derniers projets portent des pièces Tiime et aucun document (spec 2026-10-02, devis et factures, §12).
+// Les trois derniers projets n'ont encore aucun document : ils relient leur projet Linear à son workspace.
 
 /** Documents sans projet, par choix. Désignés par `collection/id`. */
 export const HORS_NOMENCLATURE: readonly string[] = [

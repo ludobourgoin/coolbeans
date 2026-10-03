@@ -1,8 +1,10 @@
 # Devis et factures dans la page projet
 
 Date : 2026-10-02
-Statut : spec validée par Ludo le 2026-10-02
+Statut : remplacée le 2026-10-03 par une version simplifiée, ci-dessous
 Dépend de : la page projet du portail (spec `2026-09-30-barre-portail-par-workspace-design.md`, en prod), la table `PROJETS` de `src/lib/documents/nomenclature.ts` et le binding R2 `PORTAL_FILES`.
+
+> **Remplacée le 2026-10-03.** Ludo a jugé la version qui suit trop lourde. Il ne reste que trois gestes : Ludo dépose les PDF dans `a-classer/` du bucket R2 ; Claude les range sous `pieces/<workspace>/<projet Linear>/<Nom propre>.pdf`, en demandant quand il doute ; la page projet liste ce dossier, et chaque lien ouvre le PDF dans un nouvel onglet. Ni table D1, ni statut, ni montant, ni page admin, ni script d'import. Mode d'emploi : `src/content/docs/coolbeans/04-portail.mdx`.
 
 ## Pourquoi
 

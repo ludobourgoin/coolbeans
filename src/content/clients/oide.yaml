@@ -4,8 +4,6 @@ nom: Oïde
 organisation: coolbeans
 tutoiement: false
 cle: oid
-# Noms sous lesquels Tiime facture ce client (pièces du portail).
-raisonsSociales: ["3BNBW - OÏDE"]
 prenom: Clément
 # Emoji du sélecteur, repris de l'icône de la team Linear Oïde (:shorts:).
 emoji: 🩳

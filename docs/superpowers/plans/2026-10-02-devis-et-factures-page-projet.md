@@ -1,5 +1,7 @@
 # Devis et factures dans la page projet : plan d'implémentation
 
+> **Remplacé le 2026-10-03** par la version simplifiée décrite en tête de la spec. Ce plan reste comme trace de ce qui a été livré puis retiré.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal :** afficher dans la page projet du portail les devis, factures et avoirs Tiime du client, avec leur statut et leur PDF, à partir d'un registre D1 alimenté par un import manuel.
