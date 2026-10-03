@@ -3,8 +3,6 @@ nom: CAFA-TO
 organisation: coolbeans
 tutoiement: false
 cle: caf
-# Noms sous lesquels Tiime facture ce client (pièces du portail).
-raisonsSociales: [CLUB AFFAIRES FRANCO-ALLEMAND TOULOUSE MIDI-PYRENEES]
 prenom: Susanne
 # Emoji du sélecteur (repris de l'icône de la team Linear) et début de la
 # relation, daté du premier devis.

@@ -21,12 +21,10 @@ import PageCadrage from "../../../components/documents/pages/PageCadrage.astro";
 import PageProposition from "../../../components/documents/pages/PageProposition.astro";
 import PageLivrable from "../../../components/documents/pages/PageLivrable.astro";
 import PageTemoignage from "../../../components/documents/pages/PageTemoignage.astro";
-import { db } from "../../../lib/devis/reponses";
 import { chargerDocuments } from "../../../lib/documents/charger";
 import { workspaceDuLinear } from "../../../lib/documents/nomenclature";
 import { ongletOuvert, ongletsDuProjet, slugIdDe } from "../../../lib/documents/projets-portail";
-import type { Piece } from "../../../lib/pieces/piece";
-import { piecesDuProjet } from "../../../lib/pieces/store";
+import { piecesDuDossier, prefixeDuProjet, type PieceAffichee } from "../../../lib/pieces/pieces-r2";
 import { workspacesVisibles } from "../../../lib/portail/appartenances";
 import { getPortalContext, poserWorkspaceCourant } from "../../../lib/portail/context";
 import { portalHref } from "../../../lib/portail/nav";
@@ -87,15 +85,14 @@ const detail = projet.statut
 const avancement = detail && !projet.pack ? construireAvancement(detail.jalons, detail.issues) : null;
 const heures = detail && projet.pack ? construireHeures(detail.issues, await totalDuPack(projet)) : null;
 
-// Les pièces comptables du projet (spec 2026-10-02, devis et factures, §4).
-// Une base muette ne casse pas la page : le bloc disparaît.
-let pieces: Piece[] = [];
-if (projet.nomenclature) {
-  try {
-    pieces = await piecesDuProjet(db(), workspace.slug, projet.nomenclature);
-  } catch (err) {
-    console.error("Pièces du projet illisibles", err);
-  }
+// Les devis et factures du projet : les PDF de son dossier R2. Un stockage
+// muet ne casse pas la page : le bloc disparaît.
+let pieces: PieceAffichee[] = [];
+try {
+  const { objects } = await env.PORTAL_FILES.list({ prefix: prefixeDuProjet(workspace.slug, projet.slugId) });
+  pieces = piecesDuDossier(objects.map((o) => o.key));
+} catch (err) {
+  console.error("Pièces du projet illisibles", err);
 }
 
 const documents = await chargerDocuments();

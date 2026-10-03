@@ -3,11 +3,9 @@
    incohérente. Non testé sous Vitest, où `astro:content` est indisponible :
    toute la logique vit dans projet.ts et frise.ts. COO-295 ajoutera ici la
    collection `audit`. Il vérifie aussi les clés des fiches client, qui
-   relient un workspace à ses documents, et l'unicité des raisons sociales,
-   qui relient une pièce Tiime à sa fiche. Il vérifie enfin que chaque
-   document résout un pronom (spec 2026-10-02). */
+   relient un workspace à ses documents. Il vérifie enfin que chaque document
+   résout un pronom (spec 2026-10-02). */
 import { getCollection } from "astro:content";
-import { verifierRaisonsSociales } from "../pieces/raisons-sociales";
 import type { CollectionDocument } from "./etapes";
 import { verifierCles, verifierLiensLinear } from "./nomenclature";
 import { verifierPronoms } from "./pronom";
@@ -34,27 +32,20 @@ export async function chargerDocuments(): Promise<DocumentProjet[]> {
     ),
   );
   const documents = parCollection.flat();
-  const fichesClients = await getCollection("clients");
-  const fichesOrganisations = await getCollection("organisations");
-  const fiches = fichesClients.map((e) => ({
+  const fiches = (await getCollection("clients")).map((e) => ({
     slug: e.id,
     cle: e.data.cle,
     organisation: e.data.organisation,
     tutoiement: e.data.tutoiement,
   }));
-  const organisations = fichesOrganisations.map((e) => ({
+  const organisations = (await getCollection("organisations")).map((e) => ({
     slug: e.id,
     tutoiement: e.data.tutoiement,
   }));
-  const raisons = [
-    ...fichesClients.map((e) => ({ chemin: `clients/${e.id}`, raisonsSociales: e.data.raisonsSociales })),
-    ...fichesOrganisations.map((e) => ({ chemin: `organisations/${e.id}`, raisonsSociales: e.data.raisonsSociales })),
-  ];
   const erreurs = [
     ...verifierNomenclature(documents),
     ...verifierCles(fiches),
     ...verifierLiensLinear(),
-    ...verifierRaisonsSociales(raisons),
     ...verifierPronoms({ documents, fiches, organisations }),
   ];
   if (erreurs.length > 0) {

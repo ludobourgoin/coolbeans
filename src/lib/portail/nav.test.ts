@@ -163,7 +163,6 @@ describe("buildSidebar · workspace Coolbeans", () => {
       "Mes clients",
       "Utilisateurs",
       "Devis",
-      "Pièces",
     ]);
   });
 

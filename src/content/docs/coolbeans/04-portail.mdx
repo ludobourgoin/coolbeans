@@ -47,6 +47,18 @@ mois glissants en calendrier complet, week-ends grisés, avec les jours fériés
 français, qu'elle calcule elle-même. Le planning est commun à tous les
 workspaces.
 
+**Déposer des devis et factures** : déposer les PDF Tiime dans le dossier
+`a-classer/` du bucket R2 `coolbeans-portal-fichiers`, puis demander à Claude
+de « classer les pièces ». Claude lit chaque PDF, en déduit le workspace et le
+projet Linear, demande quand il doute, puis range le fichier sous
+`pieces/<workspace>/<identifiant du projet Linear>/<Nom propre>.pdf` avec
+`scripts/ranger-piece.mjs`. Le nom du fichier devient le libellé affiché :
+« Devis 4330 », « Facture d'acompte 24617 », « Facture de solde 24624 ». Tiime
+facture sous la raison sociale, pas sous la marque : ABEAM DRINKS est Fylgo,
+DOS ET POSTURE est UnlockBreath, 3BNBW - OÏDE est Oïde. Une pièce adressée à
+un revendeur se range sous `pieces/<organisation>/`, une pièce sans projet sous
+`pieces/<workspace>/sans-projet/` : aucune page projet ne les liste.
+
 Un module dont le mapping est absent affiche un **état vide** explicite, pas
 une erreur : on peut créer un client incomplet et compléter ensuite. Un
 encart de diagnostic, visible des seuls admins, liste ce qui manque : c'est
@@ -108,7 +120,7 @@ est mémorisé dans un cookie. Règle d'arbitrage : **l'URL gagne** : un admin
 qui ouvre la doc d'un client alors que son sélecteur est ailleurs bascule
 automatiquement sur ce client, pour que l'écran et le sélecteur racontent la
 même chose. Les pages de la section Admin (`/admin`, `/admin/relances`,
-`/admin/finances/pieces`, `/clients`, `/utilisateurs`, `/devis`, `/devis/reglages`) imposent l'inverse :
+`/clients`, `/utilisateurs`, `/devis`, `/devis/reglages`) imposent l'inverse :
 ouvertes depuis un autre workspace, elles basculent sur Coolbeans, pour ne
 jamais afficher le cockpit admin sous la barre d'un client.
 
@@ -138,9 +150,9 @@ statut traduit (« Proposition », « À venir », « Planifié », « En
 projet validé. Sous l'en-tête, le bloc « Avancement » liste les issues
 du projet par jalon, avec leur état traduit et leur échéance ; les annulées
 et celles en Triage n'y figurent pas.
-Sous l'avancement, le bloc « Devis et factures » liste les pièces Tiime du
-projet, avec leur date, leur montant TTC, leur statut et un lien vers le PDF.
-Une pièce sans projet, ou adressée à un revendeur, n'y figure jamais.
+Sous l'avancement, le bloc « Devis et factures » liste les PDF du dossier R2
+du projet. Chaque lien ouvre le PDF dans un nouvel onglet, pour le seul client
+du workspace : la route répond 404 à tout autre compte.
 Les six étapes du cycle (audit si présent, cadrage,
 proposition, production, livraison, suivi) s'ouvrent en onglets ; une
 étape sans document lisible par le compte garde son onglet, grisé, sans
@@ -297,8 +309,7 @@ La règle vit dans `src/lib/documents/pronom.ts`.
 | Bascule de workspace depuis une page | `poserWorkspaceCourant`, `basculerSurCoolbeans` dans `src/lib/portail/context.ts` |
 | Page projet | `src/pages/espace/projets/[projet].astro`, `src/components/portail/projet/` |
 | Bloc Avancement de la page projet (issues par jalon) | `src/lib/portail/avancement-linear.ts`, `src/components/portail/projet/AvancementProjet.astro` |
-| Devis et factures : registre, import, bloc de la page projet, PDF | `migrations/0014_pieces.sql`, `src/lib/pieces/`, `scripts/importer-pieces.mts`, `src/components/portail/projet/PiecesProjet.astro`, `src/pages/api/pieces/[id].ts` |
-| Pièces côté admin : rattachement et règlements | `src/pages/espace/admin/finances/pieces.astro`, `src/pages/api/admin/finances/pieces/` |
+| Devis et factures de la page projet (un dossier R2 par projet) | `src/lib/pieces/pieces-r2.ts`, `src/components/portail/projet/PiecesProjet.astro`, `src/pages/api/pieces/[...chemin].ts`, `scripts/ranger-piece.mjs` |
 | Liste de tous les projets (entrée « Tous ») | `src/pages/espace/projets/index.astro` |
 | Packs d'heures : heures restantes, statuts des demandes, rattachement des demandes | `construireHeures` dans `src/lib/portail/avancement-linear.ts`, `src/lib/devis/heures.ts`, `totalDuPack` dans `src/lib/portail/projets-courants.ts`, `src/components/portail/projet/HeuresPack.astro`, `packActif` dans `src/lib/documents/projets-portail.ts` |
 | Adresse publique d'un document, pour tout lien émis | `src/lib/documents/adresse.ts` |

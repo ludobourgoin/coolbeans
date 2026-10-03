@@ -3,8 +3,6 @@ nom: MerciYanis
 organisation: coolbeans
 # Clé de la nomenclature des documents : la clé de la team Linear MER.
 cle: mer
-# Noms sous lesquels Tiime facture ce client (pièces du portail).
-raisonsSociales: [MERCIYANIS]
 # Team « MerciYanis » (MER), créée le 2026-09-25 sous Web.
 linearTeamId: d4a0264c-fbd7-42dd-b290-df35780d8db3
 tutoiement: true
